@@ -38,7 +38,10 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Config\ConfigContainer;
+use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Console\Application;
+use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Debug\Profiler;
@@ -95,7 +98,7 @@ class Html
     public static function convDate($time, $format = null)
     {
 
-        if (is_null($time) || trim($time) == '' || in_array($time, ['NULL', '0000-00-00', '0000-00-00 00:00:00'])) {
+        if (is_null($time) || trim($time) == '' || in_array($time, ['null', 'NULL', '0000-00-00', '0000-00-00 00:00:00'])) {
             return null;
         }
 
@@ -141,7 +144,7 @@ class Html
      **/
     public static function convDateTime($time, $format = null, bool $with_seconds = false)
     {
-        if (is_null($time) || ($time === 'NULL')) {
+        if (is_null($time) || $time === 'NULL' || $time === 'null') {
             return null;
         }
 
@@ -498,15 +501,20 @@ class Html
 
     /**
      * Return the referer URL.
+     *
+     * Referer is fetched from $_SERVER['HTTP_REFERER']
+     * unless $_POST['_glpi_http_referer'] is defined.
+     *
+     * $_POST['_glpi_http_referer'] can be used to override the referer URL in case of redirection from an intermediate page.
+     *
      * If the referer is invalid, return value will be null.
      *
-     * @since 11.0.0
-     *
      * @return string|null
+     * @since 11.0.0
      */
     public static function getRefererUrl(): ?string
     {
-        $referer = URL::sanitizeURL($_SERVER['HTTP_REFERER'] ?? '');
+        $referer = URL::sanitizeURL($_POST['_glpi_http_referer'] ?? $_SERVER['HTTP_REFERER'] ?? '');
 
         $referer_host = parse_url($referer, PHP_URL_HOST);
         $referer_path = parse_url($referer, PHP_URL_PATH);
@@ -829,7 +837,7 @@ TWIG,
     {
         global $CFG_GLPI;
 
-        $can_read_dashboard      = Session::haveRight('dashboard', READ);
+        $can_read_dashboard      = Session::haveRight(Dashboard::$rightname, READ);
         $default_asset_dashboard = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('assets');
         $default_asset_helpdesk  = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('helpdesk');
 
@@ -907,7 +915,7 @@ TWIG,
                 'types' => [
                     AssetDefinition::class,
                     CommonDropdown::class, CommonDevice::class, Notification::class, Webhook::class,
-                    SLM::class, Config::class, SecurityConfig::class, FieldUnicity::class, CronTask::class, Auth::class,
+                    SLM::class, Config::class, SecurityConfig::class, DataAndPrivacyConfig::class, FieldUnicity::class, CronTask::class, Auth::class,
                     OAuthClient::class, MailCollector::class, Link::class, Plugin::class,
                 ],
                 'icon'  => 'ti ti-settings',
@@ -1079,8 +1087,8 @@ TWIG,
         }
 
         if (
-            Session::haveRight("ticket", READ)
-            || Session::haveRight("ticket", Ticket::READMY)
+            Session::haveRight(Ticket::$rightname, READ)
+            || Session::haveRight(Ticket::$rightname, Ticket::READMY)
         ) {
             $menu['tickets'] = [
                 'default' => '/front/ticket.php',
@@ -1096,12 +1104,12 @@ TWIG,
                 ],
             ];
 
-            if (Session::haveRight("ticket", CREATE)) {
+            if (Session::haveRight(Ticket::$rightname, CREATE)) {
                 $menu['tickets']['content']['ticket']['links']['add'] = ServiceCatalog::getSearchURL(false);
             }
         }
 
-        if (Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
+        if (Session::haveRightsOr(Reservation::$rightname, [READ, ReservationItem::RESERVEANITEM])) {
             $menu['reservation'] = [
                 'default' => '/front/reservationitem.php',
                 'title'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
@@ -1109,7 +1117,7 @@ TWIG,
             ];
         }
 
-        if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+        if (Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::READFAQ)) {
             $menu['faq'] = [
                 'default' => '/front/helpdesk.faq.php',
                 'title'   => __('FAQ'),
@@ -2052,20 +2060,15 @@ TWIG,
             && ($max > 0)
             && ($max < ($p['num_displayed'] + 10))
         ) {
-            if (
-                !$p['ontop']
-                || (isset($p['forcecreate']) && $p['forcecreate'])
-            ) {
-                $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
-                            <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;'></i>"
-                            . __s('Selection too large, massive action disabled.')
-                        . "</span>";
-                if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                    $out .= Html::showToolTip(
-                        __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
-                        ['display' => false, 'link_class' => 'btn btn-sm border-danger text-danger me-1']
-                    );
-                }
+            $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
+                        <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;' aria-hidden='true'></i>"
+                        . __s('Selection too large, massive action disabled.')
+                    . "</span>";
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                $out .= Html::showToolTip(
+                    __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
+                    ['display' => false, 'link_class' => 'btn btn-sm border-danger text-danger me-1']
+                );
             }
         } else {
             // Create Modal window on top
@@ -2112,7 +2115,7 @@ TWIG,
             }
             $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
             if ($p['display_arrow']) {
-                $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
+                $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;' aria-hidden='true'></i>";
             }
             $out .= "<span>" . htmlescape($p['title']) . "</span>";
             $out .= "</a>";
@@ -2203,13 +2206,13 @@ TWIG,
         $calendar_tooltip = __s('Enter or select a date');
         $calendar_btn = $p['calendar_btn']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
-                <i class='ti ti-calendar'></i>
+                <i class='ti ti-calendar' aria-hidden='true'></i>
                 <span class='visually-hidden'>" . $calendar_tooltip . "</span>
             </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle data-clear title='" . __s('Clear') . "'>
-                    <i class='ti ti-circle-x'></i>
+                    <i class='ti ti-circle-x' aria-hidden='true'></i>
                 </button>"
          : "";
 
@@ -2399,7 +2402,7 @@ JS;
         $disabled = !$p['canedit'] ? " disabled='disabled'" : "";
         $clear    = $p['maybeempty'] && $p['canedit']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Clear') . "'>
-                    <i class='ti ti-circle-x' data-clear></i>
+                    <i class='ti ti-circle-x' data-clear aria-hidden='true'></i>
                 </button>"
          : "";
 
@@ -2412,7 +2415,8 @@ JS;
             <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
             <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
-                <i class='ti ti-calendar-time'></i>
+                <i class='ti ti-calendar-time' aria-hidden='true'></i>
+                <span class='visually-hidden'>{$show_datepicker_label}</span>
             </button>
             $clear
          </div>
@@ -2974,7 +2978,7 @@ JS;
                 $out .= "<img id='tooltip$rand' src='" . htmlescape($param['img']) . "'>";
             } else {
                 $class = htmlescape($param['awesome-class']);
-                $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw'></span>";
+                $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw' aria-hidden='true'></span>";
             }
 
             if ($has_wrapper) {
@@ -3441,7 +3445,7 @@ JAVASCRIPT
         $link =  $CFG_GLPI['root_doc'] . $url;
 
         echo sprintf(
-            '<a href="%1$s" %2$s target="_blank" style="margin-top:6px; display: block">%3$s <i class="ti ti-help"></i></a>',
+            '<a href="%1$s" %2$s target="_blank" style="margin-top:6px; display: block">%3$s <i class="ti ti-help" aria-hidden="true"></i></a>',
             htmlescape($link),
             !is_null($link_id) ? sprintf('id="%s"', htmlescape($link_id)) : '',
             __s('Available variables')
@@ -3495,7 +3499,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info, $display and $additional_params params in GLPI 12.0, they are not used.
+     * @TODO Deprecate $additional_info, $display and $additional_params params, they are not used.
      **/
     public static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '')
     {
@@ -3539,10 +3543,12 @@ JAVASCRIPT
 
         // Back and fast backward button
         if (!$start == 0) {
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\"></i></a></th>";
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\"></i></a></th>";
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\">
+                     <i class='ti ti-chevrons-left' aria-hidden='true'></i></a></th>";
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\">
+                     <i class='ti ti-chevron-left' aria-hidden='true'></i></a></th>";
         }
 
         $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3561,10 +3567,12 @@ JAVASCRIPT
 
         // Forward and fast forward button
         if ($forward < $numrows) {
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\"></i></a></th>";
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\"></i></a></th>";
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\">
+                     <i class='ti ti-chevron-right' aria-hidden='true'></i></a></th>";
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\">
+                     <i class='ti ti-chevrons-right' aria-hidden='true'></i></a></th>";
         }
 
         // End pager
@@ -3660,7 +3668,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info param in GLPI 12.0, it is not used.
+     * @TODO Deprecate $additional_info param, it is not used.
      * @TODO Accept an array of key/values in the $parameters param to ease its usage/escaping.
      */
     public static function printPager(
@@ -3720,11 +3728,11 @@ JAVASCRIPT
             echo "<th class='left'>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=0' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Start') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevrons-left'></i>";
+            echo "<i class='ti ti-chevrons-left' aria-hidden='true'></i>";
             echo "</a>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$back' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Previous') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevron-left'></i>";
+            echo "<i class='ti ti-chevron-left' aria-hidden='true'></i>";
             echo "</a></th>";
         }
 
@@ -3785,11 +3793,11 @@ JAVASCRIPT
             echo "<th class='right'>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$forward' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('Next') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>
-               <i class='ti ti-chevron-right'></i>";
+               <i class='ti ti-chevron-right' aria-hidden='true'></i>";
             echo "</a>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$end' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('End') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevrons-right'></i>";
+            echo "<i class='ti ti-chevrons-right' aria-hidden='true'></i>";
             echo "</a>";
             echo "</th>";
         }
@@ -4010,7 +4018,7 @@ JAVASCRIPT
      *
      * @return string
      *
-     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     * @TODO (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
      *       `templateResult`, `templateSelection`.
      */
     public static function jsAdaptDropdown($id, $params = [])
@@ -4077,7 +4085,7 @@ JS;
      *
      * @return string
      *
-     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     * @TODO (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
      *        `on_change`, `templateResult`, `templateSelection`.
      **/
     public static function jsAjaxDropdown($name, $field_id, $url, $params = [])
@@ -4327,10 +4335,11 @@ JS;
      *     - `confirmaction` optional action to do on confirmation
      * @return string an `a` element.
      *
-     * @TODO Deprecate this method in GLPI 12.0, it is not used anymore in GLPI itself.
+     * @deprecated 12.0.0
      **/
     public static function link($text, $url, $options = [])
     {
+        Toolbox::deprecated();
 
         if (isset($options['confirm'])) {
             if (!empty($options['confirm'])) {
@@ -4532,7 +4541,7 @@ JS;
 
         $icon = "";
         if (isset($options['icon'])) {
-            $icon = sprintf('<i class="%s"></i>&nbsp;', htmlescape($options['icon']));
+            $icon = sprintf('<i class="%s" aria-hidden="true"></i>&nbsp;', htmlescape($options['icon']));
             unset($options['icon']);
         }
 
@@ -5695,6 +5704,7 @@ JS);
      */
     public static function getCoreVariablesForJavascript(bool $full = false)
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         // prevent leak of data for non logged sessions
@@ -5706,7 +5716,7 @@ JS);
         };";
 
         if ($full) {
-            $cfg_glpi = "var CFG_GLPI  = " . json_encode(Config::getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
+            $cfg_glpi = "var CFG_GLPI  = " . json_encode($CFG_GLPI->getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
         }
 
         $plugins_path = [];

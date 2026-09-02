@@ -36,7 +36,7 @@
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight('user', User::UPDATEAUTHENT);
+Session::checkRight(User::$rightname, User::UPDATEAUTHENT);
 
 if ($_POST["authtype"] > 0) {
     $name = $_POST['name'] ?? 'massiveaction';

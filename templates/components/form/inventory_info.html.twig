@@ -34,7 +34,7 @@
 <div class="card m-n2 border-0 shadow-none">
    <div class="card-header">
       <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-         <i class="ti ti-cloud-download fa-2x"></i>
+         <i class="ti ti-cloud-download fa-2x" aria-hidden="true"></i>
       </div>
       <h4 class="card-title ps-5">
          {{ __('Inventory information') }}
@@ -45,11 +45,11 @@
             class="btn btn-sm btn-secondary ms-auto" target="_blank"
             data-bs-toggle="tooltip" data-bs-placement="right"
             title="{{ __('Download "%1$s" inventory file')|format(get_item_name(item)) }}">
-            <i class="ti ti-download"></i>
+            <i class="ti ti-download" aria-hidden="true"></i>
          </a>
       {% else %}
          <span class="ms-auto" data-bs-toggle="tooltip" data-bs-placement="right" title="{{ __('Inventory file missing') }}">
-            <i class="ti ti-ban"></i>
+            <i class="ti ti-ban" aria-hidden="true"></i>
             <span class="visually-hidden">{{ __('Inventory file missing') }}</span>
          </span>
       {% endif %}
@@ -61,7 +61,7 @@
          <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >{{ agent.getTypeName() }}</label>
             <span>
-               <i class="{{ agent.getIcon() }}"></i>
+               <i class="{{ agent.getIcon() }}" aria-hidden="true"></i>
                {{ get_item_link(agent) }}
             </span>
          </div>
@@ -97,26 +97,34 @@
          {% endif %}
 
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >
+            <div class="form-label">
                {{ __('Agent status') }}
-               <i id="update-status" class="ti ti-refresh d-inline-block" role="button" data-bs-toggle="tooltip" title="{{ __('Ask agent about its current status') }}"></i>
-            </label>
-            <span id='agent_status'>{{ __('Unknown') }}</span>
+               <button type="button" id="update-status" class="btn btn-sm btn-icon btn-ghost-secondary"
+                       data-bs-toggle="tooltip" title="{{ __('Ask agent about its current status') }}">
+                  <i class="ti ti-refresh" aria-hidden="true"></i>
+                  <span class="visually-hidden">{{ __('Ask agent about its current status') }}</span>
+               </button>
+            </div>
+            <span id='agent_status' aria-live="polite">{{ __('Unknown') }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >
+            <div class="form-label">
                {{ __('Request inventory') }}
-               <i id="update-inventory" class="ti ti-refresh d-inline-block" role="button" data-bs-toggle="tooltip" title="{{ __('Request agent to proceed an new inventory') }}"></i>
-            </label>
-            <span id='inventory_status'>{{ __('Unknown') }}</span>
+               <button type="button" id="update-inventory" class="btn btn-sm btn-icon btn-ghost-secondary"
+                       data-bs-toggle="tooltip" title="{{ __('Request agent to proceed an new inventory') }}">
+                  <i class="ti ti-refresh" aria-hidden="true"></i>
+                  <span class="visually-hidden">{{ __('Request agent to proceed an new inventory') }}</span>
+               </button>
+            </div>
+            <span id='inventory_status' aria-live="polite">{{ __('Unknown') }}</span>
          </div>
       </div>
 
       <script>
       $(function () {
          $('#update-status').on('click', function() {
-            var icon = $(this);
+            var icon = $(this).find('i');
             icon.addClass('icon-rotate');
             $.ajax({
                type: 'POST',
@@ -137,7 +145,7 @@
          });
 
          $('#update-inventory').on('click', function() {
-            var icon = $(this);
+            var icon = $(this).find('i');
             icon.addClass('icon-rotate');
             $.ajax({
                type: 'POST',

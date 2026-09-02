@@ -51,8 +51,10 @@ trait AssignedITILUserFilterTrait
      *
      * @return array<string, array<string, mixed>>
      */
-    protected static function getAssignedITILUserCriteria(string $table, int $users_id, string $alias = 'ul_assigned'): array
+    protected static function getAssignedITILUserCriteria(string $table, int $users_id, ?string $alias = null): array
     {
+        $alias ??= self::uniqueAlias('ul');
+
         $main_item = match ($table) {
             Ticket::getTable()  => new Ticket(),
             Change::getTable()  => new Change(),

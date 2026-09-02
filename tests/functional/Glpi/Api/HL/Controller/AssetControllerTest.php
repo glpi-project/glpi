@@ -43,6 +43,7 @@ use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Group;
 use Group_Item;
 use Item_RemoteManagement;
 use OperatingSystem;
@@ -845,5 +846,124 @@ class AssetControllerTest extends HLAPITestCase
         ], [
             'date_creation' => '2026-03-01T10:00:00+00:00',
         ]);
+    }
+
+    public function testComputerGroupUpdate(): void
+    {
+        $this->login();
+        $computers_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $groups_id_1 = getItemByTypeName(Group::class, '_test_group_1', true);
+        $groups_id_2 = getItemByTypeName(Group::class, '_test_group_2', true);
+
+        // Test setting groups by an array of IDs
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', [$groups_id_1]);
+        $request->setParameter('group_tech', [$groups_id_1]);
+        $this->api->call($request, function ($call) use ($groups_id_1) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_1) {
+                    $this->assertEquals([$groups_id_1], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_1], array_column($content['group_tech'], 'id'));
+                });
+        });
+
+        // Test setting groups by a single ID (not in array)
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', $groups_id_2);
+        $request->setParameter('group_tech', $groups_id_2);
+        $this->api->call($request, function ($call) use ($groups_id_2) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_2) {
+                    $this->assertEquals([$groups_id_2], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_2], array_column($content['group_tech'], 'id'));
+                });
+        });
+
+        // Test setting multiple groups
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', [$groups_id_1, $groups_id_2]);
+        $request->setParameter('group_tech', [$groups_id_1, $groups_id_2]);
+        $this->api->call($request, function ($call) use ($groups_id_1, $groups_id_2) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_1, $groups_id_2) {
+                    $this->assertEquals([$groups_id_1, $groups_id_2], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_1, $groups_id_2], array_column($content['group_tech'], 'id'));
+                });
+        });
+    }
+
+    public function testCartridgeItemShowsCreatedCartridges()
+    {
+        $cartridge_item_id = getItemByTypeName('CartridgeItem', '_test_cartridgeitem01', true);
+        $this->assertIsInt($cartridge_item_id);
+        $this->assertGreaterThan(0, $cartridge_item_id);
+
+        $created = $this->createItems('Cartridge', [
+            ['cartridgeitems_id' => $cartridge_item_id],
+            ['cartridgeitems_id' => $cartridge_item_id],
+            ['cartridgeitems_id' => $cartridge_item_id],
+        ]);
+
+        $created_ids = array_map(static fn($it) => $it->getID(), $created);
+        $this->assertCount(3, $created_ids);
+
+        $this->login();
+        $request = new Request('GET', '/Assets/Cartridge');
+        $request->setParameter('filter', ['id==' . $cartridge_item_id]);
+
+        $this->api->call($request, function ($call) use ($created_ids) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($created_ids) {
+                    $this->assertCount(1, $content);
+                    $ci = $content[0];
+
+                    $this->assertEquals('_test_cartridgeitem01', $ci['name']);
+                    $returned_ids = array_column($ci['cartridges'], 'id');
+
+                    foreach ($created_ids as $id) {
+                        $this->assertContains($id, $returned_ids);
+                    }
+                });
+        });
+    }
+
+    public function testConsumableItemShowsCreatedConsumables()
+    {
+        $consumable_item_id = getItemByTypeName('ConsumableItem', '_test_consumableitem01', true);
+        $this->assertIsInt($consumable_item_id);
+        $this->assertGreaterThan(0, $consumable_item_id);
+
+        $created = $this->createItems('Consumable', [
+            ['consumableitems_id' => $consumable_item_id],
+            ['consumableitems_id' => $consumable_item_id],
+            ['consumableitems_id' => $consumable_item_id],
+        ]);
+
+        $created_ids = array_map(static fn($it) => $it->getID(), $created);
+        $this->assertCount(3, $created_ids);
+
+        $this->login();
+        $request = new Request('GET', '/Assets/Consumable');
+        $request->setParameter('filter', ['id==' . $consumable_item_id]);
+
+        $this->api->call($request, function ($call) use ($created_ids) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($created_ids) {
+                    $this->assertCount(1, $content);
+                    $ci = $content[0];
+
+                    $this->assertEquals('_test_consumableitem01', $ci['name']);
+                    $returned_ids = array_column($ci['consumables'], 'id');
+
+                    foreach ($created_ids as $id) {
+                        $this->assertContains($id, $returned_ids);
+                    }
+                });
+        });
     }
 }

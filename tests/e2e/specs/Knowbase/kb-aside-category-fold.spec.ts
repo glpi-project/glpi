@@ -36,86 +36,139 @@ import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-test('Can fold and unfold a category in the KB aside', async ({ page, profile, api }) => {
+test('Can fold and unfold a parent article in the KB aside', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
-    const category_name = `E2E Category ${unique}`;
-    const article_name = `E2E Article ${unique}`;
+    const parent_name = `E2E Parent ${unique}`;
+    const child_name = `E2E Child ${unique}`;
 
-    const category_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_name,
-        entities_id: getWorkerEntityId(),
-    });
-
-    const article_id = await api.createItem('KnowbaseItem', {
-        name: article_name,
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_id],
     });
 
-    await kb.goto(article_id);
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
 
-    // Category and article are visible by default
-    const category_toggle = kb.getAsideCategoryToggle(category_name);
-    const article_link = kb.getAsideCategoryArticle(category_name, article_name);
+    await kb.goto(child_id);
 
-    await expect(category_toggle).toHaveAttribute('aria-expanded', 'true');
-    await expect(article_link).toBeVisible();
+    // Parent and child are visible by default
+    const parent_toggle = kb.getAsideCategoryToggle(parent_name);
+    const child_link = kb.getAsideCategoryArticle(parent_name, child_name);
 
-    // Fold the category — article should be hidden
-    await kb.doToggleAsideCategory(category_name);
-    await expect(category_toggle).toHaveAttribute('aria-expanded', 'false');
-    await expect(article_link).toBeHidden();
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(child_link).toBeVisible();
 
-    // Unfold the category — article should be visible again
-    await kb.doToggleAsideCategory(category_name);
-    await expect(category_toggle).toHaveAttribute('aria-expanded', 'true');
-    await expect(article_link).toBeVisible();
+    // Fold the parent — child should be hidden
+    await kb.doToggleAsideCategory(parent_name);
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(child_link).toBeHidden();
+
+    // Unfold the parent — child should be visible again
+    await kb.doToggleAsideCategory(parent_name);
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(child_link).toBeVisible();
 });
 
-test('Category fold state is remembered across reloads', async ({ page, profile, api }) => {
+test('Article fold state is remembered across reloads', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
-    // Arrange: create some articles and categories so we have something to fold.
+    // Arrange: the article being read, plus an unrelated parent with a child so
+    // we have a branch to fold that is not the one leading to what we read.
     const unique = randomUUID().slice(0, 8);
-    const category_name = `E2E Category ${unique}`;
-    const article_name = `E2E Article ${unique}`;
+    const read_name = `E2E Read ${unique}`;
+    const parent_name = `E2E Parent ${unique}`;
+    const child_name = `E2E Child ${unique}`;
 
-    const category_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_name,
-        entities_id: getWorkerEntityId(),
-    });
-    const article_id = await api.createItem('KnowbaseItem', {
-        name: article_name,
+    const read_id = await api.createItem('KnowbaseItem', {
+        name: read_name,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_id],
+    });
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
     });
 
-    await kb.goto(article_id);
+    await kb.goto(read_id);
     await kb.waitForAsideReady();
 
-    const category_toggle = kb.getAsideCategoryToggle(category_name);
-    const article_link = kb.getAsideCategoryArticle(category_name, article_name);
+    const parent_toggle = kb.getAsideCategoryToggle(parent_name);
+    const child_link = kb.getAsideCategoryArticle(parent_name, child_name);
 
-    // Fold the category, then reload: the folded state must be restored.
-    await kb.doToggleAsideCategoryAndWaitForPersist(category_name);
-    await expect(article_link).toBeHidden();
+    // The knowledge base is folded by default.
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(child_link).toBeHidden();
+
+    // Unfold the parent, then reload: the unfolded state must be restored.
+    await kb.doToggleAsideCategoryAndWaitForPersist(parent_name);
+    await expect(child_link).toBeVisible();
 
     await page.reload();
-    await expect(category_toggle).toHaveAttribute('aria-expanded', 'false');
-    await expect(article_link).toBeHidden();
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(child_link).toBeVisible();
 
-    // Unfold and reload again: the expanded state must likewise be restored.
+    // Fold it again and reload: it must be folded once more.
     await kb.waitForAsideReady();
-    await kb.doToggleAsideCategoryAndWaitForPersist(category_name);
-    await expect(article_link).toBeVisible();
+    await kb.doToggleAsideCategoryAndWaitForPersist(parent_name);
+    await expect(child_link).toBeHidden();
 
     await page.reload();
-    await expect(category_toggle).toHaveAttribute('aria-expanded', 'true');
-    await expect(article_link).toBeVisible();
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(child_link).toBeHidden();
+});
+
+test('Reading an article always reveals the branch leading to it', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Parent ${unique}`;
+    const child_name = `E2E Child ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    await kb.goto(child_id);
+    await kb.waitForAsideReady();
+
+    const parent_toggle = kb.getAsideCategoryToggle(parent_name);
+    const child_link = kb.getAsideCategoryArticle(parent_name, child_name);
+
+    // The parent is folded by default, but it leads to the article being read.
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(child_link).toBeVisible();
+
+    // Folding it hides the child, but reading the child reveals it again: the
+    // reader always gets to see where they are.
+    await kb.doToggleAsideCategoryAndWaitForPersist(parent_name);
+    await expect(child_link).toBeHidden();
+
+    await page.reload();
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(child_link).toBeVisible();
 });

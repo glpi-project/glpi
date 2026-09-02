@@ -30,9 +30,23 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set root = thread.getRootComment().fields.id %}
+{% set root_comment = thread.getRootComment() %}
+{% set root = root_comment.fields.id %}
 
-<div class="kb-comment-thread" data-glpi-comment-thread="{{ root }}">
+<div
+    class="kb-comment-thread"
+    data-glpi-comment-thread="{{ root }}"
+    data-testid="comment-thread-{{ root }}"
+    {% if root_comment.hasAnchor() %}
+        data-glpi-comment-anchor="{{ {
+            id: root,
+            prefix: root_comment.fields.anchor_prefix,
+            exact: root_comment.fields.anchor_exact,
+            suffix: root_comment.fields.anchor_suffix,
+            occurrence: root_comment.fields.anchor_occurrence,
+        }|json_encode|e('html_attr') }}"
+    {% endif %}
+>
     {% for comment in thread.getComments() %}
         {{ include('pages/tools/kb/sidepanel/comment.html.twig', {
             comment_id   : comment.fields.id,
@@ -41,6 +55,7 @@
             can_edit     : comment.can(comment.fields.id, constant('UPDATE')),
             can_purge    : comment.can(comment.fields.id, constant('PURGE')),
             user         : users[comment.fields.users_id] ?? null,
+            anchor_quote : loop.first and root_comment.hasAnchor() ? root_comment.fields.anchor_exact : null,
         }, with_context = false) }}
     {% endfor %}
 
@@ -92,8 +107,8 @@
                             data-glpi-reply-submit
                             aria-label="{{ __('Reply') }}"
                         >
-                            <i class="ti ti-arrow-back-up" data-glpi-icon></i>
-                            <i class="ti ti-loader-2 fa-spin d-none" data-glpi-loading></i>
+                            <i class="ti ti-arrow-back-up" data-glpi-icon aria-hidden="true"></i>
+                            <i class="ti ti-loader-2 icon-rotate d-none" data-glpi-loading aria-hidden="true"></i>
                             <span>{{ __('Reply') }}</span>
                         </button>
                     </div>

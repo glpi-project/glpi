@@ -52,22 +52,6 @@ use function Safe\strtotime;
 
 class SynchronizeUsersCommand extends AbstractCommand
 {
-    /**
-     * Error code returned if LDAP connection failed.
-     *
-     * @var int
-     * @FIXME Remove in GLPI 11.0.
-     */
-    public const ERROR_LDAP_CONNECTION_FAILED = 1;
-
-    /**
-     * Error code returned if LDAP limit exceeded.
-     *
-     * @var int
-     * @FIXME Remove in GLPI 11.0.
-     */
-    public const ERROR_LDAP_LIMIT_EXCEEDED = 2;
-
     protected function configure()
     {
 
@@ -243,7 +227,7 @@ class SynchronizeUsersCommand extends AbstractCommand
 
         $servers_id = $input->getOption('ldap-server-id');
         if (empty($servers_id)) {
-            $servers_iterator = $this->db->request(
+            $servers_iterator = $this->getDb()->request(
                 [
                     'SELECT' => 'id',
                     'FROM'   => AuthLDAP::getTable(),
@@ -264,7 +248,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         if (!$input->getOption('no-interaction')) {
             // Ask for confirmation (unless --no-interaction)
 
-            $servers_iterator = $this->db->request(
+            $servers_iterator = $this->getDb()->request(
                 [
                     'SELECT' => ['id', 'name'],
                     'FROM'   => AuthLDAP::getTable(),
@@ -381,7 +365,6 @@ class SynchronizeUsersCommand extends AbstractCommand
                 $users_progress_bar = new ProgressBar($output, count($users));
                 $users_progress_bar->start();
 
-                User::enableLdapGroupBatchMode();
                 foreach ($users as $user) {
                     $users_progress_bar->advance(1);
 
@@ -424,7 +407,9 @@ class SynchronizeUsersCommand extends AbstractCommand
                             'user_field'       => $user_field,
                         ],
                         $action,
-                        $server_id
+                        $server_id,
+                        false,
+                        true
                     );
 
                     if (false !== $result) {

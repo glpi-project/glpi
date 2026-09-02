@@ -81,17 +81,17 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                     (data.itemtype && data.itemtype === 'User')
                     || (data.id && data.id.startsWith('users_id-'))
                 ) {
-                    icon = '<i class="ti ti-user mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-user mx-1" title="' + title + '" aria-hidden="true"></i>';
                 } else if (
                     (data.itemtype && data.itemtype === 'Group')
                     || (data.id && data.id.startsWith('groups_id-'))
                 ) {
-                    icon = '<i class="ti ti-users mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-users mx-1" title="' + title + '" aria-hidden="true"></i>';
                 } else if (
                     (data.itemtype && data.itemtype === 'Supplier')
                     || (data.id && data.id.startsWith('suppliers_id-'))
                 ) {
-                    icon = '<i class="ti ti-package mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-package mx-1" title="' + title + '" aria-hidden="true"></i>';
                 }
 
                 return $('<span class="actor_entry">' + icon + text + '</span>');

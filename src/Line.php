@@ -256,7 +256,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
         $action_prefix = 'Item_Line' . MassiveAction::CLASS_ACTION_SEPARATOR;
         if (in_array($itemtype, $CFG_GLPI['line_types'], true)) {
-            $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+            $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>"
                 . _sx('button', 'Add a phone line');
             $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a phone line');
         }

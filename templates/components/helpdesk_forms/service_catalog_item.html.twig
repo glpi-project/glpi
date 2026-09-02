@@ -34,16 +34,7 @@
 {% set is_pinned = item.fields['is_pinned']|default(false) %}
 
 <div class="col-12 col-sm-6 col-md-4 d-flex">
-    <a
-        class="card mx-1 my-2 flex-grow-1 {{ is_pinned ? "border-menu" : "" }}"
-        {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
-            href="{{ item.getServiceCatalogLink() }}"
-        {% elseif item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
-            href="?{{ item.getChildrenUrlParameters() }}"
-            data-children-url-parameters="{{ item.getChildrenUrlParameters() }}"
-            data-composite-item
-        {% endif %}
-    >
+    <div class="card mx-1 my-2 flex-grow-1 {{ is_pinned ? "border-menu" : "" }}">
         <section
             class="card-body"
             aria-labelledby="{{ unique_dom_id }}"
@@ -59,10 +50,21 @@
                             id="{{ unique_dom_id }}"
                             class="card-title mb-0"
                         >
-                            {{ item.getServiceCatalogItemTitle() }}
+                            <a
+                                class="stretched-link text-reset"
+                                {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
+                                    href="{{ item.getServiceCatalogLink() }}"
+                                {% elseif item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
+                                    href="?{{ item.getChildrenUrlParameters() }}"
+                                    data-children-url-parameters="{{ item.getChildrenUrlParameters() }}"
+                                    data-composite-item
+                                {% endif %}
+                            >
+                                {{ item.getServiceCatalogItemTitle() }}
+                            </a>
                         </h2>
                         {% if is_pinned %}
-                            <i class="ti ti-pin ms-auto"></i>
+                            <i class="ti ti-pin ms-auto" aria-hidden="true"></i>
                         {% endif %}
                     </div>
                     <div
@@ -74,5 +76,5 @@
                 </div>
             </div>
         </section>
-    </a>
+    </div>
 </div>

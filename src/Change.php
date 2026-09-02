@@ -145,7 +145,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function canReopen()
     {
-        return Session::haveRight('followup', CREATE)
+        return Session::haveRight(ITILFollowup::$rightname, CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::EVALUATION));
@@ -212,7 +212,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         if (Session::getCurrentInterface() === 'central') {
             if (Change_Item::canCreate()) {
                 $actions['Change_Item' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='ti ti-plus'></i>"
+                = "<i class='ti ti-plus' aria-hidden='true'></i>"
                  . _sx('button', 'Add an item');
             }
 
@@ -1344,11 +1344,11 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         ) {
                             foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>'
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape($d['alternative_email']);
                                 }
                             }
@@ -1359,7 +1359,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                             && count($change->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1" aria-hidden="true"></i>'
                                     . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                             }
                         }
@@ -1631,5 +1631,32 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='6' ><i>" . __s('No change found.') . "</i></td></tr>";
         }
+    }
+
+    /**
+     * Give cron information
+     *
+     * @param string $name  Task's name
+     *
+     * @return array{description?: string}
+     **/
+    public static function cronInfo($name)
+    {
+        if ($name === 'createinquestchange') {
+            return ['description' => __('Generation of changes satisfaction surveys')];
+        }
+        return [];
+    }
+
+    /**
+     * Cron for automatically creating changes satisfaction surveys
+     *
+     * @param CronTask $task
+     *
+     * @return int (0 : nothing done - 1 : done)
+     **/
+    public static function cronCreateInquestChange($task)
+    {
+        return parent::cronCreateInquest($task);
     }
 }

@@ -756,7 +756,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if ($itemtype == Computer::class) {
-            if (!Session::haveRight('networking', $action)) {
+            if (!Session::haveRight(NetworkPort::$rightname, $action)) {
                 $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
                 $todel      = array_merge($todel, array_keys($itemstodel));
             }

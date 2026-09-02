@@ -38,11 +38,13 @@ namespace Glpi\Form\QuestionType;
 use CartridgeItem;
 use Cluster;
 use CommonDBTM;
+use CommonDropdown;
 use CommonTreeDropdown;
 use ConsumableItem;
 use Datacenter;
 use DbUtils;
 use Dropdown;
+use DropdownTranslation;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Category;
@@ -530,8 +532,20 @@ TWIG;
             }
 
             $name = $item instanceof CommonTreeDropdown
-            ? $item->fields['completename']
-            : ($item->fields['name'] ?? $item->getName());
+                ? $item->fields['completename']
+                : ($item->fields['name'] ?? $item->getName());
+
+            // The ticket content is frozen at submission time, so the value must be
+            // resolved in the requester language here. Conditions are deliberately
+            // left untranslated: they must compare against the source value.
+            if ($item instanceof CommonDropdown) {
+                $name = DropdownTranslation::getTranslatedValue(
+                    $item->getID(),
+                    $item::class,
+                    $item instanceof CommonTreeDropdown ? 'completename' : 'name',
+                    value: $name
+                );
+            }
 
             // Append additional fields to match what is displayed in renderEndUserTemplate.
             $extra_parts = [];

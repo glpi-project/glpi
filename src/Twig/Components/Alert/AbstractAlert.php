@@ -38,15 +38,17 @@ abstract class AbstractAlert
 {
     /**
      * Var is exposed in the template, for the backward compatibility.
-     * So type can be used with {{ component('Alert', {type: 'warning') }}
+     * So type can be used with {{ component('Alert', {color: 'warning') }}
      *
-     * @var 'success'|'info'|'warning'|'danger'
+     * @var 'primary'|'secondary'|'success'|'danger'|'warning'|'info'|'light'|'dark'
      */
-    public string $type = 'info';
+    public string $color = 'info';
 
-    public string $title = '';
+    public ?string $heading = null;
 
-    public string $message = '';
+    public string $content = '';
+
+    public bool $dismissible = false;
 
     public string $icon = '';
 
@@ -58,22 +60,32 @@ abstract class AbstractAlert
 
     public bool $link_blank = false;
 
+    public function getClasses(): string
+    {
+        $classes = ['alert', 'alert-' . $this->color];
+
+        if ($this->dismissible) {
+            $classes = [...$classes, 'alert-dismissible', 'fade', 'show'];
+        }
+
+        if ($this->important) {
+            $classes[] = 'alert-important';
+        }
+
+        return implode(' ', $classes);
+    }
+
     public function getResolvedIcon(): string
     {
         if ($this->icon !== '') {
             return $this->icon;
         }
 
-        return match ($this->type) {
+        return match ($this->color) {
             'success' => 'ti ti-check',
             'warning' => 'ti ti-alert-triangle',
             'danger' => 'ti ti-exclamation-circle',
             default => 'ti ti-info-circle',
         };
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
     }
 }

@@ -46,7 +46,7 @@ use function Safe\preg_match;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
-Session::checkRight("statistic", READ);
+Session::checkRight(Stat::$rightname, READ);
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {

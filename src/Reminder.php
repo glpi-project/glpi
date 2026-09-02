@@ -67,7 +67,7 @@ class Reminder extends CommonDBVisible implements
 
     public static function getTypeName($nb = 0)
     {
-        if (Session::haveRight('reminder_public', READ)) {
+        if (Session::haveRight(Reminder::$rightname, READ)) {
             return _n('Reminder', 'Reminders', $nb);
         }
         return _n('Personal reminder', 'Personal reminders', $nb);
@@ -454,7 +454,7 @@ class Reminder extends CommonDBVisible implements
             $nb = 0;
             switch (get_class($item)) {
                 case Reminder::class:
-                    if (Session::haveRight('reminder_public', CREATE)) {
+                    if (Session::haveRight(Reminder::$rightname, CREATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }
@@ -773,7 +773,7 @@ class Reminder extends CommonDBVisible implements
                         Html::convDateTime($data["end"])
                     );
                     $row['values'][] = sprintf(
-                        '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell"></i><span class="visually-hidden">%s</span></a>',
+                        '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell" aria-hidden="true"></i><span class="visually-hidden">%s</span></a>',
                         htmlescape(sprintf('%s/front/planning.php?date=%s&type=day', $CFG_GLPI['root_doc'], $date_url)),
                         htmlescape($planning_text),
                         __s('Planning')
@@ -870,7 +870,7 @@ class Reminder extends CommonDBVisible implements
 
     public function getAsVCalendar()
     {
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return null;
         }
 

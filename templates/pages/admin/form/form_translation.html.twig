@@ -90,13 +90,12 @@
     {% set rand = random() %}
 
     <div class="btn-actions">
-        <a data-translation-action-copy-default-value="{{ rand }}"
+        <button type="button" data-translation-action-copy-default-value="{{ rand }}"
             class="btn btn-action"
-            title="{{ __('Copy default value to translation') }}"
-            role="button"
-            aria-label="{{ __('Copy default value to translation') }}">
-            <i class="ti ti-arrow-big-right"></i>
-        </a>
+            title="{{ __('Copy default value to translation') }}">
+            <i class="ti ti-arrow-big-right" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __('Copy default value to translation') }}</span>
+        </button>
     </div>
 
     <script>

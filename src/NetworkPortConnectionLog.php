@@ -126,7 +126,8 @@ class NetworkPortConnectionLog extends CommonDBRelation
                 );
 
                 $entries[] = [
-                    'status' => '<i class="ti ' . $co_class . '" title="' . $title . '"></i>',
+                    'status' => '<i class="ti ' . $co_class . '" title="' . $title . '" aria-hidden="true"></i>'
+                        . '<span class="visually-hidden">' . $title . '</span>',
                     'date' => $row['date'],
                     'connected_item' => sprintf(
                         __s('%1$s on %2$s'),

@@ -34,6 +34,7 @@ import { expect, test } from "../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
 import { getUniqueName } from "../../utils/Random";
+import { getWorkerEntityId } from "../../utils/WorkerEntities";
 
 test('Can add and remove a favorite from the aside dots menu', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
@@ -71,6 +72,50 @@ test('Can add and remove a favorite from the aside dots menu', async ({ page, pr
     await kb.doToggleAsideFavorite(target_id);
     await expect(favorite_checkbox).not.toBeChecked();
     await expect(kb.getFavoriteArticle(target_name)).toBeHidden();
+});
+
+test('A nested article dots menu acts on that article, not on its parent', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const viewed_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside nested viewed`),
+        answer: "My answer",
+    });
+    const parent_name = getUniqueName(`Aside nested parent`);
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_name = getUniqueName(`Aside nested child`);
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    await kb.goto(viewed_id);
+    await kb.waitForAsideReady();
+
+    // Load parent menu actions. Revealing the child under its parent (the tree
+    // is folded by default) already interacts with the parent row, which
+    // prefetches them, so the waiter has to be armed before that.
+    const parent_actions = page.waitForResponse(
+        (response) => response.url().includes(`/Knowbase/${parent_id}/AsideActions`),
+    );
+    await kb.doExpandAsideCategory(parent_name);
+    await kb.getAsideArticleTitleLink(parent_name).hover();
+    await parent_actions;
+
+    // Favorite the child from its own menu.
+    await kb.doOpenAsideArticleMenu(child_id);
+    await kb.doToggleAsideFavorite(child_id);
+
+    // The child is favorited, the parent is untouched.
+    await expect(kb.getFavoriteArticle(child_name)).toBeVisible();
+    await expect(kb.getFavoriteArticle(parent_name)).toBeHidden();
 });
 
 test('Can toggle FAQ status from the aside dots menu', async ({ page, profile, api }) => {
@@ -120,8 +165,13 @@ test('Aside dots menu is reachable and operable with the keyboard', async ({ pag
 
     await kb.goto(viewed_id);
 
-    // Tabbing off the article link reaches the dots trigger...
+    // Tabbing off the article link walks the row's actions in visual order:
+    // the "create child article" (+) affordance first...
     await kb.getAsideTreeArticleRow(target_id).getByRole('link', { name: target_name }).focus();
+    await page.keyboard.press('Tab');
+    await expect(kb.getAsideArticleAddChildTrigger(target_id)).toBeFocused();
+
+    // ...then the dots trigger.
     await page.keyboard.press('Tab');
     await expect(kb.getAsideArticleMenuTrigger(target_id)).toBeFocused();
 

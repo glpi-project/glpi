@@ -41,7 +41,7 @@
             <div class="modal-status bg-info"></div>
             <div
                 class="modal-body text-center py-4">
-                <i class="fa-2x ti ti-info-circle mb-2 text-info"></i>
+                <i class="fa-2x ti ti-info-circle mb-2 text-info" aria-hidden="true"></i>
                 <h3>{{ _x('button', 'Update?') }}</h3>
                 <div class="text-muted">{{ __('A new update is available for the %s plugin.')|escape|format('<strong>' ~ plugin_name|escape ~ '</strong>')|raw }}</div>
                 <div class="text-muted">{{ __('Update to version %s?')|escape|format('<strong><code>' ~ to_version|escape ~ '</strong></code>')|raw }}</div>

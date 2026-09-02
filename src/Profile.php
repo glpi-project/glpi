@@ -61,6 +61,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /** @use Clonable<static> */
     use Clonable;
 
+    public const HELPDESK_RIGHT_PASSWORD_UPDATE = 'password_update';
+    public const HELPDESK_RIGHT_PERSONALIZATION = 'personalization';
+    public const HELPDESK_RIGHT_SHOW_GROUP_HARDWARE = 'show_group_hardware';
+
     // Specific ones
 
     /**
@@ -74,13 +78,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         'helpdesk_hardware',
         'helpdesk_item_type',
         'knowbase',
-        'password_update',
-        'personalization',
+        self::HELPDESK_RIGHT_PASSWORD_UPDATE,
+        self::HELPDESK_RIGHT_PERSONALIZATION,
         'problemtemplates_id',
         'reminder_public',
         'reservation',
         'rssfeed_public',
-        'show_group_hardware',
+        self::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE,
         'use_mentions',
         'task',
         'ticket',
@@ -1180,7 +1184,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 ]),
                                 $fn_get_rights(Location::class, 'central'),
                                 $fn_get_rights(ITILCategory::class, 'central'),
-                                $fn_get_rights(KnowbaseItemCategory::class, 'central'),
                                 $fn_get_rights(TaskCategory::class, 'central'),
                                 $fn_get_rights(State::class, 'central'),
                                 $fn_get_rights(ITILFollowupTemplate::class, 'central'),
@@ -2306,20 +2309,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => ITILCategory::$rightname],
-            ],
-        ];
-
-        $tab[] = [
-            'id'                 => '165',
-            'table'              => 'glpi_profilerights',
-            'field'              => 'rights',
-            'name'               => KnowbaseItemCategory::getTypeName(Session::getPluralNumber()),
-            'datatype'           => 'right',
-            'rightclass'         => KnowbaseItemCategory::class,
-            'rightname'          => KnowbaseItemCategory::$rightname,
-            'joinparams'         => [
-                'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => KnowbaseItemCategory::$rightname],
             ],
         ];
 
@@ -3978,5 +3967,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public function getTilesConfigInformationText(): ?string
     {
         return __("Users with this profile will see the tiles below if defined, overriding the one found in the entities configuration.");
+    }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 }

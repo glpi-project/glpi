@@ -169,7 +169,7 @@ updates:
       fontsource:
         patterns:
           - "@fontsource/*"
-          - "@fontsource-*"
+          - "@fontsource-utils/*"
       fullcalendar:
         patterns:
           - "@fullcalendar/*"

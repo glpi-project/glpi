@@ -101,7 +101,7 @@ if (isset($_GET['_in_modal'])) {
     $alias->showForm($_GET["id"], $_GET);
     Html::popFooter();
 } else {
-    Session::checkRight("internet", UPDATE);
+    Session::checkRight(NetworkName::$rightname, UPDATE);
 
     $menus = ['assets'];
     NetworkAlias::displayFullPageForItem($_GET["id"], $menus, $_GET);

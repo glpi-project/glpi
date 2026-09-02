@@ -715,4 +715,55 @@ class Document_ItemTest extends DbTestCase
 
         $this->login();
     }
+
+    public function testGetTypeItemsForKnowbaseItemDoesNotLeakUnrelatedArticles()
+    {
+        $this->login();
+
+        $document = $this->createItem(\Document::class, [
+            'name' => __FUNCTION__,
+        ]);
+
+        $linked_kb = $this->createItem(\KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' linked',
+            'answer' => 'linked',
+            'is_faq' => 0,
+        ]);
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $linked_kb->getID(),
+        ]);
+
+        // Visible to the "tech" user but linked to another document, not this one
+        $other_document = $this->createItem(\Document::class, [
+            'name' => __FUNCTION__ . ' other',
+        ]);
+        $unrelated_kb = $this->createItem(\KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' unrelated',
+            'answer' => 'unrelated',
+            'is_faq' => 0,
+        ]);
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $other_document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $unrelated_kb->getID(),
+        ]);
+
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->createItems('KnowbaseItem_User', [
+            ['knowbaseitems_id' => $linked_kb->getID(), 'users_id' => $tech_user],
+            ['knowbaseitems_id' => $unrelated_kb->getID(), 'users_id' => $tech_user],
+        ]);
+
+        // "tech" is not a KB admin, so visibility is checked through the OR
+        // criteria merged in Document_Item::getTypeItemsQueryParams()
+        $this->login('tech', 'tech');
+
+        $iterator = Document_Item::getTypeItems($document->getID(), \KnowbaseItem::class);
+        $ids = array_column(iterator_to_array($iterator), 'id');
+
+        $this->assertContains($linked_kb->getID(), $ids);
+        $this->assertNotContains($unrelated_kb->getID(), $ids);
+    }
 }

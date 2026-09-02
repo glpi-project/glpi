@@ -183,7 +183,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         $plugin_key = $input->getOption('plugin');
 
         $checker = new DatabaseSchemaIntegrityChecker(
-            $this->db,
+            $this->getDb(),
             $input->getOption('strict'),
             !$input->getOption('check-all-migrations') && !$input->getOption('check-innodb-migration'),
             !$input->getOption('check-all-migrations') && !$input->getOption('check-timestamps-migration'),

@@ -149,7 +149,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $this->outputWarningOnMissingOptionnalRequirements();
 
-        $this->db->disableTableCaching();
+        $this->getDb()->disableTableCaching();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -164,7 +164,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         $force          = $input->getOption('force');
         $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
 
-        $update = new Update($this->db);
+        $update = new Update($this->getDb());
         $update->setLogger($PHPLOGGER);
 
         // Initialize entities
@@ -180,7 +180,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         if ($current_version === null) {
             $msg = sprintf(
                 __('Current GLPI version not found for database named "%s". Update cannot be done.'),
-                $this->db->dbdefault
+                $this->getDb()->dbdefault
             );
             $output->writeln('<error>' . $msg . '</error>');
             return self::ERROR_INVALID_DATABASE;
@@ -188,9 +188,9 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $informations = new Table($output);
         $informations->setHeaders(['', __('Current'), _n('Target', 'Targets', 1)]);
-        $informations->addRow([__('Database host'), $this->db->dbhost, '']);
-        $informations->addRow([__('Database name'), $this->db->dbdefault, '']);
-        $informations->addRow([__('Database user'), $this->db->dbuser, '']);
+        $informations->addRow([__('Database host'), $this->getDb()->dbhost, '']);
+        $informations->addRow([__('Database name'), $this->getDb()->dbdefault, '']);
+        $informations->addRow([__('Database user'), $this->getDb()->dbuser, '']);
         $informations->addRow([__('GLPI version'), $current_version, GLPI_VERSION]);
         $informations->addRow([
             __('GLPI database version'),
@@ -312,7 +312,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $this->output->writeln('<comment>' . __('Checking database schema integrity...') . '</comment>');
 
-        $checker = new DatabaseSchemaIntegrityChecker($this->db, false, true, true, true, true, true);
+        $checker = new DatabaseSchemaIntegrityChecker($this->getDb(), false, true, true, true, true, true);
 
         if (!$checker->canCheckIntegrity($installed_version)) {
             $msg = sprintf(

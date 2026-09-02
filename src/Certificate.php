@@ -557,9 +557,9 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         if (Session::getCurrentInterface() == 'central') {
             if (self::canUpdate()) {
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-                 =  "<i class='ti ti-link'></i>" . _sx('button', 'Associate certificate');
+                 =  "<i class='ti ti-link' aria-hidden='true'></i>" . _sx('button', 'Associate certificate');
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-                 = "<i class='ti ti-link-off'></i>" . _sx('button', 'Dissociate certificate');
+                 = "<i class='ti ti-link-off' aria-hidden='true'></i>" . _sx('button', 'Dissociate certificate');
             }
         }
         return $actions;

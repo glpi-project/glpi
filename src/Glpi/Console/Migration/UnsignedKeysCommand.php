@@ -72,7 +72,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $columns = $this->db->getSignedKeysColumns();
+        $columns = $this->getDb()->getSignedKeysColumns();
 
         $output->writeln(
             sprintf(
@@ -90,7 +90,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
             $this->warnAboutExecutionTime();
             $this->askForConfirmation();
 
-            $foreign_keys = $this->db->getForeignKeysContraints();
+            $foreign_keys = $this->getDb()->getForeignKeysContraints();
 
             $progress_message = (fn(array $column) => sprintf(__('Migrating column "%s.%s"...'), $column['TABLE_NAME'], $column['COLUMN_NAME']));
 
@@ -151,7 +151,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
                 }
 
                 // Check for negative values in table data
-                $min = $this->db
+                $min = $this->getDb()
                     ->request(['SELECT' => ['MIN' => sprintf('%s AS min', $column_name)], 'FROM' => $table_name])
                     ->current()['min'];
                 if ($min !== null && $min < 0) {
@@ -166,7 +166,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
                         );
                         $this->outputMessage('<comment>' . $message . '</comment>');
 
-                        $result = $this->db->update(
+                        $result = $this->getDb()->update(
                             $table_name,
                             [$column_name => $forced_value],
                             [$column_name => ['<', 0]]
@@ -176,8 +176,8 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
                                 __('Updating column "%s.%s" values failed with message "(%s) %s".'),
                                 $table_name,
                                 $column_name,
-                                $this->db->errno(),
-                                $this->db->error()
+                                $this->getDb()->errno(),
+                                $this->getDb()->error()
                             );
                             $this->outputMessage(
                                 '<error>' . $message . '</error>',
@@ -206,23 +206,23 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
 
                 $query = sprintf(
                     'ALTER TABLE %s MODIFY COLUMN %s %s unsigned %s %s %s',
-                    $this->db->quoteName($table_name),
-                    $this->db->quoteName($column_name),
+                    $this->getDb()->quoteName($table_name),
+                    $this->getDb()->quoteName($column_name),
                     $data_type,
                     $nullable ? 'NULL' : 'NOT NULL',
-                    $default !== null || $nullable ? sprintf('DEFAULT %s', $this->db->quoteValue($default)) : '',
+                    $default !== null || $nullable ? sprintf('DEFAULT %s', $this->getDb()->quoteValue($default)) : '',
                     $extra
                 );
 
                 try {
-                    $this->db->doQuery($query);
+                    $this->getDb()->doQuery($query);
                 } catch (QueryException $e) {
                     $message = sprintf(
                         __('Migration of column "%s.%s" failed with message "(%s) %s".'),
                         $table_name,
                         $column_name,
-                        $this->db->errno(),
-                        $this->db->error()
+                        $this->getDb()->errno(),
+                        $this->getDb()->error()
                     );
                     $this->outputMessage(
                         '<error>' . $message . '</error>',

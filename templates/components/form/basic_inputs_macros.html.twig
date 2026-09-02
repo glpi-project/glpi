@@ -250,6 +250,7 @@
         'disabled': false,
         'maybeempty': false,
         'addCalendarButton': true,
+        'field_label': '',
     }|merge(options) %}
 
     {% set editable = not options.readonly and not options.disabled %}
@@ -297,13 +298,13 @@
         {% if editable and options.addCalendarButton %}
             {% set calendar_icon = options.enableTime ? 'ti ti-calendar-time' : 'ti ti-calendar' %}
             <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
-                <i class="{{ calendar_icon }}"></i>
+                <i class="{{ calendar_icon }}" aria-hidden="true"></i>
                 <span class="visually-hidden">{{ __('Enter or select a date') }}</span>
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
             {% if options.clearable or options.maybeempty %}
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-clear title="{{ __('Clear') }}">
-                    <i class="ti ti-circle-x"></i>
+                    <i class="ti ti-circle-x" aria-hidden="true"></i>
                 </button>
             {% endif %}
         {% endif %}
@@ -324,6 +325,16 @@
             {# No time and no date, doesn't make sense so fallback to full format #}
             {% set date_format = 'Y-m-d H:i:S' %}
         {% endif %}
+
+        {# flatpickr hides the real input and builds an unlabelled altInput; expose the field label and a human-readable format hint on it #}
+        {% set a11y_name = options.field_label is not empty ? options.field_label : __('Enter or select a date') %}
+        {% if options.enableTime and not options.noCalendar %}
+            {% set format_hint = call('Toolbox::getDateFormat', ['php']) ~ ' HH:MM:SS' %}
+        {% elseif options.enableTime and options.noCalendar %}
+            {% set format_hint = 'HH:MM:SS' %}
+        {% else %}
+            {% set format_hint = call('Toolbox::getDateFormat', ['php']) %}
+        {% endif %}
         <script>
             $(function() {
                 $("#{{ options.id|e('css')|e('js') }}").flatpickr({
@@ -339,8 +350,44 @@
                     allowInput: {{ options.readonly ? 'false' : 'true' }},
                     clickOpens: {{ options.readonly ? 'false' : 'true' }},
                     locale: getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
+                    onReady(dates, currentdatestring, picker) {
+                        // `altInput: true` hides the original input and exposes a substitute one
+                        if (picker.altInput) {
+                            // so copy all aria-* attributes from the original input to the altInput
+                            for (const attribute of picker.input.attributes) {
+                                if (attribute.name.startsWith('aria-')) {
+                                    picker.altInput.setAttribute(attribute.name, attribute.value);
+                                }
+                            }
+
+                            // keep a caller provided label, fall back to the field label
+                            if (!picker.altInput.hasAttribute('aria-label') && !picker.altInput.hasAttribute('aria-labelledby')) {
+                                picker.altInput.setAttribute('aria-label', '{{ a11y_name|e('js') }}');
+                            }
+                            // keep a caller-provided placeholder; only fall back to the format hint
+                            if (!picker.altInput.getAttribute('placeholder')) {
+                                picker.altInput.setAttribute('placeholder', '{{ format_hint|e('js') }}');
+                            }
+                            picker.altInput.setAttribute('aria-haspopup', 'dialog');
+                            picker.altInput.setAttribute('aria-expanded', 'false');
+                            picker.calendarContainer.id = picker.input.id + '_calendar';
+                            picker.altInput.setAttribute('aria-controls', picker.calendarContainer.id);
+                            // flatpickr does not close on Escape while the altInput is focused
+                            picker.altInput.addEventListener('keydown', (event) => {
+                                if (event.key === 'Escape' && picker.isOpen) {
+                                    event.stopPropagation();
+                                    picker.close();
+                                    picker.altInput.focus();
+                                }
+                            });
+                        }
+                    },
+                    onOpen(dates, currentdatestring, picker) {
+                        picker.altInput.setAttribute('aria-expanded', 'true');
+                    },
                     onClose(dates, currentdatestring, picker) {
                         picker.setDate(picker.altInput.value, true, picker.config.altFormat)
+                        picker.altInput.setAttribute('aria-expanded', 'false');
                     },
                     plugins: [
                         CustomFlatpickrButtons()
@@ -495,15 +542,25 @@
         'additional_attributes': {},
     }|merge(options) %}
 
+    {# Check if button is not label-less #}
+    {% if label is empty and options.icon_title is empty %}
+        {% do call('trigger_error', [
+            'A button must be given either a `label` or an `icon_title` to be named.',
+            constant('E_USER_WARNING')
+        ]) %}
+    {% endif %}
+
     <button class="{{ options.class }}" type="{{ type }}" name="{{ name }}" value="{{ value }}"
         {% for attr, value in options.additional_attributes %}
             {{ attr }}="{{ value }}"
         {% endfor %}>
         {% if options.icon is not empty %}
-            <i class="{{ options.icon }}" title="{{ options.icon_title }}"></i>
+            <i class="{{ options.icon }}" title="{{ options.icon_title }}" aria-hidden="true"></i>
         {% endif %}
         {% if label is not empty %}
             <span>{{ label }}</span>
+        {% elseif options.icon_title is not empty %}
+            <span class="visually-hidden">{{ options.icon_title }}</span>
         {% endif %}
     </button>
 {% endmacro %}
@@ -553,7 +610,8 @@
             -
             {{ __('Last inventory value was:') ~ ' ' ~ options.locked_value }}{% endset %}
         {% endif %}
-        <i class="ti ti-lock" title="{{ locked_title }}" data-bs-toggle="tooltip"></i>
+        <i class="ti ti-lock" title="{{ locked_title }}" data-bs-toggle="tooltip" aria-hidden="true"></i>
+        <span class="visually-hidden">{{ locked_title }}</span>
         {% endset %}
     {% endif %}
 

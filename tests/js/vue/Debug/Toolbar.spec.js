@@ -114,7 +114,7 @@ describe("Debug Bar", () => {
         window.AjaxMock.end();
     });
 
-    async function mountToolbar() {
+    async function mountToolbar(initial_request_overrides = {}) {
         const Toolbar = await import("/js/src/vue/Debug/Toolbar.vue").then(module => module.default);
 
         // import all widgets at once, assigning each to variable for use in the mount options later, and then await all to reduce test time
@@ -145,54 +145,56 @@ describe("Debug Bar", () => {
             import('/js/src/vue/Debug/Widget/ThemeSwitcher.vue').then(module => module.default),
         ]);
 
+        const base_initial_request = {
+            "id":"0f9fde97e889ed3f",
+            "parent_id":null,
+            "server_performance":{"execution_time":200,"memory_usage":5176272,"memory_peak":5346088,"memory_limit":268435456},
+            "sql":{"queries":[{"num":0,"query":"SELECT * FROM `glpi_assets_assetdefinitions`","time":0.3948211669921875,"rows":2,"errors":"","warnings":""}]},
+            "globals": {
+                "get": [],
+                "post": [],
+                "session": {
+                    "glpicookietest": "testcookie",
+                    "valid_id": "fce7f1b423db04cbd32aa7eab70c13d3",
+                    "glpi_currenttime": "2026-06-16 18:09:42",
+                    "glpi_use_mode": 2,
+                    "glpiID": 2,
+                },
+                "server": {
+                    "USER": "www-data",
+                    "HOME": "/var/www",
+                    "SCRIPT_NAME": "/index.php",
+                    "REQUEST_URI": "/front/entity.php"
+                },
+            },
+            "profiler":[
+                {
+                    "id":"3c961f88-a87f-486f-b853-20cb5e72baac",
+                    "parent_id":null,
+                    "category":"core",
+                    "name": "php_request",
+                    "start":1781647782350,
+                    "end":1781647782380,
+                    "duration":30,
+                    "auto_ended":false
+                },
+                {
+                    "id":"1954516f-d3fc-4260-8eea-6f9ad526f1a7",
+                    "parent_id":"3c961f88-a87f-486f-b853-20cb5e72baac",
+                    "category":"boot",
+                    "name":"InitializeDbConnection::execute",
+                    "start":1781647782351,
+                    "end":1781647782362,
+                    "duration":11,
+                    "auto_ended":false
+                }
+            ],
+        };
+
         const wrapper = mount(Toolbar, {
             attachTo: document.body,
             props: {
-                initial_request: {
-                    "id":"0f9fde97e889ed3f",
-                    "parent_id":null,
-                    "server_performance":{"execution_time":200,"memory_usage":5176272,"memory_peak":5346088,"memory_limit":268435456},
-                    "sql":{"queries":[{"num":0,"query":"SELECT * FROM `glpi_assets_assetdefinitions`","time":0.3948211669921875,"rows":2,"errors":"","warnings":""}]},
-                    "globals": {
-                        "get": [],
-                        "post": [],
-                        "session": {
-                            "glpicookietest": "testcookie",
-                            "valid_id": "fce7f1b423db04cbd32aa7eab70c13d3",
-                            "glpi_currenttime": "2026-06-16 18:09:42",
-                            "glpi_use_mode": 2,
-                            "glpiID": 2,
-                        },
-                        "server": {
-                            "USER": "www-data",
-                            "HOME": "/var/www",
-                            "SCRIPT_NAME": "/index.php",
-                            "REQUEST_URI": "/front/entity.php"
-                        },
-                    },
-                    "profiler":[
-                        {
-                            "id":"3c961f88-a87f-486f-b853-20cb5e72baac",
-                            "parent_id":null,
-                            "category":"core",
-                            "name": "php_request",
-                            "start":1781647782350,
-                            "end":1781647782380,
-                            "duration":30,
-                            "auto_ended":false
-                        },
-                        {
-                            "id":"1954516f-d3fc-4260-8eea-6f9ad526f1a7",
-                            "parent_id":"3c961f88-a87f-486f-b853-20cb5e72baac",
-                            "category":"boot",
-                            "name":"InitializeDbConnection::execute",
-                            "start":1781647782351,
-                            "end":1781647782362,
-                            "duration":11,
-                            "auto_ended":false
-                        }
-                    ],
-                }
+                initial_request: {...base_initial_request, ...initial_request_overrides}
             },
             global: {
                 components: {
@@ -239,7 +241,7 @@ describe("Debug Bar", () => {
 
         const serverPerformanceWidget = wrapper.find('.debug-toolbar-widget[data-glpi-debug-widget-id="server_performance"]');
         expect(serverPerformanceWidget.exists()).toBe(true);
-        expect(serverPerformanceWidget.text()).toMatch(/200\s+ms\s+using\s+4\.94\s+MiB/);
+        expect(serverPerformanceWidget.text()).toMatch(/200\s+ms\s+total\s+using\s+4\.94\s+MiB/);
         await serverPerformanceWidget.trigger('click');
         expect(wrapper.find('#debug-toolbar-expanded-content').element).toBeVisible();
         const expandedContent = wrapper.find('#debug-toolbar-expanded-content');
@@ -280,8 +282,77 @@ describe("Debug Bar", () => {
         expect(firstRowCells[2].text()).toContain('`glpi_assets_assetdefinitions`'); // query
         expect(firstRowCells[3].text()).toMatch(/^\d+\.\d+\sms$/); // time
         expect(firstRowCells[4].text()).toMatch(/^\d+$/); // rows
-        expect(firstRowCells[5].text()).toBe(''); // errors
-        expect(firstRowCells[6].text()).toBe(''); // warnings
+        expect(firstRowCells[5].text()).toBe(''); // warnings
+        expect(firstRowCells[6].text()).toBe(''); // errors
+
+        // this fixture has neither raw_query nor params: nothing to disclose
+        expect(expandedContent.find('.toggle-sql-params').exists()).toBe(false);
+    });
+
+    it('SQL requests with prepared statement parameters', async () => {
+        window.copyTextToClipboard = vi.fn();
+
+        const raw_query = 'SELECT * FROM `glpi_computers` WHERE `name` = ? AND `id` = ?';
+        const wrapper = await mountToolbar({
+            "sql": {
+                "queries": [
+                    {
+                        "num": 0,
+                        "query": "SELECT * FROM `glpi_computers` WHERE `name` = 'what?' AND `id` = '42'",
+                        "raw_query": raw_query,
+                        "params": ['what?', 42],
+                        "time": 0.5,
+                        "rows": 1,
+                        "errors": "",
+                        "warnings": ""
+                    }
+                ]
+            }
+        });
+
+        await wrapper.find('.debug-toolbar-widget[data-glpi-debug-widget-id="sql"]').trigger('click');
+        const expandedContent = wrapper.find('#debug-toolbar-expanded-content');
+        await flushPromises();
+
+        // collapsed by default, the interpolated query is what is shown
+        expect(expandedContent.findAll('#debug-sql-request-table > tbody > tr').length).toBe(1);
+        expect(expandedContent.find('#debug-sql-request-table > tbody > tr td:nth-of-type(3) code').text())
+            .toContain("`name` = 'what?'");
+        expect(expandedContent.find('.sql-params-panel').exists()).toBe(false);
+
+        const toggle = expandedContent.find('.toggle-sql-params');
+        expect(toggle.exists()).toBe(true);
+        expect(toggle.attributes('aria-expanded')).toBe('false');
+        expect(toggle.find('.badge').text()).toBe('2');
+
+        // expanded: the prepared query and its parameters
+        await toggle.trigger('click');
+        await flushPromises();
+        expect(expandedContent.findAll('#debug-sql-request-table > tbody > tr').length).toBe(1);
+        expect(expandedContent.find('.toggle-sql-params').attributes('aria-expanded')).toBe('true');
+
+        const panel = expandedContent.find('.sql-params-panel');
+        expect(panel.exists()).toBe(true);
+        expect(panel.find('code').text()).toContain('`name` = ? AND `id` = ?');
+
+        const params = panel.findAll('.sql-params-list li');
+        expect(params.length).toBe(2);
+        expect(params[0].find('.param-index').text()).toBe('1');
+        expect(params[0].find('.param-type').text()).toBe('string');
+        expect(params[0].find('.param-value').text()).toBe("'what?'");
+        expect(params[1].find('.param-index').text()).toBe('2');
+        expect(params[1].find('.param-type').text()).toBe('number');
+        expect(params[1].find('.param-value').text()).toBe('42');
+
+        // each block copies its own content
+        await panel.find('.copy-raw-query').trigger('click');
+        expect(window.copyTextToClipboard).toHaveBeenLastCalledWith(raw_query);
+        await panel.find('.copy-params').trigger('click');
+        expect(window.copyTextToClipboard).toHaveBeenLastCalledWith(JSON.stringify(['what?', 42], null, 2));
+
+        // and it collapses back
+        await expandedContent.find('.toggle-sql-params').trigger('click');
+        expect(expandedContent.find('.sql-params-panel').exists()).toBe(false);
     });
 
     it('HTTP requests', async () => {
@@ -360,8 +431,8 @@ describe("Debug Bar", () => {
         expect(firstRowCells[1].text()).toContain('`glpi_assets_assetdefinitions`'); // query
         expect(firstRowCells[2].text()).toMatch(/^\d+\.\d+\sms$/); // time
         expect(firstRowCells[3].text()).toMatch(/^\d+$/); // rows
-        expect(firstRowCells[4].text()).toBe(''); // errors
-        expect(firstRowCells[5].text()).toBe(''); // warnings
+        expect(firstRowCells[4].text()).toBe(''); // warnings
+        expect(firstRowCells[5].text()).toBe(''); // errors
     });
 
     it('Client performance', async () => {

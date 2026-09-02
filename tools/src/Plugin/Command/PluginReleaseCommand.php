@@ -34,6 +34,8 @@
 
 namespace Glpi\Tools\Plugin\Command;
 
+use Override;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,11 +45,16 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
+use function Safe\file;
+use function Safe\getcwd;
+use function Safe\mkdir;
+use function Safe\preg_match;
+use function Safe\unlink;
+
 final class PluginReleaseCommand extends AbstractPluginCommand
 {
     private string $dist_dir;
     private string $plugin_name = '';
-    private string $commit = '';
 
     private const BANNED_FILES = [
         '.git*',
@@ -100,14 +107,18 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         // Resolve relative paths based on plugin directory
         $fs = new Filesystem();
         if (!$fs->isAbsolutePath($dest)) {
-            $dest = \getcwd() . '/' . $dest;
+            $dest = getcwd() . '/' . $dest;
         }
 
         // Ensure parent directory exists
         $this->dist_dir = dirname($dest);
-        if (!is_dir($this->dist_dir) && !mkdir($this->dist_dir, 0o777, true)) {
-            $this->io->error(sprintf('Unable to create the `%s` directory.', $this->dist_dir));
-            return Command::FAILURE;
+        if (!is_dir($this->dist_dir)) {
+            try {
+                mkdir($this->dist_dir, 0o777, true);
+            } catch (FilesystemException) {
+                $this->io->error(sprintf('Unable to create the `%s` directory.', $this->dist_dir));
+                return Command::FAILURE;
+            }
         }
 
         if (!$input->getOption('force') && file_exists($dest)) {
@@ -134,7 +145,9 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         if (is_dir($src_dir)) {
             $fs->remove($src_dir);
         }
-        if (!mkdir($src_subdir, 0o777, true)) {
+        try {
+            mkdir($src_subdir, 0o777, true);
+        } catch (FilesystemException) {
             $this->io->error(sprintf('Unable to create the `%s` directory.', $src_subdir));
             return Command::FAILURE;
         }

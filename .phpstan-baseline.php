@@ -50,12 +50,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/dashboard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/dropdownConnectNetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'toupdate\' might not exist on array\\{name\\: non\\-falsy\\-string, entity\\: array\\<int\\>\\|int, rand\\: int\\<0, max\\>, to_update\\: null, toupdate\\?\\: array\\{value_fieldname\\: \'value\', to_update\\: non\\-falsy\\-string, url\\: non\\-falsy\\-string, moreparams\\: array\\{value\\: \'__VALUE__\', allow_email\\: bool, field\\: non\\-falsy\\-string, typefield\\: \'supplier\', use_notification\\: mixed\\}\\}\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -686,8 +680,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/report.dynamic.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method canView\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
+	'message' => '#^Cannot call method checkGlobal\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/front/report.dynamic.php',
 ];
@@ -1090,7 +1084,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$fields\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 17,
+	'count' => 16,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -1798,7 +1792,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -2054,12 +2048,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILCost.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access constant class on CommonITILTask\\|false\\.$#',
-	'identifier' => 'classConstant.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonITILValidation\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 1,
@@ -2072,12 +2060,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on CommonITILTask\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on ITILCategory\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
@@ -2085,18 +2067,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on ITIL_ValidationStep\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method canUpdateItem\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method canViewItem\\(\\) on CommonITILTask\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
@@ -2138,12 +2108,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method post_getFromDB\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method update\\(\\) on ITIL_ValidationStep\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -2159,12 +2123,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method CommonITILObject\\:\\:computeSolveDelayStat\\(\\) should return int but returns float\\|int\\<0, max\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:cronInfo\\(\\) should return array\\{description\\: string, parameter\\?\\: string\\} but returns array\\{\\}\\|array\\{description\\: string\\}\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -3034,12 +2992,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$dbuser on DBmysql\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'lock_use_lock_item\' might not exist on array\\{typedoc_icon_dir\\: mixed, root_doc\\: mixed, proxy_exclusions\\: mixed, lock_lockprofile_id\\: mixed, \\.\\.\\.\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Config.php',
 ];
@@ -4265,24 +4217,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$documentElement on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method createAttribute\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method createCDATASection\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method createElement\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
@@ -5834,68 +5768,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/AbstractConfigureCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Diagnostic\\\\DatabaseSchemaIntegrityChecker constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getTzIncompatibleTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/EnableTimezonesCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbTimezones constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/EnableTimezonesCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset 0 on array\\|false\\|null\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbssl on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslca on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslcacipher on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslcapath on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslcert on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslkey on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method connect\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
 ];
@@ -5906,30 +5780,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbhost on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbuser on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method disableTableCaching\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'hash\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, version\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, hash\\: non\\-empty\\-string, 2\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -5938,18 +5788,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'version\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, version\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, hash\\: non\\-empty\\-string, 2\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$DB of class Update constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Diagnostic\\\\DatabaseSchemaIntegrityChecker constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
@@ -5966,82 +5804,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$name of method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:setName\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginMigrationCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method fieldExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method delete\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method fieldExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
@@ -6050,148 +5816,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 7,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DomainsPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method listTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\Form\\\\Migration\\\\FormMigration constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/FormCreatorPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\Migration\\\\GenericobjectPluginMigration constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/GenericobjectPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method find\\(\\) on Symfony\\\\Component\\\\Console\\\\Application\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/MigrateAllCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method delete\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 9,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:createDatacenter\\(\\) should return int\\|null but returns int\\|true\\.$#',
@@ -6206,132 +5834,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$use_timezones on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method escape\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getTzIncompatibleTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteValue\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbTimezones constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getForeignKeysContraints\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getSignedKeysColumns\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteValue\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -6342,90 +5844,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$use_utf8mb4 on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getNonUtf8mb4Tables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method listTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbConfiguration constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/ActivateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/DeactivateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/UninstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Rules/ProcessSoftwareCategoryRulesCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method quoteValue\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method find\\(\\) on CommonDBTM\\|false\\.$#',
@@ -6494,7 +5912,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EditorController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$value_operator of class Glpi\\\\Form\\\\Condition\\\\ConditionData constructor expects string\\|null, int\\|string\\|false given\\.$#',
+	'message' => '#^Parameter \\$value_operator of class Glpi\\\\Form\\\\Condition\\\\ConditionData constructor expects string\\|null, int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EditorController.php',
@@ -7394,12 +6812,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Condition/Engine.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssigneeFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssigneeFieldConfig.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -7410,12 +6822,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldStrategy\\|null\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsFieldConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getEntityID\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\EntityFieldStrategy\\|false\\.$#',
@@ -7490,12 +6896,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/LocationField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ObserverFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ObserverFieldConfig.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getRequestSource\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\RequestSourceFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -7506,12 +6906,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequestTypeField.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\RequesterFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequesterFieldConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getDateSLM\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLMFieldStrategy\\|false\\.$#',
@@ -8744,9 +8138,39 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifinbytes\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifinerrors\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$ifinternalstatus\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifmtu\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifoutbytes\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifouterrors\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
@@ -8954,12 +8378,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method object\\:\\:getManagementPorts\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 4,
@@ -9023,24 +8441,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method fetch_object\\(\\) on mysqli_result\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 4,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getManagementPorts\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getStackId\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method isStackedSwitch\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -9116,7 +8516,79 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$company\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$hostid\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$install_date\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$license_number\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$licenseid\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemarchitectures_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemeditions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemkernels_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemkernelversions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystems_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemservicepacks_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemversions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$owner\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
@@ -10970,12 +10442,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemFromArray\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -11240,12 +10706,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Output/HTMLSearchOutput.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Output/Spreadsheet.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$count of class GLPIPDF@anonymous/src/Glpi/Search/Output/Tcpdf\\.php\\:46 constructor expects int\\|null, bool\\|float\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -11494,12 +10954,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Security\\\\TOTPManager\\:\\:getGracePeriodDaysLeft\\(\\) should return int but returns int\\|false\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'secret\' might not exist on array\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
 ];
@@ -13064,48 +12518,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between non\\-falsy\\-string and array\\<string\\>\\|string results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
-	'identifier' => 'classConstant.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'id\' on CommonDropdown\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'name\' on CommonDropdown\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getForeignKeyField\\(\\) on CommonDBTM\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTableField\\(\\) on CommonDBTM\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 5,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method KnowbaseItem\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -13115,30 +12527,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:addFiles\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method KnowbaseItem\\:\\:getCategoryItem\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method KnowbaseItem\\:\\:getTreeCategoryList\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method Search\\:\\:getDatas\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$itemtype of static method DropdownTranslation\\:\\:getTranslatedValue\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
@@ -14486,24 +13874,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'type\' might not exist on array\\{type\\?\\: 1\\|2\\|3, use_notification\\?\\: bool, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'use_notification\' might not exist on array\\{type\\: 2, use_notification\\?\\: bool, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'users_id\' might not exist on array\\{type\\: 2, use_notification\\: true, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 6,
@@ -14661,12 +14031,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Entity\\|Group\\|Profile\\|User\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetKnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on KnowbaseItemCategory\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetKnowbaseItem.php',
@@ -14830,7 +14194,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property NotificationTarget\\<Project\\>\\:\\:\\$data \\(array\\<string, array\\<string\\>\\|string\\>\\) does not accept array\\<string, array\\<array\\<string, mixed\\>\\|string\\>\\|string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 3,
+	'count' => 4,
 	'path' => __DIR__ . '/src/NotificationTargetProject.php',
 ];
 $ignoreErrors[] = [
@@ -14884,7 +14248,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property NotificationTarget\\<ProjectTask\\>\\:\\:\\$data \\(array\\<string, array\\<string\\>\\|string\\>\\) does not accept array\\<string, array\\<array\\<string, mixed\\>\\|string\\>\\|string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [
@@ -17882,12 +17246,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$width of function Safe\\\\imagecreatetruecolor expects int, float\\|int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -17906,12 +17264,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$height of function Safe\\\\imagecreatetruecolor expects int, float\\|int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$string of function Safe\\\\unpack expects string, array\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -17925,18 +17277,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$height of static method Html\\:\\:getImageHtmlTagForDocument\\(\\) expects int, int\\<0, max\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#7 \\$dst_width of function Safe\\\\imagecopyresampled expects int, float\\|int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#8 \\$dst_height of function Safe\\\\imagecopyresampled expects int, float\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',

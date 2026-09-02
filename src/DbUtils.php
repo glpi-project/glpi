@@ -204,12 +204,19 @@ final class DbUtils
         global $CFG_GLPI;
 
         if (!isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
+            $expected_table = $this->getExpectedTableNameForClass($itemtype);
+
             $table = is_a($itemtype, CommonDBTM::class, true)
                 ? $itemtype::getTable()
-                : $this->getExpectedTableNameForClass($itemtype);
+                : $expected_table;
 
             $CFG_GLPI['glpitablesitemtype'][$itemtype] = $table;
-            $CFG_GLPI['glpiitemtypetables'][$table]    = $itemtype;
+
+            if ($table === $expected_table) {
+                // Do not cache result if the found table does not match the expected one, for instance
+                // if the target classname is a specific implementation of an abstract class (e.g. `RuleTicket` -> `glpi_rules`).
+                $CFG_GLPI['glpiitemtypetables'][$table] = $itemtype;
+            }
         }
 
         return $CFG_GLPI['glpitablesitemtype'][$itemtype];
@@ -360,7 +367,12 @@ final class DbUtils
             }
 
             if ($itemtype !== null && ($classname = $this->getClassForItemtype($itemtype)) !== null) {
-                $CFG_GLPI['glpiitemtypetables'][$inittable] = $classname;
+                if ($this->getExpectedTableNameForClass($classname) === $inittable) {
+                    // Do not cache result if the found table does not match the expected one, for instance
+                    // if the target classname is a specific implementation of an abstract class (e.g. `RuleTicket` -> `glpi_rules`).
+                    $CFG_GLPI['glpiitemtypetables'][$inittable] = $classname;
+                }
+
                 $CFG_GLPI['glpitablesitemtype'][$classname] = $inittable;
                 return $itemtype;
             }
@@ -759,7 +771,8 @@ final class DbUtils
      *                                        when have acces to all entities (used for reminders)
      *
      * @return string the WHERE clause to restrict
-     * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
+     *
+     * @deprecated 12.0.0
      */
     public function getEntitiesRestrictRequest(
         $separator = "AND",
@@ -769,6 +782,8 @@ final class DbUtils
         $is_recursive = false,
         $complete_request = false
     ) {
+        Toolbox::deprecated('Use getEntitiesRestrictCriteria() instead.');
+
         global $DB;
 
         $query = $separator . " ( ";

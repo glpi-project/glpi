@@ -38,8 +38,10 @@ use Change;
 use Change_User;
 use CommonITILActor;
 use CommonITILObject;
+use Computer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use User;
 
 /* Test for inc/change.class.php */
@@ -63,7 +65,7 @@ class ChangeTest extends DbTestCase
 
         // Login again to acess the new entity
         $this->login('glpi', 'glpi');
-        $success = \Session::changeActiveEntities($entity->getID(), true);
+        $success = Session::changeActiveEntities($entity->getID(), true);
         $this->assertTrue($success);
 
         $group = new \Group();
@@ -467,6 +469,76 @@ class ChangeTest extends DbTestCase
         $this->assertNotEmpty($html);
     }
 
+    public function testShowFormFromItemUsesItemEntity(): void
+    {
+        // Arrange: an asset in a sub-entity, while the current (default)
+        // session entity is its parent entity
+        $this->login('glpi', 'glpi');
+
+        $root_entity = $this->getTestRootEntity(only_id: true);
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer used to create a change from item',
+            'entities_id' => $item_entity,
+        ]);
+
+        // Active entity is the parent entity (with access to its sub-entities),
+        // which is not the same as the asset's own entity
+        $this->assertTrue(Session::changeActiveEntities($root_entity, true));
+
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change created from the asset
+        ob_start();
+        $change->showForm($change->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the change entity follows the asset entity, not the
+        // currently active session entity
+        $this->assertEquals($item_entity, (int) $change->fields['entities_id']);
+        $this->assertNotEquals($root_entity, (int) $change->fields['entities_id']);
+    }
+
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change created from the (inaccessible) asset
+        ob_start();
+        $change->showForm($change->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the change falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $change->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $change->fields['entities_id']);
+    }
+
     public function testShowFormClosedItem(): void
     {
         // Arrange: prepare an empty change
@@ -578,7 +650,7 @@ class ChangeTest extends DbTestCase
                 'requester' => [
                     [
                         'itemtype'  => 'User',
-                        'items_id'  => \Session::getLoginUserID(),
+                        'items_id'  => Session::getLoginUserID(),
                     ],
                 ],
             ],
@@ -724,5 +796,139 @@ class ChangeTest extends DbTestCase
         ], ['name']);
 
         $this->assertSame(255, mb_strlen($change->fields['name']));
+    }
+
+    public function testCronSurveyCreation(): void
+    {
+        $this->login();
+
+        $root_entity_id    = $this->getTestRootEntity(true);
+        $child_1_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $twelve_hours_ago = date("Y-m-d H:i:s", strtotime('-12 hours'));
+        $six_hours_ago    = date("Y-m-d H:i:s", strtotime('-6 hours'));
+        $four_hours_ago   = date("Y-m-d H:i:s", strtotime('-4 hours'));
+        $two_hours_ago    = date("Y-m-d H:i:s", strtotime('-2 hours'));
+
+        $this->updateItem(
+            \Entity::class,
+            0,
+            [
+                'inquest_config_change' => 1, // GLPI native survey
+                'inquest_rate_change'   => 100, // always generate a survey for closed changes
+                'inquest_delay_change'  => 0, // instant survey generation
+            ]
+        );
+        foreach ([$root_entity_id, $child_1_entity_id] as $entity_id) {
+            $this->updateItem(
+                \Entity::class,
+                $entity_id,
+                [
+                    'inquest_config_change' => \Entity::CONFIG_PARENT, // inherits
+                ]
+            );
+        }
+        $this->updateItem(
+            \Entity::class,
+            $child_2_entity_id,
+            [
+                'inquest_config_change' => 1, // GLPI native survey
+                'inquest_rate_change'   => 100, // always generate a survey for closed changes
+                'inquest_delay_change'  => 0, // instant survey generation
+            ]
+        );
+
+        foreach ([0, $root_entity_id, $child_1_entity_id, $child_2_entity_id] as $entity_id) {
+            $this->updateItem(
+                \Entity::class,
+                $entity_id,
+                [
+                    'max_closedate_change' => $twelve_hours_ago,
+                ]
+            );
+        }
+
+        $original_currenttime = $_SESSION['glpi_currenttime'];
+
+        // Create a closed change on test root entity
+        $_SESSION['glpi_currenttime'] = $six_hours_ago;
+        $root_change = $this->createItem(
+            Change::class,
+            [
+                'name'        => "test root entity survey",
+                'content'     => "test root entity survey",
+                'entities_id' => $root_entity_id,
+                'status'      => CommonITILObject::CLOSED,
+            ]
+        );
+
+        // Create a closed change on test child entity 1
+        $_SESSION['glpi_currenttime'] = $four_hours_ago;
+        $child_1_change = $this->createItem(
+            Change::class,
+            [
+                'name'        => "test child entity 1 survey",
+                'content'     => "test child entity 1 survey",
+                'entities_id' => $child_1_entity_id,
+                'status'      => CommonITILObject::CLOSED,
+            ]
+        );
+
+        // Create a closed change on test child entity 2
+        $_SESSION['glpi_currenttime'] = $two_hours_ago;
+        $child_2_change = $this->createItem(
+            Change::class,
+            [
+                'name'        => "test child entity 2 survey",
+                'content'     => "test child entity 2 survey",
+                'entities_id' => $child_2_entity_id,
+                'status'      => CommonITILObject::CLOSED,
+            ]
+        );
+
+        $_SESSION['glpi_currenttime'] = $original_currenttime;
+
+        // Ensure no survey has been created yet
+        $change_satisfaction = new \ChangeSatisfaction();
+        $this->assertEquals(0, count($change_satisfaction->find(['changes_id' => $root_change->getID()])));
+        $this->assertEquals(0, count($change_satisfaction->find(['changes_id' => $child_1_change->getID()])));
+        $this->assertEquals(0, count($change_satisfaction->find(['changes_id' => $child_2_change->getID()])));
+
+        // Launch cron to create surveys
+        \CronTask::launch(
+            - \CronTask::MODE_INTERNAL, // force
+            1,
+            'createinquestchange'
+        );
+
+        // Ensure survey has been created
+        $this->assertEquals(1, count($change_satisfaction->find(['changes_id' => $root_change->getID()])));
+        $this->assertEquals(1, count($change_satisfaction->find(['changes_id' => $child_1_change->getID()])));
+        $this->assertEquals(1, count($change_satisfaction->find(['changes_id' => $child_2_change->getID()])));
+
+        // Check `max_closedate` values in DB
+        $expected_db_values = [
+            0                  => $four_hours_ago,   // last change closedate from entities that inherits the config
+            $root_entity_id    => $twelve_hours_ago, // not updated as it inherits the config
+            $child_1_entity_id => $twelve_hours_ago, // not updated as it inherits the config
+            $child_2_entity_id => $two_hours_ago,    // last change closedate from self as it has its own config
+        ];
+        $entity = new \Entity();
+        foreach ($expected_db_values as $entity_id => $date) {
+            $this->assertTrue($entity->getFromDB($entity_id));
+            $this->assertEquals($date, $entity->fields['max_closedate_change']);
+        }
+
+        // Check `max_closedate` returned by `Entity::getUsedConfig()`
+        $expected_config_values = [
+            0                  => $four_hours_ago, // last change closedate from entities that inherits the config
+            $root_entity_id    => $four_hours_ago, // inherited value
+            $child_1_entity_id => $four_hours_ago, // inherited value
+            $child_2_entity_id => $two_hours_ago,  // last change closedate from self as it has its own config
+        ];
+        foreach ($expected_config_values as $entity_id => $date) {
+            $this->assertEquals($date, \Entity::getUsedConfig('inquest_config_change', $entity_id, 'max_closedate_change'));
+        }
     }
 }

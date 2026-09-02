@@ -175,7 +175,7 @@ final class SessionTracker
      */
     public static function revokeSession(string $login_session_uid, string $reason): void
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $it = $DB->request([
             'SELECT' => ['users_id', 'session_file'],
@@ -187,14 +187,18 @@ final class SessionTracker
         $users_id = $session['users_id'] ?? null;
 
         $DB->delete('glpi_users_sessions', ['login_session_uid' => $login_session_uid]);
-        $DB->update('glpi_users_sessionhistories', [
-            'logged_out_at' => Session::getCurrentTime(),
-            'logout_reason' => $reason,
-            'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
-        ], [
-            'login_session_uid' => $login_session_uid,
-            'logged_out_at' => null, // Possibility of reused session IDs since this history is kept indefinitely.
-        ]);
+        if ($CFG_GLPI['login_history_retention_days'] <= 0) {
+            $DB->delete('glpi_users_sessionhistories', ['login_session_uid' => $login_session_uid]);
+        } else {
+            $DB->update('glpi_users_sessionhistories', [
+                'logged_out_at' => Session::getCurrentTime(),
+                'logout_reason' => $reason,
+                'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
+            ], [
+                'login_session_uid' => $login_session_uid,
+                'logged_out_at' => null,
+            ]);
+        }
         if ($reason !== self::REVOKE_REASON_EXPIRED && $users_id) {
             $DB->delete('glpi_usertokens', [
                 'users_id' => $users_id,
@@ -236,7 +240,7 @@ final class SessionTracker
         global $DB;
 
         $is_own_sessions = $users_id > 0 && $users_id === Session::getLoginUserID();
-        if (!$is_own_sessions && !Session::haveRight('config', UPDATE)) {
+        if (!$is_own_sessions && !Session::haveRight(\Config::$rightname, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -692,7 +696,7 @@ final class SessionTracker
         ];
         $start = (int) ($_GET['start'] ?? 0);
 
-        if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
+        if ($users_id !== Session::getLoginUserID() && !Session::haveRight(\Config::$rightname, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
         if ($users_id > 0) {

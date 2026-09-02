@@ -5429,25 +5429,25 @@
                         "type": "string",
                         "enum": {
                             "0": "bigNumber",
-                            "58": "summaryNumbers",
-                            "59": "multipleNumber",
-                            "60": "pie",
-                            "61": "donut",
-                            "62": "halfpie",
-                            "63": "halfdonut",
-                            "64": "bar",
-                            "65": "hbar",
-                            "710": "searchShowList",
-                            "727": "line",
-                            "728": "area",
-                            "730": "lines",
-                            "731": "areas",
-                            "732": "bars",
-                            "733": "stackedbars",
-                            "746": "hBars",
-                            "747": "stackedHBars",
-                            "830": "articleList",
-                            "831": "markdown"
+                            "59": "summaryNumbers",
+                            "60": "multipleNumber",
+                            "61": "pie",
+                            "62": "donut",
+                            "63": "halfpie",
+                            "64": "halfdonut",
+                            "65": "bar",
+                            "66": "hbar",
+                            "703": "searchShowList",
+                            "720": "line",
+                            "721": "area",
+                            "723": "lines",
+                            "724": "areas",
+                            "725": "bars",
+                            "726": "stackedbars",
+                            "731": "hBars",
+                            "732": "stackedHBars",
+                            "851": "articleList",
+                            "852": "markdown"
                         }
                     }
                 },
@@ -5467,6 +5467,7 @@
                         "enum": [
                             "dates",
                             "dates_mod",
+                            "entity",
                             "itilcategory",
                             "location",
                             "manufacturer",
@@ -9739,7 +9740,7 @@
                 },
                 "knowbase_category": {
                     "type": "object",
-                    "x-itemtype": "KnowbaseItemCategory",
+                    "x-itemtype": "KnowbaseItem",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -10918,7 +10919,6 @@
             }
         },
         "KBCategory": {
-            "x-itemtype": "KnowbaseItemCategory",
             "type": "object",
             "properties": {
                 "id": {
@@ -10935,7 +10935,8 @@
                     "readOnly": true
                 },
                 "comment": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 },
                 "entity": {
                     "type": "object",
@@ -10959,7 +10960,9 @@
                 },
                 "parent": {
                     "type": "object",
-                    "x-itemtype": "KnowbaseItemCategory",
+                    "nullable": true,
+                    "readOnly": true,
+                    "x-full-schema": "KBCategory",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -10969,8 +10972,7 @@
                             "type": "string",
                             "readOnly": true
                         }
-                    },
-                    "x-full-schema": "KBCategory"
+                    }
                 },
                 "level": {
                     "type": "integer",
@@ -12280,7 +12282,9 @@
                 "size": {
                     "type": "number",
                     "format": "float",
-                    "minimum": 0
+                    "minimum": 0,
+                    "maximum": 999.99,
+                    "multipleOf": 0.01
                 },
                 "has_microphone": {
                     "type": "boolean",
@@ -21457,18 +21461,6 @@
                                     "x-label": "Knowledge base",
                                     "x-right-scope": "entity"
                                 },
-                                "knowbasecategory": {
-                                    "type": "integer",
-                                    "description": "Knowledge base categories rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
-                                    "enum": [
-                                        1,
-                                        2,
-                                        4,
-                                        16
-                                    ],
-                                    "x-label": "Knowledge base categories",
-                                    "x-right-scope": "entity"
-                                },
                                 "license": {
                                     "type": "integer",
                                     "description": "Licenses rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
@@ -25394,6 +25386,9 @@
                     "type": "string"
                 },
                 "firstname": {
+                    "type": "string"
+                },
+                "middlename": {
                     "type": "string"
                 },
                 "phone": {

@@ -34,14 +34,17 @@
 
 namespace tests\units;
 
+use Change;
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\Router;
 use Glpi\Search\CriteriaFilter;
-use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
+use ITILFollowup;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
 use Ticket;
+use User;
 use Webhook;
 
 use function Safe\json_encode;
@@ -268,6 +271,39 @@ JSON;
                 }
             }
         }
+    }
+
+    /**
+     * The schema resolution methods accept an API version so that the v3 work does not have to
+     * change their signatures. The filtering itself is not implemented yet, so passing a version
+     * must not change what they return today.
+     *
+     * The per-version memoization of getAPIItemtypeData() is deliberately not covered: under
+     * PHPUnit, Environment::shouldExpectResourcesToChange() is always true, so the static cache
+     * is bypassed on every call and its keying cannot be observed from a test.
+     */
+    public function testSchemaResolutionAcceptsAnAPIVersion()
+    {
+        $this->login();
+
+        $default = Webhook::getAPIItemtypeData();
+        $explicit = Webhook::getAPIItemtypeData(Router::API_VERSION);
+        $this->assertSame($default, $explicit);
+
+        $schema_default = Webhook::getAPISchemaBySupportedItemtype(\Computer::class);
+        $schema_explicit = Webhook::getAPISchemaBySupportedItemtype(\Computer::class, Router::API_VERSION);
+        // Schemas embed closures (rights checks) that are fresh instances on every call, so the
+        // exposed property names are compared rather than the raw structures.
+        $this->assertNotEmpty($schema_default['properties']);
+        $this->assertSame(
+            array_keys($schema_default['properties']),
+            array_keys($schema_explicit['properties'])
+        );
+
+        $suggestions_default = Webhook::getMonacoSuggestions(\Computer::class);
+        $suggestions_explicit = Webhook::getMonacoSuggestions(\Computer::class, Router::API_VERSION);
+        $this->assertNotEmpty($suggestions_default);
+        $this->assertSame($suggestions_default, $suggestions_explicit);
     }
 
     public function testGetAPIPath()
@@ -528,5 +564,272 @@ JSON;
         $matching_itemtype = \Computer::class;
         $no_mismatch = $webhook->getID() && $matching_itemtype !== $webhook->fields['itemtype'];
         $this->assertFalse($no_mismatch, 'Correct itemtype should not trigger the mismatch guard');
+    }
+
+    /**
+     * Non-regression: a Self-Service user adding a followup must not produce a webhook error
+     * popup (Webhook::raise() catches exceptions and converts them to session messages).
+     */
+    public function testWebhookDoesNotErrorOnFollowupAddBySelfServiceUser(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'Test ticket',
+            'content'             => 'Test content',
+            'entities_id'         => $entity_id,
+            '_users_id_requester' => $selfservice_user->getID(),
+        ]);
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype'        => Webhook::class,
+            'items_id'        => $webhook->getID(),
+            'search_itemtype' => ITILFollowup::class,
+            'search_criteria' => json_encode([[
+                'link'       => 'AND',
+                'field'      => 4, // is_private
+                'searchtype' => 'equals',
+                'value'      => '0',
+            ]]),
+        ], ['search_criteria']);
+
+        $this->login($selfservice_user->fields['name']);
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        $followup    = new ITILFollowup();
+        $followup_id = $followup->add([
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'content'  => 'Test followup',
+        ]);
+
+        $this->assertGreaterThan(0, $followup_id);
+
+        $webhook_errors = array_filter(
+            $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? [],
+            static fn(string $msg) => stripos($msg, 'webhook') !== false
+        );
+        $this->assertEmpty($webhook_errors);
+    }
+
+    public function testParentItemResolvedProperly(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        // Create webhook for new followups
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'Test ticket',
+            'entities_id' => $entity_id,
+            '_actors' => [
+                'observer' => [
+                    [
+                        'itemtype' => User::class,
+                        'items_id' => 2,
+                    ],
+                ],
+            ],
+        ]);
+
+        $change = $this->createItem(Change::class, [
+            'name' => 'Test change',
+            'entities_id' => $entity_id,
+            '_actors' => [
+                'observer' => [
+                    [
+                        'itemtype' => User::class,
+                        'items_id' => 3,
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->createItem(ITILFollowup::class, [
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'content'  => 'Test followup for ticket',
+        ]);
+
+        $this->createItem(ITILFollowup::class, [
+            'items_id' => $change->getID(),
+            'itemtype' => Change::class,
+            'content'  => 'Test followup for change',
+        ]);
+
+        $webhooks = array_values(getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]));
+        $this->assertCount(2, $webhooks);
+        $team_1 = json_decode($webhooks[0]['body'], true)['parent_item']['team'][0];
+        $team_2 = json_decode($webhooks[1]['body'], true)['parent_item']['team'][0];
+        $this->assertSame('glpi', $team_1['name']);
+        $this->assertSame('observer', $team_1['role']);
+        $this->assertSame('post-only', $team_2['name']);
+        $this->assertSame('observer', $team_2['role']);
+    }
+
+    public function testGetPinnableAPIVersions()
+    {
+        $pinnable = Webhook::getPinnableAPIVersions();
+
+        // v1 is routed to the legacy API and would never resolve a webhook path.
+        $this->assertArrayNotHasKey('1', $pinnable);
+        $this->assertArrayHasKey('2', $pinnable);
+        // Major 2 is not fully deprecated, so its label is the bare version.
+        $this->assertSame('2', $pinnable['2']);
+    }
+
+    public function testGetPinnedAPIVersion()
+    {
+        $this->login();
+        $webhook = new Webhook();
+
+        // Explicit value is kept.
+        $webhook->fields['pinned_version'] = '2';
+        $this->assertSame('2', $webhook->getPinnedAPIVersion());
+
+        // Empty value falls back to the oldest pinnable major, not to the latest one.
+        $webhook->fields['pinned_version'] = '';
+        $this->assertSame('2', $webhook->getPinnedAPIVersion());
+
+        // Unknown value falls back too, otherwise normalizeAPIVersion() would silently
+        // resolve it to the latest version, which is the bug being fixed.
+        $webhook->fields['pinned_version'] = '99';
+        $this->assertSame('2', $webhook->getPinnedAPIVersion());
+
+        // Missing key behaves like an empty value.
+        unset($webhook->fields['pinned_version']);
+        $this->assertSame('2', $webhook->getPinnedAPIVersion());
+    }
+
+    public function testIsPinnedAPIVersionDeprecated()
+    {
+        $webhook = new Webhook();
+        $webhook->fields['pinned_version'] = '2';
+        $this->assertFalse($webhook->isPinnedAPIVersionDeprecated());
+    }
+
+    public function testNewWebhookIsPinnedToLatestMajorVersion()
+    {
+        $this->login();
+        $pinnable = array_keys(Webhook::getPinnableAPIVersions());
+        // Cast: array keys are integers, the stored field is a string.
+        $latest_major = (string) end($pinnable);
+
+        /** @var Webhook $webhook */
+        $webhook = $this->createItem(Webhook::class, [
+            'name' => 'Pinned version default',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => User::class,
+            'event' => 'new',
+        ]);
+
+        $this->assertSame($latest_major, $webhook->fields['pinned_version']);
+    }
+
+    public function testExplicitPinnedVersionIsKeptOnCreation()
+    {
+        $this->login();
+
+        /** @var Webhook $webhook */
+        $webhook = $this->createItem(Webhook::class, [
+            'name' => 'Pinned version explicit',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => User::class,
+            'event' => 'new',
+            'pinned_version' => '2',
+        ]);
+
+        $this->assertSame('2', $webhook->fields['pinned_version']);
+    }
+
+    /**
+     * The no-op this whole change relies on: an existing webhook, pinned to the major it was
+     * built against, still asks the router for the version it was already getting.
+     * The day this fails is the day pinning starts changing an existing payload, which is
+     * exactly the moment a conscious decision is required rather than a silent drift.
+     */
+    public function testPinnedMajorResolvesToRouterCurrentVersion()
+    {
+        $this->login();
+
+        /** @var Webhook $webhook */
+        $webhook = $this->createItem(Webhook::class, [
+            'name' => 'Pinned to v2',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => User::class,
+            'event' => 'new',
+            'pinned_version' => '2',
+        ]);
+
+        $this->assertSame(Router::API_VERSION, Router::normalizeAPIVersion($webhook->getPinnedAPIVersion()));
+    }
+
+    /**
+     * A webhook whose stored version is missing falls back to the oldest pinnable major, so it
+     * must produce the very same payload as one pinned to it explicitly. This also proves that
+     * setting the version header does not break the internal routing.
+     */
+    public function testFallbackVersionProducesSamePayloadAsExplicitPin()
+    {
+        $this->login();
+        $users_id = \Session::getLoginUserID();
+
+        $common_input = [
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => User::class,
+            'event' => 'new',
+            'is_active' => 1,
+            'use_default_payload' => 1,
+        ];
+
+        /** @var Webhook $pinned */
+        $pinned = $this->createItem(Webhook::class, $common_input + [
+            'name' => 'Pinned to v2',
+            'pinned_version' => '2',
+        ]);
+
+        /** @var Webhook $unpinned */
+        $unpinned = $this->createItem(Webhook::class, $common_input + ['name' => 'Unpinned']);
+        // Simulate a webhook inserted without going through prepareInputForAdd().
+        $unpinned->fields['pinned_version'] = '';
+
+        $path = '/Administration/User/' . $users_id;
+        $pinned_body = $pinned->getResultForPath($path, 'new', User::class, $users_id);
+        $unpinned_body = $unpinned->getResultForPath($path, 'new', User::class, $users_id);
+
+        $this->assertNotNull($pinned_body);
+        $this->assertSame($pinned_body, $unpinned_body);
     }
 }

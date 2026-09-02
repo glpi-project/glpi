@@ -77,7 +77,7 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
         //convert db
 
         // we are going to update datetime types to timestamp type
-        $tbl_iterator = $this->db->getTzIncompatibleTables();
+        $tbl_iterator = $this->getDb()->getTzIncompatibleTables();
 
         $output->writeln(
             sprintf(
@@ -106,7 +106,7 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                 $tablealter = ''; // init by default
 
                 // get accurate info from information_schema to perform correct alter
-                $col_iterator = $this->db->request([
+                $col_iterator = $this->getDb()->request([
                     'SELECT' => [
                         'table_name AS TABLE_NAME',
                         'column_name AS COLUMN_NAME',
@@ -116,7 +116,7 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                     ],
                     'FROM'   => 'information_schema.columns',
                     'WHERE'  => [
-                        'table_schema' => $this->db->dbdefault,
+                        'table_schema' => $this->getDb()->dbdefault,
                         'table_name'   => $table,
                         'data_type'    => 'datetime',
                     ],
@@ -131,7 +131,7 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                     }
 
                     // Fix invalid zero dates
-                    $this->db->update(
+                    $this->getDb()->update(
                         $table,
                         [
                             $column['COLUMN_NAME'] => $nullable ? null : '1970-01-01 00:00:01',
@@ -156,19 +156,19 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                             // Prevent default value to be out of range (lower to min possible value)
                             $defaultDate = new DateTime('1970-01-01 00:00:01', new DateTimeZone('UTC'));
                             $defaultDate->setTimezone(new DateTimeZone(date_default_timezone_get()));
-                            $default = $this->db->quoteValue($defaultDate->format("Y-m-d H:i:s"));
+                            $default = $this->getDb()->quoteValue($defaultDate->format("Y-m-d H:i:s"));
                         } elseif ($column['COLUMN_DEFAULT'] > '2038-01-19 03:14:07') {
                             // Prevent default value to be out of range (greater to max possible value)
                             $defaultDate = new DateTime('2038-01-19 03:14:07', new DateTimeZone('UTC'));
                             $defaultDate->setTimezone(new DateTimeZone(date_default_timezone_get()));
-                            $default = $this->db->quoteValue($defaultDate->format("Y-m-d H:i:s"));
+                            $default = $this->getDb()->quoteValue($defaultDate->format("Y-m-d H:i:s"));
                         } else {
-                            $default = $this->db->quoteValue($column['COLUMN_DEFAULT']);
+                            $default = $this->getDb()->quoteValue($column['COLUMN_DEFAULT']);
                         }
                     }
 
                     //build alter
-                    $tablealter .= "\n\t MODIFY COLUMN " . $this->db->quoteName($column['COLUMN_NAME']) . " TIMESTAMP";
+                    $tablealter .= "\n\t MODIFY COLUMN " . $this->getDb()->quoteName($column['COLUMN_NAME']) . " TIMESTAMP";
                     if ($nullable) {
                         $tablealter .= " NULL";
                     } else {
@@ -178,23 +178,23 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                         $tablealter .= " DEFAULT $default";
                     }
                     if ($column['COLUMN_COMMENT'] != '') {
-                        $tablealter .= " COMMENT '" . $this->db->escape($column['COLUMN_COMMENT']) . "'";
+                        $tablealter .= " COMMENT '" . $this->getDb()->escape($column['COLUMN_COMMENT']) . "'";
                     }
                     $tablealter .= ",";
                 }
                 $tablealter =  rtrim($tablealter, ",");
 
                 // apply alter to table
-                $query = "ALTER TABLE " . $this->db->quoteName($table) . " " . $tablealter . ";\n";
+                $query = "ALTER TABLE " . $this->getDb()->quoteName($table) . " " . $tablealter . ";\n";
 
                 try {
-                    $this->db->doQuery($query);
+                    $this->getDb()->doQuery($query);
                 } catch (QueryException $e) {
                     $message = sprintf(
                         __('Migration of table "%s" failed with message "(%s) %s".'),
                         $table,
-                        $this->db->errno(),
-                        $this->db->error()
+                        $this->getDb()->errno(),
+                        $this->getDb()->error()
                     );
                     $this->outputMessage(
                         '<error>' . $message . '</error>',
@@ -209,8 +209,8 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
             DBConnection::PROPERTY_ALLOW_DATETIME => false,
         ];
 
-        if ($this->db->use_timezones !== true) {
-            $timezones_requirement = new DbTimezones($this->db);
+        if ($this->getDb()->use_timezones !== true) {
+            $timezones_requirement = new DbTimezones($this->getDb());
             if ($timezones_requirement->isValidated()) {
                 $properties_to_update[DBConnection::PROPERTY_USE_TIMEZONES] = true;
             } else {

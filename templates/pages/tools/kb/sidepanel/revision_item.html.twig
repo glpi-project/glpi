@@ -33,6 +33,8 @@
 <li
     class="step-item {{ first ? 'active' : '' }}"
     data-testid="history-event"
+    {# The first event of the first page is the one the article is displaying #}
+    {% if first %}aria-current="step"{% endif %}
     {# If the item doesn't have any versions, the creation event will be used instead #}
     {% if is_curent_version or is_creation_event %}
         data-glpi-current-version
@@ -101,7 +103,7 @@
                 data-bs-toggle="tooltip"
                 data-bs-placement="left"
             >
-                <i class="ti ti-restore"></i>
+                <i class="ti ti-restore" aria-hidden="true"></i>
             </button>
         {% elseif is_revision and can_revert %}
             <button
@@ -113,7 +115,7 @@
                 data-bs-toggle="tooltip"
                 data-bs-placement="left"
             >
-                <i class="ti ti-restore"></i>
+                <i class="ti ti-restore" aria-hidden="true"></i>
             </button>
         {% endif %}
     </div>

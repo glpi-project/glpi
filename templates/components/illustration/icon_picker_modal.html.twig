@@ -46,10 +46,12 @@
 >
     <div class="modal-dialog rounded">
         <div class="modal-content">
-            <div class="px-4 pt-2" role="tablist">
-                <div class="nav nav-underline">
-                    <div class="nav-item">
-                        <a
+            {# <button> to be focusable; the tablist must own only the tabs. #}
+            <div class="px-4 pt-2 d-flex">
+                <div class="nav nav-underline" role="tablist">
+                    <div class="nav-item" role="presentation">
+                        <button
+                            type="button"
                             class="nav-link pointer active"
                             role="tab"
                             id="pick-an-icon-{{ rand }}"
@@ -58,14 +60,15 @@
                             aria-controls="{{ pick_an_icon_pane_id }}"
                             aria-selected="true"
                         >
-                            <div class="d-flex align-items-center">
-                                <i class="ti ti-photo-scan fa-lg me-2"></i>
+                            <span class="d-flex align-items-center">
+                                <i class="ti ti-photo-scan fa-lg me-2" aria-hidden="true"></i>
                                 {{ __("Pick an illustration") }}
-                            </div>
-                        </a>
+                            </span>
+                        </button>
                     </div>
-                    <div class="nav-item">
-                        <a
+                    <div class="nav-item" role="presentation">
+                        <button
+                            type="button"
                             class="nav-link pointer"
                             role="tab"
                             id="upload-an-icon-{{ rand }}"
@@ -74,27 +77,27 @@
                             aria-controls="{{ upload_an_icon_pane_id }}"
                             aria-selected="false"
                         >
-                            <div class="d-flex align-items-center">
-                                <i class="ti ti-file-upload fa-lg me-2"></i>
+                            <span class="d-flex align-items-center">
+                                <i class="ti ti-file-upload fa-lg me-2" aria-hidden="true"></i>
                                 {{ __("Upload your own illustration") }}
-                            </div>
-                        </a>
+                            </span>
+                        </button>
                     </div>
-                    <button
-                        type="button"
-                        class="btn-close ms-auto align-self-center"
-                        data-bs-dismiss="modal"
-                        aria-label="{{ __("Close") }}"
-                    ></button>
                 </div>
+                <button
+                    type="button"
+                    class="btn-close ms-auto align-self-center"
+                    data-bs-dismiss="modal"
+                    aria-label="{{ __("Close") }}"
+                ></button>
             </div>
             <div class="modal-body tab-content">
-                <div id="{{ pick_an_icon_pane_id }}" class="tab-pane fade active show" role="tabpanel">
+                <div id="{{ pick_an_icon_pane_id }}" class="tab-pane fade active show" role="tabpanel" aria-labelledby="pick-an-icon-{{ rand }}">
                     <div class="input-icon mb-3">
                         <span class="input-icon-addon">
                             <i
                                 class="ti ti-search"
-                                data-glpi-icon-picker-filter-default-icon
+                                data-glpi-icon-picker-filter-default-icon aria-hidden="true"
                             ></i>
                             <span class="spinner-border spinner-border d-none" role="status" aria-hidden="true" data-glpi-icon-picker-filter-loading-icon></span>
                         </span>
@@ -115,7 +118,7 @@
                         'page_size': 30,
                     }, with_context: false) }}
                 </div>
-                <div id="{{ upload_an_icon_pane_id }}" class="tab-pane fade" role="tabpanel">
+                <div id="{{ upload_an_icon_pane_id }}" class="tab-pane fade" role="tabpanel" aria-labelledby="upload-an-icon-{{ rand }}">
                     {% do call('Html::file', [
                         {
                             'name': 'custom_icon',

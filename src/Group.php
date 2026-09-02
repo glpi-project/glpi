@@ -71,7 +71,7 @@ class Group extends CommonTreeDropdown
 
     public static function getAdditionalMenuOptions()
     {
-        if (Session::haveRight('user', User::UPDATEAUTHENT)) {
+        if (Session::haveRight(User::$rightname, User::UPDATEAUTHENT)) {
             return [
                 'ldap' => [
                     'title' => AuthLDAP::getTypeName(Session::getPluralNumber()),
@@ -147,7 +147,7 @@ class Group extends CommonTreeDropdown
                     if (
                         $item->fields['is_usergroup']
                         && self::canUpdate()
-                        && Session::haveRight("user", User::UPDATEAUTHENT)
+                        && Session::haveRight(User::$rightname, User::UPDATEAUTHENT)
                         && AuthLDAP::useAuthLdap()
                     ) {
                         $ong[3] = self::createTabEntry(__('LDAP directory link'), 0, $item::class, 'ti ti-login');
@@ -236,10 +236,10 @@ class Group extends CommonTreeDropdown
         $links = [];
         if (
             AuthLDAP::useAuthLdap()
-            && Session::haveRight("user", User::IMPORTEXTAUTHUSERS)
+            && Session::haveRight(User::$rightname, User::IMPORTEXTAUTHUSERS)
             && static::canUpdate()
         ) {
-            $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "/front/ldap.group.php";
+            $links['<i class="ti ti-settings" aria-hidden="true"></i><span>' . __s('LDAP directory link') . '</span>'] = "/front/ldap.group.php";
         }
         return $links;
     }
@@ -250,13 +250,13 @@ class Group extends CommonTreeDropdown
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
             $prefix                            = 'Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus'></i>"
+            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a user');
-            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star'></i>"
+            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a manager');
-            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check'></i>"
+            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a delegatee');
-            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus'></i>"
+            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus' aria-hidden='true'></i>"
                                               . _sx('button', 'Remove a user');
         }
 
@@ -499,7 +499,7 @@ class Group extends CommonTreeDropdown
         if (
             !$this->fields['is_usergroup']
             || !$this->can($this->getID(), UPDATE)
-            || !Session::haveRight("user", User::UPDATEAUTHENT)
+            || !Session::haveRight(User::$rightname, User::UPDATEAUTHENT)
             || !AuthLDAP::useAuthLdap()
         ) {
             return;
@@ -520,7 +520,7 @@ class Group extends CommonTreeDropdown
      **/
     public function showSecurityForm($ID)
     {
-        $canedit = $this->can($this->getID(), UPDATE) && Session::haveRight("user", User::UPDATEAUTHENT);
+        $canedit = $this->can($this->getID(), UPDATE) && Session::haveRight(User::$rightname, User::UPDATEAUTHENT);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,
@@ -746,12 +746,12 @@ class Group extends CommonTreeDropdown
                 'name'     => $item->getLink(['comments' => true]),
                 'entity'   => $entity_names[$item->getEntityID()],
             ];
-            if ($item->canViewItem() && self::canUpdate()) {
+            if ($item->can($item->getID(), READ)) {
                 // Show massive actions if there is at least one viewable/updatable item.
                 $show_massive_actions = true;
             } else {
                 // This row cannot have massive actions due to lack of rights.
-                $entry['skip_ma'] = true;
+                $entry['showmassiveactions'] = false;
             }
 
             $assignees = [];
@@ -988,5 +988,11 @@ class Group extends CommonTreeDropdown
         if (Session::getLoginUserID()) {
             Session::loadGroups();
         }
+    }
+
+    #[Override]
+    public static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 }

@@ -113,6 +113,14 @@ license-headers: ## Add the missing license headers in all files
 	$(CONSOLE) tools:licence_headers_check --fix
 .PHONY: license-headers
 
+decorative-icons-check: ## Verify that decorative icons are hidden from assistive technologies
+	$(CONSOLE) tools:check_decorative_icons
+.PHONY: decorative-icons-check
+
+decorative-icons: ## Hide the decorative icons that are still exposed to assistive technologies
+	$(CONSOLE) tools:check_decorative_icons --fix
+.PHONY: decorative-icons
+
 ## —— Database —————————————————————————————————————————————————————————————————
 db-install: ## Install local development's database
 	$(CONSOLE) database:install \
@@ -250,7 +258,7 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 paratest: ## Run paratest, example: make paratest p=8
 	@$(eval p ?= 4)
 	@$(eval c ?=)
-	$(PHP) php vendor/bin/paratest -p $(p) --exclude-group "single-thread" $(c)
+	$(PHP) php vendor/bin/paratest -p $(p) $(c)
 .PHONY: paratest
 
 phpstan: ## Run phpstan

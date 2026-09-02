@@ -41,6 +41,7 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
 use CommonTreeDropdown;
+use Computer;
 use Config;
 use DBConnection;
 use ExtraVisibilityCriteria;
@@ -56,6 +57,8 @@ use Glpi\Debug\Profiler;
 use Glpi\Search\Input\QueryBuilder;
 use Group;
 use Group_Ticket;
+use Item_OperatingSystem;
+use OperatingSystem;
 use Profile_User;
 use Session;
 use Stat;
@@ -994,6 +997,376 @@ class Provider
         ];
     }
 
+    /**
+     * Count number of tickets grouped by their current status.
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public static function ticketsByStatus(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $t_table  = Ticket::getTable();
+        $statuses = Ticket::getAllStatusArray();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'  => [
+                    "$t_table.status AS status",
+                    'COUNT DISTINCT' => "$t_table.id AS cpt",
+                ],
+                'FROM'    => $t_table,
+                'WHERE'   => [
+                    "$t_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($t_table),
+                'GROUPBY' => "$t_table.status",
+                'ORDERBY' => "$t_table.status ASC",
+            ],
+            // limit count for profiles with limited rights
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($t_table, $params['apply_filters'])
+        );
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+        $iterator = $DB->request($criteria);
+
+        $search_criteria = self::getSearchFiltersCriteria($t_table, $params['apply_filters'])['criteria'] ?? [];
+        $url = Ticket::getSearchURL();
+
+        $data = [];
+        foreach ($iterator as $result) {
+            $status = (int) $result['status'];
+
+            $result_criteria = $search_criteria;
+            $result_criteria[] = [
+                'link'       => 'AND',
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => $status,
+            ];
+
+            $data[] = [
+                'number' => $result['cpt'],
+                'label'  => $statuses[$status] ?? $status,
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => $result_criteria,
+                    'reset'    => 'reset',
+                ]),
+            ];
+        }
+
+        if (count($data) === 0) {
+            $data = [
+                'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Count number of computers grouped by their operating system.
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public static function computersByOperatingSystem(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Computer::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $c_table   = Computer::getTable();
+        $ios_table = Item_OperatingSystem::getTable();
+        $os_table  = OperatingSystem::getTable();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$os_table.name AS os_name",
+                    "$os_table.id AS os_id",
+                    'COUNT DISTINCT' => "$c_table.id AS cpt",
+                ],
+                'FROM'      => $c_table,
+                'LEFT JOIN' => [
+                    $ios_table => [
+                        'ON' => [
+                            $ios_table => 'items_id',
+                            $c_table   => 'id',
+                            [
+                                'AND' => [
+                                    "$ios_table.itemtype" => Computer::class,
+                                ],
+                            ],
+                        ],
+                    ],
+                    $os_table => [
+                        'ON' => [
+                            $os_table  => 'id',
+                            $ios_table => 'operatingsystems_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$c_table.is_deleted"  => 0,
+                    "$c_table.is_template" => 0,
+                ] + getEntitiesRestrictCriteria($c_table, '', '', true),
+                'GROUPBY'   => "$os_table.id",
+                'ORDERBY'   => "cpt DESC",
+            ],
+            self::getFiltersCriteria($c_table, $params['apply_filters'])
+        );
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+        $iterator = $DB->request($criteria);
+
+        $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
+        $url = Computer::getSearchURL();
+
+        $data = [];
+        foreach ($iterator as $result) {
+            $result_criteria = $search_criteria;
+            $result_criteria[] = [
+                'link'       => 'AND',
+                'field'      => 45, // operating system name
+                'searchtype' => 'equals',
+                'value'      => $result['os_id'] ?? 0,
+            ];
+
+            $data[] = [
+                'number' => $result['cpt'],
+                'label'  => $result['os_name'] ?? __('without'),
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => $result_criteria,
+                    'reset'    => 'reset',
+                ]),
+            ];
+        }
+
+        if (count($data) === 0) {
+            $data = [
+                'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Count number of tickets grouped by their category and their entity
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByCategoryAndEntity(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $ticket_table   = Ticket::getTable();
+        $entity_table   = \Entity::getTable();
+        $category_table = \ITILCategory::getTable();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$entity_table.id AS entity_id",
+                    "$entity_table.completename AS entity_name",
+                    "$category_table.id AS category_id",
+                    "$category_table.completename AS category_name",
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'      => $ticket_table,
+                'LEFT JOIN' => [
+                    $entity_table => [
+                        'ON' => [
+                            $ticket_table => 'entities_id',
+                            $entity_table => 'id',
+                        ],
+                    ],
+                    $category_table => [
+                        'ON' => [
+                            $ticket_table   => 'itilcategories_id',
+                            $category_table => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => ["$entity_table.id", "$category_table.id"],
+                'ORDERBY'   => ["$entity_table.completename", "$category_table.completename"],
+            ],
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+        $iterator = $DB->request($criteria);
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $matrix         = [];
+        $entity_names   = [];
+        $category_names = [];
+        foreach ($iterator as $result) {
+            $entity_id   = $result['entity_id'] ?? 0;
+            $category_id = $result['category_id'] ?? 0;
+
+            $entity_names[$entity_id]         = $result['entity_name'] ?? __('Root entity');
+            $category_names[$category_id]     = $result['category_name'] ?? __('None');
+            $matrix[$entity_id][$category_id] = (int) $result['cpt'];
+        }
+
+        $data = [
+            'labels' => array_values($entity_names),
+            'series' => [],
+        ];
+        foreach ($category_names as $category_id => $category_name) {
+            $series_data = [];
+            foreach (array_keys($entity_names) as $entity_id) {
+                $series_data[] = $matrix[$entity_id][$category_id] ?? 0;
+            }
+            $data['series'][] = [
+                'name' => $category_name,
+                'data' => $series_data,
+            ];
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * count number of opened and closed tickets grouped by their assigned group
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByGroupAndStatus(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $ticket_table       = Ticket::getTable();
+        $group_ticket_table = Group_Ticket::getTable();
+        $group_table        = Group::getTable();
+
+        $opened_statuses = implode(',', [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING]);
+        $closed_statuses = implode(',', [Ticket::SOLVED, Ticket::CLOSED]);
+
+        // Restrict our own grouping to the groups selected by the "technician
+        // group" filter, not just which tickets are included (see
+        // extractActorFilterIds() doc for why this is needed).
+        $filtered_group_ids = self::extractActorFilterIds(
+            GroupTechFilter::class,
+            'gl_' . GroupTechFilter::getId() . '.groups_id',
+            $ticket_table,
+            $params['apply_filters']
+        );
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$group_table.name AS group_name",
+                    new QueryExpression("COUNT(DISTINCT CASE WHEN $ticket_table.status IN ($opened_statuses) THEN $ticket_table.id END) AS opened"),
+                    new QueryExpression("COUNT(DISTINCT CASE WHEN $ticket_table.status IN ($closed_statuses) THEN $ticket_table.id END) AS closed"),
+                ],
+                'FROM'      => $ticket_table,
+                'INNER JOIN' => [
+                    $group_ticket_table => [
+                        'ON' => [
+                            $group_ticket_table => 'tickets_id',
+                            $ticket_table        => 'id',
+                            [
+                                'AND' => [
+                                    "$group_ticket_table.type" => Group_Ticket::ASSIGN,
+                                ],
+                            ],
+                        ],
+                    ],
+                    $group_table => [
+                        'ON' => [
+                            $group_table         => 'id',
+                            $group_ticket_table  => 'groups_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + ($filtered_group_ids !== null ? ["$group_table.id" => $filtered_group_ids] : [])
+                  + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => "$group_table.id",
+                'ORDERBY'   => "$group_table.name",
+            ],
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+        $iterator = $DB->request($criteria);
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $data = [
+            'labels' => [],
+            'series' => [
+                ['name' => __('Opened'), 'data' => []],
+                ['name' => __('Closed'), 'data' => []],
+            ],
+        ];
+        foreach ($iterator as $result) {
+            $data['labels'][] = $result['group_name'];
+            $data['series'][0]['data'][] = (int) $result['opened'];
+            $data['series'][1]['data'][] = (int) $result['closed'];
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
 
     /**
      * Get a list of article for an compatible item (with date,name,text fields)
@@ -1793,6 +2166,103 @@ class Provider
         ];
     }
 
+    /**
+     * Count number of computers grouped by their age (based on the warranty
+     * start date declared on their financial and administrative information)
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function computersByAge(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Computer::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $c_table = Computer::getTable();
+        $i_table = \Infocom::getTable();
+
+        $brackets = [
+            'lt1'       => __('< 1 year'),
+            'from1to3'  => __('1-3 years'),
+            'from3to5'  => __('3-5 years'),
+            'gt5'       => __('> 5 years'),
+            'undefined' => __('Undefined'),
+        ];
+
+        $bracket_case = "CASE
+            WHEN $i_table.warranty_date IS NULL THEN 'undefined'
+            WHEN $i_table.warranty_date > CURDATE() - INTERVAL 1 YEAR THEN 'lt1'
+            WHEN $i_table.warranty_date > CURDATE() - INTERVAL 3 YEAR THEN 'from1to3'
+            WHEN $i_table.warranty_date > CURDATE() - INTERVAL 5 YEAR THEN 'from3to5'
+            ELSE 'gt5'
+        END";
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    new QueryExpression("$bracket_case AS age_bracket"),
+                    'COUNT DISTINCT' => "$c_table.id AS cpt",
+                ],
+                'FROM'      => $c_table,
+                'LEFT JOIN' => [
+                    $i_table => [
+                        'ON' => [
+                            $i_table => 'items_id',
+                            $c_table => 'id',
+                            [
+                                'AND' => [
+                                    "$i_table.itemtype" => Computer::class,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$c_table.is_deleted"  => 0,
+                    "$c_table.is_template" => 0,
+                ] + getEntitiesRestrictCriteria($c_table, '', '', true),
+                'GROUPBY'   => 'age_bracket',
+            ],
+            self::getFiltersCriteria($c_table, $params['apply_filters'])
+        );
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+        $iterator = $DB->request($criteria);
+
+        $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
+        $url = Computer::getSearchURL();
+
+        $data = [];
+        foreach ($iterator as $result) {
+            $bracket = $result['age_bracket'];
+
+            $data[] = [
+                'number' => $result['cpt'],
+                'label'  => $brackets[$bracket] ?? $bracket,
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => $search_criteria,
+                    'reset'    => 'reset',
+                ]),
+            ];
+        }
+
+        if (count($data) === 0) {
+            $data = [
+                'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
 
     public static function formatMonthyearDates(string $monthyear): array
     {
@@ -1839,6 +2309,29 @@ class Provider
 
         Profiler::getInstance()->stop(__METHOD__);
         return ['criteria' => $s_criteria];
+    }
+
+    /**
+     * Extracts an actor filter's resolved ids (e.g. selected group ids) so a
+     * provider can restrict its own GROUP BY, not just gate ticket inclusion.
+     * Also unsets the filter from $apply_filters to avoid a redundant join later.
+     *
+     * @param array<string, mixed> $apply_filters
+     *
+     * @return int[]|null
+     */
+    private static function extractActorFilterIds(
+        string $filter_class,
+        string $where_key,
+        string $table,
+        array &$apply_filters
+    ): ?array {
+        $value = $apply_filters[$filter_class::getId()] ?? null;
+        unset($apply_filters[$filter_class::getId()]);
+
+        $ids = $value !== null ? ($filter_class::getCriteria($table, $value)['WHERE'][$where_key] ?? null) : null;
+
+        return $ids === null ? null : (array) $ids;
     }
 
     /**

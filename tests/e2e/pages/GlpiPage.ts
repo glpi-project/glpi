@@ -69,9 +69,9 @@ export class GlpiPage
         this.page = page;
 
         // Define locators
-        this.user_menu             = this.getButton('User menu');
+        this.user_menu             = page.getByRole('button', { name: 'User menu' }).filter({ visible: true });
         this.logout_link           = this.getLink('Logout');
-        this.change_profile_button = this.getButton('Change profile');
+        this.change_profile_button = page.getByRole('button', { name: 'Change profile' }).filter({ visible: true });
         this.history_rows          = page.getByRole('row');
         this.dashboards_widgets    = page.getByTestId("dashboard-widget");
 
@@ -299,11 +299,16 @@ export class GlpiPage
      * Select2's container is the span right after the select.
      * The interactive element is the combobox inside the container.
      */
-    public getDropdownByLabel(label: string, base?: Locator): Locator
-    {
+    public getDropdownByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = true,
+    ): Locator {
+        // Fields carrying a help tooltip render it inside the <label>, so their accessible name
+        // is not the label text alone: pass exact = false to match on the label text only.
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
-            .getByLabel(label, {exact: true})
+            .getByLabel(label, {exact: exact})
             .locator('+ span')
             .getByRole('combobox')
         ;

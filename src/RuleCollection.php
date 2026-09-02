@@ -685,7 +685,7 @@ HTML;
                         'content': reset_warning
                     }) }}
                 {% endif %}
-                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest"><i class="ti ti-stethoscope"></i> <span>{{ test_label }}</span></button>
+                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest"><i class="ti ti-stethoscope" aria-hidden="true"></i> <span>{{ test_label }}</span></button>
                 {% do call('Ajax::createIframeModalWindow', ['allruletest', test_url, {title: test_label}]) %}
                 {% if can_replay %}
                     <a class="btn btn-primary mx-1" role="button" href="{{ rule_class|itemtype_search_path }}?replay_rule=replay_rule">{{ replay_label }}</a>
@@ -2098,7 +2098,7 @@ TWIG, $twig_params);
         }
 
         if (
-            Session::haveRight("transfer", READ)
+            Session::haveRight(Transfer::$rightname, READ)
             && Session::isMultiEntitiesMode()
         ) {
             $rules[] = [
@@ -2109,7 +2109,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if (Session::haveRight("config", READ)) {
+        if (Session::haveRight(Blacklist::$rightname, READ)) {
             $rules[] = [
                 'label'     => _n('Blacklist', 'Blacklists', Session::getPluralNumber()),
                 'link'      => Blacklist::getSearchURL(),
@@ -2132,7 +2132,7 @@ TWIG, $twig_params);
 
         $entries = [];
 
-        if (Session::haveRight("rule_dictionnary_software", READ)) {
+        if (Session::haveRight(RuleDictionnarySoftware::$rightname, READ)) {
             $entries[] = [
                 'label'  => Software::getTypeName(Session::getPluralNumber()),
                 'link'   => 'ruledictionnarysoftware.php',
@@ -2140,7 +2140,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+        if (Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)) {
             $entries[] = [
                 'label'  => Manufacturer::getTypeName(Session::getPluralNumber()),
                 'link'   => 'ruledictionnarymanufacturer.php',
@@ -2148,7 +2148,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if (Session::haveRight("rule_dictionnary_printer", READ)) {
+        if (Session::haveRight(RuleDictionnaryPrinter::$rightname, READ)) {
             $entries[] = [
                 'label'  => Printer::getTypeName(Session::getPluralNumber()),
                 'link'   => 'ruledictionnaryprinter.php',
@@ -2165,7 +2165,7 @@ TWIG, $twig_params);
 
         $custom_assets = AssetDefinitionManager::getInstance()->getDefinitions(true);
 
-        if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+        if (Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)) {
             $model_dictionaries = [
                 'type'      => _n('Model', 'Models', Session::getPluralNumber()),
                 'entries'   => [
@@ -2209,7 +2209,7 @@ TWIG, $twig_params);
             $dictionnaries[] = $model_dictionaries;
         }
 
-        if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+        if (Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)) {
             $type_dictionaries = [
                 'type'      => _n('Type', 'Types', Session::getPluralNumber()),
                 'entries'   => [
@@ -2253,7 +2253,7 @@ TWIG, $twig_params);
             $dictionnaries[] = $type_dictionaries;
         }
 
-        if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
+        if (Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)) {
             $dictionnaries[] = [
                 'type'      => OperatingSystem::getTypeName(Session::getPluralNumber()),
                 'entries'   => [

@@ -109,6 +109,10 @@ class ITILSolution extends CommonDBChild
 
     public function canCreateItem(): bool
     {
+        if ($this->isParentAlreadyLoaded()) {
+            return $this->item->canSolve();
+        }
+
         $item = getItemForItemtype($this->fields['itemtype']);
 
         if (!($item instanceof CommonITILObject)) {
@@ -117,6 +121,25 @@ class ITILSolution extends CommonDBChild
 
         $item->getFromDB($this->fields['items_id']);
         return $item->canSolve();
+    }
+
+    /**
+     * Check if $this->item already contains the correct parent item, to avoid
+     * reloading it for no reason.
+     *
+     * @phpstan-assert-if-true !null $this->item
+     *
+     * @return bool
+     */
+    private function isParentAlreadyLoaded(): bool
+    {
+        if (!isset($this->fields['itemtype'], $this->fields['items_id'])) {
+            return false;
+        }
+
+        return $this->item !== null
+            && $this->item::class === $this->fields['itemtype']
+            && $this->item->getID() === $this->fields['items_id'];
     }
 
     public function canEdit($ID): bool
@@ -128,11 +151,7 @@ class ITILSolution extends CommonDBChild
     {
         // Bandaid to avoid loading parent item if not needed
         // TODO: replace by proper lazy loading
-        if (
-            $this->item == null // No item loaded
-            || !$this->item instanceof $this->fields['itemtype'] // Another item is loaded
-            || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
-        ) {
+        if (!$this->isParentAlreadyLoaded()) {
             $item = getItemForItemtype($this->fields['itemtype']);
             if ($item instanceof CommonITILObject) {
                 $this->item = $item;

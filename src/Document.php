@@ -130,8 +130,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function canCreate(): bool
     {
         // Have right to add document OR ticket followup
-        return (Session::haveRight('document', CREATE)
-              || Session::haveRight('followup', ITILFollowup::ADDMY));
+        return (Session::haveRight(Document::$rightname, CREATE)
+              || Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDMY));
     }
 
     public function canCreateItem(): bool
@@ -378,7 +378,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'uploader' => $this->fields['users_id'] > 0 ? getUserLink($this->fields["users_id"]) : '',
             'uploaded_files' => self::getUploadedFiles(),
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 
@@ -850,7 +850,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         /** @var CommonDBTM $item */
         $item->getFromDB($items_id);
-        if (!$item->canViewItem()) {
+        if (!$item->can($item->getID(), READ)) {
             return false;
         }
 
@@ -1340,7 +1340,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (empty($dir)) {
             $message = __s('Unauthorized file type');
 
-            if (Session::haveRight('dropdown', READ)) {
+            if (Session::haveRight(DocumentType::$rightname, READ)) {
                 $message .= " <a target='_blank' href='" . htmlescape(DocumentType::getSearchURL()) . "' class='pointer'>
                          <i class='fa fa-info'</i><span class='visually-hidden'>" . __s('Manage document types') . "</span></a>";
             }
@@ -1615,16 +1615,16 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         if (self::canApplyOn($itemtype)) {
             if (self::canView()) {
-                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus'></i>"
+                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus' aria-hidden='true'></i>"
                                                 . _sx('button', 'Add a document');
-                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus'></i>"
+                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus' aria-hidden='true'></i>"
                                                 . _sx('button', 'Remove a document');
             }
         }
 
         if ((is_a($itemtype, self::class, true)) && (static::canUpdate())) {
-            $actions[$action_prefix . 'add_item']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
-            $actions[$action_prefix . 'remove_item'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
+            $actions[$action_prefix . 'add_item']    = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
+            $actions[$action_prefix . 'remove_item'] = "<i class='ti ti-package-off' aria-hidden='true'></i>" . _sx('button', 'Remove an item');
         }
     }
 
@@ -1738,7 +1738,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function cronInfo($name): array
     {
         return match ($name) {
-            'cleanorphans' => ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')],
+            'cleanorphansdocument' => ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')],
             default => [],
         };
     }
@@ -1751,7 +1751,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
-    public static function cronCleanOrphans(CronTask $task): int
+    public static function cronCleanOrphansDocument(CronTask $task): int
     {
         global $DB;
 

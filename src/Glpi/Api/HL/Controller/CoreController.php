@@ -783,7 +783,7 @@ HTML;
     )]
     public function statusAllServices(Request $request): Response
     {
-        $show_all = Session::haveRight('config', READ);
+        $show_all = Session::haveRight(\Config::$rightname, READ);
         $data = StatusChecker::getServiceStatus(null, !$show_all);
         return new JSONResponse($data);
     }
@@ -810,7 +810,7 @@ HTML;
     )]
     public function statusByService(Request $request): Response
     {
-        $show_all = Session::haveRight('config', READ);
+        $show_all = Session::haveRight(\Config::$rightname, READ);
         $service = $request->getAttribute('service');
         $service = strtolower($service);
 

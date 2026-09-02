@@ -105,6 +105,7 @@ class GLPIDashboard {
         this.cache_key = "";
         this.filters = "{}";
         this.filters_selector = "";
+        this._filters_cache = null;
 
         GridStack.renderCB = (el, w) => {
             el.parentElement.innerHTML = w.content;
@@ -135,7 +136,7 @@ class GLPIDashboard {
         this.elem_id      = "#dashboard-" + this.rand;
         this.element      = $(this.elem_id);
         this.elem_dom     = this.element[0];
-        this.current_name = $(`${this.elem_id} .dashboard-select`).val() || options.current;
+        this.current_name = $(`${this.elem_id} .dashboard_select`).val() || options.current;
         this.embed        = options.embed;
         this.token        = options.token;
         this.entities_id  = options.entities_id;
@@ -1209,7 +1210,7 @@ class GLPIDashboard {
                     this.fitNumbers(card);
                     this.animateNumbers(card);
                 }, () => {
-                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                 }));
             });
 
@@ -1251,13 +1252,13 @@ class GLPIDashboard {
                         }
                     });
                     if (!has_result) {
-                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                     }
                 });
             }, () => {
                 $.each(requested_cards, (i2, crd) => {
                     const card = crd.card_el;
-                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                 });
             });
         }
@@ -1325,6 +1326,12 @@ class GLPIDashboard {
             return [];
         }
 
+        if (this._filters_cache !== null) {
+            // Avoid a synchronous round trip to the server on every call, several of which
+            // happen on a single dashboard load (init, refresh, filter changes...).
+            return this._filters_cache;
+        }
+
         let filters;
         $.ajax({
             method: 'GET',
@@ -1339,7 +1346,9 @@ class GLPIDashboard {
             }
         });
 
-        return filters || {};
+        this._filters_cache = filters || {};
+
+        return this._filters_cache;
     }
 
     /**
@@ -1352,6 +1361,9 @@ class GLPIDashboard {
         if (this.current_name.length > 0) {
             filters[this.current_name] = sub_filters;
         }
+
+        this._filters_cache = sub_filters;
+
         return $.ajax({
             method: 'POST',
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",

@@ -1079,7 +1079,7 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($document_2->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
     }
 
-    public function testCronCleanorphans()
+    public function testCronCleanOrphansDocument()
     {
 
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
@@ -1117,7 +1117,7 @@ class DocumentTest extends DbTestCase
 
         // launch Cron for closing tickets
         $mode = - \CronTask::MODE_EXTERNAL; // force
-        \CronTask::launch($mode, 5, 'cleanorphans');
+        \CronTask::launch($mode, 5, 'cleanorphansdocument');
 
         // check documents presence
         $this->assertFalse($doc->getFromDB($did1));

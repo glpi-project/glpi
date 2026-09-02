@@ -59,6 +59,11 @@
    }
 }
 
+#page:focus-visible {
+   outline: 2px solid var(--tblr-primary-fg);
+   outline-offset: 2px;
+}
+
 /* Apply legacy styles to main content (#page) and elements that are inserted directly in body (modals, tooltips, ...) */
 #page, .qtip, .modal .modal-body {
    img {
@@ -271,6 +276,14 @@
       margin: 0;
       font-size: 1.1em;
       padding: 10px 5px;
+   }
+
+   /* Row headers carry structure only, they must render like the data cells. */
+   .tab_cadre_fixe th[scope="row"] {
+      background-color: transparent;
+      font-weight: inherit;
+      font-size: inherit;
+      padding: 5px;
    }
 
    .tab_cadre_fixehov th {
@@ -864,7 +877,7 @@
       }
    }
 
-   .fa {
+   .fa, .ti {
       &.bookmark_record, &.reset-search {
          font-size: 1.5em;
          color: #ccc !important;

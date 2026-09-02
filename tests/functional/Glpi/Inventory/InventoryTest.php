@@ -241,6 +241,7 @@ class InventoryTest extends InventoryTestCase
                 'mac' => '00:e0:4c:68:01:db',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
+                'ifspeed' => 100000000,
             ], [
                 'logical_number' => 1,
                 'name' => 'wlp58s0',
@@ -303,8 +304,8 @@ class InventoryTest extends InventoryTestCase
                 'is_recursive' => 0,
                 'is_deleted' => 0,
                 'is_dynamic' => 1,
-                'ifmtu' => 0,
-                'ifspeed' => 0,
+                'ifmtu' => $expected['ifmtu'] ?? 0,
+                'ifspeed' => $expected['ifspeed'] ?? 0,
                 'ifinternalstatus' => null,
                 'ifconnectionstatus' => 0,
                 'iflastchange' => null,
@@ -2057,8 +2058,8 @@ class InventoryTest extends InventoryTestCase
                     'is_recursive' => 0,
                     'is_deleted' => 0,
                     'is_dynamic' => 1,
-                    'ifmtu' => 0,
-                    'ifspeed' => 0,
+                    'ifmtu' => $expected['ifmtu'] ?? 0,
+                    'ifspeed' => $expected['ifspeed'] ?? 0,
                     'ifinternalstatus' => null,
                     'ifconnectionstatus' => 0,
                     'iflastchange' => null,
@@ -2480,8 +2481,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'is_recursive' => 0,
                         'is_deleted' => 0,
                         'is_dynamic' => 1,
-                        'ifmtu' => 0,
-                        'ifspeed' => 0,
+                        'ifmtu' => $expected['ifmtu'] ?? 0,
+                        'ifspeed' => $expected['ifspeed'] ?? 0,
                         'ifinternalstatus' => null,
                         'ifconnectionstatus' => 0,
                         'iflastchange' => null,
@@ -3063,8 +3064,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'is_recursive' => 0,
                         'is_deleted' => 0,
                         'is_dynamic' => 1,
-                        'ifmtu' => 0,
-                        'ifspeed' => 0,
+                        'ifmtu' => $expected['ifmtu'] ?? 0,
+                        'ifspeed' => $expected['ifspeed'] ?? 0,
                         'ifinternalstatus' => null,
                         'ifconnectionstatus' => 0,
                         'iflastchange' => null,
@@ -3758,8 +3759,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'is_recursive' => 0,
                         'is_deleted' => 0,
                         'is_dynamic' => 1,
-                        'ifmtu' => 0,
-                        'ifspeed' => 0,
+                        'ifmtu' => $expected['ifmtu'] ?? 0,
+                        'ifspeed' => $expected['ifspeed'] ?? 0,
                         'ifinternalstatus' => null,
                         'ifconnectionstatus' => 0,
                         'iflastchange' => null,
@@ -4128,8 +4129,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'is_recursive' => 0,
                     'is_deleted' => 0,
                     'is_dynamic' => 1,
-                    'ifmtu' => 0,
-                    'ifspeed' => 0,
+                    'ifmtu' => $expected['ifmtu'] ?? 0,
+                    'ifspeed' => $expected['ifspeed'] ?? 0,
                     'ifinternalstatus' => null,
                     'ifconnectionstatus' => 0,
                     'iflastchange' => null,
@@ -4701,6 +4702,31 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertInstanceOf(ImportResult::class, $result[$json_name]);
         $this->assertTrue($result[$json_name]->isSuccess());
         $this->assertInstanceOf('Computer', $result[$json_name]->getItems()[0]);
+    }
+
+    public function testCronCleantemp()
+    {
+        if (!is_dir(GLPI_INVENTORY_DIR)) {
+            mkdir(GLPI_INVENTORY_DIR);
+        }
+
+        //simulate a leftover temporary file, as created by `Inventory::setData()` through `tempnam()`
+        $old_file = tempnam(GLPI_INVENTORY_DIR, 'json_');
+        file_put_contents($old_file, '{}');
+        //older than the 12 hours threshold used by `Inventory::cronCleantemp()`
+        touch($old_file, time() - (13 * HOUR_TIMESTAMP));
+
+        //a recent temporary file must not be removed
+        $recent_file = tempnam(GLPI_INVENTORY_DIR, 'xml_');
+        file_put_contents($recent_file, '<xml/>');
+
+        $task = new \CronTask();
+        $this->assertSame(1, Inventory::cronCleantemp($task));
+
+        $this->assertFileDoesNotExist($old_file);
+        $this->assertFileExists($recent_file);
+
+        unlink($recent_file);
     }
 
     /**
@@ -5557,6 +5583,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'mac' => 'e0:dc:ff:ed:09:59',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
+                'ifspeed' => 240000000,
             ],
         ];
 
@@ -5591,8 +5618,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'is_recursive' => 0,
                 'is_deleted' => 0,
                 'is_dynamic' => 1,
-                'ifmtu' => 0,
-                'ifspeed' => 0,
+                'ifmtu' => $expected['ifmtu'] ?? 0,
+                'ifspeed' => $expected['ifspeed'] ?? 0,
                 'ifinternalstatus' => null,
                 'ifconnectionstatus' => 0,
                 'iflastchange' => null,

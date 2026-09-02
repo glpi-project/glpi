@@ -1604,6 +1604,21 @@ class SearchTest extends DbTestCase
         $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
         $this->assertArrayNotHasKey('reset', $_SESSION['glpisearch']['Ticket']);
 
+        // Simulate a page refresh where only the URL is taken into account, and not the “sort”/“order” criteria.
+        // The sort order of the saved search must still be restored from the session and not replaced by the default
+        // sort order for that item type
+        $search = \Search::manageParams('Ticket', [
+            'criteria' => [
+                [
+                    'field' => '5',
+                    'searchtype' => 'equals',
+                    'value' => $uid,
+                ],
+            ],
+        ], true, false);
+        $this->assertEquals([2], $search['sort']);
+        $this->assertEquals(['DESC'], $search['order']);
+
         // saved search criteria must survive a subsequent unrelated request (sort/pagination)
         \Search::manageParams('Ticket', ['sort' => 6, 'order' => 'ASC'], true, false);
         $this->assertEquals(
@@ -3759,13 +3774,23 @@ class SearchTest extends DbTestCase
             'expected_and_not'  => "false",
             'expected_values'    => [Computer::class, Computer::class],
         ];
+        // A date/time prefix is searched as a range
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 9, // last_inventory_update
             'value'             => '2023-06',
+            'expected_and'      => "(`glpi_computers`.`last_inventory_update` >= ?) AND (`glpi_computers`.`last_inventory_update` < ?)",
+            'expected_and_not'  => "((`glpi_computers`.`last_inventory_update` < ?) OR (`glpi_computers`.`last_inventory_update` >= ?) OR (`glpi_computers`.`last_inventory_update` IS NULL))",
+            'expected_values'    => [Computer::class, Computer::class, '2023-06-01 00:00:00', '2023-07-01 00:00:00'],
+        ];
+        // Any other value keeps the `LIKE` criterion
+        yield [
+            'itemtype'          => Computer::class,
+            'search_option'     => 9, // last_inventory_update
+            'value'             => '-06-',
             'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) LIKE ?)",
             'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) NOT LIKE ? OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NULL)",
-            'expected_values'    => [Computer::class, Computer::class, '%2023-06%'],
+            'expected_values'    => [Computer::class, Computer::class, '%-06-%'],
         ];
 
         // datatype=datetime (usehaving=true)
@@ -3794,13 +3819,22 @@ class SearchTest extends DbTestCase
             'expected_and'      => "false",
             'expected_and_not'  => "false",
         ];
+        // Bounds are expressed as dates, as the column holds no time part
         yield [
             'itemtype'          => \Budget::class,
             'search_option'     => 5, // begin_date
             'value'             => '2023',
+            'expected_and'      => "(`glpi_budgets`.`begin_date` >= ?) AND (`glpi_budgets`.`begin_date` < ?)",
+            'expected_and_not'  => "((`glpi_budgets`.`begin_date` < ?) OR (`glpi_budgets`.`begin_date` >= ?) OR (`glpi_budgets`.`begin_date` IS NULL))",
+            'expected_values'    => ['2023-01-01', '2024-01-01'],
+        ];
+        yield [
+            'itemtype'          => \Budget::class,
+            'search_option'     => 5, // begin_date
+            'value'             => '-06-',
             'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) LIKE ?)",
             'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) NOT LIKE ? OR CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NULL)",
-            'expected_values'    => ['%2023%'],
+            'expected_values'    => ['%-06-%'],
         ];
 
         // datatype=date_delay
@@ -4825,6 +4859,252 @@ class SearchTest extends DbTestCase
                     echo $provider_information . "\n";
                     throw $e;
                 }
+            }
+        }
+    }
+
+    /**
+     * A `datetime` "is"/"is not" criterion is searched as a range, to use the column index.
+     */
+    public static function dateTimeEqualsCriterionProvider(): iterable
+    {
+        $ticket_date = '`glpi_tickets`.`date`';
+
+        // Bounds depend on the value precision. A trailing `:00` is stripped before parsing,
+        // so a value given with seconds is handled with a minute precision.
+        $precisions = [
+            '2024-07-28'          => ['2024-07-28 00:00:00', '2024-07-29 00:00:00'],
+            '2024-07-28 14'       => ['2024-07-28 14:00:00', '2024-07-28 15:00:00'],
+            '2024-07-28 14:30'    => ['2024-07-28 14:30:00', '2024-07-28 14:31:00'],
+            '2024-07-28 14:30:00' => ['2024-07-28 14:30:00', '2024-07-28 14:31:00'],
+            '2024-07-28 14:30:15' => ['2024-07-28 14:30:15', '2024-07-28 14:30:16'],
+            '2024-07'             => ['2024-07-01 00:00:00', '2024-08-01 00:00:00'],
+            '2024'                => ['2024-01-01 00:00:00', '2025-01-01 00:00:00'],
+        ];
+
+        foreach ($precisions as $value => [$lower_bound, $upper_bound]) {
+            $value = (string) $value; // PHP casts a numeric-only key to an int
+            yield [
+                'search_option'    => 15, // date
+                'searchtype'       => 'equals',
+                'value'            => $value,
+                'expected_and'     => "({$ticket_date} >= ?) AND ({$ticket_date} < ?)",
+                'expected_and_not' => "(({$ticket_date} < ?) OR ({$ticket_date} >= ?) OR ({$ticket_date} IS NULL))",
+                'expected_values'    => [$lower_bound, $upper_bound],
+            ];
+            // `notequals` is the negation of `equals`
+            yield [
+                'search_option'    => 15, // date
+                'searchtype'       => 'notequals',
+                'value'            => $value,
+                'expected_and'     => "(({$ticket_date} < ?) OR ({$ticket_date} >= ?) OR ({$ticket_date} IS NULL))",
+                'expected_and_not' => "({$ticket_date} >= ?) AND ({$ticket_date} < ?)",
+                'expected_values'    => [$lower_bound, $upper_bound],
+            ];
+        }
+
+        // An unparsable value falls back to the `LIKE` criterion
+        foreach (['2024-02-30', '2024-13-01'] as $value) {
+            yield [
+                'search_option'    => 15, // date
+                'searchtype'       => 'equals',
+                'value'            => $value,
+                'expected_and'     => "{$ticket_date} LIKE ?",
+                // (((`glpi_tickets`.`date` IS NULL)) OR (`glpi_tickets`.`date` = ?))
+                'expected_and_not' => "(((NOT ({$ticket_date} LIKE ?))) OR ({$ticket_date} IS NULL))",
+                'expected_values'    => ['%' . $value . '%'],
+            ];
+        }
+
+        yield [
+            'search_option'    => 15, // date
+            'searchtype'       => 'equals',
+            'value'            => 'NULL',
+            'expected_and'     => "((({$ticket_date} IS NULL)) OR ({$ticket_date} = ?))",
+            'expected_and_not' => "NOT (((({$ticket_date} IS NULL)) OR ({$ticket_date} = ?)))",
+            'expected_values'    => [''],
+        ];
+    }
+
+    #[DataProvider('dateTimeEqualsCriterionProvider')]
+    public function testDateTimeEqualsCriterion(
+        int $search_option,
+        string $searchtype,
+        string $value,
+        string $expected_and,
+        string $expected_and_not,
+        array $expected_values
+    ): void {
+        $cases = [
+            'AND'     => $expected_and,
+            'AND NOT' => $expected_and_not,
+        ];
+
+        foreach ($cases as $link => $expected_where) {
+            $data = $this->doSearch(Ticket::class, [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    [
+                        'link'       => $link,
+                        'field'      => $search_option,
+                        'searchtype' => $searchtype,
+                        'value'      => $value,
+                    ],
+                ],
+            ]);
+
+            $this->assertArrayHasKey('sql', $data);
+            $this->assertArrayHasKey('search', $data['sql']);
+            $this->assertInstanceOf(Select::class, $data['sql']['search']);
+
+            $this->assertStringContainsString(
+                $expected_where,
+                $this->cleanSQL($data['sql']['search']->getQuery()),
+            );
+            foreach ($expected_values as $expected_value) {
+                $this->assertContains(
+                    $expected_value,
+                    $data['sql']['search']->getParams(),
+                );
+            }
+        }
+    }
+
+    /**
+     * The range boundaries must not be shifted by a DST transition of the server timezone,
+     * as the compared `datetime` column holds a naive value with no time offset.
+     */
+    public function testDateTimeEqualsCriterionOnDstTransition(): void
+    {
+        global $DB;
+
+        $original_tz = date_default_timezone_get();
+        // Hack to prevent the script tz from being changed by the DB access layer
+        $DB->use_timezones = true;
+        // Clocks jump from 02:00 to 03:00 in `Europe/Paris` on this date
+        date_default_timezone_set('Europe/Paris');
+
+        try {
+            $data = $this->doSearch(Ticket::class, [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 15, // date
+                        'searchtype' => 'equals',
+                        'value'      => '2024-03-31 02',
+                    ],
+                ],
+            ]);
+        } finally {
+            date_default_timezone_set($original_tz);
+        }
+
+        $this->assertArrayHasKey('sql', $data);
+        $this->assertArrayHasKey('search', $data['sql']);
+        $this->assertInstanceOf(Select::class, $data['sql']['search']);
+
+        $this->assertStringContainsString(
+            '(`glpi_tickets`.`date` >= ?) AND (`glpi_tickets`.`date` < ?)',
+            $this->cleanSQL($data['sql']['search']->getQuery()),
+        );
+        $this->assertContains('2024-03-31 02:00:00', $data['sql']['search']->getParams());
+        $this->assertContains('2024-03-31 03:00:00', $data['sql']['search']->getParams());
+    }
+
+    /**
+     * A `contains` criterion on a date/time field is searched as a range, to use the column index.
+     */
+    public static function dateTimeContainsCriterionProvider(): iterable
+    {
+        $ticket_date = '`glpi_tickets`.`date`';
+
+        $precisions = [
+            '2024-07-28'          => ['2024-07-28 00:00:00', '2024-07-29 00:00:00'],
+            '2024-07-28 14'       => ['2024-07-28 14:00:00', '2024-07-28 15:00:00'],
+            '2024-07-28 14:30'    => ['2024-07-28 14:30:00', '2024-07-28 14:31:00'],
+            '2024-07-28 14:30:15' => ['2024-07-28 14:30:15', '2024-07-28 14:30:16'],
+            '2024-07'             => ['2024-07-01 00:00:00', '2024-08-01 00:00:00'],
+            '2024'                => ['2024-01-01 00:00:00', '2025-01-01 00:00:00'],
+            // a `DD-MM-YYYY` value is reformatted first
+            '28-07-2024'          => ['2024-07-28 00:00:00', '2024-07-29 00:00:00'],
+        ];
+
+        foreach ($precisions as $value => [$lower_bound, $upper_bound]) {
+            $value = (string) $value; // PHP casts a numeric-only key to an int
+            yield [
+                'searchtype'       => 'contains',
+                'value'            => $value,
+                'expected_and'     => "({$ticket_date} >= ?) AND ({$ticket_date} < ?)",
+                'expected_and_not' => "(({$ticket_date} < ?) OR ({$ticket_date} >= ?) OR ({$ticket_date} IS NULL))",
+                'expected_values'    => [$lower_bound, $upper_bound],
+            ];
+            // `notcontains` is the negation of `contains`
+            yield [
+                'searchtype'       => 'notcontains',
+                'value'            => $value,
+                'expected_and'     => "(({$ticket_date} < ?) OR ({$ticket_date} >= ?) OR ({$ticket_date} IS NULL))",
+                'expected_and_not' => "({$ticket_date} >= ?) AND ({$ticket_date} < ?)",
+                'expected_values'    => [$lower_bound, $upper_bound],
+            ];
+        }
+
+        // A value that is not a date/time prefix falls back to the `LIKE` criterion
+        $charset = DBConnection::getDefaultCharset();
+        $converted = "CONVERT({$ticket_date} USING {$charset})";
+        foreach (['-07-', '14:30', '2024-02-30', '2024-13-01', '0000'] as $value) {
+            yield [
+                'searchtype'       => 'contains',
+                'value'            => $value,
+                'expected_and'     => "({$converted} LIKE ?)",
+                'expected_and_not' => "({$converted} NOT LIKE ? OR {$converted} IS NULL)",
+                'expected_values'    => ['%' . $value . '%'],
+            ];
+        }
+    }
+
+    #[DataProvider('dateTimeContainsCriterionProvider')]
+    public function testDateTimeContainsCriterion(
+        string $searchtype,
+        string $value,
+        string $expected_and,
+        string $expected_and_not,
+        array $expected_values
+    ): void {
+        $cases = [
+            'AND'     => $expected_and,
+            'AND NOT' => $expected_and_not,
+        ];
+
+        foreach ($cases as $link => $expected_where) {
+            $data = $this->doSearch(Ticket::class, [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    [
+                        'link'       => $link,
+                        'field'      => 15, // date
+                        'searchtype' => $searchtype,
+                        'value'      => $value,
+                    ],
+                ],
+            ]);
+
+            $this->assertArrayHasKey('sql', $data);
+            $this->assertArrayHasKey('search', $data['sql']);
+            $this->assertInstanceOf(Select::class, $data['sql']['search']);
+
+            $this->assertStringContainsString(
+                $expected_where,
+                $this->cleanSQL($data['sql']['search']->getQuery()),
+            );
+            foreach ($expected_values as $expected_value) {
+                $this->assertContains(
+                    $expected_value,
+                    $data['sql']['search']->getParams(),
+                );
             }
         }
     }

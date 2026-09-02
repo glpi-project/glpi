@@ -84,6 +84,14 @@ use TicketValidation;
 use User;
 use UserEmail;
 
+use function Safe\copy;
+use function Safe\file_get_contents;
+use function Safe\json_encode;
+use function Safe\ob_end_clean;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\strtotime;
+
 /* Test for inc/ticket.class.php */
 
 class TicketTest extends DbTestCase
@@ -1712,6 +1720,76 @@ class TicketTest extends DbTestCase
         $this->checkFormOutput($ticket);
     }
 
+    public function testShowFormFromItemUsesItemEntity(): void
+    {
+        // Arrange: an asset in a sub-entity, while the current (default)
+        // session entity is its parent entity
+        $this->login('glpi', 'glpi');
+
+        $root_entity = $this->getTestRootEntity(only_id: true);
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer used to create a ticket from item',
+            'entities_id' => $item_entity,
+        ]);
+
+        // Active entity is the parent entity (with access to its sub-entities),
+        // which is not the same as the asset's own entity
+        $this->assertTrue(Session::changeActiveEntities($root_entity, true));
+
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // Act: render form for a new ticket created from the asset
+        ob_start();
+        $ticket->showForm($ticket->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the ticket entity follows the asset entity, not the
+        // currently active session entity
+        $this->assertEquals($item_entity, (int) $ticket->fields['entities_id']);
+        $this->assertNotEquals($root_entity, (int) $ticket->fields['entities_id']);
+    }
+
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // Act: render form for a new ticket created from the (inaccessible) asset
+        ob_start();
+        $ticket->showForm($ticket->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the ticket falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $ticket->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $ticket->fields['entities_id']);
+    }
+
     public function testFormPostOnly()
     {
         $auth = new \Auth();
@@ -2921,6 +2999,80 @@ class TicketTest extends DbTestCase
         // check status (should still be ASSIGNED)
         $this->assertTrue($ticket->getFromDB($tickets_id));
         $this->assertEquals(CommonITILObject::ASSIGNED, (int) $ticket->fields['status']);
+
+        // remove associated user
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [],
+            ],
+        ]));
+        // check status (should be INCOMING)
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals(CommonITILObject::INCOMING, (int) $ticket->fields['status']);
+
+        // add associated user
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 2,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]));
+        // check status (should be ASSIGNED)
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals(CommonITILObject::ASSIGNED, (int) $ticket->fields['status']);
+
+        // replace associated user
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 3,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]));
+        // check status (should still be ASSIGNED)
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals(CommonITILObject::ASSIGNED, (int) $ticket->fields['status']);
+
+        // change status to WAITING
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            'status' => CommonITILObject::WAITING,
+        ]));
+
+        // replace associated user
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 2,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]));
+        // check status (should still be WAITING)
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals(CommonITILObject::WAITING, (int) $ticket->fields['status']);
     }
 
     public function testClosedTicketTransfer()
@@ -4342,6 +4494,76 @@ class TicketTest extends DbTestCase
             'itemtype' => 'Ticket',
             'items_id' => $ticket1,
             'documents_id' => $documents_id,
+        ]));
+    }
+
+    public function testMergeDoesNotTriggerNotifications(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $user = getItemByTypeName(User::class, 'tech');
+        $this->createItem(UserEmail::class, [
+            'users_id'    => $user->getID(),
+            'is_default'  => 1,
+            'email'       => 'tech@tech.tech',
+        ]);
+
+        $ticket1 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif target',
+            'content'     => 'merge notif target',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+            '_actors'     => [
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ])->getID();
+        $ticket2 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif source',
+            'content'     => 'merge notif source',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+        ])->getID();
+
+        $fup = new ITILFollowup();
+        $fup->add([
+            'itemtype'  => 'Ticket',
+            'items_id'  => $ticket2,
+            'content'   => 'source ticket followup',
+        ]);
+
+        $task = new TicketTask();
+        $task->add([
+            'tickets_id' => $ticket2,
+            'content'    => 'source ticket task',
+        ]);
+
+        $status = [];
+        Ticket::merge($ticket1, [$ticket2], $status, [
+            'linktypes'  => ['ITILFollowup', 'TicketTask'],
+            'link_type'  => \CommonITILObject_CommonITILObject::SON_OF,
+        ]);
+        $this->assertSame([$ticket2 => 0], $status);
+
+        // Merging must not queue any "add_followup"/"add_task" notification for the merged-in content
+        $queue = new \QueuedNotification();
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_followup',
+        ]));
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_task',
         ]));
     }
 
@@ -5851,7 +6073,7 @@ HTML,
         CronTask::launch(
             - CronTask::MODE_INTERNAL, // force
             1,
-            'createinquest'
+            'createinquestticket'
         );
 
         // Ensure survey has been created
@@ -8727,6 +8949,48 @@ HTML,
         $this->assertTrue($fn_dropdown_has_id($values['results'], $not_my_tickets_id));
     }
 
+    public function testDropdownValueOrderedByIdForLinkSearch()
+    {
+        $this->login();
+
+        // Names are chosen so that alphabetical order (Alpha, Mid, Zulu) differs
+        // from creation/id order, to distinguish the two sorting strategies.
+        $prefix = $this->getUniqueString();
+        $entities_id = $this->getTestRootEntity(true);
+        $first = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Zulu",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+        $second = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Alpha",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+        $third = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Mid",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+
+        $dropdown_params = [
+            'itemtype'         => Ticket::class,
+            'searchText'       => $prefix,
+            'entity_restrict'  => $entities_id,
+            'page_limit'       => 10,
+        ];
+        $idor = Session::getNewIDORToken(Ticket::class, $dropdown_params);
+        $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
+
+        $found_ids = array_column($values['results'], 'id');
+        // Only the 3 tickets created above are expected, sorted by id descending
+        // (most recent first), not alphabetically by name.
+        $this->assertEquals(
+            [$third->getID(), $second->getID(), $first->getID()],
+            $found_ids
+        );
+    }
+
     public function testGetCommonCriteria()
     {
         global $DB;
@@ -10551,6 +10815,268 @@ HTML,
     }
 
     /**
+     * @return iterable
+     */
+    public static function delActorNotificationProvider(): iterable
+    {
+        yield [
+            'role'            => CommonITILActor::REQUESTER,
+            'target_itemtype' => User::class,
+            'event'           => 'remove_requester_user',
+            'target'          => \Notification::OLD_REQUESTER_USER,
+        ];
+        yield [
+            'role'            => CommonITILActor::REQUESTER,
+            'target_itemtype' => Group::class,
+            'event'           => 'remove_requester_group',
+            'target'          => \Notification::OLD_REQUESTER_GROUP,
+        ];
+        yield [
+            'role'            => CommonITILActor::OBSERVER,
+            'target_itemtype' => User::class,
+            'event'           => 'remove_observer_user',
+            'target'          => \Notification::OLD_OBSERVER_USER,
+        ];
+        yield [
+            'role'            => CommonITILActor::OBSERVER,
+            'target_itemtype' => Group::class,
+            'event'           => 'remove_observer_group',
+            'target'          => \Notification::OLD_OBSERVER_GROUP,
+        ];
+        yield [
+            'role'            => CommonITILActor::ASSIGN,
+            'target_itemtype' => Group::class,
+            'event'           => 'remove_assign_group',
+            'target'          => \Notification::OLD_ASSIGN_GROUP,
+        ];
+        yield [
+            'role'            => CommonITILActor::ASSIGN,
+            'target_itemtype' => Supplier::class,
+            'event'           => 'remove_assign_supplier',
+            'target'          => \Notification::OLD_ASSIGN_SUPPLIER,
+        ];
+        yield [
+            'role'            => CommonITILActor::ASSIGN,
+            'target_itemtype' => User::class,
+            'event'           => 'remove_assign_user',
+            'target'          => \Notification::OLD_TECH_IN_CHARGE,
+        ];
+    }
+
+    /**
+     * Create the actor to be removed for {@see testDelActorNotification()}, along with its expected notification recipient email.
+     *
+     * @return array{0: int, 1: string}
+     */
+    private function createActorForDelNotificationTest(string $target_itemtype): array
+    {
+        $name  = $this->getUniqueString();
+        $email = strtolower(str_replace(' ', '', $name)) . '@glpi-test.local';
+
+        if ($target_itemtype === User::class) {
+            $user = $this->createItem(User::class, ['name' => $name]);
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'is_default' => 1,
+                'email'      => $email,
+            ]);
+            return [$user->getID(), $email];
+        }
+
+        if ($target_itemtype === Group::class) {
+            $group = $this->createItem(Group::class, [
+                'name'      => $name,
+                'is_notify' => 1,
+            ]);
+            $member = $this->createItem(User::class, ['name' => $this->getUniqueString()]);
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $member->getID(),
+                'is_default' => 1,
+                'email'      => $email,
+            ]);
+            $this->createItem(Group_User::class, [
+                'groups_id' => $group->getID(),
+                'users_id'  => $member->getID(),
+            ]);
+            return [$group->getID(), $email];
+        }
+
+        // Supplier::class
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => $name,
+            'entities_id' => $this->getTestRootEntity(true),
+            'email'       => $email,
+        ]);
+        return [$supplier->getID(), $email];
+    }
+
+    #[DataProvider('delActorNotificationProvider')]
+    public function testDelActorNotification(int $role, string $target_itemtype, string $event, int $target): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+
+        $notif = $this->createItem(\Notification::class, [
+            'name'         => 'Old actor test - ' . $event,
+            'itemtype'     => Ticket::class,
+            'event'        => $event,
+            'is_active'    => 1,
+            'is_recursive' => 1,
+            'entities_id'  => 0,
+        ]);
+        $template = $this->createItem(\NotificationTemplate::class, [
+            'name'     => 'Old actor test template - ' . $event,
+            'itemtype' => Ticket::class,
+        ]);
+        $this->createItem(\NotificationTemplateTranslation::class, [
+            'notificationtemplates_id' => $template->getID(),
+            'language'                 => '',
+            'subject'                  => '##ticket.action## ##ticket.title##',
+            'content_text'             => '##ticket.action##',
+            'content_html'             => '##ticket.action##',
+        ]);
+        $this->createItem(\Notification_NotificationTemplate::class, [
+            'notifications_id'         => $notif->getID(),
+            'mode'                     => 'mailing',
+            'notificationtemplates_id' => $template->getID(),
+        ]);
+        $this->createItem(\NotificationTarget::class, [
+            'notifications_id' => $notif->getID(),
+            'type'             => \Notification::USER_TYPE,
+            'items_id'         => $target,
+        ]);
+
+        [$actor_items_id, $expected_recipient] = $this->createActorForDelNotificationTest($target_itemtype);
+
+        $role_key = match ($role) {
+            CommonITILActor::REQUESTER => 'requester',
+            CommonITILActor::OBSERVER  => 'observer',
+            CommonITILActor::ASSIGN    => 'assign',
+        };
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Old actor notification test',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_actors'     => [
+                $role_key => [
+                    [
+                        'itemtype'         => $target_itemtype,
+                        'items_id'         => $actor_items_id,
+                        'use_notification' => 1,
+                    ],
+                ],
+            ],
+        ]);
+
+        $link_class = match ($target_itemtype) {
+            User::class     => Ticket_User::class,
+            Group::class    => Group_Ticket::class,
+            Supplier::class => Supplier_Ticket::class,
+        };
+        $link = new $link_class();
+        $this->assertTrue($link->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+            $link->getActorForeignKey() => $actor_items_id,
+            'type'       => $role,
+        ]));
+        $this->assertTrue($link->delete(['id' => $link->getID()], true));
+
+        $queue = new \QueuedNotification();
+        $this->assertTrue(
+            $queue->getFromDBByCrit([
+                'itemtype'  => Ticket::class,
+                'items_id'  => $ticket->getID(),
+                'event'     => $event,
+                'mode'      => 'mailing',
+                'recipient' => $expected_recipient,
+            ]),
+            sprintf('No queued notification found for event "%s" and recipient "%s"', $event, $expected_recipient)
+        );
+    }
+
+    public function testDelActorNotificationSkippedWhenUseNotificationDisabled(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+
+        $event = 'remove_requester_user';
+
+        $notif = $this->createItem(\Notification::class, [
+            'name'         => 'Old actor test - ' . $event,
+            'itemtype'     => Ticket::class,
+            'event'        => $event,
+            'is_active'    => 1,
+            'is_recursive' => 1,
+            'entities_id'  => 0,
+        ]);
+        $template = $this->createItem(\NotificationTemplate::class, [
+            'name'     => 'Old actor test template - ' . $event,
+            'itemtype' => Ticket::class,
+        ]);
+        $this->createItem(\NotificationTemplateTranslation::class, [
+            'notificationtemplates_id' => $template->getID(),
+            'language'                 => '',
+            'subject'                  => '##ticket.action## ##ticket.title##',
+            'content_text'             => '##ticket.action##',
+            'content_html'             => '##ticket.action##',
+        ]);
+        $this->createItem(\Notification_NotificationTemplate::class, [
+            'notifications_id'         => $notif->getID(),
+            'mode'                     => 'mailing',
+            'notificationtemplates_id' => $template->getID(),
+        ]);
+        $this->createItem(\NotificationTarget::class, [
+            'notifications_id' => $notif->getID(),
+            'type'             => \Notification::USER_TYPE,
+            'items_id'         => \Notification::OLD_REQUESTER_USER,
+        ]);
+
+        [$actor_items_id, $expected_recipient] = $this->createActorForDelNotificationTest(User::class);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Old actor notification test - use_notification disabled',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_actors'     => [
+                'requester' => [
+                    [
+                        'itemtype'         => User::class,
+                        'items_id'         => $actor_items_id,
+                        'use_notification' => 0,
+                    ],
+                ],
+            ],
+        ]);
+
+        $link = new Ticket_User();
+        $this->assertTrue($link->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+            'users_id'   => $actor_items_id,
+            'type'       => CommonITILActor::REQUESTER,
+        ]));
+        $this->assertTrue($link->delete(['id' => $link->getID()], true));
+
+        $queue = new \QueuedNotification();
+        $this->assertFalse(
+            $queue->getFromDBByCrit([
+                'itemtype'  => Ticket::class,
+                'items_id'  => $ticket->getID(),
+                'event'     => $event,
+                'mode'      => 'mailing',
+                'recipient' => $expected_recipient,
+            ]),
+            sprintf('Unexpected queued notification found for event "%s" and recipient "%s"', $event, $expected_recipient)
+        );
+    }
+
+    /**
      * Test that sourceof_items_id / sourceitems_id references in followups and tasks are cleaned when a ticket is purged
      * @return void
      */
@@ -10643,4 +11169,84 @@ HTML,
 
         $this->assertSame(255, mb_strlen($ticket->fields['name']));
     }
+
+    public function testGetAssociatedDocumentsOfPrivateTaskWithUnrelatedGroup(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $tech_user_id   = getItemByTypeName(User::class, 'tech', true);
+        $normal_user_id = getItemByTypeName(User::class, 'normal', true);
+
+        // Give the tech profile full visibility on private tasks (seeprivate)
+        // in addition to seeprivategroups
+        $tprofile_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $profile_right = new ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $tprofile_id,
+            'name'        => 'task',
+        ]);
+        $this->updateItem(
+            ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => \CommonITILTask::SEEPUBLIC
+                    + \CommonITILTask::SEEPRIVATE
+                    + \CommonITILTask::SEEPRIVATEGROUPS,
+            ]
+        );
+
+        // Group with no relation at all to the ticket or its tasks
+        $unrelated_group = $this->createItem(Group::class, [
+            'name' => 'Unrelated group',
+        ]);
+        $this->createItem(Group_User::class, [
+            'groups_id' => $unrelated_group->getID(),
+            'users_id'  => $tech_user_id,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Private task neither authored by assigned to nor linked by group to the tech user
+        $task = $this->createItem(TicketTask::class, [
+            'tickets_id'    => $ticket->getID(),
+            'content'       => 'private task unrelated to tech user',
+            'is_private'    => 1,
+            'users_id'      => $normal_user_id,
+            'users_id_tech' => $normal_user_id,
+        ]);
+
+        $doc = $this->createItem(\Document::class, [
+            'name' => 'Doc linked to unrelated private task',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'     => $task->getID(),
+            'itemtype'     => TicketTask::class,
+            'documents_id' => $doc->getID(),
+        ]);
+
+        // Tech user has seeprivate but also belongs to an
+        // unrelated group with seeprivategroups enabled. Merely belonging to that
+        // group must not restrict access to documents they are otherwise allowed to see
+        $this->login('tech', 'tech');
+
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria();
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+
+        $this->assertContains($doc->getID(), $found_docs);
+    }
+
 }

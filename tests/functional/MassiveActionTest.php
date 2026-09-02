@@ -274,7 +274,7 @@ class MassiveActionTest extends DbTestCase
         } else {
             // No update right, the action will run and fail
             $expected_ok = 0;
-            $expected_ko = 1;
+            $expected_ko = 0; // no items set KO, action canceled before the foreach loop.
         }
 
         // Execute action
@@ -1662,5 +1662,67 @@ class MassiveActionTest extends DbTestCase
             $source_itemtype::getForeignKeyField() => $source->getID(),
             $target_itemtype::getForeignKeyField() => $target->getID(),
         ]));
+    }
+
+    /**
+     * Multi-value fields (e.g. a plugin's "multiple" dropdown) submit an
+     * array as their value. A field matching the foreign-key naming pattern
+     * (isForeignKeyField(), e.g. "locations_id") must not be treated as a
+     * single scalar foreign key in that case, or PHP emits
+     * "Array to string conversion" warnings (which fail the test, as
+     * GLPITestCase asserts there are no unexpected log entries).
+     */
+    #[AllowMockObjectsWithoutExpectations()]
+    public function testProcessMassiveActionsForOneItemtypeDoesNotWarnOnArrayValueForForeignKeyNamedField(): void
+    {
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'test',
+                'content'     => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        $location_id = $this->createItem(
+            Location::class,
+            [
+                'name'        => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        $location_so_id = null;
+        foreach (SearchOption::getOptionsForItemtype($ticket->getType()) as $so_id => $so) {
+            if (($so['table'] ?? null) === Location::getTable() && ($so['linkfield'] ?? null) === 'locations_id') {
+                $location_so_id = $so_id;
+                break;
+            }
+        }
+        $this->assertNotNull($location_so_id);
+
+        // Deny update rights so processing stops before reaching update():
+        // this isolates the code path under test (the entity-validation
+        // branch, where the warnings originated) from the actual field
+        // write, which is not what is being tested here.
+        $old_right = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+
+        try {
+            $this->processMassiveActionsForOneItemtype(
+                'update',
+                $ticket,
+                [$ticket->fields['id']],
+                [
+                    'locations_id'   => [$location_id], // array, as a "multiple" field would submit
+                    'search_options' => [$ticket->getType() => $location_so_id],
+                    'field'          => 'locations_id',
+                ],
+                0,
+                1,
+            );
+        } finally {
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_right;
+        }
     }
 }

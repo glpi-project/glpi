@@ -69,7 +69,7 @@ final class AsideActionsController extends AbstractController
         }
 
         return $this->render('pages/tools/kb/aside_actions.html.twig', [
-            'actions' => $item->getAsideActions(),
+            'actions' => $item->getAsideActions(with_move: true),
         ]);
     }
 }

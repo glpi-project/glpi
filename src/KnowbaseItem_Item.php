@@ -322,11 +322,11 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         $kb_item = new KnowbaseItem();
         $kb_item->getEmpty();
-        if ($kb_item->canViewItem()) {
+        if ($kb_item->can($kb_item->getID(), READ)) {
             $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
             $actions[$action_prefix . 'add']
-            = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+            = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>"
               . _sx('button', 'Link knowledgebase article');
         }
 

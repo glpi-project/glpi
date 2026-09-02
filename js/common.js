@@ -964,7 +964,7 @@ var templateItilStatus = function(option) {
             break;
     }
 
-    return $(`<span><i class="itilstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
+    return $(`<span><i class="itilstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateValidation = function(option) {
@@ -988,7 +988,7 @@ var templateValidation = function(option) {
             break;
     }
 
-    return $(`<span><i class="validationstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
+    return $(`<span><i class="validationstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateItilPriority = function(option) {
@@ -1002,7 +1002,7 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}'></i>`;
+        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}' aria-hidden='true'></i>`;
     }
 
     return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
@@ -1033,7 +1033,7 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
-    // TODO in GLPI 12.0: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
+    console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
 
     if (typeof(text) !== 'string') {
         return text;
@@ -1241,6 +1241,9 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
                             resolved_params[k] = v;
                         }
                     });
+                    if ($.fn.select2) {
+                        $(target).find('.select2-hidden-accessible').select2('destroy');
+                    }
                     $(target).load(url, resolved_params);
                 };
                 if (conditional && (min_size_condition || force_load_condition)) {
@@ -1512,7 +1515,10 @@ $(() => {
     // General "copy to clipboard" handler.
     // TODO: refactorate existing code to use this unique handler.
     $(document).on('click', '[data-glpi-clipboard-text]', function() {
-        const text = $(this).data('glpi-clipboard-text');
+        // Read the attribute instead of `.data()`: the value may be updated
+        // dynamically (jQuery caches its data store on first read) and must not
+        // be type-casted (`.data()` would turn a numeric value into a Number).
+        const text = $(this).attr('data-glpi-clipboard-text');
         if (navigator.clipboard === undefined) {
             // The clipboard is not available in non secure environements.
             // See: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
@@ -1655,7 +1661,7 @@ function initSortableTable(element_id) {
         const sort_icon = col.find('i');
         if (sort_icon.length === 0) {
             // Add sort icon
-            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled"></i>`);
+            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled" aria-hidden="true"></i>`);
         } else {
             sort_icon.addClass(new_order === 'up' ? 'ti-caret-up-filled' : 'ti-caret-down-filled');
         }
@@ -1765,7 +1771,7 @@ function setupAjaxDropdown(config) {
             url: config.url,
             dataType: 'json',
             type: 'POST',
-            delay: 250,
+            delay: 500,
             data: function (params) {
                 query = params;
                 var data = $.extend({}, config.params, {
@@ -1848,6 +1854,16 @@ function setupAjaxDropdown(config) {
         const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${CSS.escape(e.target.id)}-results']`);
         if (search_input) {
             search_input.focus();
+        }
+    });
+
+    $('#' + field_id).on('select2:selecting', function (e) {
+        if (e?.params?.args?.data) {
+            const data = e.params.args.data;
+            const option = this.querySelector(`option[value="${CSS.escape(String(data.id))}"]`);
+            if (option) {
+                option.text = data.text;
+            }
         }
     });
 
@@ -2051,6 +2067,7 @@ function setupFileUpload(config) {
                 $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
                     .text(progress + '%')
                     .css('width', progress + '%')
+                    .attr('aria-valuenow', progress)
                     .show();
             }
         });

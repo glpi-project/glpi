@@ -922,7 +922,14 @@ class CommonDBTM extends CommonGLPI
                 }
 
                 $itemtype = getItemTypeForTable($tablename);
-                if (!is_a($itemtype, self::class, true)) {
+                $is_clonable = $itemtype !== null
+                    && is_a($itemtype, self::class, true)
+                    && (
+                        !(new ReflectionClass($itemtype))->isAbstract()
+                        || (new ReflectionMethod($itemtype, 'getById'))->class !== self::class
+                    );
+
+                if (!$is_clonable) {
                     trigger_error(
                         sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
                         E_USER_WARNING
@@ -1514,7 +1521,7 @@ class CommonDBTM extends CommonGLPI
         }
         if ($icon !== '') {
             $html .= sprintf(
-                '<i class="%s"></i> ',
+                '<i class="%s" aria-hidden="true"></i> ',
                 htmlescape($icon)
             );
         }
@@ -1680,6 +1687,15 @@ class CommonDBTM extends CommonGLPI
         Plugin::doHook(Hooks::PRE_ITEM_UPDATE, $this);
         if ($this->input && is_array($this->input)) {
             $this->input = $this->prepareInputForUpdate($this->input);
+        }
+
+        if ($this->input && is_array($this->input)) {
+            // Call the plugin hook - $this->input can be altered
+            // This hook get the data altered by the object method
+            Plugin::doHook(Hooks::POST_PREPAREUPDATE, $this);
+        }
+
+        if ($this->input && is_array($this->input)) {
             $this->filterValues(!isCommandLine());
         }
 
@@ -2485,8 +2501,6 @@ class CommonDBTM extends CommonGLPI
      * Default is true and check entity if the objet is entity assign
      *
      * May be overloaded if needed
-     *
-     * @return bool
      **/
     public function canUpdateItem(): bool
     {
@@ -2955,13 +2969,48 @@ class CommonDBTM extends CommonGLPI
         return true;
     }
 
-    public function can($ID, int $right, ?array &$input = null): bool
+    #[Override]
+    public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
         if (Session::isInventory()) {
+            $reauth_needed = false;
             return true;
         }
 
-        // Create process
+        // reauth - store reauth status in $is_user_reauthentication_needed, set it to $reauth_needed only if it's the sole missing requirement.
+        $is_user_reauthentication_needed = static::isUserReauthenticationNeeded();
+        $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
+
+        /**
+         * Returns the correct value for $allowed depending on $is_user_reauthentication_needed
+         *
+         * Core logic to respond with reauth and authorization is in this method
+         *
+         *
+         * - allowed (legacy right management) :
+         *   - 1. item type requires reauth : [can result: false (because item type requires reauth), reauth_needed : true]
+         *   - 2. reauth not needed [true, false]
+         * - not allowed :
+         *   - 3. single case, because whether or not reauth is needed, no right is given : [false, false]
+         *
+         * @return array{bool, bool} first value is the allowed result, second value is reauth_needed
+         */
+        $allowed_against_reauth = static function (bool $allowed) use ($is_user_reauthentication_needed) {
+            if (!$allowed) {
+                // case 3 - not allowed
+                return [false, false];
+            }
+
+            if ($is_user_reauthentication_needed) {
+                // case 1 - allowed but $is_user_reauthentication_needed
+                return [false, true];
+            }
+
+            // case 2 - allowed, no reauth_needed
+            return [true, false];
+        };
+
+        // New item
         if (static::isNewID($ID)) {
             if (!isset($this->fields['id'])) {
                 // Only once
@@ -2981,18 +3030,23 @@ class CommonDBTM extends CommonGLPI
                 $this->input = $input;
             }
 
-            if (
-                $this->isPrivate()
-                && ($this->fields['users_id'] == Session::getLoginUserID())
-            ) {
-                return true;
+            // check if private
+            $allowed = $this->isPrivate() && ($this->fields['users_id'] == Session::getLoginUserID());
+            // global check
+            if (!$allowed) {
+                $allowed = static::canCreate() && $this->canCreateItem();
             }
-            return (static::canCreate() && $this->canCreateItem());
+
+            [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+
+            return $allowed;
         }
-        // else : Get item if not already loaded
+
+        // Existing item without id or $ID param not the same as this
         if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
             // Item not found : no right
             if (!$this->getFromDB($ID)) {
+                [, $reauth_needed] = $allowed_against_reauth(false);
                 return false;
             }
         }
@@ -3001,8 +3055,10 @@ class CommonDBTM extends CommonGLPI
         $this->right = $right;
         Plugin::doHook(Hooks::ITEM_CAN, $this);
         if ($this->right !== $right) {
+            [, $reauth_needed] = $allowed_against_reauth(false);
             return false;
         }
+
         $this->right = null;
 
         // Share token session-based access (read-only)
@@ -3011,61 +3067,43 @@ class CommonDBTM extends CommonGLPI
             && $this instanceof ShareableInterface
             && (new ShareTokenManager())->hasSessionAccess(static::class, $ID)
         ) {
+            $reauth_needed = false;
             return true;
         }
 
+        $this_belongs_to_current_user = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
         switch ($right) {
             case READ:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canView() && $this->canViewItem());
+                $allowed = $this_belongs_to_current_user || (static::canView() && $this->canViewItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case UPDATE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canUpdate() && $this->canUpdateItem());
+                $allowed = $this_belongs_to_current_user || (static::canUpdate() && $this->canUpdateItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case DELETE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canDelete() && $this->canDeleteItem());
+                $allowed = $this_belongs_to_current_user || (static::canDelete() && $this->canDeleteItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case PURGE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canPurge() && $this->canPurgeItem());
+                $allowed = $this_belongs_to_current_user || (static::canPurge() && $this->canPurgeItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case CREATE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canCreate() && $this->canCreateItem());
+                $allowed = $this_belongs_to_current_user || (static::canCreate() && $this->canCreateItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
+
+            default:
+                $reauth_needed = false;
+                return false;
         }
-        return false;
+
+        return $allowed;
     }
 
     /**
@@ -3093,22 +3131,26 @@ class CommonDBTM extends CommonGLPI
      * @param int                  $ID    ID of the item (-1 if new item)
      * @param int                  $right Right to check
      * @param ?array<string,mixed> $input array of input data (used for adding item) (default NULL)
-     *
-     * @return void
      **/
     public function check($ID, int $right, ?array &$input = null): void
     {
         // Check item exists
         if (!$this->checkIfExistOrNew($ID)) {
             throw new NotFoundHttpException();
-        } else {
-            if (!$this->can($ID, $right, $input)) {
-                /** @var class-string<CommonDBTM> $itemtype */
-                $itemtype = static::class;
-                $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
-                $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
-                throw new AccessDeniedHttpException($info);
+        }
+
+        $require_reauth = null;
+        if (!$this->can($ID, $right, $input, $require_reauth)) {
+            if ($require_reauth) {
+                self::redirectToReauthPrompt();
+                // method exit - redirection processed
             }
+
+            /** @var class-string<CommonDBTM> $itemtype */
+            $itemtype = static::class;
+            $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
+            $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -3176,26 +3218,41 @@ class CommonDBTM extends CommonGLPI
      **/
     public function checkGlobal(int $right): void
     {
-        if (!$this->canGlobal($right)) {
-            /** @var class-string<CommonDBTM> $itemtype */
-            $itemtype = static::class;
-            $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
-            $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
-            throw new AccessDeniedHttpException($info);
+        $reauth_needed = null;
+        $allowed = $this->canGlobal($right, $reauth_needed);
+
+        if ($allowed) {
+            return;
         }
+
+        // not allowed because of missing reauth : redirect to reauth prompt
+        if ($reauth_needed) {
+            self::redirectToReauthPrompt();
+        }
+
+        // not allowed, no reauth needed
+        /** @var class-string<CommonDBTM> $itemtype */
+        $itemtype = static::class;
+        $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
+        $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
+        throw new AccessDeniedHttpException($info);
     }
 
 
     /**
      * Get global right on an object
      *
-     * @param int $right Right to check: READ / UPDATE / CREATE / DELETE
+     * @param int  $right         Right to check: READ / UPDATE / CREATE / DELETE
+     * @param null $reauth_needed always pass null. use reference to get reauth status. see @param-out tag.
+     * @param-out bool $reauth_needed On true, it tells that soly a reauth is needed to perform action. On false, ignore it.
      *
-     * @return bool
      **/
-    public function canGlobal(int $right): bool
+    public function canGlobal(int $right, null &$reauth_needed = null): bool
     {
-        return match ($right) {
+        $_reauth_needed = self::isUserReauthenticationNeeded();
+        $reauth_needed = false;
+
+        $allowed = match ($right) {
             READ => static::canView(),
             UPDATE => static::canUpdate(),
             CREATE => static::canCreate(),
@@ -3203,6 +3260,16 @@ class CommonDBTM extends CommonGLPI
             PURGE => static::canPurge(),
             default => false,
         };
+
+        if ($allowed) {
+            if ($_reauth_needed) {
+                $reauth_needed = true;
+
+                return false;
+            }
+        }
+
+        return $allowed;
     }
 
 
@@ -3311,6 +3378,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
+     * @phpstan-impure
      * @return bool
      **/
     public function isActive()
@@ -3838,7 +3906,7 @@ class CommonDBTM extends CommonGLPI
         $self = new static();
 
         foreach ($self->rawSearchOptions() as $opt) {
-            // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+            // FIXME Trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             $missingFields = [];
             if (!isset($opt['id'])) {
@@ -3965,7 +4033,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         foreach ($classname::$method_name($itemtype) as $opt) {
-            // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+            // FIXME Trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             if (!isset($opt['id'])) {
                 throw new Exception(static::class . ': invalid search option! ' . print_r($opt, true));
@@ -4159,12 +4227,12 @@ class CommonDBTM extends CommonGLPI
             if ($checkitem === null || $checkitem->isNewItem() || !$checkitem->isTemplate()) {
                 if (in_array(static::class, Appliance::getTypes(true))) {
                     $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                        = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
+                        = "<i class='" . htmlescape(Appliance::getIcon()) . "' aria-hidden='true'></i>" . _sx('button', 'Associate to an appliance');
                 }
 
                 if (in_array(static::class, $CFG_GLPI['rackable_types'])) {
                     $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                        = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                        = "<i class='ti ti-server-off' aria-hidden='true'></i>" . _sx('button', 'Remove from a rack');
                 }
             }
         }
@@ -5092,6 +5160,15 @@ class CommonDBTM extends CommonGLPI
                     return Dropdown::showNumber($name, $options);
 
                 case "decimal":
+                    $copytooption = ['min', 'max', 'step'];
+                    foreach ($copytooption as $key) {
+                        if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                            $options[$key] = $searchoptions[$key];
+                        }
+                    }
+                    $options['type'] = 'number';
+                    $options['value'] = $value;
+                    return Html::input($name, $options);
                 case "mac":
                 case "ip":
                 case "string":
@@ -5737,7 +5814,10 @@ class CommonDBTM extends CommonGLPI
             }
         }
         if ($title !== null) {
-            $mark = "<i class='ti ti-wand' title='$title'></i>";
+            $mark = sprintf(
+                '<span><i class="ti ti-wand" title="%1$s" aria-hidden="true"></i><span class="visually-hidden">%1$s</span></span>',
+                $title
+            );
         }
         return $mark;
     }
@@ -5793,6 +5873,11 @@ class CommonDBTM extends CommonGLPI
             // If _auto is not defined : it's a manual process : set it's value to 0
             if (!isset($this->input['_auto'])) {
                 $input['_auto'] = 0;
+            }
+
+            // The 'manufacturer' criterion is matched by its code, not by the 'manufacturers_id' field
+            if (isset($input['manufacturers_id'])) {
+                $input['manufacturer'] = $input['manufacturers_id'];
             }
 
             // Add last_inventory_update
@@ -6503,6 +6588,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Display a full helpdesk page (header + content + footer) for a given item
      *
+     * Right checks and reauth process are processed in this method.
+     *
      * @param int|string  $id      Id of the item to be displayed, may be a
      *                             string due to some weird default values.
      *                             Will be cast to int straight away.
@@ -6540,23 +6627,16 @@ class CommonDBTM extends CommonGLPI
             $menus = $menus[$interface];
         }
 
+        // New item, check create rights
         if (static::isNewID($id)) {
-            // New item, check create rights
-            if (!static::canCreate()) {
-                throw new AccessDeniedHttpException('Missing CREATE right. Cannot view the new item form.');
-            }
+            $item->checkGlobal(CREATE);
 
             // Tab name will be generic (item isn't saved yet)
             $title = static::getBrowserTabNameForNewItem();
         } else {
-            // Existing item, try to load it and check read rights
-            if (!$item->getFromDB($id)) {
-                throw new NotFoundHttpException();
-            }
-
-            if (!$item->can($id, READ)) {
-                throw new AccessDeniedHttpException('Missing READ right. Cannot view the item.');
-            }
+            // Existing item : check() loads it and checks read rights.
+            // It throws NotFound/AccessDenied or redirects to the re-authentication prompt when needed.
+            $item->check($id, READ);
 
             // Tab name will be specific to the loaded item
             $title = $item->getBrowserTabName();

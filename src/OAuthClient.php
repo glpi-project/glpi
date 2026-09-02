@@ -55,6 +55,12 @@ final class OAuthClient extends CommonDBTM
         return _n('OAuth client', 'OAuth clients', $nb);
     }
 
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];

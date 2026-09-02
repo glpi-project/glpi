@@ -60,7 +60,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static function getTypeName($nb = 0)
     {
-        if (Session::haveRight('rssfeed_public', READ)) {
+        if (Session::haveRight(RSSFeed::$rightname, READ)) {
             return _n('RSS feed', 'RSS feed', $nb);
         }
         return _n('Personal RSS feed', 'Personal RSS feed', $nb);
@@ -85,7 +85,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         // Is my rssfeed or is in visibility
         return (($this->fields['users_id'] === Session::getLoginUserID())
-              || (Session::haveRight('rssfeed_public', READ)
+              || (Session::haveRight(RSSFeed::$rightname, READ)
                   && $this->haveVisibilityAccess()));
     }
 
@@ -98,7 +98,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public function canUpdateItem(): bool
     {
         return (($this->fields['users_id'] === Session::getLoginUserID())
-              || (Session::haveRight('rssfeed_public', UPDATE)
+              || (Session::haveRight(RSSFeed::$rightname, UPDATE)
                   && $this->haveVisibilityAccess()));
     }
 
@@ -428,7 +428,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             switch ($item::class) {
                 case RSSFeed::class:
                     $showtab = [1 => self::createTabEntry(__('Content'))];
-                    if (Session::haveRight('rssfeed_public', UPDATE)) {
+                    if (Session::haveRight(RSSFeed::$rightname, UPDATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }
@@ -561,7 +561,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="alert alert-danger">
-                    <i class="alert-icon ti ti-alert-triangle"></i>
+                    <i class="alert-icon ti ti-alert-triangle" aria-hidden="true"></i>
                     <div class="alert-title">{{ msg }}</div>
                 </div>
 TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
@@ -616,7 +616,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public function showFeedContent(): bool
     {
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return false;
         }
         $rss_feed = [
@@ -791,7 +791,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
         if (
             ($personal && self::canCreate())
-            || (!$personal && Session::haveRight('rssfeed_public', CREATE))
+            || (!$personal && Session::haveRight(RSSFeed::$rightname, CREATE))
         ) {
             $output .= "<span class='float-end'>";
             $output .= "<a href='" . htmlescape(RSSFeed::getFormURL()) . "'>";

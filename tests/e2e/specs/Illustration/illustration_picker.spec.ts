@@ -67,6 +67,43 @@ test.describe('Illustration picker', () => {
         await expect(picker_page.getIllustration('Request a service')).not.toBeAttached();
     });
 
+    test('Can pick an image with the keyboard', async ({ profile, page }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const picker_page = new IllustrationPickerPage(page);
+        await picker_page.gotoFormServiceCatalogTab(form_id);
+
+        // Trigger: focusable and driven by Enter.
+        await picker_page.select_illustration_button.press('Enter');
+        await expect(picker_page.picker_modal).toBeVisible();
+        await expect(picker_page.picker_modal).toHaveAttribute('data-cy-shown', 'true');
+
+        // Autofocus proves the controller ran, unlike `data-cy-shown`.
+        await expect(picker_page.search_input).toBeFocused();
+
+        // Tabs must be focusable for the arrows to reach the upload pane.
+        const illustrations_tab = picker_page.picker_modal.getByRole('tab', {
+            name: 'Pick an illustration',
+        });
+        await illustrations_tab.focus();
+        await expect(illustrations_tab).toBeFocused();
+        await illustrations_tab.press('ArrowRight');
+        await expect(picker_page.picker_modal.getByRole('button', {
+            name: 'Use selected file',
+        })).toBeVisible();
+
+        // Back to the illustrations, then pick one with Enter.
+        await picker_page.picker_modal.getByRole('tab', {
+            name: 'Upload your own illustration',
+        }).press('ArrowLeft');
+        await picker_page.picker_modal.getByRole('button', {
+            name: 'Cartridge',
+            exact: true,
+        }).press('Enter');
+
+        await expect(picker_page.picker_modal).toHaveAttribute('data-cy-shown', 'false');
+        await expect(picker_page.getIllustration('Cartridge')).toBeVisible();
+    });
+
     test('Can use pagination', async ({ profile, page }) => {
         await profile.set(Profiles.SuperAdmin);
         const picker_page = new IllustrationPickerPage(page);
@@ -86,19 +123,19 @@ test.describe('Illustration picker', () => {
         // We are on the first page by default
         await picker_page.doOpenIllustrationPicker();
         for (const name of icons_from_first_page) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).toBeVisible();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).toBeVisible();
         }
         for (const name of icons_from_second_page) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).not.toBeAttached();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).not.toBeAttached();
         }
 
         // Go to second page
         await picker_page.doGoToPage(2);
         for (const name of icons_from_first_page) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).not.toBeAttached();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).not.toBeAttached();
         }
         for (const name of icons_from_second_page) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).toBeVisible();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).toBeVisible();
         }
         await expect(picker_page.picker_modal).toBeVisible();
     });
@@ -121,7 +158,7 @@ test.describe('Illustration picker', () => {
         // Only the matching icons must be found
         await expect(picker_page.getModalImages()).toHaveCount(expected_icons.length);
         for (const name of expected_icons) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).toBeVisible();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).toBeVisible();
         }
     });
 
@@ -138,8 +175,7 @@ test.describe('Illustration picker', () => {
         await picker_page.doUploadCustomIllustration("uploads/bar.png");
 
         // Make sure the custom image is displayed and is valid
-        const custom_preview = picker_page.getCustomPreview();
-        const custom_img = custom_preview.getByRole('img');
+        const custom_img = picker_page.getCustomPreviewImage();
         await expect(custom_img).toBeVisible();
         const natural_width = await custom_img.evaluate(
             (img: HTMLImageElement) => img.naturalWidth
@@ -148,7 +184,7 @@ test.describe('Illustration picker', () => {
 
         // Save changes
         await page.getByRole('button', { name: 'Save changes' }).click();
-        await expect(custom_preview.getByRole('img')).toBeVisible();
+        await expect(picker_page.getCustomPreviewImage()).toBeVisible();
     });
 
     test('Can pick an image searchable by tag', async ({ profile, page }) => {
@@ -167,6 +203,6 @@ test.describe('Illustration picker', () => {
         await expect(picker_page.getModalImages()).toHaveCount(1);
 
         // The icon must be the one we are looking for
-        await expect(picker_page.picker_modal.getByRole('img', { name: 'World' })).toBeVisible();
+        await expect(picker_page.picker_modal.getByRole('button', { name: 'World' })).toBeVisible();
     });
 });

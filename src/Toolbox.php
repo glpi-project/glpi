@@ -884,6 +884,8 @@ class Toolbox
             $new_width  = $max_size;
             $new_height = ceil($max_size / $source_aspect_ratio);
         }
+        $new_width = max((int) $new_width, 1);
+        $new_height = max((int) $new_height, 1);
 
         $img_type = $img_infos[2];
 

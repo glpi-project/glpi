@@ -37,10 +37,12 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\RedirectException;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
+use Glpi\Security\ReAuth\ReAuthManager;
 
 use function Safe\parse_url;
 
@@ -169,17 +171,77 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
+     * @throws RedirectException
+     */
+    final public static function redirectToReauthPrompt(): never
+    {
+        (ReAuthManager::getInstance())->redirectToReauth();
+    }
+
+    /**
+     * Override this method to return true in itemtypes that need re-authentication
+     */
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Should the user reauthenticate ?
+     *
+     * Depends on
+     * - context : always false on api & cli contexts
+     * - itemtype : may require it ( static::itemTypeRequiresReauthentication() )
+     * - user has a valid reauthentication (ReAuthManager::getInstance())->isReAuthenticated()
+     */
+    final public static function isUserReauthenticationNeeded(): bool
+    {
+        // Itemtype doesn't need re-authentication
+        if (!static::itemTypeRequiresReauthentication()) {
+            return false;
+        }
+
+        // reauthentication only for http requests
+        if (isAPI() || isCommandLine()) {
+            return false;
+        }
+
+        // Check that user is re-authenticated if it's required for this itemtype @see \CommonGLPI::isReautenticationNeeded()
+        return !(ReAuthManager::getInstance())->isReAuthenticated();
+    }
+
+    /**
+     * Redirect to reauth prompt ff user is not reauthenticated and the current itemtype requires reauth.
+     *
+     * @throws RedirectException
+     */
+    final public static function checkReAuthenticationOrRedirect(): true
+    {
+        if (static::itemTypeRequiresReauthentication()) {
+            (ReAuthManager::getInstance())->checkReAuthenticationOrRedirect();
+        }
+
+        return true;
+    }
+
+    /**
      * Check right on an item.
      *
-     * @param int                  $ID    ID of the item (-1 if new item)
-     * @param int                  $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
-     * @param ?array<string,mixed> $input array of input data (used for adding item)
+     * Parameter $reauth_needed passed by ref : value changes depending on reauthentication is needed
      *
-     * @return bool
+     * @param int                  $ID            ID of the item (-1 if new item)
+     * @param int                  $right         Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
+     * @param ?array<string,mixed> $input         array of input data (used for adding item)
+     * @param null                 $reauth_needed param is used as a return value (modified by reference) to know if reauth is needed
+     *
+     * @param-out bool $reauth_needed On true, it tells that soly a reauth is needed to perform action. On false, ignore it.
+     *
      */
-    public function can($ID, int $right, ?array &$input = null): bool
+    public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
-        return match ($right) {
+        $_reauth_needed = static::isUserReauthenticationNeeded();
+
+        $allowed = match ($right) {
             READ => static::canView(),
             UPDATE => static::canUpdate(),
             DELETE => static::canDelete(),
@@ -187,12 +249,26 @@ class CommonGLPI implements CommonGLPIInterface
             CREATE => static::canCreate(),
             default => false,
         };
+
+        // allowed
+        if ($allowed) {
+            // but need reauth
+            if ($_reauth_needed) {
+                $reauth_needed = true;
+                return false;
+            }
+
+            $reauth_needed = false;
+            return true;
+        }
+
+        // not allowed
+        $reauth_needed = false;
+        return false;
     }
 
     /**
      * Check the global "creation" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canCreate(): bool
     {
@@ -217,8 +293,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "update" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canUpdate(): bool
     {
@@ -230,8 +304,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "delete" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canDelete(): bool
     {
@@ -243,8 +315,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "purge" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canPurge(): bool
     {
@@ -428,7 +498,7 @@ class CommonGLPI implements CommonGLPIInterface
         if (method_exists(static::class, 'getIcon')) {
             $icon = static::getIcon();
         }
-        $icon = $icon ? "<i class='" . htmlescape($icon) . " me-2'></i>" : '';
+        $icon = $icon ? "<i class='" . htmlescape($icon) . " me-2' aria-hidden='true'></i>" : '';
         $ong[static::class . '$main'] = '<span>' . $icon . htmlescape(static::getTypeName(1)) . '</span>';
         return $this;
     }
@@ -650,7 +720,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return bool
      *
-     * @TODO In GLPI 12.0, do something with the return value that is currently not used.
+     * @TODO Do something with the return value that is currently not used.
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
@@ -667,7 +737,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return bool
      *
-     * @TODO In GLPI 12.0, do something with the return value that is currently not used.
+     * @TODO Do something with the return value that is currently not used.
      */
     public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = [])
     {
@@ -776,7 +846,7 @@ class CommonGLPI implements CommonGLPIInterface
             $icon = '';
         }
 
-        $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlescape($icon)) : '';
+        $icon_html = $icon !== '' ? sprintf('<i class="%s me-2" aria-hidden="true"></i>', htmlescape($icon)) : '';
         $counter_html = '';
         if ($nb > 0) {
             $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
@@ -1126,7 +1196,7 @@ class CommonGLPI implements CommonGLPIInterface
             $list = "<a href='" . htmlescape($glpilisturl) . "' title=\"" . htmlescape($glpilisttitle) . "\"
                   class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                  <i class='ti ti-list-search fs-2'></i>
+                  <i class='ti ti-list-search fs-2' aria-hidden='true'></i>
                </a>";
             $list_shown = false;
 
@@ -1138,7 +1208,7 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<a href='" . htmlescape("$cleantarget?id=$first$extraparamhtml") . "'
                  class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($first >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('First') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                 <i class='fs-2 ti ti-chevrons-left'></i>
+                 <i class='fs-2 ti ti-chevrons-left' aria-hidden='true'></i>
               </a>";
 
             if (!$list_shown && $prev < 0) {
@@ -1150,7 +1220,7 @@ class CommonGLPI implements CommonGLPIInterface
                  id='previouspage'
                  class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($prev >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('Previous') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                 <i class='fs-2 ti ti-chevron-left'></i>
+                 <i class='fs-2 ti ti-chevron-left' aria-hidden='true'></i>
               </a>";
             if ($prev >= 0) {
                 $js = '$("body").keydown(function(e) {
@@ -1185,7 +1255,7 @@ class CommonGLPI implements CommonGLPIInterface
                                 : __s('Deleted');
                     echo "<span class='mx-2 status rounded-1' title=\"" . $title . "\"
                         data-bs-toggle='tooltip'>
-                        <i class='ti ti-trash'></i>";
+                        <i class='ti ti-trash' aria-hidden='true'></i>";
                     echo __s('Deleted');
                     echo "</span>";
                 }
@@ -1210,7 +1280,7 @@ class CommonGLPI implements CommonGLPIInterface
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($next >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Next') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>"
-            . "<i class='fs-2 ti ti-chevron-right'></i>
+            . "<i class='fs-2 ti ti-chevron-right' aria-hidden='true'></i>
                 </a>";
             if ($next >= 0) {
                 $js = '$("body").keydown(function(e) {
@@ -1227,7 +1297,7 @@ class CommonGLPI implements CommonGLPIInterface
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($last >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Last') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>"
-            . "<i class='fs-2 ti ti-chevrons-right'></i></a>";
+            . "<i class='fs-2 ti ti-chevrons-right' aria-hidden='true'></i></a>";
 
             echo "</div>";
 

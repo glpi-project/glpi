@@ -73,7 +73,7 @@ switch ($_POST['action'] ?? null) {
     case 'save_new_dashboard':
         header("Content-Type: application/json; charset=UTF-8");
 
-        if (!Session::haveRight('dashboard', CREATE)) {
+        if (!Session::haveRight(Dashboard::$rightname, CREATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -129,7 +129,7 @@ switch ($_POST['action'] ?? null) {
     case 'clone_dashboard':
         header("Content-Type: application/json; charset=UTF-8");
 
-        if (!Session::haveRight('dashboard', CREATE) || !$dashboard->canViewCurrent()) {
+        if (!Session::haveRight(Dashboard::$rightname, CREATE) || !$dashboard->canViewCurrent()) {
             throw new AccessDeniedHttpException();
         }
 
@@ -190,7 +190,7 @@ Profiler::getInstance()->stop('Grid::construct');
 header("Content-Type: text/html; charset=UTF-8");
 switch ($_REQUEST['action']) {
     case 'add_new':
-        if (!Session::haveRight('dashboard', CREATE)) {
+        if (!Session::haveRight(Dashboard::$rightname, CREATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -199,7 +199,7 @@ switch ($_REQUEST['action']) {
 
     case 'edit_rights':
         // FIXME This endpoint does not seems to be used.
-        if (!Session::haveRight('dashboard', UPDATE)) {
+        if (!Session::haveRight(Dashboard::$rightname, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -216,7 +216,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'display_embed_form':
-        if (!Session::haveRight('dashboard', UPDATE)) {
+        if (!Session::haveRight(Dashboard::$rightname, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -224,11 +224,13 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_card':
+        // Release the lock before the DB/cache read, so concurrent card requests don't queue.
+        Session::writeClose();
+
         if (!$dashboard->canViewCurrent() && !$is_embed_request) {
             throw new AccessDeniedHttpException();
         }
 
-        Session::writeClose();
         Profiler::getInstance()->start('Get card HTML');
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
         Profiler::getInstance()->stop('Get card HTML');
@@ -237,11 +239,13 @@ switch ($_REQUEST['action']) {
     case 'get_cards':
         header("Content-Type: application/json; charset=UTF-8");
 
+        // Release the lock before the DB/cache read, so concurrent card requests don't queue.
+        Session::writeClose();
+
         if (!$dashboard->canViewCurrent() && !$is_embed_request) {
             throw new AccessDeniedHttpException();
         }
 
-        Session::writeClose();
         $cards = $request_data['cards'];
         unset($request_data['cards']);
         $result = [];
@@ -273,7 +277,7 @@ switch ($_REQUEST['action']) {
         echo $grid->getFiltersSetHtml($_REQUEST['filters'] ?? []);
         break;
     case 'get_filter':
-        if (!Session::haveRight('dashboard', READ)) {
+        if (!Session::haveRight(Dashboard::$rightname, READ)) {
             throw new AccessDeniedHttpException();
         }
 

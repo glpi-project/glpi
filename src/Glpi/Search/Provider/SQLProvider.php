@@ -48,6 +48,9 @@ use CommonITILValidation;
 use Config;
 use Consumable;
 use CronTask;
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeZone;
 use DBConnection;
 use DBmysqlIterator;
 use Document;
@@ -757,7 +760,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case ProjectTask::class:
-                if (!Session::haveRightsOr('project', [Project::READALL, Project::READMY])) {
+                if (!Session::haveRightsOr(Project::$rightname, [Project::READALL, Project::READMY])) {
                     // Can only see the tasks assigned to the user or one of his groups
                     $teamtable = 'glpi_projecttaskteams';
                     $user_criteria = [
@@ -776,7 +779,7 @@ final class SQLProvider implements SearchProviderInterface
                         "glpi_projects.is_template" => 0,
                         'OR' => $or_criteria,
                     ];
-                } elseif (Session::haveRight('project', Project::READMY)) {
+                } elseif (Session::haveRight(Project::$rightname, Project::READMY)) {
                     // User must be the manager, in the manager group or in the project team
                     $teamtable = 'glpi_projectteams';
                     $user_criteria = [
@@ -801,7 +804,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case Project::class:
-                if (!Session::haveRight("project", Project::READALL)) {
+                if (!Session::haveRight(Project::$rightname, Project::READALL)) {
                     $teamtable  = 'glpi_projectteams';
                     $user_criteria = [
                         "$teamtable.itemtype" => User::class,
@@ -827,7 +830,7 @@ final class SQLProvider implements SearchProviderInterface
 
             case Ticket::class:
                 // Same structure in addDefaultJoin
-                if (!Session::haveRight("ticket", Ticket::READALL)) {
+                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
                     $searchopt
                         = SearchOption::getOptionsForItemtype($itemtype);
                     $requester_table
@@ -860,7 +863,7 @@ final class SQLProvider implements SearchProviderInterface
                     $criteria = [
                         'OR' => [],
                     ];
-                    if (Session::haveRight("ticket", Ticket::READMY)) {
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READMY)) {
                         $criteria['OR'][] = [
                             'OR' => [
                                 "$requester_table.users_id" => Session::getLoginUserID(),
@@ -872,7 +875,7 @@ final class SQLProvider implements SearchProviderInterface
                         $criteria['OR'][] = new QueryExpression('false');
                     }
 
-                    if (Session::haveRight("ticket", Ticket::READGROUP)) {
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
                         if (count($_SESSION['glpigroups'])) {
                             $criteria['OR'][] = [
                                 'OR' => [
@@ -883,13 +886,13 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
 
-                    if (Session::haveRight("ticket", Ticket::OWN)) {// Can own ticket: show assign to me
+                    if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) {// Can own ticket: show assign to me
                         $criteria['OR'][] = [
                             "$assign_table.users_id" => Session::getLoginUserID(),
                         ];
                     }
 
-                    if (Session::haveRight("ticket", Ticket::READASSIGN)) { // assign to me
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) { // assign to me
                         $criteria['OR'][] = [
                             "$assign_table.users_id" => Session::getLoginUserID(),
                         ];
@@ -900,7 +903,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
 
-                    if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
                         $criteria['OR'][] = [
                             'glpi_tickets.status' => CommonITILObject::INCOMING,
                         ];
@@ -908,7 +911,7 @@ final class SQLProvider implements SearchProviderInterface
 
                     if (
                         Session::haveRightsOr(
-                            'ticketvalidation',
+                            TicketValidation::$rightname,
                             [
                                 TicketValidation::VALIDATEINCIDENT,
                                 TicketValidation::VALIDATEREQUEST,
@@ -1019,7 +1022,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 // Check for parent item visibility unless the user can see all the
                 // possible parents
-                if (!Session::haveRight('ticket', Ticket::READALL)) {
+                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
                     $criteria[] = [
                         new QueryExpression(TicketTask::buildParentCondition()),
                     ];
@@ -1898,10 +1901,19 @@ final class SQLProvider implements SearchProviderInterface
                         // Specific search for datetime
                         if (in_array($searchtype, ['equals', 'notequals'])) {
                             $val = preg_replace("/:00$/", '', $val);
-                            $val = '^' . $val;
                             if ($searchtype === 'notequals') {
                                 $nott = !$nott;
                             }
+
+                            // Search the range matching the value precision (e.g. the whole day for
+                            // `2024-07-28`), as a `LIKE` pattern would not use the column index.
+                            $boundaries = isset($opt["computation"])
+                                ? null // not supported on computed fields
+                                : self::getDateTimeRangeBoundaries((string) $val);
+                            if ($boundaries !== null) {
+                                return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
+                            }
+
                             return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
                         }
                     }
@@ -1994,6 +2006,25 @@ final class SQLProvider implements SearchProviderInterface
                     // ELSE standard search
                     // Date format modification if needed
                     $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
+
+                    // The column string representation has a fixed width, so a partial date can only
+                    // be found at its beginning. It can therefore be searched as a range, which,
+                    // unlike the `LIKE` pattern used below, is able to use the column index.
+                    if (
+                        in_array($searchtype, ['contains', 'notcontains'], true)
+                        && in_array($opt["datatype"], ['date', 'datetime'], true)
+                        && !isset($opt["computation"])
+                        && preg_match('/\$$/', (string) $val) !== 1 // a trailing `$` is not a prefix search
+                    ) {
+                        $boundaries = self::getDateTimeRangeBoundaries(
+                            preg_replace('/^\^/', '', (string) $val),
+                            $opt["datatype"] === 'datetime'
+                        );
+                        if ($boundaries !== null) {
+                            return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
+                        }
+                    }
+
                     if ($date_computation) {
                         return self::getTextCriteria($date_computation, $val, $nott, Operator::NONE);
                     }
@@ -2461,7 +2492,7 @@ final class SQLProvider implements SearchProviderInterface
 
             case Project::class:
                 // Same structure in addDefaultWhere
-                if (!Session::haveRight("project", Project::READALL)) {
+                if (!Session::haveRight(Project::$rightname, Project::READALL)) {
                     $out = self::getLeftJoinCriteria(
                         $itemtype,
                         $ref_table,
@@ -2477,7 +2508,7 @@ final class SQLProvider implements SearchProviderInterface
 
             case Ticket::class:
                 // Same structure in addDefaultWhere
-                if (!Session::haveRight("ticket", Ticket::READALL)) {
+                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
                     $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
                     // show mine: requester
@@ -2492,7 +2523,7 @@ final class SQLProvider implements SearchProviderInterface
                         $searchopt[4]['joinparams']['beforejoin']['joinparams']
                     );
 
-                    if (Session::haveRight("ticket", Ticket::READGROUP)) {
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
                         if (count($_SESSION['glpigroups'])) {
                             $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                                 $itemtype,
@@ -2533,7 +2564,7 @@ final class SQLProvider implements SearchProviderInterface
                         ));
                     }
 
-                    if (Session::haveRight("ticket", Ticket::OWN)) { // Can own ticket: show assign to me
+                    if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) { // Can own ticket: show assign to me
                         $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
@@ -2546,7 +2577,7 @@ final class SQLProvider implements SearchProviderInterface
                         ));
                     }
 
-                    if (Session::haveRightsOr("ticket", [Ticket::READMY, Ticket::READASSIGN])) { // show mine + assign to me
+                    if (Session::haveRightsOr(Ticket::$rightname, [Ticket::READMY, Ticket::READASSIGN])) { // show mine + assign to me
                         $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
@@ -2575,7 +2606,7 @@ final class SQLProvider implements SearchProviderInterface
 
                     if (
                         Session::haveRightsOr(
-                            'ticketvalidation',
+                            TicketValidation::$rightname,
                             [TicketValidation::VALIDATEINCIDENT,
                                 TicketValidation::VALIDATEREQUEST,
                             ]
@@ -4923,20 +4954,12 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             if ($data['itemtype'] == Entity::class) {
-                //$COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
                 $where_criteria = array_merge($where_criteria, getEntitiesRestrictCriteria($itemtable));
             } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                 // Will be replaced below in Union/Recursivity Hack
                 $ADDDEFAULTWHERE = true;
                 $ENTITYRESTRICT = true;
             } else {
-                /*$COMMONWHERE .= getEntitiesRestrictRequest(
-                    $LINK,
-                    $itemtable,
-                    '',
-                    '',
-                    $data['item']->maybeRecursive() && $data['item']->isField('is_recursive')
-                );*/
                 $where_criteria = array_merge(
                     $where_criteria,
                     getEntitiesRestrictCriteria(
@@ -6316,6 +6339,92 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
+     * Compute the range matching a partial date/time value, e.g. the whole day for `2024-07-28`.
+     *
+     * @param string $val       Partial date/time value, from `YYYY` to `YYYY-MM-DD HH:mm:ss`
+     * @param bool   $with_time Whether the compared column holds a time part
+     *
+     * @return array{0: string, 1: string}|null Lower (included) and upper (excluded) bounds,
+     *                                          or `null` if the value cannot be interpreted.
+     */
+    private static function getDateTimeRangeBoundaries(string $val, bool $with_time = true): ?array
+    {
+        $precisions = [
+            '/^\d{4}$/'                               => ['Y',           'P1Y',  false],
+            '/^\d{4}-\d{2}$/'                         => ['Y-m',         'P1M',  false],
+            '/^\d{4}-\d{2}-\d{2}$/'                   => ['Y-m-d',       'P1D',  false],
+            '/^\d{4}-\d{2}-\d{2} \d{2}$/'             => ['Y-m-d H',     'PT1H', true],
+            '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/'       => ['Y-m-d H:i',   'PT1M', true],
+            '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/' => ['Y-m-d H:i:s', 'PT1S', true],
+        ];
+
+        $val = trim($val);
+
+        foreach ($precisions as $pattern => [$format, $interval, $has_time]) {
+            if (preg_match($pattern, $val) !== 1) {
+                continue;
+            }
+
+            if ($has_time && !$with_time) {
+                // A column without time part cannot match such a value.
+                return null;
+            }
+
+            if (str_starts_with($val, '0000')) {
+                // The legacy `0000-00-00` value would be out of the computed range.
+                return null;
+            }
+
+            // `!` resets unspecified fields to their "zero" value; force UTC as the value has no time offset.
+            $lower_bound = DateTimeImmutable::createFromFormat('!' . $format, $val, new DateTimeZone('UTC'));
+            $errors      = DateTimeImmutable::getLastErrors();
+            if ($lower_bound === false || ($errors !== false && ($errors['warning_count'] + $errors['error_count']) > 0)) {
+                // Out of range value, e.g. `2024-02-30`
+                return null;
+            }
+
+            $output_format = $with_time ? 'Y-m-d H:i:s' : 'Y-m-d';
+
+            return [
+                $lower_bound->format($output_format),
+                $lower_bound->add(new DateInterval($interval))->format($output_format),
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Build a criterion matching the given date/time range.
+     *
+     * @param string                      $column     Column to compare, as `table.field`
+     * @param array{0: string, 1: string} $boundaries Lower (included) and upper (excluded) bounds
+     * @param bool                        $nott       Is a negative search?
+     *
+     * @return array<int|string, mixed>
+     */
+    private static function getDateTimeRangeCriteria(string $column, array $boundaries, bool $nott): array
+    {
+        [$lower_bound, $upper_bound] = $boundaries;
+
+        if ($nott) {
+            // `NULL` values are part of a negative search results
+            return [
+                'OR' => [
+                    [$column => ['<', $lower_bound]],
+                    [$column => ['>=', $upper_bound]],
+                    [$column => null],
+                ],
+            ];
+        }
+
+        return [
+            [$column => ['>=', $lower_bound]],
+            [$column => ['<', $upper_bound]],
+        ];
+    }
+
+    /**
      * Create SQL search value
      *
      * @since 9.4
@@ -6515,7 +6624,7 @@ final class SQLProvider implements SearchProviderInterface
                                             $user = new User();
                                             if ($user->getFromDB($data[$ID][$k]['name'])) {
                                                 $tooltip = "";
-                                                if (Session::haveRight('user', READ)) {
+                                                if (Session::haveRight(User::$rightname, READ)) {
                                                     $tooltip = Html::showToolTip(
                                                         __s('Loading...'),
                                                         [
@@ -6562,7 +6671,7 @@ final class SQLProvider implements SearchProviderInterface
                         if ($data[$ID][0]['id'] > 0) {
                             $toadd = '';
                             if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                                if (Session::haveRight('user', READ)) {
+                                if (Session::haveRight(User::$rightname, READ)) {
                                     $users_id = (int) $data[$ID][0]['id'];
                                     $toadd = Html::showToolTip(
                                         __s('Loading...'),
@@ -6786,7 +6895,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && Session::haveRight("problem", Problem::READALL)
+                            && Session::haveRight(Problem::$rightname, Problem::READALL)
                         ) {
                             if ($itemtype == 'ITILCategory') {
                                 $options['criteria'][0]['field']      = 7;
@@ -6823,7 +6932,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && Session::haveRight("ticket", Ticket::READALL)
+                            && Session::haveRight(Ticket::$rightname, Ticket::READALL)
                         ) {
                             if ($itemtype == User::class) {
                                 // Requester
@@ -6949,7 +7058,7 @@ final class SQLProvider implements SearchProviderInterface
                             ));
                             $currenttime = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
-                                date('Y-m-d H:i:s')
+                                $_SESSION['glpi_currenttime']
                             );
                             $totaltime   = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
@@ -6967,14 +7076,14 @@ final class SQLProvider implements SearchProviderInterface
                             if ($calendars_id > 0 && $calendar->getFromDB($calendars_id)) { // Ticket entity have calendar
                                 $currenttime = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
-                                    date('Y-m-d H:i:s')
+                                    $_SESSION['glpi_currenttime']
                                 );
                                 $totaltime   = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
                                     $data[$ID][0]['name']
                                 );
                             } else { // No calendar
-                                $currenttime = strtotime(date('Y-m-d H:i:s'))
+                                $currenttime = strtotime($_SESSION['glpi_currenttime'])
                                     - strtotime($item->fields['date']);
                                 $totaltime   = strtotime($data[$ID][0]['name'])
                                     - strtotime($item->fields['date']);
@@ -7227,7 +7336,7 @@ final class SQLProvider implements SearchProviderInterface
                     } else {
                         $text = Html::resume_text(RichText::getTextFromHtml($data[$ID][0]['name']));
                     }
-                    if (Session::haveRight('reservation', UPDATE)) {
+                    if (Session::haveRight(Reservation::$rightname, UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"
                            href='" . \htmlescape(ReservationItem::getFormURLWithID($data['refID'])) . "' >" . $text . "</a>";
                     }
@@ -7240,19 +7349,19 @@ final class SQLProvider implements SearchProviderInterface
                 case 'glpi_changes.status':
                     $status = Change::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
+                        . Change::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_problems.status':
                     $status = Problem::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
+                        . Problem::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_tickets.status':
                     $status = Ticket::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
+                        . Ticket::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_projectstates.name':
@@ -7447,7 +7556,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($data[$ID][0]['is_active']) {
                         return "<a href='reservation.php?reservationitems_id="
                             . \htmlescape($data["refID"]) . "' title=\"" . __s('See planning') . "\">"
-                            . "<i class='ti ti-calendar'></i><span class='visually-hidden'>" . __s('See planning') . "</span></a>";
+                            . "<i class='ti ti-calendar' aria-hidden='true'></i><span class='visually-hidden'>" . __s('See planning') . "</span></a>";
                     } else {
                         return '';
                     }
@@ -7523,7 +7632,10 @@ final class SQLProvider implements SearchProviderInterface
                         $icon_class = "ti ti-eye-off not-published";
                         $icon_title = __s("This item is not published yet");
                     }
-                    return "<div class='kb'> <i class='$icon_class' title='$icon_title'></i> <a href='" . \htmlescape($href) . "'>" . \htmlescape($name) . "</a></div>";
+                    $icon = $icon_title !== ''
+                        ? "<i class='$icon_class' title='$icon_title' aria-hidden='true'></i><span class='visually-hidden'>$icon_title</span> "
+                        : '';
+                    return "<div class='kb'> $icon<a href='" . \htmlescape($href) . "'>" . \htmlescape($name) . "</a></div>";
                 case "glpi_certificates.date_expiration":
                     if (
                         !in_array($orig_id, [151, 158, 181, 186])
@@ -7912,7 +8024,7 @@ final class SQLProvider implements SearchProviderInterface
                     } elseif (!empty($field_data['trans_name'])) {
                         $out .= \htmlescape($field_data['trans_name']);
                     } else {
-                        $out .= \htmlescape($field_data['name'] ?: '');
+                        $out .= \htmlescape($field_data['name'] ?? '');
                     }
                 }
             }

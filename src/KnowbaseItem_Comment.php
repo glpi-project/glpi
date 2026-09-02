@@ -46,6 +46,12 @@ final class KnowbaseItem_Comment extends CommonDBTM
     // public static string $itemtype = KnowbaseItem::class;
     // public static string $items_id = 'knowbaseitems_id';
 
+    /** Longest quotable passage, in characters. */
+    public const MAX_ANCHOR_LENGTH = 1000;
+
+    /** Longest context kept around the quote, in characters. */
+    public const MAX_ANCHOR_CONTEXT_LENGTH = 255;
+
     #[Override]
     public static function getTypeName($nb = 0): string
     {
@@ -131,8 +137,12 @@ final class KnowbaseItem_Comment extends CommonDBTM
     }
 
     #[Override]
-    public function prepareInputForAdd($input): array
+    public function prepareInputForAdd($input): array|false
     {
+        if (trim((string) ($input['comment'] ?? '')) === '') {
+            return false;
+        }
+
         if (!isset($input["users_id"])) {
             $input["users_id"] = 0;
             if ($uid = Session::getLoginUserID()) {
@@ -140,7 +150,175 @@ final class KnowbaseItem_Comment extends CommonDBTM
             }
         }
 
+        // A reply belongs to its thread's anchor; it never carries its own.
+        if (!empty($input['parent_comment_id'])) {
+            unset(
+                $input['anchor_prefix'],
+                $input['anchor_exact'],
+                $input['anchor_suffix'],
+                $input['anchor_occurrence'],
+            );
+        } elseif (!$this->hasValidAnchorLengths($input)) {
+            return false;
+        }
+
         return $input;
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input): array|false
+    {
+        if (!$this->hasValidAnchorLengths($input)) {
+            return false;
+        }
+
+        return $input;
+    }
+
+    /**
+     * The quote duplicates article content; unbounded, it is an abuse vector.
+     *
+     * @param array<string, mixed> $input
+     */
+    public function hasValidAnchorLengths(array $input): bool
+    {
+        $limits = [
+            'anchor_prefix' => self::MAX_ANCHOR_CONTEXT_LENGTH,
+            'anchor_exact'  => self::MAX_ANCHOR_LENGTH,
+            'anchor_suffix' => self::MAX_ANCHOR_CONTEXT_LENGTH,
+        ];
+
+        foreach ($limits as $field => $limit) {
+            if (mb_strlen((string) ($input[$field] ?? '')) > $limit) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function hasAnchor(): bool
+    {
+        return !empty($this->fields['anchor_exact'] ?? null);
+    }
+
+    /**
+     * Drop the anchors of the given comments; ids belonging elsewhere are ignored.
+     *
+     * @param array<mixed> $comment_ids
+     */
+    public function clearAnchorsForItem(KnowbaseItem $article, array $comment_ids): void
+    {
+        $updates = [];
+        foreach ($comment_ids as $comment_id) {
+            if (!is_scalar($comment_id)) {
+                continue;
+            }
+            $updates[(int) $comment_id] = [
+                'anchor_prefix'     => null,
+                'anchor_exact'      => null,
+                'anchor_suffix'     => null,
+                'anchor_occurrence' => null,
+            ];
+        }
+
+        self::writeAnchors($article, $updates, only_anchored: false);
+    }
+
+    /**
+     * Move the given comments' anchors onto the quote the saved content now carries, so
+     * an edited passage stays anchored. Ids belonging elsewhere are ignored, and an
+     * anchor is only ever moved, never created: dropping one goes through
+     * clearAnchorsForItem().
+     *
+     * @param array<mixed> $anchors
+     */
+    public function refreshAnchorsForItem(KnowbaseItem $article, array $anchors): void
+    {
+        $updates = [];
+        foreach ($anchors as $anchor) {
+            if (!is_array($anchor) || !is_scalar($anchor['id'] ?? null)) {
+                continue;
+            }
+
+            $prefix     = $anchor['prefix'] ?? '';
+            $exact      = $anchor['exact'] ?? '';
+            $suffix     = $anchor['suffix'] ?? '';
+            $occurrence = $anchor['occurrence'] ?? 0;
+            if (
+                !is_scalar($prefix) || !is_scalar($exact)
+                || !is_scalar($suffix) || !is_scalar($occurrence)
+                || trim((string) $exact) === ''
+            ) {
+                continue;
+            }
+
+            $updates[(int) $anchor['id']] = [
+                'anchor_prefix'     => (string) $prefix,
+                'anchor_exact'      => (string) $exact,
+                'anchor_suffix'     => (string) $suffix,
+                'anchor_occurrence' => (int) $occurrence,
+            ];
+        }
+
+        self::writeAnchors($article, $updates, only_anchored: true);
+    }
+
+    /**
+     * Apply anchor columns to the given comments, loaded in one query. Ids
+     * belonging to another article are ignored.
+     *
+     * @param array<int, array<string, string|int|null>> $updates Keyed by comment id.
+     * @param bool $only_anchored Skip comments that carry no anchor yet.
+     */
+    private static function writeAnchors(KnowbaseItem $article, array $updates, bool $only_anchored): void
+    {
+        // Anchors track position in the article's content, not comment ownership,
+        // but still require the comment feature itself to be enabled for the user.
+        if ($updates === [] || !$article->can($article->getID(), UPDATE) || !$article->canComment()) {
+            return;
+        }
+
+        $comments = self::getSeveralFromDBByCrit([
+            'id'               => array_keys($updates),
+            'knowbaseitems_id' => $article->getID(),
+        ]);
+
+        foreach ($comments as $comment) {
+            if ($only_anchored && !$comment->hasAnchor()) {
+                continue;
+            }
+            $comment->update(
+                ['id' => $comment->getID()] + $updates[(int) $comment->fields['id']]
+            );
+        }
+    }
+
+    /**
+     * @return list<array{id: int, prefix: string, exact: string, suffix: string, occurrence: int}>
+     */
+    public static function getAnchorsForItem(KnowbaseItem $article): array
+    {
+        $comments = self::getSeveralFromDBByCrit([
+            'knowbaseitems_id'  => $article->getID(),
+            'parent_comment_id' => null,
+        ]);
+
+        $anchors = [];
+        foreach ($comments as $comment) {
+            if (!$comment->hasAnchor()) {
+                continue;
+            }
+            $anchors[] = [
+                'id'         => (int) $comment->fields['id'],
+                'prefix'     => (string) $comment->fields['anchor_prefix'],
+                'exact'      => (string) $comment->fields['anchor_exact'],
+                'suffix'     => (string) $comment->fields['anchor_suffix'],
+                'occurrence' => (int) $comment->fields['anchor_occurrence'],
+            ];
+        }
+
+        return $anchors;
     }
 
     /** @return CommentsThread[] */

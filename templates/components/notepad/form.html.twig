@@ -40,7 +40,7 @@
 <div class="d-flex mb-3 justify-content-between align-items-center">
     {% if canedit %}
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form" aria-label="{{ _x('button', 'Add a note') }}">
-            <i class="ti ti-link"></i>
+            <i class="ti ti-link" aria-hidden="true"></i>
             <span>{{ _x('button', 'Add a note') }}</span>
         </button>
     {% else %}
@@ -57,7 +57,7 @@
                data-collapse-text="{{ __('Collapse all') }}"
                data-expand-title="{{ __('Expand all') }}"
                data-collapse-title="{{ __('Collapse all') }}">
-                <i class="ti ti-eye"></i>
+                <i class="ti ti-eye" aria-hidden="true"></i>
                 <span>{{ __('Collapse all') }}</span>
             </a>
         </small>
@@ -71,7 +71,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h3 class="modal-title">
-                            <i class="ti ti-notes"></i>
+                            <i class="ti ti-notes" aria-hidden="true"></i>
                             {{ __('Add a note') }}
                         </h3>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -127,7 +127,7 @@
                     aria-controls="{{ id }}"
                     data-testid="note-container"
                 >
-                    <i class="ti ti-notes"></i>
+                    <i class="ti ti-notes" aria-hidden="true"></i>
                     {% set title = '#' ~ note['id'] ~ ' - ' ~ note['date_creation']|formatted_datetime %}
                     {% if note['date_mod'] != note['date_creation'] %}
                         {% set title = title ~ ' (' ~ __('Last update on %s')|format(note['date_mod']|formatted_datetime) ~ ')' %}
@@ -163,7 +163,7 @@
                                         data-id="{{ id }}"
                                         aria-label="{{ __("Delete") }}"
                                     >
-                                        <i class="ti ti-trash"></i>
+                                        <i class="ti ti-trash" aria-hidden="true"></i>
                                         <span>{{ __('Delete') }}</span>
                                     </button>
 
@@ -175,7 +175,7 @@
                                         data-bs-target="#edit-{{ id }}"
                                         aria-label="{{ __("Edit") }}"
                                     >
-                                        <i class="ti ti-edit"></i>
+                                        <i class="ti ti-edit" aria-hidden="true"></i>
                                         <span>{{ __('Edit') }}</span>
                                     </button>
                                 </span>
@@ -205,7 +205,7 @@
 
                                     <div class="modal-header">
                                         <h3 class="modal-title">
-                                            <i class="ti ti-notes"></i>
+                                            <i class="ti ti-notes" aria-hidden="true"></i>
                                             {{ __('Edit a note') }}
                                         </h3>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -238,7 +238,7 @@
                                                 onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
                                                 data-bs-toggle="tooltip" data-bs-position="top"
                                                 title="{{ _x('button', 'Delete permanently') }}">
-                                            <i class="ti ti-trash"></i>
+                                            <i class="ti ti-trash" aria-hidden="true"></i>
                                         </button>
 
                                         <button
@@ -248,7 +248,7 @@
                                             class="btn btn-primary"
                                             aria-label="{{ __('Update') }}"
                                         >
-                                            <i class="ti ti-device-floppy"></i>
+                                            <i class="ti ti-device-floppy" aria-hidden="true"></i>
                                             <span>{{ __('Update') }}</span>
                                         </button>
                                     </div>

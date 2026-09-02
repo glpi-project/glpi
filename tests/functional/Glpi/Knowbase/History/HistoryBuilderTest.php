@@ -51,11 +51,10 @@ use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
-use KnowbaseItem_KnowbaseItemCategory;
 use KnowbaseItem_Revision;
 use KnowbaseItem_User;
-use KnowbaseItemCategory;
 use KnowbaseItemTranslation;
+use Log;
 use Session;
 use Ticket;
 use User;
@@ -94,6 +93,42 @@ final class HistoryBuilderTest extends DbTestCase
         $this->assertEquals(2, $events[0]->getAuthor());
         $this->assertEquals("Current version", $events[0]->getLabel());
         $this->assertEquals("Created by", $events[0]->getDescription());
+    }
+
+    /**
+     * The builder holds the list it fills while reading its sources, so it must
+     * start over on each build instead of stacking a second read on top of the
+     * first one.
+     */
+    public function testBuildingTwiceWithTheSameBuilderYieldsTheSameHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Original title',
+            'answer' => 'Original content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Updated title',
+            'answer' => 'Updated content',
+        ]);
+        $kb->getFromDB($kb->getID());
+
+        $builder = new HistoryBuilder($kb);
+        $first = $builder->buildHistory();
+        $second = $builder->buildHistory();
+
+        $this->assertEquals($first->getEvents(), $second->getEvents());
+
+        // A limited build must not be polluted by the previous one either, nor
+        // leave the next one short.
+        $this->assertCount(1, $builder->buildHistory(1)->getEvents());
+        $this->assertEquals($first->getEvents(), $builder->buildHistory()->getEvents());
     }
 
     public function testUpdatedKnowbaseItemReturnsLogEventAndRevision(): void
@@ -1296,16 +1331,22 @@ final class HistoryBuilderTest extends DbTestCase
         ]);
 
         $this->setCurrentTime("2026-01-15 11:00:00");
-        $category = $this->createItem(KnowbaseItemCategory::class, [
-            'name' => 'How-to',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
 
-        $this->createItem(KnowbaseItem_KnowbaseItemCategory::class, [
-            'knowbaseitems_id' => $kb->getID(),
-            'knowbaseitemcategories_id' => $category->getID(),
+        // `KnowbaseItemCategory` no longer exists (KB categories were replaced
+        // by the article hierarchy). Simulate the legacy `glpi_logs` row it
+        // used to produce when a KB item was added to a category, since
+        // HistoryBuilder::addCategoryChangesToHistory() still reads those
+        // rows by string literal to keep old history entries visible.
+        global $DB;
+        $DB->insert(Log::getTable(), [
+            'itemtype'      => KnowbaseItem::class,
+            'items_id'      => $kb->getID(),
+            'itemtype_link' => 'KnowbaseItemCategory',
+            'linked_action' => Log::HISTORY_ADD_RELATION,
+            'user_name'     => $this->loggedInUserName(),
+            'date_mod'      => '2026-01-15 11:00:00',
+            'old_value'     => '',
+            'new_value'     => 'How-to',
         ]);
 
         $kb->getFromDB($kb->getID());
@@ -1334,20 +1375,36 @@ final class HistoryBuilderTest extends DbTestCase
         ]);
 
         $this->setCurrentTime("2026-01-15 11:00:00");
-        $category = $this->createItem(KnowbaseItemCategory::class, [
-            'name' => 'Obsolete',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
 
-        $relation = $this->createItem(KnowbaseItem_KnowbaseItemCategory::class, [
-            'knowbaseitems_id' => $kb->getID(),
-            'knowbaseitemcategories_id' => $category->getID(),
+        // `KnowbaseItemCategory` no longer exists (KB categories were replaced
+        // by the article hierarchy). Simulate the legacy `glpi_logs` rows it
+        // used to produce when a KB item was added to, then removed from, a
+        // category, since HistoryBuilder::addCategoryChangesToHistory() still
+        // reads those rows by string literal to keep old history entries
+        // visible.
+        global $DB;
+        $DB->insert(Log::getTable(), [
+            'itemtype'      => KnowbaseItem::class,
+            'items_id'      => $kb->getID(),
+            'itemtype_link' => 'KnowbaseItemCategory',
+            'linked_action' => Log::HISTORY_ADD_RELATION,
+            'user_name'     => $this->loggedInUserName(),
+            'date_mod'      => '2026-01-15 11:00:00',
+            'old_value'     => '',
+            'new_value'     => 'Obsolete',
         ]);
 
         $this->setCurrentTime("2026-01-15 12:00:00");
-        $this->deleteItem(KnowbaseItem_KnowbaseItemCategory::class, $relation->getID(), purge: true);
+        $DB->insert(Log::getTable(), [
+            'itemtype'      => KnowbaseItem::class,
+            'items_id'      => $kb->getID(),
+            'itemtype_link' => 'KnowbaseItemCategory',
+            'linked_action' => Log::HISTORY_DEL_RELATION,
+            'user_name'     => $this->loggedInUserName(),
+            'date_mod'      => '2026-01-15 12:00:00',
+            'old_value'     => 'Obsolete',
+            'new_value'     => '',
+        ]);
 
         $kb->getFromDB($kb->getID());
         $history = (new HistoryBuilder($kb))->buildHistory();
@@ -1648,5 +1705,103 @@ final class HistoryBuilderTest extends DbTestCase
 
         $this->assertCount(1, $de_revisions);
         $this->assertEquals('Deutsch — Version 1', $de_revisions[0]->getLabel());
+    }
+
+    /**
+     * A limited build must return the very same events as a complete one, just
+     * fewer of them: the most recent ones.
+     */
+    public function testLimitedHistoryHoldsTheMostRecentEvents(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-01 00:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Version 1',
+        ]);
+
+        // Mix the sources: each update produces a revision and a "Renamed"
+        // event, and the translation produces its own events.
+        $base_time = strtotime("2026-01-01 00:00:00");
+        for ($i = 2; $i <= 6; $i++) {
+            $this->setCurrentTime(date("Y-m-d H:i:s", $base_time + ($i * HOUR_TIMESTAMP)));
+            $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+                'name'   => sprintf('Test article %d', $i),
+                'answer' => sprintf('Version %d', $i),
+            ]);
+        }
+
+        $this->setCurrentTime("2026-01-02 10:00:00");
+        $translation = $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'language'         => 'fr_FR',
+            'name'             => 'Article de test',
+            'answer'           => 'Version 1',
+        ]);
+        $this->setCurrentTime("2026-01-02 11:00:00");
+        $this->updateItem(KnowbaseItemTranslation::class, $translation->getID(), [
+            'answer' => 'Version 2',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $full = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+        $this->assertGreaterThan(5, count($full));
+
+        // Whatever the limit is, the events must be the first ones of the
+        // complete history, unchanged.
+        foreach ([1, 2, 5, count($full) - 1, count($full), count($full) + 10] as $limit) {
+            $limited = (new HistoryBuilder($kb))->buildHistory($limit)->getEvents();
+
+            $this->assertCount(min($limit, count($full)), $limited, "limit: $limit");
+            foreach ($limited as $index => $event) {
+                $this->assertEquals(
+                    $full[$index]->getLabel(),
+                    $event->getLabel(),
+                    "limit: $limit, event: $index"
+                );
+                $this->assertEquals($full[$index]->getDate(), $event->getDate(), "limit: $limit");
+                $this->assertEquals($full[$index]->getAuthor(), $event->getAuthor(), "limit: $limit");
+                $this->assertInstanceOf($full[$index]::class, $event, "limit: $limit");
+            }
+        }
+    }
+
+    /**
+     * Version numbers must not depend on the number of events that were built.
+     */
+    public function testVersionNumbersDoNotDependOnTheLimit(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-01 00:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Version 1',
+        ]);
+
+        $base_time = strtotime("2026-01-01 00:00:00");
+        for ($i = 2; $i <= 4; $i++) {
+            $this->setCurrentTime(date("Y-m-d H:i:s", $base_time + ($i * HOUR_TIMESTAMP)));
+            $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+                'answer' => sprintf('Version %d', $i),
+            ]);
+        }
+
+        $kb->getFromDB($kb->getID());
+
+        // Three revisions: the newest one is "Version 3", whether the two older
+        // ones were built or not.
+        $revisions = array_values(array_filter(
+            (new HistoryBuilder($kb))->buildHistory(2)->getEvents(),
+            static fn($event) => $event instanceof RevisionEvent
+        ));
+        $this->assertCount(1, $revisions);
+        $this->assertEquals("Version 3", $revisions[0]->getLabel());
+        $this->assertEquals("Updated by", $revisions[0]->getDescription());
     }
 }

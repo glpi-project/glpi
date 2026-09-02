@@ -33,16 +33,16 @@
 <nav aria-label="{{ __('Breadcrumbs') }}">
    <ol class="breadcrumb breadcrumb-alternate pe-1 pe-sm-3">
       <li class="breadcrumb-item text-truncate">
-      <a href="{{ index_path() }}" class="d-inline-flex align-items-center gap-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Home') }}">
-            <i class="ti ti-home-2"></i>
+      <a href="{{ index_path() }}" class="d-inline-flex align-items-center gap-1">
+            <i class="ti ti-home-2" aria-hidden="true"></i>
             {{ __('Home') }}
          </a>
       </li>
 
       {% if menu[sector] is defined %}
       <li class="breadcrumb-item text-truncate">
-      <a href="{{ path(menu[sector]['default'] ?? '/front/central.php') }}" class="d-inline-flex align-items-center gap-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ menu[sector]['title'] }}">
-            <i class="{{ menu[sector]['icon'] ?? '' }}"></i>
+      <a href="{{ path(menu[sector]['default'] ?? '/front/central.php') }}" class="d-inline-flex align-items-center gap-1">
+            <i class="{{ menu[sector]['icon'] ?? '' }}" aria-hidden="true"></i>
             {{ menu[sector]['title'] }}
          </a>
       </li>
@@ -54,10 +54,9 @@
          {% set with_option = option is not empty and menu[sector]['content'][item]['options'][option]['title'] is defined and menu[sector]['content'][item]['options'][option]['page'] is defined %}
          <li class="breadcrumb-item text-truncate">
             <a href="{{ path(menu[sector]['content'][item]['page']) }}"
-            class="d-inline-flex align-items-center gap-1 {{ with_option ? '' : 'here' }}"
-               data-bs-toggle="tooltip" data-bs-placement="bottom"
-               title="{{ menu[sector]['content'][item]['title'] }}" >
-               <i class="{{ menu[sector]['content'][item]['icon'] ?? '' }}"></i>
+               class="d-inline-flex align-items-center gap-1"
+               {% if not with_option %}aria-current="page"{% endif %}>
+               <i class="{{ menu[sector]['content'][item]['icon'] ?? '' }}" aria-hidden="true"></i>
                {{ menu[sector]['content'][item]['title'] }}
             </a>
          </li>
@@ -66,10 +65,11 @@
          {% if with_option %}
          <li class="breadcrumb-item text-truncate">
             <a href="{{ path(menu[sector]['content'][item]['options'][option]['page']) }}"
-               class="d-inline-flex align-items-center gap-1 here"
+               class="d-inline-flex align-items-center gap-1"
+               aria-current="page"
                data-bs-toggle="tooltip" data-bs-placement="bottom"
                title="{{ menu[sector]['content'][item]['options'][option]['title'] }}" >
-               <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? '' }}"></i>
+               <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? '' }}" aria-hidden="true"></i>
                {{ menu[sector]['content'][item]['options'][option]['title']|u.truncate(17, '...') }}
             </a>
          </li>

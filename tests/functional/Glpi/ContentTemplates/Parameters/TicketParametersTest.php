@@ -313,7 +313,7 @@ class TicketParametersTest extends AbstractParametersTest
                         'id' => getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01', true),
                         'name' => '_knowbaseitem01',
                         'answer' => "Answer for Knowledge base entry _knowbaseitem01 apple juice turnover",
-                        'link' => "<a href=\"/front/knowbaseitem.form.php?id=1\" data-bs-toggle=\"tooltip\" data-bs-placement=\"bottom\" title=\"_knowbaseitem01\">_knowbaseitem01</a>",
+                        'link' => "<a href=\"/front/knowbaseitem.form.php?id=" . getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01', true) . "\" data-bs-toggle=\"tooltip\" data-bs-placement=\"bottom\" title=\"_knowbaseitem01\">_knowbaseitem01</a>",
                     ],
                 ],
                 'assets'        => [],

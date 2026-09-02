@@ -340,3 +340,71 @@ test('Clicking current version deactivates comparison', async ({ page, profile, 
     await expect(initialRevision).not.toHaveClass(/kb-revision--selected/);
     await expect(page.getByText('Updated content')).toBeVisible();
 });
+
+test('History is loaded page by page as the user scrolls', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Each update changes both the title and the content, which produces two
+    // events: a revision and a "Renamed" entry. With the single "Current
+    // version" event, the article ends up with more events than a page holds.
+    const page_size = 50;
+    const updates = (page_size / 2) + 1;
+    const total_events = (updates * 2) + 1;
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'Paginated history',
+        entities_id: getWorkerEntityId(),
+        answer: '<p>Content 0</p>',
+    });
+    for (let i = 1; i <= updates; i++) {
+        await api.updateItem('KnowbaseItem', id, {
+            name: `Paginated history ${i}`,
+            answer: `<p>Content ${i}</p>`,
+        });
+    }
+
+    await kb.goto(id);
+    await kb.doOpenHistoryPanel();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    // Only the first page is rendered, with a marker for the next one.
+    const events = kb.getHistoryEvents();
+    await expect(events).toHaveCount(page_size);
+    await expect(kb.getHistoryLoadMoreMarker()).toBeAttached();
+
+    // Reaching the end of the list loads the remaining events.
+    await kb.doScrollToHistoryListEnd();
+    await expect(events).toHaveCount(total_events);
+    await expect(kb.getHistoryLoadMoreMarker()).not.toBeAttached();
+
+    // The newest event is still the highlighted one, and the events appended
+    // afterwards did not highlight the first entry of their own page.
+    await expect(events.nth(0)).toHaveAttribute('aria-current', 'step');
+    await expect(events.nth(0).getByText('Current version')).toBeVisible();
+    await expect(events.nth(page_size)).not.toHaveAttribute('aria-current');
+
+    // Regression test: there was an issue with infinite scroll not working
+    // after the panel was closed an re-opened so we trigger a close/reopen here.
+    const side_panel = page.getByTestId('side-panel');
+    await side_panel.getByTestId('side-panel-close').click();
+    await expect(side_panel).toHaveCSS('width', '0px');
+    await kb.doOpenHistoryPanel();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    // The reopened panel starts back at the first page...
+    await expect(kb.getHistoryLoadMoreMarker()).toBeAttached();
+    await expect(events).toHaveCount(page_size);
+
+    // ... and reaching its end still loads the remaining events.
+    await kb.doScrollToHistoryListEnd();
+    await expect(events).toHaveCount(total_events);
+    await expect(kb.getHistoryLoadMoreMarker()).not.toBeAttached();
+
+    // Events loaded on the second page stay usable.
+    const lastEvent = events.nth(total_events - 1);
+    await expect(lastEvent.getByText('Version 1')).toBeVisible();
+    await lastEvent.click();
+    await expect(page.getByRole('article')).toHaveClass(/kb-article--diff-mode/);
+    await expect(lastEvent).toHaveClass(/kb-revision--selected/);
+});

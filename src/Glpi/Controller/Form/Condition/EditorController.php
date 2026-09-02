@@ -101,9 +101,9 @@ final class EditorController extends AbstractController
 
         // Retrieve the conditions data
         $conditions = $form_data->getConditionsData();
-        $default_value_operator = current(array_keys($this->editor_manager->getValueOperatorForValidationDropdownValues(
+        $default_value_operator = array_key_first($this->editor_manager->getValueOperatorForValidationDropdownValues(
             $question_uuid
-        )));
+        ));
         if ($conditions === []) {
             $conditions[] = new ConditionData(
                 item_uuid: $question_uuid,

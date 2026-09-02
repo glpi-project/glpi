@@ -30,12 +30,63 @@
  # ---------------------------------------------------------------------
  #}
 
+{#
+/**
+ * This component renders the small "link an existing item, or create a new one" form
+ * displayed at the top of many relation tabs.
+ *
+ * Available variables:
+ *
+ * - link_itemtype: Itemtype of the relation class handling the submission. Used to build
+ *   the form id, name and action path.
+ * - source_itemtype: Itemtype of the item the relation starts from.
+ * - source_items_id: ID of that source item.
+ * - source_suffix: Optional string appended to the source field names, to allow several
+ *   instances of the form in the same page.
+ *
+ * - form_label: Optional label displayed above the fields. Rendered as plain text unless
+ *   'form_label_level' is given.
+ * - form_label_level: Optional heading level (int). When set and the label is not empty,
+ *   the label is exposed as a heading of that level, visually unchanged. Opt in only:
+ *   without it the label keeps its plain text rendering.
+ *
+ * - generic_target: Render an itemtype plus items_id dropdown pair instead of a single
+ *   dropdown. Defaults to false.
+ * - target_itemtype: Itemtype proposed in the dropdown, when 'generic_target' is false.
+ * - target_suffix: Optional string appended to the target field names.
+ * - generic_source: Post the source as 'itemtype' and 'items_id' hidden fields instead of
+ *   the source foreign key. Defaults to false.
+ *
+ * - link_types: When 'generic_target' is true, the list of selectable itemtypes. Otherwise,
+ *   an optional 'colkey' => 'label' list rendered as an extra 'link' dropdown of relation
+ *   types.
+ * - used: Optional array of already linked ids to exclude from the dropdown.
+ * - dropdown_options: Options merged into the dropdown. Its 'itemtype' key, when present,
+ *   overrides 'target_itemtype'.
+ * - ajax_dropdown: Optional array wiring a dependent dropdown. Must include 'toobserve',
+ *   'url', 'params' and a 'toupdate' array with 'id', 'itemtype' and 'params' keys.
+ *
+ * - add_button_label: Label of the submit button. Defaults to the generic "Add".
+ * - add_button_icon: Icon class of the submit button. Defaults to 'ti ti-link'.
+ * - create_link: When truthy, displays a second button linking to the creation form of the
+ *   target itemtype. Its optional 'url' key overrides the computed target form path.
+ * - button_label: Label of that creation link.
+ *
+ * - rand: Optional unique suffix for the generated ids. Defaults to a random value.
+ */
+#}
+
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set rand = rand|default(random()) %}
 <div class="mb-3">
    <form id="{{ link_itemtype|lower ~ "_form" ~ rand }}" name="{{ link_itemtype|lower ~ "_form" ~ rand }}" method="post" action="{{ link_itemtype|itemtype_form_path }}">
-      {{ form_label }}
+      {% if form_label_level is defined and form_label is not empty %}
+         {# Structure only: fs-4 and lh-base restore the surrounding body text metrics. #}
+         <h{{ form_label_level }} class="fw-normal mb-0 fs-4 lh-base">{{ form_label }}</h{{ form_label_level }}>
+      {% else %}
+         {{ form_label }}
+      {% endif %}
       {% if generic_source ?? false %}
           {{ fields.hiddenField('itemtype' ~ (source_suffix ?? ''), source_itemtype) }}
           {{ fields.hiddenField('items_id' ~ (source_suffix ?? ''), source_items_id) }}
@@ -91,7 +142,7 @@
       {% endif %}
          <div class="col-auto">
             <button class="btn btn-primary ms-1" type="submit" name="add">
-               <i class="{{ add_button_icon ?? 'ti ti-link' }}"></i>
+               <i class="{{ add_button_icon ?? 'ti ti-link' }}" aria-hidden="true"></i>
                <span>{{ add_button_label ?? _x('button', 'Add') }}</span>
             </button>
          </div>
@@ -100,7 +151,7 @@
                {% set target_form_path = (target_itemtype|itemtype_form_path ~ "?_" ~ source_itemtype|itemtype_foreign_key ~ "=" ~ source_items_id) %}
                {% set create_url = create_link['url'] is defined ? create_link['url'] : target_form_path %}
                <a href="{{ create_url }}" class="btn btn-primary">
-                  <i class="ti ti-plus"></i>
+                  <i class="ti ti-plus" aria-hidden="true"></i>
                   <span>{{ button_label }}</span>
                </a>
          </div>

@@ -220,7 +220,7 @@ export class TeamBadgeProvider {
         context.fillText(initials, this.team_image_size / 2, this.team_image_size / 2);
         const src = canvas.toDataURL("image/png");
         const name = team_member['name'];
-        return `<span><img src="${_.escape(src)}" title="${_.escape(name)}" data-bs-toggle="tooltip" data-bs-placement="top" data-placeholder-users-id="${_.escape(team_member["id"])}"/></span>`;
+        return `<span><img src="${_.escape(src)}" alt="${_.escape(name)}" title="${_.escape(name)}" data-bs-toggle="tooltip" data-bs-placement="top" data-placeholder-users-id="${_.escape(team_member["id"])}"/></span>`;
     }
 
     /**
@@ -235,7 +235,8 @@ export class TeamBadgeProvider {
 
         return `
             <span class="badge badge-pill" style="background-color: ${_.escape(bg_color)}; font-size: ${(this.team_image_size / 2)}px; height: 26px; padding: 0.25em;">
-                <i class="${_.escape(icon)}" title="${_.escape(name)}" data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                <i class="${_.escape(icon)}" title="${_.escape(name)}" data-bs-toggle="tooltip" data-bs-placement="top" aria-hidden="true"></i>
+                <span class="visually-hidden">${_.escape(name)}</span>
             </span>
         `;
     }
@@ -252,6 +253,7 @@ export class TeamBadgeProvider {
         const context = canvas.getContext('2d');
         context.fillText(`+${overflow_count}`, this.team_image_size / 2, this.team_image_size / 2);
         const src = canvas.toDataURL("image/png");
-        return `<span class="position-relative"><img src="${_.escape(src)}" title="${__('%d other team members').replace('%d', overflow_count)}" data-bs-toggle="tooltip" data-bs-placement="top"></span>`;
+        const label = _.escape(__('%d other team members').replace('%d', overflow_count));
+        return `<span class="position-relative"><img src="${_.escape(src)}" alt="${label}" title="${label}" data-bs-toggle="tooltip" data-bs-placement="top"></span>`;
     }
 }

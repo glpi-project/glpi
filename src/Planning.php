@@ -267,7 +267,7 @@ class Planning extends CommonGLPI
         }
         $class = self::getStatusClass($status);
         $color = self::getStatusColor($status);
-        return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip'></i><span>" . $label . "</span>";
+        return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip' aria-hidden='true'></i><span>" . $label . "</span>";
     }
 
     /**
@@ -336,7 +336,7 @@ class Planning extends CommonGLPI
                     break;
 
             }
-            return $('<span><i class="itilstatus ' + classes + '"></i> ' + _.escape(option.text) + '</span>');
+            return $('<span><i class="itilstatus ' + classes + '" aria-hidden="true"></i> ' + _.escape(option.text) + '</span>');
         }
 JAVASCRIPT;
 
@@ -925,7 +925,7 @@ JAVASCRIPT;
     public static function showAddPlanningForm()
     {
         $planning_types = ['user' => User::getTypeName(1)];
-        if (Session::haveRightsOr('planning', [self::READGROUP, self::READALL])) {
+        if (Session::haveRightsOr(Planning::$rightname, [self::READGROUP, self::READALL])) {
             $planning_types['group_users'] = __('All users of a group');
             $planning_types['group']       = Group::getTypeName(1);
         }
@@ -980,13 +980,13 @@ TWIG, $twig_params);
         // show only users with right to add planning events
         $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
         // Can we see only personal planning ?
-        if (!Session::haveRightsOr('planning', [self::READALL, self::READGROUP])) {
+        if (!Session::haveRightsOr(Planning::$rightname, [self::READALL, self::READGROUP])) {
             $rights = 'id';
         }
         // Can we see user of my groups ?
         if (
-            Session::haveRight('planning', self::READGROUP)
-            && !Session::haveRight('planning', self::READALL)
+            Session::haveRight(Planning::$rightname, self::READGROUP)
+            && !Session::haveRight(Planning::$rightname, self::READALL)
         ) {
             $rights = 'groups';
         }
@@ -1043,7 +1043,7 @@ TWIG, $twig_params);
     {
         $condition = [];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
+        if (!Session::haveRight(Planning::$rightname, self::READALL) && count($_SESSION['glpigroups'])) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
 
@@ -1140,7 +1140,7 @@ TWIG, $twig_params);
 
             echo "<div class='center'>";
             echo "<a href='" . htmlescape($url) . "' class='btn btn-outline-secondary'>"
-                . "<i class='ti ti-eye'></i>"
+                . "<i class='ti ti-eye' aria-hidden='true'></i>"
                 . "<span>" . __s("View this item in its context") . "</span>"
             . "</a>";
             echo "</div>";
@@ -1164,7 +1164,7 @@ TWIG, $twig_params);
     {
         $condition = ['is_task' => 1];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
+        if (!Session::haveRight(Planning::$rightname, self::READALL) && count($_SESSION['glpigroups'])) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
 
@@ -1439,7 +1439,7 @@ TWIG, $twig_params);
         if (count($append_params) > 1) {
             $rand = mt_rand();
             echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
-            echo "<i class='ti ti-calendar'></i>";
+            echo "<i class='ti ti-calendar' aria-hidden='true'></i>";
             echo "<span class='visually-hidden'>" . __s('Availability') . "</span>";
             echo "</a>";
             Ajax::createIframeModalWindow(
@@ -2114,8 +2114,7 @@ TWIG, $twig_params);
             if (
                 $item->getFromDB($params['items_id'])
                 && empty($item->fields['is_deleted'])
-                && $item::canUpdate()
-                && $item->canUpdateItem()
+                && $item->can($item->getID(), UPDATE)
             ) {
                 // item exists and is not in bin
 

@@ -78,7 +78,7 @@
 
       {{ fields.smallTitle(__('General')) }}
        <twig:Alert:Warning
-           :message="__('Child locations will not be transferred with the parent to avoid visibility and hierarchy issues.')"
+           :content="__('Child locations will not be transferred with the parent to avoid visibility and hierarchy issues.')"
        />
       {{ fields.dropdownArrayField('keep_history', item.fields['keep_history'], keep_options, __('Historical'), {
          readonly: not can_change_options,

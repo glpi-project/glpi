@@ -60,7 +60,7 @@ class Reservation extends CommonDBChild
     {
         if (
             !$withtemplate
-            && Session::haveRight("reservation", READ)
+            && Session::haveRight(Reservation::$rightname, READ)
         ) {
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::class);
         }
@@ -86,7 +86,7 @@ class Reservation extends CommonDBChild
         if (
             isset($this->fields["users_id"])
             && (($this->fields["users_id"] === Session::getLoginUserID())
-              || Session::haveRight("reservation", PURGE))
+              || Session::haveRight(Reservation::$rightname, PURGE))
         ) {
             // Processing Email
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -428,7 +428,7 @@ class Reservation extends CommonDBChild
         $item = $ri !== false ? $ri->getItem() : false;
         if ($item !== false) {
             // Users with permission to update the specific asset can CRUD all reservations for that asset
-            if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+            if ($item->can($item->getID(), UPDATE)) {
                 return true;
             }
         }
@@ -477,7 +477,7 @@ class Reservation extends CommonDBChild
         }
 
         // Users with permission to update the specific asset can see all reservations for that asset
-        if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+        if ($item->can($item->getID(), UPDATE)) {
             return true;
         }
 
@@ -520,7 +520,7 @@ class Reservation extends CommonDBChild
     {
         global $CFG_GLPI;
 
-        if (!Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
+        if (!Session::haveRightsOr(Reservation::$rightname, [READ, ReservationItem::RESERVEANITEM])) {
             return;
         }
 
@@ -550,7 +550,7 @@ class Reservation extends CommonDBChild
 
             $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>"
                . __s('View all items')
-               . "&nbsp;<i class='ti ti-eye'></i>"
+               . "&nbsp;<i class='ti ti-eye' aria-hidden='true'></i>"
             . "</a>";
         } else {
             $type = "";
@@ -567,7 +567,7 @@ class Reservation extends CommonDBChild
         echo "</div>"; // .reservation_panel
 
         $can_reserve = (
-            Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
+            Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
         );
 
@@ -612,9 +612,9 @@ HTML;
         $res_table   = static::getTable();
         $res_i_table = ReservationItem::getTable();
 
-        $can_read    = Session::haveRight("reservation", READ);
-        $can_edit    = Session::getCurrentInterface() === "central" && Session::haveRight("reservation", UPDATE);
-        $can_reserve = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
+        $can_read    = Session::haveRight(Reservation::$rightname, READ);
+        $can_edit    = Session::getCurrentInterface() === "central" && Session::haveRight(Reservation::$rightname, UPDATE);
+        $can_reserve = Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM);
 
         $user = new User();
 
@@ -843,7 +843,7 @@ HTML;
         $resa->fields["users_id_friendlyname"] = User::getFriendlyNameById($uid);
 
         $entities_id  = (isset($item)) ? $item->getEntityID() : Session::getActiveEntity();
-        $canedit = Session::haveRight("reservation", UPDATE) && Session::haveAccessToEntity($entities_id);
+        $canedit = Session::haveRight(Reservation::$rightname, UPDATE) && Session::haveAccessToEntity($entities_id);
 
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
@@ -1001,7 +1001,7 @@ HTML;
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        if (!Session::haveRight("reservation", READ)) {
+        if (!Session::haveRight(Reservation::$rightname, READ)) {
             return;
         }
 
@@ -1018,7 +1018,8 @@ HTML;
         $ID     = $ri->getID();
 
         echo "<br>";
-        echo "<h1>" . __s('Reservations for this item') . "</h1>";
+        // Level 2: the page already carries the item h1. The h1 class keeps the rendering unchanged.
+        echo "<h2 class='h1'>" . __s('Reservations for this item') . "</h2>";
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
         $default_date = date('Y-m-d');
@@ -1032,7 +1033,7 @@ HTML;
         $default_date = jsescape($default_date);
 
         $can_reserve_js =  (
-            Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
+            Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
         ) ? "true" : "false";
         $now = jsescape($_SESSION["glpi_currenttime"]);
@@ -1174,13 +1175,13 @@ HTML;
                 [$annee, $mois] = explode("-", $data["start_date"]);
                 $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
-                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
+                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "' aria-hidden='true'></i>";
                 $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
                 $entry['planning'] .= "</a>";
             } elseif ($item instanceof CommonDBTM) {
                 $href = htmlescape($item::getFormURLWithID($item->getID()) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data['start_date']}");
                 $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
-                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
+                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "' aria-hidden='true'></i>";
                 $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
             }
             return $entry;
@@ -1229,7 +1230,7 @@ HTML;
      **/
     public static function showForUser($ID)
     {
-        if (!Session::haveRight("reservation", READ)) {
+        if (!Session::haveRight(Reservation::$rightname, READ)) {
             return;
         }
 
@@ -1279,16 +1280,16 @@ HTML;
                 }
             }
             if ($show_all || !$reservable) {
-                $actions[$action_prefix . 'enable'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Authorize reservations');
+                $actions[$action_prefix . 'enable'] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>" . __s('Authorize reservations');
             }
             if ($show_all || $reservable) {
-                $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off'></i>" . __s('Prohibit reservations');
+                $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off' aria-hidden='true'></i>" . __s('Prohibit reservations');
             }
             if ($show_all || ($reservable && !$available)) {
-                $actions[$action_prefix . 'available'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Make available for reservations');
+                $actions[$action_prefix . 'available'] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>" . __s('Make available for reservations');
             }
             if ($show_all || $available) {
-                $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off'></i>" . __s('Make unavailable for reservations');
+                $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off' aria-hidden='true'></i>" . __s('Make unavailable for reservations');
             }
         }
     }

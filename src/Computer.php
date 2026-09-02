@@ -404,19 +404,19 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
                 'Item_OperatingSystem' . MassiveAction::CLASS_ACTION_SEPARATOR . 'update'
                 => htmlescape(OperatingSystem::getTypeName()),
                 Asset_PeripheralAsset::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-                => "<i class='ti ti-plug'></i>"
+                => "<i class='ti ti-plug' aria-hidden='true'></i>"
                   . _sx('button', 'Connect'),
                 'Item_SoftwareVersion' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-                => "<i class='" . htmlescape(Software::getIcon()) . "'></i>"
+                => "<i class='" . htmlescape(Software::getIcon()) . "' aria-hidden='true'></i>"
                   . _sx('button', 'Install'),
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-                => "<i class='" . htmlescape(SoftwareLicense::getIcon()) . "'></i>"
+                => "<i class='" . htmlescape(SoftwareLicense::getIcon()) . "' aria-hidden='true'></i>"
                   . _sx('button', 'Add a license'),
                 'Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'
-                => "<i class='" . htmlescape(Domain::getIcon()) . "'></i>"
+                => "<i class='" . htmlescape(Domain::getIcon()) . "' aria-hidden='true'></i>"
                     . _sx('button', 'Add a domain'),
                 'Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_domain'
-                => "<i class='" . htmlescape(Domain::getIcon()) . "'></i>"
+                => "<i class='" . htmlescape(Domain::getIcon()) . "' aria-hidden='true'></i>"
                     . _sx('button', 'Remove a domain'),
             ];
 

@@ -80,8 +80,7 @@ class Profile_User extends CommonDBRelation
     public function canCreateItem(): bool
     {
 
-        $user = new User();
-        return $user->can($this->fields['users_id'], READ)
+        return parent::canCreateItem()
              && Profile::currentUserHaveMoreRightThan([$this->fields['profiles_id']
                                                                => $this->fields['profiles_id'],
              ])
@@ -443,7 +442,7 @@ TWIG, $avatar_params) . $username;
         global $DB;
 
         $ID      = $prof->fields['id'];
-        $canedit = Session::haveRightsOr("user", [CREATE, UPDATE, DELETE, PURGE]);
+        $canedit = Session::haveRightsOr(User::$rightname, [CREATE, UPDATE, DELETE, PURGE]);
         $rand = mt_rand();
         if (!$prof->can($ID, READ)) {
             return;
@@ -1020,7 +1019,7 @@ TWIG, $avatar_params) . $username;
             $nb = 0;
             switch (get_class($item)) {
                 case Entity::class:
-                    if (Session::haveRight('user', READ)) {
+                    if (Session::haveRight(User::$rightname, READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $count = $DB->request([
                                 'COUNT'     => 'cpt',
@@ -1045,7 +1044,7 @@ TWIG, $avatar_params) . $username;
                     break;
 
                 case Profile::class:
-                    if (Session::haveRight('user', READ)) {
+                    if (Session::haveRight(User::$rightname, READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $count = $DB->request([
                                 'COUNT'     => 'cpt',
@@ -1332,4 +1331,12 @@ TWIG, $avatar_params) . $username;
             );
         }
     }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
+
 }

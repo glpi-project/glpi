@@ -1300,7 +1300,7 @@ class PendingReasonTest extends DbTestCase
             'name' => 'Auto close PendingReason',
             'entities_id' => $entities_id,
             'itemtype' => 'Ticket',
-            'event' => 'pendingreason_close',
+            'event' => 'pendingreason_resolve',
             'is_active' => 1,
         ]);
 

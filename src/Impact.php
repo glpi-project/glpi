@@ -348,7 +348,7 @@ JS);
                             $path[] = htmlescape($node['label']);
                         }
                     }
-                    $separator = '<i class="ti ti-chevron-right"></i>';
+                    $separator = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
                     echo implode(" $separator ", $path);
 
                     echo '</div></td>';
@@ -1077,7 +1077,7 @@ HTML;
         echo '</div>'; // <div class="impact-side-select-itemtype">
 
         echo '<div class="impact-side-search">';
-        echo '<h4><i class="ti ti-chevron-left"></i><img><span></span></h4>';
+        echo '<h4><i class="ti ti-chevron-left" aria-hidden="true"></i><img><span></span></h4>';
         echo Html::input("impact-side-filter-assets", [
             'id' => 'impact-side-filter-assets',
             'placeholder' => __('Filter assets...'),
@@ -1087,7 +1087,7 @@ HTML;
         echo '<div class="impact-side-search-results"></div>';
 
         echo '<div class="impact-side-search-more">';
-        echo '<h4><i class="ti ti-chevron-down"></i>' . __s("More...") . '</h4>';
+        echo '<h4><i class="ti ti-chevron-down" aria-hidden="true"></i>' . __s("More...") . '</h4>';
         echo '</div>'; // <div class="impact-side-search-more">
 
         echo '<div class="impact-side-search-no-results">';
@@ -1153,20 +1153,20 @@ HTML;
         echo '</div>'; // div class="impact-side-panel">
 
         echo '<ul class="fs-1">';
-        echo '<li id="save_impact" title="' . __s("Save") . '"><i class="ti ti-device-floppy"></i></li>';
-        echo '<li id="impact_undo" class="impact-disabled" title="' . __s("Undo") . '"><i class="ti ti-arrow-back-up"></i></li>';
-        echo '<li id="impact_redo" class="impact-disabled" title="' . __s("Redo") . '"><i class="ti ti-arrow-forward-up"></i></li>';
+        echo '<li id="save_impact" title="' . __s("Save") . '"><i class="ti ti-device-floppy" aria-hidden="true"></i></li>';
+        echo '<li id="impact_undo" class="impact-disabled" title="' . __s("Undo") . '"><i class="ti ti-arrow-back-up" aria-hidden="true"></i></li>';
+        echo '<li id="impact_redo" class="impact-disabled" title="' . __s("Redo") . '"><i class="ti ti-arrow-forward-up" aria-hidden="true"></i></li>';
         echo '<li class="impact-separator"></li>';
-        echo '<li id="add_node" title="' . __s("Add asset") . '"><i class="ti ti-plus"></i></li>';
-        echo '<li id="add_edge" title="' . __s("Add relation") . '"><i class="ti ti-line"></i></li>';
-        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="ti ti-augmented-reality"></i></li>';
-        echo '<li id="delete_element" title="' . __s("Delete element") . '"><i class="ti ti-trash"></i></li>';
+        echo '<li id="add_node" title="' . __s("Add asset") . '"><i class="ti ti-plus" aria-hidden="true"></i></li>';
+        echo '<li id="add_edge" title="' . __s("Add relation") . '"><i class="ti ti-line" aria-hidden="true"></i></li>';
+        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="ti ti-augmented-reality" aria-hidden="true"></i></li>';
+        echo '<li id="delete_element" title="' . __s("Delete element") . '"><i class="ti ti-trash" aria-hidden="true"></i></li>';
         echo '<li class="impact-separator"></li>';
-        echo '<li id="export_graph" title="' . __s("Download") . '"><i class="ti ti-download"></i></li>';
-        echo '<li id="toggle_fullscreen" title="' . __s("Fullscreen") . '"><i class="ti ti-maximize"></i></li>';
-        echo '<li id="impact_settings" title="' . __s("Settings") . '"><i class="ti ti-adjustments"></i></li>';
+        echo '<li id="export_graph" title="' . __s("Download") . '"><i class="ti ti-download" aria-hidden="true"></i></li>';
+        echo '<li id="toggle_fullscreen" title="' . __s("Fullscreen") . '"><i class="ti ti-maximize" aria-hidden="true"></i></li>';
+        echo '<li id="impact_settings" title="' . __s("Settings") . '"><i class="ti ti-adjustments" aria-hidden="true"></i></li>';
         echo '</ul>';
-        echo '<span class="impact-side-toggle"><i class="ti ti-chevron-left"></i></span>';
+        echo '<span class="impact-side-toggle"><i class="ti ti-chevron-left" aria-hidden="true"></i></span>';
         echo '</div>'; // <div class="impact-side impact-side-expanded">
         echo "</td></tr>";
         echo "</table>";

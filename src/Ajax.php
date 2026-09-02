@@ -193,7 +193,7 @@ class Ajax
                             <h3 class="modal-title">' . htmlescape($param['title']) . '</h3>
                         </div>
                         <div class="modal-body">
-                            <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden">
+                            <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden" data-testid="modal-iframe">
                             </iframe>
                         </div>
                     </div>
@@ -788,7 +788,8 @@ JS;
         $display = true
     ) {
 
-        $out = sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
+        $out = sprintf('try { $("#%s").find(".select2-hidden-accessible").select2("destroy"); } catch(e) {}', jsescape($toupdate));
+        $out .= sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
         if (count($parameters)) {
             $out .= ",{";
             $first = true;

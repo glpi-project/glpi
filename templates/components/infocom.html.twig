@@ -43,7 +43,7 @@
                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
                <button type="submit" class="btn btn-primary" name="add" value="1">
-                  <i class="ti ti-coins"></i>
+                  <i class="ti ti-coins" aria-hidden="true"></i>
                   <span>{{ __('Enable the financial and administrative information') }}</span>
                </button>
          </div>
@@ -340,14 +340,14 @@
                      <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                         {% if can_global_update %}
                            <button class="btn btn-primary me-2" type="submit" name="update">
-                              <i class="ti ti-device-floppy"></i>
+                              <i class="ti ti-device-floppy" aria-hidden="true"></i>
                               <span>{{ _x('button', 'Save') }}</span>
                            </button>
                         {% endif %}
 
                         {% if can_global_purge %}
                            <button class="btn btn-outline-danger me-2" type="submit" name="purge">
-                              <i class="ti ti-trash"></i>
+                              <i class="ti ti-trash" aria-hidden="true"></i>
                               <span>{{ _x('button', 'Delete permanently') }}</span>
                            </button>
                         {% endif %}

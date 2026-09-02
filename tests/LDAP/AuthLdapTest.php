@@ -1060,7 +1060,7 @@ class AuthLdapTest extends DbTestCase
         yield [
             'group_dn'            => 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org',
             'user_uid'            => 'specialchar1',
-            // openladap replaces `\#` by `\23` (23 is the ascii code for #)
+            // OpenLDAP replaces `\#` by `\23` (23 is the ascii code for #)
             'expected_group_dn'   => 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org',
             'expected_group_name' => 'glpi2-group2',
         ];
@@ -3089,6 +3089,32 @@ class AuthLdapTest extends DbTestCase
             $error,
             LogLevel::WARNING
         );
+    }
+
+    #[RequiresPhpExtension('ldap')]
+    public function testSearchForUsersIndexesUsersByDn(): void
+    {
+        $ldap = $this->ldap;
+        $limitexceeded = false;
+        $user_infos = $ldap_users = $ldap_users_by_dn = [];
+
+        AuthLDAP::searchForUsers(
+            $ldap->connect(),
+            ['basedn' => $ldap->fields['basedn'], 'mode' => AuthLDAP::ACTION_SYNCHRONIZE],
+            '(uid=ecuador0)',
+            ['uid', 'modifyTimestamp'],
+            $limitexceeded,
+            $user_infos,
+            $ldap_users,
+            $ldap,
+            $ldap_users_by_dn
+        );
+
+        $this->assertSame(
+            'ecuador0',
+            $ldap_users_by_dn['uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org']['name'] ?? null
+        );
+        $this->assertSame($user_infos['ecuador0']['timestamp'], $ldap_users['ecuador0']);
     }
 
     public static function searchForUsersErrorsProvider(): iterable

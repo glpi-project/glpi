@@ -95,7 +95,7 @@ class Lock extends CommonGLPI
         // language=Twig
         $list_info_alert_template = <<<TWIG
             <div class="alert alert-info d-flex align-items-center" role="alert">
-                <i class="ti ti-info-circle fs-1"></i>
+                <i class="ti ti-info-circle fs-1" aria-hidden="true"></i>
                 <span class="ms-2">
                     <span class="alert-title">{{ alert_title }}</span>
                     <br>
@@ -1065,7 +1065,7 @@ TWIG, $twig_params);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div>
-                    <i class='ti ti-corner-left-up mx-3'></i>
+                    <i class='ti ti-corner-left-up mx-3' aria-hidden='true'></i>
                     <a onclick="if ( markCheckboxes('lock_form') ) return false;" href='#'>{{ check_all_msg }}</a>
                     <span>/</span>
                     <a onclick="if ( unMarkCheckboxes('lock_form') ) return false;" href='#'>{{ uncheck_all_msg }}</a>
@@ -1306,7 +1306,7 @@ TWIG, $twig_params);
 
         if (
             Session::haveRight($itemtype::$rightname, UPDATE)
-            && in_array($itemtype, $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'], true)
+            && in_array($itemtype, array_merge($CFG_GLPI['inventory_types'], $CFG_GLPI['inventory_lockable_objects']), true)
         ) {
             $actions[$action_unlock_component] = __s('Unlock components');
             $actions[$action_unlock_fields] = __s('Unlock fields');

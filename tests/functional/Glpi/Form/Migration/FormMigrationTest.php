@@ -100,6 +100,7 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Ramsey\Uuid\Uuid;
 use Ticket;
 
 final class FormMigrationTest extends DbTestCase
@@ -1182,13 +1183,54 @@ final class FormMigrationTest extends DbTestCase
         yield 'FULLFORM placeholder' => [
             'rawContent'                => '##FULLFORM##',
             'expectedPatternForTitle'   => '/##FULLFORM##/',
-            'expectedPatternForContent' => '/<p><b>1\) <span[^>]*>#Question: Question for tag tests 1<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 1<\/span><br><b>2\) <span[^>]*>#Question: Question for tag tests 2<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 2<\/span><br><\/p>/',
+            'expectedPatternForContent' => '/<p>'
+                                                . '<b>1\) <span[^>]*>#Question: Question for tag tests 1<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 1<\/span><br>'
+                                                . '<b>2\) <span[^>]*>#Question: Question for tag tests 2<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 2<\/span><br>'
+                                                . '<b>3\) <span[^>]*>#Question: Question for tag tests 3<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 3<\/span><br>'
+                                                . '<b>4\) <span[^>]*>#Question: Question for tag tests 4<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 4<\/span><br>'
+                                            . '<\/p>/',
         ];
 
         yield 'No tags' => [
             'rawContent'                => 'Plain text without any tags',
             'expectedPatternForTitle' => '/^Plain text without any tags$/',
             'expectedPatternForContent' => '/^Plain text without any tags$/',
+        ];
+
+        yield 'Property tag on a non "GLPI Object" question is left untouched' => [
+            'rawContent'                => 'NonItem: ##answer_9998.serial##',
+            'expectedPatternForTitle'   => '/^NonItem: ##answer_9998\.serial##$/',
+            'expectedPatternForContent' => '/^NonItem: ##answer_9998\.serial##$/',
+        ];
+
+        yield 'Property tag on a "GLPI Object" question (simple field)' => [
+            'rawContent'                => 'Serial: ##answer_9996.serial##',
+            'expectedPatternForTitle'   => '/Serial: <span[^>]*>#Answer: Question for tag tests 3 › Serial number<\/span>/',
+            'expectedPatternForContent' => '/Serial: <span[^>]*>#Answer: Question for tag tests 3 › Serial number<\/span>/',
+        ];
+
+        yield 'Property tag on a "GLPI Object" question (generic field)' => [
+            'rawContent'                => 'Name: ##answer_9996.name##',
+            'expectedPatternForTitle'   => '/Name: <span[^>]*>#Answer: Question for tag tests 3 › Name<\/span>/',
+            'expectedPatternForContent' => '/Name: <span[^>]*>#Answer: Question for tag tests 3 › Name<\/span>/',
+        ];
+
+        yield 'Property tag on a User question (simple field)' => [
+            'rawContent'                => 'Email: ##answer_9997.login##',
+            'expectedPatternForTitle'   => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Login<\/span>/',
+            'expectedPatternForContent' => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Login<\/span>/',
+        ];
+
+        yield 'Email tag on a User question' => [
+            'rawContent'                => 'Email: ##answer_9997.email##',
+            'expectedPatternForTitle'   => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Email addresses<\/span>/',
+            'expectedPatternForContent' => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Email addresses<\/span>/',
+        ];
+
+        yield 'Unknown property tag tag on a User question' => [
+            'rawContent'                => 'Unknown: ##answer_9997.unknown##',
+            'expectedPatternForTitle'   => '/^Unknown: ##answer_9997.unknown##$/',
+            'expectedPatternForContent' => '/^Unknown: ##answer_9997.unknown##$/',
         ];
     }
 
@@ -1233,6 +1275,32 @@ final class FormMigrationTest extends DbTestCase
                 'plugin_formcreator_sections_id' => $section_id,
                 'name'                           => 'Question for tag tests 2',
                 'row'                            => 1,
+            ]
+        ));
+
+        // "GLPI Object" questions (fieldtype "glpiselect"), migrated into a
+        // `QuestionTypeItem` question so that its properties can be resolved.
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'id'                             => 9996,                         // Fixed ID to match our test tags
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Question for tag tests 3',
+                'fieldtype'                      => 'glpiselect',
+                'itemtype'                       => 'Computer',
+                'row'                            => 2,
+            ]
+        ));
+
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'id'                             => 9997,                         // Fixed ID to match our test tags
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Question for tag tests 4',
+                'fieldtype'                      => 'glpiselect',
+                'itemtype'                       => 'User',
+                'row'                            => 3,
             ]
         ));
 
@@ -4069,6 +4137,173 @@ final class FormMigrationTest extends DbTestCase
 
         // Assert: migration should be done without error
         $this->assertTrue($result->isFullyProcessed());
+    }
+
+    public function testFormMigrationWithDuplicateFormNames(): void
+    {
+        global $DB;
+
+        // Arrange: create two formcreator forms with the exact same name, entity
+        // and category. This reproduces a real-world scenario where users had
+        // duplicated form names in formcreator.
+        $duplicate_name = 'Duplicate form name test';
+        $this->createSimpleFormcreatorForm(
+            name: $duplicate_name,
+            questions: [
+                ['name' => 'Question in first form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => Uuid::uuid4(),
+            ]
+        );
+        $this->createSimpleFormcreatorForm(
+            name: $duplicate_name,
+            questions: [
+                ['name' => 'Question in second form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => Uuid::uuid4(),
+            ]
+        );
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: both forms must have been migrated as distinct GLPI forms.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => $duplicate_name],
+        ]);
+        $this->assertEquals(
+            2,
+            $migrated_forms->count(),
+            'Two distinct forms should have been created, one per formcreator form'
+        );
+    }
+
+    public function testFormMigrationWithCollidingFormUuids(): void
+    {
+        global $DB;
+
+        // Arrange: create two formcreator forms sharing the exact same UUID.
+        // Formcreator has no unique constraint on this column, so this can
+        // happen with real-world data (e.g. forms duplicated by a buggy tool).
+        $shared_uuid = (string) Uuid::uuid4();
+        $this->createSimpleFormcreatorForm(
+            name: 'Form with colliding uuid 1',
+            questions: [
+                ['name' => 'Question in first form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $shared_uuid,
+            ]
+        );
+        $this->createSimpleFormcreatorForm(
+            name: 'Form with colliding uuid 2',
+            questions: [
+                ['name' => 'Question in second form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $shared_uuid,
+            ]
+        );
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: both forms must have been migrated as distinct GLPI forms,
+        // despite sharing the same source UUID.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => ['Form with colliding uuid 1', 'Form with colliding uuid 2']],
+        ]);
+        $this->assertEquals(
+            2,
+            $migrated_forms->count(),
+            'Two distinct forms should have been created, one per formcreator form, despite the UUID collision'
+        );
+    }
+
+    public function testFormMigrationSubstituteUuidIsDeterministicAcrossReplays(): void
+    {
+        global $DB;
+
+        // Arrange: a formcreator form with no UUID, forcing a substitute one to be generated.
+        $this->createSimpleFormcreatorForm(
+            name: 'Form without uuid replayed',
+            questions: [
+                ['name' => 'Question', 'fieldtype' => 'text'],
+            ],
+        );
+
+        // Act: run the migration twice, as a real replay of the console command would.
+        $first_migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($first_migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($first_migration, 'processMigration'));
+
+        $second_migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($second_migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($second_migration, 'processMigration'));
+
+        // Assert: the replay reconciled with the form created on the first run instead of duplicating it.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'uuid'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => 'Form without uuid replayed'],
+        ]);
+        $this->assertEquals(
+            1,
+            $migrated_forms->count(),
+            'The substitute UUID must be the same on both runs, so the replay must not create a duplicate'
+        );
+    }
+
+    public function testFormMigrationReconcilesFormsMigratedBeforeUuidReconciliation(): void
+    {
+        global $DB;
+
+        // Arrange: a formcreator form with a UUID, as if Formcreator was upgraded after a first migration.
+        $source_uuid = (string) Uuid::uuid4();
+        $this->createSimpleFormcreatorForm(
+            name: 'Form migrated before uuid reconciliation',
+            questions: [
+                ['name' => 'Question', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $source_uuid,
+            ]
+        );
+
+        // Arrange: a GLPI form matching it by name/entity/category, but with an unrelated UUID,
+        // as produced by a migration run before reconciliation switched from name to uuid.
+        $legacy_form = $this->createItem(Form::class, [
+            'name'        => 'Form migrated before uuid reconciliation',
+            'entities_id' => 0,
+            'uuid'        => (string) Uuid::uuid4(),
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: the pre-existing form was adopted, not duplicated, and its uuid was upgraded.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'uuid'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => 'Form migrated before uuid reconciliation'],
+        ]);
+        $this->assertEquals(1, $migrated_forms->count());
+
+        $migrated_form = $migrated_forms->current();
+        $this->assertEquals($legacy_form->getID(), $migrated_form['id']);
+        $this->assertEquals($source_uuid, $migrated_form['uuid']);
     }
 
     public function testFormMigrationActorsWithEmptyDefaultValue(): void

@@ -52,6 +52,7 @@ use Dropdown;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigContainer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Dropdown\DropdownDefinitionManager;
@@ -89,7 +90,7 @@ class GLPITestCase extends TestCase
     private $int;
     private $str;
     protected $has_failed = false;
-    private ?array $config_copy = null;
+    private ?ConfigContainer $config_copy = null;
     private array $superglobals_copy = [];
 
     private TestHandler $log_handler;
@@ -510,7 +511,9 @@ class GLPITestCase extends TestCase
         $this->superglobals_copy['SERVER'] = $_SERVER;
 
         if ($this->config_copy === null) {
-            $this->config_copy = $CFG_GLPI;
+            // Snapshot the config as an independent copy (ConfigContainer holds
+            // its data in an array property, copied by value on clone).
+            $this->config_copy = clone $CFG_GLPI;
         }
     }
 
@@ -537,7 +540,7 @@ class GLPITestCase extends TestCase
 
         // Globals
         global $CFG_GLPI, $FOOTER_LOADED, $HEADER_LOADED;
-        $CFG_GLPI = $this->config_copy;
+        $CFG_GLPI = clone $this->config_copy;
         $FOOTER_LOADED = false;
         $HEADER_LOADED = false;
 

@@ -66,15 +66,15 @@ final class CreateArticleController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        $raw_category_id = (int) ($data['knowbaseitemcategories_id'] ?? 0);
-        $category_id = KnowbaseItem::getReadablePrefilledCategoryId($raw_category_id);
+        $raw_parent_id = (int) ($data['knowbaseitems_id_parent'] ?? 0);
+        $parent_id = KnowbaseItem::getReadablePrefilledParentId($raw_parent_id);
 
         $item = $this->add(KnowbaseItem::class, [
             'name'         => $name,
             'answer'       => '',
             'entities_id'  => Session::getActiveEntity(),
             'is_recursive' => 0,
-            '_categories'  => $category_id !== null ? [$category_id] : [],
+            '_parents'     => $parent_id !== null ? [$parent_id] : [],
         ]);
 
         return new JsonResponse([

@@ -1008,7 +1008,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                                 field_class: 'col-4',
                             }) }}
                             {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ add_label }}</span></button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ add_label }}</span></button>
                                 <input type="hidden" name="cartridgeitems_id" value="{{ cartridgeitems_id }}">
                             {% endset %}
                             {{ fields.htmlField('', btn, null, {
@@ -1041,7 +1041,7 @@ TWIG, $twig_params);
         if (!self::canView()) {
             return false;
         }
-        $canedit = Session::haveRight("cartridge", UPDATE);
+        $canedit = Session::haveRight(Cartridge::$rightname, UPDATE);
         $rand    = mt_rand();
 
         $where = ['glpi_cartridges.printers_id' => $instID];

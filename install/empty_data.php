@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\Environment;
+use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Event;
 use Glpi\Form\AnswersSet;
@@ -72,6 +73,9 @@ $empty_data_builder = new class {
     public const USER_TECH            = 4;
     public const USER_NORMAL          = 5;
     public const USER_SYSTEM          = 6;
+
+    /** @var int Root knowledge base article ID (the base of the KB tree) */
+    public const KB_ROOT_ARTICLE      = 1;
 
     /** @var int Value indicating no rights */
     public const RIGHT_NONE           = 0;
@@ -417,6 +421,8 @@ $empty_data_builder = new class {
             'glpi_11_form_migration' => 0,
             'glpi_11_assets_migration' => 0,
             'must_unsanitize_db_data' => 0,
+            'login_history_retention_days' => 90,
+            'root_knowbaseitems_id' => self::KB_ROOT_ARTICLE,
         ];
 
         $tables['glpi_configs'] = [];
@@ -620,7 +626,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 18,
                 'itemtype' => Ticket::class,
-                'name' => 'createinquest',
+                'name' => 'createinquestticket',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
@@ -824,7 +830,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 35,
                 'itemtype' => 'Document',
-                'name' => 'cleanorphans',
+                'name' => 'cleanorphansdocument',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
@@ -896,7 +902,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 41,
                 'itemtype' => Inventory::class,
-                'name' => 'cleanorphans',
+                'name' => 'cleanorphansinventory',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
@@ -932,7 +938,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 44,
                 'itemtype' => 'Change',
-                'name' => 'createinquest',
+                'name' => 'createinquestchange',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
@@ -1021,6 +1027,18 @@ $empty_data_builder = new class {
                 'param' => 3,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 52,
+                'itemtype' => DataAndPrivacyConfig::class,
+                'name' => 'purgesessionhistory',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -2710,6 +2728,23 @@ $empty_data_builder = new class {
             [
                 'id' => 8,
                 'name' => 'PCI-X',
+            ],
+        ];
+
+        // The root article, base of the knowledge base tree. Its id is stored in
+        // the `root_knowbaseitems_id` configuration.
+        // Existing installations get theirs from the 12.0.0 migration.
+        $tables['glpi_knowbaseitems'] = [
+            [
+                'id' => self::KB_ROOT_ARTICLE,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                'name' => __('Home'),
+                'answer' => '',
+                'is_faq' => 0,
+                'users_id' => self::USER_SYSTEM,
+                'date_creation' => date('Y-m-d H:i:s'),
+                'date_mod' => date('Y-m-d H:i:s'),
             ],
         ];
 
@@ -6023,10 +6058,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
             ], [
-                'profiles_id' => self::PROFILE_SUPER_ADMIN,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
-            ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -6326,10 +6357,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
-            ], [
-                'profiles_id' => self::PROFILE_ADMIN,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'itilcategory',
@@ -6638,10 +6665,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_OBSERVER,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'itilcategory',
                 'rights' => READ | UPDATE | CREATE | PURGE,
@@ -6947,10 +6970,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_SELF_SERVICE,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -7241,10 +7260,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_SUPERVISOR,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
-            ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -7532,10 +7547,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | Problem::READMY | Problem::READALL | READNOTE | UPDATENOTE,
             ], [
-                'profiles_id' => self::PROFILE_TECHNICIAN,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'itilcategory',
                 'rights' => READ | UPDATE | CREATE | PURGE,
@@ -7819,10 +7830,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_HOTLINER,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -7950,10 +7957,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'knowbase',
                 'rights' => READ | KnowbaseItem::READFAQ | KnowbaseItem::COMMENTS,
-            ], [
-                'profiles_id' => self::PROFILE_READ_ONLY,
-                'name' => 'knowbasecategory',
-                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'link',

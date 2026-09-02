@@ -178,6 +178,7 @@ class Auth extends CommonGLPI
     /**
      * Check user existence in DB
      *
+     * @phpstan-impure $this->user_dn can be altered
      * @global DBmysql $DB
      * @param  array   $options conditions : array('name'=>'glpi')
      *                                    or array('email' => 'test at test.com')
@@ -1599,7 +1600,7 @@ class Auth extends CommonGLPI
      */
     public static function showSynchronizationForm(User $user)
     {
-        if (Session::haveRight("user", User::UPDATEAUTHENT) && $user->can($user->getID(), READ)) {
+        if (Session::haveRight(User::$rightname, User::UPDATEAUTHENT) && $user->can($user->getID(), READ)) {
             TemplateRenderer::getInstance()->display('pages/setup/authentication/sync.html.twig', [
                 'user' => $user,
             ]);
@@ -1626,7 +1627,7 @@ class Auth extends CommonGLPI
         if (!$withtemplate) {
             switch ($item::class) {
                 case User::class:
-                    if (Session::haveRight("user", User::UPDATEAUTHENT)) {
+                    if (Session::haveRight(User::$rightname, User::UPDATEAUTHENT)) {
                         return self::createTabEntry(__('Synchronization'), 0, $item::class, 'ti ti-refresh');
                     }
                     break;

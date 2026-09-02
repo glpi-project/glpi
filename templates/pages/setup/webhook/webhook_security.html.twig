@@ -82,8 +82,8 @@
 
         {% if constant('GLPI_WEBHOOK_CRA_MANDATORY') %}
             <twig:Alert
-                :title="__('CRA is mandatory due to GLPI configuration')"
-                :message="cra_tooltip"
+                :heading="__('CRA is mandatory due to GLPI configuration')"
+                :content="cra_tooltip"
             />
             <input type="hidden" name="use_cra_challenge" value="1" />
         {% else %}
@@ -99,7 +99,7 @@
 
         {% set cra_btn %}
             <button class="btn btn-primary me-2" type="button" name="validate_challenge" value="1">
-                <i class="ti ti-lock-check"></i>
+                <i class="ti ti-lock-check" aria-hidden="true"></i>
                 <span>{{ _x('button', 'Validate') }}</span>
             </button>
         {% endset %}
@@ -167,10 +167,10 @@
                     success: function(json_response) {
                         if (json_response.status) {
                             $('input[name="is_cra_challenge_valid"]').val(1);
-                            $('span[name="cra_result"]').html('<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
+                            $('span[name="cra_result"]').html('<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;" aria-hidden="true"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
                         } else {
                             $('input[name="is_cra_challenge_valid"]').val(0);
-                            $('span[name="cra_result"]').html('<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
+                            $('span[name="cra_result"]').html('<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;" aria-hidden="true"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
                         }
                     },
                 });

@@ -41,7 +41,7 @@
          <h4 class="card-title {{ icon|length ? 'ms-5' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fs-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}" aria-hidden="true"></i>
                </div>
             {% endif %}
             {{ label }}
@@ -66,7 +66,7 @@
          <h{{ level }} class="card-subtitle fs-4 {{ icon|length ? 'ms-4' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fs-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}" aria-hidden="true"></i>
                </div>
             {% endif %}
              <span class="ms-2">{{ label }}</span>
@@ -285,7 +285,7 @@
 {% macro dateField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.date(name, value, options) }}
+        {{ _inputs.date(name, value, options|merge({'field_label': label})) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -295,7 +295,7 @@
 {% macro datetimeField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.datetime(name, value, options) }}
+        {{ _inputs.datetime(name, value, options|merge({'field_label': label})) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -396,7 +396,7 @@
              {%- endset -%}
             <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
                     onclick="{{ clear_js }}">
-               <i class="ti ti-x"></i>
+               <i class="ti ti-x" aria-hidden="true"></i>
             </button>
          {% endif %}
       </div>
@@ -449,7 +449,7 @@
             If `options` is not iterable, it means that this macro was used
             with its previous signature (name, value, label, options = {}).
             We get the `options` value from the extra positional arguments (available in `varargs`).
-            @TODO Add a deprecation in GLPI 12.0.
+            @TODO Add a deprecation.
          #}
         {% set options = varargs[0]|default({}) %}
     {% endif %}

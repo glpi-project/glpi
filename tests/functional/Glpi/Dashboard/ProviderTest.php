@@ -38,6 +38,7 @@ use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
+use Item_DeviceSimcard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Reminder;
 use Reminder_User;
@@ -655,7 +656,7 @@ class ProviderTest extends DbTestCase
         return [
             ['item' => new \Computer()],
             ['item' => new \Ticket()],
-            ['item' => new \Item_DeviceSimcard()],
+            ['item' => new Item_DeviceSimcard()],
         ];
     }
 
@@ -664,10 +665,10 @@ class ProviderTest extends DbTestCase
     {
         $this->login();
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $data = [
             Provider::bigNumberItem($item),
-            call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"]),
+            call_user_func([Provider::class, "bigNumber$itemtype"]),
         ];
 
         foreach ($data as $result) {
@@ -675,7 +676,7 @@ class ProviderTest extends DbTestCase
             $this->assertArrayHasKey('url', $result);
             $this->assertArrayHasKey('label', $result);
             $this->assertArrayHasKey('icon', $result);
-            if ($item::getType() !== 'Item_DeviceSimcard') {
+            if ($item::class !== Item_DeviceSimcard::class) {
                 // Ignore count for simcards. None are added in Bootstrap process and is here for regression testing only.
                 $this->assertGreaterThan(0, $result['number']);
             }
@@ -760,6 +761,42 @@ class ProviderTest extends DbTestCase
     }
 
 
+    public function testTicketsByStatus()
+    {
+        $this->login();
+
+        // Testing with incoming : to make sure there is at least one ticket
+        $this->createItem(\Ticket::class, [
+            'name'    => "test dashboard card tickets by status",
+            'content' => 'foo',
+            'status'  => \Ticket::INCOMING,
+        ]);
+
+        // verify existing key data/label/icon
+        $result = Provider::ticketsByStatus();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $nb_items = 0;
+        foreach ($result['data'] as $key => $data) {
+            if ($key === 'nodata') {
+                continue;
+            }
+            // checks that each item has a number, a label, and a URL containing Ticket::getSearchURL
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
+
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Ticket::getSearchURL(), $data['url']);
+
+            $nb_items++;
+        }
+
+        $this->assertGreaterThan(0, $nb_items);
+    }
     public function testTicketsOpened()
     {
         $result = Provider::ticketsOpened();
@@ -902,7 +939,7 @@ class ProviderTest extends DbTestCase
 
         // Change author to someone else
         $tech = getItemByTypeName(User::class, 'tech');
-        $this->updateItem($reminder::getType(), $reminder->getID(), [
+        $this->updateItem($reminder::class, $reminder->getID(), [
             'users_id'  => $tech->getID(),
         ]);
         yield ['expected' => 0];
@@ -945,5 +982,221 @@ class ProviderTest extends DbTestCase
 
         // Assert: just make sure this was executed without errors
         $this->assertNotEmpty($params);
+    }
+
+    public function testComputersByOperatingSystem()
+    {
+        $this->login();
+
+        $os = $this->createItem(\OperatingSystem::class, [
+            'name' => 'test dashboard OS',
+        ]);
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'test dashboard computer by os',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem(\Item_OperatingSystem::class, [
+            'itemtype'            => \Computer::class,
+            'items_id'            => $computer->getID(),
+            'operatingsystems_id' => $os->getID(),
+        ]);
+
+        $result = Provider::computersByOperatingSystem();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $nb_items = 0;
+        foreach ($result['data'] as $key => $data) {
+            if ($key === 'nodata') {
+                continue;
+            }
+
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
+
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Computer::getSearchURL(), $data['url']);
+
+            $nb_items++;
+        }
+
+        $this->assertGreaterThan(0, $nb_items);
+    }
+
+    public function testComputersByAge()
+    {
+        $this->login();
+
+        // ensure at least one computer with a warranty date exists so the data loop is exercised
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'test dashboard computer by age',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem(\Infocom::class, [
+            'itemtype'      => \Computer::class,
+            'items_id'      => $computer->getID(),
+            'warranty_date' => date('Y-m-d', strtotime('-2 years')),
+        ]);
+
+        $result = Provider::computersByAge();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $nb_items = 0;
+        foreach ($result['data'] as $key => $data) {
+            if ($key === 'nodata') {
+                continue;
+            }
+
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
+
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Computer::getSearchURL(), $data['url']);
+
+            $nb_items++;
+        }
+
+        $this->assertGreaterThan(0, $nb_items);
+    }
+
+    public function testTicketsByCategoryAndEntity()
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $category1 = $this->createItem(\ITILCategory::class, [
+            'name' => 'test dashboard category 1 for tickets by category and entity',
+        ]);
+        $category2 = $this->createItem(\ITILCategory::class, [
+            'name' => 'test dashboard category 2 for tickets by category and entity',
+        ]);
+
+        $this->createItem(\Ticket::class, [
+            'name'             => 'test dashboard ticket cat1 a',
+            'content'          => 'blablabla',
+            'entities_id'      => $entity_id,
+            'itilcategories_id' => $category1->getID(),
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'             => 'test dashboard ticket cat1 b',
+            'content'          => 'blablabla',
+            'entities_id'      => $entity_id,
+            'itilcategories_id' => $category1->getID(),
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'             => 'test dashboard ticket cat2',
+            'content'          => 'blablabla',
+            'entities_id'      => $entity_id,
+            'itilcategories_id' => $category2->getID(),
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard ticket no category',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => 0,
+        ]);
+
+        $result = Provider::ticketsByCategoryAndEntity();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $this->assertArrayHasKey('labels', $result['data']);
+        $this->assertArrayHasKey('series', $result['data']);
+
+        $entity = new \Entity();
+        $this->assertTrue($entity->getFromDB($entity_id));
+        $entity_index = array_search($entity->fields['completename'], $result['data']['labels'], true);
+        $this->assertNotFalse($entity_index, 'entity must appear in the report labels');
+
+        $series_by_name = [];
+        foreach ($result['data']['series'] as $serie) {
+            $series_by_name[$serie['name']] = $serie['data'];
+        }
+
+        $this->assertArrayHasKey($category1->fields['completename'], $series_by_name);
+        $this->assertArrayHasKey($category2->fields['completename'], $series_by_name);
+        $this->assertArrayHasKey(__('None'), $series_by_name, 'a "None" series is expected for the uncategorized ticket');
+        $this->assertSame(2, $series_by_name[$category1->fields['completename']][$entity_index], '2 tickets expected for category 1');
+        $this->assertSame(1, $series_by_name[$category2->fields['completename']][$entity_index], '1 ticket expected for category 2');
+        $this->assertGreaterThanOrEqual(1, $series_by_name[__('None')][$entity_index], 'at least 1 uncategorized ticket expected');
+    }
+
+    public function testTicketsByGroupAndStatus()
+    {
+        $this->login();
+        $self = getItemByTypeName(User::class, TU_USER);
+
+        $group1 = $this->createItem(\Group::class, [
+            'name' => 'test dashboard group 1 for tickets by status',
+        ]);
+        $group2 = $this->createItem(\Group::class, [
+            'name' => 'test dashboard group 2 for tickets by status',
+        ]);
+
+        $this->createItem(\Group_User::class, [
+            'groups_id' => $group1->getID(),
+            'users_id'  => $self->getID(),
+        ]);
+        $this->createItem(\Group_User::class, [
+            'groups_id' => $group2->getID(),
+            'users_id'  => $self->getID(),
+        ]);
+
+        \Session::loadGroups();
+
+        $this->attachTicketToGroup('group1 opened 1', \Ticket::ASSIGNED, $group1);
+        $this->attachTicketToGroup('group2 opened', \Ticket::ASSIGNED, $group2);
+        $this->attachTicketToGroup('group1 opened 2', \Ticket::INCOMING, $group1);
+        $this->attachTicketToGroup('group1 closed', \Ticket::CLOSED, $group1);
+        $this->attachTicketToGroup('group2 closed/solved 1', \Ticket::SOLVED, $group2);
+        $this->attachTicketToGroup('group2 closed 2', \Ticket::CLOSED, $group2);
+
+        $result = Provider::ticketsByGroupAndStatus();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $this->assertArrayHasKey('labels', $result['data']);
+        $this->assertArrayHasKey('series', $result['data']);
+        $this->assertCount(2, $result['data']['series']);
+
+        $group1_index = array_search($group1->fields['name'], $result['data']['labels'], true);
+        $group2_index = array_search($group2->fields['name'], $result['data']['labels'], true);
+        $this->assertNotFalse($group1_index, 'group1 must be included in report labels');
+        $this->assertNotFalse($group2_index, 'group2 must be included in report labels');
+        $this->assertNotSame($group1_index, $group2_index, 'each group must have its own row');
+
+        $this->assertSame(2, $result['data']['series'][0]['data'][$group1_index], 'group1: 2 opened tickets expected');
+        $this->assertSame(1, $result['data']['series'][1]['data'][$group1_index], 'group1: 1 closed ticket expected');
+        $this->assertSame(1, $result['data']['series'][0]['data'][$group2_index], 'group2: 1 opened ticket expected');
+        $this->assertSame(2, $result['data']['series'][1]['data'][$group2_index], 'group2: 2 closed tickets expected');
+    }
+
+    private function attachTicketToGroup(string $name, int $status, \Group $group): \Ticket
+    {
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => "test dashboard $name",
+            'content'     => 'blablabla',
+            'status'      => $status,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(\Group_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'groups_id'  => $group->getID(),
+            'type'       => \Group_Ticket::ASSIGN,
+        ]);
+
+        return $ticket;
     }
 }

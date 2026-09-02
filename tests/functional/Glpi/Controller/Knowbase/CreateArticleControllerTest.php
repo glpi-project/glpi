@@ -39,7 +39,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
-use KnowbaseItemCategory;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\json_decode;
@@ -47,18 +46,17 @@ use function Safe\json_encode;
 
 final class CreateArticleControllerTest extends DbTestCase
 {
-    public function testCreatesArticleLinkedToCategory(): void
+    public function testCreatesArticleLinkedToParent(): void
     {
         $this->login();
-        $entity_id = $this->getTestRootEntity(only_id: true);
-        $cat = $this->createItem(KnowbaseItemCategory::class, [
-            'name' => 'C1', 'knowbaseitemcategories_id' => 0,
-            'entities_id' => $entity_id, 'is_recursive' => 1,
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Parent article',
+            'answer' => '',
         ]);
 
         $request = new Request(content: json_encode([
             'name' => 'New from inline input',
-            'knowbaseitemcategories_id' => $cat->getID(),
+            'knowbaseitems_id_parent' => $parent->getID(),
         ]));
         $response = (new CreateArticleController())($request);
 
@@ -71,7 +69,13 @@ final class CreateArticleControllerTest extends DbTestCase
         $this->assertTrue($item->getFromDB($data['id']));
         $this->assertSame('New from inline input', $item->fields['name']);
         $this->assertSame('', $item->fields['answer']);
-        $this->assertSame([$cat->getID()], array_map('intval', $item->fields['_categories']));
+
+        $links = (new \KnowbaseItem_KnowbaseItem())->find([
+            'knowbaseitems_id' => $data['id'],
+        ]);
+        $this->assertCount(1, $links);
+        $link = array_pop($links);
+        $this->assertSame($parent->getID(), (int) $link['knowbaseitems_id_parent']);
     }
 
     public function testCreatedArticleIsScopedToActiveEntity(): void
@@ -91,18 +95,19 @@ final class CreateArticleControllerTest extends DbTestCase
         $this->assertSame(0, (int) $item->fields['is_recursive']);
     }
 
-    public function testCreatesUncategorizedArticleWhenNoCategoryGiven(): void
+    public function testCreatesArticleUnderRootWhenNoParentGiven(): void
     {
         $this->login();
 
-        $request = new Request(content: json_encode(['name' => 'No category']));
+        $request = new Request(content: json_encode(['name' => 'No parent']));
         $response = (new CreateArticleController())($request);
 
         $this->assertSame(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        $item = new KnowbaseItem();
-        $this->assertTrue($item->getFromDB($data['id']));
-        $this->assertSame([], $item->fields['_categories']);
+        $this->assertSame(
+            [KnowbaseItem::getRootId()],
+            $this->getParentIds((int) $data['id']),
+        );
     }
 
     public function testEmptyNameReturns400(): void
@@ -122,21 +127,37 @@ final class CreateArticleControllerTest extends DbTestCase
         (new CreateArticleController())($request);
     }
 
-    public function testUnreadableCategoryIsSilentlyDropped(): void
+    public function testUnreadableParentIsSilentlyDropped(): void
     {
         $this->login();
 
         $request = new Request(content: json_encode([
-            'name' => 'Unreadable category test',
-            'knowbaseitemcategories_id' => 999999,
+            'name' => 'Unreadable parent test',
+            'knowbaseitems_id_parent' => 999999,
         ]));
         $response = (new CreateArticleController())($request);
 
         $this->assertSame(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        $item = new KnowbaseItem();
-        $this->assertTrue($item->getFromDB($data['id']));
-        $this->assertSame([], $item->fields['_categories']);
+
+        // The unreadable parent is dropped, so the article falls back to the
+        // root article like any other parentless creation.
+        $this->assertSame(
+            [KnowbaseItem::getRootId()],
+            $this->getParentIds((int) $data['id']),
+        );
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getParentIds(int $article_id): array
+    {
+        $links = (new \KnowbaseItem_KnowbaseItem())->find([
+            'knowbaseitems_id' => $article_id,
+        ]);
+
+        return array_map('intval', array_column($links, 'knowbaseitems_id_parent'));
     }
 
     public function testUserWithoutCreateRightIsDenied(): void

@@ -37,8 +37,9 @@
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
-    {% if prefilled_category is defined %}
-        data-glpi-kb-prefilled-category-id="{{ prefilled_category.id }}"
+    data-glpi-kb-can-comment="{{ can_comment ? 'true' : 'false' }}"
+    {% if prefilled_parent is defined %}
+        data-glpi-kb-prefilled-parent-id="{{ prefilled_parent.id }}"
     {% endif %}
     {% if mode == 'edit' %}
         data-glpi-kb-default-language="{{ default_language }}"
@@ -56,7 +57,7 @@
             data-testid="translation-mode-alert"
             data-glpi-kb-translation-alert
         >
-            <i class="ti ti-language me-2 fs-3"></i>
+            <i class="ti ti-language me-2 fs-3" aria-hidden="true"></i>
             <span>{{ __("Translation mode enabled, currently editing") }}</span>
             <select
                 class="form-select form-select-sm d-inline-block w-auto ms-2 me-auto"
@@ -70,7 +71,7 @@
                 data-testid="translation-delete-btn"
                 data-glpi-kb-translation-delete title="{{ __('Delete this translation') }}"
             >
-                <i class="ti ti-trash"></i>
+                <i class="ti ti-trash" aria-hidden="true"></i>
             </button>
             <button
                 type="button"
@@ -78,7 +79,7 @@
                 data-testid="translation-save-btn"
                 data-glpi-kb-translation-save
             >
-                <i class="ti ti-device-floppy me-1"></i>{{ __('Save') }}
+                <i class="ti ti-device-floppy me-1" aria-hidden="true"></i>{{ __('Save') }}
             </button>
             <button
                 type="button"
@@ -127,7 +128,7 @@
                                 data-glpi-share-button
                                 data-glpi-itemtype="KnowbaseItem"
                                 data-glpi-items-id="{{ item_id }}">
-                            <i class="ti ti-share me-1"></i>{{ __('Share') }}
+                            <i class="ti ti-share me-1" aria-hidden="true"></i>{{ __('Share') }}
                         </button>
                         <div class="dropdown-menu dropdown-menu-end p-3"
                              style="min-width: 360px;"
@@ -146,7 +147,7 @@
                             data-action="toggle-edit"
                             data-testid="edit-button"
                         >
-                            <i class="ti ti-edit me-1"></i>{{ __('Edit') }}
+                            <i class="ti ti-edit me-1" aria-hidden="true"></i>{{ __('Edit') }}
                         </button>
                         <button
                             type="button"
@@ -154,7 +155,7 @@
                             data-action="save"
                             data-testid="save-button"
                         >
-                            <i class="ti ti-device-floppy me-1"></i>{{ __('Save') }}
+                            <i class="ti ti-device-floppy me-1" aria-hidden="true"></i>{{ __('Save') }}
                         </button>
                         <button
                             type="button"
@@ -176,7 +177,7 @@
             <div class="text-muted d-flex align-items-center gap-3">
                 {# Last update #}
                 <div class="d-flex align-items-center" data-testid="last-update">
-                    <i class="ti ti-clock me-1 fs-3"></i>
+                    <i class="ti ti-clock me-1 fs-3" aria-hidden="true"></i>
                     <span>
                         <span>{{ __("Updated:") }}</span>
                         <time
@@ -206,7 +207,7 @@
 
                 {# Views #}
                 <div class="d-flex align-items-center">
-                    <i class="ti ti-eye me-1 fs-3"></i>
+                    <i class="ti ti-eye me-1 fs-3" aria-hidden="true"></i>
                     <span data-testid="views">
                         {% if views == 0 %}
                             {{ __("No views") }}
@@ -218,7 +219,7 @@
 
                 {# Translations count #}
                 <div class="d-flex align-items-center">
-                    <i class="ti ti-language me-1 fs-3"></i>
+                    <i class="ti ti-language me-1 fs-3" aria-hidden="true"></i>
                     <a
                         href="#"
                         class="text-muted pointer-events-none"
@@ -231,15 +232,15 @@
 
                 {# Documents count #}
                 <div class="d-flex align-items-center {{ documents_count == 0 ? 'd-none' : '' }}" data-kb-documents-count-container>
-                    <i class="ti ti-paperclip me-1 fs-3"></i>
-                    <a href="#kb-documents" class="text-muted" data-kb-documents-count  data-testid="documents-count">
+                    <i class="ti ti-paperclip me-1 fs-3" aria-hidden="true"></i>
+                    <a href="#kb-documents" class="text-muted" data-kb-documents-count data-glpi-kb-activates-tab="kb-documents-tab-btn" data-testid="documents-count">
                         {{ _n("%s document", "%s documents", documents_count)|format(documents_count) }}
                     </a>
                 </div>
 
                 <div class="d-flex align-items-center {{ related_items_count == 0 ? 'd-none' : '' }}" data-kb-related-items-count-container>
-                    <i class="ti ti-link me-1 fs-3"></i>
-                    <a href="#kb-documents" class="text-muted" data-kb-related-items-count data-testid="related-items-count">
+                    <i class="ti ti-link me-1 fs-3" aria-hidden="true"></i>
+                    <a href="#kb-documents" class="text-muted" data-kb-related-items-count data-glpi-kb-activates-tab="kb-items-tab-btn" data-testid="related-items-count">
                         {{ _n("%s related item", "%s related items", related_items_count)|format(related_items_count) }}
                     </a>
                 </div>
@@ -250,7 +251,7 @@
                         class="d-flex align-items-center {{ comments_count == 0 ? 'd-none' : '' }}"
                         data-glpi-comments-counter-container
                     >
-                        <i class="ti ti-message-circle me-1 fs-3"></i>
+                        <i class="ti ti-message-circle me-1 fs-3" aria-hidden="true"></i>
                         <button
                             type="button"
                             class="btn btn-link p-0 text-muted text-decoration-none border-0"
@@ -273,7 +274,7 @@
                         data-glpi-kb-visibility-dates-indicator
                         data-testid="visibility-dates-indicator"
                     >
-                        <i class="ti ti-calendar-clock me-1 fs-3"></i>
+                        <i class="ti ti-calendar-clock me-1 fs-3" aria-hidden="true"></i>
                         <a
                             href="#"
                             class="text-muted"
@@ -293,217 +294,246 @@
         {# Tiptap editor container #}
         <div
             id="kb-tiptap-editor"
-            class="rich_text_container article-container mt-4"
+            class="rich_text_container article-container mt-4 {{ mode in ['add', 'edit'] ? 'kb-editor-reserved' }}"
             data-glpi-kb-content
+            data-glpi-comment-anchors="{{ (comment_anchors ?? [])|json_encode|e('html_attr') }}"
+            data-glpi-comment-anchor-max-length="{{ comment_anchor_max_length ?? 0 }}"
             data-testid="content"
         >
             {{ answer|enhanced_html({text_maxsize: 0}) }}
         </div>
 
-        {# Documents and Related Items section #}
-        {% if (mode == "view" or mode == "edit") and (documents|length > 0 or can_add_documents or related_items|length > 0 or can_link_items) %}
+        {# Sub-articles, Documents and Related Items section #}
+        {% if (mode == "view" or mode == "edit") and (show_children_tab or show_documents_tab or show_items_tab) %}
             <div id="kb-documents" class="kb-documents-footer mt-5">
                 {# Tab navigation #}
                 <ul class="nav nav-underline mb-3" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="kb-documents-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-documents-tab" type="button" role="tab">
-                            <i class="ti ti-paperclip me-1"></i>{{ __('Documents') }}
-                            <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ documents_count }}</span>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="kb-items-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-items-tab" type="button" role="tab">
-                            <i class="ti ti-link me-1"></i>{{ __('Related items') }}
-                            <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ related_items_count }}</span>
-                        </button>
-                    </li>
+                    {% if show_children_tab %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {{ active_tab == 'children' ? 'active' : '' }}" id="kb-children-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-children-tab" type="button" role="tab" aria-controls="kb-children-tab" aria-selected="{{ active_tab == 'children' ? 'true' : 'false' }}">
+                                <i class="ti ti-list-tree me-1" aria-hidden="true"></i>{{ __('Sub-articles') }}
+                                <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ child_articles|length }}</span>
+                            </button>
+                        </li>
+                    {% endif %}
+                    {% if show_documents_tab %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {{ active_tab == 'documents' ? 'active' : '' }}" id="kb-documents-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-documents-tab" type="button" role="tab" aria-controls="kb-documents-tab" aria-selected="{{ active_tab == 'documents' ? 'true' : 'false' }}">
+                                <i class="ti ti-paperclip me-1" aria-hidden="true"></i>{{ __('Documents') }}
+                                <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ documents_count }}</span>
+                            </button>
+                        </li>
+                    {% endif %}
+                    {% if show_items_tab %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {{ active_tab == 'items' ? 'active' : '' }}" id="kb-items-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-items-tab" type="button" role="tab" aria-controls="kb-items-tab" aria-selected="{{ active_tab == 'items' ? 'true' : 'false' }}">
+                                <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Related items') }}
+                                <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ related_items_count }}</span>
+                            </button>
+                        </li>
+                    {% endif %}
                 </ul>
 
                 {# Tab content #}
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="kb-documents-tab" role="tabpanel">
-                        <div class="d-flex flex-wrap gap-2 mb-2 {{ documents|length == 0 ? 'd-none' : '' }}" data-glpi-kb-documents-list>
-                            {% for doc in documents %}
-                                {{ include('pages/tools/kb/document_badge.html.twig', {
-                                    doc: doc,
-                                    can_edit: can_edit,
-                                }, with_context = false) }}
-                            {% endfor %}
+                    {% if show_children_tab %}
+                        <div class="tab-pane fade {{ active_tab == 'children' ? 'show active' : '' }}" id="kb-children-tab" role="tabpanel" aria-labelledby="kb-children-tab-btn">
+                            <ul class="kb-child-articles list-unstyled mb-0">
+                                {% for article in child_articles %}
+                                    {{ include('pages/tools/kb/child_article_row.html.twig', {
+                                        article: article,
+                                    }, with_context = false) }}
+                                {% endfor %}
+                            </ul>
                         </div>
+                    {% endif %}
+                    {% if show_documents_tab %}
+                        <div class="tab-pane fade {{ active_tab == 'documents' ? 'show active' : '' }}" id="kb-documents-tab" role="tabpanel" aria-labelledby="kb-documents-tab-btn">
+                            <div class="d-flex flex-wrap gap-2 mb-2 {{ documents|length == 0 ? 'd-none' : '' }}" data-glpi-kb-documents-list>
+                                {% for doc in documents %}
+                                    {{ include('pages/tools/kb/document_badge.html.twig', {
+                                        doc: doc,
+                                        can_edit: can_edit,
+                                    }, with_context = false) }}
+                                {% endfor %}
+                            </div>
 
-                        {% if can_add_documents %}
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-secondary mt-2"
-                                data-bs-toggle="modal"
-                                data-bs-target="#kb-add-document-modal"
-                            >
-                                <i class="ti ti-plus me-1"></i>{{ __('Add Document') }}
-                            </button>
+                            {% if can_add_documents %}
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-secondary mt-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#kb-add-document-modal"
+                                >
+                                    <i class="ti ti-plus me-1" aria-hidden="true"></i>{{ __('Add Document') }}
+                                </button>
 
-                            {# Modal for document upload/linking #}
-                            <div class="modal fade" id="kb-add-document-modal" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header border-0 pb-0 pt-3">
-                                            <ul class="nav nav-underline kb-modal-nav flex-fill mb-0" role="tablist">
-                                                <li class="nav-item" role="presentation">
-                                                    <button
-                                                        class="nav-link active"
-                                                        id="kb-modal-upload-tab" data-bs-toggle="tab"
-                                                        data-bs-target="#kb-modal-upload-pane"
-                                                        type="button"
-                                                        role="tab"
-                                                        aria-controls="kb-modal-upload-pane"
-                                                        aria-selected="true"
+                                {# Modal for document upload/linking #}
+                                <div class="modal fade" id="kb-add-document-modal" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header border-0 pb-0 pt-3">
+                                                <ul class="nav nav-underline kb-modal-nav flex-fill mb-0" role="tablist">
+                                                    <li class="nav-item" role="presentation">
+                                                        <button
+                                                            class="nav-link active"
+                                                            id="kb-modal-upload-tab" data-bs-toggle="tab"
+                                                            data-bs-target="#kb-modal-upload-pane"
+                                                            type="button"
+                                                            role="tab"
+                                                            aria-controls="kb-modal-upload-pane"
+                                                            aria-selected="true"
+                                                        >
+                                                            <i class="ti ti-upload me-1" aria-hidden="true"></i>{{ __('Upload a file') }}
+                                                        </button>
+                                                    </li>
+                                                    {% if document_idor_token is defined %}
+                                                    <li class="nav-item" role="presentation">
+                                                        <button
+                                                            class="nav-link"
+                                                            id="kb-modal-link-tab"
+                                                            data-bs-toggle="tab"
+                                                            data-bs-target="#kb-modal-link-pane"
+                                                            type="button"
+                                                            role="tab"
+                                                            aria-controls="kb-modal-link-pane"
+                                                            aria-selected="false"
+                                                        >
+                                                            <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Link a document') }}
+                                                        </button>
+                                                    </li>
+                                                    {% endif %}
+                                                </ul>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                                            </div>
+                                            <div class="modal-body p-4">
+                                                <div class="tab-content">
+                                                    <div
+                                                        class="tab-pane fade show active"
+                                                        id="kb-modal-upload-pane"
+                                                        role="tabpanel"
+                                                        aria-labelledby="kb-modal-upload-tab"
                                                     >
-                                                        <i class="ti ti-upload me-1"></i>{{ __('Upload a file') }}
-                                                    </button>
-                                                </li>
-                                                {% if document_idor_token is defined %}
-                                                <li class="nav-item" role="presentation">
-                                                    <button
-                                                        class="nav-link"
-                                                        id="kb-modal-link-tab"
-                                                        data-bs-toggle="tab"
-                                                        data-bs-target="#kb-modal-link-pane"
-                                                        type="button"
-                                                        role="tab"
-                                                        aria-controls="kb-modal-link-pane"
-                                                        aria-selected="false"
+                                                        <form id="kb-document-upload-form" method="post">
+                                                            <input type="hidden" name="itemtype" value="KnowbaseItem">
+                                                            <input type="hidden" name="items_id" value="{{ item_id }}">
+
+                                                            {# File uploader component #}
+                                                            {{ include('components/form/file_uploader.html.twig', {
+                                                                'input_id': 'kb-document-input',
+                                                                'input_name': 'files[]',
+                                                                'multiple': true,
+                                                            }, with_context = false) }}
+
+                                                            <div class="invalid-feedback d-block mt-2"
+                                                                 role="alert"
+                                                                 id="kb-document-upload-error"
+                                                                 data-glpi-kb-upload-error></div>
+
+                                                            {# KB-specific: Description #}
+                                                            <div class="mb-3 mt-3">
+                                                                <label for="kb-document-description" class="form-label">
+                                                                    {{ __('Description') }}
+                                                                    <span class="text-muted">({{ __('optional') }})</span>
+                                                                </label>
+                                                                 <textarea
+                                                                    class="form-control"
+                                                                    id="kb-document-description"
+                                                                    name="comment"
+                                                                    rows="2"
+                                                                    placeholder="{{ __('Add a description for these documents...') }}"
+                                                                ></textarea>
+                                                            </div>
+
+                                                            {# Actions #}
+                                                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                                                <button type="button" class="btn btn-ghost-secondary" data-bs-dismiss="modal">
+                                                                    {{ __('Cancel') }}
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary"
+                                                                        data-glpi-kb-upload-submit>
+                                                                    <i class="ti ti-upload me-1" aria-hidden="true"></i>
+                                                                    {{ __('Upload Documents') }}
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    {% if document_idor_token is defined %}
+                                                    <div
+                                                        class="tab-pane fade"
+                                                        id="kb-modal-link-pane"
+                                                        role="tabpanel"
+                                                        aria-labelledby="kb-modal-link-tab"
+                                                        data-glpi-kb-link-item-id="{{ item_id }}"
+                                                        data-glpi-kb-link-idor-token="{{ document_idor_token }}"
+                                                        data-glpi-kb-link-used-ids="{{ used_document_ids|json_encode }}"
+                                                        data-glpi-kb-link-ajax-url="{{ path('/ajax/getDropdownValue.php') }}"
                                                     >
-                                                        <i class="ti ti-link me-1"></i>{{ __('Link a document') }}
-                                                    </button>
-                                                </li>
-                                                {% endif %}
-                                            </ul>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
-                                        </div>
-                                        <div class="modal-body p-4">
-                                            <div class="tab-content">
-                                                <div
-                                                    class="tab-pane fade show active"
-                                                    id="kb-modal-upload-pane"
-                                                    role="tabpanel"
-                                                    aria-labelledby="kb-modal-upload-tab"
-                                                >
-                                                    <form id="kb-document-upload-form" method="post">
-                                                        <input type="hidden" name="itemtype" value="KnowbaseItem">
-                                                        <input type="hidden" name="items_id" value="{{ item_id }}">
-
-                                                        {# File uploader component #}
-                                                        {{ include('components/form/file_uploader.html.twig', {
-                                                            'input_id': 'kb-document-input',
-                                                            'input_name': 'files[]',
-                                                            'multiple': true,
-                                                        }, with_context = false) }}
-
-                                                        <div class="invalid-feedback d-block mt-2"
-                                                             role="alert"
-                                                             id="kb-document-upload-error"
-                                                             data-glpi-kb-upload-error></div>
-
-                                                        {# KB-specific: Description #}
-                                                        <div class="mb-3 mt-3">
-                                                            <label for="kb-document-description" class="form-label">
-                                                                {{ __('Description') }}
-                                                                <span class="text-muted">({{ __('optional') }})</span>
+                                                        {# Document search dropdown #}
+                                                        <div class="mb-3">
+                                                            <label for="kb-link-document-select" class="form-label">
+                                                                {{ __('Search for a document') }}
                                                             </label>
-                                                             <textarea
-                                                                class="form-control"
-                                                                id="kb-document-description"
-                                                                name="comment"
-                                                                rows="2"
-                                                                placeholder="{{ __('Add a description for these documents...') }}"
-                                                            ></textarea>
+                                                            <select id="kb-link-document-select"
+                                                                    class="form-select"></select>
+                                                            <div class="invalid-feedback d-block mt-2"
+                                                                 role="alert"
+                                                                 id="kb-document-link-error"
+                                                                 data-glpi-kb-link-error></div>
+                                                        </div>
+
+                                                        {# Selected documents list (matching upload tab style) #}
+                                                        <div class="file-uploader-preview d-none"
+                                                             data-glpi-kb-link-preview>
+                                                            <div class="file-uploader-list" role="list"
+                                                                 data-glpi-kb-link-list></div>
                                                         </div>
 
                                                         {# Actions #}
                                                         <div class="d-flex justify-content-end gap-2 mt-4">
-                                                            <button type="button" class="btn btn-ghost-secondary" data-bs-dismiss="modal">
+                                                            <button type="button" class="btn btn-ghost-secondary"
+                                                                    data-bs-dismiss="modal">
                                                                 {{ __('Cancel') }}
                                                             </button>
-                                                            <button type="submit" class="btn btn-primary"
-                                                                    data-glpi-kb-upload-submit>
-                                                                <i class="ti ti-upload me-1"></i>
-                                                                {{ __('Upload Documents') }}
+                                                            <button type="button" class="btn btn-primary"
+                                                                    data-glpi-kb-link-submit>
+                                                                <i class="ti ti-link me-1" aria-hidden="true"></i>
+                                                                {{ __('Link Documents') }}
                                                             </button>
                                                         </div>
-                                                    </form>
+                                                    </div>
+                                                    {% endif %}
                                                 </div>
-                                                {% if document_idor_token is defined %}
-                                                <div
-                                                    class="tab-pane fade"
-                                                    id="kb-modal-link-pane"
-                                                    role="tabpanel"
-                                                    aria-labelledby="kb-modal-link-tab"
-                                                    data-glpi-kb-link-item-id="{{ item_id }}"
-                                                    data-glpi-kb-link-idor-token="{{ document_idor_token }}"
-                                                    data-glpi-kb-link-used-ids="{{ used_document_ids|json_encode }}"
-                                                    data-glpi-kb-link-ajax-url="{{ path('/ajax/getDropdownValue.php') }}"
-                                                >
-                                                    {# Document search dropdown #}
-                                                    <div class="mb-3">
-                                                        <label for="kb-link-document-select" class="form-label">
-                                                            {{ __('Search for a document') }}
-                                                        </label>
-                                                        <select id="kb-link-document-select"
-                                                                class="form-select"></select>
-                                                        <div class="invalid-feedback d-block mt-2"
-                                                             role="alert"
-                                                             id="kb-document-link-error"
-                                                             data-glpi-kb-link-error></div>
-                                                    </div>
-
-                                                    {# Selected documents list (matching upload tab style) #}
-                                                    <div class="file-uploader-preview d-none"
-                                                         data-glpi-kb-link-preview>
-                                                        <div class="file-uploader-list" role="list"
-                                                             data-glpi-kb-link-list></div>
-                                                    </div>
-
-                                                    {# Actions #}
-                                                    <div class="d-flex justify-content-end gap-2 mt-4">
-                                                        <button type="button" class="btn btn-ghost-secondary"
-                                                                data-bs-dismiss="modal">
-                                                            {{ __('Cancel') }}
-                                                        </button>
-                                                        <button type="button" class="btn btn-primary"
-                                                                data-glpi-kb-link-submit>
-                                                            <i class="ti ti-link me-1"></i>
-                                                            {{ __('Link Documents') }}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {# Related Items Tab Pane #}
+                    {% if show_items_tab %}
+                        <div class="tab-pane fade {{ active_tab == 'items' ? 'show active' : '' }}" id="kb-items-tab" role="tabpanel" aria-labelledby="kb-items-tab-btn">
+                            <div class="d-flex flex-wrap gap-2 mb-2 {{ related_items|length == 0 ? 'd-none' : '' }}" data-glpi-kb-related-items-list>
+                                {% for item in related_items %}
+                                    {{ include('pages/tools/kb/related_item_badge.html.twig', {
+                                        item: item,
+                                        can_edit: can_edit,
+                                    }, with_context = false) }}
+                                {% endfor %}
                             </div>
-                        {% endif %}
-                    </div>
-                </div>
 
-                {# Related Items Tab Pane #}
-                <div class="tab-pane fade" id="kb-items-tab" role="tabpanel">
-                    <div class="d-flex flex-wrap gap-2 mb-2 {{ related_items|length == 0 ? 'd-none' : '' }}" data-glpi-kb-related-items-list>
-                        {% for item in related_items %}
-                            {{ include('pages/tools/kb/related_item_badge.html.twig', {
-                                item: item,
-                                can_edit: can_edit,
-                            }, with_context = false) }}
-                        {% endfor %}
-                    </div>
-
-                    {% if can_link_items %}
-                    <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
-                            data-glpi-kb-action="OPEN_MODAL"
-                            data-glpi-kb-action-param-id="{{ item_id }}"
-                            data-glpi-kb-action-param-key="LinkItemModal"
-                            data-glpi-kb-action-param-title="{{ __('Link to another item') }}">
-                        <i class="ti ti-link me-1"></i>{{ __('Link to another item') }}
-                    </button>
+                            {% if can_link_items %}
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
+                                    data-glpi-kb-action="OPEN_MODAL"
+                                    data-glpi-kb-action-param-id="{{ item_id }}"
+                                    data-glpi-kb-action-param-key="LinkItemModal"
+                                    data-glpi-kb-action-param-title="{{ __('Link to another item') }}">
+                                <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Link to another item') }}
+                            </button>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -520,7 +550,7 @@
 {% if mode == 'add' %}
     <div class="px-4 mb-2 d-flex">
         <button class="btn btn-primary ms-auto" data-glpi-kb-add-article>
-            <i class="ti ti-plus me-2"></i>
+            <i class="ti ti-plus me-2" aria-hidden="true"></i>
             {{ __("Add article") }}
         </button>
     </div>

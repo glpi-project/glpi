@@ -37,9 +37,11 @@ namespace tests\units;
 use Glpi\Tests\DbTestCase;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
+use Html;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
+use Toolbox;
 
 use function Safe\file_put_contents;
 use function Safe\mktime;
@@ -54,72 +56,74 @@ class HtmlTest extends DbTestCase
 {
     public function testConvDate()
     {
-        $this->assertNull(\Html::convDate(null));
-        $this->assertNull(\Html::convDate('NULL'));
-        $this->assertNull(\Html::convDate(''));
-        $this->assertNull(\Html::convDate('0000-00-00'));
-        $this->assertNull(\Html::convDate('0000-00-00 00:00:00'));
+        $this->assertNull(Html::convDate(null));
+        $this->assertNull(Html::convDate('null'));
+        $this->assertNull(Html::convDate('NULL'));
+        $this->assertNull(Html::convDate(''));
+        $this->assertNull(Html::convDate('0000-00-00'));
+        $this->assertNull(Html::convDate('0000-00-00 00:00:00'));
 
         $mydate = date('Y-m-d H:i:s');
 
         $expected = date('Y-m-d');
         unset($_SESSION['glpidate_format']);
-        $this->assertSame($expected, \Html::convDate($mydate));
+        $this->assertSame($expected, Html::convDate($mydate));
         $_SESSION['glpidate_format'] = 0;
-        $this->assertSame($expected, \Html::convDate($mydate));
+        $this->assertSame($expected, Html::convDate($mydate));
 
-        $this->assertSame($expected, \Html::convDate(date('Y-m-d')));
+        $this->assertSame($expected, Html::convDate(date('Y-m-d')));
 
         $expected = date('d-m-Y');
-        $this->assertSame($expected, \Html::convDate($mydate, 1));
+        $this->assertSame($expected, Html::convDate($mydate, 1));
 
         $expected = date('m-d-Y');
-        $this->assertSame($expected, \Html::convDate($mydate, 2));
+        $this->assertSame($expected, Html::convDate($mydate, 2));
 
         // Check type casting when session property is not an int
         $_SESSION['glpidate_format'] = '1';
-        $this->assertSame(date('d-m-Y'), \Html::convDate($mydate, 1));
+        $this->assertSame(date('d-m-Y'), Html::convDate($mydate, 1));
         $_SESSION['glpidate_format'] = '2';
-        $this->assertSame(date('m-d-Y'), \Html::convDate($mydate, 2));
+        $this->assertSame(date('m-d-Y'), Html::convDate($mydate, 2));
 
         $expected_error = 'Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database';
-        $this->assertSame('not a date', \Html::convDate('not a date', 2));
+        $this->assertSame('not a date', Html::convDate('not a date', 2));
         $this->hasPhpLogRecordThatContains($expected_error, LogLevel::ERROR);
     }
 
     public function testConvDateTime()
     {
-        $this->assertNull(\Html::convDateTime(null));
-        $this->assertNull(\Html::convDateTime('NULL'));
+        $this->assertNull(Html::convDateTime(null));
+        $this->assertNull(Html::convDateTime('null'));
+        $this->assertNull(Html::convDateTime('NULL'));
 
         $timestamp = time();
 
         $mydate = date('Y-m-d H:i:s', $timestamp);
 
         $expected = date('Y-m-d H:i', $timestamp);
-        $this->assertSame($expected, \Html::convDateTime($mydate));
+        $this->assertSame($expected, Html::convDateTime($mydate));
 
         $expected = date('Y-m-d H:i:s', $timestamp);
-        $this->assertSame($expected, \Html::convDateTime($mydate, null, true));
+        $this->assertSame($expected, Html::convDateTime($mydate, null, true));
 
         $expected = date('d-m-Y H:i', $timestamp);
-        $this->assertSame($expected, \Html::convDateTime($mydate, 1));
+        $this->assertSame($expected, Html::convDateTime($mydate, 1));
 
         $expected = date('d-m-Y H:i:s', $timestamp);
-        $this->assertSame($expected, \Html::convDateTime($mydate, 1, true));
+        $this->assertSame($expected, Html::convDateTime($mydate, 1, true));
 
         $expected = date('m-d-Y H:i', $timestamp);
-        $this->assertSame($expected, \Html::convDateTime($mydate, 2));
+        $this->assertSame($expected, Html::convDateTime($mydate, 2));
 
         $expected = date('m-d-Y H:i:s', $timestamp);
-        $this->assertSame($expected, \Html::convDateTime($mydate, 2, true));
+        $this->assertSame($expected, Html::convDateTime($mydate, 2, true));
     }
 
     public function cleanParametersURL()
     {
         $url = 'http://host/glpi/path/to/file.php?var1=2&var2=3';
         $expected = 'http://host/glpi/path/to/file.php';
-        $this->assertSame($expected, \Html::cleanParametersURL($url));
+        $this->assertSame($expected, Html::cleanParametersURL($url));
     }
 
     public function testResume_text()
@@ -130,19 +134,19 @@ class HtmlTest extends DbTestCase
         $expected = 'This is a very long string which will be truncated by a dedicated method. '
          . 'If the string is not truncated, well... We&#039;re wrong and got a very serious issue in our codebase!'
          . 'And if the string has been correctly truncated, well... All is ok then, let&#039;s show i&nbsp;(...)';
-        $this->assertSame($expected, \Html::resume_text($origin));
+        $this->assertSame($expected, Html::resume_text($origin));
 
         $origin = 'A string that is longer than 10 characters.';
         $expected = 'A string t&nbsp;(...)';
-        $this->assertSame($expected, \Html::resume_text($origin, 10));
+        $this->assertSame($expected, Html::resume_text($origin, 10));
 
         $origin = 'A string that contains HTML special chars like >, < and &, and some text that should be truncated.';
         $expected = 'A string that contains HTML special chars like &gt;, &lt; and &amp;, a&nbsp;(...)';
-        $this->assertSame($expected, \Html::resume_text($origin, 60));
+        $this->assertSame($expected, Html::resume_text($origin, 60));
 
         $origin = 'A string that contains HTML special chars like >, < and &, and some text that should NOT be truncated.';
         $expected = 'A string that contains HTML special chars like &gt;, &lt; and &amp;, and some text that should NOT be truncated.';
-        $this->assertSame($expected, \Html::resume_text($origin, 1500));
+        $this->assertSame($expected, Html::resume_text($origin, 1500));
     }
 
     public function testFormatNumber()
@@ -150,108 +154,108 @@ class HtmlTest extends DbTestCase
         $_SESSION['glpinumber_format'] = 0;
         $origin = '';
         $expected = '0.00';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
 
         $origin = '1207.3';
 
         $expected = '1 207.30';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
 
         $expected = '1207.30';
-        $this->assertSame($expected, \Html::formatNumber($origin, true));
+        $this->assertSame($expected, Html::formatNumber($origin, true));
 
         $origin = 124556.693;
         $expected = '124 556.69';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
 
         $origin = 120.123456789;
 
         $expected = '120.12';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
 
         $expected = '120.12346';
-        $this->assertSame($expected, \Html::formatNumber($origin, false, 5));
+        $this->assertSame($expected, Html::formatNumber($origin, false, 5));
 
         $expected = '120';
-        $this->assertSame($expected, \Html::formatNumber($origin, false, 0));
+        $this->assertSame($expected, Html::formatNumber($origin, false, 0));
 
         $origin = 120.999;
         $expected = '121.00';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
         $expected = '121';
-        $this->assertSame($expected, \Html::formatNumber($origin, false, 0));
+        $this->assertSame($expected, Html::formatNumber($origin, false, 0));
 
-        $this->assertSame('-', \Html::formatNumber('-'));
+        $this->assertSame('-', Html::formatNumber('-'));
 
         $_SESSION['glpinumber_format'] = 2;
 
         $origin = '1207.3';
         $expected = '1 207,30';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
 
         $_SESSION['glpinumber_format'] = 3;
 
         $origin = '1207.3';
         $expected = '1207.30';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
 
         $_SESSION['glpinumber_format'] = 4;
 
         $origin = '1207.3';
         $expected = '1207,30';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
 
         $_SESSION['glpinumber_format'] = 1337;
         $origin = '1207.3';
 
         $expected = '1,207.30';
-        $this->assertSame($expected, \Html::formatNumber($origin));
+        $this->assertSame($expected, Html::formatNumber($origin));
     }
 
     public function testTimestampToString()
     {
         $expected = '0 seconds';
-        $this->assertSame($expected, \Html::timestampToString(null));
-        $this->assertSame($expected, \Html::timestampToString(''));
-        $this->assertSame($expected, \Html::timestampToString(0));
+        $this->assertSame($expected, Html::timestampToString(null));
+        $this->assertSame($expected, Html::timestampToString(''));
+        $this->assertSame($expected, Html::timestampToString(0));
 
         $tstamp = 57226;
         $expected = '15 hours 53 minutes 46 seconds';
-        $this->assertSame($expected, \Html::timestampToString($tstamp));
+        $this->assertSame($expected, Html::timestampToString($tstamp));
 
         $tstamp = -57226;
         $expected = '- 15 hours 53 minutes 46 seconds';
-        $this->assertSame($expected, \Html::timestampToString($tstamp));
+        $this->assertSame($expected, Html::timestampToString($tstamp));
 
         $tstamp = 1337;
         $expected = '22 minutes 17 seconds';
-        $this->assertSame($expected, \Html::timestampToString($tstamp));
+        $this->assertSame($expected, Html::timestampToString($tstamp));
 
         $expected = '22 minutes';
-        $this->assertSame($expected, \Html::timestampToString($tstamp, false));
+        $this->assertSame($expected, Html::timestampToString($tstamp, false));
 
         $tstamp = 54;
         $expected = '54 seconds';
-        $this->assertSame($expected, \Html::timestampToString($tstamp));
-        $this->assertSame($expected, \Html::timestampToString($tstamp, false));
+        $this->assertSame($expected, Html::timestampToString($tstamp));
+        $this->assertSame($expected, Html::timestampToString($tstamp, false));
 
         $tstamp = 157226;
         $expected = '1 days 19 hours 40 minutes 26 seconds';
-        $this->assertSame($expected, \Html::timestampToString($tstamp));
+        $this->assertSame($expected, Html::timestampToString($tstamp));
 
         $expected = '1 days 19 hours 40 minutes';
-        $this->assertSame($expected, \Html::timestampToString($tstamp, false));
+        $this->assertSame($expected, Html::timestampToString($tstamp, false));
 
         $expected = '43 hours 40 minutes 26 seconds';
-        $this->assertSame($expected, \Html::timestampToString($tstamp, true, false));
+        $this->assertSame($expected, Html::timestampToString($tstamp, true, false));
 
         $expected = '43 hours 40 minutes';
-        $this->assertSame($expected, \Html::timestampToString($tstamp, false, false));
+        $this->assertSame($expected, Html::timestampToString($tstamp, false, false));
     }
 
     public function testGetMenuInfos()
     {
-        $menu = \Html::getMenuInfos();
+        $menu = Html::getMenuInfos();
         $this->assertSame(8, count($menu));
 
         $expected = [
@@ -360,6 +364,7 @@ class HtmlTest extends DbTestCase
             'SLM',
             'Config',
             'Glpi\Security\SecurityConfig',
+            'Glpi\Config\DataAndPrivacyConfig',
             'FieldUnicity',
             'CronTask',
             'Auth',
@@ -378,11 +383,11 @@ class HtmlTest extends DbTestCase
 
     public function testGetCopyrightMessage()
     {
-        $message = \Html::getCopyrightMessage();
+        $message = Html::getCopyrightMessage();
         $this->assertStringContainsString(GLPI_VERSION, $message);
         $this->assertStringContainsString(GLPI_YEAR, $message);
 
-        $message = \Html::getCopyrightMessage(false);
+        $message = Html::getCopyrightMessage(false);
         $this->assertStringNotContainsString(GLPI_VERSION, $message);
         $this->assertStringContainsString(GLPI_YEAR, $message);
     }
@@ -393,13 +398,13 @@ class HtmlTest extends DbTestCase
 
         // GLPI installed at domain root
         $CFG_GLPI['root_doc'] = '';
-        $this->assertSame('/css/styles.css', \Html::getPrefixedUrl('css/styles.css'));
-        $this->assertSame('/css/styles.css', \Html::getPrefixedUrl('/css/styles.css'));
+        $this->assertSame('/css/styles.css', Html::getPrefixedUrl('css/styles.css'));
+        $this->assertSame('/css/styles.css', Html::getPrefixedUrl('/css/styles.css'));
 
         // GLPI installed in a subfolder
         $CFG_GLPI['root_doc'] = '/subfolder';
-        $this->assertSame('/subfolder/css/styles.css', \Html::getPrefixedUrl('css/styles.css'));
-        $this->assertSame('/subfolder/css/styles.css', \Html::getPrefixedUrl('/css/styles.css'));
+        $this->assertSame('/subfolder/css/styles.css', Html::getPrefixedUrl('css/styles.css'));
+        $this->assertSame('/subfolder/css/styles.css', Html::getPrefixedUrl('/css/styles.css'));
     }
 
     public function testCss()
@@ -430,7 +435,7 @@ class HtmlTest extends DbTestCase
             ['file.min.css', $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/file.css'));
+        $this->assertSame($expected, Html::css($dir . '/file.css'));
 
         //explicitely require not minified file
         $expected = str_replace(
@@ -438,7 +443,7 @@ class HtmlTest extends DbTestCase
             ['file.css', $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/file.css', [], false));
+        $this->assertSame($expected, Html::css($dir . '/file.css', [], false));
 
         //activate debug mode: expect not minified file
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
@@ -447,7 +452,7 @@ class HtmlTest extends DbTestCase
             ['file.css', $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/file.css'));
+        $this->assertSame($expected, Html::css($dir . '/file.css'));
         $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
         //expect original file
@@ -456,7 +461,7 @@ class HtmlTest extends DbTestCase
             ['nofile.css', $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/nofile.css'));
+        $this->assertSame($expected, Html::css($dir . '/nofile.css'));
 
         //expect original file
         $expected = str_replace(
@@ -464,7 +469,7 @@ class HtmlTest extends DbTestCase
             ['other.css', $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/other.css'));
+        $this->assertSame($expected, Html::css($dir . '/other.css'));
 
         //expect original file
         $expected = str_replace(
@@ -472,7 +477,7 @@ class HtmlTest extends DbTestCase
             ['other-min.css', $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/other-min.css'));
+        $this->assertSame($expected, Html::css($dir . '/other-min.css'));
 
         //expect minified file, print media
         $expected = str_replace(
@@ -480,7 +485,7 @@ class HtmlTest extends DbTestCase
             ['file.min.css', 'media="print"'],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/file.css', ['media' => 'print']));
+        $this->assertSame($expected, Html::css($dir . '/file.css', ['media' => 'print']));
 
         //expect minified file, screen media
         $expected = str_replace(
@@ -488,7 +493,7 @@ class HtmlTest extends DbTestCase
             ['file.min.css', $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/file.css', ['media' => '']));
+        $this->assertSame($expected, Html::css($dir . '/file.css', ['media' => '']));
 
         //expect minified file and specific version
         $fake_version = '0.0.1';
@@ -497,7 +502,7 @@ class HtmlTest extends DbTestCase
             ['file.min.css', $base_attrs, FrontEnd::getVersionCacheKey($fake_version)],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/file.css', ['version' => $fake_version]));
+        $this->assertSame($expected, Html::css($dir . '/file.css', ['version' => $fake_version]));
 
         //expect minified file with added attributes
         $expected = str_replace(
@@ -505,7 +510,7 @@ class HtmlTest extends DbTestCase
             ['file.min.css', 'attribute="one" ' . $base_attrs],
             $base_expected
         );
-        $this->assertSame($expected, \Html::css($dir . '/file.css', ['attribute' => 'one']));
+        $this->assertSame($expected, Html::css($dir . '/file.css', ['attribute' => 'one']));
 
         //remove test files
         foreach ($fake_files as $fake_file) {
@@ -540,7 +545,7 @@ class HtmlTest extends DbTestCase
             'file.min.js',
             $base_expected
         );
-        $this->assertSame($expected, \Html::script($dir . '/file.js'));
+        $this->assertSame($expected, Html::script($dir . '/file.js'));
 
         //explicitely require not minified file
         $expected = str_replace(
@@ -548,7 +553,7 @@ class HtmlTest extends DbTestCase
             'file.js',
             $base_expected
         );
-        $this->assertSame($expected, \Html::script($dir . '/file.js', [], false));
+        $this->assertSame($expected, Html::script($dir . '/file.js', [], false));
 
         //activate debug mode: expect not minified file
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
@@ -557,7 +562,7 @@ class HtmlTest extends DbTestCase
             'file.js',
             $base_expected
         );
-        $this->assertSame($expected, \Html::script($dir . '/file.js'));
+        $this->assertSame($expected, Html::script($dir . '/file.js'));
         $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
         //expect original file
@@ -566,7 +571,7 @@ class HtmlTest extends DbTestCase
             'nofile.js',
             $base_expected
         );
-        $this->assertSame($expected, \Html::script($dir . '/nofile.js'));
+        $this->assertSame($expected, Html::script($dir . '/nofile.js'));
 
         //expect original file
         $expected = str_replace(
@@ -574,7 +579,7 @@ class HtmlTest extends DbTestCase
             'other.js',
             $base_expected
         );
-        $this->assertSame($expected, \Html::script($dir . '/other.js'));
+        $this->assertSame($expected, Html::script($dir . '/other.js'));
 
         //expect original file
         $expected = str_replace(
@@ -582,7 +587,7 @@ class HtmlTest extends DbTestCase
             'other-min.js',
             $base_expected
         );
-        $this->assertSame($expected, \Html::script($dir . '/other-min.js'));
+        $this->assertSame($expected, Html::script($dir . '/other-min.js'));
 
         //expect minified file and specific version
         $fake_version = '0.0.1';
@@ -591,7 +596,7 @@ class HtmlTest extends DbTestCase
             ['file.min.js', FrontEnd::getVersionCacheKey($fake_version)],
             $base_expected
         );
-        $this->assertSame($expected, \Html::script($dir . '/file.js', ['version' => $fake_version]));
+        $this->assertSame($expected, Html::script($dir . '/file.js', ['version' => $fake_version]));
 
         //remove test files
         foreach ($fake_files as $fake_file) {
@@ -606,34 +611,34 @@ class HtmlTest extends DbTestCase
             unset($_SESSION['glpirefresh_views']);
         }
 
-        $base_script = \Html::scriptBlock("window.setInterval(function() {
+        $base_script = Html::scriptBlock("window.setInterval(function() {
                ##CALLBACK##
             }, ##TIMER##);");
 
         $expected = '';
-        $message = \Html::manageRefreshPage();
+        $message = Html::manageRefreshPage();
         $this->assertSame($expected, $message);
 
         //Set session refresh to one minute
         $_SESSION['glpirefresh_views'] = 1;
         $expected = str_replace("##CALLBACK##", "window.location.reload()", $base_script);
         $expected = str_replace("##TIMER##", 1 * MINUTE_TIMESTAMP * 1000, $expected);
-        $message = \Html::manageRefreshPage();
+        $message = Html::manageRefreshPage();
         $this->assertSame($expected, $message);
 
         $expected = str_replace("##CALLBACK##", '$(\'#mydiv\').remove();', $base_script);
         $expected = str_replace("##TIMER##", 1 * MINUTE_TIMESTAMP * 1000, $expected);
-        $message = \Html::manageRefreshPage(false, '$(\'#mydiv\').remove();');
+        $message = Html::manageRefreshPage(false, '$(\'#mydiv\').remove();');
         $this->assertSame($expected, $message);
 
         $expected = str_replace("##CALLBACK##", "window.location.reload()", $base_script);
         $expected = str_replace("##TIMER##", 3 * MINUTE_TIMESTAMP * 1000, $expected);
-        $message = \Html::manageRefreshPage(3);
+        $message = Html::manageRefreshPage(3);
         $this->assertSame($expected, $message);
 
         $expected = str_replace("##CALLBACK##", '$(\'#mydiv\').remove();', $base_script);
         $expected = str_replace("##TIMER##", 3 * MINUTE_TIMESTAMP * 1000, $expected);
-        $message = \Html::manageRefreshPage(3, '$(\'#mydiv\').remove();');
+        $message = Html::manageRefreshPage(3, '$(\'#mydiv\').remove();');
         $this->assertSame($expected, $message);
     }
 
@@ -643,7 +648,7 @@ class HtmlTest extends DbTestCase
         $auth = new \Auth();
         $this->assertTrue($auth->login(TU_USER, TU_PASS, true));
 
-        $menu = \Html::generateMenuSession(true);
+        $menu = Html::generateMenuSession(true);
 
         $this->assertArrayHasKey('glpimenu', $_SESSION);
 
@@ -674,10 +679,10 @@ class HtmlTest extends DbTestCase
         $this->assertTrue($auth->login(TU_USER, TU_PASS, true));
 
         // init menu
-        \Html::generateMenuSession(true);
+        Html::generateMenuSession(true);
 
         // test retrieving entries
-        $entries = \Html::getMenuFuzzySearchList();
+        $entries = Html::getMenuFuzzySearchList();
         $this->assertGreaterThan(5, count($entries));
 
         foreach ($entries as $entry) {
@@ -689,10 +694,10 @@ class HtmlTest extends DbTestCase
     public function testCleanParametersURL()
     {
         $url = 'http://perdu.com';
-        $this->assertSame($url, \Html::cleanParametersURL($url));
+        $this->assertSame($url, Html::cleanParametersURL($url));
 
         $purl = $url . '?with=some&args=none';
-        $this->assertSame($url, \Html::cleanParametersURL($purl));
+        $this->assertSame($url, Html::cleanParametersURL($purl));
     }
 
     public function testDisplayMessageAfterRedirect()
@@ -703,7 +708,7 @@ class HtmlTest extends DbTestCase
         ];
 
         ob_start();
-        \Html::displayMessageAfterRedirect();
+        Html::displayMessageAfterRedirect();
         $output = ob_get_clean();
 
         $this->assertMatchesRegularExpression(
@@ -724,13 +729,13 @@ class HtmlTest extends DbTestCase
         global $CFG_GLPI;
 
         ob_start();
-        \Html::displayBackLink();
+        Html::displayBackLink();
         $output = ob_get_clean();
         $this->assertSame('<a href="http://localhost">Back</a>', $output);
 
         $_SERVER['HTTP_REFERER'] = 'http://localhost/originalpage.html';
         ob_start();
-        \Html::displayBackLink();
+        Html::displayBackLink();
         $output = ob_get_clean();
         $this->assertSame('<a href="http://localhost/originalpage.html">Back</a>', $output);
         $_SERVER['HTTP_REFERER'] = ''; // reset referer to prevent having this var in test loop mode
@@ -740,47 +745,47 @@ class HtmlTest extends DbTestCase
     {
         $string = 'Are U\' OK?';
         $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ ;return true;} else { return false;}"';
-        $this->assertSame($expected, \Html::addConfirmationOnAction($string));
+        $this->assertSame($expected, Html::addConfirmationOnAction($string));
 
         $strings = ['Are you', 'OK?'];
         $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
-        $this->assertSame($expected, \Html::addConfirmationOnAction($strings));
+        $this->assertSame($expected, Html::addConfirmationOnAction($strings));
 
         $actions = '$("#mydiv").focus();';
         $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
-        $this->assertSame($expected, \Html::addConfirmationOnAction($string, $actions));
+        $this->assertSame($expected, Html::addConfirmationOnAction($string, $actions));
     }
 
     public function testCleanId()
     {
         $id = 'myid';
-        $this->assertSame($id, \Html::cleanId($id));
+        $this->assertSame($id, Html::cleanId($id));
 
         $id = 'array[]';
         $expected = 'array__';
-        $this->assertSame($expected, \Html::cleanId($id));
+        $this->assertSame($expected, Html::cleanId($id));
     }
 
     public function testImage()
     {
         $path = '/path/to/image.png';
         $expected = '<img src="/path/to/image.png" title="" alt="" />';
-        $this->assertSame($expected, \Html::image($path));
+        $this->assertSame($expected, Html::image($path));
 
         $options = [
             'title'  => 'My title',
             'alt'    => 'no img text',
         ];
         $expected = '<img src="/path/to/image.png" title="My title" alt="no img text" />';
-        $this->assertSame($expected, \Html::image($path, $options));
+        $this->assertSame($expected, Html::image($path, $options));
 
         $options = ['url' => 'mypage.php'];
         $expected = '<a href="mypage.php"><img src="/path/to/image.png" title="" alt="" class="pointer" /></a>';
-        $this->assertSame($expected, \Html::image($path, $options));
+        $this->assertSame($expected, Html::image($path, $options));
 
         $options = ['url' => 'mypage.php', 'class' => 'specific-class'];
         $expected = '<a href="mypage.php"><img src="/path/to/image.png" class="specific-class" title="" alt="" /></a>';
-        $this->assertSame($expected, \Html::image($path, $options));
+        $this->assertSame($expected, Html::image($path, $options));
     }
 
     public function testLink()
@@ -789,28 +794,28 @@ class HtmlTest extends DbTestCase
         $url = 'mylink.php';
 
         $expected = '<a href="mylink.php" >My link</a>';
-        $this->assertSame($expected, \Html::link($text, $url));
+        $this->assertSame($expected, @Html::link($text, $url));
 
         $options = [
             'confirm'   => 'U sure?',
         ];
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
-        $this->assertSame($expected, \Html::link($text, $url, $options));
+        $this->assertSame($expected, @Html::link($text, $url, $options));
 
         $options['confirmaction'] = 'window.close();';
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
-        $this->assertSame($expected, \Html::link($text, $url, $options));
+        $this->assertSame($expected, @Html::link($text, $url, $options));
     }
 
     public function testHidden()
     {
         $name = 'hiddenfield';
         $expected = '<input type="hidden" name="hiddenfield"  />';
-        $this->assertSame($expected, \Html::hidden($name));
+        $this->assertSame($expected, Html::hidden($name));
 
         $options = ['value'  => 'myval'];
         $expected = '<input type="hidden" name="hiddenfield" value="myval" />';
-        $this->assertSame($expected, \Html::hidden($name, $options));
+        $this->assertSame($expected, Html::hidden($name, $options));
 
         $options = [
             'value'  => [
@@ -819,7 +824,7 @@ class HtmlTest extends DbTestCase
             ],
         ];
         $expected = "<input type=\"hidden\" name=\"hiddenfield[0]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[1]\" value=\"another one\" />\n";
-        $this->assertSame($expected, \Html::hidden($name, $options));
+        $this->assertSame($expected, Html::hidden($name, $options));
 
         $options = [
             'value'  => [
@@ -828,14 +833,14 @@ class HtmlTest extends DbTestCase
             ],
         ];
         $expected = "<input type=\"hidden\" name=\"hiddenfield[one]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[two]\" value=\"another one\" />\n";
-        $this->assertSame($expected, \Html::hidden($name, $options));
+        $this->assertSame($expected, Html::hidden($name, $options));
     }
 
     public function testInput()
     {
         $name = 'in_put';
         $expected = '<input type="text" name="in_put" class="form-control" />';
-        $this->assertSame($expected, \Html::input($name));
+        $this->assertSame($expected, Html::input($name));
 
         $options = [
             'value'     => 'myval',
@@ -843,7 +848,7 @@ class HtmlTest extends DbTestCase
             'data-id'   => 12,
         ];
         $expected = '<input type="text" name="in_put" value="myval" class="a_class" data-id="12" />';
-        $this->assertSame($expected, \Html::input($name, $options));
+        $this->assertSame($expected, Html::input($name, $options));
 
         $options = [
             'type'      => 'number',
@@ -851,7 +856,7 @@ class HtmlTest extends DbTestCase
             'value'     => 'myval',
         ];
         $expected = '<input type="number" name="in_put" min="10" value="myval" class="form-control" />';
-        $this->assertSame($expected, \Html::input($name, $options));
+        $this->assertSame($expected, Html::input($name, $options));
     }
 
     public static function providerGetRefererUrl(): iterable
@@ -881,7 +886,7 @@ class HtmlTest extends DbTestCase
     public function testGetRefererUrl(string $referer, ?string $expected): void
     {
         $_SERVER['HTTP_REFERER'] = $referer;
-        $this->assertSame($expected, \Html::getRefererUrl());
+        $this->assertSame($expected, Html::getRefererUrl());
     }
 
     public static function providerGetBackUrl(): iterable
@@ -943,7 +948,7 @@ class HtmlTest extends DbTestCase
         $_SERVER['HTTP_REFERER'] = $referer;
         $CFG_GLPI['url_base'] = $base_url;
 
-        $this->assertSame($expected, \Html::getBackUrl());
+        $this->assertSame($expected, Html::getBackUrl());
     }
 
     public function testGetScssFileHash()
@@ -991,20 +996,19 @@ SCSS,
         // Composite scss file hash corresponds to self md5 suffixed by all imported scss md5
         $this->assertEquals(
             $files_md5['all.scss'] . $files_md5['imports/borders.scss'] . $files_md5['imports/colors.scss'],
-            \Html::getScssFileHash(vfsStream::url('glpi/css/all.scss'))
+            Html::getScssFileHash(vfsStream::url('glpi/css/all.scss'))
         );
 
         // Simple scss file hash corresponds to self md5
         $this->assertEquals(
             $files_md5['another.scss'],
-            \Html::getScssFileHash(vfsStream::url('glpi/css/another.scss'))
+            Html::getScssFileHash(vfsStream::url('glpi/css/another.scss'))
         );
     }
 
     public function testCompileScssForPlugin()
     {
-        // FIXME remove the `@` operator once `scssphp/scssphp` and `league/uri` PHP 8.5 deprecation fixes will be released
-        $compiled_scss = @\Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
+        $compiled_scss = Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
 
         // Strip comments to ease comparison.
         $compiled_scss = preg_replace('~/\*.*\*/~s', '', $compiled_scss);
@@ -1110,7 +1114,7 @@ SCSS,
         array $check_values,
         array $unwanted
     ) {
-        $values = \Html::getGenericDateTimeSearchItems($options);
+        $values = Html::getGenericDateTimeSearchItems($options);
 
         foreach ($check_values as $key => $value) {
             $this->assertArrayHasKey($key, $values);
@@ -1126,7 +1130,7 @@ SCSS,
     {
         // Non-regression: with_time=true must NOT propagate to the specific date AJAX call.
         // Before the fix, withtime:true was sent, forcing a full H:i:S datetime picker.
-        $output = \Html::showGenericDateTimeSearch(
+        $output = Html::showGenericDateTimeSearch(
             'test_field',
             '2023-06-15',
             ['with_time' => true, 'with_specific_date' => true, 'display' => false]
@@ -1141,7 +1145,7 @@ SCSS,
         // Non-regression: when the current value is not a specific date (e.g. 'NOW'),
         // specificvalue must default to Y-m-d (no time), so the time toggle starts unchecked.
         // Before the fix, the default was date("Y-m-d H:i:s"), which made the toggle default ON.
-        $output = \Html::showGenericDateTimeSearch(
+        $output = Html::showGenericDateTimeSearch(
             'test_field',
             'NOW',
             ['with_specific_date' => true, 'display' => false]
@@ -1204,7 +1208,7 @@ SCSS,
         int $specifictime,
         string $expected
     ): void {
-        $this->assertEquals($expected, \Html::computeGenericDateTimeSearch($val, $force_day, $specifictime));
+        $this->assertEquals($expected, Html::computeGenericDateTimeSearch($val, $force_day, $specifictime));
     }
 
     public static function inputNameProvider(): iterable
@@ -1234,7 +1238,7 @@ SCSS,
     #[DataProvider('inputNameProvider')]
     public function testSanitizeInputName(string $name, string $expected): void
     {
-        $this->assertEquals($expected, \Html::sanitizeInputName($name));
+        $this->assertEquals($expected, Html::sanitizeInputName($name));
     }
 
     public static function domIdProvider(): iterable
@@ -1253,7 +1257,7 @@ SCSS,
     #[DataProvider('domIdProvider')]
     public function testSanitizeDomId(string $name, string $expected): void
     {
-        $this->assertEquals($expected, \Html::sanitizeDomId($name));
+        $this->assertEquals($expected, Html::sanitizeDomId($name));
     }
 
     public static function getMenuSectorForItemtypeProvider(): iterable
@@ -1297,7 +1301,7 @@ SCSS,
     #[DataProvider('getMenuSectorForItemtypeProvider')]
     public function testGetMenuSectorForItemtype($itemtype, $expected): void
     {
-        $this->assertEquals($expected, \Html::getMenuSectorForItemtype($itemtype));
+        $this->assertEquals($expected, Html::getMenuSectorForItemtype($itemtype));
     }
 
     public static function timestampToRelativeStrProvider(): iterable
@@ -1521,7 +1525,7 @@ SCSS,
         $_SESSION['glpi_currenttime'] = $current;
         $_SESSION['glpilanguage'] = 'en_GB';
 
-        $this->assertSame($expected, \Html::timestampToRelativeStr($timestamp));
+        $this->assertSame($expected, Html::timestampToRelativeStr($timestamp));
     }
 
     public function testFileWithMissingTempFileDoesNotThrow(): void
@@ -1531,7 +1535,7 @@ SCSS,
             '_tag_filename'  => ['abc123tag'],
         ];
 
-        $result = \Html::file([
+        $result = Html::file([
             'display' => false,
             'uploads' => $uploads,
         ]);
@@ -1552,7 +1556,7 @@ SCSS,
                 '_tag_filename'  => ['abc123tag'],
             ];
 
-            $result = \Html::file([
+            $result = Html::file([
                 'display' => false,
                 'uploads' => $uploads,
             ]);
@@ -1561,5 +1565,50 @@ SCSS,
         } finally {
             unlink($filepath);
         }
+    }
+
+    public function testShowMassiveActionsSelectionTooLarge(): void
+    {
+        $this->login();
+        $max_input_vars = Toolbox::get_max_input_vars();
+
+        ob_start();
+        Html::showMassiveActions([
+            'num_displayed' => 10,
+            'is_deleted' => 0,
+            'container' => 'massformTicket318832853',
+        ]);
+        $output = ob_get_clean();
+
+        $this->assertStringNotContainsString('Selection too large, massive action disabled.', $output);
+
+        ob_start();
+        Html::showMassiveActions([
+            'num_displayed' => $max_input_vars + 1,
+            'is_deleted' => 0,
+            'container' => 'massformTicket318832853',
+        ]);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Selection too large, massive action disabled.', $output);
+    }
+
+    public function testFileWithoutMultipleOptionDoesNotRenderMultipleAttribute(): void
+    {
+        $result = Html::file([
+            'display' => false,
+        ]);
+
+        $this->assertStringNotContainsString("multiple='multiple'", $result);
+    }
+
+    public function testFileWithMultipleOptionRendersMultipleAttribute(): void
+    {
+        $result = Html::file([
+            'display'  => false,
+            'multiple' => true,
+        ]);
+
+        $this->assertStringContainsString("multiple='multiple'", $result);
     }
 }

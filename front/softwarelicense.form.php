@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-Session::checkRightsOr("license", [READ, READ_ASSIGNED, READ_OWNED]);
+Session::checkRightsOr(SoftwareLicense::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 if (!isset($_REQUEST["id"])) {
     $_REQUEST["id"] = "";
 }

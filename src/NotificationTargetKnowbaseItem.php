@@ -53,7 +53,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
     #[Override]
     public function addNotificationTargets($entity)
     {
-        if (Session::haveRight("config", UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
         }
         $this->addGroupsToTargets($entity);
@@ -110,7 +110,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             new KnowbaseItem_User(),
             new KnowbaseItem_Profile(),
             new Entity_KnowbaseItem(),
-            new KnowbaseItem_KnowbaseItemCategory(),
+            new KnowbaseItem_KnowbaseItem(),
         ];
         $targets = $listofcategories = [];
         foreach ($typeSearch as $type) {
@@ -133,9 +133,11 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                     case Entity_KnowbaseItem::class:
                         $targets[] = Entity::getById($value['entities_id']);
                         break;
-                    case KnowbaseItem_KnowbaseItemCategory::class:
-                        $category = KnowbaseItemCategory::getById($value['knowbaseitemcategories_id']);
-                        $listofcategories[] = $category->fields['name'];
+                    case KnowbaseItem_KnowbaseItem::class:
+                        $parent = KnowbaseItem::getById($value['knowbaseitems_id_parent']);
+                        if ($parent !== false) {
+                            $listofcategories[] = $parent->fields['name'];
+                        }
                         break;
                 }
             }

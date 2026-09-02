@@ -13,6 +13,11 @@ The present file will list all changes made to the project; according to the
   If your GLPI instance is behind a reverse proxy, you should add its IP(s) the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP.
   Only the required HTTP headers should be listed for better security as any header not handled by the proxy could be spoofed by the client.
 - Remember me support for multiple devices at the same time.
+- `Setup > Data and Privacy` menu item to centralize all data policies and privacy related settings.
+- New automatic action "purgesessionhistory" to automate deleting old login history data based on a retention period set in `Setup > Data and Privacy`.
+- A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration. It can be edited like any other article but it cannot be deleted. **On upgrade, articles that have no parent (including the ones created from the former categories) become children of it.**
+- Knowledge base articles can be moved in the aside tree by dragging them: onto an article to become its child, or onto the top or bottom edge of an article to become its sibling. Dragging is mouse-only for now, and reorders nothing: only the parent changes.
+- Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
@@ -26,11 +31,16 @@ The present file will list all changes made to the project; according to the
 - `status_msg` property for the cronttask (automatic actions) service in the status checker format changed from "RUNNING: %d, STUCK: %d, TOTAL: %d" to "RUNNING: %d, STUCK: %d, ERROR: %d, TOTAL: %d".
   If your monitoring relies on parsing this string, make sure it can handle the new format.
 - New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
+- "Logs purge" tab moved from `Setup > General` to `Setup > Data and Privacy` and renamed to "Historical logs".
+- Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents). The root article is an exception: it is readable by anyone who can read the knowledge base, and it never grants access to its descendants.
 
 ### Deprecated
 
 ### Removed
 - CSRF protection is now handled via browser-native `Sec-Fetch-Site`/`Origin` header validation instead of per-request tokens. All `_glpi_csrf_token` hidden form fields and `X-Glpi-Csrf-Token` AJAX headers must be removed from plugins. See API changes below for the full list of removed methods and helpers.
+- The `KnowbaseItemCategory` itemtype and the `knowbasecategory` right have been removed. Knowledge base categories are now regular articles; hierarchy is expressed by linking child articles to parent articles.
+- Generic tree-browse (`TreeBrowse`) support for the knowledge base. The KB aside provides browsing.
+- The `Search` and `Browse` tabs of the knowledge base article list. The list is now a plain search page.
 
 ### API changes
 - Type declarations for some `CronTask` methods have been added.
@@ -44,7 +54,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_Revision` is now final
 - Use of the `users_id_validate` field for `CommonITILValidation` is no longer supported. Use `items_id_target` and `itemtype_target` instead.
 - Passing additional URL parameters in `Document::getDownloadLink()` is no longer supported.
-- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use `_categories` array instead.
+- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use the `_parents` array instead (parent articles, stored in `glpi_knowbaseitems_knowbaseitems.knowbaseitems_id_parent`).
 - Use of the `certificates` and `entities_id` options in `NotificationTargetCertificate` is no longer supported. These values are automatically computed based on the linked certificate.
 - Use of the `domains` and `entities_id` options in `NotificationTargetDomain` is no longer supported. These values are automatically computed based on the linked domain.
 - Use of the `bypass_rights`, `expose_private` and `is_self_service` parameters in `CommonITILObject::getTimelineItems()` is no longer supported.
@@ -57,6 +67,9 @@ The present file will list all changes made to the project; according to the
 - `User::getAuthToken()` cannot be used for `cookie_token` anymore.
 - Remember me cookie token no longer stored in the `glpi_users` table. It is now stored in the `glpi_user_tokens` table.
 - `Auth::setRememberMeCookie()` signature changed. It no longer accepts an empty value to trigger the removal of the cookie.
+- `KnowbaseItem_KnowbaseItemCategory` renamed to `KnowbaseItem_KnowbaseItem`; table `glpi_knowbaseitems_knowbaseitemcategories` renamed to `glpi_knowbaseitems_knowbaseitems` with columns `knowbaseitems_id` (child) and `knowbaseitems_id_parent` (parent).
+- The `knowbaseitemcategories_id` column of `ITILCategory` and `TaskCategory` is renamed to `knowbaseitems_id` and now references a knowledge base article.
+- `KnowbaseItem::getForCategory()` renamed to `KnowbaseItem::getChildrenArticles()`; the HL API `/Knowledge base/Category` endpoints and the `KBCategory` schema are removed.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.
@@ -83,6 +96,9 @@ The present file will list all changes made to the project; according to the
 - `csrf_token()` Twig function: remove all `_glpi_csrf_token` hidden fields from forms; they are no longer required.
 - `getAjaxCsrfToken()` JavaScript function: remove all `X-Glpi-Csrf-Token` request headers from AJAX calls; they are no longer required.
 - `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
+- `escapeMarkupText()` javascript function.
+- `Html::link()`
+- Inclusion of the `inc/includes.php` file.
 
 #### Removed
 
@@ -103,6 +119,7 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLE`
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
+- `CommonITILObject::assign()`
 - `CommonITILObject::showSatisfactionTabContent()`
 - `ComputerAntivirus` class
 - `ComputerVirtualMachine` class
@@ -115,14 +132,16 @@ The present file will list all changes made to the project; according to the
 - `DBConnection::getDBSlaveConf()`
 - `DBConnection::isDBSlaveActive()`
 - `DBConnection::saveDBSlaveConf()`
+- `DBmysql::doQueryOrDie()`
+- `DBmysql::deleteOrDie()`
+- `DBmysql::guessTimezone()`
+- `DBmysql::insertOrDie()`
 - `DBmysql::query()`
 - `DBmysql::queryOrDie()`
-- `DBmysql::doQueryOrDie()`
-- `DBmysql::insertOrDie()`
 - `DBmysql::updateOrDie()`
-- `DBmysql::deleteOrDie()`
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
+- `DbUtils::getEntitiesRestrictRequest()`
 - `Document::send()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
@@ -159,9 +178,11 @@ The present file will list all changes made to the project; according to the
 - `ITILFollowup::ADDGROUPTICKET` constant
 - `ITILFollowup::ADDMYTICKET` constant
 - `KnowbaseItem::normalizeKbRevisionDiffHtml()`
+- `KnowbaseItem_KnowbaseItemCategory` class
 - `KnowbaseItem_Comment::getCommentForm()`
 - `KnowbaseItem_Comment::showForItem()`
 - `KnowbaseItem_Revision::showForItem()`
+- `KnowbaseItemCategory` class
 - `KnowbaseItemTranslation::defineTabs()`
 - `KnowbaseItemTranslation::displayTabContentForItem()`
 - `KnowbaseItemTranslation::getTabNameForItem()`

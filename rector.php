@@ -38,6 +38,7 @@ use Rector\Config\RectorConfig;
 use Rector\Configuration\PhpLevelSetResolver;
 use Rector\DeadCode\Rector as DeadCode;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php74\Rector\If_\IfToNullCoalescingAssignRector;
 use Rector\ValueObject\PhpVersion;
 use RectorGlpi\Set\GlpiSetList;
 
@@ -64,6 +65,7 @@ return RectorConfig::configure()
         StringClassNameToClassConstantRector::class => [
             __DIR__ . '/install/migrations',
         ],
+        IfToNullCoalescingAssignRector::class, // Too much changes, may be done in another PR
     ])
     ->withPhpVersion(PhpVersion::PHP_83)
     ->withCache(

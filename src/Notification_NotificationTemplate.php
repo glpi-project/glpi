@@ -163,7 +163,7 @@ TWIG, $twig_params);
 
             $tpl_link = $tpl->getLink();
             if (empty($tpl_link)) {
-                $tpl_link = "<i class='ti ti-alert-triangle red'></i>
+                $tpl_link = "<i class='ti ti-alert-triangle red' aria-hidden='true'></i>
                         <a href='" . htmlescape($notiftpl->getLinkUrl()) . "'>"
                          . __s("No template selected")
                       . "</a>";
@@ -316,7 +316,7 @@ TWIG, $twig_params);
     #[Override]
     public function showForm($ID, array $options = [])
     {
-        if (!Session::haveRight("notification", UPDATE)) {
+        if (!Session::haveRight(Notification::$rightname, UPDATE)) {
             return false;
         }
 

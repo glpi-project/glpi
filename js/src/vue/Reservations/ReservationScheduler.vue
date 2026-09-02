@@ -37,7 +37,7 @@
         },
     });
 
-    const { getListFullView, getResourceWeekView } = useScheduler();
+    const { getListFullView, getResourceWeekView, resourceWeekDayLevel } = useScheduler();
     const id = Number(props.id);
     const default_date = new Date(props.default_date);
     const calendar = useTemplateRef('calendar');
@@ -82,6 +82,23 @@
                 return ['defaultDate'];
             }
             return [];
+        },
+        dayCellDidMount: (arg) => markDayHeading(arg.el.querySelector('.fc-daygrid-day-number')),
+        dayHeaderDidMount: (arg) => {
+            // Month view column headers are weekday names, not days: they carry no date.
+            if (arg.el.dataset.date === undefined) {
+                return;
+            }
+
+            markDayHeading(arg.el.querySelector('.fc-col-header-cell-cushion, .fc-list-day-text'));
+        },
+        slotLabelDidMount: (arg) => {
+            // Timeline rows are week, day then hour. timeGrid time axis labels are always level 0.
+            if (arg.level !== resourceWeekDayLevel) {
+                return;
+            }
+
+            markDayHeading(arg.el.querySelector('.fc-timeline-slot-cushion'));
         },
         selectable: props.can_reserve,
         select: (info) => {
@@ -163,6 +180,17 @@
         return date1.getFullYear() === date2.getFullYear() &&
             date1.getMonth() === date2.getMonth() &&
             date1.getDate() === date2.getDate();
+    }
+
+    // Mark the node FullCalendar already renders, to keep the grid and table semantics.
+    function markDayHeading(day) {
+        // Disabled cells render an empty placeholder number, which must not become a heading.
+        if (!day || day.textContent.trim() === '') {
+            return;
+        }
+
+        day.setAttribute('role', 'heading');
+        day.setAttribute('aria-level', '3');
     }
 
     watch(current_view, (new_view) => {

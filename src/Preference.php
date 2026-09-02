@@ -39,6 +39,12 @@ use Glpi\Security\TOTPManager;
 // class Preference for the current connected User
 class Preference extends CommonGLPI
 {
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     public static function getTypeName($nb = 0)
     {
         // Always plural
@@ -51,7 +57,7 @@ class Preference extends CommonGLPI
         $ong = [];
         $this->addStandardTab(User::class, $ong, $options);
         $this->addStandardTab(self::class, $ong, $options);
-        if (Session::haveRightsOr('personalization', [READ, UPDATE])) {
+        if (Session::haveRightsOr(Profile::HELPDESK_RIGHT_PERSONALIZATION, [READ, UPDATE])) {
             $this->addStandardTab(Config::class, $ong, $options);
         }
         $this->addStandardTab(ValidatorSubstitute::class, $ong, $options);

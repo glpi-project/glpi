@@ -273,7 +273,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 self::READNEWTICKET,
             ]
         )
-              || Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights()));
+              || Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights()));
     }
 
 
@@ -341,7 +341,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
         // Can validate tickets
         if (
-            Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
+            Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())
             && TicketValidation::canValidate($this->fields["id"])
         ) {
             return true;
@@ -360,7 +360,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
 
         return ((($this->fields["users_id_recipient"] === Session::getLoginUserID())
-               &&  Session::haveRight('ticket', Ticket::SURVEY))
+               &&  Session::haveRight(Ticket::$rightname, Ticket::SURVEY))
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
@@ -424,9 +424,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             return false;
         }
 
-        $canAddTask = Session::haveRight("task", CommonITILTask::ADDALLITEM);
+        $canAddTask = Session::haveRight(TicketTask::$rightname, CommonITILTask::ADDALLITEM);
         $canAddFollowup = Session::haveRightsOr(
-            'followup',
+            ITILFollowup::$rightname,
             [
                 ITILFollowup::ADDALLITEM,
                 ITILFollowup::ADDMY,
@@ -644,7 +644,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function canReopen()
     {
-        return Session::haveRight('followup', CREATE)
+        return Session::haveRight(ITILFollowup::$rightname, CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
@@ -2085,34 +2085,34 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         if (Session::getCurrentInterface() === 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
-                 = "<i class='ti ti-git-merge'></i>"
+                 = "<i class='ti ti-git-merge' aria-hidden='true'></i>"
                  . __s('Merge as Followup');
             }
 
             if (Item_Ticket::canCreate()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='ti ti-plus'></i>"
+                = "<i class='ti ti-plus' aria-hidden='true'></i>"
                  . _sx('button', 'Add an item');
             }
 
             if (ITILFollowup::canCreate()) {
                 $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
-                = "<i class='" . htmlescape($icon) . "'></i>"
+                = "<i class='" . htmlescape($icon) . "' aria-hidden='true'></i>"
                  . __s('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
-                = "<i class='" . htmlescape($icon) . "'></i>"
+                = "<i class='" . htmlescape($icon) . "' aria-hidden='true'></i>"
                  . __s('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
                 $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
-                = "<i class='" . htmlescape($icon) . "'></i>"
+                = "<i class='" . htmlescape($icon) . "' aria-hidden='true'></i>"
                  . __s('Approval request');
             }
 
@@ -2122,16 +2122,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
 
             if (Session::haveRight(self::$rightname, UPDATE)) {
-                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='ti ti-user'></i>" . __s('Add an actor');
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='ti ti-user' aria-hidden='true'></i>" . __s('Add an actor');
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                        = "<i class='ti ti-link'></i>"
+                        = "<i class='ti ti-link' aria-hidden='true'></i>"
                         . _sx('button', 'Link project task');
                 }
                 if (Ticket_Contract::canCreate()) {
                     $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
-                        = "<i class='" . Contract::getIcon() . "'></i>"
+                        = "<i class='" . Contract::getIcon() . "' aria-hidden='true'></i>"
                         . _sx('button', 'Add contract');
                 }
 
@@ -2140,7 +2140,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
             if (self::canUpdate()) {
                 $actions[static::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
-                = "<i class='ti ti-check'></i>"
+                = "<i class='ti ti-check' aria-hidden='true'></i>"
                 . __s("Resolve selected tickets");
             }
         }
@@ -2835,7 +2835,7 @@ JAVASCRIPT;
         $validation_options = TicketValidation::rawSearchOptionsToAdd();
         if (
             !Session::haveRightsOr(
-                'ticketvalidation',
+                TicketValidation::$rightname,
                 [
                     TicketValidation::CREATEINCIDENT,
                     TicketValidation::CREATEREQUEST,
@@ -3015,19 +3015,19 @@ JAVASCRIPT;
 
             $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
-            if (Session::haveRight('ticketcost', READ)) {
+            if (Session::haveRight(TicketCost::$rightname, READ)) {
                 $tab = array_merge($tab, TicketCost::rawSearchOptionsToAdd());
             }
         }
 
-        if (Session::haveRight('problem', READ)) {
+        if (Session::haveRight(Problem::$rightname, READ)) {
             $tab = array_merge(
                 $tab,
                 Problem::rawSearchOptionsToAdd(self::class)
             );
         }
 
-        if (Session::haveRight('change', READ)) {
+        if (Session::haveRight(Change::$rightname, READ)) {
             $tab = array_merge($tab, Change::rawSearchOptionsToAdd(self::class));
         }
 
@@ -3091,7 +3091,7 @@ JAVASCRIPT;
             $tokeep = ['common', 'requester','satisfaction'];
             if (
                 Session::haveRightsOr(
-                    'ticketvalidation',
+                    TicketValidation::$rightname,
                     array_merge(
                         TicketValidation::getValidateRights(),
                         TicketValidation::getCreateRights()
@@ -3525,10 +3525,9 @@ JAVASCRIPT;
             return false;
         }
 
-        if (isset($options['_add_fromitem']) && isset($options['itemtype']) && is_a($options['itemtype'], CommonDBTM::class, true)) {
-            $item = new $options['itemtype']();
-            $item->getFromDB($options['items_id'][$options['itemtype']][0]);
-            $options['entities_id'] = $item->fields['entities_id'];
+        $entities_id = $this->getEntitiesIdFromAddFromItemOptions($options);
+        if ($entities_id !== null) {
+            $options['entities_id'] = $entities_id;
         }
 
         $this->restoreInputAndDefaults($ID, $options, null, true);
@@ -3666,7 +3665,7 @@ JAVASCRIPT;
         // check right used for this ticket
         $canupdate     = !$ID
                         || (Session::getCurrentInterface() == "central"
-                            && $this->canUpdateItem());
+                            && $this->can($this->getID(), UPDATE));
         $can_requester = $this->canRequesterUpdateItem();
         $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
@@ -3697,9 +3696,9 @@ JAVASCRIPT;
         $tto_sla->getFromDB($this->fields['slas_id_tto']);
 
         if ($this->isNewItem()) {
-            $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+            $options['_canupdate'] = Session::haveRight(Ticket::$rightname, CREATE);
         } else {
-            $options['_canupdate'] = Session::haveRight('ticket', UPDATE);
+            $options['_canupdate'] = Session::haveRight(Ticket::$rightname, UPDATE);
         }
 
         // If a link is specified in the old format, convert it to the new one
@@ -3739,7 +3738,7 @@ JAVASCRIPT;
             'canassigntome'             => $canassigntome,
             'userentities'              => $userentities,
             'cancreateuser'             => $cancreateuser,
-            'canreadnote'               => Session::haveRight('entity', READNOTE),
+            'canreadnote'               => Session::haveRight(Entity::$rightname, READNOTE),
             'has_pending_reason'        => PendingReason_Item::getForItem($this) !== false,
             'show_tickets_properties_on_helpdesk' => Entity::getUsedConfig(
                 'show_tickets_properties_on_helpdesk',
@@ -3765,7 +3764,7 @@ JAVASCRIPT;
 
         if (
             !Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
-            && !Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
+            && !Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())
         ) {
             return false;
         }
@@ -3831,7 +3830,7 @@ JAVASCRIPT;
 
             case "toapprove": //tickets waiting for approval
                 $ORWHERE = ['AND' => $search_users_id];
-                if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
+                if (!$showgrouptickets &&  Session::haveRight(Ticket::$rightname, Ticket::SURVEY)) {
                     $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
                 }
                 $WHERE[] = ['OR' => $ORWHERE];
@@ -3940,7 +3939,7 @@ JAVASCRIPT;
                     ],
                 ];
                 $ORWHERE = ['AND' => $search_users_id];
-                if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
+                if (!$showgrouptickets &&  Session::haveRight(Ticket::$rightname, Ticket::SURVEY)) {
                     $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
                 }
                 $WHERE[] = ['OR' => $ORWHERE];
@@ -4353,7 +4352,7 @@ JAVASCRIPT;
                             ],
                         ];
 
-                        if (Session::haveRight('ticket', Ticket::SURVEY)) {
+                        if (Session::haveRight(Ticket::$rightname, Ticket::SURVEY)) {
                             $options['criteria'][] = [
                                 'link'     => 'AND',
                                 'criteria' => [
@@ -4434,7 +4433,7 @@ JAVASCRIPT;
                 ];
                 foreach ($results as $data) {
                     $showprivate = false;
-                    if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
+                    if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                         $showprivate = true;
                     }
 
@@ -4457,11 +4456,11 @@ JAVASCRIPT;
                         ) {
                             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>'
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape($d['alternative_email']);
                                 }
                             }
@@ -4472,7 +4471,7 @@ JAVASCRIPT;
                             && count($job->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1" aria-hidden="true"></i>'
                                     . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                             }
                         }
@@ -4636,7 +4635,7 @@ JAVASCRIPT;
             ];
         }
 
-        if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+        if (Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())) {
             $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
 
             $opt = [
@@ -4819,7 +4818,7 @@ JAVASCRIPT;
         // Print links or not in case of user view
         // Make new job object and fill it from database, if success, print it
         $showprivate = false;
-        if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
+        if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
             $showprivate = true;
         }
 
@@ -5012,8 +5011,11 @@ JAVASCRIPT;
                     'description' => __('Automatic closed tickets purge'),
                     'parameter' => __('Maximum number of tickets purged per entity (0 = unlimited)'),
                 ];
+
+            case 'createinquestticket':
+                return ['description' => __('Generation of tickets satisfaction surveys')];
         }
-        return parent::cronInfo($name);
+        return [];
     }
 
 
@@ -5243,6 +5245,18 @@ JAVASCRIPT;
         }
 
         return ($tot > 0 ? 1 : 0);
+    }
+
+    /**
+     * Cron for automatically creating tickets satisfaction surveys
+     *
+     * @param CronTask $task
+     *
+     * @return int (0 : nothing done - 1 : done)
+     **/
+    public static function cronCreateInquestTicket($task)
+    {
+        return parent::cronCreateInquest($task);
     }
 
 
@@ -5531,10 +5545,11 @@ JAVASCRIPT;
      * Build parent condition for search
      *
      * @param string $fieldID field used in the condition: tickets_id, items_id
+     * @param string $table   table name to qualify column references; prevents MySQL 1052 when JOINed tables share the same column name
      *
      * @return string
      */
-    public static function buildCanViewCondition($fieldID)
+    public static function buildCanViewCondition(string $fieldID, string $table = '')
     {
 
         $condition = "";
@@ -5550,32 +5565,34 @@ JAVASCRIPT;
             $groups = '-1';
         }
 
-        if (Session::haveRight("ticket", Ticket::READMY)) {
+        $field_ref = $table ? "`$table`.`$fieldID`" : "`$fieldID`";
+
+        if (Session::haveRight(Ticket::$rightname, Ticket::READMY)) {
             // Add tickets where the users is requester, observer or recipient
             // Subquery for requester/observer user
             $user_query = "SELECT `tickets_id`
             FROM `glpi_tickets_users`
             WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
-            $condition .= "OR `$fieldID` IN ($user_query) ";
+            $condition .= "OR $field_ref IN ($user_query) ";
 
             // Subquery for recipient
             $recipient_query = "SELECT `id`
             FROM `glpi_tickets`
             WHERE `users_id_recipient` = '$user'";
-            $condition .= "OR `$fieldID` IN ($recipient_query) ";
+            $condition .= "OR $field_ref IN ($recipient_query) ";
         }
 
-        if (Session::haveRight("ticket", Ticket::READGROUP)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
             // Add tickets where the users is in a requester or observer group
             // Subquery for requester/observer group
             $group_query = "SELECT `tickets_id`
             FROM `glpi_groups_tickets`
             WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
-            $condition .= "OR `$fieldID` IN ($group_query) ";
+            $condition .= "OR $field_ref IN ($group_query) ";
         }
 
         if (
-            Session::haveRightsOr("ticket", [
+            Session::haveRightsOr(Ticket::$rightname, [
                 Ticket::OWN,
                 Ticket::READASSIGN,
             ])
@@ -5585,28 +5602,28 @@ JAVASCRIPT;
             $user_query = "SELECT `tickets_id`
             FROM `glpi_tickets_users`
             WHERE `users_id` = '$user' AND type = $assign";
-            $condition .= "OR `$fieldID` IN ($user_query) ";
+            $condition .= "OR $field_ref IN ($user_query) ";
         }
 
-        if (Session::haveRight("ticket", Ticket::READASSIGN)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) {
             // Add tickets where the users is part of an assigned group
             // Subquery for assigned group
             $group_query = "SELECT `tickets_id`
             FROM `glpi_groups_tickets`
             WHERE `groups_id` IN ($groups) AND type = $assign";
-            $condition .= "OR `$fieldID` IN ($group_query) ";
+            $condition .= "OR $field_ref IN ($group_query) ";
 
-            if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
+            if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
                 // Add new tickets
                 $tickets_query = "SELECT `id`
                FROM `glpi_tickets`
                WHERE `status` = '" . CommonITILObject::INCOMING . "'";
-                $condition .= "OR `$fieldID` IN ($tickets_query) ";
+                $condition .= "OR $field_ref IN ($tickets_query) ";
             }
         }
 
         if (
-            Session::haveRightsOr('ticketvalidation', [
+            Session::haveRightsOr(TicketValidation::$rightname, [
                 TicketValidation::VALIDATEINCIDENT,
                 TicketValidation::VALIDATEREQUEST,
             ])
@@ -5617,7 +5634,7 @@ JAVASCRIPT;
             FROM `glpi_ticketvalidations`
             WHERE (`itemtype_target` = 'User' AND `items_id_target` = '$user')
                 OR (`itemtype_target` = 'Group' AND `items_id_target` IN (SELECT `glpi_groups_users`.`groups_id` FROM `glpi_groups_users` WHERE `glpi_groups_users`.`users_id` = '$user'))";
-            $condition .= "OR `$fieldID` IN ($validation_query) ";
+            $condition .= "OR $field_ref IN ($validation_query) ";
         }
 
         return $condition;
@@ -5701,12 +5718,15 @@ JAVASCRIPT;
         if ($p['full_transaction']) {
             $DB->beginTransaction();
         }
+
+        $can_update_merge_target = $merge_target->can($merge_target->getID(), UPDATE);
+        $can_add_document = $merge_target->canAddItem('Document');
         foreach ($ticket_ids as $id) {
             try {
                 if (!$p['full_transaction']) {
                     $DB->beginTransaction();
                 }
-                if ($merge_target->canUpdateItem() && $ticket->can($id, DELETE)) {
+                if ($can_update_merge_target && $ticket->can($id, DELETE)) {
                     if (!$ticket->getFromDB($id)) {
                         //Cannot retrieve ticket. Abort/fail the merge
                         throw new RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
@@ -5750,6 +5770,7 @@ JAVASCRIPT;
                         'date_mod'        => $ticket->fields['date_mod'],
                         'date'            => $ticket->fields['date_creation'],
                         'sourceitems_id'  => $ticket->getID(),
+                        '_disablenotif'   => true,
                     ];
                     if (!$fup->add($input)) {
                         //Cannot add followup. Abort/fail the merge
@@ -5765,6 +5786,7 @@ JAVASCRIPT;
                             $fup2['items_id'] = $merge_target_id;
                             $fup2['sourceitems_id'] = $id;
                             $fup2['content'] = $fup2['content'];
+                            $fup2['_disablenotif'] = true;
                             unset($fup2['id']);
                             if (!$fup->add($fup2)) {
                                 // Cannot add followup. Abort/fail the merge
@@ -5785,6 +5807,7 @@ JAVASCRIPT;
                             $task2['tickets_id'] = $merge_target_id;
                             $task2['sourceitems_id'] = $id;
                             $task2['content'] = $task2['content'];
+                            $task2['_disablenotif'] = true;
                             unset($task2['id']);
                             unset($task2['uuid']);
                             if (!$task->add($task2)) {
@@ -5794,7 +5817,7 @@ JAVASCRIPT;
                         }
                     }
                     if (in_array('Document', $p['linktypes'])) {
-                        if (!$merge_target->canAddItem('Document')) {
+                        if (!$can_add_document) {
                             throw new RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
                         }
                         $tomerge = $document_item->find([
@@ -5907,16 +5930,19 @@ JAVASCRIPT;
                             });
                             foreach ($users as $user) {
                                 $user['tickets_id'] = $merge_target_id;
+                                $user['_disablenotif'] = true;
                                 unset($user['id']);
                                 $tu->add($user);
                             }
                             foreach ($groups as $group) {
                                 $group['tickets_id'] = $merge_target_id;
+                                $group['_disablenotif'] = true;
                                 unset($group['id']);
                                 $gt->add($group);
                             }
                             foreach ($suppliers as $supplier) {
                                 $supplier['tickets_id'] = $merge_target_id;
+                                $supplier['_disablenotif'] = true;
                                 unset($supplier['id']);
                                 $st->add($supplier);
                             }
@@ -6011,7 +6037,7 @@ JAVASCRIPT;
      */
     public static function getCriteriaFromProfile()
     {
-        if (Session::haveRight("ticket", Ticket::READALL)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
             return [];
         }
 
@@ -6020,7 +6046,7 @@ JAVASCRIPT;
         $valid  = false;
 
         $where_profile = [];
-        if (Session::haveRight("ticket", Ticket::READMY)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READMY)) {
             $users = true;
             $where_profile[] = [
                 'OR' => [
@@ -6036,7 +6062,7 @@ JAVASCRIPT;
             ];
         }
 
-        if (Session::haveRight("ticket", Ticket::READGROUP) && count($_SESSION['glpigroups'])) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP) && count($_SESSION['glpigroups'])) {
             $groups = true;
             $where_profile[] = [
                 'gt.groups_id' => $_SESSION['glpigroups'],
@@ -6047,7 +6073,7 @@ JAVASCRIPT;
             ];
         }
 
-        if (Session::haveRight("ticket", Ticket::OWN)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) {
             $users = true;
             $where_profile[] = [
                 'tu.users_id' => Session::getLoginUserID(),
@@ -6055,7 +6081,7 @@ JAVASCRIPT;
             ];
         }
 
-        if (Session::haveRight("ticket", Ticket::READASSIGN)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) {
             $users = true;
             $temp = [
                 'OR' => [
@@ -6074,7 +6100,7 @@ JAVASCRIPT;
                 ];
             }
 
-            if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
+            if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
                 $temp['OR'][] = [
                     ['glpi_tickets.status' => CommonITILObject::INCOMING],
                 ];
@@ -6084,7 +6110,7 @@ JAVASCRIPT;
         }
 
         if (
-            Session::haveRightsOr('ticketvalidation', [
+            Session::haveRightsOr(TicketValidation::$rightname, [
                 TicketValidation::VALIDATEINCIDENT,
                 TicketValidation::VALIDATEREQUEST,
             ])
@@ -6492,13 +6518,13 @@ JAVASCRIPT;
         // remove old fields and add new fields
         if (isset($input['olas_id_tto'])) {
             Toolbox::deprecated('Passing `olas_id_tto` input to ticket is deprecated.'
-                . ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.0");
+                . ' Use `_olas_id` (array) + `_la_update` instead.', version: "12.0");
             $input['_olas_id'][] = $input['olas_id_tto'];
             unset($input['olas_id_tto']);
         }
         if (isset($input['olas_id_ttr'])) {
             Toolbox::deprecated('Passing `olas_id_ttr` input to ticket is deprecated.'
-                . ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.0");
+                . ' Use `_olas_id` (array) + `_la_update` instead.', version: "12.0");
             $input['_olas_id'][] = $input['olas_id_ttr'];
             unset($input['olas_id_ttr']);
         }

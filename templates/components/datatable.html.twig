@@ -58,7 +58,8 @@
  * - footer_class: Additional CSS classes applied to the table footer element.
  * - no_header: Hide all column headers when set to true. Defaults to false.
  * - super_header: Optional header row spanning all columns. Can be a string or an
- *   array with 'label' (string) and optional 'is_raw' (boolean) keys.
+ *   array with 'label' (string) and optional 'is_raw' (boolean) and 'level' (int) keys.
+ *   'level' exposes the label as a heading of that level, for pages that need it.
  *
  * - nosort: Disable sorting on all columns. Defaults to false.
  * - sort: The currently sorted column key.
@@ -110,9 +111,12 @@
             {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
             {% if super_header_label is not empty %}
                 {% set super_header_raw = super_header is array ? (super_header['is_raw'] ?? false) : false %}
+                {% set super_header_level = super_header is array ? (super_header['level'] ?? null) : null %}
                 <tr>
                     <th colspan="1">
+                        {% if super_header_level and super_header_raw is not same as 'th_elements' %}<span role="heading" aria-level="{{ super_header_level }}">{% endif %}
                         {{ super_header_raw ? super_header_label|raw : super_header_label }}
+                        {% if super_header_level and super_header_raw is not same as 'th_elements' %}</span>{% endif %}
                     </th>
                 </tr>
             {% endif %}
@@ -148,9 +152,12 @@
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
                     {% set super_header_raw = super_header is array ? (super_header['is_raw'] ?? false) : false %}
+                    {% set super_header_level = super_header is array ? (super_header['level'] ?? null) : null %}
                     <tr>
                         {% if super_header_raw is not same as 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
+                            {% if super_header_level and super_header_raw is not same as 'th_elements' %}<span role="heading" aria-level="{{ super_header_level }}">{% endif %}
                             {{ super_header_raw ? super_header_label|raw : super_header_label }}
+                            {% if super_header_level and super_header_raw is not same as 'th_elements' %}</span>{% endif %}
                         {% if super_header_raw is not same as 'th_elements' %}</th>{% endif %}
                     </tr>
                 {% endif %}
@@ -180,7 +187,7 @@
                             <th scope="col">
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
                                     <a href="{{ sort_href }}">
-                                    <i class="{{ sort_icon }}"></i>
+                                    <i class="{{ sort_icon }}" aria-hidden="true"></i>
                                 {% endif %}
                                 <span>{{ raw_header ? column_label|raw : column_label }}</span>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
@@ -194,13 +201,13 @@
                                <span class="float-end log-toolbar mb-0">
                                    {% if nofilter is not defined %}
                                        <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
-                                           <i class="ti ti-filter"></i>
+                                           <i class="ti ti-filter" aria-hidden="true"></i>
                                            <span class="d-none d-xl-block">{{ __('Filter') }}</span>
                                        </button>
                                    {% endif %}
                                    {% if csv_url|length %}
                                        <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
-                                           <i class="ti ti-download"></i>
+                                           <i class="ti ti-download" aria-hidden="true"></i>
                                            <span class="d-none d-xl-block">{{ __('Export') }}</span>
                                        </a>
                                    {% endif %}
@@ -278,7 +285,7 @@
             <tbody>
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
-                        {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
+                        {% set row_massiveactions = entry['showmassiveactions'] is defined ? entry['showmassiveactions'] : showmassiveactions %}
                         <tr
                             class="{{ loop.last ? "border-transparent" : "" }} {{ row_class|default('') }} {{ entry['row_class']|default('') }}"
                             {% if entry['itemtype'] is defined %}
@@ -291,12 +298,14 @@
                                 aria-label="{{ entry['row_aria_label'] }}"
                             {% endif %}
                         >
-                            {% if row_massiveactions %}
+                            {% if showmassiveactions %}
                                 <td style="width: 10px">
-                                    {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
-                                        <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                               value="1" aria-label="{{ __("Select item") }}"
-                                               name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                    {% if row_massiveactions %}
+                                        {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
+                                            <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
+                                                   value="1" aria-label="{{ __("Select item") }}"
+                                                   name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                             {% endif %}
@@ -366,7 +375,7 @@
                                             {% endif %}
                                         {% elseif formatter == 'yesno' %}
                                             {% if entry[colkey] == 1 %}
-                                                <div aria-label="{{ __('Yes') }}"><i class="ti ti-circle-check"></i></div>
+                                                <div aria-label="{{ __('Yes') }}"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
                                             {% else %}
                                                 <div aria-label="{{ __('No') }}"></div>
                                             {% endif %}
@@ -385,7 +394,7 @@
                     <tr>
                         <td colspan="{{ total_cols }}">
                             <twig:Alert
-                                :message="__('No results found')"
+                                :content="__('No results found')"
                             />
                         </td>
                     </tr>

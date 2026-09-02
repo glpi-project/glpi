@@ -130,6 +130,21 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
+        if (
+            isset($input['itemtype'], $input['items_id'], $input['softwareversions_id'])
+            && countElementsInTable(
+                static::getTable(),
+                [
+                    'itemtype'            => $input['itemtype'],
+                    'items_id'            => $input['items_id'],
+                    'softwareversions_id' => $input['softwareversions_id'],
+                ]
+            ) > 0
+        ) {
+            Session::addMessageAfterRedirect(__s('This software version is already installed on this item.'), false, ERROR);
+            return false;
+        }
+
         $input = $this->prepareInputForAddAndUpdate($input, true);
         if ($input === false) {
             return false;
@@ -454,7 +469,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             return;
         }
 
-        $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
+        $canedit       = Session::haveRightsOr(Software::$rightname, [CREATE, UPDATE, DELETE, PURGE]);
         $canshowitems  = [];
         $item_version_table = self::getTable(self::class);
 
@@ -994,7 +1009,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         $rand          = mt_rand();
         $filters       = $_GET['filters'] ?? [];
         $is_filtered   = count($filters) > 0;
-        $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
+        $canedit       = Session::haveRightsOr(Software::$rightname, [CREATE, UPDATE, DELETE, PURGE]);
         $entities_id   = $item->fields["entities_id"];
 
         $crit         = Session::getSavedOption(self::class, 'criterion', -1);
@@ -1016,7 +1031,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</div>";
             echo "<div class='col-auto'>";
             echo "<button type='submit' name='add' class='btn btn-primary ms-1'>";
-            echo "<i class='ti ti-link'></i>" . _sx('button', 'Install');
+            echo "<i class='ti ti-link' aria-hidden='true'></i>" . _sx('button', 'Install');
             echo "</button>";
             echo "</div>";
             echo "</div>"; // d-flex
@@ -1107,7 +1122,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end .= "<th>" . __s('Valid license') . "</th>";
             $header_end .= "<th>
                 <button class='btn btn-sm show_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
-                    <i class='ti ti-filter'></i>
+                    <i class='ti ti-filter' aria-hidden='true'></i>
                     <span class='d-none d-xl-block'>" . __s('Filter') . "</span>
                 </button></th>";
             $header_end .= "</tr>";
@@ -1226,7 +1241,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</div>";
             echo "<div class='col-auto'>";
             echo "<button type='submit' name='add' class='btn btn-primary ms-1'>";
-            echo "<i class='ti ti-link'></i>" . _sx('button', 'Add');
+            echo "<i class='ti ti-link' aria-hidden='true'></i>" . _sx('button', 'Add');
             echo "</button>";
             echo "</div>";
             echo "</div>"; // d-flex

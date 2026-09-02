@@ -114,9 +114,10 @@ test('Cancelling edit after clearing illustration restores the original value', 
 
     await kb.editor.cancel();
 
+    // Back to view mode: the picker is decorative again, nothing is named.
     const picker = page.getByTestId('illustration-picker');
     await expect(page.getByTestId('illustration-input')).toHaveValue('antivirus');
-    await expect(picker.getByRole('img', { name: 'Antivirus', exact: true })).toBeVisible();
+    await expect(picker).toHaveAttribute('aria-disabled', 'true');
 });
 
 test('History panel shows "Illustration removed by" when illustration is cleared', async ({ page, profile, api }) => {
@@ -163,5 +164,7 @@ test('Aside renders no svg for an article without illustration', async ({ page, 
         .getByRole('link', { name: article_name })
     ;
     await expect(aside_link).toBeVisible();
-    await expect(aside_link.getByRole('img')).toHaveCount(0);
+    // Located by test id: untitled illustrations are `aria-hidden`, so the
+    // `img` role would no longer match them even if one was rendered.
+    await expect(aside_link.getByTestId('illustration-use')).toHaveCount(0);
 });

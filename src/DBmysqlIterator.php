@@ -814,6 +814,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 return $fkey;
             }
         } elseif ($values instanceof QueryExpression) {
+            $this->values = array_merge($this->values, $values->getParams());
             return $values->getValue();
         }
         throw new LogicException('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].');

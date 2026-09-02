@@ -84,7 +84,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
             {# state flag #}
             <div class="align-middle my-2 me-2">
-                <i class="ti ti-flag text-secondary mx-1"></i>
+                <i class="ti ti-flag text-secondary mx-1" aria-hidden="true"></i>
             </div>
 
             {# datetime field #}
@@ -159,7 +159,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
             {# state flag #}
             <div class="align-middle my-2 me-2">
-                <i class="ti ti-flag text-secondary mx-1"></i>
+                <i class="ti ti-flag text-secondary mx-1" aria-hidden="true"></i>
             </div>
 
             {# datetime field #}
@@ -270,17 +270,20 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                     <i class="ti ti-flag-check text-success mx-1"
                        title="{{ __('%s completed')|format(__('OLA')) }}"
                        data-bs-toggle="tooltip"
-                       data-bs-placement="left" ></i>
+                       data-bs-placement="left" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ __('%s completed')|format(__('OLA')) }}</span>
                 {% elseif la.is_late %}
                     <i class="ti ti-flag-exclamation text-danger mx-1"
                        title="{{ __('%s is late')|format(__('OLA')) }}"
                        data-bs-toggle="tooltip"
-                       data-bs-placement="left" ></i>
+                       data-bs-placement="left" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ __('%s is late')|format(__('OLA')) }}</span>
                 {% else %} {# ola running #}
                     <i class="ti ti-flag text-secondary mx-1"
                        title="{{ __('%s not completed')|format(__('OLA')) }}"
                        data-bs-toggle="tooltip"
-                       data-bs-placement="left" ></i>
+                       data-bs-placement="left" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ __('%s not completed')|format(__('OLA')) }}</span>
                 {% endif %}
              </span>
             <span>{{ la.due_time|formatted_datetime }}</span>
@@ -288,7 +291,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
             <span class="level_name badge itil-badge bg-body border-info ms-1 flex-column flex-sm-row">
                 <span class="d-flex align-items-center">
-                     <i class="ti ti-stopwatch slt me-1"></i>
+                     <i class="ti ti-stopwatch slt me-1" aria-hidden="true"></i>
                      <span class="text-truncate"
                            title="{{ get_item_comment(la.class, la.olas_id) }}"
                            data-bs-toggle="tooltip" data-bs-placement="top">
@@ -300,7 +303,8 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                     <span class="badge bg-info-lt ms-0 ms-sm-1">
                         <i class="ti ti-clock me-1"
                            title="{{ __('Next escalation: %s')|format(la.nextaction.fields['date']|formatted_datetime) }}"
-                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                           data-bs-toggle="tooltip" data-bs-placement="top" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ __('Next escalation: %s')|format(la.nextaction.fields['date']|formatted_datetime) }}</span>
                         <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), get_item_name(la.level)) }}"
                               data-bs-toggle="tooltip" data-bs-placement="top">
                            {{ get_item_name(la.level) }}
@@ -312,7 +316,8 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                 <span class="badge bg-info-lt ms-0 ms-sm-1">
                     <i class="ti ti-users me-1"
                        title="{{ __('Ola group: %s')|format(_n('Group', 'Groups', 1), la.group_name) }}"
-                       data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                       data-bs-toggle="tooltip" data-bs-placement="top" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ __('Ola group: %s')|format(_n('Group', 'Groups', 1), la.group_name) }}</span>
                     <span title="{{ __('%1$s: %2$s')|format(_n('Group', 'Groups', 1), la.group_name) }}"
                           data-bs-toggle="tooltip" data-bs-placement="top">
                        {{ la.group_name }}
@@ -362,13 +367,14 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             <i class="ti ti-flag text-secondary mx-1"
                title="{{ __('OLA') }}"
                data-bs-toggle="tooltip"
-               data-bs-placement="left"></i> {{ la.due_time|formatted_datetime }}
+               data-bs-placement="left" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __('OLA') }}</span> {{ la.due_time|formatted_datetime }}
         {% endif %}
 
         {% if options.display_associatedsla_field %}
             <span class="level_name badge itil-badge bg-body border-info ms-1 flex-column flex-sm-row">
                 <span class="d-flex align-items-center">
-                     <i class="ti ti-stopwatch slt me-1"></i>
+                     <i class="ti ti-stopwatch slt me-1" aria-hidden="true"></i>
                      <span class="text-truncate"
                            title="{{ get_item_comment(la.class, la.id) }}"
                            data-bs-toggle="tooltip" data-bs-placement="top">
@@ -380,7 +386,8 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                     <span class="badge bg-info-lt ms-0 ms-sm-1">
                         <i class="ti ti-clock me-1"
                            title="{{ __('Next escalation: %s')|format(la.nextaction.fields['date']|formatted_datetime) }}"
-                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                           data-bs-toggle="tooltip" data-bs-placement="top" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ __('Next escalation: %s')|format(la.nextaction.fields['date']|formatted_datetime) }}</span>
                         <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), get_item_name(la.level)) }}"
                               data-bs-toggle="tooltip" data-bs-placement="top">
                            {{ get_item_name(la.level) }}
@@ -451,7 +458,8 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             data-bs-toggle="modal"
             data-bs-target="#{{ assign_la_id }}"
             aria-expanded="false"
-            aria-controls="{{ assign_la_id }}">
+            aria-controls="{{ assign_la_id }}"
+            aria-label="{{ __('Assign a SLA') }}">
         <i class="ti ti-stopwatch slt pointer"
            title="{{ __('Assign a SLA') }}"
            data-bs-toggle="tooltip" data-bs-placement="top"></i>
@@ -463,7 +471,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         add_confirmation_message|join('<br />'),
         {
             'id': assign_la_id,
-            'confirm_label': '<i class="ti ti-stopwatch me-1"></i>' ~ __('Assign'),
+            'confirm_label': '<i class="ti ti-stopwatch me-1" aria-hidden="true"></i>' ~ __('Assign'),
             'confirm_event': 'toggleAssignLA_' ~ assign_la_id ~ '()',
         }|merge(options)
     ) }}

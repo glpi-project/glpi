@@ -324,7 +324,7 @@ class Entity extends CommonTreeDropdown implements
     public static function canUpdate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::UPDATEHELPDESK])
-              || Session::haveRight('notification', UPDATE));
+              || Session::haveRight(Notification::$rightname, UPDATE));
     }
 
     public function canUpdateItem(): bool
@@ -2967,7 +2967,7 @@ class Entity extends CommonTreeDropdown implements
         $out = "<div class='badge bg-azure-lt m-1 py-1 " . ($inline ? "inline" : "") . "'
                    title='" . __s("Value inherited from a parent entity") . "'
                    data-bs-toggle='tooltip'>
-         <i class='ti ti-corner-right-down me-1'></i>
+         <i class='ti ti-corner-right-down me-1' aria-hidden='true'></i>
          $value
       </div>";
 
@@ -3101,7 +3101,7 @@ class Entity extends CommonTreeDropdown implements
             $title = implode(' > ', $names);
         }
         $breadcrumbs = implode(
-            '<i class="ti ti-caret-right-filled mx-1"></i>',
+            '<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>',
             array_map(
                 static fn(string $name) => '<span class="text-nowrap">' . htmlescape($name) . '</span>',
                 $names
@@ -3148,14 +3148,14 @@ class Entity extends CommonTreeDropdown implements
         $title       = htmlescape(implode(' > ', $names));
         $last_name   = array_pop($names);
         $breadcrumbs = implode(
-            '<i class="ti ti-caret-right-filled mx-1"></i>',
+            '<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>',
             array_map(
                 static fn(string $name) => '<span class="text-nowrap text-muted">' . htmlescape($name) . '</span>',
                 $names
             )
         );
 
-        $last_url  = '<i class="ti ti-caret-right-filled mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlescape($last_name) . '</a>';
+        $last_url  = '<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlescape($last_name) . '</a>';
 
         return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
     }
@@ -3282,8 +3282,7 @@ class Entity extends CommonTreeDropdown implements
             // Is not root entity
             $this->getId() !== 0
             // Editable
-            && static::canUpdate()
-            && $this->canUpdateItem()
+            && $this->can($this->getID(), UPDATE)
             // Has no tiles
             && count($tiles_manager->getTilesForItem($this)) === 0
         ) {

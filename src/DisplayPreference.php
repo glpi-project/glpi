@@ -278,6 +278,19 @@ class DisplayPreference extends CommonDBTM
             return false;
         }
 
+        // Do nothing if the personal preferences already exist.
+        $existing = $DB->request([
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'itemtype'  => $input['itemtype'],
+                'users_id'  => $input['users_id'],
+            ],
+        ]);
+        if ($existing->current()['cpt'] > 0) {
+            return;
+        }
+
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [

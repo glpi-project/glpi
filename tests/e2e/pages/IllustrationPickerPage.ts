@@ -65,7 +65,7 @@ export class IllustrationPickerPage extends GlpiPage
 
     public async doSelectIllustration(name: string): Promise<void>
     {
-        await this.picker_modal.getByRole('img', { name }).click();
+        await this.picker_modal.getByRole('button', { name }).click();
         await expect(this.picker_modal).toHaveAttribute('data-cy-shown', 'false');
     }
 
@@ -90,6 +90,10 @@ export class IllustrationPickerPage extends GlpiPage
         await expect(this.picker_modal).toHaveAttribute('data-cy-shown', 'false');
     }
 
+    /**
+     * The svg illustration is always aria-hidden; this matches the
+     * accessibility-only status span carrying the selected illustration's name.
+     */
     public getIllustration(name: string): Locator
     {
         return this.page.getByRole('img', { name });
@@ -97,11 +101,20 @@ export class IllustrationPickerPage extends GlpiPage
 
     public getModalImages(): Locator
     {
-        return this.picker_modal.getByRole('img');
+        return this.picker_modal.getByRole('group', { name: 'Illustrations' }).getByRole('button');
     }
 
     public getCustomPreview(): Locator
     {
         return this.page.getByTestId('illustration-custom-preview');
+    }
+
+    /**
+     * Custom illustrations are decorative (`alt=""`), so they are not exposed
+     * with the `img` role and must be located by their test id.
+     */
+    public getCustomPreviewImage(): Locator
+    {
+        return this.getCustomPreview().getByTestId('illustration-img');
     }
 }

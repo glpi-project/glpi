@@ -37,6 +37,7 @@ namespace Glpi\Dashboard;
 
 use Config;
 use Dropdown;
+use Entity;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
@@ -45,6 +46,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 use Html;
 use Item_Devices;
+use Location;
+use Manufacturer;
 use Plugin;
 use Profile;
 use Ramsey\Uuid\Uuid;
@@ -52,6 +55,7 @@ use ReflectionClass;
 use Reminder;
 use Session;
 use ShareDashboardDropdown;
+use State;
 use Telemetry;
 use Throwable;
 use Ticket;
@@ -266,10 +270,10 @@ HTML;
 
         $nb_dashboards = count(self::$all_dashboards);
 
-        $can_view_all  = Session::haveRight('dashboard', READ) || self::$embed;
-        $can_create    = Session::haveRight('dashboard', CREATE);
-        $can_edit      = Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
-        $can_purge     = Session::haveRight('dashboard', PURGE) && $nb_dashboards;
+        $can_view_all  = Session::haveRight(Dashboard::$rightname, READ) || self::$embed;
+        $can_create    = Session::haveRight(Dashboard::$rightname, CREATE);
+        $can_edit      = Session::haveRight(Dashboard::$rightname, UPDATE) && $nb_dashboards;
+        $can_purge     = Session::haveRight(Dashboard::$rightname, PURGE) && $nb_dashboards;
         $can_clone     = $can_create && $nb_dashboards;
 
         // prepare html for add controls
@@ -323,7 +327,7 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<button type='button' class='btn btn-sm btn-icon btn-ghost-secondary fs-toggle add-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$add_dash_label'><i class='ti ti-plus' aria-hidden='true'></i></button>";
             }
             if (!$mini && $can_clone) {
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$clone_label'></i>";
@@ -333,10 +337,10 @@ HTML;
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
                <button class='btn btn-ghost-secondary btn-icon btn-sm fs-2 ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'>
-                   <i class='ti ti-device-floppy' ></i>
+                   <i class='ti ti-device-floppy' aria-hidden='true' ></i>
                </button>
                <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$reset_label}'>
-                   <i class='ti ti-refresh' ></i>
+                   <i class='ti ti-refresh' aria-hidden='true' ></i>
                </button>
                <span class='display-message'></span>
             </div>";
@@ -345,7 +349,7 @@ HTML;
                 $rename = <<<HTML
                     <div class='edit-dashboard-properties'>
                         <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' title='{$reset_label}'>
-                           <i class='ti ti-refresh' ></i>
+                           <i class='ti ti-refresh' aria-hidden='true' ></i>
                        </button>
                     </div>
 HTML;
@@ -379,7 +383,7 @@ HTML;
                     <div class="toolbar left-toolbar mb-3 position-relative">
                         <div class='edit-dashboard-properties'>
                             <button class='btn btn-ghost-danger btn-sm ms-1 reset-dashboard'>
-                               <i class='ti ti-refresh' ></i>
+                               <i class='ti ti-refresh' aria-hidden='true' ></i>
                                {$reset_label}
                            </button>
                         </div>
@@ -428,12 +432,12 @@ HTML;
                 <div class='placeholder_info {{ is_placeholder ? "" : "d-none" }}' style="background-color: transparent; color: var(--tblr-body-color); font-size: var(--tblr-body-font-size)">
                     <div class="alert alert-info">
                         <div class="d-flex">
-                            <i class="ti ti-info-circle fs-2x me-3"></i>
+                            <i class="ti ti-info-circle fs-2x me-3" aria-hidden="true"></i>
                             <div>
                                 <h4 class="alert-title">{{ messages['placeholder_main'] }}</h4>
                                 <div class="mt-2">
                                     <button class="btn btn-info btn-sm disable-dashboard-demo me-2 {{ can_disable_demo ? '' : 'd-none' }}" type="button">
-                                        <i class="ti ti-presentation-off"></i>
+                                        <i class="ti ti-presentation-off" aria-hidden="true"></i>
                                         <span>{{ messages['disable_demo_msg'] }}</span>
                                     </button>
                                     <script>
@@ -611,7 +615,7 @@ TWIG, $twig_params);
 
         // Restore user preference defaults wiped by session_start() (mirrors PostBootListener).
         foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (array_key_exists($field, $CFG_GLPI)) {
+            if (isset($CFG_GLPI[$field])) {
                 $_SESSION["glpi$field"] = $CFG_GLPI[$field];
             }
         }
@@ -1122,7 +1126,7 @@ HTML;
         echo "</div>";
 
         echo "<a href='#' class='btn btn-primary save_rights'>
-         <i class='ti ti-device-floppy'></i>
+         <i class='ti ti-device-floppy' aria-hidden='true'></i>
          <span>" . __s("Save") . "</span>
       </a>";
 
@@ -1152,11 +1156,11 @@ HTML;
 
         // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
-         <i class='ti ti-alert-triangle'></i>"
+         <i class='ti ti-alert-triangle' aria-hidden='true'></i>"
          . __s('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
-         <i class='ti ti-alert-triangle'></i>"
+         <i class='ti ti-alert-triangle' aria-hidden='true'></i>"
          . __s('Error rendering card!')
             . "</br>"
             . \htmlescape($card_id)
@@ -1438,12 +1442,27 @@ HTML;
             // add multiple width for Assets itemtypes grouped by their foreign keys
             $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
             foreach ($assets as $itemtype) {
-                $fk_itemtypes = [
-                    'State',
-                    'Entity',
-                    'Manufacturer',
-                    'Location',
-                ];
+                $item = getItemForItemtype($itemtype);
+                if ($item === false) {
+                    continue;
+                }
+                $fk_itemtypes = [];
+
+                if ($item->isField(State::getForeignKeyField())) {
+                    $fk_itemtypes[] = State::class;
+                }
+
+                if ($item->isField(Entity::getForeignKeyField())) {
+                    $fk_itemtypes[] = Entity::class;
+                }
+
+                if ($item->isField(Manufacturer::getForeignKeyField())) {
+                    $fk_itemtypes[] = Manufacturer::class;
+                }
+
+                if ($item->isField(Location::getForeignKeyField())) {
+                    $fk_itemtypes[] = Location::class;
+                }
 
                 if (class_exists($itemtype . 'Type')) {
                     $fk_itemtypes[] = $itemtype . 'Type';
@@ -1461,7 +1480,7 @@ HTML;
 
                     $cards["count_" . $itemtype . "_" . $fk_itemtype] = [
                         'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
-                        'itemtype'   => "\\Computer",
+                        'itemtype'   => $itemtype,
                         'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
                         'label'      => $label,
                         'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,
@@ -1542,6 +1561,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["ticket_by_category_and_entity"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and entity"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndEntity",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["ticket_times"] = [
                 'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
                 'itemtype'   => "\\Ticket",
@@ -1619,6 +1647,42 @@ HTML;
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
             }
+
+            $cards["report_ticket_by_status"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_computers_by_os"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by operating system"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByOperatingSystem",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_computers_by_age"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by age"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByAge",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_ticket_by_group_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened and solved tickets by group"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByGroupAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
 
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],

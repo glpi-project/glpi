@@ -65,15 +65,30 @@ export class GlpiIllustrationPickerController
      */
     #initial_preview_html;
 
+    /**
+     * Baseline for #selected_title, restored by restore(). Lives outside
+     * #initial_preview_html since the status is now a sibling, not a child.
+     * @type {?string}
+     */
+    #initial_title;
+
+    /**
+     * Title of the currently selected native illustration, if any.
+     * @type {?string}
+     */
+    #selected_title;
+
     constructor(container, modal_node, custom_icon_prefix)
     {
         this.#container = container;
         this.#modal_node = modal_node;
         this.#custom_icon_prefix = custom_icon_prefix;
+        this.#selected_title = this.#getPreviewElement().dataset['glpiIconPickerValuePreviewTitle'] || null;
         this.#initEventListeners();
 
         this.#initial_value = this.#getSelectedIllustrationsInput().value;
         this.#initial_preview_html = this.#getPreviewElement().innerHTML;
+        this.#initial_title = this.#selected_title;
 
         container.glpiIllustrationPicker = this;
         container.dispatchEvent(new CustomEvent('glpi:illustration-picker:ready', {
@@ -87,24 +102,51 @@ export class GlpiIllustrationPickerController
      */
     setEditable(editable)
     {
-        const preview = this.#getPreviewElement();
-        if (preview === null) {
+        if (this.#getPreviewElement() === null) {
             return;
         }
 
+        const preview = this.#morphPreview(editable ? 'button' : 'div');
+
         if (editable) {
-            preview.setAttribute('role', 'button');
+            preview.setAttribute('type', 'button');
             preview.setAttribute('aria-label', __('Select an illustration'));
             preview.setAttribute('data-bs-toggle', 'modal');
             preview.setAttribute('data-bs-target', `#${this.#modal_node.id}`);
             preview.removeAttribute('aria-disabled');
         } else {
-            preview.removeAttribute('role');
+            preview.removeAttribute('type');
             preview.removeAttribute('aria-label');
             preview.removeAttribute('data-bs-toggle');
             preview.removeAttribute('data-bs-target');
             preview.setAttribute('aria-disabled', 'true');
         }
+
+        // Re-apply now that the trigger changed.
+        this.#setPreviewStatus(this.#selected_title);
+    }
+
+    /**
+     * Swaps the trigger between <button> (editable) and <div> (read-only).
+     *
+     * @param {string} tag
+     * @return {HTMLElement}
+     */
+    #morphPreview(tag)
+    {
+        const current = this.#getPreviewElement();
+        if (current.localName === tag) {
+            return current;
+        }
+
+        const morphed = document.createElement(tag);
+        for (const { name, value } of current.attributes) {
+            morphed.setAttribute(name, value);
+        }
+        morphed.replaceChildren(...current.childNodes);
+        current.replaceWith(morphed);
+
+        return morphed;
     }
 
     /**
@@ -122,6 +164,7 @@ export class GlpiIllustrationPickerController
     {
         this.#initial_value = this.#getSelectedIllustrationsInput().value;
         this.#initial_preview_html = this.#getPreviewElement().innerHTML;
+        this.#initial_title = this.#selected_title;
     }
 
     /**
@@ -131,6 +174,7 @@ export class GlpiIllustrationPickerController
     {
         this.#getSelectedIllustrationsInput().value = this.#initial_value;
         this.#getPreviewElement().innerHTML = this.#initial_preview_html;
+        this.#setPreviewStatus(this.#initial_title);
     }
 
     #getPreviewElement()
@@ -210,6 +254,12 @@ export class GlpiIllustrationPickerController
         this.#modal_node.addEventListener('shown.bs.modal', () => {
             this.#container.querySelector("[data-glpi-icon-picker-filter]").focus();
         });
+
+        // The tab data-api skips pickers injected after load: no arrows, no roving tabindex.
+        const active_tab = this.#container.querySelector('[data-bs-toggle="tab"].active');
+        if (active_tab !== null) {
+            bootstrap.Tab.getOrCreateInstance(active_tab);
+        }
     }
 
     #setNativeIllustration(illustration)
@@ -237,6 +287,10 @@ export class GlpiIllustrationPickerController
         native_slot.classList.remove('d-none');
         this.#getCustomPreviewSlot().classList.add('d-none');
         this.#getPlaceholderSlot()?.classList.add('d-none');
+
+        // The svg illustration itself is never named (see icon.svg.twig), so the
+        // grid tile's own aria-label (the icon's title) is reused here instead.
+        this.#setPreviewStatus(illustration.getAttribute('aria-label'));
     }
 
     #setEmptyPreview()
@@ -244,6 +298,40 @@ export class GlpiIllustrationPickerController
         this.#getNativePreviewSlot()?.classList.add('d-none');
         this.#getCustomPreviewSlot()?.classList.add('d-none');
         this.#getPlaceholderSlot()?.classList.remove('d-none');
+
+        this.#setPreviewStatus(null);
+    }
+
+    /**
+     * Names the currently selected illustration, as a sibling of the
+     * trigger referenced via aria-describedby (a descendant would be
+     * pruned by the trigger button's own name computation).
+     *
+     * @param {?string} title
+     */
+    #setPreviewStatus(title)
+    {
+        this.#selected_title = title;
+
+        const preview = this.#getPreviewElement();
+        let status = this.#container.querySelector('[data-glpi-icon-picker-value-preview-status]');
+
+        if (!title || preview.localName !== 'button') {
+            status?.remove();
+            preview.removeAttribute('aria-describedby');
+            return;
+        }
+
+        if (status === null) {
+            status = document.createElement('span');
+            status.id = `${this.#container.id}-status`;
+            status.className = 'visually-hidden';
+            status.setAttribute('role', 'img');
+            status.setAttribute('data-glpi-icon-picker-value-preview-status', '');
+            preview.insertAdjacentElement('afterend', status);
+        }
+        status.setAttribute('aria-label', title);
+        preview.setAttribute('aria-describedby', status.id);
     }
 
     #getNativePreviewSlot()
@@ -273,6 +361,8 @@ export class GlpiIllustrationPickerController
         custom_slot.classList.remove('d-none');
         this.#getNativePreviewSlot().classList.add('d-none');
         this.#getPlaceholderSlot()?.classList.add('d-none');
+
+        this.#setPreviewStatus(null);
     }
 
     /**

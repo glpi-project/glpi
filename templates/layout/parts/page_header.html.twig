@@ -35,10 +35,14 @@
 {% set is_vertical = not anonymous and get_page_layout() == 'vertical' %}
 {% set is_horizontal = not is_vertical %}
 {% set is_helpdesk = anonymous or get_current_interface() == 'helpdesk' %}
+{% set has_main_nav = not anonymous or (menu|length > 0 and menu.home is not defined) %}
 
 <body class="{{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }} {{ is_helpdesk ? 'helpdesk' : 'central' }}">
    <div class="skip-links">
       <a class="visually-hidden-focusable skip-link" href="#page">{{ __('Go to main content') }}</a>
+      {% if has_main_nav %}
+         <a class="visually-hidden-focusable skip-link" href="#navbar-menu">{{ __('Go to main navigation') }}</a>
+      {% endif %}
    </div>
    {% if call('DBConnection::isDbAvailable') and constant('GLPI_SKIP_UPDATES') is defined and not call('Update::isDbUpToDate') %}
       <div class="banner-need-update">
@@ -54,12 +58,13 @@
       <aside class="navbar navbar-vertical navbar-expand-lg sticky-lg-top sidebar" data-testid="sidebar" aria-label="{{ __('Sidebar') }}">
          <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-label="{{ __('Toggle navigation') }}">
-               <span class="navbar-toggler-icon"></span>
+               <span class="navbar-toggler-icon" aria-hidden="true"></span>
             </button>
 
             <a href="{{ index_path() }}" accesskey="1" title="{{ __('Home') }}"
                class="navbar-brand">
                <span class="glpi-logo"></span>
+               <span class="visually-hidden">{{ __('Home') }}</span>
             </a>
 
             {% if not anonymous %}
@@ -76,7 +81,7 @@
             {% endif %}
 
             {% if not anonymous %}
-               <nav class="collapse navbar-collapse" id="navbar-menu" aria-label="{{ __('Main navigation') }}">
+               <nav class="collapse navbar-collapse" id="navbar-menu" aria-label="{{ __('Main navigation') }}" tabindex="-1">
                    <span class="d-inline-block d-lg-none ms-2">
                        {{ include('layout/parts/goto_button.html.twig') }}
                    </span>
@@ -106,20 +111,21 @@
 
             {% elseif is_horizontal %}
                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-label="{{ __('Toggle navigation') }}">
-                  <span class="navbar-toggler-icon"></span>
+                  <span class="navbar-toggler-icon" aria-hidden="true"></span>
                </button>
 
                <a href="{{ index_path() }}" accesskey="1" title="{{ __('Home') }}"
                   class="navbar-brand">
                   <span class="glpi-logo"></span>
+                  <span class="visually-hidden">{{ __('Home') }}</span>
                </a>
 
                <div class="d-lg-none">
                   {{ include('layout/parts/user_header.html.twig') }}
                </div>
 
-               {% if not anonymous or (menu|length > 0 and menu.home is not defined) %}
-               <nav class="collapse navbar-collapse justify-content-center" id="navbar-menu" aria-label="{{ __('Main navigation') }}">
+               {% if has_main_nav %}
+               <nav class="collapse navbar-collapse justify-content-center" id="navbar-menu" aria-label="{{ __('Main navigation') }}" tabindex="-1">
                   {{ include('layout/parts/menu.html.twig') }}
                   {% if not anonymous %}
                   <span class="ms-xl-2 d-inline-block mt-2 mt-xl-2">

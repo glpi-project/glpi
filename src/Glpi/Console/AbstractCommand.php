@@ -119,6 +119,23 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     }
 
     /**
+     * Get the database connection.
+     *
+     * Must only be used by commands that require a DB connection, as it will
+     * fail if no connection is available.
+     *
+     * @throws RuntimeException
+     */
+    protected function getDb(): DBmysql
+    {
+        if ($this->db === null) {
+            throw new RuntimeException('No database connection available.');
+        }
+
+        return $this->db;
+    }
+
+    /**
      * Correctly write output messages when a progress bar is displayed.
      *
      * @param string|array $messages

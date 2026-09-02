@@ -70,7 +70,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             'items_id' => getItemByTypeName(Computer::class, '_test_pc01', true),
         ]);
         $this->assertEquals(
-            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge" data-testid="tab-count-badge">1</span></span>',
+            '<span class="d-flex align-items-center"><i class="ti ti-package me-2" aria-hidden="true"></i>Items <span class="badge glpi-badge" data-testid="tab-count-badge">1</span></span>',
             $link->getTabNameForItem($itil_item),
         );
 
@@ -80,7 +80,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             'items_id' => getItemByTypeName(Computer::class, '_test_pc02', true),
         ]);
         $this->assertEquals(
-            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge" data-testid="tab-count-badge">2</span></span>',
+            '<span class="d-flex align-items-center"><i class="ti ti-package me-2" aria-hidden="true"></i>Items <span class="badge glpi-badge" data-testid="tab-count-badge">2</span></span>',
             $link->getTabNameForItem($itil_item),
         );
 

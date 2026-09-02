@@ -194,8 +194,9 @@ class Group_User extends CommonDBRelation
 
         $group = new Group();
         $entries = [];
-        $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '"></i>';
-        $no_icon  = '<span class="visually-hidden" aria-label="' . __s('No') . '"></span>';
+        $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '" aria-hidden="true"></i>'
+            . '<span class="visually-hidden">' . __s('Yes') . '</span>';
+        $no_icon  = '<span class="visually-hidden">' . __s('No') . '</span>';
         foreach ($groups as $data) {
             if (!$group->getFromDB($data["id"])) {
                 continue;
@@ -452,7 +453,7 @@ class Group_User extends CommonDBRelation
 
         if ($number != $all_groups) {
             echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
-            echo "<i class='ti ti-info-circle fs-1'></i>";
+            echo "<i class='ti ti-info-circle fs-1' aria-hidden='true'></i>";
             echo "<span class='ms-2'>";
             echo __s("Some users are not listed as they are not visible from your current entity.");
             echo "</span>";
@@ -461,8 +462,9 @@ class Group_User extends CommonDBRelation
 
         $tmpgrp = new Group();
         $entries = [];
-        $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '"></i>';
-        $no_icon  = '<span class="visually-hidden" aria-label="' . __s('No') . '"></span>';
+        $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '" aria-hidden="true"></i>'
+            . '<span class="visually-hidden">' . __s('Yes') . '</span>';
+        $no_icon  = '<span class="visually-hidden">' . __s('No') . '</span>';
         for ($i = $start, $j = 0; ($i < $number) && ($j < $_SESSION['glpilist_limit']); $i++, $j++) {
             $data = $used[$i];
             $user->getFromDB($data["id"]);
@@ -930,6 +932,12 @@ class Group_User extends CommonDBRelation
                 $recall->delete(['id' => $recall->getID()]);
             }
         }
+    }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 
     /**

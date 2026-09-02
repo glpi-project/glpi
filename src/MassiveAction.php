@@ -35,6 +35,7 @@
 
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\Clonable;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
@@ -80,6 +81,7 @@ class MassiveAction
 
     /**
      * Class used to process current action.
+     * @var class-string
      */
     private string $processor;
 
@@ -565,7 +567,6 @@ class MassiveAction
         return false;
     }
 
-
     /**
      * Get 'add to transfer list' action when needed
      *
@@ -577,12 +578,12 @@ class MassiveAction
     {
 
         if (
-            Session::haveRight('transfer', READ)
+            Session::haveRight(Transfer::$rightname, READ)
             && Session::isMultiEntitiesMode()
             && !isAPI()
         ) {
             $actions[self::class . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
-                  = "<i class='ti ti-corner-right-up'></i>"
+                  = "<i class='ti ti-corner-right-up' aria-hidden='true'></i>"
                     . _sx('button', 'Add to transfer list');
         }
     }
@@ -613,6 +614,7 @@ class MassiveAction
             return false;
         }
 
+        /** @var CommonDBTM $item  */
         if (!is_null($checkitem)) {
             $canupdate = $checkitem->canUpdate();
             $candelete = $checkitem->canDelete();
@@ -652,9 +654,9 @@ class MassiveAction
                 $actions[$self_pref . 'update'] = _sx('button', 'Update');
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
-                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Clone');
+                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy' aria-hidden='true'></i>" . _sx('button', 'Clone');
                     if ($item->maybeTemplate()) {
-                        $actions[$self_pref . 'create_template'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Create template');
+                        $actions[$self_pref . 'create_template'] = "<i class='ti ti-copy' aria-hidden='true'></i>" . _sx('button', 'Create template');
                     }
                 }
             }
@@ -664,8 +666,8 @@ class MassiveAction
 
             global $CFG_GLPI;
             if ($canupdate && in_array($itemtype, $CFG_GLPI['assignable_types'], true)) {
-                $actions[$self_pref . 'associate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Associate group');
-                $actions[$self_pref . 'dissociate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Dissociate group');
+                $actions[$self_pref . 'associate_group'] = "<i class='ti-users-group' aria-hidden='true'></i>" . _sx('button', 'Associate group');
+                $actions[$self_pref . 'dissociate_group'] = "<i class='ti-users-group' aria-hidden='true'></i>" . _sx('button', 'Dissociate group');
             }
 
             CommonDBConnexity::getMassiveActionsForItemtype(
@@ -705,12 +707,12 @@ class MassiveAction
             // Amend comment for objects with a 'comment' field
             $item->getEmpty();
             if ($canupdate && isset($item->fields['comment'])) {
-                $actions[$self_pref . 'amend_comment'] = "<i class='ti ti-message-circle'></i>" . __s("Amend comment");
+                $actions[$self_pref . 'amend_comment'] = "<i class='ti ti-message-circle' aria-hidden='true'></i>" . __s("Amend comment");
             }
 
             // Add a note for objects with the UPDATENOTE rights
             if (Session::haveRight($item::$rightname, UPDATENOTE)) {
-                $actions[$self_pref . 'add_note'] = "<i class='ti ti-note'></i>" . __s("Add note");
+                $actions[$self_pref . 'add_note'] = "<i class='ti ti-note' aria-hidden='true'></i>" . __s("Add note");
             }
 
             // Plugin Specific actions
@@ -1068,7 +1070,13 @@ class MassiveAction
                             "infocom"  => UPDATE,
                         ]);
                     } else {
-                        $so_item->checkGlobal(UPDATE);
+                        // display subform if auth is granted or a reauth is needed (means action will be possible after reauthenticated)
+                        // Notice that no redirection can be done here (file called using ajax)
+                        $reauth_needed = null;
+                        $allowed = $so_item->canGlobal(UPDATE, $reauth_needed);
+                        if (!$allowed && !$reauth_needed) {
+                            throw new AccessDeniedHttpException('Missing authorization');
+                        }
                     }
 
                     $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);
@@ -1558,8 +1566,10 @@ class MassiveAction
                                     $related_item = null;
                                     // Case 1: The modified field is a foreign key (ex : locations_id)
                                     if (isForeignKeyField($field_name)) {
+                                        // Multi-value fields (e.g. a "multiple" dropdown) submit an array
+                                        // as $field_value, which is not a valid single foreign key value.
                                         // Attempt to load the related object using its ID (from the input value)
-                                        if ($item2->getFromDB($field_value)) {
+                                        if (!is_array($field_value) && $item2->getFromDB($field_value)) {
                                             $related_item = $item2;
                                         }
                                         // Case 2: The field is not a foreign key, but the target class supports connexity (relations)
@@ -1679,6 +1689,11 @@ class MassiveAction
                     break;
                 }
 
+                if (!$item::canUpdate()) {
+                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    break;
+                }
+
                 // Load input
                 $input = $ma->getInput();
                 $amendment = $input['amendment'];
@@ -1687,7 +1702,7 @@ class MassiveAction
                     $item->getFromDB($id);
 
                     // Check rights
-                    if (!$item->canUpdateItem()) {
+                    if (!$item->can($item->getID(), UPDATE)) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;

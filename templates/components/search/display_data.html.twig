@@ -53,7 +53,7 @@
 
                 {% if count > (start + constant('Search::GLOBAL_DISPLAY_COUNT')) %}
                     <a class="btn btn-ghost-secondary" href="{{ href }}">
-                        <i class="ti ti-eye"></i>
+                        <i class="ti ti-eye" aria-hidden="true"></i>
                         <span>{{ __('View all') }}</span>
                     </a>
                 {% endif %}
@@ -83,12 +83,12 @@
         {% elseif as_map %}
             {% if search_error %}
                 <twig:Alert:Danger
-                    :title="__('An error occurred during the search')"
-                    :message="__('Consider changing the search criteria or adjusting the displayed columns.')"
+                    :heading="__('An error occurred during the search')"
+                    :content="__('Consider changing the search criteria or adjusting the displayed columns.')"
                 />
             {% else %}
                 <twig:Alert
-                    :message="__('No results found')"
+                    :content="__('No results found')"
                 />
             {% endif %}
         {% endif %}

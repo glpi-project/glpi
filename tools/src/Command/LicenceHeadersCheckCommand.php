@@ -35,22 +35,30 @@
 
 namespace Glpi\Tools\Command;
 
+use Override;
 use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use RecursiveIterator;
 use RecursiveIteratorIterator;
+use Safe\Exceptions\FilesystemException;
 use SplFileInfo;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\file;
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\realpath;
+
 final class LicenceHeadersCheckCommand extends AbstractCommand
 {
     /**
      * Header lines.
      *
-     * @var array|null
      */
     private ?array $header_lines = null;
 
@@ -143,8 +151,10 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
                 $this->io->text('<comment>' . sprintf('Processing "%s".', $filename) . '</comment>');
             }
 
-            if (($file_lines = file($filename)) === false) {
-                throw new \Exception(sprintf('Unable to read file "%s".', $filename));
+            try {
+                $file_lines = file($filename);
+            } catch (FilesystemException $e) {
+                throw new \Exception(sprintf('Unable to read file "%s".', $filename), $e->getCode(), $e);
             }
 
             $header_start_pattern   = null;
@@ -371,12 +381,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
      * Get licence header lines.
      *
      * @param string|null $header_file_path
-     * @param string $line_prefix
-     * @param string $prepend_line
-     * @param string $append_line
-     * @param array  $extra_tagged_data
      *
-     * @return array
      */
     private function getLicenceHeaderLines(
         string $header_file_path,
@@ -386,10 +391,11 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
         array $extra_tagged_data = []
     ): array {
         if ($this->header_lines === null) {
-            if (($lines = file($header_file_path)) === false) {
-                throw new \Exception('Unable to read header file.');
+            try {
+                $this->header_lines = file($header_file_path);
+            } catch (FilesystemException $e) {
+                throw new \Exception('Unable to read header file.', $e->getCode(), $e);
             }
-            $this->header_lines = $lines;
         }
 
         $lines = [];
@@ -407,9 +413,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Return files to parse.
      *
-     * @param string $directory
      *
-     * @return array
      */
     private function getFilesToParse(string $directory): array
     {
@@ -481,9 +485,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Indicates if a line can/should be located before licence header.
      *
-     * @param string $line
      *
-     * @return bool
      */
     private function shouldLineBeLocatedBeforeHeader(string $line): bool
     {
@@ -514,11 +516,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Strip empty top/bottom lines from an array.
      *
-     * @param array $lines
-     * @param bool $strip_top_lines
-     * @param bool $strip_bottom_lines
      *
-     * @return array
      */
     private function stripEmptyLines(array $lines, bool $strip_top_lines, bool $strip_bottom_lines): array
     {
@@ -554,10 +552,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Extract tagged data from header lines.
      *
-     * @param array $lines
-     * @param string|null $line_prefix
      *
-     * @return array
      */
     private function extractTaggedData(array $lines, ?string $line_prefix = null): array
     {
@@ -567,8 +562,9 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
         $tag_pattern = $this->getTagPattern($line_prefix);
 
         foreach ($lines as $line) {
-            $tag = null;
-            if (preg_match($tag_pattern, $line, $tag)) {
+            $tag = [];
+            preg_match($tag_pattern, $line, $tag);
+            if (isset($tag['name'], $tag['value'])) {
                 $tag_name = $tag['name'];
                 $tag_value = $tag['value'];
 
@@ -585,11 +581,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Append tagged data to header lines.
      *
-     * @param array $lines
-     * @param array $data_to_append
-     * @param string|null $line_prefix
      *
-     * @return array
      */
     private function appendTaggedData(array $lines, array $data_to_append, ?string $line_prefix = null): array
     {
@@ -641,9 +633,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Get regex pattern used to detect/extract tagged data.
      *
-     * @param string $line_prefix
      *
-     * @return string
      */
     private function getTagPattern(?string $line_prefix = null): string
     {
@@ -659,9 +649,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Unduplicate copyright/copyleft tags values.
      *
-     * @param array $values
      *
-     * @return array
      */
     private function unduplicateCopyTag(array $values): array
     {
@@ -676,7 +664,8 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
 
         foreach ($values as $value) {
             $dates_matches = [];
-            if (preg_match($copy_dates_pattern, $value, $dates_matches) !== 1) {
+            preg_match($copy_dates_pattern, $value, $dates_matches);
+            if (!isset($dates_matches['starting_date'])) {
                 continue;
             }
 
@@ -714,6 +703,9 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
             foreach ($similar_values as $similar_value) {
                 $similar_dates_matches = [];
                 preg_match($copy_dates_pattern, $similar_value, $similar_dates_matches);
+                if (!isset($similar_dates_matches['starting_date'])) {
+                    continue;
+                }
                 if ($similar_dates_matches['starting_date'] < $starting_date) {
                     $starting_date = $similar_dates_matches['starting_date'];
                 } elseif ($similar_dates_matches['starting_date'] > $ending_date) {
@@ -735,9 +727,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Get files exclusion pattern. All files matching this pattern will be excluded from checks.
      *
-     * @param string $directory
      *
-     * @return string
      */
     protected function getExclusionPattern(string $directory): ?string
     {

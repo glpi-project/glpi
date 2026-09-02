@@ -152,7 +152,8 @@ trait PlanningEvent
             $input["name"] = __('Without title');
         }
 
-        $input["begin"] = $input["end"] = "NULL";
+        $input["begin"] ??= 'NULL';
+        $input["end"] ??= "NULL";
 
         if (isset($input['plan'])) {
             if (
@@ -588,7 +589,7 @@ trait PlanningEvent
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $event_obj->getFromResultSet($data);
-                if ($event_obj->canViewItem()) {
+                if ($event_obj->can($event_obj->getID(), READ)) {
                     $key = $data["begin"]
                       . "$$" . $itemtype
                       . "$$" . $data["id"]
@@ -623,7 +624,7 @@ trait PlanningEvent
                                         . "?action=edit_event_form"
                                         . "&itemtype=$itemtype"
                                         . "&id=" . $data['id'],
-                        'editable'         => $event_obj->canUpdateItem(),
+                        'editable'         => $event_obj->can($event_obj->getID(), UPDATE),
                         'url'              => $url,
                         'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)
                                           ? $begin
@@ -821,7 +822,7 @@ trait PlanningEvent
         $out .= "<a class='btn btn-primary'
                  title='" . __("Personalization") . "'
                  onclick='$(\"#advanced_repetition$rand\").toggle()'>
-                 <i class='ti ti-settings'></i>
+                 <i class='ti ti-settings' aria-hidden='true'></i>
               </a>";
         $out .= "<div id='advanced_repetition$rand' style='display: $display_ar; max-width: 23'>";
 

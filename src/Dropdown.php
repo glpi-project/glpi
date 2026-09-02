@@ -336,14 +336,12 @@ class Dropdown
             && !isset($_REQUEST['_in_modal'])
             && $params['addicon']
         ) {
-            $add_item_icon .= '<div class="btn btn-outline-secondary"
-                           title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
+            $add_label = htmlescape(sprintf(__('Add a new %s'), $item::getTypeName(1)));
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
-            $add_item_icon .= "<span data-bs-toggle='tooltip'>
-              <i class='ti ti-plus'></i>
-              <span class='visually-hidden'>" . __s('Add') . "</span>
-                </span>";
-            $add_item_icon .= '</div>';
+            $add_item_icon .= '<button type="button" class="btn btn-outline-secondary"
+                           title="' . $add_label . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
+            $add_item_icon .= "<i class='ti ti-plus' aria-hidden='true'></i><span class='visually-hidden'>" . $add_label . "</span>";
+            $add_item_icon .= '</button>';
         }
 
         if ($params['display_dc_position'] && method_exists($item, 'getParentRack')) {
@@ -367,7 +365,7 @@ class Dropdown
                     if (
                         $params['value']
                         && $item->getFromDB($params['value'])
-                        && $item->canViewItem()
+                        && $item->can($item->getID(), READ)
                     ) {
                         $options_tooltip['link'] = $item->getLinkURL();
                     } else {
@@ -431,7 +429,7 @@ class Dropdown
             if ($itemtype === 'Location' && Location::canView()) {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
                                        data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip' data-bs-placement='bottom'>";
-                $location_icon .= "<i class='ti ti-map'></i></div>";
+                $location_icon .= "<i class='ti ti-map' aria-hidden='true'></i></div>";
                 $icon_array[] = $location_icon;
             }
 
@@ -444,7 +442,7 @@ class Dropdown
 
             // KB links
             if (
-                $item->isField('knowbaseitemcategories_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
+                $item->isField('knowbaseitems_id') && Session::haveRightsOr(KnowbaseItem::$rightname, [READ, KnowbaseItem::READFAQ])
                 && method_exists($item, 'getLinks')
             ) {
                 // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,
@@ -1203,8 +1201,7 @@ HTML;
      **/
     public static function getDeviceItemTypes(bool $grouped = false)
     {
-        //TODO After GLPI 11.0, make this always return grouped values
-        if (!Session::haveRight('device', READ)) {
+        if (!Session::haveRight(CommonDevice::$rightname, READ)) {
             return [];
         }
 
@@ -1288,6 +1285,9 @@ HTML;
                     'DeviceGenericType' => null,
                     'DeviceSensorType' => null,
                     'DeviceMemoryType' => null,
+                    'DeviceHardDriveType' => null,
+                    'DeviceBatteryType' => null,
+                    'DeviceFirmwareType' => null,
                     'SupplierType' => null,
                     'InterfaceType' => null,
                     'DeviceCaseType' => null,
@@ -1313,10 +1313,12 @@ HTML;
                     'PhoneModel' => null,
 
                     // Devices models :
+                    'DeviceBatteryModel' => null,
                     'DeviceCameraModel' => null,
                     'DeviceCaseModel' => null,
                     'DeviceControlModel' => null,
                     'DeviceDriveModel' => null,
+                    'DeviceFirmwareModel' => null,
                     'DeviceGenericModel' => null,
                     'DeviceGraphicCardModel' => null,
                     'DeviceHardDriveModel' => null,
@@ -1345,10 +1347,6 @@ HTML;
                     'DocumentType' => null,
                     'BusinessCriticity' => null,
                     'DatabaseInstanceCategory' => null,
-                ],
-
-                __('Tools') => [
-                    'KnowbaseItemCategory' => null,
                 ],
 
                 _n('Calendar', 'Calendars', Session::getPluralNumber()) => [
@@ -2811,7 +2809,7 @@ HTML;
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
         echo "<button type='submit' name='export' class='btn' "
              . " title=\"" . _sx('button', 'Export') . "\">"
-             . "<i class='ti ti-device-floppy'></i><span class='visually-hidden'>" . _sx('button', 'Export') . "<span>";
+             . "<i class='ti ti-device-floppy' aria-hidden='true'></i><span class='visually-hidden'>" . _sx('button', 'Export') . "<span>";
     }
 
 
@@ -2989,12 +2987,15 @@ HTML;
             if (isset($condition['WHERE'])) {
                 $where = array_merge($where, $condition['WHERE']);
             } else {
+                $or_where = [];
                 foreach ($condition as $key => $value) {
                     if (is_array($value) && isset($value['LEFT JOIN'])) {
-                        $ljoin = $value['LEFT JOIN'];
+                        $ljoin = array_merge($ljoin, $value['LEFT JOIN']);
                     }
                     if (is_array($value) && isset($value['WHERE'])) {
-                        $where = array_merge($where, $value['WHERE']);
+                        // Combine with OR: sub-conditions target different types but must match any one of them,
+                        // and array_merge would silently produce AND instead of the required OR.
+                        $or_where[] = $value['WHERE'];
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
                         $where["$table.$key"] = $value;
@@ -3006,6 +3007,9 @@ HTML;
                         // e.g. to override the default `is_template` / `is_deleted` filtering.
                         $where[$key] = $value;
                     }
+                }
+                if ($or_where !== []) {
+                    $where[] = ['OR' => $or_where];
                 }
             }
         }
@@ -3633,6 +3637,11 @@ HTML;
             );
 
             $order_field = "$table.$field";
+            if (in_array($post['itemtype'], [Ticket::class, Change::class, Problem::class], true)) {
+                // Ordering by `name` forces a filesort over the whole (unindexable, `LIKE`-filtered)
+                // matching set; ordering by the primary key lets MySQL stop scanning early instead.
+                $order_field = "$table.id DESC";
+            }
             if (isset($post['order']) && !empty($post['order'])) {
                 $order_field = $post['order'];
             }
@@ -4280,7 +4289,7 @@ HTML;
         }
 
         // My group items
-        if (Session::haveRight("show_group_hardware", 1)) {
+        if (Session::haveRight(Profile::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE, 1)) {
             $iterator = $DB->request([
                 'SELECT'    => [
                     'glpi_groups_users.groups_id',

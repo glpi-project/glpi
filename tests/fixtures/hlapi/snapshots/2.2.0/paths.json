@@ -66224,268 +66224,6 @@
             ]
         }
     },
-    "/Knowledgebase/Category": {
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "language",
-                    "description": "",
-                    "in": "query",
-                    "required": false,
-                    "schema": {
-                        "type": "string",
-                        "format": "string"
-                    },
-                    "example": null
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/KBCategory"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/KBCategory"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/KBCategory"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/KBCategory"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "language",
-                    "description": "",
-                    "in": "query",
-                    "required": false,
-                    "schema": {
-                        "type": "string",
-                        "format": "string"
-                    },
-                    "example": null
-                },
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Knowledgebase/Category/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/KBCategory"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/KBCategory"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/KBCategory"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                },
-                {
-                    "name": "language",
-                    "description": "",
-                    "in": "query",
-                    "required": false,
-                    "schema": {
-                        "type": "string",
-                        "format": "string"
-                    },
-                    "example": null
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/KBCategory"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                },
-                {
-                    "name": "language",
-                    "description": "",
-                    "in": "query",
-                    "required": false,
-                    "schema": {
-                        "type": "string",
-                        "format": "string"
-                    },
-                    "example": null
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/KBCategory"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                },
-                {
-                    "name": "language",
-                    "description": "",
-                    "in": "query",
-                    "required": false,
-                    "schema": {
-                        "type": "string",
-                        "format": "string"
-                    },
-                    "example": null
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
     "/Knowledgebase/Article/{article_id}/Comment": {
         "post": {
             "responses": {
@@ -67039,6 +66777,268 @@
             "parameters": [
                 {
                     "name": "article_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "language",
+                    "description": "",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "example": null
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Knowledgebase/Category": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "language",
+                    "description": "",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "example": null
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/KBCategory"
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/KBCategory"
+                                }
+                            }
+                        },
+                        "text/csv": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/KBCategory"
+                                }
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/KBCategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "language",
+                    "description": "",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "example": null
+                },
+                {
+                    "$ref": "#/components/parameters/filter"
+                },
+                {
+                    "$ref": "#/components/parameters/start"
+                },
+                {
+                    "$ref": "#/components/parameters/limit"
+                },
+                {
+                    "$ref": "#/components/parameters/sort"
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Knowledgebase/Category/{id}": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/KBCategory"
+                            }
+                        },
+                        "text/csv": {
+                            "schema": {
+                                "$ref": "#/components/schemas/KBCategory"
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "$ref": "#/components/schemas/KBCategory"
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "language",
+                    "description": "",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "example": null
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "patch": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/KBCategory"
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "language",
+                    "description": "",
+                    "in": "query",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "example": null
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/KBCategory"
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "id",
                     "description": "",
                     "in": "path",
                     "required": true,

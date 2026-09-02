@@ -49,11 +49,6 @@ class KnowbaseControllerTest extends HLAPITestCase
         $this->api->autoTestCRUD('/Knowledgebase/Article');
     }
 
-    public function testCreateGetUpdateDeleteCategory()
-    {
-        $this->api->autoTestCRUD('/Knowledgebase/Category');
-    }
-
     public function testCreateGetUpdateDeleteComment()
     {
         $article_id = getItemByTypeName(KnowbaseItem::class, '_knowbaseitem02', true);
@@ -187,5 +182,78 @@ class KnowbaseControllerTest extends HLAPITestCase
         ], [
             'date_creation' => '2026-03-01T10:00:00+00:00',
         ]);
+    }
+
+    /**
+     * Categories do not exist anymore, but they are still exposed until the v3 of the API
+     * through the articles that have children.
+     */
+    public function testDeprecatedCategories()
+    {
+        $this->loginWeb();
+
+        $entity = $this->getTestRootEntity(true);
+
+        // Chained at creation time: adding the links afterwards would leave each
+        // article with a second parent, the root article every parentless
+        // creation is attached to.
+        $articles = [];
+        $parent_id = 0;
+        foreach (['root', 'middle', 'leaf'] as $name) {
+            $articles[$name] = $this->createItem(KnowbaseItem::class, [
+                'name' => '_kbcategory_' . $name,
+                'answer' => $name,
+                'entities_id' => $entity,
+                'is_recursive' => 1,
+                '_parents' => $parent_id > 0 ? [$parent_id] : [],
+            ]);
+            $parent_id = $articles[$name]->getID();
+        }
+
+        $this->login();
+
+        $request = new Request('GET', '/Knowledgebase/Category');
+        $request->setParameter('filter', 'name=like=_kbcategory_*');
+        $this->api->call($request, function ($call) use ($articles) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($articles) {
+                    // Only the articles that have children are seen as categories, and they must not be duplicated
+                    $this->assertCount(2, $content);
+                    $categories = array_column($content, null, 'id');
+                    $this->assertArrayHasKey($articles['root']->getID(), $categories);
+                    $this->assertArrayHasKey($articles['middle']->getID(), $categories);
+
+                    // Every article hangs under the root article, which is thus
+                    // the first level of the deprecated category tree.
+                    $root = $categories[$articles['root']->getID()];
+                    $this->assertEquals('Home > _kbcategory_root', $root['completename']);
+                    $this->assertEquals(2, $root['level']);
+                    $this->assertEquals(KnowbaseItem::getRootId(), $root['parent']['id']);
+                    $this->assertEquals('', $root['comment']);
+
+                    $middle = $categories[$articles['middle']->getID()];
+                    $this->assertEquals('Home > _kbcategory_root > _kbcategory_middle', $middle['completename']);
+                    $this->assertEquals(3, $middle['level']);
+                    $this->assertEquals($articles['root']->getID(), $middle['parent']['id']);
+                    $this->assertEquals('_kbcategory_root', $middle['parent']['name']);
+                });
+        });
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Category/' . $articles['middle']->getID()), function ($call) use ($articles) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($articles) {
+                    $this->assertEquals('_kbcategory_middle', $content['name']);
+                    $this->assertEquals('Home > _kbcategory_root > _kbcategory_middle', $content['completename']);
+                    $this->assertEquals(3, $content['level']);
+                    $this->assertEquals($articles['root']->getID(), $content['parent']['id']);
+                });
+        });
+
+        // An article without any child is not a category
+        $this->api->call(new Request('GET', '/Knowledgebase/Category/' . $articles['leaf']->getID()), function ($call) {
+            $call->response->isNotFoundError();
+        });
     }
 }

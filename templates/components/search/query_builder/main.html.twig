@@ -76,7 +76,7 @@
                   <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 default-filter" role="button"
                         {{ p.nodefault is defined ? '' : 'checked' }} autocomplete="off" {{ (can_disablefilter) ? '' : 'disabled' }} />
                   <span class="form-check-label mb-1 mb-sm-0">
-                     <i class="fs-2 ti ti-filter"></i>
+                     <i class="fs-2 ti ti-filter" aria-hidden="true"></i>
                   </span>
                </label>
                <span title="{{ p.defaultfilter['comment'] }}">{{ p.defaultfilter['name'] }}</span>
@@ -102,17 +102,17 @@
 
       <div class="card-footer d-flex search_actions">
          <button id="addsearchcriteria{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
-            <i class="ti ti-square-plus"></i>
+            <i class="ti ti-square-plus" aria-hidden="true"></i>
             <span class="d-none d-sm-block">{{ __('rule') }}</span>
          </button>
          {% if linked is defined and linked|length > 0 %}
             <button id="addmetasearchcriteria{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
-               <i class="ti ti-circle-plus"></i>
+               <i class="ti ti-circle-plus" aria-hidden="true"></i>
                <span class="d-none d-sm-block">{{ __('global rule') }}</span>
             </button>
          {% endif %}
          <button id="addcriteriagroup{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
-            <i class="ti ti-code-plus"></i>
+            <i class="ti ti-code-plus" aria-hidden="true"></i>
             <span class="d-none d-sm-block">{{ __('group') }}</span>
          </button>
          {% if mainform %}
@@ -121,7 +121,7 @@
                 {% if (showaction) %}
                 {# Display submit button #}
                 <button class="btn {{ p['is_criteria_filter'] ? 'btn-ghost-secondary' : 'btn-sm btn-primary' }}" type="button" name="{{ p['actionname'] }}">
-                    <i class="ti ti-search"></i>
+                    <i class="ti ti-search" aria-hidden="true"></i>
                     <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
                 </button>
                 {% endif %}
@@ -136,7 +136,7 @@
                 <a class="btn btn-sm btn-outline-secondary btn-icon px-2 search-reset"
                    data-bs-toggle="tooltip" data-bs-placement="bottom"
                    href="{{ p['target'] ~ ('?' in p['target'] ? '&' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
-                    <i class="ti ti-square-x"></i>
+                    <i class="ti ti-square-x" aria-hidden="true"></i>
                 </a>
                 {% elseif p['forcereset'] %}
                 <input type="hidden" name="reset" value="reset">

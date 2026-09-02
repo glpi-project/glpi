@@ -35,6 +35,8 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use Computer;
+use Contact;
+use DropdownTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
@@ -500,6 +502,20 @@ final class QuestionTypeItemTest extends DbTestCase
                 ],
             ],
 
+            'item is a contact' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => Contact::class,
+                        'items_ids' => [$t->createItem(Contact::class, [
+                            'name'        => 'Doe',
+                            'firstname'   => 'John',
+                            'entities_id' => $t->getTestRootEntity(true),
+                        ])->getID()],
+                    ],
+                    'expected' => 'Doe',
+                ],
+            ],
+
             'location without parent' => [
                 fn(self $t) => [
                     'answer'   => [
@@ -701,5 +717,66 @@ final class QuestionTypeItemTest extends DbTestCase
     public function testFormatPredefinedValue(string $value, ?string $expected): void
     {
         $this->assertSame($expected, (new QuestionTypeItem())->formatPredefinedValue($value));
+    }
+
+    /**
+     * Non-regression test for #25249.
+     *
+     * The generated ticket content is frozen at submission time, so the item
+     * name has to be resolved in the requester language at that moment. Before
+     * the fix, formatRawAnswer() read the raw completename column and the
+     * answer was stored in the source language whatever the requester used.
+     */
+    public function testFormatRawAnswerUsesDropdownTranslation(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(Location::class, [
+            'name'        => 'Head office',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $child = $this->createItem(Location::class, [
+            'name'         => 'Meeting room',
+            'locations_id' => $parent->getID(),
+            'entities_id'  => $this->getTestRootEntity(true),
+        ]);
+
+        // Only `name` is translated on purpose: GLPI derives the `completename`
+        // translation from the ancestors' translated names, and overwrites any
+        // `completename` row that is written directly.
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $parent->getID(),
+            'itemtype' => Location::class,
+            'language' => 'fr_FR',
+            'field'    => 'name',
+            'value'    => 'Siège social',
+        ]);
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $child->getID(),
+            'itemtype' => Location::class,
+            'language' => 'fr_FR',
+            'field'    => 'name',
+            'value'    => 'Salle de réunion',
+        ]);
+
+        // The translation cache is built at login, so the user must be logged
+        // in after the translations exist.
+        $this->createItem(User::class, [
+            'name'         => 'fr_FR',
+            'language'     => 'fr_FR',
+            '_entities_id' => $this->getTestRootEntity(true),
+            '_profiles_id' => 1,
+        ]);
+        $this->login('fr_FR');
+
+        $result = (new QuestionTypeItem())->formatRawAnswer(
+            [
+                'itemtype'  => Location::class,
+                'items_ids' => [$child->getID()],
+            ],
+            new Question()
+        );
+
+        $this->assertEquals('Siège social > Salle de réunion', $result);
     }
 }

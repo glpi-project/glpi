@@ -125,6 +125,26 @@ final class IllustrationManager
     }
 
     /**
+     * Human-readable title of a native icon, e.g. for use as an `aria-label`
+     * on a caller-provided interactive element.
+     */
+    public function getIconTitle(string $icon_id): string
+    {
+        global $TRANSLATE;
+
+        $icons = $this->getIconsDefinitions();
+
+        try {
+            // Cannot call `_x()` here as it results in an illegal empty translation `id` when strings are extracted.
+            // see #21049
+            $title = $TRANSLATE->translate("Icon\004" . ($icons[$icon_id]['title'] ?? ""), 'glpi');
+            return str_replace("Icon\004", "", $title);
+        } catch (Throwable $e) {
+            return '';
+        }
+    }
+
+    /**
      * @param int|null $height Height (px). Will be set to 100% if null.
      * @param int|null $width Width (px). Will be set to 100% if null.
      */
@@ -322,20 +342,7 @@ final class IllustrationManager
 
     private function renderNativeIcon(string $icon_id, ?int $size = null): string
     {
-        global $TRANSLATE;
-
         $size = $this->computeSize($size);
-
-        $icons = $this->getIconsDefinitions();
-
-        try {
-            // Cannot call `_x()` here as it results in an illegal empty translation `id` when strings are extracted.
-            // see #21049
-            $title = $TRANSLATE->translate("Icon\004" . ($icons[$icon_id]['title'] ?? ""), 'glpi');
-            $title = str_replace("Icon\004", "", $title);
-        } catch (Throwable $e) {
-            $title = '';
-        }
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
@@ -343,7 +350,7 @@ final class IllustrationManager
             'icon_id'   => $icon_id,
             'width'     => $size,
             'height'    => $size,
-            'title'     => $title,
+            'title'     => $this->getIconTitle($icon_id),
         ]);
     }
 

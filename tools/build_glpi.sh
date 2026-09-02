@@ -95,6 +95,7 @@ dev_nodes=(
     "phpunit.xml.dist"
     "playwright.config.ts"
     "PluginsMakefile.mk"
+    "PluginsRector.php"
     "psalm.xml"
     "rector.php"
     "stubs"
@@ -103,6 +104,7 @@ dev_nodes=(
     "tsconfig.json"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
+    "vitest.config.ts"
 )
 for node in "${dev_nodes[@]}"
 do

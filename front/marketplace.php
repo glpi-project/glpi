@@ -38,7 +38,7 @@ use Glpi\Marketplace\View;
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRight("config", UPDATE);
+(new Config())->checkGlobal(UPDATE);
 
 if (!Controller::isWebAllowed()) {
     // Redirect to classic plugins page

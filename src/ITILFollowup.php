@@ -752,7 +752,7 @@ class ITILFollowup extends CommonDBChild
         ];
 
         $followup_condition = '';
-        if (!Session::haveRight('followup', self::SEEPRIVATE)) {
+        if (!Session::haveRight(ITILFollowup::$rightname, self::SEEPRIVATE)) {
             $followup_condition = [
                 'OR' => [
                     'NEWTABLE.is_private'   => 0,
@@ -1083,8 +1083,8 @@ class ITILFollowup extends CommonDBChild
         // We need to do some specific checks for tickets
         if ($itemtype == Ticket::class) {
             // Default condition
-            $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
-            return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
+            $condition = "(`$itilfup_table`.`itemtype` = '$itemtype' AND (0 = 1 ";
+            return $condition . Ticket::buildCanViewCondition("items_id", $itilfup_table) . ")) ";
         } else {
             if (Session::haveRight($rightname, $itemtype::READMY)) {
                 // Subquery for affected/assigned/observer user

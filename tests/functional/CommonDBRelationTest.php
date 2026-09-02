@@ -37,10 +37,23 @@ namespace tests\units;
 use CommonDBRelation;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\ItemLinkException;
+use Glpi\Exception\RedirectException;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
+use Group;
+use Group_User;
+use User;
 
 class CommonDBRelationTest extends DbTestCase
 {
+    use ReAuthTrait;
+
+    public function tearDown(): void
+    {
+        $this->restoreWebContext();
+        parent::tearDown();
+    }
+
     public function testCreateCheck(): void
     {
         /** both specific, both attached */
@@ -414,4 +427,66 @@ class CommonDBRelationTest extends DbTestCase
         );
         /** /Entity with items_id = 0 is valid (root entity) */
     }
+
+    // --- Re-authentication ("sudo mode") propagation through the CommonDBRelation hierarchy ---
+
+    /**
+     * Group_User is a CommonDBRelation subclass that requires re-authentication.
+     * changeActiveEntities('all') is required so that the group item created in entity 0
+     * is visible regardless of the active entity restriction.
+     */
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCanPropagatesReauthThroughRelation(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $relation_id = $this->createGroupUser()->getID();
+        $this->fakeWebContext();
+
+        // --- act + assert : not re-authenticated → can() returns false and sets reauth_needed ---
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $input = null;
+        $this->assertFalse((new Group_User())->can($relation_id, READ, $input, $reauth_needed));
+        $this->assertTrue($reauth_needed);
+
+        // --- act + assert : re-authenticated → can() returns true and clears reauth_needed ---
+        $this->setReauthenticated(true);
+        $reauth_needed = null;
+        $input = null;
+        $this->assertTrue((new Group_User())->can($relation_id, READ, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    /**
+     * CommonDBRelation overrides check() but delegates to parent::check(),
+     * so the re-authentication redirect must still be triggered.
+     */
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCheckOverrideStillRedirectsToReauthPrompt(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $relation_id = $this->createGroupUser()->getID();
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        // --- act + assert ---
+        $this->expectException(RedirectException::class);
+        (new Group_User())->check($relation_id, READ);
+    }
+
+    private function createGroupUser(): Group_User
+    {
+        $group = $this->createItem(
+            Group::class,
+            $this->getMinimalCreationInput(Group::class),
+        );
+
+        return $this->createItem(Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => getItemByTypeName(User::class, TU_USER, true),
+        ]);
+    }
+
 }

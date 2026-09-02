@@ -140,6 +140,7 @@ final class FormTagsManager
             new CommentTitleTagProvider(),
             new CommentDescriptionTagProvider(),
             new FullFormTagProvider(),
+            new ItemPropertyTagProvider(),
         ]);
     }
 
@@ -147,6 +148,7 @@ final class FormTagsManager
         string $subject,
         MapperInterface $mapper
     ): string {
+
         foreach ($this->getTagProviders() as $tag_provider) {
             if (!$tag_provider instanceof TagWithIdValueInterface) {
                 // This tag value do not reference and ID, we can skip it
@@ -154,6 +156,23 @@ final class FormTagsManager
             }
             $provider_class = preg_quote($tag_provider::class);
             $mapped_class = $tag_provider->getItemtype();
+
+            if ($tag_provider instanceof CompositeTagValueInterface) {
+                $subject = preg_replace_callback(
+                    "/data-form-tag-value=\"([^\"]+)\" "
+                    . "data-form-tag-provider=\"$provider_class\"/",
+                    fn($match) => preg_replace(
+                        "/value=\"([^\"]+)/",
+                        "value=\"" . $tag_provider->rebuildValueWithMappedId(
+                            $match[1],
+                            (string) $mapper->getItemId($mapped_class, $tag_provider->extractItemIdFromValue($match[1]))
+                        ),
+                        $match[0]
+                    ),
+                    $subject,
+                );
+                continue;
+            }
 
             $subject = preg_replace_callback(
                 // Look for the value + provider properties

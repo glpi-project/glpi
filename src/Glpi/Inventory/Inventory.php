@@ -596,8 +596,10 @@ class Inventory
         ];
         $links = [];
         foreach ($classes as $class) {
-            $entry = "<i class=\"" . \htmlescape($class::getIcon()) . " pointer\" title=\"" . \htmlescape($class::getTypeName(Session::getPluralNumber()))
-            . "\"></i><span class=\"d-none d-xxl-block\">" . \htmlescape($class::getTypeName(Session::getPluralNumber())) . "</span>";
+            $label = \htmlescape($class::getTypeName(Session::getPluralNumber()));
+            $entry = "<i class=\"" . \htmlescape($class::getIcon()) . " pointer\" title=\"$label\" aria-hidden=\"true\"></i>"
+            . "<span class=\"d-none d-xxl-block\" aria-hidden=\"true\">$label</span>"
+            . "<span class=\"visually-hidden\">$label</span>";
             $links[$entry] = $class::getSearchURL(false);
         }
 
@@ -629,7 +631,9 @@ class Inventory
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
                 'links' => [
-                    "<i class=\"ti ti-plus\" title=\"" . __s('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __s('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
+                    "<i class=\"ti ti-plus\" title=\"" . __s('Add global lock') . "\" aria-hidden=\"true\"></i>"
+                    . "<span class=\"d-none d-xxl-block\" aria-hidden=\"true\">" . __s('Add global lock') . "</span>"
+                    . "<span class=\"visually-hidden\">" . __s('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
                 ] + $links,
                 'lists_itemtype' => Lockedfield::class,
             ];
@@ -1001,7 +1005,7 @@ class Inventory
             case 'cleantemp':
                 return ['description' => __('Clean temporary files created from inventories')];
 
-            case 'cleanorphans':
+            case 'cleanorphansinventory':
                 return ['description' => __('Clean inventories orphaned files')];
         }
         return [];
@@ -1019,10 +1023,13 @@ class Inventory
         $conf = new Conf();
         $temp_files = glob(GLPI_INVENTORY_DIR . '/*.{' . implode(',', $conf->knownInventoryExtensions()) . '}', GLOB_BRACE);
 
+        // Files created by `tempnam()` while an inventory is being processed (see `Inventory::setData()`).
+        $temp_files = array_merge($temp_files, glob(GLPI_INVENTORY_DIR . '/{xml_,json_}*', GLOB_BRACE));
+
         $time_limit = 60 * 60 * 12;//12 hours
         foreach ($temp_files as $temp_file) {
             //drop only inventory files that have been created more than 12 hours ago
-            if (time() - filemtime($temp_file) >= $time_limit) {
+            if (is_file($temp_file) && time() - filemtime($temp_file) >= $time_limit) {
                 try {
                     unlink($temp_file);
                     $message = sprintf(__('File %1$s has been removed'), $temp_file);
@@ -1048,7 +1055,7 @@ class Inventory
      *
      * @return int
      **/
-    public static function cronCleanorphans($task)
+    public static function cronCleanOrphansInventory($task)
     {
         global $DB;
 
