@@ -464,7 +464,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         ],
                     ],
                 ],
-                'WHERE' => $user_criteria['criteria'],
+                'WHERE' => $user_criteria['criteria'] + $item::getSystemSQLCriteria(),
             ];
 
             if ($item->maybeTemplate()) {
