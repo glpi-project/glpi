@@ -78,7 +78,7 @@ class PlugTest extends DbTestCase
         }
     }
 
-    private function getPlugMainItem(?\Glpi\Asset\AssetDefinition $definition = null): \CommonDBTM
+    private function getPlugMainItem(?AssetDefinition $definition = null): \CommonDBTM
     {
         $definition ??= $this->initAssetDefinition(capacities: [new Capacity(name: HasPlugCapacity::class)]);
         return $this->createItem(
