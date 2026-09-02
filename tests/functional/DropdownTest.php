@@ -64,6 +64,7 @@ use Phone;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Printer;
 use Profile;
+use Profile_User;
 use Project;
 use ProjectTask;
 use Session;
@@ -2647,6 +2648,12 @@ HTML;
                 -1 => 'user-default-email@example.com',
             ],
             '_default_email' => -1,
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'     => $user->getID(),
+            'profiles_id'  => getItemByTypeName(Profile::class, 'Technician', true),
+            'entities_id'  => $root_id,
+            'is_recursive' => 1,
         ]);
 
         $base_post = [

@@ -4248,7 +4248,7 @@ HTML;
                     if (is_numeric($post['searchText'])) {
                         $orwhere['id'] = $post['searchText'];
                     }
-                    if (!empty($orwhere)) {
+                    if ($orwhere !== []) {
                         $criteria['WHERE'][] = ['OR' => $orwhere];
                     }
                 }
@@ -4377,7 +4377,7 @@ HTML;
                             if (is_numeric($post['searchText'])) {
                                 $orwhere['id'] = $post['searchText'];
                             }
-                            if (!empty($orwhere)) {
+                            if ($orwhere !== []) {
                                 $criteria['WHERE'][] = ['OR' => $orwhere];
                             }
                         }
