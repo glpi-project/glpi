@@ -34,7 +34,6 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,11 +53,8 @@ final class UpdateTileController extends AbstractTileController
             $request->request->getString('_itemtype'),
             $request->request->getInt('id'),
         );
-        if (!$tile::canUpdate() || !$tile->canUpdateItem()) {
-            throw new AccessDeniedHttpException();
-        }
 
-        // Validate linked item
+        // Validate linked item — access is granted based on the linked item (entity/profile), not the tile itself.
         $linked_item = $this->getAndValidateLinkedItemFromDatabase($tile);
 
         // Prepare input

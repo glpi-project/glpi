@@ -213,6 +213,7 @@ final class ManagementController extends AbstractController
         };
         $fn_get_group_property = (static fn(string $itemtype) => [
             'type' => Doc\Schema::TYPE_ARRAY,
+            'x-input-field' => 'groups_id',
             'items' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-full-schema' => 'Group',
@@ -242,6 +243,7 @@ final class ManagementController extends AbstractController
         ]);
         $fn_get_group_tech_property = (static fn(string $itemtype) => [
             'type' => Doc\Schema::TYPE_ARRAY,
+            'x-input-field' => 'groups_id_tech',
             'items' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-full-schema' => 'Group',

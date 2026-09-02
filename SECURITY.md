@@ -9,16 +9,31 @@ Email **security@glpi-project.org**.
 
 We do not accept GitHub Security Advisory direct submissions, and we will not create accounts on third-party platforms to receive reports. All information must be sent by email or, once an advisory is opened, posted directly in that advisory.
 
+## One email per vulnerability
+
+Send a separate email for each unrelated vulnerability. Do not bundle unrelated issues into a single thread, and do not reply to an existing report thread to raise a new, unrelated one. This keeps triage, severity assessment, and advisory tracking clean — one report, one thread, one advisory.
+
+This is distinct from the grouping rule below: related instances of the *same* vulnerability class stay in one report; unrelated vulnerabilities each get their own.
+
+Attach your proof-of-concept as a file (script, HTTP request collection, etc.) rather than pasting source code inline in the email body. This keeps reports readable and reproducible, and avoids mangling by mail clients (indentation, quoting, encoding).
+
 ## Required information
 
 Incomplete reports are returned once and **closed** if not completed within seven days.
 
+> [!IMPORTANT]
+> We receive a lot of security reports and we need to validate each one - please be patient ;)
+> Also, please provide us all information, scripts, etc so we can easily reproduce and test.
+> 
+> Thank you!
+
 1. Affected GLPI version (see below).
 2. What the attacker can do and what privilege level they need.
 3. Step-by-step reproduction from a clean install.
-4. Working proof of concept.
-5. Impact and preconditions.
-6. AI disclosure: which tools, if any, you used to find or draft the report.
+4. Scripts (Python, PHP, ...) to validate and reproduce the issue; and then make sure it gets fixed.
+5. Working proof of concept.
+6. Impact and preconditions.
+7. AI disclosure: which tools, if any, you used to find or draft the report.
 
 Group related findings into a single report. Multiple instances of the same vulnerability class — for example XSS across different fields, or missing capability checks on related endpoints — belong in one submission, not several.
 

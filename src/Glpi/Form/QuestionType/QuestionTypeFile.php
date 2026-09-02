@@ -78,6 +78,7 @@ final class QuestionTypeFile extends AbstractQuestionType implements FormQuestio
                     'no_label'       : true,
                     'full_width'     : true,
                     'mb'             : '',
+                    'multiple'       : true,
                 }
             ) }}
 TWIG;
@@ -109,6 +110,7 @@ TWIG;
                     'no_label'             : true,
                     'full_width'           : true,
                     'mb'                   : '',
+                    'multiple'             : true,
                 }
             ) }}
 TWIG;

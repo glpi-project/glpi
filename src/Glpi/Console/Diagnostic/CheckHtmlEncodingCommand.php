@@ -269,7 +269,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         $update = [];
         foreach ($fields as $field) {
             $update[$field] = $this->fixOneField($item, $field);
-            $update[$field] = $update[$field];
         }
 
         $success = $DB->update(

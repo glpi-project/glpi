@@ -630,6 +630,55 @@ final class RequesterFieldTest extends AbstractActorFieldTest
         );
     }
 
+    public function testTicketIsCreatedWhenStoredStrategyIsUnknown(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+        $destination = current($destinations);
+
+        // Simulate a destination whose requester strategy was stored as the
+        // empty value of the strategy dropdown. The update is done directly in
+        // database to bypass `prepareInput`, which now rejects such a value.
+        global $DB;
+        $this->assertTrue($DB->update(
+            $destination::getTable(),
+            [
+                'config' => json_encode([
+                    RequesterField::getKey() => [
+                        ITILActorFieldConfig::STRATEGIES => ['0'],
+                        ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS => null,
+                        ITILActorFieldConfig::SPECIFIC_QUESTION_IDS => null,
+                    ],
+                ]),
+            ],
+            ['id' => $destination->getID()]
+        ));
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers_set = $answers_handler->saveAnswers(
+            $form,
+            [],
+            getItemByTypeName(User::class, TU_USER, true)
+        );
+
+        // The ticket must still be created, with the form filler as requester.
+        $created_items = $answers_set->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        /** @var Ticket $ticket */
+        $ticket = current($created_items);
+        $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(1, $actors);
+        $this->assertEquals(
+            getItemByTypeName(User::class, TU_USER, true),
+            $actors[0]['items_id']
+        );
+    }
+
     #[Override]
     public static function provideConvertFieldConfigFromFormCreator(): iterable
     {

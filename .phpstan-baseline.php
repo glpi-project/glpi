@@ -50,12 +50,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/dashboard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/dropdownConnectNetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'toupdate\' might not exist on array\\{name\\: non\\-falsy\\-string, entity\\: array\\<int\\>\\|int, rand\\: int\\<0, max\\>, to_update\\: null, toupdate\\?\\: array\\{value_fieldname\\: \'value\', to_update\\: non\\-falsy\\-string, url\\: non\\-falsy\\-string, moreparams\\: array\\{value\\: \'__VALUE__\', allow_email\\: bool, field\\: non\\-falsy\\-string, typefield\\: \'supplier\', use_notification\\: mixed\\}\\}\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -1174,7 +1168,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$fields\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 17,
+	'count' => 16,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -2050,7 +2044,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -2372,12 +2366,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on CommonITILTask\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on ITILCategory\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
@@ -2385,18 +2373,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on ITIL_ValidationStep\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method canUpdateItem\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method canViewItem\\(\\) on CommonITILTask\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
@@ -2438,20 +2414,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method post_getFromDB\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method update\\(\\) on ITIL_ValidationStep\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getType\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
@@ -2483,12 +2447,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method CommonITILObject\\:\\:computeSolveDelayStat\\(\\) should return int but returns float\\|int\\<0, max\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:cronInfo\\(\\) should return array\\{description\\: string, parameter\\?\\: string\\} but returns array\\{\\}\\|array\\{description\\: string\\}\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -4805,24 +4763,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$documentElement on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method createAttribute\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method createCDATASection\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method createElement\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
@@ -8042,12 +7982,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Condition/Engine.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssigneeFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssigneeFieldConfig.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -8058,12 +7992,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldStrategy\\|null\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsFieldConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getEntityID\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\EntityFieldStrategy\\|false\\.$#',
@@ -8150,12 +8078,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/LocationField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ObserverFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ObserverFieldConfig.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getRequestSource\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\RequestSourceFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -8166,12 +8088,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequestTypeField.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\RequesterFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequesterFieldConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLATTRField\\:\\:getTimeDefinitionFromLegacy\\(\\) should return string but returns string\\|false\\.$#',
@@ -9800,7 +9716,79 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$company\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$hostid\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$install_date\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$license_number\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$licenseid\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemarchitectures_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemeditions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemkernels_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemkernelversions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystems_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemservicepacks_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemversions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$owner\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
@@ -11988,12 +11976,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Output/HTMLSearchOutput.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Output/Spreadsheet.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$count of class GLPIPDF@anonymous/src/Glpi/Search/Output/Tcpdf\\.php\\:46 constructor expects int\\|null, bool\\|float\\|int\\|string\\|null given\\.$#',
@@ -16072,7 +16054,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property NotificationTarget\\<Project\\>\\:\\:\\$data \\(array\\<string, array\\<string\\>\\|string\\>\\) does not accept array\\<string, array\\<array\\<string, mixed\\>\\|string\\>\\|string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 3,
+	'count' => 4,
 	'path' => __DIR__ . '/src/NotificationTargetProject.php',
 ];
 $ignoreErrors[] = [
@@ -16126,7 +16108,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property NotificationTarget\\<ProjectTask\\>\\:\\:\\$data \\(array\\<string, array\\<string\\>\\|string\\>\\) does not accept array\\<string, array\\<array\\<string, mixed\\>\\|string\\>\\|string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [
@@ -16466,38 +16448,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PendingReason.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$fields\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method object\\:\\:getID\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method object\\:\\:getType\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on PendingReason_Item\\|false\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itil_item of method AbstractITILChildTemplate\\:\\:getRenderedContent\\(\\) expects CommonITILObject, object given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$item of static method NotificationEvent\\:\\:raiseEvent\\(\\) expects CommonGLPI, object given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/PendingReasonCron.php',
 ];
@@ -19490,12 +19442,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$width of function Safe\\\\imagecreatetruecolor expects int, float\\|int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -19514,12 +19460,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$height of function Safe\\\\imagecreatetruecolor expects int, float\\|int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$string of function Safe\\\\unpack expects string, array\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -19533,18 +19473,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$height of static method Html\\:\\:getImageHtmlTagForDocument\\(\\) expects int, int\\<0, max\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#7 \\$dst_width of function Safe\\\\imagecopyresampled expects int, float\\|int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#8 \\$dst_height of function Safe\\\\imagecopyresampled expects int, float\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',

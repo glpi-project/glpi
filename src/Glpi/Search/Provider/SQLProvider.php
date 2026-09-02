@@ -48,6 +48,9 @@ use CommonITILValidation;
 use Config;
 use Consumable;
 use CronTask;
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeZone;
 use DBConnection;
 use DBmysql;
 use DBmysqlIterator;
@@ -1869,10 +1872,20 @@ final class SQLProvider implements SearchProviderInterface
                         // Specific search for datetime
                         if (in_array($searchtype, ['equals', 'notequals'])) {
                             $val = preg_replace("/:00$/", '', $val);
-                            $val = '^' . $val;
                             if ($searchtype === 'notequals') {
                                 $nott = !$nott;
                             }
+
+                            // Search the range matching the value precision (e.g. the whole day for
+                            // `2024-07-28`), as a `LIKE` pattern would not use the column index.
+                            $boundaries = isset($opt["computation"])
+                                ? null // not supported on computed fields
+                                : self::getDateTimeRangeBoundaries((string) $val);
+                            if ($boundaries !== null) {
+                                return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
+                            }
+
+                            $val = '^' . $val;
                             return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
                         }
                     }
@@ -1965,6 +1978,25 @@ final class SQLProvider implements SearchProviderInterface
                     // ELSE standard search
                     // Date format modification if needed
                     $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
+
+                    // The column string representation has a fixed width, so a partial date can only
+                    // be found at its beginning. It can therefore be searched as a range, which,
+                    // unlike the `LIKE` pattern used below, is able to use the column index.
+                    if (
+                        in_array($searchtype, ['contains', 'notcontains'], true)
+                        && in_array($opt["datatype"], ['date', 'datetime'], true)
+                        && !isset($opt["computation"])
+                        && preg_match('/\$$/', (string) $val) !== 1 // a trailing `$` is not a prefix search
+                    ) {
+                        $boundaries = self::getDateTimeRangeBoundaries(
+                            preg_replace('/^\^/', '', (string) $val),
+                            $opt["datatype"] === 'datetime'
+                        );
+                        if ($boundaries !== null) {
+                            return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
+                        }
+                    }
+
                     if ($date_computation) {
                         return [
                             new QueryExpression(self::makeTextCriteria($date_computation, $val, $nott, '')),
@@ -5429,6 +5461,92 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
+     * Compute the range matching a partial date/time value, e.g. the whole day for `2024-07-28`.
+     *
+     * @param string $val       Partial date/time value, from `YYYY` to `YYYY-MM-DD HH:mm:ss`
+     * @param bool   $with_time Whether the compared column holds a time part
+     *
+     * @return array{0: string, 1: string}|null Lower (included) and upper (excluded) bounds,
+     *                                          or `null` if the value cannot be interpreted.
+     */
+    private static function getDateTimeRangeBoundaries(string $val, bool $with_time = true): ?array
+    {
+        $precisions = [
+            '/^\d{4}$/'                               => ['Y',           'P1Y',  false],
+            '/^\d{4}-\d{2}$/'                         => ['Y-m',         'P1M',  false],
+            '/^\d{4}-\d{2}-\d{2}$/'                   => ['Y-m-d',       'P1D',  false],
+            '/^\d{4}-\d{2}-\d{2} \d{2}$/'             => ['Y-m-d H',     'PT1H', true],
+            '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/'       => ['Y-m-d H:i',   'PT1M', true],
+            '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/' => ['Y-m-d H:i:s', 'PT1S', true],
+        ];
+
+        $val = trim($val);
+
+        foreach ($precisions as $pattern => [$format, $interval, $has_time]) {
+            if (preg_match($pattern, $val) !== 1) {
+                continue;
+            }
+
+            if ($has_time && !$with_time) {
+                // A column without time part cannot match such a value.
+                return null;
+            }
+
+            if (str_starts_with($val, '0000')) {
+                // The legacy `0000-00-00` value would be out of the computed range.
+                return null;
+            }
+
+            // `!` resets unspecified fields to their "zero" value; force UTC as the value has no time offset.
+            $lower_bound = DateTimeImmutable::createFromFormat('!' . $format, $val, new DateTimeZone('UTC'));
+            $errors      = DateTimeImmutable::getLastErrors();
+            if ($lower_bound === false || ($errors !== false && ($errors['warning_count'] + $errors['error_count']) > 0)) {
+                // Out of range value, e.g. `2024-02-30`
+                return null;
+            }
+
+            $output_format = $with_time ? 'Y-m-d H:i:s' : 'Y-m-d';
+
+            return [
+                $lower_bound->format($output_format),
+                $lower_bound->add(new DateInterval($interval))->format($output_format),
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Build a criterion matching the given date/time range.
+     *
+     * @param string                      $column     Column to compare, as `table.field`
+     * @param array{0: string, 1: string} $boundaries Lower (included) and upper (excluded) bounds
+     * @param bool                        $nott       Is a negative search?
+     *
+     * @return array<int|string, mixed>
+     */
+    private static function getDateTimeRangeCriteria(string $column, array $boundaries, bool $nott): array
+    {
+        [$lower_bound, $upper_bound] = $boundaries;
+
+        if ($nott) {
+            // `NULL` values are part of a negative search results
+            return [
+                'OR' => [
+                    [$column => ['<', $lower_bound]],
+                    [$column => ['>=', $upper_bound]],
+                    [$column => null],
+                ],
+            ];
+        }
+
+        return [
+            [$column => ['>=', $lower_bound]],
+            [$column => ['<', $upper_bound]],
+        ];
+    }
+
+    /**
      * Create SQL search value
      *
      * @since 9.4
@@ -6076,7 +6194,7 @@ final class SQLProvider implements SearchProviderInterface
                             ));
                             $currenttime = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
-                                date('Y-m-d H:i:s')
+                                $_SESSION['glpi_currenttime']
                             );
                             $totaltime   = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
@@ -6094,14 +6212,14 @@ final class SQLProvider implements SearchProviderInterface
                             if ($calendars_id > 0 && $calendar->getFromDB($calendars_id)) { // Ticket entity have calendar
                                 $currenttime = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
-                                    date('Y-m-d H:i:s')
+                                    $_SESSION['glpi_currenttime']
                                 );
                                 $totaltime   = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
                                     $data[$ID][0]['name']
                                 );
                             } else { // No calendar
-                                $currenttime = strtotime(date('Y-m-d H:i:s'))
+                                $currenttime = strtotime($_SESSION['glpi_currenttime'])
                                     - strtotime($item->fields['date']);
                                 $totaltime   = strtotime($data[$ID][0]['name'])
                                     - strtotime($item->fields['date']);

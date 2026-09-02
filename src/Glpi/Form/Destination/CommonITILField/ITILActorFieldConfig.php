@@ -37,12 +37,15 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
+use Glpi\Form\Destination\DeserializeStrategiesTrait;
 use Override;
 
 abstract class ITILActorFieldConfig implements
     JsonFieldInterface,
     ConfigFieldWithStrategiesInterface
 {
+    use DeserializeStrategiesTrait;
+
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGIES              = 'strategies';
     public const SPECIFIC_ITILACTORS_IDS = 'specific_itilactors_ids';

@@ -1281,6 +1281,9 @@ HTML;
                     'DeviceGenericType' => null,
                     'DeviceSensorType' => null,
                     'DeviceMemoryType' => null,
+                    'DeviceHardDriveType' => null,
+                    'DeviceBatteryType' => null,
+                    'DeviceFirmwareType' => null,
                     'SupplierType' => null,
                     'InterfaceType' => null,
                     'DeviceCaseType' => null,
@@ -1306,10 +1309,12 @@ HTML;
                     'PhoneModel' => null,
 
                     // Devices models :
+                    'DeviceBatteryModel' => null,
                     'DeviceCameraModel' => null,
                     'DeviceCaseModel' => null,
                     'DeviceControlModel' => null,
                     'DeviceDriveModel' => null,
+                    'DeviceFirmwareModel' => null,
                     'DeviceGenericModel' => null,
                     'DeviceGraphicCardModel' => null,
                     'DeviceHardDriveModel' => null,
@@ -2985,12 +2990,15 @@ HTML;
             if (isset($condition['WHERE'])) {
                 $where = array_merge($where, $condition['WHERE']);
             } else {
+                $or_where = [];
                 foreach ($condition as $key => $value) {
                     if (is_array($value) && isset($value['LEFT JOIN'])) {
-                        $ljoin = $value['LEFT JOIN'];
+                        $ljoin = array_merge($ljoin, $value['LEFT JOIN']);
                     }
                     if (is_array($value) && isset($value['WHERE'])) {
-                        $where = array_merge($where, $value['WHERE']);
+                        // Combine with OR: sub-conditions target different types but must match any one of them,
+                        // and array_merge would silently produce AND instead of the required OR.
+                        $or_where[] = $value['WHERE'];
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
                         $where["$table.$key"] = $value;
@@ -3002,6 +3010,9 @@ HTML;
                         // e.g. to override the default `is_template` / `is_deleted` filtering.
                         $where[$key] = $value;
                     }
+                }
+                if ($or_where !== []) {
+                    $where[] = ['OR' => $or_where];
                 }
             }
         }
@@ -3629,6 +3640,11 @@ HTML;
             );
 
             $order_field = "$table.$field";
+            if (in_array($post['itemtype'], [Ticket::class, Change::class, Problem::class], true)) {
+                // Ordering by `name` forces a filesort over the whole (unindexable, `LIKE`-filtered)
+                // matching set; ordering by the primary key lets MySQL stop scanning early instead.
+                $order_field = "$table.id DESC";
+            }
             if (isset($post['order']) && !empty($post['order'])) {
                 $order_field = $post['order'];
             }

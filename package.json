@@ -69,7 +69,7 @@
         "tinycolor2": "^1.6.0",
         "tinymce": "^7.9.3",
         "tinymce-i18n": "^25.6.2",
-        "vue": "^3.5.40"
+        "vue": "^3.5.42"
     },
     "scripts": {
         "audit": "npm audit package-lock-only",
@@ -106,9 +106,9 @@
         "axios": "^1.16.1",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^14.0.0",
-        "css-loader": "^7.1.4",
+        "css-loader": "^7.1.5",
         "csso-cli": "^4.0.2",
-        "cypress": "^14.5.4",
+        "cypress": "^15.20.1",
         "cypress-axe": "^1.6.0",
         "cypress-network-idle": "^1.15.0",
         "cypress-otp": "^1.0.3",
@@ -150,10 +150,8 @@
             "sharp": "^0.35.0"
         },
         "monaco-editor": {
-            "dompurify": "^3.4.12"
+            "dompurify": "^3.4.13"
         },
-        "brace-expansion": "^5.0.8",
-        "js-yaml": "^4.2.0",
         "qs": "^6.15.1",
         "uuid": "^14.0.0"
     }

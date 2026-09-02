@@ -225,6 +225,10 @@ const StencilEditor = function (container, rand, zones_definition) {
                 && cropper.getCropperSelection().width > 0;
         })[0];
 
+        if (cropper === undefined) {
+            return;
+        }
+
         // get the different dom object
         const cr_canvas = cropper.getCropperCanvas();
         const cr_selection = cropper.getCropperSelection();
@@ -404,9 +408,23 @@ const StencilEditor = function (container, rand, zones_definition) {
             success: function () {
                 // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
                 $(`form#stencil-editor-form-${rand} button[name="remove-zone"][data-bs-toggle="tooltip"]`).tooltip('hide');
-                $(`form#stencil-editor-form-${rand} button.set-zone-data`).sort((a, b) => {
+                const lastBtn = $(`form#stencil-editor-form-${rand} button.set-zone-data`).sort((a, b) => {
                     return $(a).data('zone-index') - $(b).data('zone-index');
-                }).last().remove();
+                }).last();
+                
+                const removedZoneIndex = lastBtn.data('zone-index');
+                lastBtn.remove();
+                
+                if (zones[removedZoneIndex] !== undefined) {
+                    delete zones[removedZoneIndex];
+                }
+                
+                const currentZoneIndex = $(container).find(`#zone_number-${rand}`).data('zone-index');
+                if (_this.isEditorActive() && currentZoneIndex == removedZoneIndex) {
+                    _this.editorDisable();
+                } else {
+                    _this.redoZones();
+                }
             },
         });
     };

@@ -136,7 +136,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'add_document'      => __('New document'),
             'pendingreason_add' => __('Pending reason added'),
             'pendingreason_del' => __('Pending reason removed'),
-            'pendingreason_close' => __('Pending reason auto close'),
+            'pendingreason_resolve' => __('Pending reason auto resolve'),
         ];
 
         asort($events);
