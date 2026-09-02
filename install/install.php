@@ -36,6 +36,7 @@
 require_once(__DIR__ . '/../front/_check_webserver_config.php');
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
@@ -44,9 +45,7 @@ use Glpi\Toolbox\Filesystem;
 
 use function Safe\file_get_contents;
 
-global $CFG_GLPI;
-
-if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
+if (isset($_POST["language"]) && is_string($_POST["language"]) && LanguageRegistry::has($_POST["language"])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
     Session::loadLanguage(with_plugins: false);
 }
