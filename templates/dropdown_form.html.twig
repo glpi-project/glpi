@@ -152,7 +152,17 @@
                     {% endif %}
 
                     {% set fields_params = fields_params|merge({'type': 'number'}) %}
-                    {{ fields.numberField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
+                    {% if field['unit_factors'] is defined %}
+                        {{ fields.unitNumberField(
+                            field['name'],
+                            item.fields[field['name']],
+                            field['label'],
+                            field['unit_factors'],
+                            fields_params
+                        ) }}
+                    {% else %}
+                        {{ fields.numberField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
+                    {% endif %}
                 {% elseif type == 'timestamp' %}
                     {% set fields_params = {'value': item.fields[field['name']]} %}
                     {% if field['min'] is defined %}

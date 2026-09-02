@@ -52,10 +52,14 @@ class DeviceHardDrive extends CommonDevice
             [
                 [
                     'name'  => 'capacity_default',
-                    'label' => __('Capacity by default'),
+                    'label' => sprintf(__('%1$s (%2$s)'), __('Capacity by default'), _x('size', 'MiB')),
                     'type'  => 'integer',
                     'min'   => 0,
-                    'unit'  => __('Mio'),
+                    'unit_factors' => [
+                        _x('size', 'MiB') => 1,
+                        _x('size', 'GiB') => 1024,
+                        _x('size', 'TiB') => 1024 ** 2,
+                    ],
                 ],
                 [
                     'name'  => 'rpm',
@@ -66,7 +70,12 @@ class DeviceHardDrive extends CommonDevice
                     'name'  => 'cache',
                     'label' => __('Cache'),
                     'type'  => 'integer',
-                    'unit'  => __('Mio'),
+                    'min'   => 0,
+                    'unit_factors' => [
+                        _x('size', 'MiB') => 1,
+                        _x('size', 'GiB') => 1024,
+                        _x('size', 'TiB') => 1024 ** 2,
+                    ],
                 ],
                 [
                     'name'  => 'deviceharddrivemodels_id',
@@ -150,6 +159,7 @@ class DeviceHardDrive extends CommonDevice
      **/
     public function prepareInputForAddOrUpdate($input)
     {
+        $input = $this->prepareUnitAwareInput($input);
         foreach (['capacity_default'] as $field) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
                 $input[$field] = 0;
