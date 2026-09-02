@@ -1527,8 +1527,6 @@ $(() => {
             flashIconButton($(this), $(this).attr('class'), 'ti ti-check', 1500);
         }
     });
-
-
 });
 
 /**
