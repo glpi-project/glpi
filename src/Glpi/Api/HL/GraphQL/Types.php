@@ -36,10 +36,12 @@ namespace Glpi\Api\HL\GraphQL;
 
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\GraphQL\Type\DateTimeType;
-use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\Schemas;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\UnionType;
+use LogicException;
 
 class Types
 {
@@ -49,8 +51,11 @@ class Types
     public static function load(string $type_name, string $api_version): Type
     {
         if (!isset(self::$types[$type_name])) {
-            $schemas = OpenAPIGenerator::getComponentSchemas($api_version);
-            self::$types[$type_name] = self::convertRESTSchemaToGraphQLSchema($type_name, $schemas[$type_name], $api_version);
+            $schema = Schemas::getInstance($api_version)->getSchema($type_name);
+            if ($schema === null) {
+                throw new LogicException("Schema for type {$type_name} not found");
+            }
+            self::$types[$type_name] = self::convertRESTSchemaToGraphQLSchema($type_name, $schema, $api_version);
         }
         return self::$types[$type_name];
     }
@@ -59,18 +64,29 @@ class Types
      * @param string $schema_name
      * @param array<string, mixed> $schema
      * @param string $api_version
-     * @return ObjectType
+     * @return ObjectType|ListOfType<ObjectType>
      */
-    private static function convertRESTSchemaToGraphQLSchema(string $schema_name, array $schema, string $api_version): ObjectType
+    private static function convertRESTSchemaToGraphQLSchema(string $schema_name, array $schema, string $api_version): ObjectType|ListOfType
     {
         $fields = [];
-        foreach ($schema['properties'] as $name => $property) {
-            $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
+        $is_array_of_objects = $schema['type'] === Doc\Schema::TYPE_ARRAY && isset($schema['items']['properties']);
+        if ($is_array_of_objects) {
+            foreach ($schema['items']['properties'] as $name => $property) {
+                $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
+            }
+        } else {
+            foreach ($schema['properties'] as $name => $property) {
+                $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
+            }
         }
-        return new ObjectType([
+        $type_config = [
             'name' => $schema_name,
             'fields' => $fields,
-        ]);
+        ];
+        if (isset($schema['x-graphql-resolver'])) {
+            $type_config['resolveField'] = $schema['x-graphql-resolver'];
+        }
+        return $is_array_of_objects ? new ListOfType(new ObjectType($type_config)) : new ObjectType($type_config);
     }
 
     /**
@@ -104,6 +120,28 @@ class Types
         // Handle array and object types
         if ($type === Doc\Schema::TYPE_ARRAY) {
             $items = $property['items'];
+
+            // Unions
+            if (isset($items['anyOf']) || isset($items['oneOf'])) {
+                $type_list = array_map(
+                    static fn($r) => str_replace('#/components/schemas/', '', $r),
+                    array_column($items['anyOf'] ?? $items['oneOf'], '$ref')
+                );
+                // anyOf and oneOf could both use UnionType. Not sure there is a good way to properly say for oneOf that all items are the same type.
+                $union_config = [
+                    'name' => "_{$prefix}_{$name}",
+                    'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
+                    'resolveType' => static function ($value) use ($api_version): Type {
+                        $t = $value;
+                        return self::load($t['_tile_type'], $api_version);
+                    },
+                ];
+                /** @phpstan-ignore-next-line */
+                $graphql_type = new UnionType($union_config);
+                return ['type' => new ListOfType($graphql_type)];
+            }
+
+            // Regular arrays
             $graphql_type = self::convertRESTPropertyToGraphQLType($items, $name, $prefix, $api_version);
             if ($graphql_type === null) {
                 return null;

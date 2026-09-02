@@ -3368,18 +3368,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: \'1\', version\\: string, description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.3\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
@@ -5662,12 +5650,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Search\\:\\:getSearchResultsBySchema\\(\\) should return array\\{results\\: array, start\\: int, limit\\: int, total\\: int\\} but returns array\\{results\\: list, start\\: 0\\|array, limit\\: array\\|int\\<0, max\\>, total\\: Glpi\\\\Api\\\\HL\\\\Search\\\\RecordSet\\|int\\}\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];

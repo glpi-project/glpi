@@ -884,7 +884,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'readOnly' => true,
                 ],
-                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
+                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential', params: ['x-version-introduced' => '2.3.0']),
             ],
         ];
 
@@ -985,7 +985,7 @@ final class AssetController extends AbstractController
                 ],
                 'autoupdatesystem' => $autoupdatesystem_property,
                 'brand' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
-                'power_supply' => self::getDropdownTypeSchema(class: PhonePowerSupply::class, field: 'phonepowersupplies_id', full_schema: 'PhonePowerSupply') + ['x-version-introduced' => '2.3.0'],
+                'power_supply' => self::getDropdownTypeSchema(class: PhonePowerSupply::class, field: 'phonepowersupplies_id', full_schema: 'PhonePowerSupply', params: ['x-version-introduced' => '2.3.0']),
                 'number_line' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
                 'have_headset' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'have_hp' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
@@ -1089,7 +1089,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'readOnly' => true,
                 ],
-                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
+                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential', params: ['x-version-introduced' => '2.3.0']),
             ],
         ];
 
@@ -1248,7 +1248,7 @@ final class AssetController extends AbstractController
                 'autoupdatesystem' => $autoupdatesystem_property,
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
-                'agent' => self::getDropdownTypeSchema(class: Agent::class, full_schema: 'Agent') + ['x-version-introduced' => '2.3.0'],
+                'agent' => self::getDropdownTypeSchema(class: Agent::class, full_schema: 'Agent', params: ['x-version-introduced' => '2.3.0']),
                 'itemtype' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-version-introduced' => '2.3.0',
@@ -1257,7 +1257,7 @@ final class AssetController extends AbstractController
                 'accepted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3.0'],
                 'is_hub' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'hub', 'x-version-introduced' => '2.3.0'],
                 'ip' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
-                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
+                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential', params: ['x-version-introduced' => '2.3.0']),
                 'last_inventory_update' => [
                     'x-version-introduced' => '2.3.0',
                     'type' => Doc\Schema::TYPE_STRING,
@@ -1299,7 +1299,7 @@ final class AssetController extends AbstractController
                 'type' => self::getDropdownTypeSchema(class: ApplianceType::class, full_schema: 'ApplianceType'),
                 'group' => $fn_get_group_property(Appliance::class),
                 'group_tech' => $fn_get_group_tech_property(Appliance::class),
-                'environment' => self::getDropdownTypeSchema(class: ApplianceEnvironment::class, full_schema: 'ApplianceEnvironment') + ['x-version-introduced' => '2.3.0'],
+                'environment' => self::getDropdownTypeSchema(class: ApplianceEnvironment::class, full_schema: 'ApplianceEnvironment', params: ['x-version-introduced' => '2.3.0']),
                 'external_id' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'externalidentifier', 'x-version-introduced' => '2.3.0'],
                 'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true, 'x-version-introduced' => '2.3.0'],
             ],
@@ -1391,24 +1391,13 @@ final class AssetController extends AbstractController
                         ],
                     ],
                 ],
-                'cartridges' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'description' => 'List of cartridges',
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Cartridge',
-                        'x-join' => [
-                            'table' => Cartridge::getTable(),
-                            'fkey' => 'id',
-                            'field' => CartridgeItem::getForeignKeyField(),
-                            'primary-property' => 'id',
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'readOnly' => true,
-                            ],
+                'cartridges' => self::getChildrenTypeSchema(
+                    parent_class: CartridgeItem::class,
+                    class: Cartridge::class,
+                    name_field: null,
+                    full_schema: 'Cartridge',
+                    params: [
+                        'additional_properties' => [
                             'pages' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                             'date_in' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                             'date_use' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -1417,7 +1406,7 @@ final class AssetController extends AbstractController
                             'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                         ],
                     ],
-                ],
+                ),
             ],
         ];
 
@@ -1475,24 +1464,13 @@ final class AssetController extends AbstractController
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'consumables' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'description' => 'List of consumables',
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Consumable',
-                        'x-join' => [
-                            'table' => Consumable::getTable(),
-                            'fkey' => 'id',
-                            'field' => ConsumableItem::getForeignKeyField(),
-                            'primary-property' => 'id',
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'readOnly' => true,
-                            ],
+                'consumables' => self::getChildrenTypeSchema(
+                    parent_class: ConsumableItem::class,
+                    class: Consumable::class,
+                    name_field: null,
+                    full_schema: 'Consumable',
+                    params: [
+                        'additional_properties' => [
                             'date_in' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                             'date_out' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                             'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -1501,7 +1479,7 @@ final class AssetController extends AbstractController
                             'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                         ],
                     ],
-                ],
+                ),
             ],
         ];
 
@@ -1783,29 +1761,18 @@ final class AssetController extends AbstractController
                     'x-field' => 'mesured_power', // Took liberty to fix typo in DB without having to mess with the DB itself or other code
                 ],
                 'max_weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                'items' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'description' => 'List of items in the rack',
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'RackItem',
-                        'x-join' => [
-                            'table' => Item_Rack::getTable(),
-                            'fkey' => 'id',
-                            'field' => Rack::getForeignKeyField(),
-                            'primary-property' => 'id',
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'readOnly' => true,
-                            ],
+                'items' => self::getChildrenTypeSchema(
+                    parent_class: Rack::class,
+                    class: Item_Rack::class,
+                    name_field: null,
+                    full_schema: 'RackItem',
+                    params: [
+                        'additional_properties' => [
                             'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                             'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                         ],
                     ],
-                ],
+                ),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -2215,8 +2182,8 @@ final class AssetController extends AbstractController
                 'sockets_id_endpoint_b' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'cable_strand' => self::getDropdownTypeSchema(class: CableStrand::class, full_schema: 'CableStrand') + ['x-version-introduced' => '2.3.0'],
-                'type' => self::getDropdownTypeSchema(class: CableType::class, full_schema: 'CableType') + ['x-version-introduced' => '2.3.0'],
+                'cable_strand' => self::getDropdownTypeSchema(class: CableStrand::class, full_schema: 'CableStrand', params: ['x-version-introduced' => '2.3.0']),
+                'type' => self::getDropdownTypeSchema(class: CableType::class, full_schema: 'CableType', params: ['x-version-introduced' => '2.3.0']),
                 'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
                 'color' => [
@@ -4256,6 +4223,82 @@ EOT,
             $request->getAttributes(),
             $request->getParameters(),
         );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Appliance/{id}/{relation_type}/{relation_id}', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+        'relation_type' => 'Environment|Domain|Location|Network',
+        'relation_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(description: 'Create an appliance relationship for the link between an asset and an appliance')]
+    public function createItemApplianceRelation(Request $request): Response
+    {
+        $appliance_items_id = $request->getAttribute('id');
+        $itemtype = $request->getAttribute('relation_type');
+        $items_id = $request->getAttribute('relation_id');
+        $air = new Appliance_Item_Relation();
+
+        $input = [
+            'appliances_items_id' => $appliance_items_id,
+            'itemtype' => $itemtype,
+            'items_id' => $items_id,
+        ];
+        if (!$air->can(0, CREATE, $input)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        $created_response = AbstractController::getCRUDCreateResponse($items_id, self::getAPIPathForRouteFunction(self::class, 'getItemApplianceLink', [
+            'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+            'asset_id' => $request->getAttribute('asset_id'),
+            'id' => $appliance_items_id,
+        ]));
+
+        $air->getFromDBByCrit($input);
+
+        if ($air->getID()) {
+            // These resources are idempotent, so we can return a 200 OK instead of 409 (conflict)
+            return $created_response;
+        }
+
+        // Unicity check
+        if (!$air->add($input)) {
+            return self::getCRUDErrorResponse(self::CRUD_ACTION_CREATE);
+        }
+
+        return $created_response;
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Appliance/{id}/{relation_type}/{relation_id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+        'relation_type' => 'Environment|Domain|Location|Network',
+        'relation_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(description: 'Delete an appliance relationship for the link between an asset and an appliance')]
+    public function deleteItemApplianceRelation(Request $request): Response
+    {
+        $appliance_items_id = $request->getAttribute('id');
+        $itemtype = $request->getAttribute('relation_type');
+        $items_id = $request->getAttribute('relation_id');
+        $air = new Appliance_Item_Relation();
+
+        $air->getFromDBByCrit([
+            'appliances_items_id' => $appliance_items_id,
+            'itemtype' => $itemtype,
+            'items_id' => $items_id,
+        ]);
+
+        $input = ['id' => $air->getID()];
+        if (!$air->can($air->getID(), PURGE, $input)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        if (!$air->delete($input, true)) {
+            return self::getCRUDErrorResponse(self::CRUD_ACTION_DELETE);
+        }
+
+        return new JSONResponse(null, 204);
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Domain', methods: ['POST'], requirements: [
