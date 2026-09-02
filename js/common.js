@@ -1381,6 +1381,9 @@ function tableToDetails(table) {
 
 function flashIconButton(button, button_classes, icon_classes, duration) {
     const btn = $(button);
+    if (btn.data('flashing-timeout')) {
+        return;
+    }
     const ico = btn.find('i').eq(0);
     const original_btn_classes = btn.attr('class');
     const original_ico_classes = ico.attr('class');
@@ -1388,12 +1391,14 @@ function flashIconButton(button, button_classes, icon_classes, duration) {
     ico.removeClass();
     btn.addClass(button_classes);
     ico.addClass(icon_classes);
-    window.setTimeout(() => {
+    const timeout = window.setTimeout(() => {
         btn.removeClass();
         ico.removeClass();
         btn.addClass(original_btn_classes);
         ico.addClass(original_ico_classes);
+        btn.removeData('flashing-timeout');
     }, duration);
+    btn.data('flashing-timeout', timeout);
 }
 
 /**
@@ -1530,6 +1535,7 @@ $(() => {
         } else {
             navigator.clipboard.writeText(text);
             glpi_toast_info(__("Copied to clipboard"));
+            flashIconButton($(this), $(this).attr('class'), 'ti ti-check', 1500);
         }
     });
 });
@@ -1585,7 +1591,8 @@ function toggleDisclosablePasswordField(button, item) {
     const label = reveal ? button.dataset.hideLabel : button.dataset.showLabel;
     if (label !== undefined) {
         button.setAttribute("aria-label", label);
-        button.setAttribute("title", label);
+        button.setAttribute("data-bs-original-title", label);
+        bootstrap.Tooltip.getInstance(button)?.setContent({ '.tooltip-inner': label });
     }
 
     const icon = button.querySelector("i.disclose");
@@ -1611,7 +1618,7 @@ function showDisclosablePasswordField(item) {
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
-}
+};
 
 /**
  * Copies the password from a disclosable password field to the clipboard
@@ -1623,18 +1630,33 @@ function copyDisclosablePasswordFieldToClipboard(item) {
         return;
     }
 
-    const is_password_input = field.type === "password";
-    if (is_password_input) {
-        field.type = "text";
-    }
-    field.select();
-    try {
-        document.execCommand("copy");
-    } catch {
-        alert("Copy to clipboard failed");
-    }
-    if (is_password_input) {
-        field.type = "password";
+    const text = field.value;
+
+    const success_callback = () => {
+        glpi_toast_info(__("Copied to clipboard"));
+        const btn = $("#" + CSS.escape(item)).closest('.btn-group').find('.ti-clipboard-copy').closest('button');
+        flashIconButton(btn, btn.attr('class'), 'ti ti-check', 1500);
+    };
+
+    if (navigator.clipboard !== undefined) {
+        navigator.clipboard.writeText(text).then(success_callback).catch(() => {
+            alert("Copy to clipboard failed");
+        });
+    } else {
+        const is_password_input = field.type === "password";
+        if (is_password_input) {
+            field.type = "text";
+        }
+        field.select();
+        try {
+            document.execCommand("copy");
+            success_callback();
+        } catch {
+            alert("Copy to clipboard failed");
+        }
+        if (is_password_input) {
+            field.type = "password";
+        }
     }
 }
 

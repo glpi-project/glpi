@@ -44,7 +44,7 @@
                field_class: 'col-4',
             }) }}
             {% set remove_btn %}
-               <button class="btn btn-danger btn-icon" name="remove_header" type="button" title="{{ __('Remove') }}">
+               <button class="btn btn-danger btn-icon" name="remove_header" type="button" title="{{ __('Remove') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                   <i class="ti ti-trash" aria-hidden="true"></i>
                </button>
             {% endset %}
@@ -89,6 +89,7 @@
               }
               // insert the template before the add button
               $(template).insertBefore(custom_header_fields_container.find('button[name="add_header"]'));
+              window.initTooltips?.(template[0]);
               window.GLPI.Monaco.createEditor(header_value_id, 'twig', value, {{ response_schema|json_encode|raw }}, editor_options);
           };
           $(() => {
@@ -104,6 +105,7 @@
               $('div.custom-header-fields').on('click', 'button[name="add_header"]', () => {
                   add_custom_header('', '');
               }).on('click', 'button[name="remove_header"]', (e) => {
+                  bootstrap.Tooltip.getInstance(e.currentTarget)?.dispose();
                   const header_pair = $(e.target).closest('.custom-header-field-pair');
                   header_pair.find('.header_value').each((i, editor_dom) => {
                       const editor = window.monaco.editor.getEditors().find((ed) => ed._domElement === editor_dom);
