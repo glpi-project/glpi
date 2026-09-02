@@ -51,7 +51,7 @@
 
     {% if not item.isNewItem() and item.isPinnedAPIVersionDeprecated() %}
         <twig:Alert:Warning
-            :title="__('This webhook is pinned to a deprecated API version. Move it to a supported version before it is removed.')"
+            :heading="__('This webhook is pinned to a deprecated API version. Move it to a supported version before it is removed.')"
         />
     {% endif %}
 
