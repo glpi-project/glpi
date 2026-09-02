@@ -124,6 +124,7 @@ class ProblemParametersTest extends AbstractParametersTest
                             'firstname'  => null,
                             'realname'   => null,
                             'used_items' => [],
+                            'created_tickets' => [],
                         ],
                     ],
                     'groups'    => [],
