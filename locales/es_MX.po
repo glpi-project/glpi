@@ -18,8 +18,8 @@
 # Carlos Moreno Rodríguez <carlosm.rodriguez@prodigy.net.mx>, 2026
 # Edwin Elias Alvarez <sistemas@cyalimentos.com>, 2026
 # Jesus Fernandez <jesus.fernandez@dgsa.unam.mx>, 2026
-# Edwin Elias Alvarez <elias986@yahoo.com>, 2026
 # Cédric Anne, 2026
+# Edwin Elias Alvarez <elias986@yahoo.com>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -28,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-19 15:12+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Cédric Anne, 2026\n"
+"Last-Translator: Edwin Elias Alvarez <elias986@yahoo.com>, 2026\n"
 "Language-Team: Spanish (Mexico) (https://app.transifex.com/glpi/teams/1637/es_MX/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1408,7 +1408,7 @@ msgstr "Buscar..."
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Go to main navigation"
-msgstr ""
+msgstr "Ir a la navegación principal"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
@@ -6063,7 +6063,7 @@ msgstr "Favoritos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a root article"
-msgstr ""
+msgstr "Crear un artículo raíz"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
@@ -6071,12 +6071,12 @@ msgstr "No se encontraron artículos."
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a child article"
-msgstr ""
+msgstr "Crear un artículo hijo"
 
 #: templates/pages/tools/kb/aside.html.twig
 #, php-format
 msgid "Create an article under %s"
-msgstr ""
+msgstr "Crear un artículo dentro de %s"
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:700
@@ -6598,11 +6598,11 @@ msgstr[2] "Autorizaciones"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Login session data retention"
-msgstr ""
+msgstr "Retención de datos de sesión de inicio"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Retention period (days)"
-msgstr ""
+msgstr "Período de retención (días)"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -6635,7 +6635,7 @@ msgstr "Activado"
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Configure automatic action"
-msgstr ""
+msgstr "Configurar acción automática"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Session list"
@@ -8134,7 +8134,7 @@ msgstr "Error de SQL:"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Historical data retention"
-msgstr ""
+msgstr "Retención de datos históricos"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1631
 msgid "Delete all"
@@ -9629,25 +9629,25 @@ msgstr "Cuadrícula"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Column"
-msgstr ""
+msgstr "Columna"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for column %s"
-msgstr ""
+msgstr "Editar etiqueta de la columna %s"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Row"
-msgstr ""
+msgstr "Fila"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for row %s"
-msgstr ""
+msgstr "Editar etiqueta de la fila %s"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Unable to save the room axis label."
-msgstr ""
+msgstr "No se pudo guardar la etiqueta del eje de la sala."
 
 #: templates/pages/management/budget.html.twig
 #: templates/pages/management/cost.html.twig src/ContractCost.php:165
@@ -10471,11 +10471,11 @@ msgstr "Inventario"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory configuration"
-msgstr ""
+msgstr "Configuración del inventario"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory enabled"
-msgstr ""
+msgstr "Inventario habilitado"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Authorization header"
@@ -10487,6 +10487,8 @@ msgid ""
 "Using OAuth Client Credentials requires a registered OAuth client with the "
 "%1$s scope."
 msgstr ""
+"Usar credenciales de cliente OAuth requiere un cliente OAuth registrado con "
+"el alcance %1$s."
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 #, php-format
@@ -10517,11 +10519,11 @@ msgstr "Opciones de importación"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Enable all"
-msgstr ""
+msgstr "Habilitar todo"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Disable all"
-msgstr ""
+msgstr "Deshabilitar todo"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Default status"
@@ -10711,7 +10713,7 @@ msgstr "Confirmar contraseña"
 
 #: templates/pages/admin/user/user.html.twig src/User.php:3514
 msgid "Middle name / Patronymic"
-msgstr ""
+msgstr "Segundo nombre / Patronímico"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Not enough rights to change this field"
@@ -19078,21 +19080,22 @@ msgstr "Reglas de negocio para problemas"
 
 #: src/KnowbaseItem_KnowbaseItem.php:82
 msgid "An article cannot be its own parent."
-msgstr ""
+msgstr "Un artículo no puede ser su propio padre."
 
 #: src/KnowbaseItem_KnowbaseItem.php:92
 msgid "This link would create a cycle in the knowledge base tree."
 msgstr ""
+"Este vínculo crearía un ciclo en el árbol de la base de conocimientos."
 
 #: src/KnowbaseItem_KnowbaseItem.php:108
 #, php-format
 msgid "Missing '%s' value."
-msgstr ""
+msgstr "Falta el valor de '%s'."
 
 #: src/KnowbaseItem_KnowbaseItem.php:115
 #, php-format
 msgid "Invalid '%s' value: '%s'."
-msgstr ""
+msgstr "Valor inválido de '%s': '%s'."
 
 #: src/RuleDictionnaryPrinter.php:82 src/RuleRight.php:309
 #: src/RuleSoftwareCategory.php:92 src/RuleDictionnarySoftware.php:91
@@ -22343,23 +22346,23 @@ msgstr "Objetos que no deben usar la configuración del proxy:"
 #: src/Glpi/Config/DataAndPrivacyConfig.php:51
 msgctxt "setup"
 msgid "Data and Privacy"
-msgstr ""
+msgstr "Datos y Privacidad"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:93
 msgid "Historical logs"
-msgstr ""
+msgstr "Registros históricos"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:94
 #: src/Glpi/Security/SecurityConfig.php:91
 msgid "Login session"
 msgid_plural "Login sessions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Sesión de inicio"
+msgstr[1] "Sesiones de inicio"
+msgstr[2] "Sesiones de inicio"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:164
 msgid "Purge session history"
-msgstr ""
+msgstr "Purgar historial de sesiones"
 
 #: src/Glpi/Socket.php:290 src/Item_Rack.php:146 src/Item_Rack.php:337
 #: src/Item_Rack.php:670
@@ -26798,19 +26801,19 @@ msgstr "Resueltos"
 
 #: src/Glpi/Dashboard/Provider.php:2092
 msgid "< 1 year"
-msgstr ""
+msgstr "< 1 año"
 
 #: src/Glpi/Dashboard/Provider.php:2093
 msgid "1-3 years"
-msgstr ""
+msgstr "1-3 años"
 
 #: src/Glpi/Dashboard/Provider.php:2094
 msgid "3-5 years"
-msgstr ""
+msgstr "3-5 años"
 
 #: src/Glpi/Dashboard/Provider.php:2095
 msgid "> 5 years"
-msgstr ""
+msgstr "> 5 años"
 
 #: src/Glpi/Dashboard/FakeProvider.php:299
 msgctxt "fake_data"
@@ -27135,7 +27138,7 @@ msgstr "Estado de tickets por mes"
 
 #: src/Glpi/Dashboard/Grid.php:1549
 msgid "Number of tickets by category and entity"
-msgstr ""
+msgstr "Tickets por categoría y entidad"
 
 #: src/Glpi/Dashboard/Grid.php:1558
 msgid "Tickets times (in hours)"
@@ -27195,15 +27198,15 @@ msgstr "Principales grupos de tickets asignados"
 
 #: src/Glpi/Dashboard/Grid.php:1636
 msgid "Number of tickets by status"
-msgstr ""
+msgstr "Tickets por estado"
 
 #: src/Glpi/Dashboard/Grid.php:1645
 msgid "Number of computers by operating system"
-msgstr ""
+msgstr "Computadoras por sistema operativo"
 
 #: src/Glpi/Dashboard/Grid.php:1654
 msgid "Number of computers by age"
-msgstr ""
+msgstr "Computadoras por antigüedad"
 
 #: src/Glpi/Dashboard/Grid.php:1669
 msgid "Editable markdown card"
@@ -33167,7 +33170,7 @@ msgstr "Eliminar artículo"
 
 #: src/KnowbaseItem.php:2123
 msgid "Parent articles"
-msgstr ""
+msgstr "Artículos padre"
 
 #: src/KnowbaseItem.php:2241
 msgid "Use as a solution"
@@ -33199,7 +33202,7 @@ msgstr "Visibilidad de fecha fin"
 
 #: src/KnowbaseItem.php:2504
 msgid "Parent article"
-msgstr ""
+msgstr "Artículo padre"
 
 #: src/KnowbaseItem.php:2631
 msgid "Is favorite"
@@ -37686,7 +37689,7 @@ msgstr "Campos personalizados"
 
 #: js/src/vue/Debug/Widget/HTTPRequests.vue:218
 msgid "Show full URL"
-msgstr ""
+msgstr "Mostrar URL completa"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:20
 msgid "⌥ (option) + ⌘ (command) + E"

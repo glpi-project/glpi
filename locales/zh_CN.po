@@ -5448,7 +5448,7 @@ msgstr "按网络接口"
 #: templates/pages/tools/find_available_reservation.html.twig
 #: src/ReservationItem.php:421
 msgid "Find a free item in a specific period"
-msgstr "按时间日期筛选项目"
+msgstr "按指定时期查找空闲项"
 
 #: templates/pages/tools/find_available_reservation.html.twig
 #: templates/pages/management/budget.html.twig
@@ -9198,11 +9198,11 @@ msgstr "关联"
 
 #: templates/pages/management/line.html.twig src/Line.php:231
 msgid "Caller number"
-msgstr "来电号码"
+msgstr "呼叫号码"
 
 #: templates/pages/management/line.html.twig src/Line.php:239
 msgid "Caller name"
-msgstr "来电人"
+msgstr "呼叫姓名"
 
 #: templates/pages/management/database.html.twig
 #: templates/pages/management/databaseinstance.html.twig src/Database.php:450
@@ -16010,7 +16010,7 @@ msgstr "计算机型号字典"
 #: src/Item_Project.php:57
 msgid "Project item"
 msgid_plural "Project items"
-msgstr[0] "项目物项"
+msgstr[0] "项目设备"
 
 #: src/Item_Project.php:166 src/SoftwareVersion.php:351 src/Report.php:1555
 #: src/Consumable.php:794 src/Consumable.php:833 src/SoftwareLicense.php:1053
@@ -16903,7 +16903,7 @@ msgstr "邮件头中的X-Priority"
 
 #: src/RuleTicket.php:214 src/NotImportedEmail.php:141
 msgid "From email header"
-msgstr "邮件头：从"
+msgstr "来自邮件头"
 
 #: src/RuleTicket.php:218 src/NotImportedEmail.php:159
 #: src/RuleMailCollector.php:65
@@ -17529,7 +17529,7 @@ msgstr "团队成员数"
 #: src/NotificationTargetTicket.php:693
 msgctxt "quantity"
 msgid "Number of items"
-msgstr "条目数量"
+msgstr "项数"
 
 #: src/NotificationTargetProjectTask.php:633
 #: src/NotificationTargetProject.php:688
@@ -18209,7 +18209,7 @@ msgstr "不能用LDAP作为连接的外部来源"
 
 #: src/AuthLDAP.php:618
 msgid "List of LDAP directory replicates"
-msgstr "LDAP目录复制列表"
+msgstr "LDAP目录重复列表"
 
 #: src/AuthLDAP.php:621 src/AuthLDAP.php:4018
 msgid "Replicate"
@@ -18947,7 +18947,7 @@ msgstr "地址备注"
 #: src/Item_OperatingSystem.php:51
 msgid "Item operating system"
 msgid_plural "Item operating systems"
-msgstr[0] "品项操作系统"
+msgstr[0] "设备操作系统"
 
 #: src/Item_OperatingSystem.php:366
 msgid "Operating System"
@@ -25342,7 +25342,7 @@ msgstr "%1$s >= %2$s"
 #: src/Glpi/Search/SearchOption.php:544 src/Glpi/Search/SearchOption.php:670
 #: src/RuleCriteria.php:619
 msgid "under"
-msgstr "在"
+msgstr "属于"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:346
 #: src/Glpi/Search/Output/Spreadsheet.php:509
@@ -25484,7 +25484,7 @@ msgstr "AND NOT"
 
 #: src/Glpi/Search/SearchEngine.php:565
 msgid "OR NOT"
-msgstr "或否"
+msgstr "OR NOT"
 
 #: src/Glpi/Search/Provider/SQLProvider.php:6184
 msgid ""
@@ -25612,7 +25612,7 @@ msgstr "依SLA状态和技术员组的工单"
 
 #: src/Glpi/Dashboard/Provider.php:979 src/Glpi/Dashboard/Provider.php:1157
 msgid "without"
-msgstr "未知"
+msgstr "不含"
 
 #: src/Glpi/Dashboard/Provider.php:1659 src/Problem.php:726
 #: src/Ticket.php:3265 src/Change.php:725 src/Plugin.php:3056
@@ -32338,7 +32338,7 @@ msgstr "是否删除此项"
 #: src/Project.php:2140
 msgctxt "filters"
 msgid "A contact in the team of the item"
-msgstr "此项组的成员"
+msgstr "此项的组联系人"
 
 #: src/Project.php:2426
 msgid "Ongoing projects"
@@ -32428,7 +32428,7 @@ msgstr "在数据库中不存在"
 
 #: src/NetworkPortConnectionLog.php:154
 msgid "Connected item"
-msgstr "关联的物品"
+msgstr "关联的设备"
 
 #: src/Notification.php:165
 msgid "Notification target filter"
@@ -33080,7 +33080,7 @@ msgstr "授权错误"
 
 #: src/CommonGLPI.php:1435
 msgid "Incompatible items"
-msgstr "不兼容的条目"
+msgstr "不兼容项"
 
 #: src/CommonGLPI.php:1436
 msgid "Error on executing the action"
@@ -35085,7 +35085,7 @@ msgstr "强制解锁此项?"
 
 #: js/modules/ObjectLock.js:136
 msgid "Item NOT unlocked!"
-msgstr "条目非已解锁状态！"
+msgstr "非解锁状态！"
 
 #: js/modules/ObjectLock.js:137
 msgid "Contact your GLPI admin!"

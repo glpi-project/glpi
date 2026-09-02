@@ -7,8 +7,8 @@
 # 5b63a00e0726b96d7ef35c99d5553cd0_b787b5f <8bb2d0f7e8927228f17fba8639d787be_31711>, 2026
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
-# Francisco Bolivar, 2026
 # Cédric Anne, 2026
+# Francisco Bolivar, 2026
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-19 15:12+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Cédric Anne, 2026\n"
+"Last-Translator: Francisco Bolivar, 2026\n"
 "Language-Team: Spanish (Venezuela) (https://app.transifex.com/glpi/teams/1637/es_VE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -278,7 +278,7 @@ msgstr "Código de autenticación"
 #: templates/twig_components/Mfa/CodeInput.html.twig
 #, php-format
 msgid "Digit %1$s of %2$s"
-msgstr ""
+msgstr "Dígitos %1$s de %2$s"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -1263,7 +1263,7 @@ msgstr "Configuración"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "All articles"
-msgstr ""
+msgstr "Todos los artículos"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/admin/form/import/step1_index.html.twig
@@ -1395,7 +1395,7 @@ msgstr "Buscar…"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Go to main navigation"
-msgstr ""
+msgstr "Ir a la navegación principal"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
@@ -4450,11 +4450,11 @@ msgstr "TPR"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "OLA TTO is mandatory"
-msgstr ""
+msgstr "AOS TDR es obligatorio"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "OLA TTR is mandatory"
-msgstr ""
+msgstr "AOS TPR es obligatorio"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/RuleTicket.php:260 src/RuleTicket.php:348 src/OLA.php:179
@@ -4468,17 +4468,17 @@ msgstr "AOS"
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "%s completed"
-msgstr ""
+msgstr "%s completados"
 
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "%s is late"
-msgstr ""
+msgstr "%s llega tarde"
 
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "%s not completed"
-msgstr ""
+msgstr "%s no completado"
 
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
@@ -4496,7 +4496,7 @@ msgstr[2] "Niveles de escalamiento"
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "Ola group: %s"
-msgstr ""
+msgstr "Grupo AOS: %s"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: templates/pages/service-levels/levelagreement.html.twig src/Group.php:64
@@ -6021,7 +6021,7 @@ msgstr "Responder"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Show articles list"
-msgstr ""
+msgstr "Mostrar lista de artículos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Articles"
@@ -6029,7 +6029,7 @@ msgstr "Artículos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Collapse articles list"
-msgstr ""
+msgstr "Lista de artículos colapsados"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search..."
@@ -6050,7 +6050,7 @@ msgstr "Favoritos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a root article"
-msgstr ""
+msgstr "Crear un artículo raíz"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
@@ -6058,12 +6058,12 @@ msgstr "No se encontraron artículos."
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a child article"
-msgstr ""
+msgstr "Crear un artículo secundario"
 
 #: templates/pages/tools/kb/aside.html.twig
 #, php-format
 msgid "Create an article under %s"
-msgstr ""
+msgstr "Crea un artículo en %s"
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:700
@@ -6072,24 +6072,24 @@ msgstr "Desvincular documento"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 msgid "Publish to web"
-msgstr ""
+msgstr "Publicar en la web"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 msgid "Anyone with the link can view this article"
-msgstr ""
+msgstr "Cualquier persona con el enlace puede ver este artículo"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 msgid "Public link"
-msgstr ""
+msgstr "Enlace público"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 msgid "Copy link"
-msgstr ""
+msgstr "Copiar enlace"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 #: js/modules/Knowbase/SharePopoverController.js:126
 msgid "Regenerate link"
-msgstr ""
+msgstr "Regenerar enlace"
 
 #: templates/pages/tools/kb/related_item_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:745
@@ -6284,6 +6284,7 @@ msgstr "Suma del total de duración efectiva de tareas"
 #: templates/pages/service-levels/levelagreement.html.twig
 msgid "Actions done by users of this group will trigger the TTO/TTR."
 msgstr ""
+"Las acciones realizadas por los usuarios de este grupo activarán el TDR/TPR."
 
 #: templates/pages/service-levels/levelagreement.html.twig
 #: src/LevelAgreement.php:533 src/Profile.php:1197 src/Profile.php:2389
@@ -6337,7 +6338,7 @@ msgstr "Ingrese el código de su aplicación de autenticación"
 
 #: templates/pages/reauth/prompt.html.twig
 msgid "Re-authentication required"
-msgstr ""
+msgstr "Se requiere volver a autenticarse"
 
 #: templates/pages/reauth/prompt.html.twig
 #: templates/pages/2fa/macros.html.twig
@@ -6348,11 +6349,11 @@ msgstr "Verificar"
 #: templates/pages/reauth/password_form.html.twig
 #: templates/pages/reauth/ldap_form.html.twig
 msgid "Please enter your password to confirm your identity"
-msgstr ""
+msgstr "Introduzca su contraseña para confirmar su identidad"
 
 #: templates/pages/reauth/fallback_form.html.twig
 msgid "Please confirm that you want to perform this sensitive action."
-msgstr ""
+msgstr "Por favor, confirme que desea realizar esta acción delicada."
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: src/Glpi/Form/Category.php:57
@@ -6389,7 +6390,7 @@ msgstr "Formularios"
 
 #: templates/pages/redirect_post.html.twig
 msgid "Redirecting..."
-msgstr ""
+msgstr "Redireccionando..."
 
 #: templates/pages/form_renderer.html.twig
 msgid "Untitled section"
@@ -6584,11 +6585,11 @@ msgstr[2] "Autorizaciones"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Login session data retention"
-msgstr ""
+msgstr "Retención de datos de sesión de inicio de sesión"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Retention period (days)"
-msgstr ""
+msgstr "Periodo de retención (días)"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -6621,15 +6622,15 @@ msgstr "Activo"
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Configure automatic action"
-msgstr ""
+msgstr "Configurar acción automática"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Session list"
-msgstr ""
+msgstr "Lista de sesiones"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Revoke all active sessions"
-msgstr ""
+msgstr "Revocar todas las sesiones activas"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Security/SessionTracker.php:599
@@ -6653,7 +6654,7 @@ msgstr[2] "Direcciones IP"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "CIDR notation and comma separated values are supported."
-msgstr ""
+msgstr "Se admiten la notación CIDR y los valores separados por comas."
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Dashboard/Grid.php:1018
@@ -6664,7 +6665,7 @@ msgstr "Filtros"
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Console/Security/SessionListCommand.php:79
 msgid "Last activity"
-msgstr ""
+msgstr "Última actividad"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -6676,6 +6677,8 @@ msgid ""
 "Are you sure you want to revoke all active sessions (excluding the current "
 "session)?"
 msgstr ""
+"¿Está seguro de que desea revocar todas las sesiones activas (excluyendo la "
+"sesión actual)?"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Security/SessionTracker.php:652
@@ -6685,7 +6688,7 @@ msgstr "Revocar"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Are you sure you want to revoke this session?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres revocar esta sesión?"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:117
 msgid "Log connections"
@@ -7010,16 +7013,18 @@ msgstr "Frecuencia de ejecución"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "This action has repeatedly failed and needs manual intervention"
-msgstr ""
+msgstr "Esta acción ha fallado repetidamente y necesita intervención manual"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "Aborted"
-msgstr ""
+msgstr "Abortado"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid ""
 "This action was aborted externally and will be retried as soon as possible"
 msgstr ""
+"Esta acción fue abortada externamente y se volverá a intentar lo antes "
+"posible"
 
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:889
 #: src/Plugin.php:2220 src/RuleImportEntity.php:134
@@ -7062,7 +7067,7 @@ msgstr "Ejecutar"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "Consecutive error count"
-msgstr ""
+msgstr "Recuento de errores consecutivos"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "Next run"
@@ -7710,15 +7715,15 @@ msgstr ""
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Applies to Tickets, Changes, and Problems"
-msgstr ""
+msgstr "Se aplica a casos, cambios y problemas"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Pre-select me as a technician for new ITIL items"
-msgstr ""
+msgstr "Preseleccióname como técnico para nuevos elementos de ITIL"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Pre-select me as a requester for new ITIL items"
-msgstr ""
+msgstr "Preseleccionarme como solicitante de nuevos elementos de ITIL"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket follow-up"
@@ -8117,7 +8122,7 @@ msgstr "Error de SQL:"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Historical data retention"
-msgstr ""
+msgstr "Retención de datos históricos"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1631
 msgid "Delete all"
@@ -9609,25 +9614,25 @@ msgstr "Cuadricula"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Column"
-msgstr ""
+msgstr "Columna"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for column %s"
-msgstr ""
+msgstr "Editar etiqueta para la columna %s"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Row"
-msgstr ""
+msgstr "Fila"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for row %s"
-msgstr ""
+msgstr "Editar etiqueta para la fila %s"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Unable to save the room axis label."
-msgstr ""
+msgstr "No se pudo guardar la etiqueta del eje de la habitación."
 
 #: templates/pages/management/budget.html.twig
 #: templates/pages/management/cost.html.twig src/ContractCost.php:165
@@ -10451,11 +10456,11 @@ msgstr "Inventario"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory configuration"
-msgstr ""
+msgstr "Configuración de inventario"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory enabled"
-msgstr ""
+msgstr "Inventario habilitado"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Authorization header"
@@ -10467,6 +10472,8 @@ msgid ""
 "Using OAuth Client Credentials requires a registered OAuth client with the "
 "%1$s scope."
 msgstr ""
+"El uso de credenciales de cliente OAuth requiere un cliente OAuth registrado"
+" con el ámbito %1$s."
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 #, php-format
@@ -10474,6 +10481,8 @@ msgid ""
 "The generated client ID and secret must then be set in the GLPI Agent "
 "configuration using the %1$s and %2$s parameters."
 msgstr ""
+"El ID de cliente y el secreto generados deben configurarse posteriormente en"
+" la configuración del agente GLPI utilizando los parámetros %1$s y %2$s."
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Add an OAuth client"
@@ -10495,11 +10504,11 @@ msgstr "Opciones de importación"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Enable all"
-msgstr ""
+msgstr "Habilitar todo"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Disable all"
-msgstr ""
+msgstr "Deshabilitar todo"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Default status"
@@ -10575,7 +10584,7 @@ msgstr "El proceso de importación está completo."
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Inventory files import results"
-msgstr ""
+msgstr "Resultados de la importación de archivos de inventario"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Filename"
@@ -10597,7 +10606,7 @@ msgstr "Importación denegada (sin registro)"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "No file imported"
-msgstr ""
+msgstr "No se ha importado ningún archivo"
 
 #: templates/pages/admin/ldap.users.html.twig
 msgid "Bulk import users from a LDAP directory"
@@ -10690,7 +10699,7 @@ msgstr "Confirmar Contraseña"
 
 #: templates/pages/admin/user/user.html.twig src/User.php:3514
 msgid "Middle name / Patronymic"
-msgstr ""
+msgstr "Segundo nombre / Patronímico"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Not enough rights to change this field"
@@ -11235,6 +11244,8 @@ msgid ""
 "For anonymous forms, the ALTCHA anti-bot widget will follow this same "
 "visibility."
 msgstr ""
+"Para los formularios anónimos, el widget antibot ALTCHA seguirá esta misma "
+"política de visibilidad."
 
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "New comment"
@@ -18568,7 +18579,7 @@ msgstr "YiB"
 
 #: src/Toolbox.php:981 src/Toolbox.php:994
 msgid "Unable to fetch GLPI releases data."
-msgstr ""
+msgstr "No se pudieron obtener los datos de las versiones de GLPI."
 
 #: src/Toolbox.php:1001
 msgid "You have the latest available version"
@@ -19050,21 +19061,21 @@ msgstr "Reglas de negocio para problemas"
 
 #: src/KnowbaseItem_KnowbaseItem.php:82
 msgid "An article cannot be its own parent."
-msgstr ""
+msgstr "Un artículo no puede ser su propio padre."
 
 #: src/KnowbaseItem_KnowbaseItem.php:92
 msgid "This link would create a cycle in the knowledge base tree."
-msgstr ""
+msgstr "Este enlace crearía un ciclo en el árbol de la base de conocimientos."
 
 #: src/KnowbaseItem_KnowbaseItem.php:108
 #, php-format
 msgid "Missing '%s' value."
-msgstr ""
+msgstr "Falta el valor '%s'."
 
 #: src/KnowbaseItem_KnowbaseItem.php:115
 #, php-format
 msgid "Invalid '%s' value: '%s'."
-msgstr ""
+msgstr "Valor '%s' no válido: '%s'."
 
 #: src/RuleDictionnaryPrinter.php:82 src/RuleRight.php:309
 #: src/RuleSoftwareCategory.php:92 src/RuleDictionnarySoftware.php:91
@@ -19614,7 +19625,7 @@ msgstr "Los escalados definidos en el AOS se activarán en esta nueva fecha."
 
 #: src/OLA.php:240
 msgid "You must select a group to associate with the OLA."
-msgstr ""
+msgstr "Debes seleccionar un grupo con el que asociarte a la AOS."
 
 #: src/OLA.php:250
 #, php-format
@@ -19622,6 +19633,8 @@ msgid ""
 "The group #%d is not allowed to be associated with an OLA. group.is_assign "
 "must be set to 1"
 msgstr ""
+"El grupo #%d no puede asociarse con un AOS. group.is_assign debe "
+"establecerse en 1"
 
 #: src/NotificationAjaxSetting.php:46
 msgid "Browser notifications configuration"
@@ -19954,7 +19967,7 @@ msgstr "Pregunta: %s"
 
 #: src/Glpi/Form/Tag/FullFormTagProvider.php:95
 msgid "Full form (all questions and answers)"
-msgstr ""
+msgstr "Formulario completo (todas las preguntas y respuestas)"
 
 #: src/Glpi/Form/Tag/FormTagProvider.php:91
 #, php-format
@@ -21774,7 +21787,7 @@ msgstr "El archivo %1$s %2$s no se ha eliminado"
 #: src/Glpi/Inventory/Conf.php:217 src/Glpi/Inventory/Conf.php:231
 #, php-format
 msgid "File `%s` has not been imported."
-msgstr ""
+msgstr "El archivo `%s` no se ha importado."
 
 #: src/Glpi/Inventory/Conf.php:291
 #, php-format
@@ -22312,23 +22325,23 @@ msgstr "Objetos que no deben utilizar la configuración de proxy:"
 #: src/Glpi/Config/DataAndPrivacyConfig.php:51
 msgctxt "setup"
 msgid "Data and Privacy"
-msgstr ""
+msgstr "Datos y privacidad"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:93
 msgid "Historical logs"
-msgstr ""
+msgstr "Registros históricos"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:94
 #: src/Glpi/Security/SecurityConfig.php:91
 msgid "Login session"
 msgid_plural "Login sessions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Sesión de inicio"
+msgstr[1] "Sesiones de inicio"
+msgstr[2] "Sesiones de inicio"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:164
 msgid "Purge session history"
-msgstr ""
+msgstr "Borrar historial de sesiones"
 
 #: src/Glpi/Socket.php:290 src/Item_Rack.php:146 src/Item_Rack.php:337
 #: src/Item_Rack.php:670
@@ -22373,11 +22386,11 @@ msgstr "Nombre del elemento"
 
 #: src/Glpi/Security/ReAuth/FallbackReAuthStrategy.php:70
 msgid "Confirmation"
-msgstr ""
+msgstr "Confirmación"
 
 #: src/Glpi/Security/ReAuth/TOTPReAuthStrategy.php:68
 msgid "Two-factor authentication"
-msgstr ""
+msgstr "Autenticación de dos factores"
 
 #: src/Glpi/Security/SecurityConfig.php:47
 #: src/Glpi/Security/SecurityConfig.php:64
@@ -22397,31 +22410,31 @@ msgstr ""
 
 #: src/Glpi/Security/SessionTracker.php:321
 msgid "Invalid IP address filter"
-msgstr ""
+msgstr "Filtro de dirección IP no válida"
 
 #: src/Glpi/Security/SessionTracker.php:623
 msgid "Current session"
-msgstr ""
+msgstr "Sesión actual"
 
 #: src/Glpi/Security/SessionTracker.php:631
 msgctxt "logout_reason"
 msgid "User logout"
-msgstr ""
+msgstr "Cierre de sesión"
 
 #: src/Glpi/Security/SessionTracker.php:632
 msgctxt "logout_reason"
 msgid "Admin revoked"
-msgstr ""
+msgstr "Revocado por el administrador"
 
 #: src/Glpi/Security/SessionTracker.php:633
 msgctxt "logout_reason"
 msgid "Session expired"
-msgstr ""
+msgstr "La sesión ha caducado"
 
 #: src/Glpi/Security/SessionTracker.php:645
 #, php-format
 msgid "Expires at %s"
-msgstr ""
+msgstr "Caduca en %s"
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:340
 #: src/Glpi/CustomObject/AbstractDefinition.php:376
@@ -24439,7 +24452,7 @@ msgstr "Contexto no válido \"%s\"."
 
 #: src/Glpi/Console/Security/SessionListCommand.php:51
 msgid "List active sessions"
-msgstr ""
+msgstr "Lista de sesiones activas"
 
 #: src/Glpi/Console/Security/SessionListCommand.php:52
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:55
@@ -24456,31 +24469,33 @@ msgstr "Usuario %s no encontrado"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:53
 msgid "Revoke login sessions"
-msgstr ""
+msgstr "Revocar sesiones de inicio"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:57
 msgid "Revoke all sessions"
-msgstr ""
+msgstr "Revocar todas las sesiones"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:59
 msgid "Session ID to revoke"
-msgstr ""
+msgstr "ID de sesión para revocar"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:83
 #, php-format
 msgid "Session %s has been revoked."
-msgstr ""
+msgstr "La sesión %s ha sido revocada."
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:95
 #, php-format
 msgid "All sessions for user %s have been revoked."
-msgstr ""
+msgstr "Todas las sesiones del usuario %s han sido revocadas."
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:99
 msgid ""
 "You must provide either a username, a session ID, or the --all option to "
 "revoke sessions."
 msgstr ""
+"Para revocar sesiones, debe proporcionar un nombre de usuario, un ID de "
+"sesión o la opción --all."
 
 #: src/Glpi/Console/Security/DisableTFACommand.php:53
 msgid "Disable 2FA for a user"
@@ -25268,14 +25283,16 @@ msgstr ""
 msgid ""
 "Check if the database schema version matches the installed GLPI version."
 msgstr ""
+"Compruebe si la versión del esquema de la base de datos coincide con la "
+"versión de GLPI instalada."
 
 #: src/Glpi/Console/Database/IsUpToDateCommand.php:62
 msgid "The database is not up to date."
-msgstr ""
+msgstr "La base de datos no está actualizada."
 
 #: src/Glpi/Console/Database/IsUpToDateCommand.php:68
 msgid "The database is up to date."
-msgstr ""
+msgstr "La base de datos está actualizada."
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:108
 msgid ""
@@ -25631,7 +25648,7 @@ msgstr "No se puede conectar con el servidor IMAP"
 #, php-format
 msgctxt "glpi_status"
 msgid "RUNNING: %d, STUCK: %d, ERRORED: %d, TOTAL: %d"
-msgstr ""
+msgstr "EN EJECUCIÓN: %d, ATASCADO: %d, CON ERRORES: %d, TOTAL: %d"
 
 #: src/Glpi/System/Status/StatusChecker.php:555
 #, php-format
@@ -26060,7 +26077,7 @@ msgstr "Permisos actualizados"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:295
 msgid "Sharing link regenerated"
-msgstr ""
+msgstr "Enlace para compartir regenerado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:296
 msgid "Sharing enabled"
@@ -26381,7 +26398,7 @@ msgstr "No se pudo crear el enlace para compartir"
 
 #: src/Glpi/Controller/ShareTokenController.php:165
 msgid "Failed to regenerate share link"
-msgstr ""
+msgstr "No se pudo regenerar el enlace para compartir"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:223
 #, php-format
@@ -26414,13 +26431,13 @@ msgstr "%1$s > %2$s"
 #: src/Glpi/Search/Output/Spreadsheet.php:461
 #, php-format
 msgid "%1$s <= %2$s"
-msgstr ""
+msgstr "%1$s <= %2$s"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:315
 #: src/Glpi/Search/Output/Spreadsheet.php:469
 #, php-format
 msgid "%1$s >= %2$s"
-msgstr ""
+msgstr "%1$s >= %2$s"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:338
 #: src/Glpi/Search/Output/Spreadsheet.php:497
@@ -26522,11 +26539,11 @@ msgstr "menor que"
 
 #: src/Glpi/Search/SearchOption.php:579
 msgid "greater than or equal to"
-msgstr ""
+msgstr "mayor o igual que"
 
 #: src/Glpi/Search/SearchOption.php:580
 msgid "less than or equal to"
-msgstr ""
+msgstr "menor o igual que"
 
 #: src/Glpi/Search/Input/QueryBuilder.php:299
 #: src/Glpi/Dashboard/Filters/AbstractGroupFilter.php:220
@@ -26768,19 +26785,19 @@ msgstr "Resuelto"
 
 #: src/Glpi/Dashboard/Provider.php:2092
 msgid "< 1 year"
-msgstr ""
+msgstr "< 1 año"
 
 #: src/Glpi/Dashboard/Provider.php:2093
 msgid "1-3 years"
-msgstr ""
+msgstr "1-3 años"
 
 #: src/Glpi/Dashboard/Provider.php:2094
 msgid "3-5 years"
-msgstr ""
+msgstr "3-5 años"
 
 #: src/Glpi/Dashboard/Provider.php:2095
 msgid "> 5 years"
-msgstr ""
+msgstr "> 5 años"
 
 #: src/Glpi/Dashboard/FakeProvider.php:299
 msgctxt "fake_data"
@@ -26833,7 +26850,7 @@ msgstr[2] "Tipos de casos"
 
 #: src/Glpi/Dashboard/Filters/UserAssignedFilter.php:49
 msgid "User / Assigned user"
-msgstr ""
+msgstr "Usuario / Usuario asignado"
 
 #: src/Glpi/Dashboard/Dashboard.php:783
 msgid "Central"
@@ -27106,7 +27123,7 @@ msgstr "Estado de casos por mes"
 
 #: src/Glpi/Dashboard/Grid.php:1549
 msgid "Number of tickets by category and entity"
-msgstr ""
+msgstr "Número de casos por categoría y entidad"
 
 #: src/Glpi/Dashboard/Grid.php:1558
 msgid "Tickets times (in hours)"
@@ -27166,15 +27183,15 @@ msgstr "Principales grupos asignados por caso"
 
 #: src/Glpi/Dashboard/Grid.php:1636
 msgid "Number of tickets by status"
-msgstr ""
+msgstr "Número de casos por estado"
 
 #: src/Glpi/Dashboard/Grid.php:1645
 msgid "Number of computers by operating system"
-msgstr ""
+msgstr "Número de computadoras por sistema operativo"
 
 #: src/Glpi/Dashboard/Grid.php:1654
 msgid "Number of computers by age"
-msgstr ""
+msgstr "Número de computadoras por antigüedad"
 
 #: src/Glpi/Dashboard/Grid.php:1669
 msgid "Editable markdown card"
@@ -27750,7 +27767,7 @@ msgstr "Agregar nuevo elemento a este gabinete ..."
 
 #: src/Item_Enclosure.php:127
 msgid "You are not allowed to view this item"
-msgstr ""
+msgstr "No tienes permiso para ver este artículo"
 
 #: src/Item_Enclosure.php:158 src/MassiveAction.php:690
 #: src/DatabaseInstance.php:531
@@ -28643,7 +28660,7 @@ msgstr "Agregar un caso"
 
 #: src/Change_Ticket.php:270
 msgid "Create a ticket from this change"
-msgstr ""
+msgstr "Crea un caso a partir de este cambio"
 
 #: src/Change_Ticket.php:295 src/Problem_Ticket.php:255
 msgid "Solve tickets"
@@ -29893,27 +29910,27 @@ msgstr "Siguiente nivel de escalamiento"
 
 #: src/Ticket.php:2679 src/Ticket.php:2700 src/Ticket.php:2717
 msgid "time to own"
-msgstr ""
+msgstr "tiempo de respuesta"
 
 #: src/Ticket.php:2700 src/Ticket.php:2771 src/Ticket.php:5432
 msgid "due time"
-msgstr ""
+msgstr "tiempo de vencimiento"
 
 #: src/Ticket.php:2717 src/Ticket.php:2788
 msgid "due time + progress"
-msgstr ""
+msgstr "tiempo de respuesta + en curso"
 
 #: src/Ticket.php:2733
 msgid "time to own exceeded"
-msgstr ""
+msgstr "tiempo de respuesta excedido"
 
 #: src/Ticket.php:2750 src/Ticket.php:2771 src/Ticket.php:2788
 msgid "time to resolve"
-msgstr ""
+msgstr "tiempo para resolver"
 
 #: src/Ticket.php:2804
 msgid "time to resolve exceeded"
-msgstr ""
+msgstr "tiempo para resolver excedido"
 
 #: src/Ticket.php:2865
 msgid "Take into account time"
@@ -30871,7 +30888,7 @@ msgstr ""
 #: src/Webhook.php:1125
 #, php-format
 msgid "Unexpected code %d received"
-msgstr ""
+msgstr "Se recibió el código inesperado %d"
 
 #: src/Webhook.php:1255
 #, php-format
@@ -31560,7 +31577,7 @@ msgstr "estado 2FA"
 
 #: src/User.php:3908
 msgid "Notifications to myself"
-msgstr ""
+msgstr "Notificaciones para mí mismo"
 
 #: src/User.php:4625 src/TaskTemplate.php:204 src/TaskTemplate.php:235
 #: src/TaskTemplate.php:263
@@ -33142,7 +33159,7 @@ msgstr "Eliminar artículo"
 
 #: src/KnowbaseItem.php:2123
 msgid "Parent articles"
-msgstr ""
+msgstr "Artículos principales"
 
 #: src/KnowbaseItem.php:2241
 msgid "Use as a solution"
@@ -33174,7 +33191,7 @@ msgstr "Fecha de fin de visibilidad"
 
 #: src/KnowbaseItem.php:2504
 msgid "Parent article"
-msgstr ""
+msgstr "Artículo principal"
 
 #: src/KnowbaseItem.php:2631
 msgid "Is favorite"
@@ -33663,11 +33680,15 @@ msgstr "Ha definido motivos pendientes sin ningún %s activo respectivo."
 #, php-format
 msgid "Re-authentication on sensitive actions is disabled by the \"%s\" constant."
 msgstr ""
+"La reautenticación en acciones sensibles se desactiva mediante la constante "
+"\"%s\"."
 
 #: src/Central.php:661
 msgid ""
 "Remove it from your configuration to restore the expected security level."
 msgstr ""
+"Elimínelo de su configuración para restablecer el nivel de seguridad "
+"esperado."
 
 #: src/Central.php:671
 msgid "View plugins"
@@ -35239,31 +35260,31 @@ msgstr[2] ""
 
 #: src/NotificationTargetTicket.php:603 src/NotificationTargetTicket.php:611
 msgid "OLA name"
-msgstr ""
+msgstr "nombre de AOS"
 
 #: src/NotificationTargetTicket.php:604 src/NotificationTargetTicket.php:612
 msgid "OLA comment"
-msgstr ""
+msgstr "Comentario de AOS"
 
 #: src/NotificationTargetTicket.php:605 src/NotificationTargetTicket.php:613
 msgid "Group assigned to OLA"
-msgstr ""
+msgstr "Grupo asignado a AOS"
 
 #: src/NotificationTargetTicket.php:606 src/NotificationTargetTicket.php:614
 msgid "OLA start time"
-msgstr ""
+msgstr "Hora de inicio de AOS"
 
 #: src/NotificationTargetTicket.php:607 src/NotificationTargetTicket.php:615
 msgid "OLA due time"
-msgstr ""
+msgstr "Fecha límite de AOS"
 
 #: src/NotificationTargetTicket.php:608 src/NotificationTargetTicket.php:616
 msgid "OLA end time"
-msgstr ""
+msgstr "hora de finalización de AOS"
 
 #: src/NotificationTargetTicket.php:609 src/NotificationTargetTicket.php:617
 msgid "OLA waiting duration"
-msgstr ""
+msgstr "Duración de espera de AOS"
 
 #: src/NotificationTargetTicket.php:628
 msgid "Location name"
@@ -36759,7 +36780,7 @@ msgstr "Realizar una elección"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:293
 msgid "Delete the whole series of the recurrent event"
-msgstr ""
+msgstr "Eliminar toda la serie del evento recurrente"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:294
 msgid "or just add an exception by deleting this instance?"
@@ -36769,7 +36790,7 @@ msgstr "o simplemente agregar una excepción eliminando esta instancia?"
 #: js/src/vue/Planning/usePlanningScheduler.js:385
 #: js/src/vue/Planning/usePlanningScheduler.js:409
 msgid "Series"
-msgstr ""
+msgstr "Serie"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:302
 #: js/src/vue/Planning/usePlanningScheduler.js:388
@@ -36793,6 +36814,8 @@ msgid ""
 "The resized event is a recurring event. Do you want to change the series or "
 "instance ?"
 msgstr ""
+"El evento de redimensionamiento es un evento recurrente. ¿Desea cambiar la "
+"serie o la instancia?"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:405
 msgid "Recurring event dragged"
@@ -36803,6 +36826,8 @@ msgid ""
 "The dragged event is a recurring event. Do you want to move the series or "
 "instance?"
 msgstr ""
+"El evento arrastrado es un evento recurrente. ¿Desea mover la serie o la "
+"instancia?"
 
 #: js/src/vue/Kanban/TeamBadgeProvider.js:256
 #, javascript-format
@@ -37175,7 +37200,7 @@ msgstr "fallido"
 
 #: js/modules/Knowbase/AsideController.js:346
 msgid "New article..."
-msgstr ""
+msgstr "Nuevo artículo..."
 
 #: js/modules/Knowbase/AsideController.js:650
 #: js/modules/Knowbase/RevisionsPanelController.js:238
@@ -37307,11 +37332,11 @@ msgstr "%d documentos vinculados correctamente"
 
 #: js/modules/Knowbase/SharePopoverController.js:127
 msgid "The current link will stop working. Continue?"
-msgstr ""
+msgstr "El enlace actual dejará de funcionar. ¿Desea continuar?"
 
 #: js/modules/Knowbase/SharePopoverController.js:201
 msgid "Public link copied to clipboard"
-msgstr ""
+msgstr "Enlace público copiado al portapapeles"
 
 #: js/modules/Knowbase/ArticleController.js:256
 #: js/modules/Knowbase/ArticleController.js:272
@@ -37594,40 +37619,40 @@ msgstr "Imagen"
 #: js/modules/TipTap/TableGripsExtension.js:181
 #, javascript-format
 msgid "Select column %s"
-msgstr ""
+msgstr "Seleccione la columna %s"
 
 #: js/modules/TipTap/TableGripsExtension.js:187
 #: js/modules/TipTap/TableGripsExtension.js:193
 #, javascript-format
 msgid "Insert column at position %s"
-msgstr ""
+msgstr "Insertar columna en la posición %s"
 
 #: js/modules/TipTap/TableGripsExtension.js:204
 msgid "Select table"
-msgstr ""
+msgstr "Seleccionar tabla"
 
 #: js/modules/TipTap/TableGripsExtension.js:208
 #: js/modules/TipTap/TableGripsExtension.js:218
 #, javascript-format
 msgid "Insert row at position %s"
-msgstr ""
+msgstr "Insertar fila en la posición %s"
 
 #: js/modules/TipTap/TableGripsExtension.js:213
 #, javascript-format
 msgid "Select row %s"
-msgstr ""
+msgstr "Seleccione la fila %s"
 
 #: js/modules/TipTap/TableContextMenu.js:56
 msgid "Delete column"
-msgstr ""
+msgstr "Eliminar columna"
 
 #: js/modules/TipTap/TableContextMenu.js:59
 msgid "Delete row"
-msgstr ""
+msgstr "Eliminar fila"
 
 #: js/modules/TipTap/TableContextMenu.js:61
 msgid "Delete table"
-msgstr ""
+msgstr "Eliminar tabla"
 
 #: js/glpi_dialog.js:374
 msgid "Are you sure?"
@@ -37661,7 +37686,7 @@ msgstr "Campos personalizados"
 
 #: js/src/vue/Debug/Widget/HTTPRequests.vue:218
 msgid "Show full URL"
-msgstr ""
+msgstr "Mostrar URL completa"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:20
 msgid "⌥ (option) + ⌘ (command) + E"
@@ -37691,7 +37716,7 @@ msgstr "Seleccione esta entidad y todos sus hijos"
 
 #: js/src/vue/FullCalendar/BaseFullCalendar.vue:49
 msgid "Resources"
-msgstr ""
+msgstr "Recursos"
 
 #: js/src/vue/FuzzySearch/Modal.vue:10
 msgid "Go to menu"

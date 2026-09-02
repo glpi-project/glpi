@@ -37795,7 +37795,7 @@ msgstr "Ctrl + Alt + E"
 #: js/src/vue/FuzzySearch/Modal.vue:9
 msgid "Tip: You can call this modal with %s keys combination"
 msgstr ""
-"Astuce : vous pouvez appelez cette fenêtre modale avec la combinaison de "
+"Astuce : vous pouvez appeler cette fenêtre modale avec la combinaison de "
 "touches %s"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:231

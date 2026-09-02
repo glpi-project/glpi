@@ -19,6 +19,7 @@
 # Filip Daubner, 2026
 # Pavel Borecki <pavel.borecki@gmail.com>, 2026
 # Michal Čermák <michal.cermak79@gmail.com>, 2026
+# Jindřich Douša <jindrich@dousa.eu>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -27,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-19 15:12+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Michal Čermák <michal.cermak79@gmail.com>, 2026\n"
+"Last-Translator: Jindřich Douša <jindrich@dousa.eu>, 2026\n"
 "Language-Team: Czech (Czech Republic) (https://app.transifex.com/glpi/teams/1637/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3129,7 +3130,7 @@ msgstr ""
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Click to copy to clipboard"
-msgstr ""
+msgstr "Kliknutím zkopírujete do schránky"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/admin/user/user_picture_field.html.twig src/User.php:6782
@@ -7355,6 +7356,9 @@ msgid ""
 "\"upload_max_filesize\" and \"post_max_size\" PHP settings. The setting "
 "below is to further restrict the uploads for just GLPI."
 msgstr ""
+"Maximální velikost nahrávaných souborů je primárně určena nastavením PHP "
+"„upload_max_filesize“ a „post_max_size“. Níže uvedené nastavení umožňuje "
+"velikost nahrávaných souborů dále omezit pouze pro GLPI."
 
 #: templates/pages/setup/general/management_setup.html.twig
 msgid "Document files maximum size (Mio)"
@@ -8108,6 +8112,8 @@ msgid ""
 "This indicates the delay between the source and the replica for GLPI history"
 " (table: glpi_logs, column: date_mod)."
 msgstr ""
+"Udává zpoždění mezi zdrojovou databází a replikou podle historie GLPI "
+"(tabulka: glpi_logs, sloupec: date_mod)."
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "IO running:"
@@ -10104,7 +10110,7 @@ msgstr[3] ""
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Add language"
-msgstr ""
+msgstr "Přidat jazyk"
 
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
@@ -10897,15 +10903,15 @@ msgstr ""
 #: src/Glpi/Form/FormTranslation.php:52
 msgid "Form translation"
 msgid_plural "Form translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Překlad formuláře"
+msgstr[1] "Překlad formulářů"
+msgstr[2] "Překlad formuláře"
+msgstr[3] "Překlad formulářů"
 
 #: templates/pages/admin/form/access_control/allow_list.html.twig
 #, php-format
 msgid "There are %d user(s) matching these criteria."
-msgstr ""
+msgstr "Počet uživatelů odpovídajících těmto kritériím: %d."
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Direct access URL"
@@ -10917,13 +10923,15 @@ msgstr ""
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Allow unauthenticated users"
-msgstr ""
+msgstr "Povolit nepřihlášené uživatele"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid ""
 "Users without accounts will be able to answer anonymously to this form. "
 "Authenticated users will not see this form."
 msgstr ""
+"Uživatelé bez účtu budou moci tento formulář vyplnit anonymně. Přihlášeným "
+"uživatelům se tento formulář nezobrazí."
 
 #: templates/pages/admin/form/question_type/base_advanced_configuration.html.twig
 msgid "Advanced configuration"
@@ -11193,7 +11201,7 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Service catalog configuration"
-msgstr ""
+msgstr "Konfigurace servisního katalogu"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
@@ -14585,7 +14593,7 @@ msgstr "průmysl"
 #: resources/.illustrations_translations.php:287
 msgctxt "Icon"
 msgid "questions"
-msgstr ""
+msgstr "otázky"
 
 #: resources/.illustrations_translations.php:288
 msgctxt "Icon"
@@ -19988,7 +19996,7 @@ msgstr "Výchozí šablona"
 
 #: src/Glpi/Form/Destination/CommonITILField/TemplateFieldStrategy.php:49
 msgid "Specific template"
-msgstr ""
+msgstr "Konkrétní šablona"
 
 #: src/Glpi/Form/Destination/CommonITILField/LinkedITILObjectsField.php:66
 msgid "Link to assistance objects"
@@ -20033,7 +20041,7 @@ msgstr "Vnitřní TTR"
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:66
 #: src/Glpi/Form/Destination/CommonITILField/LocationFieldStrategy.php:52
 msgid "From template"
-msgstr ""
+msgstr "Ze šablony"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceFieldStrategy.php:49
 msgid "Specific request source"
@@ -20103,19 +20111,19 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:55
 #, php-format
 msgid "Specific %s"
-msgstr ""
+msgstr "Konkrétní %s"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:56
 msgid "Answer from a specific date question"
-msgstr ""
+msgstr "Datum z konkrétní otázky"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:57
 msgid "Computed date based on form submission date"
-msgstr ""
+msgstr "Datum odvozené od data odeslání formuláře"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:58
 msgid "Computed date based on a specific date question answer"
-msgstr ""
+msgstr "Datum odvozené od odpovědi na konkrétní otázku typu „Datum“"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:63
 #: src/Glpi/Form/Destination/CommonITILField/Category.php:54
@@ -20642,10 +20650,10 @@ msgstr ""
 #: src/Glpi/Form/AccessControl/FormAccessControl.php:63
 msgid "Access control"
 msgid_plural "Access controls"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Řízení přístupu"
+msgstr[1] "Řízení přístupu"
+msgstr[2] "Řízení přístupu"
+msgstr[3] "Řízení přístupu"
 
 #: src/Glpi/Form/AccessControl/FormAccessControlManager.php:197
 msgid "This form is not visible to anyone because it is not active."
@@ -20659,17 +20667,19 @@ msgstr ""
 
 #: src/Glpi/Form/AccessControl/ControlType/DirectAccess.php:56
 msgid "Allow direct access"
-msgstr ""
+msgstr "Povolit přímý přístup"
 
 #: src/Glpi/Form/AccessControl/ControlType/DirectAccess.php:89
 msgid ""
 "This form contains question types that are not allowed for unauthenticated "
 "access. These questions will be hidden from unauthenticated users."
 msgstr ""
+"Tento formulář obsahuje typy otázek, které nejsou povoleny pro nepřihlášený "
+"přístup. Tyto otázky budou před nepřihlášenými uživateli skryty."
 
 #: src/Glpi/Form/AccessControl/ControlType/AllowList.php:61
 msgid "Allow specifics users, groups or profiles"
-msgstr ""
+msgstr "Povolit konkrétní uživatele, skupiny nebo profily"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItemDropdown.php:57
 msgid "Select a dropdown type"
@@ -28224,7 +28234,7 @@ msgstr "Seznam pravidel"
 
 #: src/RuleCollection.php:481
 msgid "Other rules"
-msgstr ""
+msgstr "Ostatní pravidla"
 
 #: src/RuleCollection.php:538
 msgid "Rules used for"
@@ -32519,17 +32529,17 @@ msgstr ""
 #: src/NotificationTargetKnowbaseItem.php:47
 #: src/NotificationTargetKnowbaseItem.php:96
 msgid "New knowledge base item"
-msgstr ""
+msgstr "Nová položka znalostní báze"
 
 #: src/NotificationTargetKnowbaseItem.php:48
 #: src/NotificationTargetKnowbaseItem.php:99
 msgid "Deleting a knowledge base item"
-msgstr ""
+msgstr "Odstranění položky znalostní báze"
 
 #: src/NotificationTargetKnowbaseItem.php:49
 #: src/NotificationTargetKnowbaseItem.php:102
 msgid "Update of a knowledge base item"
-msgstr ""
+msgstr "Aktualizace položky znalostní báze"
 
 #: src/NotificationTargetKnowbaseItem.php:70
 #: src/NotificationTargetKnowbaseItem.php:189
@@ -33440,12 +33450,12 @@ msgstr[3] "Počítače"
 #: src/Computer.php:417
 msgctxt "button"
 msgid "Add a domain"
-msgstr ""
+msgstr "Přidat doménu"
 
 #: src/Computer.php:420
 msgctxt "button"
 msgid "Remove a domain"
-msgstr ""
+msgstr "Odebrat doménu"
 
 #: src/ChangeTemplate.php:56
 msgid "Change template"
@@ -34489,7 +34499,7 @@ msgstr "Každý týden"
 #: src/PendingReason.php:215
 #, php-format
 msgid "Every %s weeks"
-msgstr ""
+msgstr "Každý %s. týden"
 
 #: src/PendingReason.php:242
 msgid "Automatic resolution disabled"
@@ -36928,7 +36938,7 @@ msgstr "Kontaktujte svého správce GLPI!"
 
 #: js/modules/Form/WebIconSelector.js:113
 msgid "Select an icon"
-msgstr ""
+msgstr "Vybrat ikonu"
 
 #: js/modules/Form/WebIconSelector.js:130
 msgctxt "icons"
@@ -37490,18 +37500,18 @@ msgstr ""
 #: js/modules/Forms/EditorController.js:2326
 msgid "question"
 msgid_plural "questions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "otázka"
+msgstr[1] "otázky"
+msgstr[2] "otázky"
+msgstr[3] "otázek"
 
 #: js/modules/Forms/EditorController.js:2330
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Komentář"
+msgstr[1] "Komentáře"
+msgstr[2] "Komentáře"
+msgstr[3] "Komentářů"
 
 #: js/modules/Forms/EditorController.js:2335
 #, javascript-format
