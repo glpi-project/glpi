@@ -112,11 +112,26 @@ class Plug extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
+        global $DB;
+        $result = $DB->request([
+            'SELECT' => ['MAX' => 'number AS maxnumber'],
+            'FROM'   => Plug::getTable(),
+            'WHERE'  => [
+                'itemtype_main' => $input['itemtype_main'],
+                'items_id_main' => $input['items_id_main'],
+            ],
+        ])->current();
+        $base_number = (int) ($result['maxnumber'] ?? 0);
+
+        // always set number
+        $input['number'] = $base_number + 1;
         return $this->prepareInput($input);
     }
 
     public function prepareInputForUpdate($input)
     {
+        //never update number, it is set only on add
+        unset($input['number']);
         return $this->prepareInput($input);
     }
 

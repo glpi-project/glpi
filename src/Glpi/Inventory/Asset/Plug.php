@@ -75,7 +75,7 @@ class Plug extends InventoryAsset
     {
         $main_item = $this->item;
 
-        // load all plugs from DB, including locked (soft-deleted) ones, so they can be matched by name and left untouched
+        // load all plugs from DB, including locked (soft-deleted) ones, so they can be matched by number and left untouched
         $plug = new GlobalPlug();
         $db_plugs = $plug->find([
             'itemtype_main' => $main_item::class,
@@ -86,13 +86,14 @@ class Plug extends InventoryAsset
         // handle each plug from inventory
         foreach ($this->data as $data_key => $val) {
             /** @var stdClass $val */
-            $name = (string) ($val->name ?? $val->number ?? ''); // rely to number as Glpi-Agent
-            $val->name = $name;
+            $number = (int) ($val->number);
+            $val->number = $number;
+            $val->name = (string) ($val->name ?? $number);
             $found_key = null;
 
             // keep key if exist from DB
             foreach ($db_plugs as $key => $db_plug) {
-                if ($db_plug['name'] === $name) {
+                if ((int) $db_plug['number'] === $number) {
                     $found_key = $key;
                     break;
                 }

@@ -80,7 +80,6 @@ class PlugFormController extends GenericFormController
             for ($i = 0; $i < $request->request->getInt('number'); $i++) {
                 $input = $base_input + [
                     'name' => $name . " - " . ($i + 1),
-                    'number' => $i + 1,
                 ];
                 $plug->add($input);
             }

@@ -77,4 +77,102 @@ class PlugTest extends DbTestCase
             $this->assertContains(Plug::class, $item->getCloneRelations(), $itemtype);
         }
     }
+
+    private function getPlugMainItem(?\Glpi\Asset\AssetDefinition $definition = null): \CommonDBTM
+    {
+        $definition ??= $this->initAssetDefinition(capacities: [new Capacity(name: HasPlugCapacity::class)]);
+        return $this->createItem(
+            $definition->getAssetClassName(),
+            $this->getMinimalCreationInput($definition->getAssetClassName())
+        );
+    }
+
+    private function getPlugBaseInput(\CommonDBTM $main_item, string $name = 'Plug name'): array
+    {
+        return [
+            'itemtype_main' => $main_item::class,
+            'items_id_main' => $main_item->getID(),
+            'entities_id'   => $main_item->getEntityID(),
+            'is_recursive'  => $main_item->isRecursive(),
+            'name'          => $name,
+        ];
+    }
+
+    public function testPrepareInputForAddSetsNumberIncrementally()
+    {
+        $this->login();
+        $main_item = $this->getPlugMainItem();
+
+        foreach ([1, 2, 3] as $expected_number) {
+            $plug = $this->createItem(Plug::class, $this->getPlugBaseInput($main_item), ['number']);
+            $this->assertSame($expected_number, (int) $plug->fields['number']);
+        }
+    }
+
+    public function testPrepareInputForAddNumberIsPerMainItem()
+    {
+        $this->login();
+        $definition = $this->initAssetDefinition(capacities: [new Capacity(name: HasPlugCapacity::class)]);
+        $first_main_item = $this->getPlugMainItem($definition);
+        $second_main_item = $this->getPlugMainItem($definition);
+
+        $first_plug = $this->createItem(Plug::class, $this->getPlugBaseInput($first_main_item), ['number']);
+        $this->assertSame(1, (int) $first_plug->fields['number']);
+
+        $second_plug = $this->createItem(Plug::class, $this->getPlugBaseInput($second_main_item), ['number']);
+        $this->assertSame(1, (int) $second_plug->fields['number']);
+    }
+
+    public function testPrepareInputForAddIgnoresProvidedNumber()
+    {
+        $this->login();
+        $main_item = $this->getPlugMainItem();
+
+        $input = $this->getPlugBaseInput($main_item) + ['number' => 999];
+        $plug = new Plug();
+        $id = $plug->add($input);
+        $this->assertIsInt($id);
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($plug->getFromDB($id));
+
+        $this->assertSame(1, (int) $plug->fields['number']);
+    }
+
+    public function testPrepareInputForAddKeepsIncrementingAfterSoftDelete()
+    {
+        $this->login();
+        $main_item = $this->getPlugMainItem();
+
+        $first_plug = $this->createItem(Plug::class, $this->getPlugBaseInput($main_item), ['number']);
+        $this->assertSame(1, (int) $first_plug->fields['number']);
+
+
+        $this->assertTrue($first_plug->update([
+            'id'         => $first_plug->getID(),
+            'is_deleted' => 1,
+        ]));
+
+        $second_plug = $this->createItem(Plug::class, $this->getPlugBaseInput($main_item), ['number']);
+        $this->assertSame(2, (int) $second_plug->fields['number']);
+    }
+
+    public function testPrepareInputForUpdateNeverChangesNumber()
+    {
+        $this->login();
+        $main_item = $this->getPlugMainItem();
+
+        $plug = $this->createItem(Plug::class, $this->getPlugBaseInput($main_item), ['number']);
+        $this->assertSame(1, (int) $plug->fields['number']);
+
+        $success = $plug->update([
+            'id'     => $plug->getID(),
+            'number' => 50,
+            'name'   => 'Renamed',
+        ]);
+        $this->assertTrue($success);
+        $this->assertTrue($plug->getFromDB($plug->getID()));
+
+        $this->assertSame(1, (int) $plug->fields['number']);
+        $this->assertSame('Renamed', $plug->fields['name']);
+    }
 }
