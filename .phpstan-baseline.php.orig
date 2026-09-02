@@ -16448,8 +16448,38 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PendingReason.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$fields\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PendingReasonCron.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method object\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/PendingReasonCron.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method object\\:\\:getType\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/PendingReasonCron.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on PendingReason_Item\\|false\\.$#',
 	'identifier' => 'property.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/PendingReasonCron.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itil_item of method AbstractITILChildTemplate\\:\\:getRenderedContent\\(\\) expects CommonITILObject, object given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/PendingReasonCron.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$item of static method NotificationEvent\\:\\:raiseEvent\\(\\) expects CommonGLPI, object given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/PendingReasonCron.php',
 ];
