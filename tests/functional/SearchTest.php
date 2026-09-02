@@ -3095,7 +3095,7 @@ class SearchTest extends DbTestCase
         // GROUP_CONCAT(... ORDER BY ...) which are part of the SELECT, not the sort).
         // See glpi-project/glpi#25208: the no-ORDER-BY optimization for default asset
         // lists must be preserved (commit 3dad2e1cab).
-        $this->assertStringNotMatchesRegularExpression('/ORDER BY .* (ASC|DESC) LIMIT/', $sql);
+        $this->assertDoesNotMatchRegularExpression('/ORDER BY .* (ASC|DESC) LIMIT/', $sql);
     }
 
 
