@@ -449,7 +449,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
 
             $query = [
-                'COUNT' => 'cpt',
+                'COUNT DISTINCT' => "$table.id as cpt",
                 'FROM'  => $table,
                 'LEFT JOIN' => [
                     Group_Item::getTable() => [
