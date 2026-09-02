@@ -689,9 +689,9 @@ JSON;
         $this->assertCount(2, $webhooks);
         $team_1 = json_decode($webhooks[0]['body'], true)['parent_item']['team'][0];
         $team_2 = json_decode($webhooks[1]['body'], true)['parent_item']['team'][0];
-        $this->assertSame('glpi', $team_1['name']);
+        $this->assertSame('glpi', $team_1['user']['username']);
         $this->assertSame('observer', $team_1['role']);
-        $this->assertSame('post-only', $team_2['name']);
+        $this->assertSame('post-only', $team_2['user']['username']);
         $this->assertSame('observer', $team_2['role']);
     }
 
