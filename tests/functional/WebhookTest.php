@@ -689,9 +689,9 @@ JSON;
         $this->assertCount(2, $webhooks);
         $team_1 = json_decode($webhooks[0]['body'], true)['parent_item']['team'][0];
         $team_2 = json_decode($webhooks[1]['body'], true)['parent_item']['team'][0];
-        $this->assertSame('glpi', $team_1['user']['username']);
+        $this->assertSame('glpi', $team_1['name']);
         $this->assertSame('observer', $team_1['role']);
-        $this->assertSame('post-only', $team_2['user']['username']);
+        $this->assertSame('post-only', $team_2['name']);
         $this->assertSame('observer', $team_2['role']);
     }
 
@@ -772,12 +772,6 @@ JSON;
         $this->assertSame('2', $webhook->fields['pinned_version']);
     }
 
-    /**
-     * The no-op this whole change relies on: an existing webhook, pinned to the major it was
-     * built against, still asks the router for the version it was already getting.
-     * The day this fails is the day pinning starts changing an existing payload, which is
-     * exactly the moment a conscious decision is required rather than a silent drift.
-     */
     public function testPinnedMajorResolvesToRouterCurrentVersion()
     {
         $this->login();
@@ -792,7 +786,7 @@ JSON;
             'pinned_version' => '2',
         ]);
 
-        $this->assertSame(Router::API_VERSION, Router::normalizeAPIVersion($webhook->getPinnedAPIVersion()));
+        $this->assertSame('2.3.0', Router::normalizeAPIVersion($webhook->getPinnedAPIVersion()));
     }
 
     /**

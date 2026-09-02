@@ -276,7 +276,7 @@ class RouterTest extends GLPITestCase
         $this->assertFalse($majors['61']['deprecated']);
         // Sorted by ascending version, not by declaration order.
         // Numeric string keys are normalized to int by PHP, hence the array_map().
-        $this->assertSame(['1', '2', '60', '61'], array_map('strval', array_keys($majors)));
+        $this->assertSame(['1', '2', '3', '60', '61'], array_map('strval', array_keys($majors)));
     }
 
     public function testRoutingByVersion()
