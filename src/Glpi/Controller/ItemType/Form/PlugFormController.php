@@ -86,8 +86,22 @@ class PlugFormController extends GenericFormController
             return new RedirectResponse($main_item->getLinkURL());
         }
 
+        if ($request->request->has('purge')) {
+            $plug = new Plug();
+            if ($plug->getFromDB($request->request->getInt('id', -1))) {
+                // load main item to redirect after purge
+                $main_item = $plug->getOnePeer(0);
+            }
+        }
+
         // Handle action using the generic controller
         $request->attributes->set('class', Plug::class);
-        return parent::__invoke($request);
+        $response = parent::__invoke($request);
+
+        if (isset($main_item) && $main_item instanceof CommonDBTM) {
+            return new RedirectResponse($main_item->getLinkURL());
+        }
+
+        return $response;
     }
 }

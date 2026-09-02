@@ -62,6 +62,14 @@ class Plug extends CommonDBRelation
         return "ti ti-plug";
     }
 
+    public static function getPostFormAction(string $form_action, bool $action_success): ?string
+    {
+        return match ($form_action) {
+            'delete', 'restore' => 'form', // redirect to the form page after action (instead of list of plug that no longer exists)
+            default => parent::getPostFormAction($form_action, $action_success),
+        };
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['assets'];
