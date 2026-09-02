@@ -3082,6 +3082,7 @@ HTML;
             'item' => $this,
             'params' => $options,
             'show_sync_field' => $extauth && $this->fields['auths_id'] && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id']),
+            'identity_readonly' => $this->getIdentityReadonly(),
             'use_timezones' => $DB->use_timezones,
             'timezones' => $DB->use_timezones ? $DB->getTimezones() : [],
             'higher_rights' => $higherrights,
@@ -3096,6 +3097,45 @@ HTML;
         return true;
     }
 
+
+    /**
+     * User identity fields are read-only only when the auth source maps them
+     * for synchronization.
+     *
+     * @return array<string, bool>
+     */
+    private function getIdentityReadonly(): array
+    {
+        $readonly = [
+            'realname'  => false,
+            'firstname' => false,
+            'middlename' => false,
+        ];
+
+        $extauth = !(($this->fields["authtype"] == Auth::DB_GLPI)
+                   || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
+                       && !empty($this->fields["password"])));
+        if (!$extauth) {
+            return $readonly;
+        }
+
+        // External sources without a per-field mapping stay fully locked
+        $readonly['realname']  = true;
+        $readonly['firstname'] = true;
+
+        if ($this->fields['authtype'] == Auth::LDAP
+            && !empty($this->fields['auths_id'])
+        ) {
+            $ldap = new AuthLDAP();
+            if ($ldap->getFromDB($this->fields['auths_id'])) {
+                $sync_fields = AuthLDAP::getSyncFields($ldap->fields);
+                $readonly['realname']  = isset($sync_fields['realname']);
+                $readonly['firstname'] = isset($sync_fields['firstname']);
+            }
+        }
+
+        return $readonly;
+    }
 
     /**
      * Print the user preference form.
@@ -3134,6 +3174,7 @@ HTML;
             'is_administrator' => Config::canUpdate(),
             'item' => $this,
             'is_preference_form' => true,
+            'identity_readonly' => $this->getIdentityReadonly(),
             'use_timezones' => $DB->use_timezones,
             'timezones' => $DB->use_timezones ? $DB->getTimezones() : [],
             'entities' => $this->getEntities(),
