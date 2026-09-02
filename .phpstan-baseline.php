@@ -32,6 +32,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/cable.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/comments.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/comments.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function method_exists expects object\\|string, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -48,6 +60,12 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/ajax/dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/dropdownConnectNetworkPort.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'toupdate\' might not exist on array\\{name\\: non\\-falsy\\-string, entity\\: array\\<int\\>\\|int, rand\\: int\\<0, max\\>, to_update\\: null, toupdate\\?\\: array\\{value_fieldname\\: \'value\', to_update\\: non\\-falsy\\-string, url\\: non\\-falsy\\-string, moreparams\\: array\\{value\\: \'__VALUE__\', allow_email\\: bool, field\\: non\\-falsy\\-string, typefield\\: \'supplier\', use_notification\\: mixed\\}\\}\\}\\.$#',
@@ -350,10 +368,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/reservable_items.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$event of static method Reservation\\:\\:updateEvent\\(\\) expects array\\{id\\: int, start\\: string, end\\: string\\}, array\\<mixed\\> given\\.$#',
+	'message' => '#^Parameter \\#1 \\$event of static method Reservation\\:\\:updateEvent\\(\\) expects array\\{id\\: int, start\\: string, end\\: string\\}, non\\-empty\\-array\\<mixed\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/ajax/reservations.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$options of static method RuleAction\\:\\:dropdownActions\\(\\) expects array\\{subtype\\: class\\-string\\<Rule\\>, name\\: string, field\\?\\: string, value\\?\\: string, alreadyused\\: bool, display\\?\\: bool\\}, array\\{subtype\\: class\\-string, name\\: \'action_type\', field\\: mixed, value\\: mixed, alreadyused\\: bool\\} given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/ruleaction.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$sub_type of static method Rule\\:\\:getActionsByType\\(\\) expects class\\-string\\<Rule\\>, class\\-string given\\.$#',
@@ -368,9 +392,15 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/solution.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Part \\$parents_itemtype \\(class\\-string\\<CommonITILObject\\>\\|CommonITILObject\\) of encapsed string cannot be cast to string\\.$#',
+	'identifier' => 'encapsedStringPart.nonString',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/task.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/ajax/timeline.php',
 ];
 $ignoreErrors[] = [
@@ -434,10 +464,100 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/webhook.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/appliance_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/appliance_item_relation.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'items_id_peripheral\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/asset/asset_peripheralasset.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'itemtype_peripheral\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/asset/asset_peripheralasset.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/asset/asset_peripheralasset.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'calendars_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/calendar_holiday.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/calendar_holiday.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'cartridgeitems_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/cartridgeitem_printermodel.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/cartridgeitem_printermodel.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'certificates_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/certificate_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/certificate_item.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/change.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'changes_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/change_problem.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/change_problem.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'changes_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/change_ticket.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/change_ticket.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method check\\(\\) on CommonDBTM\\|false\\.$#',
@@ -452,10 +572,34 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/commonitilobject_commonitilobject.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset string might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/commonitilobject_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/commonitilobject_item.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:displayFullPageForItem\\(\\) expects int\\|string, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/config.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'contracts_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/contract_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/contract_item.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getPath\\(\\) on Glpi\\\\UI\\\\Theme\\|null\\.$#',
@@ -470,10 +614,40 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/document.send.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'documents_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/document_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/document_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$values of method Domain_Item\\:\\:addItem\\(\\) expects array, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/domain.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/domainrecord.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'groups_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/group_user.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/group_user.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
@@ -488,8 +662,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/impactcsv.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'clusters_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_cluster.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_cluster.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method getLinkURL\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_device.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/item_device.common.form.php',
 ];
@@ -506,10 +698,76 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/item_disk.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'enclosures_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_enclosure.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_enclosure.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'lines_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_line.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_line.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFormURLWithID\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 3,
 	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'items_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'itemtype\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'projects_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_project.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_project.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'racks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_rack.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/item_rack.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
@@ -566,6 +824,30 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/itemvirtualmachine.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'projects_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/itil_project.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/itil_project.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'knowbaseitems_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/knowbaseitem_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/knowbaseitem_item.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 3,
@@ -608,6 +890,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/notepad.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/notification_notificationtemplate.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:displayFullPageForItem\\(\\) expects int\\|string, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -644,6 +932,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/palette_preview.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'racks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/pdu_rack.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/pdu_rack.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -668,10 +968,70 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/printerlogcsv.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'problems_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/problem_ticket.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/problem_ticket.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'users_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/profile_user.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/profile_user.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/project.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'projecttasks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/projecttask_ticket.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/projecttask_ticket.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'projecttasks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/projecttaskteam.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/projecttaskteam.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'projects_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/projectteam.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/projectteam.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on non\\-empty\\-array\\|true\\.$#',
@@ -680,8 +1040,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/report.dynamic.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method checkGlobal\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
+	'message' => '#^Cannot call static method canView\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/front/report.dynamic.php',
 ];
@@ -690,6 +1050,30 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/report.networking.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Binary operation "\\." between array\\|int\\|string and \'\\?\' results in an error\\.$#',
+	'identifier' => 'binaryOp.invalid',
+	'count' => 1,
+	'path' => __DIR__ . '/front/reservation.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$haystack of function str_contains expects string, string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 3,
+	'path' => __DIR__ . '/front/reservation.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$string of function parse_str expects string, array\\|int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/reservation.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$url of function Safe\\\\parse_url expects string, string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/front/reservation.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|false given\\.$#',
@@ -788,6 +1172,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/stat.global.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method Stat\\:\\:getItems\\(\\) expects class\\-string\\<CommonGLPI\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/front/stat.location.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method Stat\\:\\:showTable\\(\\) expects class\\-string\\<CommonITILObject\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.location.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on Stencil\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -798,6 +1194,12 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/front/stencil.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/front/ticket_contract.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|string\\|false given\\.$#',
@@ -1064,6 +1466,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$hash of static method Auth\\:\\:checkPassword\\(\\) expects string, string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$options of function setcookie expects array\\{expires\\?\\: int, path\\?\\: string, domain\\?\\: string, secure\\?\\: bool, httponly\\?\\: bool, samesite\\?\\: \'Lax\'\\|\'lax\'\\|\'None\'\\|\'none\'\\|\'Strict\'\\|\'strict\'\\}, array\\{expires\\: \\(float\\|int\\), path\\: string, domain\\: string, secure\\: bool, httponly\\: true, samesite\\: string\\} given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$password of static method AuthLDAP\\:\\:connectToServer\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1084,7 +1498,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$fields\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 16,
+	'count' => 17,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -1792,7 +2206,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 4,
+	'count' => 5,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -1864,6 +2278,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getHeaderByName\\(\\) on HTMLTableRow\\|null\\.$#',
 	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDevice.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method CommonDevice\\:\\:displayFullPageForItem\\(\\) has parameter \\$menus with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDevice.php',
 ];
@@ -2048,6 +2468,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILCost.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot access constant class on CommonITILTask\\|false\\.$#',
+	'identifier' => 'classConstant.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonITILValidation\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 1,
@@ -2060,6 +2486,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on CommonITILTask\\|false\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on ITILCategory\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
@@ -2067,6 +2499,18 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on ITIL_ValidationStep\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method canUpdateItem\\(\\) on CommonITILTask\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method canViewItem\\(\\) on CommonITILTask\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
@@ -2108,6 +2552,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method post_getFromDB\\(\\) on CommonITILTask\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method update\\(\\) on ITIL_ValidationStep\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -2123,6 +2573,12 @@ $ignoreErrors[] = [
 	'message' => '#^Method CommonITILObject\\:\\:computeSolveDelayStat\\(\\) should return int but returns float\\|int\\<0, max\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 2,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method CommonITILObject\\:\\:cronInfo\\(\\) should return array\\{description\\: string, parameter\\?\\: string\\} but returns array\\{\\}\\|array\\{description\\: string\\}\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -2300,6 +2756,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$string1 of function strcmp expects string, array\\<string\\>\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$type of method CommonITILObject\\:\\:getTemplateFieldName\\(\\) expects int\\|null, int\\<min, \\-1\\>\\|int\\<1, max\\>\\|true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -2336,6 +2798,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$string2 of function strcmp expects string, array\\<string\\>\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$users_id of method CommonITILObject\\:\\:isUser\\(\\) expects int, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 11,
@@ -2344,7 +2812,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property CommonDBTM\\:\\:\\$updates \\(list\\<string\\>\\) does not accept array\\<int\\<0, max\\>, string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 12,
+	'count' => 14,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -2384,19 +2852,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject_CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "%%" between int\\|non\\-empty\\-string and 86400 results in an error\\.$#',
+	'message' => '#^Binary operation "%%" between int\\|string and 86400 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "/" between int\\|non\\-empty\\-string and 3600 results in an error\\.$#',
+	'message' => '#^Binary operation "/" between int\\|string and 3600 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "/" between int\\|non\\-empty\\-string and 86400 results in an error\\.$#',
+	'message' => '#^Binary operation "/" between int\\|string and 86400 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
@@ -2966,7 +3434,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.4\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
+	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.3\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Config.php',
@@ -2992,6 +3460,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$dbuser on DBmysql\\|null\\.$#',
 	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'lock_use_lock_item\' might not exist on array\\{typedoc_icon_dir\\: mixed, root_doc\\: mixed, proxy_exclusions\\: mixed, lock_lockprofile_id\\: mixed, \\.\\.\\.\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Config.php',
 ];
@@ -3182,7 +3656,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, non\\-falsy\\-string&numeric\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string&numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CronTask.php',
@@ -3254,19 +3728,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'alias\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, name\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, alias\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'alias\' might not exist on array\\{0\\?\\: string, name\\?\\: non\\-falsy\\-string, 1\\?\\: non\\-falsy\\-string, alias\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'name\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, name\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, alias\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'name\' might not exist on array\\{0\\?\\: string, name\\?\\: non\\-falsy\\-string, 1\\?\\: non\\-falsy\\-string, alias\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'table\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, 2\\: string, 3\\: string, 4\\: non\\-empty\\-string, table\\: non\\-empty\\-string, 5\\: non\\-empty\\-string, 6\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'table\' might not exist on array\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string, 2\\?\\: string, 3\\?\\: string, 4\\?\\: non\\-empty\\-string, table\\?\\: non\\-empty\\-string, 5\\?\\: non\\-empty\\-string, 6\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
@@ -3304,6 +3778,24 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method numrows\\(\\) on DBmysql\\|null\\.$#',
 	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysqlIterator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method DBmysqlIterator\\:\\:getSql\\(\\) should return string but returns array\\<string\\>\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysqlIterator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$query of method DBmysql\\:\\:doQuery\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysqlIterator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
@@ -3368,13 +3860,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method DbUtils\\:\\:getDbRelations\\(\\) should return array\\<string, array\\<string, list\\<array\\{string, string\\}\\|string\\>\\|string\\>\\> but returns array\\<array\\<list\\<array\\<mixed\\>\\|string\\>\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method DbUtils\\:\\:getItemTypeForTable\\(\\) should return class\\-string\\<CommonDBTM\\>\\|null but returns class\\-string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, \'\\#\'\\|\'\\#\\#\'\\|\'\\#\\#\\#\'\\|\'\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\'\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
@@ -4220,6 +4718,24 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method createAttribute\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method createCDATASection\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method createElement\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method saveXML\\(\\) on array\\<string, mixed\\>\\|DOMDocument\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -4958,6 +5474,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/SecurityResponseMiddleware.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Binary operation "\\." between \'\\#/components…\' and array\\<string\\>\\|string results in an error\\.$#',
+	'identifier' => 'binaryOp.invalid',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\SchemaReference\\:\\:toArray\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 3,
@@ -4976,9 +5498,21 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\OpenAPIGenerator\\:\\:getSchema\\(\\) should return array\\{openapi\\: string, info\\: array\\{title\\: string, version\\: string, license\\: array\\{name\\: string, url\\: string\\}\\}, servers\\: array\\<array\\{url\\: string, description\\: string\\}\\>, components\\: array\\{securitySchemes\\: array\\<string, array\\{type\\: string, schema\\?\\: string, name\\?\\: string, in\\?\\: string\\}\\>\\}, paths\\: array\\<string, array\\<string, array\\{tags\\: array\\<string\\>, responses\\: array\\<int\\|string, array\\{description\\: string\\}\\>, description\\?\\: string, parameters\\: array\\<array\\{name\\: string, in\\: string, description\\: string, required\\: bool, schema\\?\\: mixed\\}\\>, requestBody\\?\\: array\\{content\\: array\\{\'application/json\'\\: array\\{schema\\: array\\{type\\: string, format\\?\\: string, pattern\\?\\: string, properties\\?\\: array\\<string, array\\{type\\: string, format\\?\\: string\\}\\>\\}\\}\\}\\}\\}\\>\\>\\} but returns array\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'ref\' might not exist on Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\SchemaReference\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'schema\' might not exist on array\\{name\\: string, in\\: string, description\\: string, required\\: bool, schema\\?\\: mixed\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
@@ -4991,6 +5525,18 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$name of method Glpi\\\\Api\\\\HL\\\\OpenAPIGenerator\\:\\:getComponentReference\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
@@ -5156,6 +5702,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Binary operation "\\." between non\\-falsy\\-string and array\\<string\\>\\|string results in an error\\.$#',
+	'identifier' => 'binaryOp.invalid',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'itemtype\' might not exist on array\\{ids\\: non\\-empty\\-list\\<string\\>\\}\\|array\\{table\\: string, itemtype\\: class\\-string\\<CommonDBTM\\>\\|null, ids\\: list\\<string\\>\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -5164,6 +5716,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'table\' might not exist on array\\{ids\\: non\\-empty\\-list\\<string\\>\\}\\|array\\{table\\: string, itemtype\\: class\\-string\\<CommonDBTM\\>\\|null, ids\\: list\\<string\\>\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$alias of class Glpi\\\\DBAL\\\\QueryExpression constructor expects string\\|null, array\\<string\\>\\|string given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
 ];
@@ -5177,6 +5735,18 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$length of function substr expects int\\|null, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$subject of function str_replace expects array\\<string\\>\\|string, array\\<string\\>\\|int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\$alias of static method Glpi\\\\DBAL\\\\QueryFunction\\:\\:ifnull\\(\\) expects string\\|null, array\\<string\\>\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
 ];
 $ignoreErrors[] = [
@@ -5270,13 +5840,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
@@ -5552,7 +6122,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'scheme\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, scheme\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'scheme\' might not exist on array\\{0\\?\\: string, scheme\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
@@ -5768,8 +6338,68 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/AbstractConfigureCommand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Diagnostic\\\\DatabaseSchemaIntegrityChecker constructor expects DBmysql, DBmysql\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getTzIncompatibleTables\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/EnableTimezonesCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbTimezones constructor expects DBmysql, DBmysql\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/EnableTimezonesCommand.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access offset 0 on array\\|false\\|null\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbssl on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbsslca on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbsslcacipher on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbsslcapath on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbsslcert on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbsslkey on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method connect\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
 ];
@@ -5780,14 +6410,50 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'hash\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, version\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, hash\\: non\\-empty\\-string, 2\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbhost on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbuser on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method disableTableCaching\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'hash\' might not exist on array\\{0\\?\\: string, version\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, hash\\?\\: non\\-empty\\-string, 2\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'version\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, version\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, hash\\: non\\-empty\\-string, 2\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'version\' might not exist on array\\{0\\?\\: string, version\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, hash\\?\\: non\\-empty\\-string, 2\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$DB of class Update constructor expects DBmysql, DBmysql\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Diagnostic\\\\DatabaseSchemaIntegrityChecker constructor expects DBmysql, DBmysql\\|null given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
@@ -5804,10 +6470,82 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$name of method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:setName\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginMigrationCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method fieldExists\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method delete\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method fieldExists\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
@@ -5816,10 +6554,148 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 7,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/DomainsPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method listTables\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\Form\\\\Migration\\\\FormMigration constructor expects DBmysql, DBmysql\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/FormCreatorPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\Migration\\\\GenericobjectPluginMigration constructor expects DBmysql, DBmysql\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/GenericobjectPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method find\\(\\) on Symfony\\\\Component\\\\Console\\\\Application\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/MigrateAllCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method delete\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 9,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:createDatacenter\\(\\) should return int\\|null but returns int\\|true\\.$#',
@@ -5834,7 +6710,133 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$use_timezones on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method escape\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getTzIncompatibleTables\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteValue\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbTimezones constructor expects DBmysql, DBmysql\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getForeignKeysContraints\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getSignedKeysColumns\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteValue\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
@@ -5844,6 +6846,90 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$use_utf8mb4 on DBmysql\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getNonUtf8mb4Tables\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method listTables\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbConfiguration constructor expects DBmysql, DBmysql\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/ActivateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/DeactivateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/UninstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Rules/ProcessSoftwareCategoryRulesCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method quoteValue\\(\\) on DBmysql\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method find\\(\\) on CommonDBTM\\|false\\.$#',
@@ -5912,7 +6998,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EditorController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$value_operator of class Glpi\\\\Form\\\\Condition\\\\ConditionData constructor expects string\\|null, int\\|string\\|null given\\.$#',
+	'message' => '#^Parameter \\$value_operator of class Glpi\\\\Form\\\\Condition\\\\ConditionData constructor expects string\\|null, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EditorController.php',
@@ -6060,6 +7146,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Helpdesk/Translation/AddNewHelpdeskTranslationController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$files of method Glpi\\\\Inventory\\\\Conf\\:\\:importFiles\\(\\) expects array\\{filename\\: string, filepath\\: string\\}, array\\<string, string\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/InventoryController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$connect_string of static method AuthMail\\:\\:testAuth\\(\\) expects string, bool\\|float\\|int\\|string\\|null given\\.$#',
@@ -6812,6 +7904,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Condition/Engine.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssigneeFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssigneeFieldConfig.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -6822,6 +7920,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\AssociatedItemsFieldStrategy\\|null\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsFieldConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getEntityID\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\EntityFieldStrategy\\|false\\.$#',
@@ -6866,6 +7970,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorField.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, float\\|int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method getITILCategory\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILCategoryFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -6896,6 +8012,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/LocationField.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ObserverFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ObserverFieldConfig.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method getRequestSource\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\RequestSourceFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -6908,16 +8030,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequestTypeField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getDateSLM\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLMFieldStrategy\\|false\\.$#',
-	'identifier' => 'method.nonObject',
+	'message' => '#^Parameter \\$strategies of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\RequesterFieldConfig constructor expects array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\>, array\\<Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILActorFieldStrategy\\|null\\> given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getSLMID\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLMFieldStrategy\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequesterFieldConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLATTRField\\:\\:getTimeDefinitionFromLegacy\\(\\) should return string but returns string\\|false\\.$#',
@@ -7322,7 +8438,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\<0, max\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\Form\\\\Export\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of class Glpi\\\\Form\\\\Condition\\\\ConditionHandler\\\\ItemConditionHandler constructor expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
@@ -7338,6 +8466,12 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeItemDefaultValueConfig\\:\\:getItemsId\\(\\) should return int\\|null but returns int\\|string\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItemDefaultValueConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Group\\|false\\.$#',
@@ -7358,7 +8492,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeRequester.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, itemtype\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, id\\: numeric\\-string, 2\\: numeric\\-string\\}\\.$#',
+	'message' => '#^Offset \'id\' might not exist on array\\{0\\?\\: string, itemtype\\: class\\-string\\<CommonDBTM\\>, 1\\?\\: non\\-empty\\-string, id\\?\\: numeric\\-string, 2\\?\\: numeric\\-string\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'itemtype\' might not exist on array\\{0\\?\\: string, itemtype\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, id\\?\\: numeric\\-string, 2\\?\\: numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
@@ -7392,6 +8532,24 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/ServiceCatalogManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset 1 might not exist on array\\{0\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Form/Tag/FormTagsManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$string of function strlen expects string, array\\<string\\>\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/FuzzyMatcher/FuzzyMatcher.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$subject of function Safe\\\\preg_split expects string, array\\<string\\>\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/FuzzyMatcher/FuzzyMatcher.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, string\\|false given\\.$#',
@@ -7442,6 +8600,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Helpdesk/DefaultDataManager.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$lang of method Glpi\\\\Helpdesk\\\\DefaultDataManager\\:\\:applyTranslation\\(\\) expects string, int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Helpdesk/DefaultDataManager.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method listTranslationsHandlers\\(\\) on Entity\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -7466,49 +8630,49 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Helpdesk/Tile/TilesManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/SessionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Http/SessionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/SessionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Http/SessionManager.php',
@@ -7862,18 +9026,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Firmware.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$designation\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/GraphicCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$is_dynamic\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/GraphicCard.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Inventory\\\\Asset\\\\GraphicCard\\:\\:prepare\\(\\) should return array\\<int, stdClass\\> but returns array\\<int, object\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -8120,152 +9272,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Monitor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$designation\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$dhcpserver\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$gateway\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ifinbytes\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ifinerrors\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ifinternalstatus\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ifmtu\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ifoutbytes\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ifouterrors\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ifstatus\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$instantiation_type\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ip\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$ipaddress\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 7,
+	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$logical_number\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$mac\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$mac_default\\.$#',
-	'identifier' => 'property.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$manufacturers_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$name\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$netmask\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$speed\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$ssid\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$subnet\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$virtualdev\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$wwn\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type object supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
@@ -8378,6 +9404,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to an undefined method object\\:\\:getManagementPorts\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 4,
@@ -8441,6 +9473,24 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method fetch_object\\(\\) on mysqli_result\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getManagementPorts\\(\\) on object\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getStackId\\(\\) on object\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method isStackedSwitch\\(\\) on object\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -8516,79 +9566,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$company\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$hostid\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$install_date\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$license_number\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$licenseid\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemarchitectures_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemeditions_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemkernels_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemkernelversions_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystems_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemservicepacks_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemversions_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$owner\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
@@ -8604,24 +9582,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$is_dynamic\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Peripheral.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$manufacturers_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Peripheral.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$productname\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Peripheral.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type object supplied for foreach, only iterables are supported\\.$#',
@@ -9078,36 +10038,6 @@ $ignoreErrors[] = [
 	'identifier' => 'assign.propertyType',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$comment\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/SoundCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$designation\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/SoundCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$is_dynamic\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/SoundCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$manufacturers_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/SoundCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$name\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/SoundCard.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Inventory\\\\Asset\\\\SoundCard\\:\\:prepare\\(\\) should return array\\<int, stdClass\\> but returns array\\<int, object\\>\\.$#',
@@ -10184,49 +11114,49 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/ExceptionListener/AccessErrorListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
@@ -10238,13 +11168,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, plugin\\: non\\-empty\\-string, 2\\: non\\-empty\\-string, itemtype\\: non\\-empty\\-string, 3\\: non\\-empty\\-string, form\\?\\: non\\-falsy\\-string, 4\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'itemtype\' might not exist on array\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string, plugin\\?\\: non\\-empty\\-string, 2\\?\\: non\\-empty\\-string, itemtype\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string, form\\?\\: non\\-falsy\\-string, 4\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, plugin\\: non\\-empty\\-string, 2\\: non\\-empty\\-string, itemtype\\: non\\-empty\\-string, 3\\: non\\-empty\\-string, form\\?\\: non\\-falsy\\-string, 4\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin\' might not exist on array\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string, plugin\\?\\: non\\-empty\\-string, 2\\?\\: non\\-empty\\-string, itemtype\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string, form\\?\\: non\\-falsy\\-string, 4\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
@@ -10286,25 +11216,25 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
@@ -10322,19 +11252,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-empty\\-string, numeric\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Knowbase/History/LogEvent.php',
@@ -10362,6 +11292,18 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthConfig.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method request\\(\\) on GuzzleHttp\\\\Client\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$message of static method GuzzleHttp\\\\Psr7\\\\Message\\:\\:toString\\(\\) expects Psr\\\\Http\\\\Message\\\\MessageInterface, Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method addVolume\\(\\) on CronTask\\|null\\.$#',
@@ -10442,6 +11384,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemFromArray\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -10460,7 +11408,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype_chunk\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, itemtype_chunk\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'itemtype_chunk\' might not exist on array\\{0\\?\\: string, itemtype_chunk\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
@@ -10706,10 +11654,22 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Output/HTMLSearchOutput.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/Spreadsheet.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$count of class GLPIPDF@anonymous/src/Glpi/Search/Output/Tcpdf\\.php\\:46 constructor expects int\\|null, bool\\|float\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Output/Tcpdf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type array\\<string\\>\\|null supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type list\\<array\\<int\\>\\|int\\|string\\|null\\>\\|null supplied for foreach, only iterables are supported\\.$#',
@@ -10750,7 +11710,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 12,
+	'count' => 11,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -10826,6 +11786,24 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:dataSeek\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:fetchAssoc\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:numrows\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$separator of function explode expects non\\-empty\\-string, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -10868,19 +11846,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Part \\$token \\(array\\<int\\>\\|int\\|string\\|null\\) of encapsed string cannot be cast to string\\.$#',
 	'identifier' => 'encapsedStringPart.nonString',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
@@ -10954,6 +11926,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Security\\\\TOTPManager\\:\\:getGracePeriodDaysLeft\\(\\) should return int but returns int\\|false\\.$#',
 	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'secret\' might not exist on array\\|null\\.$#',
+	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
 ];
@@ -11132,8 +12110,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$version of static method Glpi\\\\Toolbox\\\\DatabaseSchema\\:\\:getEmptySchemaPath\\(\\) expects string, array\\<string\\>\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$version of static method Glpi\\\\Toolbox\\\\VersionParser\\:\\:isStableRelease\\(\\) expects string, array\\<string\\>\\|string given\\.$#',
+	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
 ];
@@ -11252,13 +12242,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Toolbox/URL.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'major\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, major\\: numeric\\-string, 1\\: numeric\\-string, minor\\: numeric\\-string, 2\\: numeric\\-string, 3\\?\\: string, bugfix\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'major\' might not exist on array\\{0\\?\\: string, major\\?\\: numeric\\-string, 1\\?\\: numeric\\-string, minor\\?\\: numeric\\-string, 2\\?\\: numeric\\-string, 3\\?\\: string, bugfix\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Toolbox/VersionParser.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'minor\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, major\\: numeric\\-string, 1\\: numeric\\-string, minor\\: numeric\\-string, 2\\: numeric\\-string, 3\\?\\: string, bugfix\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'minor\' might not exist on array\\{0\\?\\: string, major\\?\\: numeric\\-string, 1\\?\\: numeric\\-string, minor\\?\\: numeric\\-string, 2\\?\\: numeric\\-string, 3\\?\\: string, bugfix\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Toolbox/VersionParser.php',
@@ -11378,13 +12368,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
@@ -12266,6 +13256,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Disk.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Enclosure.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getLink\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Enclosure.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call static method dropdown\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
@@ -12348,36 +13350,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Line.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Ola\\:\\:fillItemOlaData\\(\\) should return array\\{items_olas_id\\?\\: int, name\\: string, entities_id\\: int, is_recursive\\: bool, type\\: int, comment\\: string, number_time\\: int, use_ticket_calendar\\: bool, \\.\\.\\.\\} but returns array\\<string, mixed\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ola.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'linkid\' does not exist on array\\{id\\: int, name\\: string, entities_id\\: int, is_recursive\\: int, type\\: 0\\|1, comment\\: string, number_time\\: int, use_ticket_calendar\\: int, \\.\\.\\.\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ola.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset string\\|null might not exist on array\\{start_time\\: string, olas_id\\: int, itemtype\\: class\\-string\\<CommonITILObject\\>, items_id\\: int\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Item_Ola.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of method CommonDBConnexity\\:\\:getConnexityItem\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ola.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$items_id of method CommonDBConnexity\\:\\:getConnexityItem\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ola.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
@@ -12518,6 +13490,48 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Binary operation "\\." between non\\-falsy\\-string and array\\<string\\>\\|string results in an error\\.$#',
+	'identifier' => 'binaryOp.invalid',
+	'count' => 2,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
+	'identifier' => 'classConstant.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access offset \'id\' on CommonDropdown\\.$#',
+	'identifier' => 'offsetAccess.nonOffsetAccessible',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access offset \'name\' on CommonDropdown\\.$#',
+	'identifier' => 'offsetAccess.nonOffsetAccessible',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getForeignKeyField\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTableField\\(\\) on CommonDBTM\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 5,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method KnowbaseItem\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -12527,6 +13541,30 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:addFiles\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method KnowbaseItem\\:\\:getCategoryItem\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method KnowbaseItem\\:\\:getTreeCategoryList\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method Search\\:\\:getDatas\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$itemtype of static method DropdownTranslation\\:\\:getTranslatedValue\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
@@ -12572,7 +13610,25 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/LevelAgreement.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method add\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method clone\\(\\) on LevelAgreementLevel\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method delete\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method deleteByCriteria\\(\\) on LevelAgreementLevel\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreement.php',
@@ -12609,6 +13665,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method LevelAgreement\\:\\:getLevelClass\\(\\) should return class\\-string\\<LevelAgreementLevel\\> but returns string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method LevelAgreement\\:\\:getLevelTicketClass\\(\\) should return class\\-string\\<CommonDBTM\\> but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreement.php',
@@ -12830,19 +13892,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, operator\\: string, 2\\: string, values\\: non\\-empty\\-string, 3\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'key\' might not exist on array\\{0\\?\\: string, key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, operator\\?\\: string, 2\\?\\: string, values\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'operator\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, operator\\: string, 2\\: string, values\\: non\\-empty\\-string, 3\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'operator\' might not exist on array\\{0\\?\\: string, key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, operator\\?\\: string, 2\\?\\: string, values\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'values\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, operator\\: string, 2\\: string, values\\: non\\-empty\\-string, 3\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'values\' might not exist on array\\{0\\?\\: string, key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, operator\\?\\: string, 2\\?\\: string, values\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
@@ -12914,25 +13976,25 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'event\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, uuid\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\: string, itemtype\\: string, 3\\: string, items_id\\: \'\'\\|numeric\\-string, 4\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'event\' might not exist on array\\{0\\?\\: string, uuid\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'uuid\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, uuid\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\: string, itemtype\\: string, 3\\: string, items_id\\: \'\'\\|numeric\\-string, 4\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'uuid\' might not exist on array\\{0\\?\\: string, uuid\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'uuid\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, uuid\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: numeric\\-string, 4\\?\\: numeric\\-string\\}\\.$#',
+	'message' => '#^Offset \'uuid\' might not exist on array\\{0\\?\\: string, uuid\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: numeric\\-string, 4\\?\\: numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, numeric\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
@@ -12987,6 +14049,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$haystack of function in_array expects array, array\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/MailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$subject of function Safe\\\\preg_match expects string, bool\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
@@ -13313,6 +14381,12 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$user_id of static method DisplayPreference\\:\\:getForTypeUser\\(\\) expects int, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Possibly invalid array key type array\\<string\\>\\|string\\.$#',
+	'identifier' => 'offsetAccess.invalidOffset',
+	'count' => 2,
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -13874,6 +14948,30 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'type\' might not exist on array\\{type\\?\\: 1\\|2\\|3, use_notification\\?\\: bool, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'use_notification\' might not exist on array\\{type\\: 2, use_notification\\?\\: bool, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'users_id\' might not exist on array\\{type\\: 2, use_notification\\: true, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$item of method NotificationTargetCommonITILObject\\<T of CommonITILObject\\>\\:\\:getDataForObject\\(\\) expects CommonITILObject, \\(T of CommonITILObject\\)\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 6,
@@ -14031,6 +15129,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Entity\\|Group\\|Profile\\|User\\|false\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetKnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on KnowbaseItemCategory\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetKnowbaseItem.php',
@@ -14194,7 +15298,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property NotificationTarget\\<Project\\>\\:\\:\\$data \\(array\\<string, array\\<string\\>\\|string\\>\\) does not accept array\\<string, array\\<array\\<string, mixed\\>\\|string\\>\\|string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 4,
+	'count' => 3,
 	'path' => __DIR__ . '/src/NotificationTargetProject.php',
 ];
 $ignoreErrors[] = [
@@ -14218,7 +15322,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on ProjectTask\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 24,
+	'count' => 26,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [
@@ -14248,7 +15352,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property NotificationTarget\\<ProjectTask\\>\\:\\:\\$data \\(array\\<string, array\\<string\\>\\|string\\>\\) does not accept array\\<string, array\\<array\\<string, mixed\\>\\|string\\>\\|string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [
@@ -14339,12 +15443,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method getID\\(\\) on Ticket\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetTicket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$id of static method Dropdown\\:\\:getDropdownName\\(\\) expects int, float\\|int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/NotificationTargetTicket.php',
 ];
 $ignoreErrors[] = [
@@ -14514,6 +15612,12 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method OAuthClient\\:\\:defineTabs\\(\\) should return array\\<string, string\\> but returns array\\<string, bool\\|string\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/OAuthClient.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
@@ -14786,6 +15890,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\|string\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$classname of function isPluginItemType expects string, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -14999,6 +16109,12 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of static method User\\:\\:getNameForLog\\(\\) expects int, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 4,
+	'path' => __DIR__ . '/src/Plugin.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$language of static method Glpi\\\\Dashboard\\\\Grid\\:\\:getAllDashboardCardsCacheKey\\(\\) expects string\\|null, int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Plugin.php',
 ];
 $ignoreErrors[] = [
@@ -15407,6 +16523,12 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method setVolume\\(\\) on CronTask\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
+	'path' => __DIR__ . '/src/QueuedNotification.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method QueuedNotification\\:\\:canCreate\\(\\) should return bool but returns int\\|string\\|false\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
 	'path' => __DIR__ . '/src/QueuedNotification.php',
 ];
 $ignoreErrors[] = [
@@ -16226,7 +17348,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'appendto\' might not exist on array\\<string, array\\<int\\|string\\>\\|string\\>\\|string\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
@@ -16280,7 +17408,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCommonITILObjectCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCommonITILObjectCollection.php',
@@ -16522,7 +17650,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot assign offset \'name\' to array\\<string, array\\<int\\|string\\>\\|string\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
-	'count' => 6,
+	'count' => 8,
 	'path' => __DIR__ . '/src/RuleTicket.php',
 ];
 $ignoreErrors[] = [
@@ -16540,25 +17668,13 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot assign offset \'table\' to array\\<string, array\\<int\\|string\\>\\|string\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
-	'count' => 2,
+	'count' => 4,
 	'path' => __DIR__ . '/src/RuleTicket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot assign offset \'table\' to array\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
-	'count' => 7,
-	'path' => __DIR__ . '/src/RuleTicket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot assign offset \'type\' to array\\<string, array\\<int\\|string\\>\\|string\\>\\|string\\.$#',
-	'identifier' => 'offsetAssign.dimType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleTicket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot assign offset \'type\' to array\\|string\\.$#',
-	'identifier' => 'offsetAssign.dimType',
-	'count' => 1,
+	'count' => 9,
 	'path' => __DIR__ . '/src/RuleTicket.php',
 ];
 $ignoreErrors[] = [
@@ -16689,6 +17805,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Glpi\\\\Search\\\\SearchOption\\:\\:isInfocomOption\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Search.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Search.php',
@@ -17024,7 +18146,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/TaskTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'engine\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, engine\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\?\\: string, version\\?\\: string, 3\\?\\: string, 4\\?\\: string, comment\\?\\: non\\-falsy\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'engine\' might not exist on array\\{0\\?\\: string, engine\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string, version\\?\\: string, 3\\?\\: string, 4\\?\\: string, comment\\?\\: non\\-falsy\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Telemetry.php',
@@ -17120,6 +18242,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$specifictime of static method Html\\:\\:computeGenericDateTimeSearch\\(\\) expects int\\|string, int\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/TicketRecurrent.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method TicketTask\\:\\:displayPlanningItem\\(\\) should return string but returns string\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -17150,7 +18278,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Toolbox\\:\\:checkNewVersionAvailable\\(\\) should return string but returns string\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Toolbox\\:\\:decodeFromUtf8\\(\\) should return string but returns array\\|string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Toolbox\\:\\:doCallCurl\\(\\) should return string but returns string\\|true\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
@@ -17198,12 +18338,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 2 on array\\{non\\-empty\\-string, non\\-empty\\-string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:isNewID\\(\\) expects int, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -17246,6 +18380,24 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$string of function rawurlencode expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, string\\|false\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$width of function Safe\\\\imagecreatetruecolor expects int, float\\|int given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -17259,6 +18411,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$color of function imagecolortransparent expects int\\|null, int\\<0, max\\>\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$height of function Safe\\\\imagecreatetruecolor expects int, float\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
@@ -17282,6 +18440,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#7 \\$dst_width of function Safe\\\\imagecopyresampled expects int, float\\|int given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#8 \\$dst_height of function Safe\\\\imagecopyresampled expects int, float\\|int given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'cpt\' on array\\<string, float\\|int\\|string\\|null\\>\\|false\\|null\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -17292,6 +18462,18 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Transfer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method USBVendor\\:\\:getManufacturer\\(\\) should return string\\|false but returns non\\-empty\\-array\\<string\\>\\|non\\-falsy\\-string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/USBVendor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method USBVendor\\:\\:getProductName\\(\\) should return string\\|false but returns non\\-empty\\-array\\<string\\>\\|non\\-falsy\\-string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/USBVendor.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
@@ -17324,7 +18506,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Unmanaged.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'target_version\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, source_version\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, target_version\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'target_version\' might not exist on array\\{0\\?\\: string, source_version\\?\\: non\\-falsy\\-string, 1\\?\\: non\\-falsy\\-string, target_version\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 4,
 	'path' => __DIR__ . '/src/Update.php',
@@ -17366,19 +18548,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-empty\\-string, non\\-empty\\-string, string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/UploadHandler.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset 1 might not exist on array\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 2 might not exist on array\\{\\}\\|array\\{non\\-empty\\-string, non\\-empty\\-string, string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset 2 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/UploadHandler.php',
@@ -17654,6 +18836,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method getReasonPhrase\\(\\) on Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getStatusCode\\(\\) on Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
@@ -17750,7 +18944,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, array\\<int\\|string, array\\<int\\|string, list\\<string\\>\\|string\\>\\|int\\|string\\>\\|string given\\.$#',
+	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, array\\<int\\|string, array\\<int\\<0, max\\>\\|string, list\\<string\\>\\|string\\>\\|int\\|string\\>\\|class\\-string\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/autoload/CFG_GLPI.php',
