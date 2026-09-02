@@ -86,8 +86,9 @@
     {% set more_html %}
         {% if options.is_disclosable %}
             <button type="button" class="btn btn-outline-secondary"
-                 aria-label="{{ __('Show / Hide password') }}" title="{{ __('Show / Hide password') }}"
+                 aria-label="{{ __('Show password') }}" title="{{ __('Show password') }}"
                  data-bs-toggle="tooltip" data-bs-placement="bottom"
+                 data-show-label="{{ __('Show password') }}" data-hide-label="{{ __('Hide password') }}"
                  onclick="toggleDisclosablePasswordField(this, '{{ options.id|e('js') }}')">
                 <i class="ti ti-eye disclose" aria-hidden="true"></i>
             </button>

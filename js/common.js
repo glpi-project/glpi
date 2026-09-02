@@ -1586,7 +1586,8 @@ function toggleDisclosablePasswordField(button, item) {
     const label = reveal ? button.dataset.hideLabel : button.dataset.showLabel;
     if (label !== undefined) {
         button.setAttribute("aria-label", label);
-        button.setAttribute("title", label);
+        button.setAttribute("data-bs-original-title", label);
+        bootstrap.Tooltip.getInstance(button)?.setContent({ '.tooltip-inner': label });
     }
 
     const icon = button.querySelector("i.disclose");
