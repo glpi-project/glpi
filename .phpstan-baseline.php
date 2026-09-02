@@ -12776,27 +12776,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Lock.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method isField\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTableField\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on string\\|null\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 3,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$haystack of function str_starts_with expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Lock.php',
 ];
 $ignoreErrors[] = [
@@ -13172,6 +13154,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PDU.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Monitor\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -13200,6 +13194,18 @@ $ignoreErrors[] = [
 	'identifier' => 'property.nonObject',
 	'count' => 4,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 4,
+	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
@@ -14532,6 +14538,18 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAssign.dimType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/OlaLevel.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Inventory\\\\MainAsset\\\\PDU\\:\\:prepare\\(\\) should return array\\<int, stdClass\\> but returns array\\<int, object\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/PDU.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$agent of method Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:setAgent\\(\\) expects Agent, Agent\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/PDU.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method PDU\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
