@@ -14122,21 +14122,6 @@
             "x-itemtype": "OLA",
             "type": "object",
             "properties": {
-                "group": {
-                    "type": "object",
-                    "x-itemtype": "Group",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "Group"
-                },
                 "id": {
                     "type": "integer",
                     "format": "int64",

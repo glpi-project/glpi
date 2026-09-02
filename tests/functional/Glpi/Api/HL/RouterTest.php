@@ -142,15 +142,8 @@ class RouterTest extends GLPITestCase
             foreach ($properties as $prop_name => $prop) {
                 $full_prop_name = $parent_path !== '' ? ($parent_path . '.' . $prop_name) : $prop_name;
                 if (isset($prop['x-mapper'])) {
-                    // A mapped property must be read-only. It either declares `readOnly` outright,
-                    // or defers it to a later API version via `x-version-readonly` (legacy properties
-                    // that used to be writable columns) — in which case that version must already be
-                    // reached by the current API version.
-                    $is_readonly = ($prop['readOnly'] ?? false) === true
-                        || (
-                            isset($prop['x-version-readonly'])
-                            && version_compare(Router::API_VERSION, $prop['x-version-readonly']) >= 0
-                        );
+                    // A mapped property must be read-only.
+                    $is_readonly = ($prop['readOnly'] ?? false) === true;
                     if (!$is_readonly) {
                         $schemas_errors[] = "Property '$full_prop_name' in schema $schema_name in " . $controller::class . " is mapped but is not marked as readOnly";
                     }

@@ -578,9 +578,9 @@ final class ITILController extends AbstractController
                 // OLA due dates (replacing internal_time_to_resolve / internal_time_to_own columns)
                 $schemas[$itil_type]['properties']['internal_resolution_date'] = [
                     'x-version-introduced' => '2.1.0',
-                    'x-version-readonly' => '2.4.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
                     'x-mapped-from' => 'id',
                     'x-mapper' => static function ($v) use ($get_ola_data): ?string {
                         $ola = $get_ola_data((int) $v, \SLM::TTR);
@@ -589,9 +589,9 @@ final class ITILController extends AbstractController
                 ];
                 $schemas[$itil_type]['properties']['internal_take_into_account_date'] = [
                     'x-version-introduced' => '2.1.0',
-                    'x-version-readonly' => '2.4.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
                     'x-mapped-from' => 'id',
                     'x-mapper' => static function ($v) use ($get_ola_data): ?string {
                         $ola = $get_ola_data((int) $v, \SLM::TTO);
