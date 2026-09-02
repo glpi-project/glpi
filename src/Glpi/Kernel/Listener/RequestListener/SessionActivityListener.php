@@ -54,6 +54,16 @@ class SessionActivityListener implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
+        if (!$event->isMainRequest()) {
+            // Do not update the session activity on sub-requests.
+            return;
+        }
+
+        if (!$this->isDatabaseUsable()) {
+            // Do not try to load data from the database if it is not available.
+            return;
+        }
+
         SessionTracker::updateLastSessionActivity();
     }
 }
