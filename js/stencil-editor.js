@@ -457,3 +457,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
     };
 };
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = StencilEditor;
+}
