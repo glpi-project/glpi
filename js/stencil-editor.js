@@ -61,14 +61,17 @@ const StencilEditor = function (container, rand, zones_definition) {
             croppers.push(cropper);
             img.cropper = cropper;
 
-            // clear other croppers on interaction to enforce single mapping
-            ['pointerdown', 'touchstart', 'mousedown'].forEach((eventType) => {
-                cropper.container.addEventListener(eventType, () => {
-                    croppers.forEach((c) => {
-                        if (c !== cropper) {
-                            c.getCropperSelection().$clear();
-                        }
-                    });
+            // a zone is stored on a single side, so only one cropper may hold a selection
+            cropper.getCropperSelection().addEventListener('change', (e) => {
+                if (e.detail.width <= 0 || e.detail.height <= 0) {
+                    // ignore empty selections, else clearing a cropper would clear the others back
+                    return;
+                }
+
+                croppers.forEach((other_cropper) => {
+                    if (other_cropper !== cropper) {
+                        other_cropper.getCropperSelection().$clear();
+                    }
                 });
             });
         });
