@@ -3091,7 +3091,11 @@ class SearchTest extends DbTestCase
         ]);
 
         $sql = $this->cleanSQL($data['sql']['search']);
-        $this->assertStringNotContainsString('ORDER BY', $sql);
+        // Assert there is no top-level ORDER BY clause (only the internal ones of
+        // GROUP_CONCAT(... ORDER BY ...) which are part of the SELECT, not the sort).
+        // See glpi-project/glpi#25208: the no-ORDER-BY optimization for default asset
+        // lists must be preserved (commit 3dad2e1cab).
+        $this->assertStringNotMatchesRegularExpression('/ORDER BY .* (ASC|DESC) LIMIT/', $sql);
     }
 
 
