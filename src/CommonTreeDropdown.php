@@ -177,33 +177,6 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function addToDB()
-    {
-        try {
-            return parent::addToDB();
-        } catch (RuntimeException $e) {
-            // MySQL error 1062: Duplicate entry — handle gracefully instead of crashing
-            if (str_contains($e->getMessage(), '(1062)')) {
-                $message_text = sprintf(
-                    __('%1$s - %2$s'),
-                    $this->getTypeName(1),
-                    $this->fields['name'] ?? ''
-                );
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('Item not added: a duplicate already exists (%s)'),
-                        $message_text
-                    )),
-                    false,
-                    ERROR
-                );
-                return false;
-            }
-            throw $e;
-        }
-    }
-
-
     public function prepareInputForAdd($input)
     {
         return $this->adaptTreeFieldsFromUpdateOrAdd($input);
