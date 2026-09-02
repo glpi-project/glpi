@@ -67,6 +67,11 @@ class Plug extends CommonDBRelation
         return ['assets'];
     }
 
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -199,7 +204,6 @@ class Plug extends CommonDBRelation
             'WHERE'  => [
                 'itemtype_main' => $item::class,
                 'items_id_main' => $ID,
-                'is_deleted'    => false,
             ],
             'ORDER' => [
                 'number',
@@ -252,6 +256,7 @@ class Plug extends CommonDBRelation
             $entries[] = [
                 'name' => $plug->getLink(),
                 'number' => $plug->fields['number'],
+                'row_class' => $plug->fields['is_deleted'] ? 'table-danger' : '',
                 'type' => Dropdown::getDropdownName(PlugType::getTable(), $plug->fields['plugtypes_id']),
                 'itemtype' => $plug::class,
                 'items_id' => $plug->getID(),
