@@ -1550,8 +1550,8 @@ class OLATest extends DbTestCase
 
         // assert
         [SLM::TTO => $fetched_olas_tto_ids, SLM::TTR => $fetched_olas_ttr_ids] = OLA::splitIdsByType(array_merge($created_olas_tto_ids, $created_olas_ttr_ids));
-        $this->assertEqualsCanonicalizing($created_olas_ttr_ids, $fetched_olas_ttr_ids);
-        $this->assertEqualsCanonicalizing($created_olas_tto_ids, $fetched_olas_tto_ids);
+        $this->assertEqualsCanonicalizing($created_olas_ttr_ids, array_values($fetched_olas_ttr_ids));
+        $this->assertEqualsCanonicalizing($created_olas_tto_ids, array_values($fetched_olas_tto_ids));
     }
 
     /**
