@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Features\Clonable;
