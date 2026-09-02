@@ -387,7 +387,7 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $key => $data) {
             if (property_exists($data, 'speed')) {
-                $data->ifspeed = (int) $data->speed * 1000000;
+                $data->ifspeed = $this->getCanonicalInterfaceSpeed((int) $data->speed);
             }
             if (property_exists($data, 'mtu')) {
                 $data->ifmtu = $data->mtu;
@@ -666,7 +666,7 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $port) {
             if (property_exists($port, 'speed')) {
-                $port->ifspeed = (int) $port->speed * 1000000;
+                $port->ifspeed = $this->getCanonicalInterfaceSpeed((int) $port->speed);
             }
             if (property_exists($port, 'mtu')) {
                 $port->ifmtu = $port->mtu;
@@ -734,5 +734,22 @@ trait InventoryNetworkPort
     {
         global $CFG_GLPI;
         return $conf->component_networkcard == 1 && in_array($this->item::class, $CFG_GLPI['networkport_types']);
+    }
+
+    /**
+     * Convert a native inventory interface speed (Mbps) to bits per second (bps),
+     * as expected by the `ifspeed` SNMP standard column.
+     *
+     * This mirrors the `getCanonicalInterfaceSpeed()` function in the GLPI Agent.
+     *
+     * @param int $speed Speed value in Mbps as reported by the agent.
+     * @return int Speed in bps, or 0 if the input is not a valid positive integer.
+     */
+    private function getCanonicalInterfaceSpeed(int $speed): int
+    {
+        if ($speed <= 0) {
+            return 0;
+        }
+        return $speed * 1000000;
     }
 }
