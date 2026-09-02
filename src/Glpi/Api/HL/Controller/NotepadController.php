@@ -77,7 +77,7 @@ use User;
 
 final class NotepadController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         return [
             'Note' => [
@@ -92,8 +92,8 @@ final class NotepadController extends AbstractController
                     ],
                     'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                    'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_lastupdater', full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                    'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_lastupdater', name_field: ['name', 'username'], full_schema: 'User'),
                     'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'visible_from_ticket' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],

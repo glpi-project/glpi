@@ -68,7 +68,7 @@ final class AdministrationController extends AbstractController
 {
     use CRUDControllerTrait;
 
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         global $DB;
 
@@ -820,8 +820,8 @@ EOT,
                         'description' => 'ID',
                         'readOnly' => true,
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                    'substitute' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_substitute', full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                    'substitute' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_substitute', name_field: ['name', 'username'], full_schema: 'User'),
                 ],
             ],
         ];

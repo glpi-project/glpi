@@ -55,7 +55,7 @@ use User;
 #[Route(path: '/Tools', tags: ['Tools'])]
 final class ToolController extends AbstractController
 {
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         return [
             'Reminder' => [
@@ -79,7 +79,7 @@ final class ToolController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'date_begin' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
@@ -148,7 +148,7 @@ final class ToolController extends AbstractController
                         'description' => 'Whether the last fetch had errors',
                     ],
                     'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
@@ -218,7 +218,7 @@ final class ToolController extends AbstractController
                         ],
                     ],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'group' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,

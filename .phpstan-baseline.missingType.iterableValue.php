@@ -3524,12 +3524,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:getTeamItemtypes\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonITILObject\\:\\:getTeamRoles\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -12579,12 +12573,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Features\\\\TeamworkInterface\\:\\:getTeam\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Features/TeamworkInterface.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Features\\\\TeamworkInterface\\:\\:getTeamItemtypes\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Features/TeamworkInterface.php',
@@ -24950,12 +24938,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Project.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Project\\:\\:getTeamItemtypes\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Project.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Project\\:\\:getTeamRoles\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -25155,12 +25137,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method ProjectTask\\:\\:getRsetFromRRuleField\\(\\) return type has no value type specified in iterable type RRule\\\\RSet\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method ProjectTask\\:\\:getTeamItemtypes\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ProjectTask.php',
