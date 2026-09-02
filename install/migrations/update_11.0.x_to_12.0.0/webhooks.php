@@ -32,8 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Api\HL\Router;
-
 /**
  * @var Migration $migration
  */
@@ -43,26 +41,3 @@ use Glpi\Api\HL\Router;
 $migration->addField('glpi_webhooks', 'pinned_version', 'string', [
     'update' => "'2'",
 ]);
-
-// array_map: PHP turns numeric array keys into integers, and the column holds a string.
-$deprecated_majors = array_map(
-    'strval',
-    array_keys(
-        array_filter(
-            Router::getAPIMajorVersions(),
-            static fn(array $info): bool => $info['deprecated']
-        )
-    )
-);
-
-if ($deprecated_majors !== []) {
-    $deprecated_count = countElementsInTable('glpi_webhooks', ['pinned_version' => $deprecated_majors]);
-    if ($deprecated_count > 0) {
-        $migration->addWarningMessage(
-            sprintf(
-                __('%d webhooks are pinned to a deprecated API version. Update them to a supported version.'),
-                $deprecated_count
-            )
-        );
-    }
-}
