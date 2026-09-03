@@ -2427,9 +2427,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             (
                 isset($this->input["status"])
                 && $this->input["status"] != self::WAITING
+                && !in_array($this->input["status"], $solvedclosed)
             ) || (
                 isset($input["status"])
                 && $input["status"] != self::WAITING
+                && !in_array($input["status"], $solvedclosed)
             )
         ) {
             PendingReason_Item::deleteForItem($this);

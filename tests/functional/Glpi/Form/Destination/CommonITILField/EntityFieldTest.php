@@ -511,6 +511,65 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         );
     }
 
+    public function testEntityFromRequesterUsesConfiguredDefaultEntity(): void
+    {
+        // Arrange: create a form with an actor question used as the requester
+        $builder = new FormBuilder();
+        $builder->addQuestion("Requester", QuestionTypeRequester::class);
+        $form = $this->createForm($builder);
+
+        $requester_config = new RequesterFieldConfig(
+            strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+            specific_question_ids: [$this->getQuestionId($form, "Requester")]
+        );
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: RequesterField::getKey(),
+            config: $requester_config,
+        );
+
+        $form = Form::getById($form->getId());
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: EntityField::getKey(),
+            config: new EntityFieldConfig(strategy: EntityFieldStrategy::REQUESTER_ENTITY),
+        );
+
+        $admin_profile        = getItemByTypeName(Profile::class, "Super-Admin", true);
+        $selfservice_profile  = getItemByTypeName(Profile::class, "Self-Service", true);
+        $child_2 = getItemByTypeName(Entity::class, "_test_child_2", true);
+        $child_3 = getItemByTypeName(Entity::class, "_test_child_3", true);
+
+        // The user is assigned to two entities. Without a configured default
+        // entity, the "Self-Service" profile (GLPI's default profile) would
+        // win and the ticket would be created in $child_2 instead.
+        $user = $this->createItem(User::class, [
+            'name'          => 'My_user_with_default_entity',
+            '_profiles_id'  => $admin_profile,
+            '_entities_id'  => $child_3,
+            '_is_recursive' => true,
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'     => $user->getID(),
+            'profiles_id'  => $selfservice_profile,
+            'entities_id'  => $child_2,
+            'is_recursive' => true,
+        ]);
+
+        // The user explicitly configured their default entity (Preferences >
+        // Default entity) to be $child_3.
+        $this->updateItem(User::class, $user->getID(), ['entities_id' => $child_3]);
+
+        // Act: submit an answer to the form
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Requester" => "users_id-{$user->getID()}",
+        ]);
+
+        // Assert: the requester's configured default entity takes priority
+        // over the profile-based heuristics.
+        $this->assertEquals($child_3, $ticket->fields['entities_id']);
+    }
+
     private function sendFormAndAssertTicketEntity(
         Form $form,
         EntityFieldConfig $config,

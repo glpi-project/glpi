@@ -2029,10 +2029,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            // Do not display quotes
-            if (isset($this->fields['name'])) {
-                $this->fields['name'] = $this->fields['name'];
-            } else {
+            if (!isset($this->fields['name'])) {
                 //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $this->fields['name'] = sprintf(
                     __('%1$s - ID %2$d'),

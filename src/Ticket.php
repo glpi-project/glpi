@@ -3762,51 +3762,77 @@ JAVASCRIPT;
     {
         global $DB;
 
-        if (
-            !Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
-            && !Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())
-        ) {
+        $ticket_validation_rights = Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights());
+
+        if (!Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN, self::READGROUP, self::READMY]) && !$ticket_validation_rights) {
             return false;
         }
 
+        $search_users_id = [new QueryExpression('false')];
+        $search_assign = [new QueryExpression('false')];
+        $search_observer = [new QueryExpression('false')];
         $SELECT = ['glpi_tickets.id', 'glpi_tickets.date_mod'];
         $JOINS = [];
         $WHERE = [
             'glpi_tickets.is_deleted' => 0,
         ];
-        $search_users_id = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::REQUESTER,
-        ];
-        $search_assign = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::ASSIGN,
-        ];
-        $search_observer = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::OBSERVER,
-        ];
+
+        $table = $showgrouptickets ? Group_Ticket::getTable() : Ticket_User::getTable();
+        $reject_assign_user = [];
+        $reject_requester_or_assign_user = [];
 
         if ($showgrouptickets) {
-            $search_users_id  = [0];
-            $search_assign = [0];
-
             if (count($_SESSION['glpigroups'])) {
-                $search_assign = [
-                    'glpi_groups_tickets.groups_id'  => $_SESSION['glpigroups'],
-                    'glpi_groups_tickets.type'       => CommonITILActor::ASSIGN,
+                $reject_assign_user = [
+                    $table . '.groups_id' => $_SESSION['glpigroups'],
+                    $table . '.type'      => CommonITILActor::ASSIGN,
                 ];
-
-                if (Session::haveRight(self::$rightname, self::READGROUP)) {
-                    $search_users_id = [
-                        'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'      => CommonITILActor::REQUESTER,
-                    ];
-                    $search_observer = [
-                        'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'      => CommonITILActor::OBSERVER,
+                $reject_requester_or_assign_user = [
+                    $table . '.groups_id' => $_SESSION['glpigroups'],
+                    $table . '.type'      => [CommonITILActor::ASSIGN, CommonITILActor::REQUESTER],
+                ];
+                if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN])) {
+                    $search_assign = [
+                        $table . '.groups_id'  => $_SESSION['glpigroups'],
+                        $table . '.type'       => CommonITILActor::ASSIGN,
                     ];
                 }
+
+                if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READGROUP])) {
+                    $search_users_id = [
+                        $table . '.groups_id' => $_SESSION['glpigroups'],
+                        $table . '.type'      => CommonITILActor::REQUESTER,
+                    ];
+                    $search_observer = [
+                        $table . '.groups_id' => $_SESSION['glpigroups'],
+                        $table . '.type'      => CommonITILActor::OBSERVER,
+                    ];
+                }
+            }
+        } else {
+            $reject_assign_user = [
+                $table . '.users_id' => Session::getLoginUserID(),
+                $table . '.type'     => CommonITILActor::ASSIGN,
+            ];
+            $reject_requester_or_assign_user = [
+                $table . '.users_id' => Session::getLoginUserID(),
+                $table . '.type'     => [CommonITILActor::ASSIGN, CommonITILActor::REQUESTER],
+            ];
+            if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]) || $ticket_validation_rights) {
+                $search_users_id = [
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::REQUESTER,
+                ];
+                $search_observer = [
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::OBSERVER,
+                ];
+            }
+            if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN]) || $ticket_validation_rights) {
+                $search_assign = [
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::ASSIGN,
+                ];
             }
         }
 
@@ -3906,15 +3932,21 @@ JAVASCRIPT;
                     $WHERE,
                     $search_observer,
                     [
-                        'glpi_tickets.status'   => [
+                        Ticket::getTable() . '.status'   => [
                             self::INCOMING,
                             self::PLANNED,
                             self::ASSIGNED,
                             self::WAITING,
                         ],
-                        'NOT'                   => [
-                            $search_assign,
-                            $search_users_id,
+                    ],
+                    [
+                        Ticket::getTable() . '.id' => [
+                            'NOT IN',
+                            new QuerySubQuery([
+                                'SELECT' => $table . '.tickets_id',
+                                'FROM'   => $table,
+                                'WHERE'  => $reject_requester_or_assign_user,
+                            ]),
                         ],
                     ]
                 );
@@ -3987,13 +4019,22 @@ JAVASCRIPT;
                     $WHERE,
                     $search_users_id,
                     [
-                        'glpi_tickets.status'   => [
+                        Ticket::getTable() . '.status'   => [
                             self::INCOMING,
                             self::PLANNED,
                             self::ASSIGNED,
                             self::WAITING,
                         ],
-                        'NOT' => $search_assign,
+                    ],
+                    [
+                        Ticket::getTable() . '.id' => [
+                            'NOT IN',
+                            new QuerySubQuery([
+                                'SELECT' => $table . '.tickets_id',
+                                'FROM'   => $table,
+                                'WHERE'  => $reject_assign_user,
+                            ]),
+                        ],
                     ]
                 );
         }
@@ -5785,7 +5826,6 @@ JAVASCRIPT;
                         foreach ($tomerge as $fup2) {
                             $fup2['items_id'] = $merge_target_id;
                             $fup2['sourceitems_id'] = $id;
-                            $fup2['content'] = $fup2['content'];
                             $fup2['_disablenotif'] = true;
                             unset($fup2['id']);
                             if (!$fup->add($fup2)) {
@@ -5806,7 +5846,6 @@ JAVASCRIPT;
                         foreach ($tomerge as $task2) {
                             $task2['tickets_id'] = $merge_target_id;
                             $task2['sourceitems_id'] = $id;
-                            $task2['content'] = $task2['content'];
                             $task2['_disablenotif'] = true;
                             unset($task2['id']);
                             unset($task2['uuid']);
