@@ -74,8 +74,12 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         $links = static::getLinkedTo(static::$itemtype_1, $input[static::$items_id_1]);
         if (count($links)) {
             foreach ($links as $link) {
-                // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed
-                if ($link['items_id'] === $input[static::$items_id_1] || $link['items_id'] === $input[static::$items_id_2]) {
+                // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed.
+                // Compare both itemtype and items_id so that different itemtypes sharing the same id are not seen as duplicates.
+                if (
+                    ($link['itemtype'] === static::$itemtype_1 && $link['items_id'] === $input[static::$items_id_1])
+                    || ($link['itemtype'] === static::$itemtype_2 && $link['items_id'] === $input[static::$items_id_2])
+                ) {
                     if ((int) $link['link'] === self::LINK_TO && (int) $input['link'] === self::DUPLICATE_WITH) {
                         $link_item = getItemForItemtype($link['link_class']);
                         $link_item->delete(['id' => $link['id']]);
