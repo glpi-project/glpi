@@ -276,8 +276,12 @@ body.in_modal .kb-article {
         background-color 0.15s ease,
         box-shadow 0.15s ease;
 
-    &:hover {
-        background-color: var(--tblr-bg-surface-secondary);
+    &.active {
+        border: none;
+
+        &:not(:hover) {
+            background-color: unset;
+        }
     }
 
     &.kb-revision--selected {
