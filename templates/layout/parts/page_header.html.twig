@@ -88,9 +88,21 @@
                    {{ include('layout/parts/menu.html.twig') }}
 
 
+                  {#
+                   # The visible label is hidden once the sidebar is collapsed, which left the button
+                   # without any accessible name in the very state where it is needed to expand it
+                   # again. The `visually-hidden` label carries the name instead, and is kept in sync
+                   # with `aria-expanded` by `switchFoldMenu()`.
+                   #}
+                  {% set sidebar_is_folded = user_pref('fold_menu') %}
                   <p class="text-start">
-                     <button class="btn btn-sm btn-ghost-secondary  {{ is_debug_active ? 'mb-4' : 'mb-2' }} mx-auto reduce-menu d-none d-md-block">
-                        <span class="menu-label">{{ __('Collapse menu') }}</span>
+                     <button type="button" class="btn btn-sm btn-ghost-secondary  {{ is_debug_active ? 'mb-4' : 'mb-2' }} mx-auto reduce-menu d-none d-md-block"
+                             aria-controls="navbar-menu"
+                             aria-expanded="{{ sidebar_is_folded ? 'false' : 'true' }}"
+                             data-collapse-label="{{ __('Collapse menu') }}"
+                             data-expand-label="{{ __('Expand menu') }}">
+                        <span class="visually-hidden">{{ sidebar_is_folded ? __('Expand menu') : __('Collapse menu') }}</span>
+                        <span class="menu-label" aria-hidden="true">{{ __('Collapse menu') }}</span>
                      </button>
                   </p>
                </nav>
