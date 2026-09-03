@@ -39,8 +39,6 @@ use Project;
 use ProjectTask;
 use ProjectTaskLink;
 
-/* Test for inc/projecttasklink.class.php */
-
 class ProjectTaskLinkTest extends DbTestCase
 {
     public function testGetFromDBForItemIDs()
