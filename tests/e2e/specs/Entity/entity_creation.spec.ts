@@ -32,7 +32,6 @@
 import { randomUUID } from 'crypto';
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { GlpiPage } from '../../pages/GlpiPage';
-import { Api } from '../../utils/Api';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
@@ -42,26 +41,10 @@ test.describe('Entity', () => {
         await entity.resetToDefaultWorkerEntity();
     });
 
-    const getEntityIdByName = async (
-        api: Api,
-        name: string,
-    ): Promise<number> => {
-        const children = await api.getSubItems(
-            'Entity',
-            getWorkerEntityId(),
-            'Entity'
-        );
-        const child = children.find((entity) => entity.name === name);
-        expect(child, `Entity "${name}" not found`).toBeDefined();
-
-        return Number(child.id);
-    };
-
     test('Should be able to create a sub-subentity in a sub-entity context', async ({
         page,
         profile,
         entity,
-        api,
     }) => {
         await profile.set(Profiles.SuperAdmin);
         const glpi_page = new GlpiPage(page);
@@ -76,7 +59,12 @@ test.describe('Entity', () => {
         await page.getByLabel('Name').fill(subentity_name);
         await glpi_page.getButton("Add").click();
 
-        const subentity_id = await getEntityIdByName(api, subentity_name);
+        // GLPI redirects to the form of the newly created entity, which gives
+        // us its id
+        await page.waitForURL(/\/front\/entity\.form\.php\?id=\d+/);
+        const subentity_id = Number(
+            new URL(page.url()).searchParams.get('id')
+        );
         await entity.switchToWithoutRecursion(subentity_id);
 
         // We can create the sub-subentity (first child so recursive will be automatically set)

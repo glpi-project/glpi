@@ -137,7 +137,12 @@ test.describe("ITIL Task Template Preservation", () => {
         const glpi_page = new GlpiPage(page);
 
         const fixtures = await setupFixtures(api);
-        await page.goto(`/front/ticket.form.php?id=${fixtures.test_ticket_id}`);
+        // `forcetab` is mandatory: GLPI remembers the last opened tab per
+        // itemtype in the session, which is shared by all the tests of the
+        // worker (dropdown.spec.ts leaves it on the approvals tab).
+        await page.goto(
+            `/front/ticket.form.php?id=${fixtures.test_ticket_id}&forcetab=Ticket$main`
+        );
 
         const task = await doOpenTaskForm(page);
 
@@ -187,7 +192,12 @@ test.describe("ITIL Task Template Preservation", () => {
         const glpi_page = new GlpiPage(page);
 
         const fixtures = await setupFixtures(api);
-        await page.goto(`/front/ticket.form.php?id=${fixtures.test_ticket_id}`);
+        // `forcetab` is mandatory: GLPI remembers the last opened tab per
+        // itemtype in the session, which is shared by all the tests of the
+        // worker (dropdown.spec.ts leaves it on the approvals tab).
+        await page.goto(
+            `/front/ticket.form.php?id=${fixtures.test_ticket_id}&forcetab=Ticket$main`
+        );
 
         const task = await doOpenTaskForm(page);
 
@@ -214,7 +224,12 @@ test.describe("ITIL Task Template Preservation", () => {
         const glpi_page = new GlpiPage(page);
 
         const fixtures = await setupFixtures(api);
-        await page.goto(`/front/ticket.form.php?id=${fixtures.test_ticket_id}`);
+        // `forcetab` is mandatory: GLPI remembers the last opened tab per
+        // itemtype in the session, which is shared by all the tests of the
+        // worker (dropdown.spec.ts leaves it on the approvals tab).
+        await page.goto(
+            `/front/ticket.form.php?id=${fixtures.test_ticket_id}&forcetab=Ticket$main`
+        );
 
         const task = await doOpenTaskForm(page);
 

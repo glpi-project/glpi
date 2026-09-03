@@ -49,32 +49,47 @@ test.describe('setupAjaxDropdown()', () => {
             entities_id: getWorkerEntityId(),
         });
 
-        // open Ticket view on Approval tab
-        await page.goto(
-            `/front/ticket.form.php?id=${ticket_id}&forcetab=TicketValidation$1`
-        );
+        try {
+            // open Ticket view on Approval tab
+            await page.goto(
+                `/front/ticket.form.php?id=${ticket_id}&forcetab=TicketValidation$1`
+            );
 
-        // click on "Send an approval request" button
-        await glpi_page.getButton("Send an approval request").click();
+            // click on "Send an approval request" button
+            await glpi_page.getButton("Send an approval request").click();
 
-        // prepare to intercept the ajax call to getDropdownValue
-        const dropdown_value_response = page.waitForResponse(
-            '**/ajax/getDropdownValue.php'
-        );
+            // prepare to intercept the ajax call to getDropdownValue
+            const dropdown_value_response = page.waitForResponse(
+                '**/ajax/getDropdownValue.php'
+            );
 
-        // click "Approval step" dropdown to trigger the ajax call
-        // The label of this required field ends with a "*", it can not be
-        // matched exactly.
-        await glpi_page
-            .getDropdownByLabel("Approval step", undefined, false)
-            .click()
-        ;
+            // click "Approval step" dropdown to trigger the ajax call
+            // The label of this required field ends with a "*", it can not be
+            // matched exactly.
+            await glpi_page
+                .getDropdownByLabel("Approval step", undefined, false)
+                .click()
+            ;
 
-        // assert that the ajax call returned a single value
-        // having a single value, means that the display_emptychoice option set to false in twig's fields.dropdownField()
-        // is correctly interpreted as a boolean false by getDropdownValue()
-        const body = await (await dropdown_value_response).json();
-        expect(body.results).toHaveLength(1);
-        expect(body.results[0].text).toEqual("Approval");
+            // assert that the ajax call did not return the empty choice
+            // its absence means that the display_emptychoice option set to false in twig's fields.dropdownField()
+            // is correctly interpreted as a boolean false by getDropdownValue()
+            //
+            // The cypress version asserted a single result named "Approval". That
+            // does not hold here: `ValidationStep` is a global dropdown and other
+            // specs add their own steps, so only the empty choice is checked.
+            const body = await (await dropdown_value_response).json();
+            const results: { id: number, text: string }[] = body.results;
+            expect(results.filter((result) => result.id === 0)).toHaveLength(0);
+            expect(results.map((result) => result.text)).toContain("Approval");
+        } finally {
+            // GLPI remembers the last opened tab per itemtype in the session,
+            // which is shared by all the tests of the worker: restore the main
+            // tab so a spec reaching a ticket through a link (and thus without
+            // `forcetab`) is not sent to the approvals tab.
+            await page.goto(
+                `/front/ticket.form.php?id=${ticket_id}&forcetab=Ticket$main`
+            );
+        }
     });
 });

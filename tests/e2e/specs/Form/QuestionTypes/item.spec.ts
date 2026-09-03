@@ -104,22 +104,15 @@ test.describe('Item form question type', () => {
 test.describe('Item form question type - default values', () => {
     let form: FormPage;
     let form_id: number;
-    let entity_id: number;
 
     test.beforeEach(async ({ page, profile, entity, api, formImporter }) => {
         await profile.set(Profiles.SuperAdmin);
         form = new FormPage(page);
 
-        // The items used as default values are created in a dedicated sub
-        // entity so a rerun can not find the ones of the previous run.
-        entity_id = await api.createItem('Entity', {
-            name: `Entity ${randomUUID()}`,
-            entities_id: getWorkerEntityId(),
-        });
-
-        // The form importer creates the form in the worker entity, so stay
-        // there (with recursion, to see the items of the sub entity above).
-        await entity.switchToWithRecursion(getWorkerEntityId());
+        // The form importer creates the form in the worker entity, so make
+        // sure the session is on it: the form has to be *saved* by these
+        // tests.
+        await entity.resetToDefaultWorkerEntity();
         api.refreshSession();
 
         const info = await formImporter.importForm(
@@ -140,7 +133,7 @@ test.describe('Item form question type - default values', () => {
         await api.createItem('Ticket', {
             name: ticket_name,
             content: '',
-            entities_id: entity_id,
+            entities_id: getWorkerEntityId(),
         });
 
         const question = form.getLastQuestion();
@@ -152,7 +145,10 @@ test.describe('Item form question type - default values', () => {
             'Tickets'
         );
 
-        await form.doSetDropdownValue(
+        // The item dropdown is loaded through ajax and only returns a page of
+        // results, so the ticket has to be searched: the worker entity holds
+        // the tickets of every previous run.
+        await form.doSearchAndClickDropdownValue(
             form.getDropdownByLabel('Select an item', question)
                 .filter({ visible: true }),
             ticket_name,
@@ -171,7 +167,7 @@ test.describe('Item form question type - default values', () => {
         const category_name = `Test ITIL category ${randomUUID()}`;
         await api.createItem('ITILCategory', {
             name: category_name,
-            entities_id: entity_id,
+            entities_id: getWorkerEntityId(),
         });
 
         const question = form.getLastQuestion();
@@ -191,6 +187,8 @@ test.describe('Item form question type - default values', () => {
             .getDropdownByLabel('Select a dropdown item', question)
             .filter({ visible: true });
         await item_dropdown.click();
+        // Searched for the same reason as the ticket above
+        await form.page.keyboard.type(category_name);
         await form.page
             .getByRole('listbox')
             .getByRole('option', { name: category_name })

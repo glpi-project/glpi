@@ -149,18 +149,19 @@ test.describe('Helpdesk home page', () => {
 
         await page.goto('/Helpdesk');
 
-        // TODO: the cypress version expected 6 columns, including "Entity".
-        // `SearchOption::getDefaultToView()` only adds that column when more
-        // than one entity is active in the session; the cypress user browsed a
-        // whole entity tree while a playwright worker is pinned to its single
-        // (childless) worker entity, so only 5 columns are displayed here.
-        // TODO: the exact number of columns also comes from the global
-        // DisplayPreference rows with `users_id = 0`. It only holds as long as
-        // the specs that rewrite them stay out of the parallel suite.
+        // The cypress version asserted an exact count of 6 columns, including
+        // "Entity". That count is not stable under playwright:
+        // - `SearchOption::getDefaultToView()` only adds the "Entity" column
+        //   when more than one entity is active in the session, which depends
+        //   on whether the worker entity has sub entities (other specs create
+        //   some) and on the recursion flag left by the previous test;
+        // - it also depends on the global DisplayPreference rows with
+        //   `users_id = 0`, rewritten by the specs still on cypress.
+        // TODO: only the presence of the default columns is asserted; the
+        // exact column list could be checked again once the session state is
+        // fully deterministic.
         const assertDefaultColumns = async (): Promise<void> => {
             const tabpanel = page.getByRole('tabpanel');
-            const headers = tabpanel.getByRole('columnheader');
-            await expect(headers).toHaveCount(5);
             for (const name of [
                 'ID',
                 'Title',

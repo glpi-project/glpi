@@ -300,10 +300,6 @@ test.describe('Helpdesk Search with FormProvider', () => {
         await page.goto('/Helpdesk');
 
         // Search should find both.
-        // The cypress version searched the shared word "test"; the service
-        // catalog search only returns its top matches, and the forms left
-        // by the previous runs of this spec are all named "Test ...", so
-        // the unique id is searched instead (both names hold it).
         await getSearchInput(page).fill(unique_id);
 
         await expect(page.getByRole('link', { name: form_name }))

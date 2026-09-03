@@ -39,6 +39,13 @@ import {
     getWorkerUserId,
 } from '../../../utils/WorkerEntities';
 
+// The four scenarios all submit one of the two built-in forms, which live in
+// the root entity and are therefore shared by every worker. Cypress ran them
+// one after the other; running them in parallel makes two workers submit the
+// same form at the same time, which intermittently fails server side
+// ("Failed to submit form, please contact your administrator.").
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Default forms', () => {
     const setupFixtures = async (api: Api): Promise<string> => {
         const uuid = randomUUID();
