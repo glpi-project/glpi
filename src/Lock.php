@@ -425,7 +425,7 @@ TWIG, $twig_params);
                 $relation_item = new Asset_PeripheralAsset();
                 $show_checkbox = $relation_item->can($result['id'], UPDATE) || $relation_item->can($result['id'], PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Glpi\\Asset\\Asset_PeripheralAsset[" . ((int) $result['id']) . "]'>" : '',
+                    'chk' => $show_checkbox ? self::getUnlockCheckbox("Glpi\\Asset\\Asset_PeripheralAsset[" . ((int) $result['id']) . "]") : '',
                     'type' => $peripheral::getTypeName(),
                     'item' => $peripheral->getLink(),
                     'serial' => $peripheral->fields['serial'],
@@ -469,7 +469,7 @@ TWIG, $twig_params);
                 $item_disk->getFromResultSet($line);
                 $show_checkbox = $item_disk->can($line['id'], UPDATE) || $item_disk->can($item_disk->getID(), PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Item_Disk[{$item_disk->getID()}]'>" : '',
+                    'chk' => $show_checkbox ? self::getUnlockCheckbox("Item_Disk[{$item_disk->getID()}]") : '',
                     'item' => $item_disk->getLink(),
                     'partition' => $item_disk->fields['device'],
                     'mountpoint' => $item_disk->fields['mountpoint'],
@@ -511,7 +511,7 @@ TWIG, $twig_params);
                 $plug->getFromResultSet($line);
                 $show_checkbox = $plug->can($line['id'], UPDATE) || $plug->can($plug->getID(), PURGE);
                 $subtable['entries'][] = [
-                    'chk'           => $show_checkbox ? "<input type='checkbox' name='Plug[{$plug->getID()}]'>" : '',
+                    'chk'           => $show_checkbox ? self::getUnlockCheckbox("Plug[{$plug->getID()}]") : '',
                     'item'          => $plug->getLink(),
                     'type'          =>  Dropdown::getDropdownName(PlugType::getTable(), $plug->fields['plugtypes_id']),
                     'is_dynamic'    => Dropdown::getYesNo($plug->fields['is_dynamic']),
@@ -552,7 +552,7 @@ TWIG, $twig_params);
                 $remote_management->getFromResultSet($line);
                 $show_checkbox = $remote_management->can($line['id'], UPDATE) || $remote_management->can($remote_management->getID(), PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Item_RemoteManagement[{$remote_management->getID()}]'>" : '',
+                    'chk' => $show_checkbox ? self::getUnlockCheckbox("Item_RemoteManagement[{$remote_management->getID()}]") : '',
                     'item' => $remote_management->getLink(),
                     'type' => $remote_management->fields['type'],
                     'is_dynamic' => Dropdown::getYesNo($remote_management->fields['is_dynamic']),
@@ -615,7 +615,7 @@ TWIG, $twig_params);
                 }
             }
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='ItemVirtualMachine[{$item_vm->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("ItemVirtualMachine[{$item_vm->getID()}]") : '',
                 'type' => $item_vm::getTypeName(),
                 'uuid' => $item_vm->fields['uuid'],
                 'machine' => $url,
@@ -675,7 +675,7 @@ TWIG, $twig_params);
             $item_sv->getFromDB($data['id']);
             $show_checkbox = $item_sv->can($data['id'], UPDATE) || $item_sv->can($data['id'], PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='Item_SoftwareVersion[{$item_sv->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("Item_SoftwareVersion[{$item_sv->getID()}]") : '',
                 'software' => $data['software'],
                 'version' => $data['version'],
                 'date_install' => $item_sv->fields['date_install'],
@@ -749,7 +749,7 @@ TWIG, $twig_params);
             }
 
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='Item_SoftwareLicense[{$item_sl->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("Item_SoftwareLicense[{$item_sl->getID()}]") : '',
                 'license' => $slicence->fields['name'],
                 'software' => $software_name,
                 'version' => $version_name,
@@ -787,7 +787,7 @@ TWIG, $twig_params);
             $networkport->getFromResultSet($line);
             $show_checkbox = $networkport->can($networkport->getID(), UPDATE) || $networkport->can($networkport->getID(), PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='NetworkPort[{$networkport->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("NetworkPort[{$networkport->getID()}]") : '',
                 'item' => $networkport->getLink(),
                 'port_type' => $networkport->fields['instantiation_type'],
                 'mac' => $networkport->fields['mac'],
@@ -844,7 +844,7 @@ TWIG, $twig_params);
             }
 
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='NetworkName[{$networkname->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("NetworkName[{$networkname->getID()}]") : '',
                 'item' => $networkname->getLink(),
                 'fqdn' => $fqdn_name,
                 'placeholder' => '',
@@ -904,7 +904,7 @@ TWIG, $twig_params);
             $ipaddress->getFromResultSet($line);
             $show_checkbox = $ipaddress->can($ipaddress->getID(), UPDATE) || $ipaddress->can($ipaddress->getID(), PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='IPAddress[{$ipaddress->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("IPAddress[{$ipaddress->getID()}]") : '',
                 'item' => $ipaddress->fields['name'],
                 'version' => $ipaddress->fields['version'],
                 'placeholder' => '',
@@ -979,7 +979,7 @@ TWIG, $twig_params);
                     $object_link = "<a href='" . htmlescape($object_item_type->getLinkURL()) . "'>{$object_name}</a>";
 
                     $subtable['entries'][] = [
-                        'chk' => $show_checkbox ? "<input type='checkbox' name='" . htmlescape("{$type}[{$data['id']}") . "]'>" : '',
+                        'chk' => $show_checkbox ? self::getUnlockCheckbox("{$type}[{$data['id']}]") : '',
                         'item' => $object_link,
                         'placeholder_1' => '',
                         'placeholder_2' => '',
@@ -1024,7 +1024,7 @@ TWIG, $twig_params);
 
             $show_checkbox = $database_instance->can($database_instance->getID(), UPDATE) || $database_instance->can($database_instance->getID(), PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='DatabaseInstance[{$database_instance->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("DatabaseInstance[{$database_instance->getID()}]") : '',
                 'item' => $database_instance->getLink(),
                 'name' => $database_instance->getName(),
                 'version' => $database_instance->fields['version'],
@@ -1076,7 +1076,7 @@ TWIG, $twig_params);
 
             $show_checkbox = $domain_item->can($row['id'], UPDATE) || $domain_item->can($row['id'], PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='Domain_Item[" . ((int) $row['id']) . "]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("Domain_Item[" . ((int) $row['id']) . "]") : '',
                 'item' => $link,
                 'relation' => $relation_name,
                 'placeholder_1' => '',
@@ -1170,6 +1170,23 @@ TWIG, $twig_params);
             self::showForItem($item);
         }
         return true;
+    }
+
+    /**
+     * Build the "select this row" checkbox - which are rendered as raw HTML
+     * into `components/datatable.html.twig` of the locks table.
+     *
+     * @param string $name Input name, e.g. `Item_Disk[42]`
+     *
+     * @return string
+     */
+    private static function getUnlockCheckbox(string $name): string
+    {
+        return sprintf(
+            '<input type="checkbox" name="%s" aria-label="%s">',
+            htmlescape($name),
+            __s('Select item')
+        );
     }
 
     /**

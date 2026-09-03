@@ -407,7 +407,9 @@ HTML;
             }
             echo $html_tabs;
             echo "</ul>";
-            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2' id='" . htmlescape($tabdiv_id) . "-select'>$html_sele</select>";
+            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2'"
+                . " id='" . htmlescape($tabdiv_id) . "-select'"
+                . " aria-label='" . __s('Select a tab') . "'>$html_sele</select>";
 
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {
