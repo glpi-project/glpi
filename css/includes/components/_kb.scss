@@ -266,6 +266,14 @@ body.in_modal .kb-article {
     }
 }
 
+[data-glpi-revisions] > .list-group-item {
+    border: none;
+
+    &.active:not(:hover):not(.kb-revision--selected) {
+        background-color: transparent;
+    }
+}
+
 // KB revision comparison - side panel state
 .kb-sidepanel [data-glpi-current-version],
 .kb-sidepanel [data-glpi-revision-id],
