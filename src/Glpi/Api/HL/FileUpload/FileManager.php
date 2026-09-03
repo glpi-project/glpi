@@ -129,10 +129,13 @@ final class FileManager
             return UPLOAD_ERR_CANT_WRITE;
         }
         $dest = Document::getUploadFileValidLocationName(strtoupper($ext), $uploaded_file->getHash());
-        try {
-            $uploaded_file->moveTo(GLPI_DOC_DIR . '/' . $dest);
-        } catch (\RuntimeException $e) {
-            return UPLOAD_ERR_CANT_WRITE;
+        $target_path = GLPI_DOC_DIR . '/' . $dest;
+        if (!file_exists($target_path)) {
+            try {
+                $uploaded_file->moveTo($target_path);
+            } catch (\RuntimeException $e) {
+                return UPLOAD_ERR_CANT_WRITE;
+            }
         }
 
         return [
@@ -189,6 +192,10 @@ final class FileManager
             } catch (FilesystemException $e) {
                 return UPLOAD_ERR_CANT_WRITE;
             }
+        }
+        if (file_exists($dest)) {
+            // unique name collision, which is extremely unlikely but possible, so we just return an error
+            return UPLOAD_ERR_CANT_WRITE;
         }
         try {
             $uploaded_file->moveTo($dest);
