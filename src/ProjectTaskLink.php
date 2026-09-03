@@ -50,7 +50,7 @@ class ProjectTaskLink extends CommonDBRelation
     public static ?string $items_id_2 = 'projecttasks_id_target';
 
     /**
-     * @param array $projecttaskIds List of project task IDs
+     * @param int[] $projecttaskIds List of project task IDs
      * @return DBmysqlIterator
      * @used-by gantt plugin
      */
