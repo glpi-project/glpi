@@ -579,7 +579,7 @@ export class GlpiKnowbaseArticleController
 
         const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
         const entries = aside.querySelectorAll(
-            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] [data-glpi-kb-article-title]`
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] > .article-line [data-glpi-kb-article-title]`
         );
         for (const entry of entries) {
             entry.textContent = title;
@@ -598,7 +598,7 @@ export class GlpiKnowbaseArticleController
 
         const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
         const containers = aside.querySelectorAll(
-            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] [data-glpi-kb-article-illustration]`
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] > .article-line [data-glpi-kb-article-illustration]`
         );
 
         // The illustration picker preview already holds a freshly rendered node
