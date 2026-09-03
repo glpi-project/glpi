@@ -29,15 +29,25 @@
  *
  * ---------------------------------------------------------------------
  */
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '../../fixtures/glpi_fixture';
+import { Profiles } from '../../utils/Profiles';
 
-describe('Planning view', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin', true);
-    });
-    it('Accessibility', () => {
-        cy.visit('/front/planning.php');
-        cy.disableAnimations();
-        cy.get('#planning_container').injectAndCheckA11y();
+test.describe('Planning view', () => {
+    test('Accessibility', async ({ page, profile }) => {
+        await profile.set(Profiles.SuperAdmin);
+
+        await page.goto('/front/planning.php');
+
+        // Wait for the animations to be over
+        await page.waitForFunction(() =>
+            document.getAnimations().filter(a => a.playState === 'running').length === 0
+        );
+
+        const planning_a11y = await new AxeBuilder({ page })
+            .include('#planning_container')
+            .analyze()
+        ;
+        expect(planning_a11y.violations).toEqual([]);
     });
 });
