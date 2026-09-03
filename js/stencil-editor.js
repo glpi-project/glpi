@@ -60,6 +60,20 @@ const StencilEditor = function (container, rand, zones_definition) {
             const cropper = new window.Cropper(img);
             croppers.push(cropper);
             img.cropper = cropper;
+
+            // a zone is stored on a single side, so only one cropper may hold a selection
+            cropper.getCropperSelection().addEventListener('change', (e) => {
+                if (e.detail.width <= 0 || e.detail.height <= 0) {
+                    // ignore empty selections, else clearing a cropper would clear the others back
+                    return;
+                }
+
+                croppers.forEach((other_cropper) => {
+                    if (other_cropper !== cropper) {
+                        other_cropper.getCropperSelection().$clear();
+                    }
+                });
+            });
         });
 
         // set default state of croppers objects
@@ -464,3 +478,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
     };
 };
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = StencilEditor;
+}
