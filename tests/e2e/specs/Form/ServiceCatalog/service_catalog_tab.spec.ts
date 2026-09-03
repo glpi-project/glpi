@@ -134,9 +134,15 @@ test.describe('Service catalog tab', () => {
         // GLPI add "»" prefix to common tree dropdown values
         const category_dropdown_value = `»${category_name}`;
 
+        // `answer` and not `content`: `glpi_knowbaseitems` has no `content`
+        // column, so the cypress version silently created the item with a NULL
+        // answer. GLPI's knowledge base search then crashes on it
+        // (`RichText::getTextFromHtml(null)` in `KnowbaseItemController`),
+        // which breaks every later search hitting this row, in this run and in
+        // all the next ones.
         const knowbase_item_id = await api.createItem('KnowbaseItem', {
             'name': `Test knowbase item for service_catalog_tab.cy.js ${randomUUID()}`,
-            'content': "My content",
+            'answer': "My content",
             'entities_id': getWorkerEntityId(),
         });
         const tab = 'Glpi\\Form\\ServiceCatalog\\ServiceCatalog$1';
