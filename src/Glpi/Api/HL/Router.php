@@ -57,6 +57,7 @@ use Glpi\Api\HL\Controller\NotificationController;
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Controller\ReportController;
 use Glpi\Api\HL\Controller\RuleController;
+use Glpi\Api\HL\Controller\SecurityController;
 use Glpi\Api\HL\Controller\SetupController;
 use Glpi\Api\HL\Controller\ToolController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
@@ -268,6 +269,7 @@ EOT;
             self::$instance->registerController(new KnowbaseController());
             self::$instance->registerController(new InventoryController());
             self::$instance->registerController(new NotificationController());
+            self::$instance->registerController(new SecurityController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {

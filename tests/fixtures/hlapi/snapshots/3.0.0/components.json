@@ -11774,6 +11774,110 @@
                 }
             }
         },
+        "LoginSession": {
+            "type": "object",
+            "x-itemtype": "Glpi\\Security\\User_SessionHistory",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "user": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "username": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User",
+                    "readOnly": true
+                },
+                "login_session_uid": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "ip_address": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "user_agent_string": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "user_agent_info": {
+                    "type": "object",
+                    "x-full-schema": "UserAgentInfo",
+                    "readOnly": true,
+                    "properties": {
+                        "user_agent_string": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
+                },
+                "auth_type": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        9
+                    ],
+                    "readOnly": true
+                },
+                "logged_in_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "last_activity_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "logged_out_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "logout_reason": {
+                    "type": "string",
+                    "enum": [
+                        "user",
+                        "expired",
+                        "admin"
+                    ],
+                    "readOnly": true
+                },
+                "revoker": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "username": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User",
+                    "readOnly": true
+                }
+            }
+        },
         "ManualLink": {
             "x-itemtype": "ManualLink",
             "type": "object",
@@ -25663,6 +25767,542 @@
                 "substitution_end_date": {
                     "type": "string",
                     "format": "date-time"
+                }
+            }
+        },
+        "UserAgentInfo": {
+            "type": "object",
+            "properties": {
+                "user_agent_string": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "is_bot": {
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "client": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "version": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
+                },
+                "os": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "readOnly": true,
+                            "enum": {
+                                "AIX": "AIX",
+                                "AND": "Android",
+                                "ADR": "Android TV",
+                                "ALP": "Alpine Linux",
+                                "AMZ": "Amazon Linux",
+                                "AMG": "AmigaOS",
+                                "ARM": "Armadillo OS",
+                                "ARO": "AROS",
+                                "ATV": "tvOS",
+                                "ARC": "ArcaOS",
+                                "ARL": "Arch Linux",
+                                "AOS": "AOSC OS",
+                                "ASP": "ASPLinux",
+                                "AZU": "Azure Linux",
+                                "BTR": "BackTrack",
+                                "SBA": "Bada",
+                                "BYI": "Baidu Yi",
+                                "BEO": "BeOS",
+                                "BLB": "BlackBerry OS",
+                                "QNX": "BlackBerry Tablet OS",
+                                "PAN": "blackPanther OS",
+                                "BOS": "Bliss OS",
+                                "BMP": "Brew",
+                                "BSN": "BrightSignOS",
+                                "BS1": "BSD",
+                                "CAI": "Caixa M\u00e1gica",
+                                "CES": "CentOS",
+                                "CST": "CentOS Stream",
+                                "CLO": "Clear Linux OS",
+                                "CLR": "ClearOS Mobile",
+                                "COS": "Chrome OS",
+                                "CRS": "Chromium OS",
+                                "CHN": "China OS",
+                                "CON": "Contiki",
+                                "COL": "Coolita OS",
+                                "CYN": "CyanogenMod",
+                                "DEB": "Debian",
+                                "DEE": "Deepin",
+                                "DFB": "DragonFly",
+                                "DVK": "DVKBuntu",
+                                "ELE": "ElectroBSD",
+                                "ELM": "elementary OS",
+                                "EUL": "EulerOS",
+                                "FED": "Fedora",
+                                "FEN": "Fenix",
+                                "FOS": "Firefox OS",
+                                "FIR": "Fire OS",
+                                "FOR": "Foresight Linux",
+                                "FRE": "Freebox",
+                                "BSD": "FreeBSD",
+                                "FRI": "FRITZ!OS",
+                                "FYD": "FydeOS",
+                                "FUC": "Fuchsia",
+                                "GNT": "Gentoo",
+                                "GNX": "GENIX",
+                                "GEO": "GEOS",
+                                "GHO": "GhostBSD",
+                                "GNS": "gNewSense",
+                                "GRI": "GridOS",
+                                "GTV": "Google TV",
+                                "HPX": "HP-UX",
+                                "HAI": "Haiku OS",
+                                "IPA": "iPadOS",
+                                "HAR": "HarmonyOS",
+                                "HNX": "HarmonyOS NEXT",
+                                "HAS": "HasCodingOS",
+                                "HEL": "HELIX OS",
+                                "IRI": "IRIX",
+                                "INF": "Inferno",
+                                "JME": "Java ME",
+                                "JOL": "Joli OS",
+                                "KOS": "KaiOS",
+                                "KAL": "Kali",
+                                "KAN": "Kanotix",
+                                "KIN": "KIN OS",
+                                "KOL": "KolibriOS",
+                                "KNO": "Knoppix",
+                                "KTV": "KreaTV",
+                                "KBT": "Kubuntu",
+                                "LIN": "GNU/Linux",
+                                "LEA": "LeafOS",
+                                "LND": "LindowsOS",
+                                "LNS": "Linspire",
+                                "LEN": "Lineage OS",
+                                "LPU": "Linpus",
+                                "LIR": "Liri OS",
+                                "LOO": "Loongnix",
+                                "LBT": "Lubuntu",
+                                "LOS": "Lumin OS",
+                                "LUN": "LuneOS",
+                                "VLN": "VectorLinux",
+                                "MAC": "Mac",
+                                "MAE": "Maemo",
+                                "MAG": "Mageia",
+                                "MDR": "Mandriva",
+                                "SMG": "MeeGo",
+                                "MET": "Meta Horizon",
+                                "MNX": "MINIX",
+                                "MOS": "Mocor OS",
+                                "MCD": "MocorDroid",
+                                "MON": "moonOS",
+                                "EZX": "Motorola EZX",
+                                "MIN": "Mint",
+                                "MLD": "MildWild",
+                                "MOR": "MorphOS",
+                                "NBS": "NetBSD",
+                                "MTK": "MTK / Nucleus",
+                                "MRE": "MRE",
+                                "NXT": "NeXTSTEP",
+                                "NWS": "NEWS-OS",
+                                "WII": "Nintendo",
+                                "NDS": "Nintendo Mobile",
+                                "NOV": "Nova",
+                                "NTX": "NuttX",
+                                "OS2": "OS/2",
+                                "T64": "OSF1",
+                                "OSS": "openSUSE",
+                                "OBS": "OpenBSD",
+                                "OHS": "OpenHarmony",
+                                "OVS": "OpenVMS",
+                                "OVZ": "OpenVZ",
+                                "OWR": "OpenWrt",
+                                "OTV": "Opera TV",
+                                "ORA": "Oracle Linux",
+                                "ORD": "Ordissimo",
+                                "ORS": "Orsay",
+                                "PAR": "Pardus",
+                                "PCL": "PCLinuxOS",
+                                "PIC": "PICO OS",
+                                "PLN": "Plan 9",
+                                "PLA": "Plasma Mobile",
+                                "PSP": "PlayStation Portable",
+                                "PS3": "PlayStation",
+                                "PVE": "Proxmox VE",
+                                "PUF": "Puffin OS",
+                                "PUR": "PureOS",
+                                "QTP": "Qtopia",
+                                "PIO": "Raspberry Pi OS",
+                                "RAS": "Raspbian",
+                                "RHT": "Red Hat",
+                                "RST": "Red Star",
+                                "RED": "RedOS",
+                                "REV": "Revenge OS",
+                                "RIS": "risingOS",
+                                "ROS": "RISC OS",
+                                "ROC": "Rocky Linux",
+                                "ROK": "Roku OS",
+                                "RSO": "Rosa",
+                                "ROU": "RouterOS",
+                                "REM": "Remix OS",
+                                "RRS": "Resurrection Remix OS",
+                                "REX": "REX",
+                                "RZD": "RazoDroiD",
+                                "RXT": "RTOS & Next",
+                                "SAB": "Sabayon",
+                                "SSE": "SUSE",
+                                "SAF": "Sailfish OS",
+                                "SCI": "Scientific Linux",
+                                "SEE": "SeewoOS",
+                                "SER": "SerenityOS",
+                                "SIR": "Sirin OS",
+                                "SLW": "Slackware",
+                                "SMA": "Smartisan OS",
+                                "SOS": "Solaris",
+                                "SBL": "Star-Blade OS",
+                                "SYL": "Syllable",
+                                "SYM": "Symbian",
+                                "SYS": "Symbian OS",
+                                "S40": "Symbian OS Series 40",
+                                "S60": "Symbian OS Series 60",
+                                "SY3": "Symbian^3",
+                                "TEN": "TencentOS",
+                                "TDX": "ThreadX",
+                                "TIT": "Titan OS",
+                                "TIZ": "Tizen",
+                                "TIV": "TiVo OS",
+                                "TOS": "TmaxOS",
+                                "TUR": "Turbolinux",
+                                "UBT": "Ubuntu",
+                                "ULT": "ULTRIX",
+                                "UOS": "UOS",
+                                "VID": "VIDAA",
+                                "VIZ": "ViziOS",
+                                "WAS": "watchOS",
+                                "WER": "Wear OS",
+                                "WTV": "WebTV",
+                                "WHS": "Whale OS",
+                                "WIN": "Windows",
+                                "WCE": "Windows CE",
+                                "WIO": "Windows IoT",
+                                "WMO": "Windows Mobile",
+                                "WPH": "Windows Phone",
+                                "WRT": "Windows RT",
+                                "WPO": "WoPhone",
+                                "XBX": "Xbox",
+                                "XBT": "Xubuntu",
+                                "YNS": "YunOS",
+                                "ZEN": "Zenwalk",
+                                "ZOR": "ZorinOS",
+                                "IOS": "iOS",
+                                "POS": "palmOS",
+                                "WEB": "Webian",
+                                "WOS": "webOS"
+                            }
+                        },
+                        "family": {
+                            "type": "string",
+                            "readOnly": true,
+                            "enum": {
+                                "Android": [
+                                    "AND",
+                                    "CYN",
+                                    "FIR",
+                                    "REM",
+                                    "RZD",
+                                    "MLD",
+                                    "MCD",
+                                    "YNS",
+                                    "GRI",
+                                    "HAR",
+                                    "ADR",
+                                    "CLR",
+                                    "BOS",
+                                    "REV",
+                                    "LEN",
+                                    "SIR",
+                                    "RRS",
+                                    "WER",
+                                    "PIC",
+                                    "ARM",
+                                    "HEL",
+                                    "BYI",
+                                    "RIS",
+                                    "PUF",
+                                    "LEA",
+                                    "MET",
+                                    "SMA"
+                                ],
+                                "AmigaOS": [
+                                    "AMG",
+                                    "MOR",
+                                    "ARO"
+                                ],
+                                "BlackBerry": [
+                                    "BLB",
+                                    "QNX"
+                                ],
+                                "Brew": [
+                                    "BMP"
+                                ],
+                                "BeOS": [
+                                    "BEO",
+                                    "HAI"
+                                ],
+                                "Chrome OS": [
+                                    "COS",
+                                    "CRS",
+                                    "FYD",
+                                    "SEE"
+                                ],
+                                "Firefox OS": [
+                                    "FOS",
+                                    "KOS"
+                                ],
+                                "Gaming Console": [
+                                    "WII",
+                                    "PS3"
+                                ],
+                                "Google TV": [
+                                    "GTV"
+                                ],
+                                "IBM": [
+                                    "OS2",
+                                    "ARC"
+                                ],
+                                "iOS": [
+                                    "IOS",
+                                    "ATV",
+                                    "WAS",
+                                    "IPA"
+                                ],
+                                "RISC OS": [
+                                    "ROS"
+                                ],
+                                "GNU/Linux": [
+                                    "LIN",
+                                    "ARL",
+                                    "DEB",
+                                    "KNO",
+                                    "MIN",
+                                    "UBT",
+                                    "KBT",
+                                    "XBT",
+                                    "LBT",
+                                    "FED",
+                                    "RHT",
+                                    "VLN",
+                                    "MDR",
+                                    "GNT",
+                                    "SAB",
+                                    "SLW",
+                                    "SSE",
+                                    "CES",
+                                    "BTR",
+                                    "SAF",
+                                    "ORD",
+                                    "TOS",
+                                    "RSO",
+                                    "DEE",
+                                    "FRE",
+                                    "MAG",
+                                    "FEN",
+                                    "CAI",
+                                    "PCL",
+                                    "HAS",
+                                    "LOS",
+                                    "DVK",
+                                    "ROK",
+                                    "OWR",
+                                    "OTV",
+                                    "KTV",
+                                    "PUR",
+                                    "PLA",
+                                    "FUC",
+                                    "PAR",
+                                    "FOR",
+                                    "MON",
+                                    "KAN",
+                                    "ZEN",
+                                    "LND",
+                                    "LNS",
+                                    "CHN",
+                                    "AMZ",
+                                    "TEN",
+                                    "CST",
+                                    "NOV",
+                                    "ROU",
+                                    "ZOR",
+                                    "RED",
+                                    "KAL",
+                                    "ORA",
+                                    "VID",
+                                    "TIV",
+                                    "BSN",
+                                    "RAS",
+                                    "UOS",
+                                    "PIO",
+                                    "FRI",
+                                    "LIR",
+                                    "WEB",
+                                    "SER",
+                                    "ASP",
+                                    "AOS",
+                                    "LOO",
+                                    "EUL",
+                                    "SCI",
+                                    "ALP",
+                                    "CLO",
+                                    "ROC",
+                                    "OVZ",
+                                    "PVE",
+                                    "RST",
+                                    "EZX",
+                                    "GNS",
+                                    "JOL",
+                                    "TUR",
+                                    "QTP",
+                                    "WPO",
+                                    "PAN",
+                                    "VIZ",
+                                    "AZU",
+                                    "COL",
+                                    "OSS",
+                                    "ELM",
+                                    "LPU"
+                                ],
+                                "Mac": [
+                                    "MAC"
+                                ],
+                                "Mobile Gaming Console": [
+                                    "PSP",
+                                    "NDS",
+                                    "XBX"
+                                ],
+                                "OpenHarmony": [
+                                    "OHS",
+                                    "HNX"
+                                ],
+                                "OpenVMS": [
+                                    "OVS"
+                                ],
+                                "Real-time OS": [
+                                    "MTK",
+                                    "TDX",
+                                    "MRE",
+                                    "JME",
+                                    "REX",
+                                    "RXT",
+                                    "KOL",
+                                    "MOS",
+                                    "NTX"
+                                ],
+                                "Other Mobile": [
+                                    "WOS",
+                                    "POS",
+                                    "SBA",
+                                    "TIZ",
+                                    "SMG",
+                                    "MAE",
+                                    "LUN",
+                                    "GEO",
+                                    "CON"
+                                ],
+                                "Symbian": [
+                                    "SYM",
+                                    "SYS",
+                                    "SY3",
+                                    "S60",
+                                    "S40"
+                                ],
+                                "Unix": [
+                                    "SOS",
+                                    "AIX",
+                                    "HPX",
+                                    "BSD",
+                                    "NBS",
+                                    "OBS",
+                                    "DFB",
+                                    "SYL",
+                                    "IRI",
+                                    "T64",
+                                    "INF",
+                                    "ELE",
+                                    "GNX",
+                                    "ULT",
+                                    "NWS",
+                                    "NXT",
+                                    "SBL",
+                                    "BS1",
+                                    "GHO",
+                                    "PLN",
+                                    "MNX"
+                                ],
+                                "WebTV": [
+                                    "WTV"
+                                ],
+                                "Windows": [
+                                    "WIN"
+                                ],
+                                "Windows Mobile": [
+                                    "WPH",
+                                    "WMO",
+                                    "WCE",
+                                    "WRT",
+                                    "WIO",
+                                    "KIN"
+                                ],
+                                "Other Smart TV": [
+                                    "WHS",
+                                    "TIT",
+                                    "ORS"
+                                ]
+                            }
+                        },
+                        "version": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
+                },
+                "device": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "readOnly": true,
+                            "enum": [
+                                "desktop",
+                                "smartphone",
+                                "tablet",
+                                "feature phone",
+                                "console",
+                                "tv",
+                                "car browser",
+                                "smart display",
+                                "camera",
+                                "portable media player",
+                                "phablet",
+                                "smart speaker",
+                                "wearable",
+                                "peripheral"
+                            ]
+                        },
+                        "brand": {
+                            "type": "string",
+                            "readOnly": true
+                        },
+                        "model": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
                 }
             }
         },

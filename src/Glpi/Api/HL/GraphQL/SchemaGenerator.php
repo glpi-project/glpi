@@ -70,6 +70,7 @@ final readonly class SchemaGenerator
                     && (
                         (isset($schema_info['x-itemtype']) && !$has_custom_resolver)
                         || ($has_custom_resolver && $schema_info['x-graphql-resolver'] !== null)
+                        || ($schema_info['x-graphql-noquery'] ?? false)
                     )
                 );
                 if (!$should_have_query) {
@@ -127,6 +128,9 @@ final readonly class SchemaGenerator
                         'order' => ['type' => Type::string()],
                     ],
                 ];
+                if (isset($schema_info['resolver'])) {
+                    $query_type_config['fields'][$schema_name]['resolve'] = ($schema_info['resolver'])(...);
+                }
             }
         }
         /** @phpstan-ignore-next-line */
