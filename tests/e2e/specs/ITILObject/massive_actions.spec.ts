@@ -29,13 +29,12 @@
  *
  * ---------------------------------------------------------------------
  */
+import { expect, test } from '../../fixtures/glpi_fixture';
+import { GlpiPage } from '../../pages/GlpiPage';
+import { Profiles } from '../../utils/Profiles';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-describe("Massive actions on ITIL objects", () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin');
-    });
-
+test.describe("Massive actions on ITIL objects", () => {
     // List ITIL objects that have a "Ticket" tab from which they can resolve
     // linked tickets.
     const itil_types_than_can_solve_tickets = [
@@ -55,46 +54,54 @@ describe("Massive actions on ITIL objects", () => {
         },
     ];
     for (const itil_type of itil_types_than_can_solve_tickets) {
-        it(`can solve linked tickets (${itil_type.type})`, () => {
+        test(`can solve linked tickets (${itil_type.type})`, async ({
+            page,
+            profile,
+            api,
+        }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const glpi_page = new GlpiPage(page);
+
             // Create a ITIL item with a linked ticket.
-            cy.createWithAPI(itil_type.type, {
+            const itil_id = await api.createItem(itil_type.type, {
                 'name': "My ITIL object",
                 'content': "My ITIL object content",
-            }).as('itil_id');
-            cy.createWithAPI('Ticket', {
+                'entities_id': getWorkerEntityId(),
+            });
+            const ticket_id = await api.createItem('Ticket', {
                 'name': "My ticket",
                 'content': "My ticket content",
-            }).as('ticket_id');
-            cy.getMany(["@itil_id", "@ticket_id"]).then(([itil_id, ticket_id]) => {
-                cy.createWithAPI(itil_type.link_type, {
-                    [itil_type.fkey]: itil_id,
-                    'tickets_id': ticket_id,
-                });
+                'entities_id': getWorkerEntityId(),
+            });
+            await api.createItem(itil_type.link_type, {
+                [itil_type.fkey]: itil_id,
+                'tickets_id': ticket_id,
             });
 
             // Go to the itil item on the "Tickets" tab.
-            cy.get('@itil_id').then((itil_id) => {
-                cy.visit(`/front/${itil_type.url}?id=${itil_id}&forcetab=${itil_type.tab}`);
-            });
+            await page.goto(
+                `/front/${itil_type.url}?id=${itil_id}&forcetab=${itil_type.tab}`
+            );
 
             // Fill resolve form through massive actions.
-            cy.findByRole('checkbox', {name: "Check all"}).check();
-            cy.findByRole('button', {name: "Actions"}).click();
-            cy.getDropdownByLabelText("Action").selectDropdownValue("Solve tickets");
-            cy.findByLabelText('Solution').awaitTinyMCE().type('My solution');
+            await glpi_page.getCheckbox("Check all").check();
+
+            await page.getByRole('button', { name: "Actions" }).click();
+            await glpi_page.doSetDropdownValue(
+                glpi_page.getDropdownByLabel("Action"),
+                "Solve tickets"
+            );
+            const solution = await glpi_page.initRichTextByLabel('Solution');
+            await solution.fill('My solution');
 
             // Submit action.
-            cy.findByRole('button', {name: "Post"}).click();
-            cy.findByRole('alert')
-                .contains('Operation successful')
-                .should('be.visible')
+            await glpi_page.getButton("Post").click();
+            await expect(glpi_page.getAlert('Operation successful'))
+                .toBeVisible()
             ;
-            cy.get('@ticket_id').then((ticket_id) => {
-                cy.getWithAPI('Ticket', ticket_id).then((ticket) => {
-                    expect(ticket.status).to.equal(5);
-                });
-            });
+
+            const ticket = await api.getItem('Ticket', ticket_id);
+            expect(ticket.status).toEqual(5);
         });
     }
-
 });
