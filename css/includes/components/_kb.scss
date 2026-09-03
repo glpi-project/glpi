@@ -1274,7 +1274,7 @@ body.in_modal .kb-editor-reserved {
 
 [data-main-page-aside="knowbaseitem"] {
     max-width: 300px;
-    background-color: #fff;
+    background-color: var(--tblr-bg-surface);
 
     .node,
     .article {
