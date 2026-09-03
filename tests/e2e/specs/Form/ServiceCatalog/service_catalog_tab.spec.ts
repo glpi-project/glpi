@@ -38,14 +38,29 @@ import { Profiles } from '../../../utils/Profiles';
 import { getWorkerEntityId } from '../../../utils/WorkerEntities';
 
 test.describe('Service catalog tab', () => {
+    // `Glpi\Form\Category` has no entity, so it is visible to every worker:
+    // purge it once the test is done to keep the shared list small.
+    const created_category_ids: number[] = [];
+
+    test.afterEach(async ({ api }) => {
+        while (created_category_ids.length > 0) {
+            await api.purgeItem(
+                'Glpi\\Form\\Category',
+                created_category_ids.pop() as number
+            );
+        }
+    });
+
     const setupCategory = async (api: Api): Promise<string> => {
         const uid = randomUUID();
         const category_name = `Category ${uid}`;
 
-        await api.createItem('Glpi\\Form\\Category', {
-            'name': category_name,
-            'description': "my description",
-        });
+        created_category_ids.push(
+            await api.createItem('Glpi\\Form\\Category', {
+                'name': category_name,
+                'description': "my description",
+            })
+        );
 
         return category_name;
     };
