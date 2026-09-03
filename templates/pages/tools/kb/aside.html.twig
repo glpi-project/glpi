@@ -104,45 +104,57 @@
     </div>
 </div>
 
-<div
-    class="card-body flex-grow-0"
-    data-glpi-kb-aside-favorites
-    data-testid="kb-aside-favorites"
-    {{ hide_favorites ? 'data-glpi-kb-aside-favorites-hidden' : '' }}
->
-    <h4 class="card-title fw-bold fs-4">
-        <i class="ti ti-star-filled me-1 fs-5 text-yellow" aria-hidden="true"></i>
-        {{ __("Favorites") }}
-    </h4>
-        <ul class="kb-tree ps-0" aria-label="{{ __('Favorite articles') }}">
-            {% for article in favorites %}
-                {% if article.is_current %}
-                    {{ macros.render_article(
-                        article,
-                        false,
-                        show_actions,
-                        true,
-                        current_is_favorite ? 'active' : 'pending',
-                    ) }}
-                {% else %}
-                    {{ macros.render_article(article, false, show_actions, true) }}
-                {% endif %}
-            {% endfor %}
-        </ul>
+<div id="kb-aside-accordion" class="accordion accordion-flush overflow-y-auto">
+    <div class="accordion-item" data-glpi-kb-aside-favorites data-testid="kb-aside-favorites">
+        <h4 id="kb-aside-favorites-header" class="accordion-header fw-bold fs-4">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#kb-aside-favorites-collapse" aria-expanded="false" aria-controls="kb-aside-favorites-collapse">
+                <span>
+                    <i class="ti ti-star-filled me-1 fs-5 text-yellow" aria-hidden="true"></i>
+                    {{ __('Favorites') }}
+                </span>
+                <i class="ti ti-chevron-down ms-auto" aria-hidden="true"></i>
+            </button>
+        </h4>
+        <div id="kb-aside-favorites-collapse" class="accordion-collapse" aria-labelledby="kb-aside-favorites-header" data-bs-parent="#kb-aside-accordion">
+            <div class="accordion-body">
+                <ul class="kb-tree ps-0" aria-label="{{ __('Favorite articles') }}">
+                    {% for article in favorites %}
+                        {% if article.is_current %}
+                            {{ macros.render_article(
+                                article,
+                                false,
+                                show_actions,
+                                true,
+                                current_is_favorite ? 'active' : 'pending',
+                            ) }}
+                        {% else %}
+                            {{ macros.render_article(article, false, show_actions, true) }}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item" data-glpi-kb-aside-tree data-glpi-kb-root-id="{{ root_id }}" data-testid="aside-tree">
+        <h4 id="kb-aside-tree-header" class="accordion-header fw-bold fs-4">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#kb-aside-tree-collapse" aria-expanded="false" aria-controls="kb-aside-tree-collapse">
+                <span>
+                    <i class="ti ti-list-search me-1 fs-5" aria-hidden="true"></i>
+                    {{ __('All articles') }}
+                </span>
+                <i class="ti ti-chevron-down ms-auto" aria-hidden="true"></i>
+            </button>
+        </h4>
+        <div id="kb-aside-tree-collapse" class="accordion-collapse" aria-labelledby="kb-aside-tree-header" data-bs-parent="#kb-aside-accordion">
+            <div class="accordion-body">
+                {{ include('pages/tools/kb/aside_tree.html.twig') }}
+                <p class="text-muted" data-glpi-kb-aside-no-results hidden>
+                    {{ __("No articles found.") }}
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div
-    class="card-body"
-    data-glpi-kb-aside-tree
-    data-glpi-kb-root-id="{{ root_id }}"
-    data-testid="aside-tree"
->
-    {{ include('pages/tools/kb/aside_tree.html.twig') }}
-    <p class="text-muted" data-glpi-kb-aside-no-results hidden>
-        {{ __("No articles found.") }}
-    </p>
-</div>
-
 </div>
 
 {# Static import: evaluated before DOMContentLoaded, so the server-rendered toggles never predate their listeners. #}

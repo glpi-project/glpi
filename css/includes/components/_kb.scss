@@ -1383,19 +1383,8 @@ body.in_modal .kb-editor-reserved {
         }
     }
 
-    // Favorites keep their natural height, but never at the expense of the
-    // list below them now that the aside is bounded.
-    [data-glpi-kb-aside-favorites] {
-        min-height: 0;
-        overflow-y: auto;
-    }
-
-    // The tree pane takes what the header leaves and scrolls as a whole, so the
-    // scrollbar sits on the card edge instead of inside whichever list is
-    // standing in it.
-    [data-glpi-kb-aside-tree] {
-        min-height: 0;
-        overflow-y: auto;
+    #kb-aside-accordion {
+        scrollbar-gutter: stable both-edges;
     }
 
     // KB aside tree hierarchy connector lines
