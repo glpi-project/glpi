@@ -39,6 +39,7 @@ use Glpi\Asset\CustomFieldOption\BooleanOption;
 use Glpi\Asset\CustomFieldOption\ProfileRestrictOption;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 abstract class AbstractType implements TypeInterface
 {
@@ -125,7 +126,7 @@ abstract class AbstractType implements TypeInterface
             'computation' => QueryFunction::coalesce([
                 QueryFunction::jsonUnquote(
                     expression: QueryFunction::jsonExtract([
-                        'glpi_assets_assets.custom_fields',
+                        new QueryIdentifier('glpi_assets_assets.custom_fields'),
                         new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                     ])
                 ),

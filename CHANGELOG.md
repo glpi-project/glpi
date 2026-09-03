@@ -47,8 +47,12 @@ The present file will list all changes made to the project; according to the
 - Type declarations for some `CronTask` methods have been added.
 
 #### Added
+- `Glpi\DBAL\QueryElementInterface`, implemented by every SQL building block that may carry bound values (`QueryExpression`, `QueryIdentifier`, `QueryValue`, `AbstractQuery`). It exposes `getValue()` for the SQL fragment and `getParams()` for the values to bind for its `?` placeholders; both must always be used together.
+- `Glpi\DBAL\QueryIdentifier`, to designate a database identifier (table or field name) that has to be quoted, instead of relying on a bare string.
+- `Glpi\DBAL\QueryValue`, to designate a scalar value used in a statement. It renders as a `?` placeholder and carries the value to bind for it, instead of the value being inlined into the SQL. Not to be confused with `QueryParam`, which renders as `?` but binds nothing.
 
 #### Changes
+- `QueryFunction` methods now accept any `QueryElementInterface` where they used to accept only a `string` or a `QueryExpression`
 - `Session::haveRight()` now only returns a boolean
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
 - `KnowbaseItem_Comment` is now final

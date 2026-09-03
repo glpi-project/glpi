@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,74 +32,45 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryElementInterface;
+namespace Glpi\DBAL;
+
+use Glpi\Exception\Database\QueryException;
 
 /**
- *  Sub query class
- **/
-abstract class AbstractQuery implements QueryElementInterface
+ * A database scalar value used in a statement.
+ *
+ * Renders as a `?` placeholder and carries the value to bind for it, so the value travels with
+ * the SQL fragment instead of being inlined into it:
+ * ```php
+ * QueryFunction::dateAdd(new QueryIdentifier('date_creation'), new QueryValue(3), 'DAY')
+ * ```
+ */
+final class QueryValue implements QueryElementInterface
 {
-    protected ?string $alias = null;
-    /** @var array<int, mixed> */
-    protected array $params = [];
-
     /**
-     * Create a query
-     *
-     * @param string $alias Alias for the whole subquery
+     * @param scalar|null $value Value to bind.
      */
-    public function __construct($alias = null)
+    public function __construct(private readonly mixed $value)
     {
-        $this->alias = $alias;
+        if ($value !== null && !is_scalar($value)) {
+            throw new QueryException(
+                sprintf('A query value must be a scalar, %s given', get_debug_type($value))
+            );
+        }
     }
 
-    /**
-     * Get alias
-     *
-     * @return string|null
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     *
-     * Get SQL query
-     *
-     * @return string
-     *
-     * @psalm-taint-escape sql
-     */
-    abstract public function getQuery();
-
-    /**
-     * @psalm-taint-escape sql
-     */
     public function getValue(): string
     {
-        return $this->getQuery();
+        return '?';
+    }
+
+    public function getParams(): array
+    {
+        return [$this->value];
     }
 
     public function __toString(): string
     {
-        return $this->getQuery();
-    }
-
-    /**
-    * @return array<int, mixed>
-    */
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param array<int, mixed> $params
-     */
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-        return $this;
+        return $this->getValue();
     }
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,74 +32,49 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryElementInterface;
+namespace Glpi\DBAL;
+
+use DBmysql;
+use Glpi\Exception\Database\QueryException;
 
 /**
- *  Sub query class
- **/
-abstract class AbstractQuery implements QueryElementInterface
+ * A database identifier (table or field name) that has to be quoted.
+ */
+final class QueryIdentifier implements QueryElementInterface
 {
-    protected ?string $alias = null;
-    /** @var array<int, mixed> */
-    protected array $params = [];
-
     /**
-     * Create a query
-     *
-     * @param string $alias Alias for the whole subquery
+     * @param string  $name  Identifier to quote. May be qualified (`table.field`), the `*`
+     *                       wildcard, or already quoted.
+     * @param ?string $alias Alias, quoted along with the identifier.
      */
-    public function __construct($alias = null)
-    {
-        $this->alias = $alias;
+    public function __construct(
+        private readonly string $name,
+        private readonly ?string $alias = null,
+    ) {
+        if ($name === '') {
+            throw new QueryException('Cannot build an empty identifier');
+        }
+        if ($alias === '') {
+            throw new QueryException('Cannot build an empty alias');
+        }
     }
 
-    /**
-     * Get alias
-     *
-     * @return string|null
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     *
-     * Get SQL query
-     *
-     * @return string
-     *
-     * @psalm-taint-escape sql
-     */
-    abstract public function getQuery();
-
-    /**
-     * @psalm-taint-escape sql
-     */
     public function getValue(): string
     {
-        return $this->getQuery();
+        $sql = DBmysql::quoteName($this->name);
+        if ($this->alias !== null) {
+            $sql .= ' AS ' . DBmysql::quoteName($this->alias);
+        }
+        return $sql;
+    }
+
+    public function getParams(): array
+    {
+        return [];
     }
 
     public function __toString(): string
     {
-        return $this->getQuery();
-    }
-
-    /**
-    * @return array<int, mixed>
-    */
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param array<int, mixed> $params
-     */
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-        return $this;
+        return $this->getValue();
     }
 }

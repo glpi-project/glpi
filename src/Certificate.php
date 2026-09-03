@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
@@ -759,7 +760,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
                         ],
                         [
                             'RAW' => [
-                                'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before],
+                                'DATEDIFF(' . new QueryIdentifier('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before],
                             ],
                         ],
                         'glpi_certificates.entities_id' => $entity,

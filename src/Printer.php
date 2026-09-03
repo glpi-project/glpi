@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
@@ -194,7 +195,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
                 'SELECT'       => [
                     'itemtype',
                     QueryFunction::groupConcat(
-                        expression: 'items_id',
+                        expression: new QueryIdentifier('items_id'),
                         distinct: true,
                         alias: 'ids'
                     ),
