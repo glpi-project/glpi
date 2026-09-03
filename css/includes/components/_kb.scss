@@ -374,6 +374,7 @@ body.in_modal .kb-article {
         // Overlap the container line so the active/hover underline replaces it
         // instead of stacking just above it.
         margin-bottom: -1px;
+        color: var(--glpi-tabs-fg);
 
         &:hover,
         &:focus {
