@@ -269,7 +269,7 @@ body.in_modal .kb-article {
 [data-glpi-revisions] > .list-group-item {
     border: none;
 
-    &.active:not(:hover):not(.kb-revision--selected) {
+    &.active:not(:hover, .kb-revision--selected) {
         background-color: transparent;
     }
 }
