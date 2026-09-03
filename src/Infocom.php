@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Safe\DateTime;
 
@@ -687,7 +688,7 @@ class Infocom extends CommonDBChild
                     'NOT'                      => ["$table.warranty_date" => null],
                     new QueryExpression(QueryFunction::dateDiff(
                         expression1: QueryFunction::dateAdd(
-                            date: 'glpi_infocoms.warranty_date',
+                            date: new QueryIdentifier('glpi_infocoms.warranty_date'),
                             interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
                             interval_unit: 'MONTH'
                         ),

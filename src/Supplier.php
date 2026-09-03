@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\AssetImage;
 use Glpi\Features\Clonable;
 use Glpi\Toolbox\URL;
@@ -295,7 +296,7 @@ class Supplier extends CommonDBTM
             'forcegroupby'       => true,
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
-            'computation'        => QueryFunction::concat(["TABLE.{$name1}", new QueryExpression($DB::quoteValue(' ')), "TABLE.{$name2}"]),
+            'computation'        => QueryFunction::concat([new QueryIdentifier("TABLE.{$name1}"), new QueryExpression($DB::quoteValue(' ')), new QueryIdentifier("TABLE.{$name2}")]),
             'computationgroupby' => true,
             'joinparams'         => [
                 'beforejoin'         => [

@@ -43,6 +43,7 @@ use Glpi\Api\HL\Schemas;
 use Glpi\Api\HL\Search;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use GraphQL\Deferred;
@@ -443,7 +444,7 @@ class DefaultResolvers
                 'FROM' => $subquery_criteria,
             ];
         }
-        $count_select = [QueryFunction::count("$table_alias.id", true, 'count')];
+        $count_select = [QueryFunction::count(new QueryIdentifier("$table_alias.id"), true, 'count')];
         $count_criteria['SELECT'] = $count_select;
         return $count_criteria;
     }

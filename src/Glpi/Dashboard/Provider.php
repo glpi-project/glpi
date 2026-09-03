@@ -52,6 +52,7 @@ use Glpi\Dashboard\Filters\{
 };
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Search\Input\QueryBuilder;
@@ -583,7 +584,7 @@ class Provider
         $query_criteria = [
             'COUNT' => 'cpt',
             'SELECT'    => [
-                QueryFunction::concat(["{$userTable}.{$first}", new QueryExpression($DB::quoteValue(' ')), "{$userTable}.{$second}"], 'username'),
+                QueryFunction::concat([new QueryIdentifier("{$userTable}.{$first}"), new QueryExpression($DB::quoteValue(' ')), new QueryIdentifier("{$userTable}.{$second}")], 'username'),
                 "$userTable.name",
                 $slaState,
             ],
@@ -1456,7 +1457,7 @@ class Provider
             [
                 'SELECT' => [
                     'COUNT DISTINCT' => "$t_table.id as nb_tickets",
-                    QueryFunction::dateFormat('date', '%Y-%m', 'ticket_month'),
+                    QueryFunction::dateFormat(new QueryIdentifier('date'), '%Y-%m', 'ticket_month'),
                 ],
                 'FROM'    => $t_table,
                 'WHERE'    => [
@@ -1744,7 +1745,7 @@ class Provider
         $criteria = [
             'SELECT'   => [
                 QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("{$t_table}_distinct.date"),
+                    expression: QueryFunction::unixTimestamp(new QueryIdentifier("{$t_table}_distinct.date")),
                     format: new QueryExpression($DB::quoteValue('%Y-%m')),
                     alias: 'period'
                 ),
@@ -2045,11 +2046,11 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT' => [
-                    QueryFunction::dateFormat('date', '%Y-%m', 'period'),
-                    QueryFunction::avg('takeintoaccount_delay_stat', 'avg_takeintoaccount_delay_stat'),
-                    QueryFunction::avg('waiting_duration', 'avg_waiting_duration'),
-                    QueryFunction::avg('solve_delay_stat', 'avg_solve_delay_stat'),
-                    QueryFunction::avg('close_delay_stat', 'close_delay_stat'),
+                    QueryFunction::dateFormat(new QueryIdentifier('date'), '%Y-%m', 'period'),
+                    QueryFunction::avg(new QueryIdentifier('takeintoaccount_delay_stat'), 'avg_takeintoaccount_delay_stat'),
+                    QueryFunction::avg(new QueryIdentifier('waiting_duration'), 'avg_waiting_duration'),
+                    QueryFunction::avg(new QueryIdentifier('solve_delay_stat'), 'avg_solve_delay_stat'),
+                    QueryFunction::avg(new QueryIdentifier('close_delay_stat'), 'close_delay_stat'),
                 ],
                 'FROM' => $t_table,
                 'WHERE' => [

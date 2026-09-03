@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * CalendarSegment Class
@@ -166,8 +167,8 @@ class CalendarSegment extends CommonDBChild
         $iterator = $DB->request([
             'SELECT' => [
                 QueryFunction::timediff(
-                    expression1: QueryFunction::least([new QueryExpression($DB::quoteValue($end_time)), 'end']),
-                    expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
+                    expression1: QueryFunction::least([new QueryExpression($DB::quoteValue($end_time)), new QueryIdentifier('end')]),
+                    expression2: QueryFunction::greatest([new QueryIdentifier('begin'), new QueryExpression($DB::quoteValue($begin_time))]),
                     alias: 'TDIFF'
                 ),
             ],
@@ -220,12 +221,12 @@ class CalendarSegment extends CommonDBChild
         if (!$negative_delay) {
             // For positive delay: calculate time from begin_time to end of segment
             $SELECT[] = QueryFunction::timediff(
-                expression1: 'end',
-                expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
+                expression1: new QueryIdentifier('end'),
+                expression2: QueryFunction::greatest([new QueryIdentifier('begin'), new QueryExpression($DB::quoteValue($begin_time))]),
                 alias: 'TDIFF'
             );
             $SELECT[] = QueryFunction::greatest(
-                params: ['begin', new QueryExpression($DB::quoteValue($begin_time))],
+                params: [new QueryIdentifier('begin'), new QueryExpression($DB::quoteValue($begin_time))],
                 alias: 'BEGIN'
             );
             $WHERE['end'] = ['>', $begin_time];
@@ -239,12 +240,12 @@ class CalendarSegment extends CommonDBChild
             // For negative delay: calculate time from begin of segment to begin_time
             // This gives us the available time to go backwards in this segment
             $SELECT[] = QueryFunction::timediff(
-                expression1: QueryFunction::least(['end', new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))]),
-                expression2: 'begin',
+                expression1: QueryFunction::least([new QueryIdentifier('end'), new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))]),
+                expression2: new QueryIdentifier('begin'),
                 alias: 'TDIFF'
             );
             $SELECT[] = QueryFunction::least(
-                params: ['end', new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))],
+                params: [new QueryIdentifier('end'), new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))],
                 alias: 'END'
             );
             $WHERE['begin'] = ['<', $adjusted_time_for_comparaison_in_negative_delay_mode];

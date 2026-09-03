@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 
@@ -2982,7 +2982,7 @@ TWIG, $twig_params);
                 static::getTable(),
             ],
             'WHERE'  => [
-                getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryExpression(DBmysql::quoteName(static::getTable() . '.id')),
+                getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryIdentifier(static::getTable() . '.id'),
                 static::getTable() . '.sub_type'                                           => static::class,
 
             ],
@@ -3285,7 +3285,7 @@ TWIG, ['label' => $this->getTitle()]);
                             $nb = countElementsInTable(
                                 ['glpi_rules', 'glpi_ruleactions'],
                                 [
-                                    'glpi_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('glpi_rules.id')),
+                                    'glpi_ruleactions.rules_id'   => new QueryIdentifier('glpi_rules.id'),
                                     'glpi_rules.sub_type'         => $types,
                                     'glpi_ruleactions.field'      => 'entities_id',
                                     'glpi_ruleactions.value'      => $item->getID(),

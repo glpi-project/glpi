@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryElementInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
@@ -315,7 +316,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $query = $table;
                 $table = $query->getQuery();
                 $this->values = array_merge($this->values, $query->getParams());
-            } elseif ($table instanceof QueryExpression) {
+            } elseif ($table instanceof QueryElementInterface) {
                 $query = $table;
                 $table = $query->getValue();
                 $this->values = array_merge($this->values, $query->getParams());
@@ -352,14 +353,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
         // GROUP BY field list
         if (is_array($groupby)) {
             if (count($groupby)) {
-                $groupby = array_map([DBmysql::class, 'quoteName'], $groupby);
-                $this->sql .= ' GROUP BY ' . implode(", ", $groupby);
+                $this->sql .= ' GROUP BY ' . implode(", ", $this->handleGroupByFields($groupby));
             } else {
                 throw new LogicException("Missing group by field.");
             }
         } elseif ($groupby) {
-            $groupby = DBmysql::quoteName($groupby);
-            $this->sql .= " GROUP BY $groupby";
+            $this->sql .= " GROUP BY " . implode(", ", $this->handleGroupByFields([$groupby]));
         }
 
         // HAVING criteria list
@@ -377,9 +376,30 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
+     * Handle "GROUP BY" fields
+     *
+     * @param array<int, string|QueryElementInterface> $fields
+     *
+     * @return array<int, string>
+     */
+    private function handleGroupByFields(array $fields): array
+    {
+        $groupby = [];
+        foreach ($fields as $field) {
+            if ($field instanceof QueryElementInterface) {
+                $this->values = array_merge($this->values, $field->getParams());
+                $groupby[] = $field->getValue();
+            } else {
+                $groupby[] = DBmysql::quoteName($field);
+            }
+        }
+        return $groupby;
+    }
+
+    /**
      * Handle "ORDER BY" SQL clause
      *
-     * @param string|QueryExpression|array<int, string|QueryExpression> $clause Clause parameters
+     * @param string|QueryElementInterface|array<int, string|QueryElementInterface> $clause Clause parameters
      *
      * @return string
      */
@@ -413,7 +433,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $cleanorderby[] = DBmysql::quoteName($name)
                     . (in_array($direction, ['ASC', 'DESC']) ? ' ' . $direction : '');
 
-            } elseif ($o instanceof QueryExpression) {
+            } elseif ($o instanceof QueryElementInterface) {
                 $cleanorderby[] = $o->getValue();
                 $this->values = array_merge($this->values, $o->getParams());
             } else {
@@ -448,12 +468,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle fields
      *
-     * @param int|string                                    $t Table name or function
-     * @param string[]|string|QueryExpression|AbstractQuery $f Field(s) name(s)
+     * @param int|string                            $t Table name or function
+     * @param string[]|string|QueryElementInterface $f Field(s) name(s)
      *
      * @return string
      */
-    private function handleFields(int|string $t, array|string|QueryExpression|AbstractQuery $f): string
+    private function handleFields(int|string $t, array|string|QueryElementInterface $f): string
     {
         if (is_numeric($t)) {
             if (is_array($f)) {
@@ -463,7 +483,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if ($f instanceof AbstractQuery) {
                 $this->values = array_merge($this->values, $f->getParams());
                 return $f->getQuery();
-            } elseif ($f instanceof QueryExpression) {
+            } elseif ($f instanceof QueryElementInterface) {
                 $this->values = array_merge($this->values, $f->getParams());
                 return $f->getValue();
             } else {
@@ -581,12 +601,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
             if (is_numeric($name)) {
                 // no key and direct expression
-                if ($value instanceof QueryExpression) {
+                if ($value instanceof QueryElementInterface) {
                     $this->values = array_merge($this->values, $value->getParams());
                     $ret .= $value->getValue();
-                } elseif ($value instanceof QuerySubQuery) {
-                    $this->values = array_merge($this->values, $value->getParams());
-                    $ret .= $value->getQuery();
                 } else {
                     // No Key case => recurse.
                     $ret .= "(" . $this->analyseCrit($value) . ")";
@@ -661,7 +678,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @param mixed $value The value to handle. This may be:
      *                      - an instance of AbstractQuery
-     *                      - a QueryExpression
+     *                      - a QueryExpression, a QueryIdentifier or any other query element
      *                      - a value quoted as a name in the db engine
      *                      - a QueryParam
      *                      - a value or an array of values
@@ -674,7 +691,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             case $value instanceof AbstractQuery:
                 $this->values = array_merge($this->values, $value->getParams());
                 return $value->getQuery();
-            case $value instanceof QueryExpression:
+            case $value instanceof QueryElementInterface:
                 $this->values = array_merge($this->values, $value->getParams());
                 return $value->getValue();
             case $value instanceof QueryParam:
@@ -774,19 +791,19 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if (count($values) == 2) {
                 $t1 = $keys[0];
                 $f1 = $values[$t1];
-                $left_value = $f1 instanceof QuerySubQuery || $f1 instanceof QueryExpression
+                $left_value = $f1 instanceof QueryElementInterface
                     ? (string) $f1
                     : (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1));
-                if ($f1 instanceof QuerySubQuery || $f1 instanceof QueryExpression) {
+                if ($f1 instanceof QueryElementInterface) {
                     $this->values = array_merge($this->values, $f1->getParams());
                 }
 
                 $t2 = $keys[1];
                 $f2 = $values[$t2];
-                $right_value = $f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression
+                $right_value = $f2 instanceof QueryElementInterface
                     ? (string) $f2
                     : (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
-                if ($f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression) {
+                if ($f2 instanceof QueryElementInterface) {
                     $this->values = array_merge($this->values, $f2->getParams());
                 }
 
@@ -813,7 +830,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 }
                 return $fkey;
             }
-        } elseif ($values instanceof QueryExpression) {
+        } elseif ($values instanceof QueryElementInterface) {
             $this->values = array_merge($this->values, $values->getParams());
             return $values->getValue();
         }

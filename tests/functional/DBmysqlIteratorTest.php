@@ -916,6 +916,29 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $it = $this->it->execute(['FROM' => 'foo', 'GROUP' => ['id', 'name']]);
         $this->assertSame('SELECT * FROM `foo` GROUP BY `id`, `name`', $it->getSql());
+
+        // the values bound by a grouped expression must be collected too, otherwise the
+        // statement ends up with more placeholders than values
+        $it = $this->it->execute([
+            'FROM'    => 'foo',
+            'GROUPBY' => [new QueryExpression('CASE WHEN `bar` = ? THEN 1 END', values: [42])],
+        ]);
+        $this->assertSame('SELECT * FROM `foo` GROUP BY CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
+        $this->assertEquals([42], $it->getValues());
+
+        $it = $this->it->execute([
+            'FROM'    => 'foo',
+            'GROUPBY' => ['id', new QueryExpression('CASE WHEN `bar` = ? THEN 1 END', values: [42])],
+        ]);
+        $this->assertSame('SELECT * FROM `foo` GROUP BY `id`, CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
+        $this->assertEquals([42], $it->getValues());
+
+        $it = $this->it->execute([
+            'FROM'    => 'foo',
+            'GROUPBY' => new QueryExpression('CASE WHEN `bar` = ? THEN 1 END', values: [7]),
+        ]);
+        $this->assertSame('SELECT * FROM `foo` GROUP BY CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
+        $this->assertEquals([7], $it->getValues());
     }
 
     public function testNoFieldGroup()
