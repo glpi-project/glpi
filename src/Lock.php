@@ -1134,9 +1134,11 @@ TWIG, $twig_params);
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div>
                     <i class='ti ti-corner-left-up mx-3' aria-hidden='true'></i>
-                    <a onclick="if ( markCheckboxes('lock_form') ) return false;" href='#'>{{ check_all_msg }}</a>
+                    <button type="button" class="btn btn-link p-0 align-baseline"
+                            onclick="markCheckboxes('lock_form');">{{ check_all_msg }}</button>
                     <span>/</span>
-                    <a onclick="if ( unMarkCheckboxes('lock_form') ) return false;" href='#'>{{ uncheck_all_msg }}</a>
+                    <button type="button" class="btn btn-link p-0 align-baseline"
+                            onclick="unMarkCheckboxes('lock_form');">{{ uncheck_all_msg }}</button>
                     <button type="submit" name="unlock" class="btn btn-primary">{{ unlock_msg }}</button>
                     <button type="submit" name="purge" class="btn btn-danger">{{ purge_msg }}</button>
                 </div>
