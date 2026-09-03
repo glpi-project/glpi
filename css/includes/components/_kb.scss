@@ -266,6 +266,14 @@ body.in_modal .kb-article {
     }
 }
 
+[data-glpi-revisions] > .list-group-item {
+    border: none;
+
+    &.active:not(:hover, .kb-revision--selected) {
+        background-color: transparent;
+    }
+}
+
 // KB revision comparison - side panel state
 .kb-sidepanel [data-glpi-current-version],
 .kb-sidepanel [data-glpi-revision-id],
@@ -276,8 +284,12 @@ body.in_modal .kb-article {
         background-color 0.15s ease,
         box-shadow 0.15s ease;
 
-    &:hover {
-        background-color: var(--tblr-bg-surface-secondary);
+    &.active {
+        border: none;
+
+        &:not(:hover) {
+            background-color: unset;
+        }
     }
 
     &.kb-revision--selected {
@@ -370,6 +382,7 @@ body.in_modal .kb-article {
         // Overlap the container line so the active/hover underline replaces it
         // instead of stacking just above it.
         margin-bottom: -1px;
+        color: var(--glpi-tabs-fg);
 
         &:hover,
         &:focus {
@@ -1269,7 +1282,7 @@ body.in_modal .kb-editor-reserved {
 
 [data-main-page-aside="knowbaseitem"] {
     max-width: 300px;
-    background-color: #fff;
+    background-color: var(--tblr-bg-surface);
 
     .node,
     .article {

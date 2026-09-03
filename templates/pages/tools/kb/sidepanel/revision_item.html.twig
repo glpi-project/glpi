@@ -31,7 +31,7 @@
  #}
 
 <li
-    class="step-item {{ first ? 'active' : '' }}"
+    class="step-item {{ first ? 'active' : '' }} list-group-item"
     data-testid="history-event"
     {# The first event of the first page is the one the article is displaying #}
     {% if first %}aria-current="step"{% endif %}
