@@ -20,7 +20,7 @@ on:
         default: false
 
 env:
-  SUPPORTED_VERSIONS: "11.0, 10.0"
+  SUPPORTED_VERSIONS: "12.0, 11.0, 10.0"
 
 jobs:
   resolve:
