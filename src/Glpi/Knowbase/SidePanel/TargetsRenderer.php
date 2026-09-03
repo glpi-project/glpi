@@ -48,7 +48,7 @@ final class TargetsRenderer implements RendererInterface
     #[Override]
     public function getTemplate(): string
     {
-        return "pages/tools/kb/modal/targets.html.twig";
+        return "pages/tools/kb/modal/permissions.html.twig";
     }
 
     #[Override]
@@ -60,6 +60,8 @@ final class TargetsRenderer implements RendererInterface
             'id'          => $item->getID(),
             'can_edit'    => $can_edit,
             'permissions' => (new PermissionsRenderer())->getParams($item),
+            'icon' => 'ti ti-lock',
+            'title' => __('Permissions'),
         ];
 
         if ($can_edit) {

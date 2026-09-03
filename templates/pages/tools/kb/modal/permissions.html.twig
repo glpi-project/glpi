@@ -30,6 +30,12 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set id = permissions.id %}
+{% set rand = permissions.rand %}
+{% set can_edit = permissions.can_edit %}
+{% set is_owner = permissions.is_owner %}
+{% set entries = permissions.entries %}
+{% set visiblity_dropdown_params = permissions.visiblity_dropdown_params %}
 {% set has_entries = entries|length > 0 %}
 
 {# Status label #}
