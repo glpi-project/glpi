@@ -1326,6 +1326,8 @@ class NetworkCardTest extends AbstractInventoryAsset
     <NETWORKS>
       <DESCRIPTION>Ethernet</DESCRIPTION>
       <MACADDR>00:11:22:33:44:55</MACADDR>
+      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
       <PCIID>14E4:165F:05E5:1028</PCIID>
       <PNPDEVICEID>PCI\\VEN_14E4&amp;DEV_165F&amp;SUBSYS_05E51028&amp;REV_00\\000000112233445500</PNPDEVICEID>
       <SPEED>1000</SPEED>
@@ -1336,6 +1338,8 @@ class NetworkCardTest extends AbstractInventoryAsset
     <NETWORKS>
       <DESCRIPTION>Ethernet 2</DESCRIPTION>
       <MACADDR>00:11:22:33:44:66</MACADDR>
+      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
       <PCIID>14E4:165F:05E5:1028</PCIID>
       <PNPDEVICEID>PCI\\VEN_14E4&amp;DEV_165F&amp;SUBSYS_05E51028&amp;REV_00\\000000112233446601</PNPDEVICEID>
       <SPEED>1000</SPEED>
@@ -1350,6 +1354,8 @@ class NetworkCardTest extends AbstractInventoryAsset
       <IPMASK>255.255.255.0</IPMASK>
       <IPSUBNET>10.0.0.0</IPSUBNET>
       <MACADDR>00:11:22:33:44:55</MACADDR>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
+      <MODEL>Microsoft Network Adapter Multiplexor Driver</MODEL>
       <PNPDEVICEID>COMPOSITEBUS\MS_IMPLAT_MP\{12345678-1234-5678-1234-123456789012}</PNPDEVICEID>
       <SPEED>2000</SPEED>
       <STATUS>Up</STATUS>
@@ -1372,8 +1378,8 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertTrue($computers_id);
         $computers_id = $computer->fields['id'];
 
-        // LoadBalance is discarded as a component because it shares a MAC address with Ethernet, 
-        // failing the MAC unicity check. (Virtual network components are enabled by default 
+        // LoadBalance is discarded as a component because it shares a MAC address with Ethernet,
+        // failing the MAC unicity check. (Virtual network components are enabled by default
         // via 'component_networkcardvirtual', but the unicity check still applies).
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $cards);
@@ -1384,7 +1390,7 @@ class NetworkCardTest extends AbstractInventoryAsset
             $device_net->getFromDB($card['devicenetworkcards_id']);
             $device_cards[] = $device_net->fields['designation'];
         }
-        
+
         $this->assertContains('NetXtreme BCM5720 Gigabit Ethernet PCIe', $device_cards);
     }
 }

@@ -76,7 +76,6 @@ class NetworkCard extends Device
             'ifoutbytes'  => 'ifoutbytes',
             'ifinerrors'  => 'ifinerrors',
             'ifouterrors' => 'ifouterrors',
-
         ];
         $pcivendor = new PCIVendor();
 

@@ -41,6 +41,8 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
+use Glpi\Inventory\MainAsset\NetworkEquipment;
+use Glpi\Inventory\MainAsset\Printer;
 use mysqli_stmt;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPort_NetworkPort;
@@ -633,7 +635,9 @@ class NetworkPort extends InventoryAsset
 
     public function handle()
     {
-        $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
+        if ($this->extra_data[$this->main_asset::class] instanceof NetworkEquipment) {
+            $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
+        }
         $this->handlePorts();
     }
 
@@ -850,7 +854,7 @@ class NetworkPort extends InventoryAsset
         }
 
         //handle ports for stacked switches
-        if ($mainasset->isStackedSwitch()) {
+        if ($mainasset instanceof NetworkEquipment && $mainasset->isStackedSwitch()) {
             $bkp_ports = $this->ports;
             $stack_id = $mainasset->getStackId();
             $need_increment_index = false;
