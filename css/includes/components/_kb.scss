@@ -1335,8 +1335,9 @@ body.in_modal .kb-editor-reserved {
         display: none;
     }
 
-    // Favorites section hidden when there are no favorites to display (set server-side or by JS).
-    [data-glpi-kb-aside-favorites][data-glpi-kb-aside-favorites-hidden] {
+    // Favorites section hidden when there are no favorites to display
+    // Either there are no .article childrens or the only .article also has data-glpi-kb-favorite-current="pending" (the current article is not yet a favorite).
+    [data-glpi-kb-aside-favorites]:not(:has(.article:not([data-glpi-kb-favorite-current="pending"]))) {
         display: none;
     }
 
@@ -1382,19 +1383,8 @@ body.in_modal .kb-editor-reserved {
         }
     }
 
-    // Favorites keep their natural height, but never at the expense of the
-    // list below them now that the aside is bounded.
-    [data-glpi-kb-aside-favorites] {
-        min-height: 0;
-        overflow-y: auto;
-    }
-
-    // The tree pane takes what the header leaves and scrolls as a whole, so the
-    // scrollbar sits on the card edge instead of inside whichever list is
-    // standing in it.
-    [data-glpi-kb-aside-tree] {
-        min-height: 0;
-        overflow-y: auto;
+    #kb-aside-accordion {
+        scrollbar-gutter: stable both-edges;
     }
 
     // KB aside tree hierarchy connector lines
