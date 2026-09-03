@@ -238,7 +238,7 @@ final class Builder
 
         $folded = [];
         foreach (array_keys($this->data) as $id) {
-            if (isset($this->roots[$id]) || isset($unfolded[$id]) || isset($on_current_branch[$id])) {
+            if (isset($unfolded[$id]) || isset($on_current_branch[$id])) {
                 continue;
             }
             $folded[$id] = true;
