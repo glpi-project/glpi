@@ -118,10 +118,11 @@ class Session
      * Init user session
      *
      * @param Auth $auth Auth object to init session
+     * @param bool $temporary If true, the session will not be persisted. Useful for stateless cases like the HLAPI.
      *
      * @return void
      **/
-    public static function init(Auth $auth)
+    public static function init(Auth $auth, bool $temporary = false)
     {
         global $CFG_GLPI;
 
@@ -140,11 +141,16 @@ class Session
                 $save[$t] = $_SESSION[$t];
             }
         }
-        self::destroy();
-        if (!defined('TU_USER')) { //FIXME: no idea why this fails with phpunit... :(
+        if (!$temporary) {
+            self::destroy();
+        } else {
+            // Just clear the superglobal to avoid regenerating the session ID and triggering a session being saved
+            $_SESSION = [];
+        }
+        if (!$temporary && !defined('TU_USER')) { //FIXME: no idea why this fails with phpunit... :(
             session_regenerate_id();
         }
-        self::start();
+        self::start($temporary);
         $_SESSION = $save;
         $_SESSION['valid_id'] = session_id();
         // Define default time :
@@ -244,11 +250,13 @@ class Session
                     return;
                 }
 
-                $session_recorded = SessionTracker::recordNewSession($auth);
-                if (!$session_recorded) {
-                    self::destroy();
-                    $auth->auth_succeded = false;
-                    $auth->addToError(__("An error occurred while creating your session. Please try again."));
+                if (!$temporary) {
+                    $session_recorded = SessionTracker::recordNewSession($auth);
+                    if (!$session_recorded) {
+                        self::destroy();
+                        $auth->auth_succeded = false;
+                        $auth->addToError(__("An error occurred while creating your session. Please try again."));
+                    }
                 }
             } else {
                 $auth->auth_succeded = false;
@@ -281,11 +289,13 @@ class Session
     /**
      * Start the GLPI php session
      *
+     * @param bool $temporary If true, the session will not be persisted. Useful for stateless cases like the HLAPI.
+     *
      * @return void
      **/
-    public static function start()
+    public static function start(bool $temporary = false)
     {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (!$temporary && session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 

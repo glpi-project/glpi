@@ -817,7 +817,7 @@ EOT;
         $auth->auth_succeded = true;
         $auth->user = new User();
         $auth->user->getFromDB($this->current_client['user_id']);
-        Session::init($auth);
+        Session::init($auth, true);
         if ($request->getHeaderLine('Accept-Language')) {
             // Make sure language header is set in SERVER superglobal so that Session::getPreferredLanguage() works
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $request->getHeaderLine('Accept-Language');
