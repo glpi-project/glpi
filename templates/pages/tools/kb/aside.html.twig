@@ -33,8 +33,6 @@
 {% import "pages/tools/kb/_article_row.html.twig" as macros %}
 {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
 
-{% set hide_favorites = not has_other_favorites and not current_is_favorite %}
-
 {% if show_actions %}
     {{ actions_menu.render_actions_menu_placeholder() }}
 {% endif %}
@@ -68,7 +66,7 @@
 
 <div id="kb-aside-body" data-glpi-kb-aside-body>
 
-<div class="card-header flex-column align-items-start" data-glpi-kb-aside-header {{ hide_favorites ? 'data-glpi-kb-aside-header-no-border' : '' }}>
+<div class="card-header flex-column align-items-start" data-glpi-kb-aside-header>
     <div class="d-flex align-items-center w-100 mb-3">
         <h3 class="card-title fw-bold mb-0 flex-grow-1">{{ __("Articles") }}</h3>
         <button

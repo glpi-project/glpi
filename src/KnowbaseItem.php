@@ -3497,7 +3497,6 @@ TWIG, $twig_params);
         $favorites = $this->getCurrentArticleAndFavorites($current_id);
 
         $current_is_favorite = KnowbaseItem_Favorite::isFavoriteForCurrentUser($current_id);
-        $has_other_favorites = array_filter($favorites, fn(Article $a) => !$a->is_current) !== [];
 
         // Don't render the aside if we don't have any article.
         $tree = (new Builder($current_id))->buildTree();
@@ -3511,7 +3510,6 @@ TWIG, $twig_params);
                 'tree'                => $tree,
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
-                'has_other_favorites' => $has_other_favorites,
                 'can_create'          => self::canCreate(),
                 'can_update'          => self::canUpdate(),
                 'show_actions'        => self::canShowAsideActions(),
