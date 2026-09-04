@@ -274,18 +274,23 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 'rand'       => $rand,
                 static::$items_id_1 => $params['id'],
             ];
+            // Recursive object: items in sub-entities are already linkable (see
+            // CommonDBRelation::can()), so widen the search accordingly.
+            $item_search_entity_restrict = $obj->isRecursive()
+                ? getSonsOf('glpi_entities', $params['entities_id'])
+                : $params['entities_id'];
             // My items
             if ($params['_users_id_requester'] > 0) {
                 ob_start();
-                static::dropdownMyDevices($params['_users_id_requester'], $params['entities_id'], $params['itemtype'], 0, $p);
+                static::dropdownMyDevices($params['_users_id_requester'], $item_search_entity_restrict, $params['itemtype'], 0, $p);
                 $twig_params['my_items_dropdown'] = ob_get_clean();
             }
             // Global search
             ob_start();
-            static::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $params['entities_id'], $p);
+            static::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $item_search_entity_restrict, $p);
             $twig_params['all_items_dropdown'] = ob_get_clean();
         }
-
+        
         // Display list
         if (!empty($params['items_id'])) {
             // No delete if mandatory and only one item
