@@ -561,8 +561,9 @@ TWIG, $twig_params);
         $used       = array_keys($used_found);
         $used       = array_combine($used, $used);
 
+        // Show the add form when user can edit the item or create documents; relation rights are enforced on submit.
         if (
-            $item->canAddItem('Document')
+            ($item->canAddItem('Document') || Document::canCreate())
             && $withtemplate < 2
         ) {
             // Restrict entity for knowbase
