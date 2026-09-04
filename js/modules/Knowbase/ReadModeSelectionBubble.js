@@ -53,6 +53,15 @@ export class ReadModeSelectionBubble {
     /** @type {() => void} */
     #onSelectionChange = () => this.#update();
 
+    /** @type {(event: KeyboardEvent) => void} */
+    #onKeyDown = (event) => this.#handleKeyDown(event);
+
+    /** @type {(event: FocusEvent) => void} */
+    #onFocusIn = (event) => this.#handleFocusIn(event);
+
+    /** True right after a selection was made and nothing else took focus since. */
+    #justSelected = false;
+
     /**
      * @param {Element} container - The KB article content container
      *  (`[data-glpi-kb-content]`).
@@ -63,6 +72,34 @@ export class ReadModeSelectionBubble {
         this.#max_anchor_length = max_anchor_length;
         this.#bubble = this.#createBubble();
         document.addEventListener('selectionchange', this.#onSelectionChange);
+        document.addEventListener('keydown', this.#onKeyDown);
+        document.addEventListener('focusin', this.#onFocusIn);
+    }
+
+    /** Any focus elsewhere means the selection is no longer "fresh". */
+    #handleFocusIn(event) {
+        if (event.target !== this.#button) {
+            this.#justSelected = false;
+        }
+    }
+
+    /**
+     * Let a keyboard user reach the comment button directly from a text selection
+     * @param {KeyboardEvent} event
+     */
+    #handleKeyDown(event) {
+        if (event.key !== 'Tab' || event.shiftKey) {
+            return;
+        }
+        if (this.#bubble.style.display === 'none' || this.#button.disabled) {
+            return;
+        }
+        if (!this.#justSelected) {
+            return;
+        }
+        event.preventDefault();
+        this.#justSelected = false;
+        this.#button.focus();
     }
 
     #createBubble() {
@@ -91,6 +128,13 @@ export class ReadModeSelectionBubble {
             e.preventDefault();
         });
         button.addEventListener('click', () => this.#dispatchCommentSelection());
+        button.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                this.#hide();
+                button.blur();
+            }
+        });
 
         bubble.appendChild(button);
         this.#button = button;
@@ -146,10 +190,12 @@ export class ReadModeSelectionBubble {
 
         this.#bubble.style.top = `${window.scrollY + rect.top - this.#bubble.offsetHeight - 8}px`;
         this.#bubble.style.left = `${window.scrollX + left}px`;
+        this.#justSelected = true;
     }
 
     #hide() {
         this.#bubble.style.display = 'none';
+        this.#justSelected = false;
     }
 
     #dispatchCommentSelection() {
