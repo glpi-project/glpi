@@ -58,6 +58,36 @@ class KnowbaseItemCategory extends CommonTreeDropdown
         return parent::canView();
     }
 
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+        if ($input === false) {
+            return false;
+        }
+
+        if (isset($input['name'])) {
+            $id = $this->findID($input);
+            if ($id > 0) {
+                $message_text = sprintf(
+                    __('%1$s - %2$s'),
+                    static::getTypeName(1),
+                    $input['name']
+                );
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('Item not added: a duplicate already exists (%s)'),
+                        $message_text
+                    )),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
+        return $input;
+    }
+
     public static function getIcon()
     {
         return KnowbaseItem::getIcon();
