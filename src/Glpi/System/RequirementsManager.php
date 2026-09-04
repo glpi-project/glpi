@@ -48,6 +48,7 @@ use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\PhpVersion;
+use Glpi\System\Requirement\SecurityKeysAccess;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -154,6 +155,8 @@ class RequirementsManager
                 }
             )
         );
+
+        $requirements[] = new SecurityKeysAccess();
 
         $requirements[] = new SeLinux();
 
