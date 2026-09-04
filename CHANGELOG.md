@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.9] unreleased
 
 ### Added
+- System requirements now check that the security key files (`glpicrypt.key`, `oauth.pem` and `oauth.pub`) can be read, or created when missing.
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
