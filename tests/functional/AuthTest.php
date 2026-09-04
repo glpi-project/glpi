@@ -336,6 +336,9 @@ class AuthTest extends DbTestCase
         // Restore the first cookie value to ensure it is still valid
         $_COOKIE[$cookie_name] = $first_cookie_value;
         $this->assertTrue((new Auth())->login('', ''));
+
+        //Clean cookie
+        unset($_COOKIE[$cookie_name]);
     }
 
     /**
