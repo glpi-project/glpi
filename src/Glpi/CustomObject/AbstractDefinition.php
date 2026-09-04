@@ -612,6 +612,33 @@ abstract class AbstractDefinition extends CommonDBTM
     }
 
     /**
+     * Remove given profile from the `profiles` field.
+     * Uses a direct DB update to bypass validation, which may fail if other stale
+     * profile IDs are already present in the JSON.
+     *
+     * @param int $profile_id
+     * @return void
+     */
+    public function removeProfileFromField(int $profile_id): void
+    {
+        global $DB;
+
+        $profiles = $this->getDecodedProfilesField();
+        if (!array_key_exists($profile_id, $profiles)) {
+            return;
+        }
+
+        unset($profiles[$profile_id]);
+        $encoded = json_encode($profiles);
+        $DB->update(
+            static::getTable(),
+            ['profiles' => $encoded],
+            ['id' => $this->getID()]
+        );
+        $this->fields['profiles'] = $encoded;
+    }
+
+    /**
      * Remove given rights from `profiles` field.
      *
      * @param int[] $rights_to_remove
