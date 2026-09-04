@@ -29,37 +29,25 @@
  *
  * ---------------------------------------------------------------------
  */
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '../../fixtures/glpi_fixture';
+import { Profiles } from '../../utils/Profiles';
 
-import test from "@playwright/test";
-import { Constants } from "./Constants";
+test.describe('Planning view', () => {
+    test('Accessibility', async ({ page, profile }) => {
+        await profile.set(Profiles.SuperAdmin);
 
-export function getWorkerEntityId(): number
-{
-    // First worker index is 0 and the first entity start at 2.
-    // We could make an API request to make this more resilent but IDs aren't
-    // likely to change very often so this is probably enough (and it saves
-    // some performances).
-    return test.info().parallelIndex + 2;
-}
+        await page.goto('/front/planning.php');
 
-export function getWorkerEntityName(): string
-{
-    const worker_index = String(test.info().parallelIndex + 1).padStart(2, '0');
-    return `E2E worker entity ${worker_index}`;
-}
+        // Wait for the animations to be over
+        await page.waitForFunction(() =>
+            document.getAnimations().filter(a => a.playState === 'running').length === 0
+        );
 
-export function getWorkerUserId(): number
-{
-    return test.info().parallelIndex + 8;
-}
-
-export function getWorkerIndex(): number
-{
-    return test.info().parallelIndex + 1;
-}
-
-export function getWorkerLogin(): string
-{
-    const worker_index = String(test.info().parallelIndex + 1).padStart(2, '0');
-    return `${Constants.E2E_WORKER_PREFIX}${worker_index}`;
-}
+        const planning_a11y = await new AxeBuilder({ page })
+            .include('#planning_container')
+            .analyze()
+        ;
+        expect(planning_a11y.violations).toEqual([]);
+    });
+});

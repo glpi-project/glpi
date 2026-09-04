@@ -30,8 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
+import { Locator } from "@playwright/test";
 import { randomUUID } from "crypto";
 import { expect, test } from '../../../fixtures/glpi_fixture';
+import { Api } from "../../../utils/Api";
 import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from '../../../utils/WorkerEntities';
 import { FormPage } from "../../../pages/FormPage";
@@ -180,3 +182,522 @@ for (const questionType of ['Radio', 'Checkbox', 'Dropdown']) {
         expect(clipboardContent).toBe(expectedUuid);
     });
 }
+
+test.describe('Selectable form question types', () => {
+    const setupForm = async (form: FormPage, api: Api): Promise<number> => {
+        const form_id = await api.createItem('Glpi\\Form\\Form', {
+            'name': `Tests form for the selectable form question types suite - ${randomUUID()}`,
+            'entities_id': getWorkerEntityId(),
+        });
+        await form.goto(form_id);
+
+        return form_id;
+    };
+
+    const getSelectableOptions = (question: Locator): Locator => {
+        return question.getByRole('textbox', {
+            name: 'Selectable option',
+            exact: true,
+        });
+    };
+
+    const getDefaultOptionRadios = (question: Locator): Locator => {
+        return question.getByRole('radio', {
+            name: 'Default option',
+            exact: true,
+        });
+    };
+
+    const getDefaultOptionCheckboxes = (question: Locator): Locator => {
+        return question.getByRole('checkbox', {
+            name: 'Default option',
+            exact: true,
+        });
+    };
+
+    test('should configure a radio question type', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const form = new FormPage(page);
+
+        await setupForm(form, api);
+
+        // Configure question
+        let question = await form.addQuestion("Test selectable question");
+        await form.setQuestionType(question, 'Radio');
+
+        // Add options
+        for (let index = 0; index < 3; index++) {
+            await expect(getDefaultOptionRadios(question).nth(index))
+                .toBeDisabled()
+            ;
+            await getSelectableOptions(question).nth(index)
+                .fill(`Option ${index}`)
+            ;
+        }
+
+        // Save the form and reload the page
+        await form.doSaveFormEditorAndReload();
+        question = form.getNthQuestion(0);
+
+        // Check if options are still there
+        for (let index = 0; index < 3; index++) {
+            await expect(getDefaultOptionRadios(question).nth(index))
+                .not.toBeChecked()
+            ;
+            await expect(getSelectableOptions(question).nth(index))
+                .toHaveValue(`Option ${index}`)
+            ;
+        }
+
+        // Check the second option
+        await getDefaultOptionRadios(question).nth(1).check();
+
+        // Save the form and reload the page
+        await form.doSaveFormEditorAndReload();
+        question = form.getNthQuestion(0);
+
+        // Check if the second option is still checked
+        await expect(getDefaultOptionRadios(question).nth(1)).toBeChecked();
+
+        // Fill form
+        await form.doPreviewForm();
+
+        // Check if the question is displayed
+        await expect(page.getByText('Test selectable question').first())
+            .toBeVisible()
+        ;
+
+        // Check if the options are displayed
+        for (let index = 0; index < 3; index++) {
+            await expect(form.getRadio(`Option ${index}`)).toBeVisible();
+        }
+
+        // Check if the second option is checked
+        await expect(form.getRadio('Option 1')).toBeChecked();
+
+        // Check the first option
+        await form.getRadio('Option 0').check();
+
+        // Check if the second option is not checked anymore
+        await expect(form.getRadio('Option 1')).not.toBeChecked();
+
+        // Submit the form
+        await form.getButton('Submit').click();
+
+        // Check if the success message is displayed
+        const alert = form.getAlert('Item successfully created');
+        await expect(alert).toBeVisible();
+        await alert.getByRole('link').click();
+
+        // Check if the option is saved
+        await expect(page.getByText(': Option 0').first()).toBeVisible();
+    });
+
+    test('should configure a checkbox question type', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const form = new FormPage(page);
+
+        await setupForm(form, api);
+
+        // Configure question
+        let question = await form.addQuestion("Test selectable question");
+        await form.setQuestionType(question, 'Checkbox');
+
+        // Add options
+        for (let index = 0; index < 3; index++) {
+            await expect(getDefaultOptionCheckboxes(question).nth(index))
+                .toBeDisabled()
+            ;
+            await getSelectableOptions(question).nth(index)
+                .fill(`Option ${index}`)
+            ;
+        }
+
+        // Save the form and reload the page
+        await form.doSaveFormEditorAndReload();
+        question = form.getNthQuestion(0);
+
+        // Check if options are still there
+        for (let index = 0; index < 3; index++) {
+            await expect(getDefaultOptionCheckboxes(question).nth(index))
+                .not.toBeChecked()
+            ;
+            await expect(getSelectableOptions(question).nth(index))
+                .toHaveValue(`Option ${index}`)
+            ;
+        }
+
+        // Check the second and third options
+        await getDefaultOptionCheckboxes(question).nth(1).check();
+        await getDefaultOptionCheckboxes(question).nth(2).check();
+
+        // Save the form and reload the page
+        await form.doSaveFormEditorAndReload();
+        question = form.getNthQuestion(0);
+
+        // Check if the second option is still checked
+        await expect(getDefaultOptionCheckboxes(question).nth(1)).toBeChecked();
+
+        // Fill form
+        await form.doPreviewForm();
+
+        // Check if the question is displayed
+        await expect(page.getByText('Test selectable question').first())
+            .toBeVisible()
+        ;
+
+        // Check if the options are displayed
+        for (let index = 0; index < 3; index++) {
+            await expect(form.getCheckbox(`Option ${index}`)).toBeVisible();
+        }
+
+        // Check if the second and third options are checked
+        await expect(form.getCheckbox('Option 1')).toBeChecked();
+        await expect(form.getCheckbox('Option 2')).toBeChecked();
+
+        // Check the first option
+        await form.getCheckbox('Option 0').check();
+
+        // Uncheck the third option
+        await form.getCheckbox('Option 2').uncheck();
+
+        // Check if the second option is still checked
+        await expect(form.getCheckbox('Option 1')).toBeChecked();
+
+        // Submit the form
+        await form.getButton('Submit').click();
+
+        // Check if the success message is displayed
+        const alert = form.getAlert('Item successfully created');
+        await expect(alert).toBeVisible();
+        await alert.getByRole('link').click();
+
+        // Check if the option is saved
+        await expect(page.getByText(': Option 0, Option 1').first())
+            .toBeVisible()
+        ;
+    });
+
+    test('can duplicate a radio question', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const form = new FormPage(page);
+
+        await setupForm(form, api);
+
+        // Set the question name
+        const question = await form.addQuestion("Test radio question");
+
+        // Change question type
+        await form.setQuestionType(question, "Radio");
+
+        // Add two options
+        await getSelectableOptions(question).nth(0).fill("Option 1");
+        await getSelectableOptions(question).nth(1).fill("Option 2");
+
+        // Define second option as default
+        await getDefaultOptionRadios(question).nth(1).check();
+
+        // Duplicate the question
+        await form.getButton('Duplicate question').click();
+
+        // Check the source question
+        let source_question = form.getNthQuestion(0);
+        await expect(
+            source_question.getByRole('textbox', { name: 'Question name' })
+        ).toHaveValue("Test radio question");
+        await expect(getSelectableOptions(source_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(source_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(getDefaultOptionRadios(source_question).nth(1))
+            .toBeChecked()
+        ;
+
+        // Check the duplicated question
+        let duplicated_question = form.getNthQuestion(1);
+        await expect(
+            duplicated_question.getByRole('textbox', { name: 'Question name' })
+        ).toHaveValue("Test radio question");
+        await expect(getSelectableOptions(duplicated_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(duplicated_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(getDefaultOptionRadios(duplicated_question).nth(1))
+            .toBeChecked()
+        ;
+
+        // Define first option as default for the duplicated question
+        await getDefaultOptionRadios(duplicated_question).nth(0).check();
+
+        // Check the source question
+        await expect(getDefaultOptionRadios(source_question).nth(0))
+            .not.toBeChecked()
+        ;
+        await expect(getDefaultOptionRadios(source_question).nth(1))
+            .toBeChecked()
+        ;
+
+        // Save the form and reload it
+        await form.doSaveFormEditorAndReload();
+
+        // Check options for the source question
+        source_question = page.getByRole('option', {
+            name: "Test radio question",
+            exact: true,
+        }).nth(0);
+        await expect(getSelectableOptions(source_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(source_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(getDefaultOptionRadios(source_question).nth(0))
+            .not.toBeChecked()
+        ;
+        await expect(getDefaultOptionRadios(source_question).nth(1))
+            .toBeChecked()
+        ;
+
+        // Check options for the duplicated question
+        duplicated_question = page.getByRole('option', {
+            name: "Test radio question",
+            exact: true,
+        }).nth(1);
+        await expect(getSelectableOptions(duplicated_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(duplicated_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(getDefaultOptionRadios(duplicated_question).nth(0))
+            .toBeChecked()
+        ;
+        await expect(getDefaultOptionRadios(duplicated_question).nth(1))
+            .not.toBeChecked()
+        ;
+    });
+
+    test('can duplicate a checkbox question', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const form = new FormPage(page);
+
+        await setupForm(form, api);
+
+        // Set the question name
+        const question = await form.addQuestion("Test checkbox question");
+
+        // Change question type
+        await form.setQuestionType(question, "Checkbox");
+
+        // Add three options
+        await getSelectableOptions(question).nth(0).fill("Option 1");
+        await getSelectableOptions(question).nth(1).fill("Option 2");
+        await getSelectableOptions(question).nth(2).fill("Option 3");
+
+        // Define second and third options as default
+        await getDefaultOptionCheckboxes(question).nth(1).check();
+        await getDefaultOptionCheckboxes(question).nth(2).check();
+
+        // Duplicate the question
+        await form.getButton('Duplicate question').click();
+
+        // Check the source question
+        let source_question = form.getNthQuestion(0);
+        await expect(
+            source_question.getByRole('textbox', { name: 'Question name' })
+        ).toHaveValue("Test checkbox question");
+        await expect(getSelectableOptions(source_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(source_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(getSelectableOptions(source_question).nth(2))
+            .toHaveValue("Option 3")
+        ;
+        await expect(getDefaultOptionCheckboxes(source_question).nth(1))
+            .toBeChecked()
+        ;
+        await expect(getDefaultOptionCheckboxes(source_question).nth(2))
+            .toBeChecked()
+        ;
+
+        // Check the duplicated question
+        let duplicated_question = form.getNthQuestion(1);
+        await expect(
+            duplicated_question.getByRole('textbox', { name: 'Question name' })
+        ).toHaveValue("Test checkbox question");
+        await expect(getSelectableOptions(duplicated_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(duplicated_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(getSelectableOptions(duplicated_question).nth(2))
+            .toHaveValue("Option 3")
+        ;
+        await expect(getDefaultOptionCheckboxes(duplicated_question).nth(1))
+            .toBeChecked()
+        ;
+        await expect(getDefaultOptionCheckboxes(duplicated_question).nth(2))
+            .toBeChecked()
+        ;
+
+        // Define first option as default for the duplicated question
+        await getDefaultOptionCheckboxes(duplicated_question).nth(0).check();
+
+        // Check the source question
+        await expect(getDefaultOptionCheckboxes(source_question).nth(0))
+            .not.toBeChecked()
+        ;
+        await expect(getDefaultOptionCheckboxes(source_question).nth(1))
+            .toBeChecked()
+        ;
+        await expect(getDefaultOptionCheckboxes(source_question).nth(2))
+            .toBeChecked()
+        ;
+
+        // Save the form and reload it
+        await form.doSaveFormEditorAndReload();
+
+        // Check options for the source question
+        source_question = page.getByRole('option', {
+            name: "Test checkbox question",
+            exact: true,
+        }).nth(0);
+        await expect(getSelectableOptions(source_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(source_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(getSelectableOptions(source_question).nth(2))
+            .toHaveValue("Option 3")
+        ;
+        await expect(getDefaultOptionCheckboxes(source_question).nth(0))
+            .not.toBeChecked()
+        ;
+        await expect(getDefaultOptionCheckboxes(source_question).nth(1))
+            .toBeChecked()
+        ;
+        await expect(getDefaultOptionCheckboxes(source_question).nth(2))
+            .toBeChecked()
+        ;
+
+        // Check options for the duplicated question
+        duplicated_question = page.getByRole('option', {
+            name: "Test checkbox question",
+            exact: true,
+        }).nth(1);
+        await expect(getSelectableOptions(duplicated_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(duplicated_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(getSelectableOptions(duplicated_question).nth(2))
+            .toHaveValue("Option 3")
+        ;
+        await expect(getDefaultOptionCheckboxes(duplicated_question).nth(0))
+            .toBeChecked()
+        ;
+        await expect(getDefaultOptionCheckboxes(duplicated_question).nth(1))
+            .toBeChecked()
+        ;
+        await expect(getDefaultOptionCheckboxes(duplicated_question).nth(2))
+            .toBeChecked()
+        ;
+    });
+
+    test('can duplicate a dropdown question', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const form = new FormPage(page);
+
+        await setupForm(form, api);
+
+        // Set the question name
+        const question = await form.addQuestion("Test dropdown question");
+
+        // Change question type
+        await form.setQuestionType(question, "Dropdown");
+
+        // Add two options
+        await getSelectableOptions(question).nth(0).fill("Option 1");
+        await getSelectableOptions(question).nth(1).fill("Option 2");
+
+        // Define second option as default
+        await form.doSelectSingleDropdownOption(question, "Option 2");
+
+        // Duplicate the question
+        await form.getButton('Duplicate question').click();
+
+        // Check the source question
+        const source_question = form.getNthQuestion(0);
+        const source_name = source_question.getByRole('textbox', {
+            name: 'Question name',
+        });
+        await expect(source_name).toHaveValue("Test dropdown question");
+        await source_name.click();
+        await expect(getSelectableOptions(source_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(source_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(form.getSingleDropdownDefault(source_question))
+            .toHaveText("Option 2")
+        ;
+
+        // Check the duplicated question
+        const duplicated_question = form.getNthQuestion(1);
+        const duplicated_name = duplicated_question.getByRole('textbox', {
+            name: 'Question name',
+        });
+        await expect(duplicated_name).toHaveValue("Test dropdown question");
+        await duplicated_name.click();
+        await expect(getSelectableOptions(duplicated_question).nth(0))
+            .toHaveValue("Option 1")
+        ;
+        await expect(getSelectableOptions(duplicated_question).nth(1))
+            .toHaveValue("Option 2")
+        ;
+        await expect(form.getSingleDropdownDefault(duplicated_question))
+            .toHaveText("Option 2")
+        ;
+
+        // Define first option as default for the duplicated question
+        await form.doSelectSingleDropdownOption(duplicated_question, "Option 1");
+
+        // Check the source question
+        await expect(form.getSingleDropdownDefault(source_question))
+            .toHaveText("Option 2")
+        ;
+
+        // Save the form
+        await form.doSaveFormEditor();
+    });
+});
