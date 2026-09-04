@@ -331,10 +331,11 @@ class KnowbaseEditor {
             // screen reader gets either no name or the glyph's raw code point.
             button.setAttribute('aria-label', btn.title);
             if (btn.shortcutAria) {
-                const shortcutLabel = this.#isMac() ? btn.shortcutMac : btn.shortcutOther;
+                const isMac = TiptapCore.isMacOS() || TiptapCore.isiOS();
+                const shortcutLabel = isMac ? btn.shortcutMac : btn.shortcutOther;
                 button.title = `${btn.title} (${shortcutLabel})`;
                 // Tiptap's "Mod" shortcuts resolve to Cmd on macOS, not Ctrl.
-                const ariaShortcut = this.#isMac() ? btn.shortcutAria.replace(/^Control\+/, 'Meta+') : btn.shortcutAria;
+                const ariaShortcut = isMac ? btn.shortcutAria.replace(/^Control\+/, 'Meta+') : btn.shortcutAria;
                 button.setAttribute('aria-keyshortcuts', ariaShortcut);
             } else {
                 button.title = btn.title;
@@ -397,15 +398,6 @@ class KnowbaseEditor {
     #focusBubbleButton(button) {
         this.#setRovingTabIndex(button);
         button.focus();
-    }
-
-    /**
-     * @returns {boolean} True on macOS/iOS, where Tiptap's "Mod" shortcuts
-     * resolve to Cmd instead of Ctrl.
-     */
-    #isMac() {
-        const platform = navigator.userAgentData?.platform ?? navigator.platform ?? navigator.userAgent;
-        return /Mac|iPhone|iPad/i.test(platform);
     }
 
     /**
