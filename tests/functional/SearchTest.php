@@ -3046,11 +3046,58 @@ class SearchTest extends DbTestCase
             "`glpi_computers`.`id` AS `ITEM_SearchTest\Computer_1_id`",
             $data['sql']['search']
         );
+        // Default search without an explicit sort must end up ordering by the first
+        // visible column (name, search option 1), not by the hidden `id` column.
+        // See glpi-project/glpi#25208.
         $this->assertStringContainsString(
+            "ITEM_SearchTest\Computer_1` ASC",
+            $data['sql']['search']
+        );
+        $this->assertStringNotContainsString(
             "ORDER BY `id`",
             $data['sql']['search']
         );
     }
+    public function testDefaultSortUsesFirstVisibleColumnForNonAssets()
+    {
+        // Regression test for glpi-project/glpi#25208 and #25221
+        // Non-asset default search (no explicit sort) must ORDER BY the first visible column,
+        // not by the hidden `id` column.
+        $data = $this->doSearch('User', [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+        ]);
+
+        $sql = $this->cleanSQL($data['sql']['search']);
+        $this->assertStringNotContainsString('ORDER BY `id`', $sql);
+        // User search option 1 is the "login" field (glpi_users.name)
+        $this->assertStringContainsString(
+            'ORDER BY `glpi_users`.`name` ASC',
+            $sql
+        );
+    }
+
+    public function testDefaultSortKeepsNoOrderByForAssets()
+    {
+        // Regression test for glpi-project/glpi#25208 and #25221
+        // Asset default search must keep the no-ORDER-BY optimization (perf concern
+        // from commit 3dad2e1cab): restoring the sort must not silently reintroduce
+        // an ORDER BY clause on default asset lists.
+        $data = $this->doSearch('Computer', [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+        ]);
+
+        $sql = $this->cleanSQL($data['sql']['search']);
+        // Assert there is no top-level ORDER BY clause (only the internal ones of
+        // GROUP_CONCAT(... ORDER BY ...) which are part of the SELECT, not the sort).
+        // See glpi-project/glpi#25208: the no-ORDER-BY optimization for default asset
+        // lists must be preserved (commit 3dad2e1cab).
+        $this->assertDoesNotMatchRegularExpression('/ORDER BY .* (ASC|DESC) LIMIT/', $sql);
+    }
+
 
     public function testGroupParamAfterMeta()
     {
