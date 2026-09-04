@@ -47,6 +47,24 @@ import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 // Used to hide the bubble menu explicitly on Tab-out (see #createBubbleMenu).
 const BUBBLE_MENU_PLUGIN_KEY = 'kb-editor-bubble-menu';
 
+const SHORTCUT_MAC_SYMBOLS = { Control: '⌘', Alt: '⌥', Shift: '⇧' };
+const SHORTCUT_OTHER_LABELS = { Control: 'Ctrl', Alt: 'Alt', Shift: 'Shift' };
+
+/**
+ * Derives the Mac and non-Mac display labels from an `aria-keyshortcuts`
+ * string (e.g. 'Control+Shift+s' -> { mac: '⌘⇧S', other: 'Ctrl+Shift+S' }).
+ * @param {string} ariaShortcut
+ * @returns {{mac: string, other: string}}
+ */
+function formatShortcut(ariaShortcut) {
+    const parts = ariaShortcut.split('+');
+    const key = parts.pop().toUpperCase();
+    return {
+        mac: parts.map((mod) => SHORTCUT_MAC_SYMBOLS[mod]).join('') + key,
+        other: [...parts.map((mod) => SHORTCUT_OTHER_LABELS[mod]), key].join('+'),
+    };
+}
+
 /**
  * Knowbase article editor based on Tiptap
  */
@@ -277,36 +295,34 @@ class KnowbaseEditor {
         menu.tabIndex = -1;
         menu.addEventListener('keydown', (e) => this.#handleBubbleMenuKeyDown(e));
         menu.addEventListener('focusout', (e) => {
-            if (e.relatedTarget !== null) {
-                // Tab-out to another page element: hide the now-stale menu.
-                if (!menu.contains(e.relatedTarget) && this.#editor && !this.#editor.isDestroyed) {
-                    this.#editor.view.dispatch(this.#editor.view.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'hide'));
+            const visible = this.#getVisibleButtons(menu);
+            // Don't key off relatedTarget===null for this
+            const targetHidden = e.target instanceof HTMLElement && !visible.includes(e.target);
+            if (targetHidden) {
+                if (menu.isConnected && menu.style.visibility !== 'hidden' && visible.length > 0) {
+                    this.#focusBubbleButton(visible[0]);
                 }
                 return;
             }
-            // Refocus only if `e.target` itself got hidden (e.g. "Remove link"),
-            // not on unrelated blurs (Alt-Tab, window.prompt()) sharing relatedTarget===null.
-            if (!menu.isConnected || menu.style.visibility === 'hidden') return;
-            const visible = this.#getVisibleButtons(menu);
-            if (e.target instanceof HTMLElement && visible.includes(e.target)) return;
-            if (visible.length > 0) {
-                this.#focusBubbleButton(visible[0]);
+            // Tab-out to another page element: hide the now-stale menu.
+            if (e.relatedTarget !== null && !menu.contains(e.relatedTarget) && this.#editor && !this.#editor.isDestroyed) {
+                this.#editor.view.dispatch(this.#editor.view.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'hide'));
             }
         });
 
         const buttons = [
-            { command: 'toggleBold', icon: 'ti ti-bold', title: __('Bold'), shortcutAria: 'Control+b', shortcutMac: '⌘B', shortcutOther: 'Ctrl+B' },
-            { command: 'toggleItalic', icon: 'ti ti-italic', title: __('Italic'), shortcutAria: 'Control+i', shortcutMac: '⌘I', shortcutOther: 'Ctrl+I' },
-            { command: 'toggleStrike', icon: 'ti ti-strikethrough', title: __('Strikethrough'), shortcutAria: 'Control+Shift+s', shortcutMac: '⌘⇧S', shortcutOther: 'Ctrl+Shift+S' },
-            { command: 'toggleCode', icon: 'ti ti-code', title: __('Code'), shortcutAria: 'Control+e', shortcutMac: '⌘E', shortcutOther: 'Ctrl+E' },
+            { command: 'toggleBold', icon: 'ti ti-bold', title: __('Bold'), shortcutAria: 'Control+b' },
+            { command: 'toggleItalic', icon: 'ti ti-italic', title: __('Italic'), shortcutAria: 'Control+i' },
+            { command: 'toggleStrike', icon: 'ti ti-strikethrough', title: __('Strikethrough'), shortcutAria: 'Control+Shift+s' },
+            { command: 'toggleCode', icon: 'ti ti-code', title: __('Code'), shortcutAria: 'Control+e' },
             { type: 'divider' },
-            { command: 'toggleHeading1', icon: 'ti ti-h-1', title: __('Heading 1'), special: 'heading', level: 1, shortcutAria: 'Control+Alt+1', shortcutMac: '⌘⌥1', shortcutOther: 'Ctrl+Alt+1' },
-            { command: 'toggleHeading2', icon: 'ti ti-h-2', title: __('Heading 2'), special: 'heading', level: 2, shortcutAria: 'Control+Alt+2', shortcutMac: '⌘⌥2', shortcutOther: 'Ctrl+Alt+2' },
-            { command: 'toggleHeading3', icon: 'ti ti-h-3', title: __('Heading 3'), special: 'heading', level: 3, shortcutAria: 'Control+Alt+3', shortcutMac: '⌘⌥3', shortcutOther: 'Ctrl+Alt+3' },
+            { command: 'toggleHeading1', icon: 'ti ti-h-1', title: __('Heading 1'), special: 'heading', level: 1, shortcutAria: 'Control+Alt+1' },
+            { command: 'toggleHeading2', icon: 'ti ti-h-2', title: __('Heading 2'), special: 'heading', level: 2, shortcutAria: 'Control+Alt+2' },
+            { command: 'toggleHeading3', icon: 'ti ti-h-3', title: __('Heading 3'), special: 'heading', level: 3, shortcutAria: 'Control+Alt+3' },
             { type: 'divider' },
-            { command: 'toggleBulletList', icon: 'ti ti-list', title: __('Bullet List'), shortcutAria: 'Control+Shift+8', shortcutMac: '⌘⇧8', shortcutOther: 'Ctrl+Shift+8' },
-            { command: 'toggleOrderedList', icon: 'ti ti-list-numbers', title: __('Numbered List'), shortcutAria: 'Control+Shift+7', shortcutMac: '⌘⇧7', shortcutOther: 'Ctrl+Shift+7' },
-            { command: 'toggleBlockquote', icon: 'ti ti-blockquote', title: __('Quote'), shortcutAria: 'Control+Shift+b', shortcutMac: '⌘⇧B', shortcutOther: 'Ctrl+Shift+B' },
+            { command: 'toggleBulletList', icon: 'ti ti-list', title: __('Bullet List'), shortcutAria: 'Control+Shift+8' },
+            { command: 'toggleOrderedList', icon: 'ti ti-list-numbers', title: __('Numbered List'), shortcutAria: 'Control+Shift+7' },
+            { command: 'toggleBlockquote', icon: 'ti ti-blockquote', title: __('Quote'), shortcutAria: 'Control+Shift+b' },
             { type: 'divider' },
             { command: 'setLink', icon: 'ti ti-link', title: _x('button', 'Link'), special: 'link' },
             { command: 'unsetLink', icon: 'ti ti-link-off', title: __('Remove link'), special: 'unlink' },
@@ -342,8 +358,8 @@ class KnowbaseEditor {
             button.setAttribute('aria-label', btn.title);
             if (btn.shortcutAria) {
                 const isMac = TiptapCore.isMacOS() || TiptapCore.isiOS();
-                const shortcutLabel = isMac ? btn.shortcutMac : btn.shortcutOther;
-                button.title = `${btn.title} (${shortcutLabel})`;
+                const { mac, other } = formatShortcut(btn.shortcutAria);
+                button.title = `${btn.title} (${isMac ? mac : other})`;
                 // Tiptap's "Mod" shortcuts resolve to Cmd on macOS, not Ctrl.
                 const ariaShortcut = isMac ? btn.shortcutAria.replace(/^Control\+/, 'Meta+') : btn.shortcutAria;
                 button.setAttribute('aria-keyshortcuts', ariaShortcut);
