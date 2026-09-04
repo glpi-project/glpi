@@ -44,6 +44,9 @@ import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors
 import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
 import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 
+// Used to hide the bubble menu explicitly on Tab-out (see #createBubbleMenu).
+const BUBBLE_MENU_PLUGIN_KEY = 'kb-editor-bubble-menu';
+
 /**
  * Knowbase article editor based on Tiptap
  */
@@ -127,6 +130,7 @@ class KnowbaseEditor {
                 showOnlyCurrent: true,
             }),
             TiptapBubbleMenu.configure({
+                pluginKey: BUBBLE_MENU_PLUGIN_KEY,
                 element: this.#bubbleMenuElement,
                 appendTo: () => this.#element.closest('.kb-article') ?? document.body,
                 shouldShow: ({ editor, state }) => editor.isEditable
@@ -272,10 +276,16 @@ class KnowbaseEditor {
         menu.setAttribute('aria-orientation', 'horizontal');
         menu.tabIndex = -1;
         menu.addEventListener('keydown', (e) => this.#handleBubbleMenuKeyDown(e));
-        // Refocus only if `e.target` itself got hidden (e.g. "Remove link"),
-        // not on unrelated blurs (Alt-Tab, window.prompt()) sharing relatedTarget===null.
         menu.addEventListener('focusout', (e) => {
-            if (e.relatedTarget !== null) return;
+            if (e.relatedTarget !== null) {
+                // Tab-out to another page element: hide the now-stale menu.
+                if (!menu.contains(e.relatedTarget) && this.#editor && !this.#editor.isDestroyed) {
+                    this.#editor.view.dispatch(this.#editor.view.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'hide'));
+                }
+                return;
+            }
+            // Refocus only if `e.target` itself got hidden (e.g. "Remove link"),
+            // not on unrelated blurs (Alt-Tab, window.prompt()) sharing relatedTarget===null.
             if (!menu.isConnected || menu.style.visibility === 'hidden') return;
             const visible = this.#getVisibleButtons(menu);
             if (e.target instanceof HTMLElement && visible.includes(e.target)) return;
