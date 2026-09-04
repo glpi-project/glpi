@@ -52,22 +52,6 @@ export class BubbleMenuHelper {
     private readonly page: Page;
     private readonly editorHelper: TipTapEditorHelper;
 
-    private static readonly COMMAND_TO_DATA_COMMAND: Record<BubbleMenuCommand, string> = {
-        'Bold': 'toggleBold',
-        'Italic': 'toggleItalic',
-        'Strikethrough': 'toggleStrike',
-        'Code': 'toggleCode',
-        'Heading 1': 'toggleHeading1',
-        'Heading 2': 'toggleHeading2',
-        'Heading 3': 'toggleHeading3',
-        'Bullet List': 'toggleBulletList',
-        'Numbered List': 'toggleOrderedList',
-        'Quote': 'toggleBlockquote',
-        'Link': 'setLink',
-        'Remove link': 'unsetLink',
-        'Comment': 'comment',
-    };
-
     constructor(page: Page, editorHelper: TipTapEditorHelper) {
         this.page = page;
         this.editorHelper = editorHelper;
@@ -79,9 +63,7 @@ export class BubbleMenuHelper {
     }
 
     getButton(command: BubbleMenuCommand): Locator {
-        const menu = this.getMenu();
-        const dataCommand = BubbleMenuHelper.COMMAND_TO_DATA_COMMAND[command];
-        return menu.locator(`[data-command="${dataCommand}"]`);
+        return this.getMenu().getByRole('button', { name: command, exact: true });
     }
 
     async selectAllContent(): Promise<void> {
