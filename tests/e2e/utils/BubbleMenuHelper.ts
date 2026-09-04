@@ -52,6 +52,22 @@ export class BubbleMenuHelper {
     private readonly page: Page;
     private readonly editorHelper: TipTapEditorHelper;
 
+    private static readonly COMMAND_TO_DATA_COMMAND: Record<BubbleMenuCommand, string> = {
+        'Bold': 'toggleBold',
+        'Italic': 'toggleItalic',
+        'Strikethrough': 'toggleStrike',
+        'Code': 'toggleCode',
+        'Heading 1': 'toggleHeading1',
+        'Heading 2': 'toggleHeading2',
+        'Heading 3': 'toggleHeading3',
+        'Bullet List': 'toggleBulletList',
+        'Numbered List': 'toggleOrderedList',
+        'Quote': 'toggleBlockquote',
+        'Link': 'setLink',
+        'Remove link': 'unsetLink',
+        'Comment': 'comment',
+    };
+
     constructor(page: Page, editorHelper: TipTapEditorHelper) {
         this.page = page;
         this.editorHelper = editorHelper;
@@ -60,6 +76,12 @@ export class BubbleMenuHelper {
     private getMenu(): Locator {
         // eslint-disable-next-line playwright/no-raw-locators
         return this.page.locator('.bubble-menu');
+    }
+
+    getButton(command: BubbleMenuCommand): Locator {
+        const menu = this.getMenu();
+        const dataCommand = BubbleMenuHelper.COMMAND_TO_DATA_COMMAND[command];
+        return menu.locator(`[data-command="${dataCommand}"]`);
     }
 
     async selectAllContent(): Promise<void> {
@@ -80,37 +102,35 @@ export class BubbleMenuHelper {
     }
 
     async clickButton(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        const button = menu.getByTitle(command, { exact: true });
+        await this.assertVisible();
+        const button = this.getButton(command);
         await expect(button).toBeVisible();
         await button.click();
     }
 
     async assertButtonActive(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        const button = menu.getByTitle(command, { exact: true });
-        await expect(button).toHaveClass(/is-active/);
+        await this.assertVisible();
+        await expect(this.getButton(command)).toHaveClass(/is-active/);
     }
 
     async assertButtonInactive(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        const button = menu.getByTitle(command, { exact: true });
-        await expect(button).not.toHaveClass(/is-active/);
+        await this.assertVisible();
+        await expect(this.getButton(command)).not.toHaveClass(/is-active/);
     }
 
     async assertButtonDisabled(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        await expect(menu.getByTitle(command, { exact: true })).toBeDisabled();
+        await this.assertVisible();
+        await expect(this.getButton(command)).toBeDisabled();
     }
 
     async assertButtonVisible(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        await expect(menu.getByTitle(command, { exact: true })).toBeVisible();
+        await this.assertVisible();
+        await expect(this.getButton(command)).toBeVisible();
     }
 
     async assertButtonHidden(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        await expect(menu.getByTitle(command, { exact: true })).toBeHidden();
+        await this.assertVisible();
+        await expect(this.getButton(command)).toBeHidden();
     }
 
     async setLink(url: string): Promise<void> {
