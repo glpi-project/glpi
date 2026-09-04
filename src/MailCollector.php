@@ -2258,9 +2258,20 @@ class MailCollector extends CommonDBTM
             $subject = $message->getHeader('subject')->getFieldValue();
             $matches = [];
 
+            global $DB;
             $ticket = new Ticket();
+            $tags = array_unique(array_merge(['GLPI'], array_column(
+                iterator_to_array($DB->request([
+                    'SELECT' => 'notification_subject_tag',
+                    'DISTINCT' => true,
+                    'FROM' => Entity::getTable(),
+                    'WHERE' => ['notification_subject_tag' => ['<>', '']],
+                ])),
+                'notification_subject_tag'
+            )));
+            $pattern = '/\[(?:' . implode('|', array_map(static fn($tag) => preg_quote($tag, '/'), $tags)) . ')\s#(\d+)\]/';
             if (
-                preg_match('/\[.+#(\d+)\]/', $subject, $matches) === 1
+                preg_match($pattern, $subject, $matches) === 1
                 && $ticket->getFromDB($matches[1])
             ) {
                 return $ticket;
