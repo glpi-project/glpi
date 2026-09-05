@@ -5057,20 +5057,6 @@ HTML;
         $field_user = $user_criteria['field_user'];
         $criteria = $user_criteria['criteria'];
 
-        $groups = [];
-
-        if (count($user_criteria['groups_ids']) > 0) {
-            $groups_iterator = $DB->request([
-                'SELECT' => ['id', 'name'],
-                'FROM'   => 'glpi_groups',
-                'WHERE'  => ['id' => $user_criteria['groups_ids']],
-            ]);
-
-            foreach ($groups_iterator as $data) {
-                $groups[$data['id']] = $data['name'];
-            }
-        }
-
         $number = 0;
 
         $group_choices = [];
