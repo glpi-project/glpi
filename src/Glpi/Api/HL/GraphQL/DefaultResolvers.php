@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\GraphQL;
 use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\APIException;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Schemas;
@@ -52,6 +53,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use stdClass;
 
 use function Safe\json_decode;
+use function Safe\preg_replace;
 
 /**
  * Default GraphQL field resolvers that use the OpenAPI schema to fetch data from the database.
@@ -321,6 +323,10 @@ class DefaultResolvers
         if (!array_key_exists($field_name, $source) || $source[$field_name] === null) {
             // no action needed on null values
             return null;
+        }
+
+        if ($parent_schema['properties'][$field_name]['type'] === Schema::TYPE_BOOLEAN) {
+            return (bool) (is_string($source[$field_name]) ? trim(preg_replace('/[[:cntrl:]]/', '', $source[$field_name])) : $source[$field_name]);
         }
 
         // other formats already handled by GraphQL type system

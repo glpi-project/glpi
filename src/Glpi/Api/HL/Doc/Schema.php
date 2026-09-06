@@ -42,6 +42,7 @@ use Glpi\Toolbox\ArrayPathAccessor;
 use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
+use function Safe\preg_replace;
 use function Safe\strtotime;
 
 /**
@@ -503,7 +504,7 @@ class Schema implements ArrayAccess
             self::TYPE_STRING => (string) $value,
             self::TYPE_INTEGER => (int) $value,
             self::TYPE_NUMBER => (float) $value,
-            self::TYPE_BOOLEAN => (bool) $value,
+            self::TYPE_BOOLEAN => (bool) (is_string($value) ? trim(preg_replace('/[[:cntrl:]]/', '', $value)) : $value),
             default => $value
         };
 

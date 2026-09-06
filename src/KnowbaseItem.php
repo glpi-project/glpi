@@ -912,14 +912,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         // Specific case for anonymous users + multi entities
         if (!Session::getLoginUserID()) {
-            $where = ['is_faq' => 1];
+            $where = [self::getTable() . '.is_faq' => 1];
             if (Session::isMultiEntitiesMode()) {
                 $where[Entity_KnowbaseItem::getTableField('entities_id')] = 0;
                 $where[Entity_KnowbaseItem::getTableField('is_recursive')] = 1;
             }
         } else {
             $where = self::getVisibilityCriteriaKB();
-            $where['is_faq'] = 1;
+            $where[self::getTable() . '.is_faq'] = 1;
         }
 
         return $where;

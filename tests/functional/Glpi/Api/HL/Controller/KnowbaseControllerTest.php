@@ -35,12 +35,15 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Budget;
+use Entity_KnowbaseItem;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use KnowbaseItem;
+use KnowbaseItem_Favorite;
 use KnowbaseItemTranslation;
 use Project;
 use Ticket;
+use User;
 
 class KnowbaseControllerTest extends HLAPITestCase
 {
@@ -182,5 +185,52 @@ class KnowbaseControllerTest extends HLAPITestCase
         ], [
             'date_creation' => '2026-03-01T10:00:00+00:00',
         ]);
+    }
+
+    public function testIsFavoriteProperty(): void
+    {
+        global $DB;
+
+        $DB->insert(KnowbaseItem::getTable(), [
+            'name' => '_knowbaseitem_favorite_test',
+            'answer' => 'Favorite test content',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_faq' => 1,
+        ]);
+        $article_id = $DB->insertId();
+
+        $DB->insert(Entity_KnowbaseItem::getTable(), [
+            'knowbaseitems_id' => $article_id,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+
+        $DB->insert(KnowbaseItem_Favorite::getTable(), [
+            'knowbaseitems_id' => $article_id,
+            'users_id' => getItemByTypeName(User::class, 'post-only', true),
+        ]);
+
+        // The `is_favorite` property is a scalar join (a scalar value pulled from another table) which reflects if the article is marked as favorite by the current user.
+        $this->login();
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $article_id), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayHasKey('is_favorite', $content);
+                    $this->assertFalse($content['is_favorite']);
+                });
+        });
+
+        $this->login('post-only', 'postonly');
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $article_id), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayHasKey('is_favorite', $content);
+                    $this->assertTrue($content['is_favorite']);
+                });
+        });
     }
 }
