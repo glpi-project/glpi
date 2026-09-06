@@ -71,6 +71,7 @@ abstract class AbstractController
     public const ERROR_INVALID_PARAMETER = 'ERROR_INVALID_PARAMETER';
     public const ERROR_METHOD_NOT_ALLOWED = 'ERROR_METHOD_NOT_ALLOWED';
     public const ERROR_ALREADY_EXISTS = 'ERROR_ALREADY_EXISTS';
+    public const ERROR_PRECONDITION_FAILED = 'ERROR_PRECONDITION_FAILED';
 
     public const CRUD_ACTION_CREATE = 'create';
     public const CRUD_ACTION_READ = 'read';

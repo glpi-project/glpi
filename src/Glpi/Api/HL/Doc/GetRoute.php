@@ -43,6 +43,18 @@ class GetRoute extends Route
     {
         parent::__construct(
             description: $description ?? 'Get an existing ' . $schema_name,
+            parameters: [
+                new Parameter(
+                    name: 'If-Modified-Since',
+                    schema: new Schema(type: Schema::TYPE_STRING, format: Schema::FORMAT_STRING_DATE_TIME),
+                    location: Parameter::LOCATION_HEADER,
+                ),
+                new Parameter(
+                    name: 'If-Unmodified-Since',
+                    schema: new Schema(type: Schema::TYPE_STRING, format: Schema::FORMAT_STRING_DATE_TIME),
+                    location: Parameter::LOCATION_HEADER,
+                ),
+            ],
             responses: [
                 new Response(schema: new SchemaReference($schema_name)),
             ]
