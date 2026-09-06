@@ -46,7 +46,8 @@
         {% endif %}
         class="article"
     >
-        <a class="d-block text-body text-hover-link" href="{{ result.link }}">
+        <div class="article-line">
+            <a class="d-block text-body text-hover-link" href="{{ result.link }}">
             <span class="d-flex align-items-center">
                 <span
                     class="{{ result.illustration ? 'me-1' : '' }}"
@@ -71,6 +72,7 @@
                 </span>
             {% endif %}
         </a>
+        </div>
     </li>
 {% endfor %}
 
