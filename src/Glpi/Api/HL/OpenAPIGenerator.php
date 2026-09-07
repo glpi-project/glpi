@@ -737,7 +737,11 @@ EOT;
             if ($route_param->getName() === '_') {
                 continue;
             }
-            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $route_param->getSchema()->toArray();
+            $property_schema = $route_param->getSchema()->toArray();
+            if ($route_param->getDescription() !== '') {
+                $property_schema['description'] = $route_param->getDescription();
+            }
+            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $property_schema;
         }
         return $request_body;
     }
