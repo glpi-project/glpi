@@ -261,7 +261,7 @@ final class Parser
                     'sql_where_callable' => fn($a, $b) => [
                         [new QueryExpression($this->db::quoteName($a) . ' IS NOT TRUE')],
                     ],
-                ]
+                ],
             ];
         }
         return $operators;
