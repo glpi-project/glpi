@@ -100,7 +100,7 @@
 
 .kb-sidepanel {
     background-color: var(--tblr-card-cap-bg);
-    border-left: 1px solid #e1e4e8;
+    border-left: 1px solid var(--tblr-border-color);
     height: calc(100vh - 150px);
 
     // Mirror .kb-article's transition so the pair always sums to the row width;
@@ -246,22 +246,22 @@ body.in_modal .kb-article {
 // KB revision diff - inline highlights
 .kb-article--diff-mode {
     ins.diffins {
-        background-color: #d4edda;
+        background-color: rgb(var(--tblr-success-rgb), 0.25);
         text-decoration: none;
     }
 
     del.diffdel {
-        background-color: #f8d7da;
+        background-color: rgb(var(--tblr-danger-rgb), 0.25);
         text-decoration: line-through;
     }
 
     ins.diffmod {
-        background-color: #d4edda;
+        background-color: rgb(var(--tblr-success-rgb), 0.25);
         text-decoration: none;
     }
 
     del.diffmod {
-        background-color: #f8d7da;
+        background-color: rgb(var(--tblr-danger-rgb), 0.25);
         text-decoration: line-through;
     }
 }
@@ -633,7 +633,7 @@ body.in_modal .kb-editor-reserved {
         .table-grip-column,
         .table-grip-row {
             &::after {
-                background: var(--tblr-gray-400);
+                background: rgb(var(--tblr-body-color-rgb), 0.4);
             }
 
             &.is-hovered::after {
@@ -679,7 +679,7 @@ body.in_modal .kb-editor-reserved {
             width: 11px;
             height: 11px;
             border-radius: 50%;
-            background: var(--tblr-gray-400);
+            background: rgb(var(--tblr-body-color-rgb), 0.4);
         }
 
         .table-grip.is-hovered::after {
@@ -703,7 +703,7 @@ body.in_modal .kb-editor-reserved {
                 font-family: tabler-icons !important;
                 font-size: 18px;
                 line-height: 1;
-                color: var(--tblr-gray-400);
+                color: rgb(var(--tblr-body-color-rgb), 0.4);
             }
 
             &.is-hovered::after {
@@ -948,7 +948,7 @@ body.in_modal .kb-editor-reserved {
         border: none;
         background: none;
         cursor: pointer;
-        color: var(--tblr-gray-400);
+        color: rgb(var(--tblr-body-color-rgb), 0.4);
 
         &::before {
             content: "\ea68";
@@ -1269,7 +1269,7 @@ body.in_modal .kb-editor-reserved {
 
 [data-main-page-aside="knowbaseitem"] {
     max-width: 300px;
-    background-color: #fff;
+    background-color: var(--tblr-bg-surface);
 
     .node,
     .article {
