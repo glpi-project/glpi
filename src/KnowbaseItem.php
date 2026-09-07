@@ -1793,8 +1793,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // Toggle actions
         $toggles = [];
-        // An anonymous reader of the public FAQ has nowhere to store a favorite.
-        if (Session::getLoginUserID() !== false && KnowbaseItem_Favorite::canCreate()) {
+        if (KnowbaseItem_Favorite::canCreate()) {
             $toggles[] = new EditorAction(
                 label: __("Add to favorites"),
                 icon: "ti ti-star",
