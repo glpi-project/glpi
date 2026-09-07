@@ -210,6 +210,20 @@ class KnowbaseControllerTest extends HLAPITestCase
             'users_id' => getItemByTypeName(User::class, 'post-only', true),
         ]);
 
+        $DB->insert(KnowbaseItem::getTable(), [
+            'name' => '_knowbaseitem_notfavorite_test',
+            'answer' => 'Not favorite test content',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_faq' => 1,
+        ]);
+        $article_id2 = $DB->insertId();
+
+        $DB->insert(Entity_KnowbaseItem::getTable(), [
+            'knowbaseitems_id' => $article_id2,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+
         // The `is_favorite` property is a scalar join (a scalar value pulled from another table) which reflects if the article is marked as favorite by the current user.
         $this->login();
 
@@ -230,6 +244,38 @@ class KnowbaseControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) {
                     $this->assertArrayHasKey('is_favorite', $content);
                     $this->assertTrue($content['is_favorite']);
+                });
+        });
+
+        // Test is_favorite as RSQL filter
+        $this->api->call(new Request('GET', '/Knowledgebase/Article'), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(2, $content);
+                    $this->assertEquals('_knowbaseitem_favorite_test', $content[0]['name']);
+                    $this->assertEquals('_knowbaseitem_notfavorite_test', $content[1]['name']);
+                });
+        });
+
+        $request = new Request('GET', '/Knowledgebase/Article');
+        $request->setParameter('filter', 'is_favorite==1');
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals('_knowbaseitem_favorite_test', $content[0]['name']);
+                });
+        });
+        $request = new Request('GET', '/Knowledgebase/Article');
+        $request->setParameter('filter', 'is_favorite==0');
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals('_knowbaseitem_notfavorite_test', $content[0]['name']);
                 });
         });
     }

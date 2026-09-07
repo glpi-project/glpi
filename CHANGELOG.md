@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 - Knowledge base articles can be moved in the aside tree by dragging them: onto an article to become its child, or onto the top or bottom edge of an article to become its sibling. Dragging is mouse-only for now, and reorders nothing: only the parent changes.
 - Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
 - High-Level API version 3.0.0.
+- `=istruthy=` and `=isnottruthy=` RSQL operators.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
@@ -34,6 +35,7 @@ The present file will list all changes made to the project; according to the
 - New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
 - "Logs purge" tab moved from `Setup > General` to `Setup > Data and Privacy` and renamed to "Historical logs".
 - Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents). The root article is an exception: it is readable by anyone who can read the knowledge base, and it never grants access to its descendants.
+- Using `==` and `!=` RSQL operators with boolean fields are coerced to `=istruthy=` and `=isnottruthy=`. There should be no noticeable change in behavior with any existing queries, but this was done to fix behavior with a field added with HLAPI v3.
 
 ### Deprecated
 

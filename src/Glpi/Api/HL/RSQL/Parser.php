@@ -246,6 +246,22 @@ final class Parser
                         ];
                     },
                 ],
+                [
+                    'operator' => '=istruthy=',
+                    'description' => 'is truthy',
+                    'value_expected' => false,
+                    'sql_where_callable' => fn($a, $b) => [
+                        [new QueryExpression($this->db::quoteName($a) . ' IS TRUE')],
+                    ],
+                ],
+                [
+                    'operator' => '=isnottruthy=',
+                    'description' => 'is not truthy',
+                    'value_expected' => false,
+                    'sql_where_callable' => fn($a, $b) => [
+                        [new QueryExpression($this->db::quoteName($a) . ' IS NOT TRUE')],
+                    ],
+                ]
             ];
         }
         return $operators;
@@ -320,11 +336,16 @@ final class Parser
                         $value = substr($value, 1, -1);
                     }
                     if (isset($flat_props[$buffer['property']])) {
-                        $value = match ($flat_props[$buffer['property']]['type']) {
+                        if ($flat_props[$buffer['property']]['type'] === Doc\Schema::TYPE_BOOLEAN) {
                             // Boolean values are stored as 0 or 1 in the database, but the user may try using "true" or "false" in the RSQL query
-                            Doc\Schema::TYPE_BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
-                            default => $value,
-                        };
+                            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                            // If using == or != operator, switch with equivalent operator for boolean values based on the original operator and the value
+                            if ($buffer['operator'] === $operators['==']['sql_where_callable']) {
+                                $buffer['operator'] = $value ? $operators['=istruthy=']['sql_where_callable'] : $operators['=isnottruthy=']['sql_where_callable'];
+                            } elseif ($buffer['operator'] === $operators['!=']['sql_where_callable']) {
+                                $buffer['operator'] = $value ? $operators['=isnottruthy=']['sql_where_callable'] : $operators['=istruthy=']['sql_where_callable'];
+                            }
+                        }
                     }
                     $criteria_array = $buffer['operator']($buffer['field'], $value);
                     $it = new DBmysqlIterator($this->db);

@@ -79,6 +79,7 @@ class ParserTest extends GLPITestCase
                         ],
                     ],
                 ],
+                'is_favorite' => ['type' => 'boolean'],
             ],
         ];
         $search_class = new \ReflectionClass(Search::class);
@@ -117,23 +118,23 @@ class ParserTest extends GLPITestCase
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, '1']],
-                "(`scalar_join`.`external_prop` = ?)", // While the property is 'scalar_join', that is also the join name. The field it points to is 'external_prop', so the resolved SQL is `scalar_join`.`external_prop`.
-                ['1'],
+                "(`scalar_join`.`external_prop` IS TRUE)", // While the property is 'scalar_join', that is also the join name. The field it points to is 'external_prop', so the resolved SQL is `scalar_join`.`external_prop`.
+                [],
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, 'true']],
-                "(`scalar_join`.`external_prop` = ?)",
-                ['1'],
+                "(`scalar_join`.`external_prop` IS TRUE)",
+                [],
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, '0']],
-                "(`scalar_join`.`external_prop` = ?)",
-                ['0'],
+                "(`scalar_join`.`external_prop` IS NOT TRUE)",
+                [],
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, 'false']],
-                "(`scalar_join`.`external_prop` = ?)",
-                ['0'],
+                "(`scalar_join`.`external_prop` IS NOT TRUE)",
+                [],
             ],
             [
                 [[5, 'extra_fields.extra1'], [6, '=='], [7, 'test']],
@@ -229,6 +230,16 @@ class ParserTest extends GLPITestCase
                 [[5, 'name'], [6, '=notilike='], [7, 'test']],
                 "(`_`.`name` NOT LIKE ?)",
                 ['test'],
+            ],
+            [
+                [[5, 'is_favorite'], [6, '=istruthy='], [8, '']],
+                "(`_`.`is_favorite` IS TRUE)",
+                [],
+            ],
+            [
+                [[5, 'is_favorite'], [6, '=isnottruthy='], [8, '']],
+                "(`_`.`is_favorite` IS NOT TRUE)",
+                [],
             ],
         ];
     }
