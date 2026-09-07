@@ -37,6 +37,8 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -57,6 +59,8 @@ final class AsideActionsController extends AbstractController
         ],
         methods: 'GET',
     )]
+    // The menu is built from the reader's own rights, checked below.
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function __invoke(int $id): Response
     {
         $item = new KnowbaseItem();
