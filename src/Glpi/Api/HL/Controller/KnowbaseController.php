@@ -238,7 +238,7 @@ class KnowbaseController extends AbstractController
                             'table' => KnowbaseItem_Favorite::getTable(),
                             'fkey' => 'id',
                             'field' => KnowbaseItem::getForeignKeyField(),
-                            'condition' => ['users_id' => Session::getLoginUserID()],
+                            'condition' => static fn() => ['users_id' => Session::getLoginUserID()],
                         ],
                     ],
                 ],
