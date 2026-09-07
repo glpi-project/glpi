@@ -209,6 +209,41 @@ await page.getByRole('button', { name: 'Sign in' }).click();
 
 See all possibilities here: https://playwright.dev/docs/input.
 
+### Checking accessibility
+
+Pages accessibility should be tested. An utility is provided to automate checks on a pre-configured set of rules:
+
+```ts
+import { a11yScan } from '../../utils/Accessibility';
+
+...
+
+const a11y = await a11yScan(page)
+    .include('main')
+    .analyze()
+;
+expect(a11y.violations).toEqual([]);
+```
+
+If tested page cause violations, the best way to go is to fix them. In some cases, this may be a huge work (for exmaple when some third party libs are involved).
+Or at the opposite, you may want to work on a specific ruleset. You can pass your own rules to the utility:
+
+```ts
+const a11y = await a11yScan(page, ['wcag135'])
+    .include('main')
+    .analyze()
+;
+expect(a11y.violations).toEqual([]);
+```
+
+```ts
+const a11y = await a11yScan(page, ['wcag22aa', 'RGAAv4', 'EN-301-549'])
+    .include('main')
+    .analyze()
+;
+expect(a11y.violations).toEqual([]);
+```
+
 ### Assertions
 
 Assertions are done by calling `expect` on a `Locator` instance.
