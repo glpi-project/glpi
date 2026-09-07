@@ -128,7 +128,7 @@ final class OpenAPIGenerator
      * @param array<string, mixed>|null $parent_schema
      * @return T
      */
-    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null): array
+    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null, bool $in_request_body = false): array
     {
         $to_keep = $this->getPublicVendorExtensions();
         // Recursively walk through every key of the schema
@@ -140,7 +140,7 @@ final class OpenAPIGenerator
                 unset($schema[$key]);
                 continue;
             }
-            if ($parent_key === 'properties' && $parent_schema !== null) {
+            if (!$in_request_body && $parent_key === 'properties' && $parent_schema !== null) {
                 if (!array_key_exists('x-full-schema', $parent_schema) && $key === 'id') {
                     // Implicitly set the id property as read-only but not for partials
                     $value['readOnly'] = true;
@@ -150,7 +150,7 @@ final class OpenAPIGenerator
             if (is_array($value)) {
                 // Clean the value
                 /** @phpstan-var T $value */
-                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema);
+                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema, $in_request_body || $key === 'requestBody');
             }
         }
         /** @phpstan-var T $schema */
