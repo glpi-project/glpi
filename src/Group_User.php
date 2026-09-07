@@ -460,12 +460,12 @@ class Group_User extends CommonDBRelation
                 {% import 'components/form/fields_macros.html.twig' as fields %}
                 <hr class="my-3">
                 <div class="d-flex justify-content-end">
-                    {{ fields.dropdownYesNo('tree', tree, __('Include members of sub-groups'), {
+                    {{ fields.dropdownYesNo('tree', tree, label, {
                         field_class: 'col-12 col-sm-8 col-md-5 col-xxl-4 mb-2',
                         on_change: 'reloadTab("start=0&tree="+this.value+"' ~ reload_suffix ~ '")'
                     }) }}
                 </div>
-TWIG, ['tree' => $tree, 'reload_suffix' => $reload_suffix]);
+TWIG, ['tree' => $tree, 'reload_suffix' => $reload_suffix, 'label' => __('Include members of sub-groups')]);
         }
 
         $number = count($used);
