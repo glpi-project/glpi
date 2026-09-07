@@ -174,7 +174,8 @@ final class ResourceAccessor
                 }
             }
 
-            if (isset($prop['x-file-removal-options'])) {
+            if (isset($prop['x-file-upload-options']) || isset($prop['x-file-removal-options'])) {
+                // File uploads and removals are handled elsewhere. Skipping for file uploads here also prevents user's from specifying existing documents/files which is not desired at this point or validated for permissions.
                 continue;
             }
 
