@@ -75,11 +75,15 @@ if ($DB->tableExists($cat_table)) {
             if (!isset($cat_to_article[(int) $tr['items_id']])) {
                 continue;
             }
+            $now = date('Y-m-d H:i:s');
+
             $DB->insert('glpi_knowbaseitemtranslations', [
                 'knowbaseitems_id' => $cat_to_article[(int) $tr['items_id']],
                 'language'         => $tr['language'],
                 'name'             => $tr['value'],
                 'answer'           => '',
+                'date_creation'    => $now,
+                'date_mod'         => $now,
             ]);
         }
         $DB->delete('glpi_dropdowntranslations', ['itemtype' => 'KnowbaseItemCategory']);
