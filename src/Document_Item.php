@@ -561,9 +561,9 @@ TWIG, $twig_params);
         $used       = array_keys($used_found);
         $used       = array_combine($used, $used);
 
-        // Show the add form when user can edit the item or create documents; relation rights are enforced on submit.
+        // Only offer the add form when the submit will actually pass (see Document::canCreateItem()).
         if (
-            ($item->canAddItem('Document') || Document::canCreate())
+            Document::canAttachToItem($item)
             && $withtemplate < 2
         ) {
             // Restrict entity for knowbase
@@ -571,8 +571,9 @@ TWIG, $twig_params);
             $entity   = $_SESSION["glpiactive_entity"];
 
             if ($item->isEntityAssign()) {
-                // Case of personal items : entity = -1 : create on active entity (Reminder case))
-                if ($item->getEntityID() >= 0) {
+                // Create the document in the item's entity when the user may write there,
+                // otherwise in their own active entity (the link still exposes it on the item).
+                if ($item->getEntityID() >= 0 && Session::haveAccessToEntity($item->getEntityID())) {
                     $entity = $item->getEntityID();
                 }
 
@@ -623,7 +624,8 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        $canedit = $item->canAddItem('Document') && Document::canView();
+        // Whoever may attach a document may also detach it.
+        $canedit = Document::canAttachToItem($item) && Document::canView();
 
         $columns = [
             'name'      => __('Name'),
