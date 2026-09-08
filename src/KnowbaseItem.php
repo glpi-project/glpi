@@ -3493,6 +3493,16 @@ TWIG, $twig_params);
     #[Override]
     protected function getLeftSideContent(): ?string
     {
+        return $this->getAsideContent();
+    }
+
+    /**
+     * The article tree aside, shared by the central knowledge base and the
+     * helpdesk FAQ. Everything it offers is gated by the reader's own rights,
+     * see `canAuthorAsideTree()` and `getAsideActions()`.
+     */
+    public function getAsideContent(): ?string
+    {
         $current_id = (int) ($this->fields['id'] ?? 0);
         $favorites = $this->getCurrentArticleAndFavorites($current_id);
 
@@ -3512,13 +3522,26 @@ TWIG, $twig_params);
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
-                'can_create'          => self::canCreate(),
-                'can_update'          => self::canUpdate(),
+                'can_create'          => self::canAuthorAsideTree() && self::canCreate(),
+                'can_update'          => self::canAuthorAsideTree() && self::canUpdate(),
                 'show_actions'        => self::canShowAsideActions(),
                 // The base of the tree: the aside refuses to drag it.
                 'root_id'             => self::hasRoot() ? self::getRootId() : 0,
             ]
         );
+    }
+
+    /**
+     * Whether the aside offers to author the tree: create a child article, drag
+     * to reparent. The central interface only, the helpdesk FAQ lists articles
+     * to read them and the create button opens the central article form.
+     *
+     * Shared with `AsideArticleChildrenController`, which renders the rows of a
+     * branch the reader unfolds.
+     */
+    public static function canAuthorAsideTree(): bool
+    {
+        return Session::getCurrentInterface() === 'central';
     }
 
     /**
