@@ -58,7 +58,9 @@ if (Session::getLoginUserID()) {
 if (isset($_GET["id"])) {
     $id = (int) $_GET["id"];
     $kb = new KnowbaseItem();
-    if ($kb->can($id, READ)) {
+    // `$id > 0`: id 0 is "new item" to can(), which populates empty fields
+    // that showFull() then crashes on (no article to show there anyway).
+    if ($id > 0 && $kb->can($id, READ)) {
         // Same two-column layout as the central knowledge base (see CommonGLPI::display()).
         echo TemplateRenderer::getInstance()->render('pages/tools/kb/faq_article.html.twig', [
             'aside'   => $kb->getAsideContent(),
