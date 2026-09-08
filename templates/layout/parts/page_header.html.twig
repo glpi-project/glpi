@@ -96,7 +96,7 @@
                    #}
                   {% set sidebar_is_folded = user_pref('fold_menu') %}
                   <p class="text-start">
-                     <button type="button" class="btn btn-sm btn-ghost-secondary  {{ is_debug_active ? 'mb-4' : 'mb-2' }} mx-auto reduce-menu d-none d-md-block"
+                     <button type="button" class="btn btn-sm btn-ghost-secondary  {{ is_debug_active ? 'mb-4' : 'mb-2' }} mx-auto reduce-menu d-none d-md-block d-lg-block"
                              aria-controls="navbar-menu"
                              aria-expanded="{{ sidebar_is_folded ? 'false' : 'true' }}"
                              data-collapse-label="{{ __('Collapse menu') }}"
