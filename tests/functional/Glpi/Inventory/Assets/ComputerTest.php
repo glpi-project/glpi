@@ -2119,4 +2119,113 @@ JSON;
         $this->assertTrue($ctrl->getFromDB($item_ctrl->fields['devicecontrols_id']));
         $this->assertSame('WD Black SN770 /  / PC SN560 & (DRAM-less) & NVMe SSD', $ctrl->fields['designation']);
     }
+
+    /**
+     * Test import of a computer with a Wi-Fi network port, then its cloning.
+     *
+     * @see https://github.com/glpi-project/glpi/issues/25420
+     */
+    public function testWifiNetworkPortClone()
+    {
+        $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/computer_networkportwifi.json');
+        $json = json_decode($json_str);
+
+        $inventory = $this->doInventory($json);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+
+        //inventory has created a Wi-Fi network port
+        $networkport = new \NetworkPort();
+        $this->assertTrue(
+            $networkport->getFromDBByCrit([
+                'itemtype'           => \Computer::class,
+                'items_id'           => $computers_id,
+                'instantiation_type' => \NetworkPortWifi::class,
+            ])
+        );
+        $this->assertSame('Intel(R) Wi-Fi 6E AX211 160MHz', $networkport->fields['name']);
+
+        //... along with its instantiation
+        $portwifi = new \NetworkPortWifi();
+        $this->assertTrue(
+            $portwifi->getFromDBByCrit(['networkports_id' => $networkport->fields['id']]),
+            'Wi-Fi network port instantiation has not been created!'
+        );
+        $instantiation_fields = $portwifi->fields;
+
+        //cloning the computer must clone the Wi-Fi network port along with its instantiation
+        $clone_id = $computer->clone();
+        $this->assertGreaterThan(0, $clone_id);
+
+        $clone_networkport = new \NetworkPort();
+        $this->assertTrue(
+            $clone_networkport->getFromDBByCrit([
+                'itemtype'           => \Computer::class,
+                'items_id'           => $clone_id,
+                'instantiation_type' => \NetworkPortWifi::class,
+            ])
+        );
+        $this->assertTrue(
+            $portwifi->getFromDBByCrit(['networkports_id' => $clone_networkport->fields['id']]),
+            'Cloned Wi-Fi network port instantiation has not been created!'
+        );
+
+        //cloned instantiation is identical, but for its own id and the port it is attached to
+        foreach ($instantiation_fields as $field => $value) {
+            if (in_array($field, ['id', 'networkports_id', 'date_creation', 'date_mod'])) {
+                continue;
+            }
+            $this->assertSame($value, $portwifi->fields[$field], $field);
+        }
+    }
+
+    /**
+     * Test import of the Wi-Fi network details (SSID, mode and protocol version)
+     * carried by the inventory, on both creation and update.
+     */
+    public function testWifiNetworkPortDetails()
+    {
+        $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/computer_networkportwifi.json');
+        $json = json_decode($json_str);
+
+        $network = $json->content->networks[1];
+        $this->assertSame('wifi', $network->type);
+
+        $inventory = $this->doInventory($json);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        $networkport = new \NetworkPort();
+        $this->assertTrue(
+            $networkport->getFromDBByCrit([
+                'itemtype'           => \Computer::class,
+                'items_id'           => $computers_id,
+                'instantiation_type' => \NetworkPortWifi::class,
+            ])
+        );
+
+        $wifinetwork = new \WifiNetwork();
+        $this->assertTrue($wifinetwork->getFromDBByCrit(['name' => 'My wifi network']));
+
+        $portwifi = new \NetworkPortWifi();
+        $this->assertTrue($portwifi->getFromDBByCrit(['networkports_id' => $networkport->fields['id']]));
+        $this->assertSame($wifinetwork->fields['id'], $portwifi->fields['wifinetworks_id']);
+        $this->assertSame('managed', $portwifi->fields['mode']);
+        $this->assertSame('ax', $portwifi->fields['version']);
+
+        //reimport with an updated mode, and a version that is not a known one
+        $network->wifi_mode = 'master';
+        $network->wifi_version = 'not a version';
+        $this->doInventory($json);
+
+        $this->assertTrue($portwifi->getFromDBByCrit(['networkports_id' => $networkport->fields['id']]));
+        $this->assertSame('master', $portwifi->fields['mode']);
+        //unknown version has been ignored, previous one is kept
+        $this->assertSame('ax', $portwifi->fields['version']);
+    }
 }
