@@ -155,7 +155,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         global $CFG_GLPI;
 
         return (Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
-              || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
+            || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
     }
 
     public function canViewItem(): bool
@@ -178,8 +178,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         if ($this->fields["is_faq"]) {
             return ((Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
-                  && $this->haveVisibilityAccess())
-                 || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
+                && $this->haveVisibilityAccess())
+                || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
         }
         return (Session::haveRight(self::$rightname, READ) && $this->haveVisibilityAccess());
     }
@@ -195,12 +195,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // Personal knowbase or visibility and write access
         return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
-              || (Session::getCurrentInterface() === "central"
-                  && $this->fields['users_id'] === Session::getLoginUserID())
-              || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
-                   || (!$this->fields["is_faq"]
-                       && Session::haveRight(self::$rightname, UPDATE)))
-                  && $this->haveVisibilityAccess()));
+            || (Session::getCurrentInterface() === "central"
+                && $this->fields['users_id'] === Session::getLoginUserID())
+            || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
+                || (!$this->fields["is_faq"]
+                    && Session::haveRight(self::$rightname, UPDATE)))
+                && $this->haveVisibilityAccess()));
     }
 
     public function canDeleteItem(): bool
@@ -2027,6 +2027,20 @@ TWIG, $twig_params);
     }
 
     /**
+     * Force the `faq` filter to true when the reader has no KB read right
+     *
+     * @param array<string, mixed> $params
+     * @return array<string, mixed> $params, with `faq` forced when required
+     */
+    private static function forceFaqForRightsLessReaders(array $params): array
+    {
+        if (!Session::haveRight(self::$rightname, READ)) {
+            $params['faq'] = true;
+        }
+        return $params;
+    }
+
+    /**
      * Build request for showList
      *
      * @since 0.83
@@ -2046,10 +2060,7 @@ TWIG, $twig_params);
             'faq' => false,
         ], $params);
 
-        // Not the caller's call: anonymous readers lose their visibility `WHERE` below.
-        if (!Session::haveRight(self::$rightname, READ)) {
-            $params['faq'] = true;
-        }
+        $params = self::forceFaqForRightsLessReaders($params);
 
         // Mysql's MATCH AGAINST do not accept expressions that contains only spaces
         if (trim($params['contains']) === '') {
@@ -2061,10 +2072,10 @@ TWIG, $twig_params);
                 'glpi_knowbaseitems.*',
                 new QueryExpression(
                     QueryFunction::count('glpi_knowbaseitems_users.id') . ' + '
-                    . QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + '
-                    . QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + '
-                    . QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS '
-                    . $DB::quoteName('visibility_count')
+                        . QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + '
+                        . QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + '
+                        . QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS '
+                        . $DB::quoteName('visibility_count')
                 ),
             ],
             'FROM'   => 'glpi_knowbaseitems',
@@ -2129,7 +2140,8 @@ TWIG, $twig_params);
             $criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'] = [
                 'ON'  => [
                     'glpi_knowbaseitems'             => 'id',
-                    'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id', [
+                    'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id',
+                    [
                         'AND'                            => [
                             'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage'],
                         ],
@@ -2174,7 +2186,8 @@ TWIG, $twig_params);
                             ['glpi_knowbaseitems.begin_date'  => null],
                             ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
                         ],
-                    ], [
+                    ],
+                    [
                         'OR'  => [
                             ['glpi_knowbaseitems.end_date'    => null],
                             ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
@@ -2246,16 +2259,25 @@ TWIG, $twig_params);
                     $search_iterator = $DB->request($search_criteria);
                     $numrows_search = $search_iterator->current()['cpt'];
 
-                    if ($numrows_search <= 0) {// not result this fulltext try with alternate search
-                        $search1 = [/* 1 */   '/\\\"/',
-                            /* 2 */   "/\+/",
-                            /* 3 */   "/\*/",
-                            /* 4 */   "/~/",
-                            /* 5 */   "/</",
-                            /* 6 */   "/>/",
-                            /* 7 */   "/\(/",
-                            /* 8 */   "/\)/",
-                            /* 9 */   "/\-/",
+                    if ($numrows_search <= 0) { // not result this fulltext try with alternate search
+                        $search1 = [/* 1 */
+                            '/\\\"/',
+                            /* 2 */
+                            "/\+/",
+                            /* 3 */
+                            "/\*/",
+                            /* 4 */
+                            "/~/",
+                            /* 5 */
+                            "/</",
+                            /* 6 */
+                            "/>/",
+                            /* 7 */
+                            "/\(/",
+                            /* 8 */
+                            "/\)/",
+                            /* 9 */
+                            "/\-/",
                         ];
                         $contains = preg_replace($search1, "", $params["contains"]);
                         $ors = [
@@ -2394,10 +2416,7 @@ TWIG, $twig_params);
             $params = array_replace($params, $options);
         }
 
-        // Not the caller's call: anonymous readers lose their visibility `WHERE` in getListRequest().
-        if (!Session::haveRight(self::$rightname, READ)) {
-            $params['faq'] = true;
-        }
+        $params = self::forceFaqForRightsLessReaders($params);
         switch ($type) {
             case 'myunpublished':
                 if (!Session::haveRightsOr(self::$rightname, [UPDATE, self::PUBLISHFAQ])) {
@@ -2718,7 +2737,8 @@ TWIG, $twig_params);
             $criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'] = [
                 'ON'  => [
                     'glpi_knowbaseitems'             => 'id',
-                    'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id', [
+                    'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id',
+                    [
                         'AND'                            => [
                             'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage'],
                         ],
@@ -3535,8 +3555,8 @@ TWIG, $twig_params);
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
-                'can_create'          => self::canAuthorAsideTree() && self::canCreate(),
-                'can_update'          => self::canAuthorAsideTree() && self::canUpdate(),
+                'can_create'          => self::canCreateAsideTree(),
+                'can_update'          => self::canUpdateAsideTree(),
                 'show_actions'        => self::canShowAsideActions(),
                 // The base of the tree: the aside refuses to drag it.
                 'root_id'             => self::hasRoot() ? self::getRootId() : 0,
@@ -3551,6 +3571,24 @@ TWIG, $twig_params);
     public static function canAuthorAsideTree(): bool
     {
         return Session::getCurrentInterface() === 'central';
+    }
+
+    /**
+     * Whether the aside offers to create an article, i.e. whether it can
+     * author the tree ({@see canAuthorAsideTree()}) and has creation rights.
+     */
+    public static function canCreateAsideTree(): bool
+    {
+        return self::canAuthorAsideTree() && self::canCreate();
+    }
+
+    /**
+     * Whether the aside offers to reparent an article, i.e. whether it can
+     * author the tree ({@see canAuthorAsideTree()}) and has update rights.
+     */
+    public static function canUpdateAsideTree(): bool
+    {
+        return self::canAuthorAsideTree() && self::canUpdate();
     }
 
     /**
