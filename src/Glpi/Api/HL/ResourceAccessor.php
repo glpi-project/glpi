@@ -274,8 +274,8 @@ final class ResourceAccessor
 
     /**
      * @param CommonDBTM $item
-     * @param array $headers
-     * @return array Array of failed preconditions. Empty array if all preconditions passed.
+     * @param array<string, string[]> $headers
+     * @return array<string, string> Array of failed preconditions. Empty array if all preconditions passed.
      * @throws \DateMalformedStringException
      */
     private static function validatePreconditions(CommonDBTM $item, array $headers): array
@@ -347,12 +347,14 @@ final class ResourceAccessor
         }
 
         $final_request = Router::getInstance()->getFinalRequest();
-        $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
-        if (!empty($precondition_failures)) {
-            return new JSONResponse(
-                AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),
-                412
-            );
+        if ($final_request !== null) {
+            $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            if ($precondition_failures !== []) {
+                return new JSONResponse(
+                    AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),
+                    412
+                );
+            }
         }
 
         $result = $item->update($input);
@@ -513,11 +515,12 @@ final class ResourceAccessor
 
         $result = $results['results'][0];
 
-        if (!empty($result['date_mod'])) {
+        $final_request = Router::getInstance()->getFinalRequest();
+        if ($final_request !== null && !empty($result['date_mod'])) {
             $item = self::getItemFromSchema($schema);
             $item->fields['date_mod'] = $result['date_mod'];
-            $precondition_failures = self::validatePreconditions($item, Router::getInstance()->getFinalRequest()->getHeaders());
-            if (!empty($precondition_failures)) {
+            $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            if ($precondition_failures !== []) {
                 return new JSONResponse(
                     AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),
                     array_key_exists('If-Modified-Since', $precondition_failures) ? 304 : 412

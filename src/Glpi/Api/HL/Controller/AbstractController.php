@@ -57,7 +57,7 @@ use Toolbox;
 
 /**
  * @phpstan-type AdditionalErrorMessage array{priority: string, message: string}
- * @phpstan-type ErrorResponseBody array{status: string, title: string, detail: string|null, additional_messages?: AdditionalErrorMessage[]}
+ * @phpstan-type ErrorResponseBody array{status: string, title: string, detail: array<mixed, mixed>|string|null, additional_messages?: AdditionalErrorMessage[]}
  * @phpstan-type InvalidParameterInfo array{name: string, reason?: string}
  */
 abstract class AbstractController
@@ -327,7 +327,7 @@ abstract class AbstractController
      * @param string $status
      * @phpstan-param self::ERROR_* $status
      * @param string $title
-     * @param string|array|null $detail
+     * @param string|array<mixed, mixed>|null $detail
      * @param AdditionalErrorMessage[] $additionalMessages
      * @return array
      * @phpstan-return ErrorResponseBody
