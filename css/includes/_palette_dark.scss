@@ -39,6 +39,7 @@
     --tblr-body-color: #e6e6e6;
     --tblr-body-color-rgb: 230, 230, 230;
     --tblr-bg-surface: color-mix(in srgb, var(--tblr-body-bg), black 2%);
+    --tblr-bg-surface-secondary: color-mix(in srgb, var(--tblr-bg-surface), white 10%);
     --tblr-border-color: color-mix(in srgb, var(--tblr-body-bg), white 33.33%);
     --tblr-gray-100: var(--tblr-dark);
     --tblr-gray-200: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 2%);
