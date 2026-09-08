@@ -53,9 +53,11 @@ if (Session::getLoginUserID()) {
     ]);
 }
 
-if (isset($_GET["id"])) {
+$id = (int) ($_GET["id"] ?? 0);
+
+if ($id > 0) {
     $kb = new KnowbaseItem();
-    if ($kb->can((int) $_GET["id"], READ)) {
+    if ($kb->can($id, READ)) {
         // Same two-column layout as the central knowledge base
         $aside = $kb->getAsideContent();
         echo "<div class=\"row\">";
@@ -65,7 +67,11 @@ if (isset($_GET["id"])) {
             echo "</aside>";
         }
         echo "<div class=\"col\">";
+        // `card p-2` mirrors the central tab container: the article template
+        // compensates its padding with `mx-n2 my-n2`.
+        echo "<div class=\"card p-2\">";
         $kb->showFull();
+        echo "</div>";
         echo "</div>";
         echo "</div>";
     }

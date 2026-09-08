@@ -2043,9 +2043,13 @@ TWIG, $twig_params);
         $params = array_replace([
             'contains' => '',
             'knowbaseitems_id_parent' => self::SEEALL,
-            // Not the caller's call: anonymous readers lose their visibility `WHERE` below.
-            'faq' => !Session::haveRight(self::$rightname, READ),
+            'faq' => false,
         ], $params);
+
+        // Not the caller's call: anonymous readers lose their visibility `WHERE` below.
+        if (!Session::haveRight(self::$rightname, READ)) {
+            $params['faq'] = true;
+        }
 
         // Mysql's MATCH AGAINST do not accept expressions that contains only spaces
         if (trim($params['contains']) === '') {
@@ -2380,7 +2384,7 @@ TWIG, $twig_params);
 
         // Default values of parameters
         $params = [
-            'faq' => !Session::haveRight(self::$rightname, READ),
+            'faq' => false,
             'start' => 0,
             'knowbaseitems_id_parent' => null,
             'contains' => '',
@@ -2388,6 +2392,11 @@ TWIG, $twig_params);
 
         if (is_array($options)) {
             $params = array_replace($params, $options);
+        }
+
+        // Not the caller's call: anonymous readers lose their visibility `WHERE` in getListRequest().
+        if (!Session::haveRight(self::$rightname, READ)) {
+            $params['faq'] = true;
         }
         switch ($type) {
             case 'myunpublished':
