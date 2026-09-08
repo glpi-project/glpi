@@ -46,6 +46,7 @@
             data-bs-toggle="tooltip" data-bs-placement="right"
             title="{{ __('Download "%1$s" inventory file')|format(get_item_name(item)) }}">
             <i class="ti ti-download" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __('Download "%1$s" inventory file')|format(get_item_name(item)) }}</span>
          </a>
       {% else %}
          <span class="ms-auto" data-bs-toggle="tooltip" data-bs-placement="right" title="{{ __('Inventory file missing') }}">
@@ -59,7 +60,7 @@
    {% if agent is not null %}
       <div class="card-body row">
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >{{ agent.getTypeName() }}</label>
+            <div class="form-label">{{ agent.getTypeName() }}</div>
             <span>
                <i class="{{ agent.getIcon() }}" aria-hidden="true"></i>
                {{ get_item_link(agent) }}
@@ -67,28 +68,28 @@
          </div>
 
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >{{ __('Useragent') }}</label>
+            <div class="form-label">{{ __('Useragent') }}</div>
             <span>{{ agent.fields['useragent'] }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >{{ __('Inventory tag') }}</label>
+            <div class="form-label">{{ __('Inventory tag') }}</div>
             <span>{{ agent.fields['tag'] }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >{{ __('Public contact address') }}</label>
+            <div class="form-label">{{ __('Public contact address') }}</div>
             <span>{{ agent.fields['remote_addr'] }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >{{ __('Last contact') }}</label>
+            <div class="form-label">{{ __('Last contact') }}</div>
             <span>{{ agent.fields['last_contact']|formatted_datetime }}</span>
          </div>
 
          {% if item.isField('last_inventory_update') %}
             <div class="mb-3 col-12 col-sm-4">
-               <label class="form-label" >{{ __('Last inventory update') }}</label>
+               <div class="form-label">{{ __('Last inventory update') }}</div>
                <span>{{ item.fields['last_inventory_update']|formatted_datetime }}</span>
             </div>
          {% else %}
@@ -179,7 +180,7 @@
    {% if item is usingtrait('Glpi\\Features\\Inventoriable') and item.getInventoryAgent() == null and item.isField('last_inventory_update') %}
       <div class="card-body row">
          <div class="mb-3 col-12 col-sm-6">
-            <label class="form-label" >{{ __('Last inventory') }}</label>
+            <div class="form-label">{{ __('Last inventory') }}</div>
             <span>{{ item.fields['last_inventory_update']|formatted_datetime }}</span>
          </div>
       </div>

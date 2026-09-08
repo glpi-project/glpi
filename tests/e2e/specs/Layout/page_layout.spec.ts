@@ -33,14 +33,14 @@
 import { test, expect } from '../../fixtures/glpi_fixture';
 import { GlpiPage } from '../../pages/GlpiPage';
 import { Profiles } from '../../utils/Profiles';
-import AxeBuilder from '@axe-core/playwright';
+import { a11yScan } from '../../utils/Accessibility';
 
 test('Page layout accessibility', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
     const layout_page = new GlpiPage(page);
     await page.goto('/front/computer.php');
 
-    const sidebar_a11y = await new AxeBuilder({ page })
+    const sidebar_a11y = await a11yScan(page)
         .include('[data-testid="sidebar"]')
         .analyze()
     ;
@@ -53,7 +53,7 @@ test('Page layout accessibility', async ({ page, profile }) => {
         await page.waitForFunction(() =>
             document.getAnimations().filter(a => a.playState === 'running').length === 0
         );
-        const sidebar_a11y = await new AxeBuilder({ page })
+        const sidebar_a11y = await a11yScan(page)
             .include('[data-testid="sidebar"]')
             .disableRules(['accesskeys']) // known issues in sidebar menus
             .analyze()
@@ -66,7 +66,7 @@ test('Page layout accessibility', async ({ page, profile }) => {
         document.getAnimations().filter(a => a.playState === 'running').length === 0
     );
     await expect(layout_page.user_menu_dropdown).toBeVisible();
-    const user_menu_a11y = await new AxeBuilder({ page })
+    const user_menu_a11y = await a11yScan(page)
         .include('[data-testid="user-menu-dropdown"]')
         .analyze()
     ;
@@ -74,7 +74,7 @@ test('Page layout accessibility', async ({ page, profile }) => {
 
     await layout_page.entity_menu_toggle.click();
     await expect(layout_page.entity_menu_dropdown).toBeVisible();
-    const entity_a11y = await new AxeBuilder({ page })
+    const entity_a11y = await a11yScan(page)
         .include('[data-testid="entity-menu-dropdown"]')
         .disableRules(['aria-command-name', 'empty-table-header']) // known issues in entity tree
         .analyze()
@@ -86,7 +86,7 @@ test('Page layout accessibility', async ({ page, profile }) => {
     await page.keyboard.press('Escape');
     await expect(layout_page.user_menu_dropdown).toBeHidden();
 
-    const header_a11y = await new AxeBuilder({ page })
+    const header_a11y = await a11yScan(page)
         .include('[data-testid="main-header"]')
         .analyze()
     ;

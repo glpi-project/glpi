@@ -124,11 +124,12 @@ $(function() {
             }
 
             // prevent menu links to close menu (waiting the page redirection)
-            if (orig_event.target.className.indexOf('dropdown-item') !== false) {
+            var clicked_item = orig_event.target.closest('.dropdown-item');
+            if (clicked_item !== null) {
                for (var item of document.querySelectorAll('#menu_{{ rand }} .dropdown-item')) {
                   item.classList.remove('active');
                }
-               orig_event.target.classList.add('active');
+               clicked_item.classList.add('active');
                event.preventDefault();
             }
          }
@@ -146,6 +147,7 @@ $(function() {
               event.stopPropagation();
           }
          $('#menu_{{ rand }} .nav-link').removeClass('show active');
+         $('#menu_{{ rand }} .nav-link.dropdown-toggle').attr('aria-expanded', 'false');
          $('#menu_{{ rand }} .nav-item').removeClass('active');
          $('#menu_{{ rand }} .dropdown-menu').removeClass('show');
       })
