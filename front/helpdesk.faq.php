@@ -56,7 +56,21 @@ if (Session::getLoginUserID()) {
 if (isset($_GET["id"])) {
     $kb = new KnowbaseItem();
     if ($kb->getFromDB($_GET["id"])) {
+        // Same two-column layout as the central knowledge base, see
+        // `CommonGLPI::display()`: the aside styles hang off `data-main-page-aside`.
+        // This page renders the article directly instead of going through
+        // `display()`, which would bring the central tabs along with it.
+        $aside = $kb->getAsideContent();
+        echo "<div class=\"row\">";
+        if ($aside !== null) {
+            echo "<aside class=\"col card border-radius-0 p-0\" data-main-page-aside=\"knowbaseitem\">";
+            echo $aside;
+            echo "</aside>";
+        }
+        echo "<div class=\"col\">";
         $kb->showFull();
+        echo "</div>";
+        echo "</div>";
     }
 } else {
     // Manage forcetab : non standard system (file name <> class name)

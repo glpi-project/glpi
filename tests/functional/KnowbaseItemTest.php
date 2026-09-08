@@ -3204,6 +3204,79 @@ HTML,
         $this->assertFalse(KnowbaseItem::hasRoot());
     }
 
+    /**
+     * The helpdesk FAQ renders the same aside as the central knowledge base, so
+     * a reader can jump between articles instead of going back to the list. It
+     * lists only what is shared with them, and offers no way to author the tree.
+     */
+    public function testFaqAsideListsSharedArticlesOnlyAndCannotAuthorTheTree(): void
+    {
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $shared = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_shared',
+            'answer'      => '<p>Shared</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $shared->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+        // Not in the FAQ and shared with nobody: out of the helpdesk reader's reach.
+        $private = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_private',
+            'answer'      => '<p>Private</p>',
+            'is_faq'      => 0,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($shared->getID()));
+        $html = (string) $item->getAsideContent();
+
+        // The shared article is listed, and the aside knows it is the one being read.
+        $this->assertStringContainsString(
+            'data-glpi-kb-article-id="' . $shared->getID() . '"',
+            $html,
+        );
+        $this->assertStringContainsString($shared->fields['name'], $html);
+        $this->assertStringContainsString('data-glpi-kb-article-current', $html);
+
+        // Navigation targets the FAQ page, not the central article form.
+        $this->assertStringContainsString('/front/helpdesk.faq.php?id=' . $shared->getID(), $html);
+
+        $this->assertStringNotContainsString(
+            'data-glpi-kb-article-id="' . $private->getID() . '"',
+            $html,
+        );
+        $this->assertStringNotContainsString($private->fields['name'], $html);
+
+        // Search and favorites are part of the FAQ aside.
+        $this->assertStringContainsString('data-glpi-kb-aside-search-input', $html);
+        $this->assertStringContainsString('data-glpi-kb-aside-favorites', $html);
+
+        // But nothing that restructures the knowledge base.
+        $this->assertStringNotContainsString('data-glpi-kb-aside-category-add', $html);
+        $this->assertStringNotContainsString('AsideDragController', $html);
+    }
+
+    public function testAsideTreeIsAuthoredFromTheCentralInterfaceOnly(): void
+    {
+        $this->login();
+        $this->assertTrue(KnowbaseItem::canAuthorAsideTree());
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(KnowbaseItem::canAuthorAsideTree());
+    }
+
     public function testGetRootIdFailIfNotConfigured(): void
     {
         global $CFG_GLPI;

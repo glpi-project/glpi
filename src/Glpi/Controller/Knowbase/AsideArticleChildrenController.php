@@ -36,7 +36,9 @@ namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Http\Firewall;
 use Glpi\Knowbase\Aside\Builder;
+use Glpi\Security\Attribute\SecurityStrategy;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,6 +61,8 @@ final class AsideArticleChildrenController extends AbstractController
         ],
         methods: 'GET',
     )]
+    // Also served to the helpdesk FAQ aside, which lists the same articles.
+    #[SecurityStrategy(Firewall::STRATEGY_FAQ_ACCESS)]
     public function __invoke(int $id, Request $request): Response
     {
         if (!KnowbaseItem::canView()) {
@@ -71,7 +75,7 @@ final class AsideArticleChildrenController extends AbstractController
 
         return $this->render('pages/tools/kb/aside_children.html.twig', [
             'children'     => $children,
-            'can_create'   => KnowbaseItem::canCreate(),
+            'can_create'   => KnowbaseItem::canAuthorAsideTree() && KnowbaseItem::canCreate(),
             'show_actions' => KnowbaseItem::canShowAsideActions(),
         ]);
     }
