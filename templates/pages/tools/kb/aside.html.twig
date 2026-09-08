@@ -123,11 +123,10 @@
                         article,
                         false,
                         show_actions,
-                        true,
                         current_is_favorite ? 'active' : 'pending',
                     ) }}
                 {% else %}
-                    {{ macros.render_article(article, false, show_actions, true) }}
+                    {{ macros.render_article(article, false, show_actions) }}
                 {% endif %}
             {% endfor %}
         </ul>

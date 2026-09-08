@@ -3312,13 +3312,16 @@ HTML,
 
         $this->logOut();
 
-        $ids = [];
-        foreach ($DB->request(KnowbaseItem::getListRequest([], 'browse')) as $row) {
-            $ids[] = (int) $row['id'];
-        }
+        // `faq` is forced, not defaulted: a crafted `?faq=0` must not lift the filter.
+        foreach ([[], ['faq' => 0], ['faq' => false]] as $params) {
+            $ids = [];
+            foreach ($DB->request(KnowbaseItem::getListRequest($params, 'browse')) as $row) {
+                $ids[] = (int) $row['id'];
+            }
 
-        $this->assertContains($faq->getID(), $ids);
-        $this->assertNotContains($not_faq->getID(), $ids);
+            $this->assertContains($faq->getID(), $ids);
+            $this->assertNotContains($not_faq->getID(), $ids);
+        }
     }
 
     /**
