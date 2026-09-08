@@ -55,11 +55,8 @@ if (Session::getLoginUserID()) {
 
 if (isset($_GET["id"])) {
     $kb = new KnowbaseItem();
-    if ($kb->getFromDB($_GET["id"])) {
-        // Same two-column layout as the central knowledge base, see
-        // `CommonGLPI::display()`: the aside styles hang off `data-main-page-aside`.
-        // This page renders the article directly instead of going through
-        // `display()`, which would bring the central tabs along with it.
+    if ($kb->can((int) $_GET["id"], READ)) {
+        // Same two-column layout as the central knowledge base
         $aside = $kb->getAsideContent();
         echo "<div class=\"row\">";
         if ($aside !== null) {
