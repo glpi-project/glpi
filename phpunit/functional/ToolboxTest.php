@@ -486,7 +486,7 @@ class ToolboxTest extends DbTestCase
     public function testSaveAndDeletePicture()
     {
         // Save an image twice
-        $test_file = __DIR__ . '/../files/test.png';
+        $test_file = __DIR__ . '/../files/_tmp/test.png';
         copy(__DIR__ . '/../../pics/add_dropdown.png', $test_file); // saved image will be removed from FS
         $first_pict = \Toolbox::savePicture($test_file);
         $this->assertMatchesRegularExpression('#[^/]+/.+\.png#', $first_pict); // generated random name inside subdir
@@ -508,6 +508,11 @@ class ToolboxTest extends DbTestCase
         // Save and delete nonexistent files
         $this->assertFalse(\Toolbox::savePicture('notafile.jpg'));
         $this->assertFalse(\Toolbox::deletePicture('notafile.jpg'));
+
+        // Save with a prefix (special chars in prefix are replaced by `_`)
+        copy(__DIR__ . '/../../pics/add_dropdown.png', $test_file); // saved image will be removed from FS
+        $prefixed_pict = \Toolbox::savePicture($test_file, 'azerty_abcd/+~1234|]');
+        $this->assertMatchesRegularExpression('#^\w{2}/azerty_abcd_1234_\w+\.png#', $prefixed_pict);
     }
 
     public static function getPictureUrlProvider()
