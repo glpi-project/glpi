@@ -9,6 +9,14 @@ Email **security@glpi-project.org**.
 
 We do not accept GitHub Security Advisory direct submissions, and we will not create accounts on third-party platforms to receive reports. All information must be sent by email or, once an advisory is opened, posted directly in that advisory.
 
+## One email per vulnerability
+
+Send a separate email for each unrelated vulnerability. Do not bundle unrelated issues into a single thread, and do not reply to an existing report thread to raise a new, unrelated one. This keeps triage, severity assessment, and advisory tracking clean — one report, one thread, one advisory.
+
+This is distinct from the grouping rule below: related instances of the *same* vulnerability class stay in one report; unrelated vulnerabilities each get their own.
+
+Attach your proof-of-concept as a file (script, HTTP request collection, etc.) rather than pasting source code inline in the email body. This keeps reports readable and reproducible, and avoids mangling by mail clients (indentation, quoting, encoding).
+
 ## Required information
 
 Incomplete reports are returned once and **closed** if not completed within seven days.

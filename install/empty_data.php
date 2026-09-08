@@ -619,7 +619,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 18,
                 'itemtype' => Ticket::class,
-                'name' => 'createinquest',
+                'name' => 'createinquestticket',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
@@ -823,7 +823,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 35,
                 'itemtype' => 'Document',
-                'name' => 'cleanorphans',
+                'name' => 'cleanorphansdocument',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
@@ -895,7 +895,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 41,
                 'itemtype' => Inventory::class,
-                'name' => 'cleanorphans',
+                'name' => 'cleanorphansinventory',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
@@ -931,7 +931,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 44,
                 'itemtype' => 'Change',
-                'name' => 'createinquest',
+                'name' => 'createinquestchange',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,

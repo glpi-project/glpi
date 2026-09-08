@@ -797,4 +797,138 @@ class ChangeTest extends DbTestCase
 
         $this->assertSame(255, mb_strlen($change->fields['name']));
     }
+
+    public function testCronSurveyCreation(): void
+    {
+        $this->login();
+
+        $root_entity_id    = $this->getTestRootEntity(true);
+        $child_1_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $twelve_hours_ago = date("Y-m-d H:i:s", strtotime('-12 hours'));
+        $six_hours_ago    = date("Y-m-d H:i:s", strtotime('-6 hours'));
+        $four_hours_ago   = date("Y-m-d H:i:s", strtotime('-4 hours'));
+        $two_hours_ago    = date("Y-m-d H:i:s", strtotime('-2 hours'));
+
+        $this->updateItem(
+            \Entity::class,
+            0,
+            [
+                'inquest_config_change' => 1, // GLPI native survey
+                'inquest_rate_change'   => 100, // always generate a survey for closed changes
+                'inquest_delay_change'  => 0, // instant survey generation
+            ]
+        );
+        foreach ([$root_entity_id, $child_1_entity_id] as $entity_id) {
+            $this->updateItem(
+                \Entity::class,
+                $entity_id,
+                [
+                    'inquest_config_change' => \Entity::CONFIG_PARENT, // inherits
+                ]
+            );
+        }
+        $this->updateItem(
+            \Entity::class,
+            $child_2_entity_id,
+            [
+                'inquest_config_change' => 1, // GLPI native survey
+                'inquest_rate_change'   => 100, // always generate a survey for closed changes
+                'inquest_delay_change'  => 0, // instant survey generation
+            ]
+        );
+
+        foreach ([0, $root_entity_id, $child_1_entity_id, $child_2_entity_id] as $entity_id) {
+            $this->updateItem(
+                \Entity::class,
+                $entity_id,
+                [
+                    'max_closedate_change' => $twelve_hours_ago,
+                ]
+            );
+        }
+
+        $original_currenttime = $_SESSION['glpi_currenttime'];
+
+        // Create a closed change on test root entity
+        $_SESSION['glpi_currenttime'] = $six_hours_ago;
+        $root_change = $this->createItem(
+            Change::class,
+            [
+                'name'        => "test root entity survey",
+                'content'     => "test root entity survey",
+                'entities_id' => $root_entity_id,
+                'status'      => CommonITILObject::CLOSED,
+            ]
+        );
+
+        // Create a closed change on test child entity 1
+        $_SESSION['glpi_currenttime'] = $four_hours_ago;
+        $child_1_change = $this->createItem(
+            Change::class,
+            [
+                'name'        => "test child entity 1 survey",
+                'content'     => "test child entity 1 survey",
+                'entities_id' => $child_1_entity_id,
+                'status'      => CommonITILObject::CLOSED,
+            ]
+        );
+
+        // Create a closed change on test child entity 2
+        $_SESSION['glpi_currenttime'] = $two_hours_ago;
+        $child_2_change = $this->createItem(
+            Change::class,
+            [
+                'name'        => "test child entity 2 survey",
+                'content'     => "test child entity 2 survey",
+                'entities_id' => $child_2_entity_id,
+                'status'      => CommonITILObject::CLOSED,
+            ]
+        );
+
+        $_SESSION['glpi_currenttime'] = $original_currenttime;
+
+        // Ensure no survey has been created yet
+        $change_satisfaction = new \ChangeSatisfaction();
+        $this->assertEquals(0, count($change_satisfaction->find(['changes_id' => $root_change->getID()])));
+        $this->assertEquals(0, count($change_satisfaction->find(['changes_id' => $child_1_change->getID()])));
+        $this->assertEquals(0, count($change_satisfaction->find(['changes_id' => $child_2_change->getID()])));
+
+        // Launch cron to create surveys
+        \CronTask::launch(
+            - \CronTask::MODE_INTERNAL, // force
+            1,
+            'createinquestchange'
+        );
+
+        // Ensure survey has been created
+        $this->assertEquals(1, count($change_satisfaction->find(['changes_id' => $root_change->getID()])));
+        $this->assertEquals(1, count($change_satisfaction->find(['changes_id' => $child_1_change->getID()])));
+        $this->assertEquals(1, count($change_satisfaction->find(['changes_id' => $child_2_change->getID()])));
+
+        // Check `max_closedate` values in DB
+        $expected_db_values = [
+            0                  => $four_hours_ago,   // last change closedate from entities that inherits the config
+            $root_entity_id    => $twelve_hours_ago, // not updated as it inherits the config
+            $child_1_entity_id => $twelve_hours_ago, // not updated as it inherits the config
+            $child_2_entity_id => $two_hours_ago,    // last change closedate from self as it has its own config
+        ];
+        $entity = new \Entity();
+        foreach ($expected_db_values as $entity_id => $date) {
+            $this->assertTrue($entity->getFromDB($entity_id));
+            $this->assertEquals($date, $entity->fields['max_closedate_change']);
+        }
+
+        // Check `max_closedate` returned by `Entity::getUsedConfig()`
+        $expected_config_values = [
+            0                  => $four_hours_ago, // last change closedate from entities that inherits the config
+            $root_entity_id    => $four_hours_ago, // inherited value
+            $child_1_entity_id => $four_hours_ago, // inherited value
+            $child_2_entity_id => $two_hours_ago,  // last change closedate from self as it has its own config
+        ];
+        foreach ($expected_config_values as $entity_id => $date) {
+            $this->assertEquals($date, \Entity::getUsedConfig('inquest_config_change', $entity_id, 'max_closedate_change'));
+        }
+    }
 }

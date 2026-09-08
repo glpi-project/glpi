@@ -109,6 +109,7 @@ export class FormPage extends GlpiPage
             type,
             false
         );
+        await this.waitForQuestionToBeLoaded(question);
     }
 
     public async setSubQuestionType(question: Locator, type: string): Promise<void>
@@ -119,6 +120,19 @@ export class FormPage extends GlpiPage
             type,
             false
         );
+        await this.waitForQuestionToBeLoaded(question);
+    }
+
+    /**
+     * Changing the type or the sub type of a question re-renders its fields
+     * (and the dropdowns that depend on them) asynchronously.
+     */
+    public async waitForQuestionToBeLoaded(question: Locator): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators
+        await question.locator('[data-glpi-loading="true"]')
+            .waitFor({ state: 'detached' })
+        ;
     }
 
     public async setItemTypeForItemQuestion(question: Locator, item_type: string): Promise<void>

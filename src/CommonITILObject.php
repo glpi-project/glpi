@@ -2414,9 +2414,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             (
                 isset($this->input["status"])
                 && $this->input["status"] != self::WAITING
+                && !in_array($this->input["status"], $solvedclosed)
             ) || (
                 isset($input["status"])
                 && $input["status"] != self::WAITING
+                && !in_array($input["status"], $solvedclosed)
             )
         ) {
             PendingReason_Item::deleteForItem($this);
@@ -10938,18 +10940,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (!$this->isNewItem() && !isset($input['entities_id'])) {
             $input['entities_id'] = $this->fields['entities_id'];
         }
-    }
-
-    /**
-     * @param string $name
-     * @return array{description: string, parameter?: string}
-     */
-    public static function cronInfo($name)
-    {
-        return match ($name) {
-            'createinquest' => ['description' => __('Generation of satisfaction surveys')],
-            default => [],
-        };
     }
 
     /**

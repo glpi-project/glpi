@@ -1763,6 +1763,8 @@ TWIG, $twig_params);
      * @param array    $user_infos    user information
      * @param array    $ldap_users    ldap users
      * @param object   $config_ldap   ldap configuration
+     * @param array<mixed>|null $ldap_users_by_dn LDAP users indexed by DN
+     * @param-out array<mixed>|null $ldap_users_by_dn
      *
      * @return bool
      */
@@ -1774,7 +1776,8 @@ TWIG, $twig_params);
         &$limitexceeded,
         &$user_infos,
         &$ldap_users,
-        $config_ldap
+        $config_ldap,
+        &$ldap_users_by_dn = null
     ) {
 
         // If paged results cannot be used (PHP < 5.4)
@@ -1888,15 +1891,11 @@ TWIG, $twig_params);
                         $ldap_users[$uid] = $uid;
                     } else {
                         //If ldap synchronisation
-                        if (isset($info[$ligne]['modifytimestamp'])) {
-                            $ldap_users[$uid] = self::ldapStamp2UnixStamp(
-                                $info[$ligne]['modifytimestamp'][0],
-                                $config_ldap->fields['time_offset']
-                            );
-                        } else {
-                            $ldap_users[$uid] = '';
-                        }
+                        $ldap_users[$uid] = $user_infos[$uid]["timestamp"];
                         $user_infos[$uid]["name"] = $info[$ligne][$login_field][0];
+                        if ($ldap_users_by_dn !== null) {
+                            $ldap_users_by_dn[$info[$ligne]['dn']] ??= $user_infos[$uid];
+                        }
                     }
                 }
             }
@@ -1945,9 +1944,10 @@ TWIG, $twig_params);
             //}
         }
 
-        $ldap_users    = [];
-        $user_infos    = [];
-        $limitexceeded = false;
+        $ldap_users       = [];
+        $ldap_users_by_dn = [];
+        $user_infos       = [];
+        $limitexceeded    = false;
 
         // we prevent some delay...
         if (!$res) {
@@ -1992,7 +1992,8 @@ TWIG, $twig_params);
                 $limitexceeded,
                 $user_infos,
                 $ldap_users,
-                $config_ldap
+                $config_ldap,
+                $ldap_users_by_dn
             );
             if (!$result) {
                 return false;
@@ -2026,7 +2027,7 @@ TWIG, $twig_params);
             } else {
                 //Ldap synchronisation : look if the user exists in the directory
                 //and compares the modifications dates (ldap and glpi db)
-                $userfound = self::dnExistsInLdap($user_infos, $user['user_dn']);
+                $userfound = $ldap_users_by_dn[$user['user_dn']] ?? false;
                 if (!empty($ldap_users[$user[$field_for_db]]) || $userfound) {
                     // userfound seems that user dn is present in GLPI DB but do not correspond to an GLPI user
                     // -> renaming case

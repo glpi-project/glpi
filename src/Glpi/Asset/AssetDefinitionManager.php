@@ -196,6 +196,11 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
             'state_types',
             'ticket_types',
             'unicity_types',
+            // keys derived from assignable_types which need manually updated
+            'linkuser_types',
+            'linkgroup_types',
+            'linkuser_tech_types',
+            'linkgroup_tech_types',
         ];
         foreach ($config_keys as $config_key) {
             if (!in_array($asset_class_name, $CFG_GLPI[$config_key], true)) {

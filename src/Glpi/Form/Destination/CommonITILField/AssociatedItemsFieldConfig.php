@@ -37,6 +37,7 @@ namespace Glpi\Form\Destination\CommonITILField;
 use CommonITILObject;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
+use Glpi\Form\Destination\DeserializeStrategiesTrait;
 use Glpi\Form\Destination\HasFieldWithQuestionId;
 use Override;
 
@@ -45,6 +46,8 @@ final class AssociatedItemsFieldConfig implements
     JsonFieldInterface,
     ConfigFieldWithStrategiesInterface
 {
+    use DeserializeStrategiesTrait;
+
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGIES = 'strategies';
     public const SPECIFIC_QUESTION_IDS = 'specific_question_ids';
@@ -64,16 +67,11 @@ final class AssociatedItemsFieldConfig implements
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategies = array_map(
-            fn(string $strategy) => AssociatedItemsFieldStrategy::tryFrom($strategy),
-            $data[self::STRATEGIES] ?? []
-        );
-        if ($strategies === []) {
-            $strategies = [AssociatedItemsFieldStrategy::ALL_VALID_ANSWERS];
-        }
-
         return new self(
-            strategies: $strategies,
+            strategies: self::deserializeStrategies(
+                $data,
+                AssociatedItemsFieldStrategy::LAST_VALID_ANSWER
+            ),
             specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
             specific_associated_items: $data[self::SPECIFIC_ASSOCIATED_ITEMS] ?? [],
         );

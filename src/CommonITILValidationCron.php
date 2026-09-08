@@ -85,7 +85,11 @@ class CommonITILValidationCron extends CommonDBTM
                             $itemtype::getTable() => [
                                 'ON' => [
                                     $itemtype::getTable() => 'id',
-                                    'validation' => $itemtype::getForeignKeyField(),
+                                    'validation' => $itemtype::getForeignKeyField(), [
+                                        'AND' => [
+                                            $itemtype::getTable() . '.is_deleted' => 0,
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],

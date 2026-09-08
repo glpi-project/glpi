@@ -43,16 +43,8 @@ final class RequesterFieldConfig extends ITILActorFieldConfig
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategies = array_map(
-            fn(string $strategy) => ITILActorFieldStrategy::tryFrom($strategy),
-            $data[self::STRATEGIES] ?? []
-        );
-        if ($strategies === []) {
-            $strategies = [ITILActorFieldStrategy::FORM_FILLER];
-        }
-
         return new self(
-            strategies: $strategies,
+            strategies: self::deserializeStrategies($data, ITILActorFieldStrategy::FORM_FILLER),
             specific_itilactors_ids: $data[self::SPECIFIC_ITILACTORS_IDS] ?? [],
             specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
         );

@@ -1,5 +1,8 @@
 name: "Docker nightly and security rebuild"
 
+env:
+  SUPPORTED_VERSIONS: "12.0, 11.0, 10.0"
+
 permissions:
   contents: "read"
 
@@ -18,9 +21,6 @@ on:
         required: false
         type: boolean
         default: false
-
-env:
-  SUPPORTED_VERSIONS: "11.0, 10.0"
 
 jobs:
   resolve:
