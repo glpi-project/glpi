@@ -42,6 +42,7 @@ use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
+use Glpi\Security\ShareTokenManager;
 use Glpi\Toolbox\ArrayPathAccessor;
 use RuntimeException;
 use Safe\DateTime;
@@ -274,9 +275,9 @@ final class ResourceAccessor
 
     /**
      * Update an item of the given schema using the given request parameters.
-     * @param array $schema The schema
-     * @param array $request_attrs The request attributes
-     * @param array $request_params The request parameters
+     * @param array<string, mixed> $schema The schema
+     * @param array<string, mixed> $request_attrs The request attributes
+     * @param array<string, mixed> $request_params The request parameters
      * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
      * The field must be present in the route path (request attributes).
      * @return Response
@@ -316,8 +317,8 @@ final class ResourceAccessor
 
     /**
      * Create an item of the given schema using the given request parameters.
-     * @param array $schema The schema
-     * @param array $request_params The request parameters
+     * @param array<string, mixed> $schema The schema
+     * @param array<string, mixed> $request_params The request parameters
      * @param array $get_route The GET route to use to get the created item. This should be an array containing the controller class and method.
      * @phpstan-param array{0: class-string<AbstractController>, 1: string} $get_route
      * @param array $extra_get_route_params Additional parameters needed to generate the GET route. This should only be needed for complex routes.
@@ -365,8 +366,8 @@ final class ResourceAccessor
     /**
      * Search items using the given schema and request parameters.
      * Public entry point for {@link Search::getSearchResultsBySchema()} method.
-     * @param array $schema
-     * @param array $request_params
+     * @param array<string, mixed> $schema
+     * @param array<string, mixed> $request_params
      * @return Response
      */
     public static function searchBySchema(array $schema, array $request_params): Response
@@ -419,9 +420,9 @@ final class ResourceAccessor
 
     /**
      * Get a single item of the given schema, request data and unique field.
-     * @param array $schema The schema
-     * @param array $request_attrs The request attributes
-     * @param array $request_params The request parameters
+     * @param array<string, mixed> $schema The schema
+     * @param array<string, mixed> $request_attrs The request attributes
+     * @param array<string, mixed> $request_params The request parameters
      * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
      * The field must be present in the route path (request attributes).
      * @return Response
@@ -464,10 +465,56 @@ final class ResourceAccessor
     }
 
     /**
+     * @param array<string, mixed> $schema
+     * @param array<string, mixed> $request_attrs
+     * @param array<string, mixed> $request_params
+     * @param string $token_field
+     * @return Response
+     */
+    public static function getOneByShareToken(array $schema, array $request_attrs, array $request_params, string $token_field = 'token', string $field = 'id'): Response
+    {
+        $token = $request_attrs[$token_field];
+        $manager = new ShareTokenManager();
+        $shared_item = $manager->grantSessionAccess($token);
+
+        if ($shared_item === null) {
+            return AbstractController::getNotFoundErrorResponse();
+        }
+
+        $schema = self::applyFieldReadRestrictions($schema);
+        $filters = $request_params['filter'] ?? '';
+        $filters .= ';' . $field . '==' . $shared_item->getID();
+        $request_params['filter'] = $filters;
+        $request_params['limit'] = 1;
+        unset($request_params['start']);
+
+        try {
+            $results = Search::getSearchResultsBySchema($schema, $request_params, [
+                'is_direct_access_granted' => true,
+            ]);
+        } catch (RSQLException $e) {
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage()), 400);
+        } catch (APIException $e) {
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()), $e->getCode() ?: 400);
+        } catch (Throwable $e) {
+            $message = (new APIException())->getUserMessage();
+            $detail = null;
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                $detail = $e->getMessage();
+            }
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
+        }
+        if (count($results['results']) === 0) {
+            return AbstractController::getNotFoundErrorResponse();
+        }
+        return new JSONResponse($results['results'][0]);
+    }
+
+    /**
      * Delete an item of the given schema using the given request parameters.
-     * @param array $schema The schema
-     * @param array $request_attrs The request attributes
-     * @param array $request_params The request parameters
+     * @param array<string, mixed> $schema The schema
+     * @param array<string, mixed> $request_attrs The request attributes
+     * @param array<string, mixed> $request_params The request parameters
      * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
      * The field must be present in the route path (request attributes).
      * @return Response

@@ -41,8 +41,12 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Api\HL\Schemas;
+use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\Security\ShareTokenManager;
+use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
 use Group;
 use Group_KnowbaseItem;
@@ -239,6 +243,25 @@ class KnowbaseController extends AbstractController
                             'fkey' => 'id',
                             'field' => KnowbaseItem::getForeignKeyField(),
                             'condition' => static fn() => ['users_id' => Session::getLoginUserID()],
+                        ],
+                    ],
+                    'share_token' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-version-introduced' => '3.0.0',
+                        'x-full-schema' => 'ShareToken',
+                        'x-join' => [
+                            'table' => ShareToken::getTable(),
+                            'fkey' => 'id',
+                            'field' => 'items_id',
+                            'primary-property' => 'id',
+                            'condition' => static fn() => ['itemtype' => KnowbaseItem::class],
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'readOnly' => true,
+                            ],
                         ],
                     ],
                 ],
@@ -770,5 +793,146 @@ class KnowbaseController extends AbstractController
     public function deleteKBCategory(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Article/{article_id}/ShareToken', methods: ['POST'])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\CreateRoute(schema_name: 'ShareToken')]
+    public function createKBArticleSharingToken(Request $request): Response
+    {
+        $article_id = (int) $request->getAttribute('article_id');
+        $article = new KnowbaseItem();
+        if (!$article->getFromDB($article_id) || !$article->canManageSharing()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+
+        $manager = new ShareTokenManager();
+        $existings = $manager->getTokensForItem(KnowbaseItem::class, $article_id);
+        if ($existings !== []) {
+            $token_path = self::getAPIPathForRouteFunction(self::class, 'getKBArticleSharingToken', [
+                'article_id' => $article_id,
+            ]);
+            return new JSONResponse(['href' => $token_path], 409, ['Location' => $token_path]);
+        }
+
+        $request->setParameter('itemtype', KnowbaseItem::class);
+        $request->setParameter('items_id', $article_id);
+
+        $token_schema = Schemas::getInstance($this->getAPIVersion($request))->getSchema('ShareToken');
+        if ($token_schema === null) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        return ResourceAccessor::createBySchema(
+            $token_schema,
+            $request->getParameters(),
+            [self::class, 'getKBArticleSharingToken'],
+            ['mapped' => ['article_id' => $article_id]]
+        );
+    }
+
+    #[Route(path: '/Article/{article_id}/ShareToken', methods: ['GET'])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\GetRoute(schema_name: 'ShareToken')]
+    public function getKBArticleSharingToken(Request $request): Response
+    {
+        $article_id = (int) $request->getAttribute('article_id');
+        $article = new KnowbaseItem();
+        if (!$article->getFromDB($article_id) || !$article->canManageSharing()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+
+        $manager = new ShareTokenManager();
+        $existings = $manager->getTokensForItem(KnowbaseItem::class, $article_id);
+        if ($existings !== []) {
+            $request->setAttribute('id', (int) $existings[0]['id']);
+
+            $token_schema = Schemas::getInstance($this->getAPIVersion($request))->getSchema('ShareToken');
+            if ($token_schema === null) {
+                return self::getNotFoundErrorResponse();
+            }
+            return ResourceAccessor::getOneBySchema(
+                $token_schema,
+                $request->getAttributes(),
+                $request->getParameters()
+            );
+        }
+
+        return self::getNotFoundErrorResponse();
+    }
+
+    #[Route(path: '/Article/{article_id}/ShareToken', methods: ['PATCH'])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\UpdateRoute('ShareToken')]
+    public function updateKBArticleSharingToken(Request $request): Response
+    {
+        $article_id = (int) $request->getAttribute('article_id');
+        $article = new KnowbaseItem();
+        if (!$article->getFromDB($article_id) || !$article->canManageSharing()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+
+        $manager = new ShareTokenManager();
+        $existings = $manager->getTokensForItem(KnowbaseItem::class, $article_id);
+        if ($existings !== []) {
+            $request->setAttribute('id', (int) $existings[0]['id']);
+
+            $params = $request->getParameters();
+            unset($params['itemtype'], $params['items_id']); // prevent changing the item type or ID
+
+            $token_schema = Schemas::getInstance($this->getAPIVersion($request))->getSchema('ShareToken');
+            if ($token_schema === null) {
+                return self::getNotFoundErrorResponse();
+            }
+            return ResourceAccessor::updateBySchema(
+                $token_schema,
+                $request->getAttributes(),
+                $params,
+            );
+        }
+
+        return self::getNotFoundErrorResponse();
+    }
+
+    #[Route(path: '/Article/{article_id}/ShareToken', methods: ['DELETE'])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\DeleteRoute('ShareToken')]
+    public function deleteKBArticleSharingToken(Request $request): Response
+    {
+        $article_id = (int) $request->getAttribute('article_id');
+        $article = new KnowbaseItem();
+        if (!$article->getFromDB($article_id) || !$article->canManageSharing()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+
+        $manager = new ShareTokenManager();
+        $existings = $manager->getTokensForItem(KnowbaseItem::class, $article_id);
+        if ($existings !== []) {
+            $request->setAttribute('id', (int) $existings[0]['id']);
+
+            $token_schema = Schemas::getInstance($this->getAPIVersion($request))->getSchema('ShareToken');
+            if ($token_schema === null) {
+                return self::getNotFoundErrorResponse();
+            }
+            return ResourceAccessor::deleteBySchema(
+                $token_schema,
+                $request->getAttributes(),
+                $request->getParameters()
+            );
+        }
+
+        return self::getNotFoundErrorResponse();
+    }
+
+    #[Route(path: '/Article/ShareToken/{token}', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\GetRoute(schema_name: 'KBArticle')]
+    public function getKBArticleByShareToken(Request $request): Response
+    {
+        return ResourceAccessor::getOneByShareToken(
+            $this->getKnownSchema('KBArticle', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
     }
 }

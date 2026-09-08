@@ -279,4 +279,125 @@ class KnowbaseControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testCRUDKBArticleShareToken()
+    {
+        $this->loginWeb();
+        $article_id = $this->createItem(KnowbaseItem::class, [
+            'name' => 'test_kb_article_share_token',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->login();
+
+        $this->api->autoTestCRUD('/Knowledgebase/Article/' . $article_id . '/ShareToken', [
+            'is_active' => 1,
+        ], [
+            'is_active' => 0,
+        ], ['new_location_singleton' => true]);
+    }
+
+    public function testKBSharingTokenGraphQL(): void
+    {
+        $this->loginWeb();
+        $article_id = $this->createItem(KnowbaseItem::class, [
+            'name' => 'test_kb_article_share_token',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->login();
+
+        $this->api->call(new Request('POST', '/Knowledgebase/Article/' . $article_id . '/ShareToken'), function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->graphql->call('query { KBArticle(id: ' . $article_id . ') { id name share_token { token } } }', function ($call) {
+            $call->response
+                ->isOK()
+                ->data('KBArticle', function ($data) {
+                    $this->assertCount(1, $data);
+                    $this->assertNotEmpty($data[0]['share_token']['token']);
+                });
+        });
+    }
+
+    public function testGetKBArticleByToken(): void
+    {
+        $this->loginWeb();
+        $article_id = $this->createItem(KnowbaseItem::class, [
+            'name' => 'test_kb_article_share_token',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->login();
+
+        $token = null;
+        $this->api->call(new Request('POST', '/Knowledgebase/Article/' . $article_id . '/ShareToken'), function ($call) use (&$token) {
+            $call->response->isOK();
+        });
+
+        $this->graphql->call('query { KBArticle(id: ' . $article_id . ') { id name share_token { id token } } }', function ($call) use (&$token) {
+            $call->response
+                ->isOK()
+                ->data('KBArticle', function ($data) use (&$token) {
+                    $this->assertCount(1, $data);
+                    $this->assertNotEmpty($data[0]['share_token']['token']);
+                    $token = $data[0]['share_token']['token'];
+                });
+        });
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) use ($article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($article_id) {
+                    $this->assertEquals($article_id, (int) $content['id']);
+                });
+        });
+
+        $request = new Request('PATCH', '/Knowledgebase/Article/' . $article_id . '/ShareToken');
+        $request->setParameter('is_active', 0);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) {
+            $call->response->isNotFoundError();
+        });
+
+        $this->logOut();
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) {
+            $call->response->isNotFoundError();
+        });
+
+        $this->login('post-only', 'postonly');
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) {
+            $call->response->isNotFoundError();
+        });
+
+        $this->login();
+
+        $request = new Request('PATCH', '/Knowledgebase/Article/' . $article_id . '/ShareToken');
+        $request->setParameter('is_active', 1);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->logOut();
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) use ($article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($article_id) {
+                    $this->assertEquals($article_id, (int) $content['id']);
+                });
+        });
+
+        $this->login('post-only', 'postonly');
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) use ($article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($article_id) {
+                    $this->assertEquals($article_id, (int) $content['id']);
+                });
+        });
+    }
 }
