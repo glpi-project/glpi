@@ -35,6 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
+use Glpi\Application\View\TemplateRenderer;
+
 global $CFG_GLPI;
 
 // Redirect management
@@ -53,27 +55,16 @@ if (Session::getLoginUserID()) {
     ]);
 }
 
-$id = (int) ($_GET["id"] ?? 0);
-
-if ($id > 0) {
+if (isset($_GET["id"])) {
+    $id = (int) $_GET["id"];
     $kb = new KnowbaseItem();
     if ($kb->can($id, READ)) {
-        // Same two-column layout as the central knowledge base
-        $aside = $kb->getAsideContent();
-        echo "<div class=\"row\">";
-        if ($aside !== null) {
-            echo "<aside class=\"col card border-radius-0 p-0\" data-main-page-aside=\"knowbaseitem\">";
-            echo $aside;
-            echo "</aside>";
-        }
-        echo "<div class=\"col\">";
-        // `card p-2` mirrors the central tab container: the article template
-        // compensates its padding with `mx-n2 my-n2`.
-        echo "<div class=\"card p-2\">";
-        $kb->showFull();
-        echo "</div>";
-        echo "</div>";
-        echo "</div>";
+        // Same two-column layout as the central knowledge base (see CommonGLPI::display()).
+        echo TemplateRenderer::getInstance()->render('pages/tools/kb/faq_article.html.twig', [
+            'aside'   => $kb->getAsideContent(),
+            'slug'    => Toolbox::slugify(KnowbaseItem::class),
+            'article' => $kb->showFull(['display' => false]),
+        ]);
     }
 } else {
     // Manage forcetab : non standard system (file name <> class name)

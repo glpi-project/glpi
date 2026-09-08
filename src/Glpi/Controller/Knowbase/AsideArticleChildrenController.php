@@ -75,7 +75,7 @@ final class AsideArticleChildrenController extends AbstractController
 
         return $this->render('pages/tools/kb/aside_children.html.twig', [
             'children'     => $children,
-            'can_create'   => KnowbaseItem::canAuthorAsideTree() && KnowbaseItem::canCreate(),
+            'can_create'   => KnowbaseItem::canCreateAsideTree(),
             'show_actions' => KnowbaseItem::canShowAsideActions(),
         ]);
     }
