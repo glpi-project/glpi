@@ -2859,4 +2859,96 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue(User::isValidUserForEntity($recursive_user->getID(), $child1_entity_id));
     }
+
+    public function testShowFormIdentityFieldsReadonlyPerAuthSourceMapping(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        // New user form: identity fields must be editable
+        $new_user = new User();
+        ob_start();
+        $new_user->showForm(-1);
+        $html_new = ob_get_clean();
+
+        $realname_ro = function (string $html): bool {
+            $matched = preg_match('/<input[^>]*name="realname"[^>]*>/', $html, $m);
+            $this->assertSame(1, $matched, 'Field "realname" not found in HTML');
+            return str_contains($m[0], 'readonly');
+        };
+        $firstname_ro = function (string $html): bool {
+            $matched = preg_match('/<input[^>]*name="firstname"[^>]*>/', $html, $m);
+            $this->assertSame(1, $matched, 'Field "firstname" not found in HTML');
+            return str_contains($m[0], 'readonly');
+        };
+
+        $this->assertFalse($realname_ro($html_new));
+        $this->assertFalse($firstname_ro($html_new));
+
+        // LDAP source without identity field mapping: Surname/First name editable
+        $authldap_unmapped = $this->createItem(AuthLDAP::class, [
+            'name'             => $this->getUniqueString(),
+            'host'             => '127.0.0.1',
+            'basedn'           => 'dc=example,dc=com',
+            'realname_field'   => '',
+            'firstname_field'  => '',
+            'login_field'      => 'uid',
+            'use_dn'           => 1,
+        ]);
+        $user_unmapped = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::LDAP,
+            'auths_id' => $authldap_unmapped->getID(),
+        ]);
+
+        ob_start();
+        $user_unmapped->showForm($user_unmapped->getID());
+        $html_unmapped = ob_get_clean();
+
+        // LDAP source with realname_field only: Surname read-only, First name editable
+        $authldap_realname_only = $this->createItem(AuthLDAP::class, [
+            'name'             => $this->getUniqueString(),
+            'host'             => '127.0.0.1',
+            'basedn'           => 'dc=example,dc=com',
+            'realname_field'   => 'sn',
+            'firstname_field'  => '',
+            'login_field'      => 'uid',
+            'use_dn'           => 1,
+        ]);
+        $user_realname_only = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::LDAP,
+            'auths_id' => $authldap_realname_only->getID(),
+        ]);
+
+        ob_start();
+        $user_realname_only->showForm($user_realname_only->getID());
+        $html_realname_only = ob_get_clean();
+
+        // unmapped source -> both editable
+        $this->assertFalse($realname_ro($html_unmapped));
+        $this->assertFalse($firstname_ro($html_unmapped));
+        // mapped realname only -> surname locked, first name editable
+        $this->assertTrue($realname_ro($html_realname_only));
+        $this->assertFalse($firstname_ro($html_realname_only));
+
+        // External non-LDAP source: all identity fields stay locked
+        $user_external = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::EXTERNAL,
+        ]);
+
+        ob_start();
+        $user_external->showForm($user_external->getID());
+        $html_external = ob_get_clean();
+
+        $middlename_ro = function (string $html): bool {
+            $matched = preg_match('/<input[^>]*name="middlename"[^>]*>/', $html, $m);
+            $this->assertSame(1, $matched, 'Field "middlename" not found in HTML');
+            return str_contains($m[0], 'readonly');
+        };
+
+        $this->assertTrue($realname_ro($html_external));
+        $this->assertTrue($firstname_ro($html_external));
+        $this->assertTrue($middlename_ro($html_external));
+    }
 }
