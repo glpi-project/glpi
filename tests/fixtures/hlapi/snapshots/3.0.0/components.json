@@ -10577,6 +10577,9 @@
                             }
                         }
                     }
+                },
+                "is_favorite": {
+                    "type": "boolean"
                 }
             }
         },

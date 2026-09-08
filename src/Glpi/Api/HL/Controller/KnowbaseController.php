@@ -48,6 +48,7 @@ use Group;
 use Group_KnowbaseItem;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
+use KnowbaseItem_Favorite;
 use KnowbaseItem_Item;
 use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_Profile;
@@ -55,6 +56,7 @@ use KnowbaseItem_Revision;
 use KnowbaseItem_User;
 use KnowbaseItemTranslation;
 use Profile;
+use Session;
 use User;
 
 #[Route(path: '/Knowledgebase', requirements: [
@@ -225,6 +227,18 @@ class KnowbaseController extends AbstractController
                                 ],
                                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                             ],
+                        ],
+                    ],
+                    'is_favorite' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '3.0.0',
+                        'description' => 'Whether the article is marked as favorite by the current user.',
+                        'x-field' => 'id',
+                        'x-join' => [
+                            'table' => KnowbaseItem_Favorite::getTable(),
+                            'fkey' => 'id',
+                            'field' => KnowbaseItem::getForeignKeyField(),
+                            'condition' => static fn() => ['users_id' => Session::getLoginUserID()],
                         ],
                     ],
                 ],

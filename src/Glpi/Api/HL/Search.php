@@ -312,6 +312,9 @@ final class Search
                 // recursively inject the join alias into the condition keys in the cases where they don't contain a '.'
                 $fn_update_keys = static function ($condition) use (&$fn_update_keys, $join_alias) {
                     $new_condition = [];
+                    if (is_callable($condition)) {
+                        $condition = $condition();
+                    }
                     foreach ($condition as $key => $value) {
                         if (is_array($value)) {
                             $value = $fn_update_keys($value);
