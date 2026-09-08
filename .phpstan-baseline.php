@@ -10316,12 +10316,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-empty\\-string, numeric\\-string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Knowbase/History/LogEvent.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$level of method Monolog\\\\Handler\\\\StreamHandler\\:\\:__construct\\(\\) expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|\'ALERT\'\\|\'alert\'\\|\'CRITICAL\'\\|\'critical\'\\|\'DEBUG\'\\|\'debug\'\\|\'EMERGENCY\'\\|\'emergency\'\\|\'ERROR\'\\|\'error\'\\|\'INFO\'\\|\'info\'\\|\'NOTICE\'\\|\'notice\'\\|\'WARNING\'\\|\'warning\'\\|Monolog\\\\Level, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
