@@ -289,7 +289,7 @@ abstract class AbstractController
                 'type' => Doc\Schema::TYPE_STRING,
                 'readOnly' => true,
             ];
-        } else {
+        } elseif ($graphql_only) {
             $schema['x-graphql-only'] = true;
         }
 

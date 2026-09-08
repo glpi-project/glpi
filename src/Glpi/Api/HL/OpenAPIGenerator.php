@@ -221,7 +221,7 @@ EOT;
     }
 
     /**
-     * @return array<string, array{name: string, in: string, description: string, schema: array<string, mixed>, example?: mixed, required?: bool}>
+     * @return array<string, array{name: string, in: string, description?: string, schema: array<string, mixed>, example?: mixed, required?: bool}>
      */
     public static function getParameterComponents(): array
     {

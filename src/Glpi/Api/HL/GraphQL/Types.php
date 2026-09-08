@@ -50,6 +50,9 @@ class Types
 
     public static function load(string $type_name, string $api_version): Type
     {
+        if ($type_name === 'RFC3339DateTime') {
+            return DateTimeType::dateTime();
+        }
         if (!isset(self::$types[$type_name])) {
             $schema = Schemas::getInstance($api_version)->getSchema($type_name);
             if ($schema === null) {
