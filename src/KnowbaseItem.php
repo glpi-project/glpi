@@ -1791,6 +1791,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         $actions = [];
 
+        // Every entry but "Add to favorites" needs central access to be served.
+        $can_author = self::canAuthorAsideTree();
+
         // Toggle actions
         $toggles = [];
         if (KnowbaseItem_Favorite::canCreate()) {
@@ -1805,7 +1808,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             );
         }
         // The root article is not part of the FAQ, see `prepareInputForUpdate()`.
-        if (!$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
+        if ($can_author && !$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
             $toggles[] = new EditorAction(
                 label: __("Add to FAQ"),
                 icon: "ti ti-bookmark",
@@ -1821,7 +1824,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         $management = [];
         // The root article is the base of the tree, it cannot be moved.
-        if ($with_move && !$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
+        if ($can_author && $with_move && !$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
             $management[] = new EditorAction(
                 label: __("Move"),
                 icon: "ti ti-file-symlink",
@@ -1834,7 +1837,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
         }
-        if ($this->can($this->fields['id'], PURGE)) {
+        if ($can_author && $this->can($this->fields['id'], PURGE)) {
             $management[] = new EditorAction(
                 label: __("Delete article"),
                 icon: "ti ti-trash",
@@ -2040,7 +2043,8 @@ TWIG, $twig_params);
         $params = array_replace([
             'contains' => '',
             'knowbaseitems_id_parent' => self::SEEALL,
-            'faq' => false,
+            // Not the caller's call: anonymous readers lose their visibility `WHERE` below.
+            'faq' => !Session::haveRight(self::$rightname, READ),
         ], $params);
 
         // Mysql's MATCH AGAINST do not accept expressions that contains only spaces
@@ -3532,12 +3536,8 @@ TWIG, $twig_params);
     }
 
     /**
-     * Whether the aside offers to author the tree: create a child article, drag
-     * to reparent. The central interface only, the helpdesk FAQ lists articles
-     * to read them and the create button opens the central article form.
-     *
-     * Shared with `AsideArticleChildrenController`, which renders the rows of a
-     * branch the reader unfolds.
+     * Whether the aside offers to author the tree (create, reparent, delete).
+     * The FAQ lists articles to read them, and its endpoints require central access.
      */
     public static function canAuthorAsideTree(): bool
     {
