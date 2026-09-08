@@ -34,6 +34,7 @@ import { expect, test } from "../../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../../pages/KnowbaseItemPage";
 import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
+import { BubbleMenuCommand } from "../../../utils/BubbleMenuHelper";
 
 test.describe('Knowledge Base Editor - Bubble Menu', () => {
     test.describe('Text Formatting', () => {
@@ -295,6 +296,32 @@ test.describe('Knowledge Base Editor - Bubble Menu', () => {
             await kb.editor.cancel();
         });
 
+        test('Hidden after clicking a formatting button then clicking outside the editor', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test bubble menu ghost toolbar',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Text to format</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+
+            await kb.bubbleMenu.selectAllContent();
+            await kb.bubbleMenu.clickButton('Bold');
+
+            // The Documents tab shares the bubble menu's appendTo ancestor
+            // (.kb-article) — that's what used to fool Tiptap's own blur
+            // handling into treating this as "still inside the menu".
+            await page.getByRole('tab', { name: /Documents/ }).click();
+            await kb.bubbleMenu.assertHidden();
+
+            await kb.editor.save();
+            await kb.editor.assertHasBold('Text to format');
+        });
+
         test('Hidden when selecting text without entering edit mode', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
@@ -537,8 +564,11 @@ test.describe('Knowledge Base Editor - Bubble Menu', () => {
             await kb.editor.enterEditMode();
             await kb.bubbleMenu.selectAllContent();
 
+            // Shift+Tab isn't special-cased like Tab: it moves focus out to
+            // whatever precedes the editor in page tab order, a genuine
+            // focus-leave that closes the menu (same as clicking away).
             await page.keyboard.press('Shift+Tab');
-            await expect(kb.bubbleMenu.getButton('Bold')).not.toBeFocused();
+            await kb.bubbleMenu.assertHidden();
 
             await kb.editor.cancel();
         });
@@ -575,7 +605,7 @@ test.describe('Knowledge Base Editor - Bubble Menu', () => {
             await kb.editor.assertHasItalic('Text to format');
         });
 
-        test('Escape returns focus to the editor without clearing the selection', async ({ page, profile, api }) => {
+        test('Escape closes the bubble menu and returns focus to the editor', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
 
@@ -594,7 +624,113 @@ test.describe('Knowledge Base Editor - Bubble Menu', () => {
 
             await page.keyboard.press('Escape');
             await expect(kb.editor.getEditor()).toBeFocused();
-            await kb.bubbleMenu.assertVisible();
+            await kb.bubbleMenu.assertHidden();
+
+            await kb.editor.cancel();
+        });
+
+        test('Escape closes the bubble menu even when focus never left the editor', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test bubble menu escape without tabbing in',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Text to format</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.bubbleMenu.selectAllContent();
+
+            await page.keyboard.press('Escape');
+            await expect(kb.editor.getEditor()).toBeFocused();
+            await kb.bubbleMenu.assertHidden();
+
+            await kb.editor.cancel();
+        });
+
+        test('Bubble menu does not reopen right after Escape closes it', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test bubble menu stays closed after escape',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Text to format</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.bubbleMenu.selectAllContent();
+
+            await page.keyboard.press('Tab');
+            await expect(kb.bubbleMenu.getButton('Bold')).toBeFocused();
+            await page.keyboard.press('Escape');
+
+            // The menu's own visibility recompute is debounced by 250ms; the
+            // old bug reopened it once that debounce fired.
+            await page.waitForTimeout(400);
+            await kb.bubbleMenu.assertHidden();
+
+            await kb.editor.cancel();
+        });
+
+        test('Tab cycles forward through all buttons and wraps back to the first', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test bubble menu tab cycling',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Text to format</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.bubbleMenu.selectAllContent();
+
+            const order: BubbleMenuCommand[] = [
+                'Bold', 'Italic', 'Strikethrough', 'Code',
+                'Heading 1', 'Heading 2', 'Heading 3',
+                'Bullet List', 'Numbered List', 'Quote',
+                'Link', 'Comment',
+            ];
+
+            await page.keyboard.press('Tab');
+            for (const command of order) {
+                await expect(kb.bubbleMenu.getButton(command)).toBeFocused();
+                await page.keyboard.press('Tab');
+            }
+            // Wrapped past "Comment" back to the first button.
+            await expect(kb.bubbleMenu.getButton('Bold')).toBeFocused();
+
+            await kb.editor.cancel();
+        });
+
+        test('Shift+Tab cycles backward through buttons and wraps to the last', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test bubble menu shift tab cycling',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Text to format</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.bubbleMenu.selectAllContent();
+
+            await page.keyboard.press('Tab');
+            await expect(kb.bubbleMenu.getButton('Bold')).toBeFocused();
+
+            // Wrap backward from the first button to the last visible one.
+            await page.keyboard.press('Shift+Tab');
+            await expect(kb.bubbleMenu.getButton('Comment')).toBeFocused();
+
+            await page.keyboard.press('Shift+Tab');
+            await expect(kb.bubbleMenu.getButton('Link')).toBeFocused();
 
             await kb.editor.cancel();
         });

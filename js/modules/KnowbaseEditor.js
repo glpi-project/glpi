@@ -44,7 +44,7 @@ import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors
 import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
 import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 
-// Used to hide the bubble menu explicitly on Tab-out (see #createBubbleMenu).
+// Used to hide the bubble menu explicitly when focus leaves it or the editor.
 const BUBBLE_MENU_PLUGIN_KEY = 'kb-editor-bubble-menu';
 
 const SHORTCUT_MAC_SYMBOLS = { Control: '⌘', Alt: '⌥', Shift: '⇧' };
@@ -151,8 +151,9 @@ class KnowbaseEditor {
                 pluginKey: BUBBLE_MENU_PLUGIN_KEY,
                 element: this.#bubbleMenuElement,
                 appendTo: () => this.#element.closest('.kb-article') ?? document.body,
-                shouldShow: ({ editor, state }) => editor.isEditable
+                shouldShow: ({ editor, state, view }) => editor.isEditable
                     && !state.selection.empty
+                    && (view.hasFocus() || this.#bubbleMenuElement.contains(document.activeElement))
                     && !editor.isActive('image')
                     && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
@@ -229,6 +230,17 @@ class KnowbaseEditor {
                 // Jump straight into the bubble menu on Tab instead of leaving
                 // the keyboard user to tab through unrelated page controls first.
                 handleKeyDown: (view, event) => {
+                    // Escape closes the menu even if focus never left the editor.
+                    if (event.key === 'Escape') {
+                        if (!this.#bubbleMenuElement?.isConnected || this.#bubbleMenuElement.style.visibility === 'hidden') {
+                            return false;
+                        }
+                        // No stopPropagation(): let page-level Escape handlers still see this.
+                        event.preventDefault();
+                        this.#closeBubbleMenu();
+                        return true;
+                    }
+
                     if (event.key !== 'Tab' || event.shiftKey) {
                         return false;
                     }
@@ -273,6 +285,17 @@ class KnowbaseEditor {
             this.#bubbleMenuElement.tabIndex = -1;
         }
 
+        // Tiptap's own blur handling wrongly treats focus moving anywhere
+        // under appendTo's `.kb-article` (e.g. the Documents tab) as still
+        // inside the menu, so hide it ourselves whenever focus lands outside.
+        this.#editor.on('blur', ({ event }) => {
+            if (event?.relatedTarget instanceof Node && this.#bubbleMenuElement?.contains(event.relatedTarget)) {
+                return;
+            }
+            if (!this.#editor || this.#editor.isDestroyed) return;
+            this.#editor.view.dispatch(this.#editor.view.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'hide'));
+        });
+
         // Add class to wrapper for styling
         this.#element.classList.add('kb-editor-wrapper');
         if (this.#isEditable) {
@@ -304,26 +327,27 @@ class KnowbaseEditor {
                 }
                 return;
             }
-            // Tab-out to another page element: hide the now-stale menu.
+            // Focus left the toolbar for another page element: hide the now-stale menu.
             if (e.relatedTarget !== null && !menu.contains(e.relatedTarget) && this.#editor && !this.#editor.isDestroyed) {
                 this.#editor.view.dispatch(this.#editor.view.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'hide'));
             }
         });
 
         const buttons = [
-            { command: 'toggleBold', icon: 'ti ti-bold', title: __('Bold'), shortcutAria: 'Control+b' },
-            { command: 'toggleItalic', icon: 'ti ti-italic', title: __('Italic'), shortcutAria: 'Control+i' },
-            { command: 'toggleStrike', icon: 'ti ti-strikethrough', title: __('Strikethrough'), shortcutAria: 'Control+Shift+s' },
-            { command: 'toggleCode', icon: 'ti ti-code', title: __('Code'), shortcutAria: 'Control+e' },
+            { command: 'toggleBold', icon: 'ti ti-bold', title: __('Bold'), shortcutAria: 'Control+b', toggle: true },
+            { command: 'toggleItalic', icon: 'ti ti-italic', title: __('Italic'), shortcutAria: 'Control+i', toggle: true },
+            { command: 'toggleStrike', icon: 'ti ti-strikethrough', title: __('Strikethrough'), shortcutAria: 'Control+Shift+s', toggle: true },
+            { command: 'toggleCode', icon: 'ti ti-code', title: __('Code'), shortcutAria: 'Control+e', toggle: true },
             { type: 'divider' },
-            { command: 'toggleHeading1', icon: 'ti ti-h-1', title: __('Heading 1'), special: 'heading', level: 1, shortcutAria: 'Control+Alt+1' },
-            { command: 'toggleHeading2', icon: 'ti ti-h-2', title: __('Heading 2'), special: 'heading', level: 2, shortcutAria: 'Control+Alt+2' },
-            { command: 'toggleHeading3', icon: 'ti ti-h-3', title: __('Heading 3'), special: 'heading', level: 3, shortcutAria: 'Control+Alt+3' },
+            { command: 'toggleHeading1', icon: 'ti ti-h-1', title: __('Heading 1'), special: 'heading', level: 1, shortcutAria: 'Control+Alt+1', toggle: true },
+            { command: 'toggleHeading2', icon: 'ti ti-h-2', title: __('Heading 2'), special: 'heading', level: 2, shortcutAria: 'Control+Alt+2', toggle: true },
+            { command: 'toggleHeading3', icon: 'ti ti-h-3', title: __('Heading 3'), special: 'heading', level: 3, shortcutAria: 'Control+Alt+3', toggle: true },
             { type: 'divider' },
-            { command: 'toggleBulletList', icon: 'ti ti-list', title: __('Bullet List'), shortcutAria: 'Control+Shift+8' },
-            { command: 'toggleOrderedList', icon: 'ti ti-list-numbers', title: __('Numbered List'), shortcutAria: 'Control+Shift+7' },
-            { command: 'toggleBlockquote', icon: 'ti ti-blockquote', title: __('Quote'), shortcutAria: 'Control+Shift+b' },
+            { command: 'toggleBulletList', icon: 'ti ti-list', title: __('Bullet List'), shortcutAria: 'Control+Shift+8', toggle: true },
+            { command: 'toggleOrderedList', icon: 'ti ti-list-numbers', title: __('Numbered List'), shortcutAria: 'Control+Shift+7', toggle: true },
+            { command: 'toggleBlockquote', icon: 'ti ti-blockquote', title: __('Quote'), shortcutAria: 'Control+Shift+b', toggle: true },
             { type: 'divider' },
+            // Not toggles: Link opens a prompt, Remove link is one-shot.
             { command: 'setLink', icon: 'ti ti-link', title: _x('button', 'Link'), special: 'link' },
             { command: 'unsetLink', icon: 'ti ti-link-off', title: __('Remove link'), special: 'unlink' },
         ];
@@ -356,6 +380,9 @@ class KnowbaseEditor {
             // Without aria-hidden on the icon + an explicit aria-label, a
             // screen reader gets either no name or the glyph's raw code point.
             button.setAttribute('aria-label', btn.title);
+            if (btn.toggle) {
+                button.setAttribute('aria-pressed', 'false');
+            }
             if (btn.shortcutAria) {
                 const isMac = TiptapCore.isMacOS() || TiptapCore.isiOS();
                 const { mac, other } = formatShortcut(btn.shortcutAria);
@@ -427,7 +454,8 @@ class KnowbaseEditor {
     }
 
     /**
-     * Arrow/Home/End navigation between the toolbar's visible buttons.
+     * Tab/Shift+Tab/Arrow/Home/End navigation between the toolbar's visible
+     * buttons; Tab cycles within the toolbar instead of leaving it.
      * @param {KeyboardEvent} event
      */
     #handleBubbleMenuKeyDown(event) {
@@ -436,14 +464,15 @@ class KnowbaseEditor {
         const buttons = this.#getVisibleButtons(this.#bubbleMenuElement);
         const currentIndex = buttons.indexOf(document.activeElement);
 
-        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft' || event.key === 'Tab') {
             event.preventDefault();
             if (buttons.length === 0) return;
             if (currentIndex === -1) {
                 this.#focusBubbleButton(buttons[0]);
                 return;
             }
-            const delta = event.key === 'ArrowRight' ? 1 : -1;
+            const backward = event.key === 'ArrowLeft' || (event.key === 'Tab' && event.shiftKey);
+            const delta = backward ? -1 : 1;
             const nextIndex = (currentIndex + delta + buttons.length) % buttons.length;
             this.#focusBubbleButton(buttons[nextIndex]);
         } else if (event.key === 'Home') {
@@ -455,8 +484,18 @@ class KnowbaseEditor {
         } else if (event.key === 'Escape') {
             // No stopPropagation(): let page-level Escape handlers still see this.
             event.preventDefault();
-            this.#editor?.commands.focus();
+            this.#closeBubbleMenu();
         }
+    }
+
+    /**
+     * Closes the menu and refocuses the editor, collapsing the selection so
+     * `shouldShow` (selection-driven) doesn't reopen it right after.
+     */
+    #closeBubbleMenu() {
+        if (!this.#editor || this.#editor.isDestroyed) return;
+        const { to } = this.#editor.state.selection;
+        this.#editor.chain().setTextSelection(to).focus().run();
     }
 
     /**
@@ -564,6 +603,10 @@ class KnowbaseEditor {
             }
 
             btn.classList.toggle('is-active', isActive);
+            // is-active is CSS-only; toggle buttons also need aria-pressed.
+            if (btn.hasAttribute('aria-pressed')) {
+                btn.setAttribute('aria-pressed', String(isActive));
+            }
         });
 
         const visible = this.#getVisibleButtons(this.#bubbleMenuElement);
