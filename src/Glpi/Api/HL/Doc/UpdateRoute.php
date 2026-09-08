@@ -49,16 +49,8 @@ class UpdateRoute extends Route
                     schema: new SchemaReference($schema_name),
                     location: Parameter::LOCATION_BODY,
                 ),
-                new Parameter(
-                    name: 'If-Modified-Since',
-                    schema: new Schema(type: Schema::TYPE_STRING, format: Schema::FORMAT_STRING_DATE_TIME),
-                    location: Parameter::LOCATION_HEADER,
-                ),
-                new Parameter(
-                    name: 'If-Unmodified-Since',
-                    schema: new Schema(type: Schema::TYPE_STRING, format: Schema::FORMAT_STRING_DATE_TIME),
-                    location: Parameter::LOCATION_HEADER,
-                ),
+                new ParameterReference('If-Modified-Since'),
+                new ParameterReference('If-Unmodified-Since'),
             ],
             responses: [
                 new Response(

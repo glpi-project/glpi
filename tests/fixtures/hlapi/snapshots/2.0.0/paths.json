@@ -1733,6 +1733,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -1766,6 +1772,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -1843,6 +1855,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -1876,6 +1894,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -1953,6 +1977,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -1986,6 +2016,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -2063,6 +2099,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2096,6 +2138,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -2173,6 +2221,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2206,6 +2260,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -2283,6 +2343,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2316,6 +2382,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -2393,6 +2465,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2426,6 +2504,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -2503,6 +2587,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2536,6 +2626,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -2613,6 +2709,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2646,6 +2748,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -2723,6 +2831,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2756,6 +2870,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -2833,6 +2953,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2878,6 +3004,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2923,6 +3055,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -2968,6 +3106,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3013,6 +3157,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3058,6 +3208,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3103,6 +3259,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3148,6 +3310,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3193,6 +3361,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3238,6 +3412,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3283,6 +3463,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3328,6 +3514,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3373,6 +3565,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3418,6 +3616,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3463,6 +3667,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3508,6 +3718,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3553,6 +3769,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3598,6 +3820,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3643,6 +3871,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3784,6 +4018,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -3817,6 +4057,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -3896,6 +4142,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "cartridgeitems_id",
                     "description": "",
                     "in": "path",
@@ -3937,6 +4189,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "cartridgeitems_id",
@@ -4184,6 +4442,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -4217,6 +4481,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -4296,6 +4566,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "consumableitems_id",
                     "description": "",
                     "in": "path",
@@ -4337,6 +4613,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "consumableitems_id",
@@ -4584,6 +4866,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -4617,6 +4905,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -4790,6 +5084,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -4823,6 +5123,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -5019,6 +5325,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "rack_id",
                     "description": "",
                     "in": "path",
@@ -5060,6 +5372,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "rack_id",
@@ -5253,6 +5571,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -5286,6 +5610,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -5459,6 +5789,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -5492,6 +5828,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -5665,6 +6007,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -5698,6 +6046,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -5871,6 +6225,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -5904,6 +6264,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -6077,6 +6443,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -6110,6 +6482,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -6306,6 +6684,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "software_id",
                     "description": "",
                     "in": "path",
@@ -6347,6 +6731,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "software_id",
@@ -6485,792 +6875,6 @@
                 }
             },
             "parameters": [],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/{itemtype}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/{itemtype}/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_{itemtype}"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/{itemtype}Model": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/{itemtype}Model/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/{itemtype}Type": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/{itemtype}Type/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "itemtype",
-                    "description": "Asset type",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "format": "string",
-                        "pattern": ""
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
             "security": [
                 {
                     "oauth": [
@@ -9117,6 +8721,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -9148,6 +8758,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -9224,6 +8840,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -9255,6 +8877,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -9331,6 +8959,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -9362,6 +8996,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -9438,6 +9078,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -9469,6 +9115,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -9545,6 +9197,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -9576,6 +9234,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -9652,6 +9316,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -9683,6 +9353,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -9759,6 +9435,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -9790,6 +9472,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -9866,6 +9554,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -9897,6 +9591,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -9973,6 +9673,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10004,6 +9710,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10080,6 +9792,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10111,6 +9829,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10187,6 +9911,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10218,6 +9948,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10294,6 +10030,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10325,6 +10067,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10401,6 +10149,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10432,6 +10186,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10508,6 +10268,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10539,6 +10305,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10615,6 +10387,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10646,6 +10424,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10722,6 +10506,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10753,6 +10543,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10829,6 +10625,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10860,6 +10662,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -10936,6 +10744,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -10967,6 +10781,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12213,6 +12033,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12256,6 +12082,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12301,6 +12133,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12344,6 +12182,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12389,6 +12233,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12432,6 +12282,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12477,6 +12333,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12520,6 +12382,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12565,6 +12433,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12608,6 +12482,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12653,6 +12533,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12696,6 +12582,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12741,6 +12633,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12784,6 +12682,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12829,6 +12733,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12872,6 +12782,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -12917,6 +12833,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -12960,6 +12882,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -25002,6 +24930,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -25035,6 +24969,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -25112,6 +25052,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -25145,6 +25091,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -25222,6 +25174,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -25255,6 +25213,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -26913,6 +26877,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -26954,6 +26924,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -27053,6 +27029,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -27094,6 +27076,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -27193,6 +27181,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -27234,6 +27228,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -27333,6 +27333,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -27374,6 +27380,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -27473,6 +27485,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -27514,6 +27532,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -27613,6 +27637,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -27654,6 +27684,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -27753,6 +27789,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -27794,6 +27836,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -27893,6 +27941,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -27934,6 +27988,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -28033,6 +28093,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -28074,6 +28140,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -28173,6 +28245,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -28214,6 +28292,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -28313,6 +28397,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -28354,6 +28444,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -28453,6 +28549,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -28494,6 +28596,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -28593,6 +28701,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -28634,6 +28748,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -28733,6 +28853,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "subitem_id",
                     "description": "",
                     "in": "path",
@@ -28774,6 +28900,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "subitem_id",
@@ -29684,6 +29816,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -29717,6 +29855,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -29890,6 +30034,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -29923,6 +30073,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -30096,6 +30252,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -30129,6 +30291,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -30579,7 +30747,14 @@
                     }
                 }
             },
-            "parameters": [],
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                }
+            ],
             "security": [
                 {
                     "oauth": [
@@ -30708,6 +30883,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -30750,7 +30931,14 @@
                     }
                 }
             },
-            "parameters": [],
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                }
+            ],
             "security": [
                 {
                     "oauth": [
@@ -30801,6 +30989,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -30832,6 +31026,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -30908,6 +31108,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "username",
                     "description": "",
                     "in": "path",
@@ -30939,6 +31145,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "username",
                     "description": "",
@@ -31275,6 +31487,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -31306,6 +31524,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -31382,6 +31606,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -31413,6 +31643,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -31489,6 +31725,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -31520,6 +31762,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -32792,6 +33040,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -32823,6 +33077,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -32899,6 +33159,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -32930,6 +33196,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33006,6 +33278,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33037,6 +33315,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33113,6 +33397,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33144,6 +33434,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33220,6 +33516,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33251,6 +33553,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33327,6 +33635,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33358,6 +33672,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33434,6 +33754,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33465,6 +33791,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33541,6 +33873,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33572,6 +33910,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33648,6 +33992,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33679,6 +34029,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33755,6 +34111,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33786,6 +34148,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -33862,6 +34230,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -33893,6 +34267,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -34065,6 +34445,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -34096,6 +34482,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -34268,6 +34660,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -34299,6 +34697,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -34971,6 +35375,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -35004,6 +35414,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -35081,6 +35497,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -35114,6 +35536,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -35191,6 +35619,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -35224,6 +35658,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -35301,6 +35741,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "security": [
@@ -35334,6 +35780,12 @@
                         "format": "int32",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 }
             ],
             "requestBody": {
@@ -39849,6 +40301,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -39890,6 +40348,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -39966,6 +40430,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40007,6 +40477,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -40083,6 +40559,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40124,6 +40606,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -40200,6 +40688,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40241,6 +40735,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -40317,6 +40817,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40358,6 +40864,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -40434,6 +40946,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40475,6 +40993,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -40551,6 +41075,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40592,6 +41122,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -40668,6 +41204,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40709,6 +41251,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -40785,6 +41333,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40826,6 +41380,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -40902,6 +41462,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -40943,6 +41509,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -41019,6 +41591,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -41060,6 +41638,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
@@ -41730,6 +42314,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -41781,6 +42371,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -41880,6 +42476,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -41931,6 +42533,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -42030,6 +42638,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -42081,6 +42695,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -42180,6 +42800,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -42231,6 +42857,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -42330,6 +42962,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -42381,6 +43019,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -42480,6 +43124,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -42531,6 +43181,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -42630,6 +43286,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -42681,6 +43343,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -42780,6 +43448,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -42831,6 +43505,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -42930,6 +43610,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -42981,6 +43667,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -43080,6 +43772,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -43131,6 +43829,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -43230,6 +43934,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -43281,6 +43991,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -43963,6 +44679,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -44014,6 +44736,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -44113,6 +44841,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -44164,6 +44898,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -44263,6 +45003,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -44314,6 +45060,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -44413,6 +45165,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -44464,6 +45222,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -44563,6 +45327,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -44614,6 +45384,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -44713,6 +45489,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -44764,6 +45546,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -44863,6 +45651,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -44914,6 +45708,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -45013,6 +45813,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -45064,6 +45870,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -45163,6 +45975,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -45214,6 +46032,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -45313,6 +46137,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -45364,6 +46194,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -45463,6 +46299,12 @@
                     }
                 },
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -45514,6 +46356,12 @@
                         "format": "int64",
                         "pattern": "\\d+"
                     }
+                },
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
                 },
                 {
                     "name": "id",
@@ -46992,6 +47840,12 @@
             },
             "parameters": [
                 {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
+                {
                     "name": "id",
                     "description": "",
                     "in": "path",
@@ -47023,6 +47877,12 @@
                 }
             },
             "parameters": [
+                {
+                    "$ref": "#/components/parameters/If-Modified-Since"
+                },
+                {
+                    "$ref": "#/components/parameters/If-Unmodified-Since"
+                },
                 {
                     "name": "id",
                     "description": "",
