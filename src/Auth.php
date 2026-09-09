@@ -330,7 +330,7 @@ class Auth extends CommonGLPI
      *
      * @return boolean
      */
-    public static function passwordIsOutdated(string $hash): bool
+    private static function passwordIsOutdated(string $hash): bool
     {
         $info = password_get_info($hash);
         return !isset($info['algo']) || !$info['algo'];
