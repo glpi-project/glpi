@@ -78,6 +78,11 @@ class MailCollector extends CommonDBTM
      */
     private ?AbstractStorage $storage = null;
     /**
+     * Notification subject tags used across entities, memoized for the current run.
+     * @var ?string[]
+     */
+    private ?array $notification_subject_tags = null;
+    /**
      * UID of the current message
      * @var int
      */
@@ -2187,29 +2192,72 @@ class MailCollector extends CommonDBTM
         // Check in subject
         if ($message->getHeaders()->has('subject')) {
             $subject = $message->getHeader('subject')->getFieldValue();
-            $matches = [];
 
-            global $DB;
             $ticket = new Ticket();
-            $tags = array_unique(array_merge(['GLPI'], array_column(
-                iterator_to_array($DB->request([
-                    'SELECT' => 'notification_subject_tag',
-                    'DISTINCT' => true,
-                    'FROM' => Entity::getTable(),
-                    'WHERE' => ['notification_subject_tag' => ['<>', '']],
-                ])),
-                'notification_subject_tag'
-            )));
-            $pattern = '/\[(?:' . implode('|', array_map(static fn($tag) => preg_quote($tag, '/'), $tags)) . ')\s#(\d+)\]/';
-            if (
-                preg_match($pattern, $subject, $matches) === 1
-                && $ticket->getFromDB($matches[1])
-            ) {
-                return $ticket;
+
+            // GLPI prefixes ITIL notification subjects with `[<tag> #<id>]`, where the
+            // id is zero-padded to at least 7 digits and always preceded by a space
+            // (see NotificationTargetCommonITILObject::getSubjectPrefix()). Requiring
+            // that shape prevents foreign references such as `[Ticket#123]` from being
+            // mistaken for a ticket id.
+            if (preg_match_all('/\[([^\]]*)\s#(\d{7,})\]/', $subject, $matches, PREG_SET_ORDER) > 0) {
+                $candidate = null;
+                if (count($matches) === 1) {
+                    // Single match: trust it, even if the entity tag has been edited
+                    // since the notification was sent.
+                    $candidate = $matches[0][2];
+                } else {
+                    // Multiple matches: prefer the one whose prefix matches a known
+                    // notification subject tag, and fall back to the last match.
+                    $known_tags = $this->getNotificationSubjectTags();
+                    foreach ($matches as $match) {
+                        if (in_array(trim($match[1]), $known_tags, true)) {
+                            $candidate = $match[2];
+                            break;
+                        }
+                    }
+                    if ($candidate === null) {
+                        $last = end($matches);
+                        $candidate = $last[2];
+                    }
+                }
+
+                if ($candidate !== null && $ticket->getFromDB($candidate)) {
+                    return $ticket;
+                }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Get the notification subject tags (`[<tag> #<id>]`) configured across the
+     * entities, plus the default `GLPI` tag. Computed once per collector instance.
+     *
+     * @return string[]
+     */
+    private function getNotificationSubjectTags(): array
+    {
+        if ($this->notification_subject_tags === null) {
+            /** @var \DBmysql $DB */
+            global $DB;
+
+            $tags = ['GLPI'];
+            $iterator = $DB->request([
+                'SELECT'   => 'notification_subject_tag',
+                'DISTINCT' => true,
+                'FROM'     => Entity::getTable(),
+                'WHERE'    => ['notification_subject_tag' => ['<>', '']],
+            ]);
+            foreach ($iterator as $row) {
+                $tags[] = trim((string) $row['notification_subject_tag']);
+            }
+
+            $this->notification_subject_tags = array_values(array_unique(array_filter($tags)));
+        }
+
+        return $this->notification_subject_tags;
     }
 
     /**
