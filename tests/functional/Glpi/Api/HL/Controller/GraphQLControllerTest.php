@@ -401,7 +401,7 @@ class GraphQLControllerTest extends HLAPITestCase
         foreach ($controllers as $controller) {
             $schemas = $controller::getKnownSchemas(Router::API_VERSION);
             foreach ($schemas as $schema_name => $schema) {
-                if (!isset($schema['x-itemtype']) || str_starts_with($schema_name, '_')) {
+                if (!isset($schema['x-itemtype']) || str_starts_with($schema_name, '_') || ($schema['x-graphql-noquery'] ?? false)) {
                     continue;
                 }
                 $query = "query { $schema_name(limit: 1) { " . $this->getCompleteFieldsRequestForSchema($schema['properties']) . '} }';

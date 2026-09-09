@@ -245,25 +245,6 @@ class KnowbaseController extends AbstractController
                             'condition' => static fn() => ['users_id' => Session::getLoginUserID()],
                         ],
                     ],
-                    'share_token' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-version-introduced' => '3.0.0',
-                        'x-full-schema' => 'ShareToken',
-                        'x-join' => [
-                            'table' => ShareToken::getTable(),
-                            'fkey' => 'id',
-                            'field' => 'items_id',
-                            'primary-property' => 'id',
-                            'condition' => static fn() => ['itemtype' => KnowbaseItem::class],
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'readOnly' => true,
-                            ],
-                        ],
-                    ],
                 ],
             ],
             'KBCategory' => [

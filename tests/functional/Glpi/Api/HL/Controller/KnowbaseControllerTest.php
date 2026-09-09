@@ -299,25 +299,11 @@ class KnowbaseControllerTest extends HLAPITestCase
 
     public function testKBSharingTokenGraphQL(): void
     {
-        $this->loginWeb();
-        $article_id = $this->createItem(KnowbaseItem::class, [
-            'name' => 'test_kb_article_share_token',
-            'entities_id' => $this->getTestRootEntity(true),
-        ])->getID();
-
         $this->login();
 
-        $this->api->call(new Request('POST', '/Knowledgebase/Article/' . $article_id . '/ShareToken'), function ($call) {
-            $call->response->isOK();
-        });
-
-        $this->graphql->call('query { KBArticle(id: ' . $article_id . ') { id name share_token { token } } }', function ($call) {
-            $call->response
-                ->isOK()
-                ->data('KBArticle', function ($data) {
-                    $this->assertCount(1, $data);
-                    $this->assertNotEmpty($data[0]['share_token']['token']);
-                });
+        $this->graphql->call('query { ShareToken { id token } }', function ($call) {
+            // No ShareToken query should be exposed
+            $call->response->isCompletelyError();
         });
     }
 
@@ -336,13 +322,12 @@ class KnowbaseControllerTest extends HLAPITestCase
             $call->response->isOK();
         });
 
-        $this->graphql->call('query { KBArticle(id: ' . $article_id . ') { id name share_token { id token } } }', function ($call) use (&$token) {
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $article_id . '/ShareToken'), function ($call) use (&$token) {
             $call->response
                 ->isOK()
-                ->data('KBArticle', function ($data) use (&$token) {
-                    $this->assertCount(1, $data);
-                    $this->assertNotEmpty($data[0]['share_token']['token']);
-                    $token = $data[0]['share_token']['token'];
+                ->jsonContent(function ($content) use (&$token) {
+                    $this->assertArrayHasKey('token', $content);
+                    $token = $content['token'];
                 });
         });
 

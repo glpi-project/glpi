@@ -10580,17 +10580,6 @@
                 },
                 "is_favorite": {
                     "type": "boolean"
-                },
-                "share_token": {
-                    "type": "object",
-                    "x-full-schema": "ShareToken",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64",
-                            "readOnly": true
-                        }
-                    }
                 }
             }
         },
