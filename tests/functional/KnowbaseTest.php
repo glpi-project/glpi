@@ -321,4 +321,32 @@ class KnowbaseTest extends DbTestCase
         ];
         $this->assertEquals($expected, $tree_with_public_faq);
     }
+
+    public function testDuplicateCategoryIsHandledGracefully(): void
+    {
+        $this->login();
+
+        $category = new \KnowbaseItemCategory();
+
+        // Create the initial category — this should succeed
+        $category_id = $category->add([
+            'name'        => 'Grafana',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $category_id);
+
+        // Attempt to create a duplicate — should return false instead of throwing a RuntimeException
+        $duplicate_id = $category->add([
+            'name'        => 'Grafana',
+            'entities_id' => 0,
+        ]);
+        $this->assertFalse($duplicate_id, 'Duplicate KnowbaseItemCategory should not be inserted');
+
+        // A user-facing error message should have been queued
+        $expected_message = sprintf(
+            __('Item not added: a duplicate already exists (%s)'),
+            sprintf(__('%1$s - %2$s'), \KnowbaseItemCategory::getTypeName(1), 'Grafana')
+        );
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+    }
 }
