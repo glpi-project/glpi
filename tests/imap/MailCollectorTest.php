@@ -415,6 +415,7 @@ class MailCollectorTest extends DbTestCase
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $ticket_id = getItemByTypeName('Ticket', '_ticket01', true);
+        $padded_ticket_id = sprintf('%07d', $ticket_id);
         $ticket_notif = new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01'));
 
         $soft_id   = getItemByTypeName('SoftwareLicense', '_test_softlic_1', true);
@@ -628,19 +629,37 @@ class MailCollectorTest extends DbTestCase
                 'expected_items_id' => null,
                 'accepted'          => false,
             ],
-            // Subject fallback - GLPI tag found, ignoring a foreign `[Ticket#...]` reference
+                        // Subject fallback - single GLPI tag, foreign `[Ticket#...]` (no space) ignored
             [
                 'headers'           => [
-                    'subject' => "Re: [GLPI #{$ticket_id}] [Ticket#2026072803024161] Foo",
+                    'subject' => "Re: [GLPI #{$padded_ticket_id}] [Ticket#2026072803024161] Foo",
                 ],
                 'expected_itemtype' => Ticket::class,
                 'expected_items_id' => $ticket_id,
                 'accepted'          => true,
             ],
-            // Subject fallback - GLPI tag found, ignoring a foreign `[Case #xxxx]` reference placed before it
+            // Subject fallback - a too-short foreign `[Case #4711]` reference is ignored (< 7 digits)
             [
                 'headers'           => [
-                    'subject' => "[Case #4711] Re: [GLPI #{$ticket_id}] Foo",
+                    'subject' => "[Case #4711] Re: [GLPI #{$padded_ticket_id}] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
+            // Subject fallback - multiple matches: the configured tag (GLPI) wins over a foreign one
+            [
+                'headers'           => [
+                    'subject' => "[Foreign #1234567] Re: [GLPI #{$padded_ticket_id}] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
+            // Subject fallback - multiple matches, none with a known tag: falls back to the last one
+            [
+                'headers'           => [
+                    'subject' => "[Foreign #7777777] Re: [Unknown #{$padded_ticket_id}] Foo",
                 ],
                 'expected_itemtype' => Ticket::class,
                 'expected_items_id' => $ticket_id,
