@@ -340,13 +340,8 @@ class Auth extends CommonGLPI
 
         if (isset($tmp['algo']) && $tmp['algo']) {
             $ok = password_verify($pass, $hash);
-        } elseif (strlen($hash) == 32) {
-            $ok = md5($pass) === $hash;
-        } elseif (strlen($hash) == 40) {
-            $ok = sha1($pass) === $hash;
         } else {
-            $salt = substr($hash, 0, 8);
-            $ok = ($salt . sha1($salt . $pass) === $hash);
+            throw new \RuntimeException(__('For security reasons, your password has expired. Please contact your administrator to reset it.'));
         }
 
         return $ok;
