@@ -1483,7 +1483,7 @@ class MailCollector extends CommonDBTM
         }
         // Use the whole recipients list (not just the first one) so that rule criteria
         // matching against the "To" address work regardless of the recipient's position.
-        if (!empty($tos)) {
+        if ($tos !== []) {
             $to = implode(', ', $tos);
         }
 

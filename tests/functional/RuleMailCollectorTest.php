@@ -67,7 +67,7 @@ class RuleMailCollectorTest extends DbTestCase
         $this->checkInput($group, $group_id, $group_input);
 
         // Create rule
-        $rule     = new \RuleMailCollector();
+        $rule     = new RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => 'test assign entity based on group',
             'match'        => 'AND',
@@ -164,7 +164,7 @@ class RuleMailCollectorTest extends DbTestCase
         $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
 
         // Create rule
-        $rule     = new \RuleMailCollector();
+        $rule     = new RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => 'test assign entity based on known domain',
             'match'        => 'AND',
@@ -253,7 +253,7 @@ class RuleMailCollectorTest extends DbTestCase
         $this->checkInput($group, $group_id, $group_input);
 
         // Create rule
-        $rule     = new \RuleMailCollector();
+        $rule     = new RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => 'test assign ExternalID based on subject',
             'match'        => 'AND',
@@ -414,7 +414,7 @@ class RuleMailCollectorTest extends DbTestCase
         $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
 
         // Create rule
-        $rule     = new \RuleMailCollector();
+        $rule     = new RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => __FUNCTION__,
             'match'        => $rule_param['match'],
