@@ -46,7 +46,6 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Security\ShareTokenManager;
-use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
 use Group;
 use Group_KnowbaseItem;
