@@ -799,6 +799,10 @@ $RELATION = [
         'glpi_networkportwifis'         => 'items_devicenetworkcards_id',
     ],
 
+    'glpi_items_devicepowersupplies' => [
+        'glpi_plugs' => 'items_devicepowersupplies_id',
+    ],
+
     'glpi_itilcategories' => [
         'glpi_changes'        => 'itilcategories_id',
         'glpi_itilcategories' => 'itilcategories_id',
