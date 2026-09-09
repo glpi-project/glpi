@@ -201,8 +201,14 @@ body.in_modal .kb-article {
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     font-weight: 400;
+    background-color: var(--tblr-bg-surface-secondary);
+    color: var(--tblr-body-color);
     border: 1px solid var(--tblr-border-color);
     transition: all 0.2s ease;
+
+    a {
+        color: inherit;
+    }
 
     .kb-unlink-item {
         &:hover {
@@ -218,10 +224,6 @@ body.in_modal .kb-article {
 
     &:hover {
         border-color: var(--tblr-secondary);
-
-        a {
-            color: var(--tblr-dark);
-        }
     }
 }
 
