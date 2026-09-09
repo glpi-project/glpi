@@ -282,7 +282,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
 
         // For recursive KB articles, it should use getSonsOf()
         $expected_entities = getSonsOf('glpi_entities', 123);
-        $expected_json = json_encode(array_values($expected_entities));
+        $expected_json = json_encode($expected_entities);
 
         $this->assertStringContainsString('entity_restrict:' . $expected_json, $output, 'Dropdown should restrict to child entities for recursive KB articles.');
     }
