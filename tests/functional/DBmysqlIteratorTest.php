@@ -939,6 +939,13 @@ class DBmysqlIteratorTest extends DbTestCase
         ]);
         $this->assertSame('SELECT * FROM `foo` GROUP BY CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
         $this->assertEquals([7], $it->getValues());
+
+        $it = $this->it->execute([
+            'FROM'    => 'foo',
+            'GROUPBY' => ['id', new QueryExpression('CASE WHEN `bar` = ? THEN 1 END', values: [42], alias: 'broken')],
+        ]);
+        $this->assertSame('SELECT * FROM `foo` GROUP BY `id`, CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
+        $this->assertEquals([42], $it->getValues());
     }
 
     public function testNoFieldGroup()

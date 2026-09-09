@@ -386,6 +386,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $groupby = [];
         foreach ($fields as $field) {
             if ($field instanceof QueryExpression) {
+                $field->withAlias(false);
                 $this->values = array_merge($this->values, $field->getParams());
                 $groupby[] = $field->getValue();
             } else {
