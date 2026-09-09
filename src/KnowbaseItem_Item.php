@@ -204,6 +204,15 @@ class KnowbaseItem_Item extends CommonDBRelation
         $entity_restrict = -1;
         $checkright = true;
 
+        if ($item instanceof KnowbaseItem && isset($item->fields['entities_id'])) {
+            $is_recursive = $item->fields['is_recursive'] ?? 0;
+            if ($is_recursive) {
+                $entity_restrict = getSonsOf('glpi_entities', $item->fields['entities_id']);
+            } else {
+                $entity_restrict = $item->fields['entities_id'];
+            }
+        }
+
         return Dropdown::showSelectItemFromItemtypes([
             'items_id_name'   => $name,
             'entity_restrict' => $entity_restrict,
