@@ -7,7 +7,7 @@ ignore_pr_authors = ["\\[bot\\]$"] # GitHub reserves the suffix for apps
 ignore_pr_labels = ["no-ai-review"]
 
 [github_app]
-pr_commands = ["/qodo_review"] # default also runs /agentic_describe
+pr_commands = ["/agentic_review"] # default also runs /agentic_describe
 
 [review_agent]
 comments_routing_preset = "custom"
