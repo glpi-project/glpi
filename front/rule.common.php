@@ -36,127 +36,26 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 /**
- * Following variables have to be defined before inclusion of this file:
- * @var RuleCollection $rulecollection
+ * @var mixed $this
+ * @var mixed $rulecollection
  */
 
-if (!isset($_GET["id"])) {
-    $_GET["id"] = "";
+use Glpi\Controller\LegacyFileLoadController;
+use Glpi\Controller\Rule\RuleListController;
+
+if (!($this instanceof LegacyFileLoadController) || !($rulecollection instanceof RuleCollection)) {
+    throw new LogicException('$rulecollection must be an instance of RuleCollection || Not in the context of a LegacyFileLoadController');
 }
 
-$rulecollection->checkGlobal(READ);
+Toolbox::deprecated(\sprintf(
+    'Requiring legacy file "' . __FILE__ . '" files is deprecated. You can safely remove the %s file and use the new `%s` route, dedicated for rules.',
+    debug_backtrace()[0]['file'] ?? 'including',
+    'rules.list',
+));
 
-if (isset($_POST["action"])) {
-    $rulecollection->checkGlobal(UPDATE);
-    $rulecollection->changeRuleOrder($_POST["id"], $_POST["action"], $_POST['condition']);
-    Html::back();
-} elseif (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
-    //reinitialize current rules
-    $ruleclass = $rulecollection->getRuleClass();
-    if ($ruleclass->initRules()) {
-        Session::addMessageAfterRedirect(
-            htmlescape(sprintf(
-                //TRANS: first parameter is the rule type name
-                __('%1$s has been reset.'),
-                $rulecollection->getTitle()
-            ))
-        );
-    } else {
-        Session::addMessageAfterRedirect(
-            htmlescape(sprintf(
-                //TRANS: first parameter is the rule type name
-                __('%1$s reset failed.'),
-                $rulecollection->getTitle()
-            )),
-            false,
-            ERROR
-        );
-    }
-    Html::back();
-} elseif (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
-    $rulecollection->checkGlobal(UPDATE);
+$request = $this->getRequest(); // @phpstan-ignore method.private
+$request->attributes->set('class', $rulecollection::getRuleClassName());
 
-    // Current time
-    $start = (int) round(microtime(true));
-
-    // Reload every X seconds to refresh the progress bar
-    $max = $start + 5;
-
-    Html::header(
-        Rule::getTypeName(Session::getPluralNumber()),
-        '',
-        "admin",
-        $rulecollection->menu_type,
-        $rulecollection->menu_option
-    );
-
-    if (
-        !(isset($_POST['replay_confirm']) || isset($_GET['offset']))
-        && $rulecollection->warningBeforeReplayRulesOnExistingDB()
-    ) {
-        Html::footer();
-        return;
-    }
-
-    $rule_class = $rulecollection->getRuleClassName();
-
-    if (array_key_exists('offset', $_GET)) {
-        // $_GET['offset'] will exists only when page is reloaded to update the progress bar
-        $manufacturer   = (int) ($_GET['manufacturer']);
-        $current_offset = (int) $_GET['offset'];
-        $total_items    = (int) $_GET['total'];
-
-        $start = $_GET['start']; // global start for stat
-    } else {
-        $manufacturer   = (int) ($_POST['manufacturer'] ?? 0);
-        $current_offset = 0;
-        $total_items    = $rulecollection->countTotalItemsForRulesReplay(['manufacturer' => $manufacturer]);
-    }
-
-    if ($total_items === 0) {
-        // Nothing to do
-        Session::addMessageAfterRedirect(__s('No items found.'));
-        Html::redirect($rule_class::getSearchURL());
-    }
-
-    echo "<div class='position-relative fw-bold'>" . htmlescape($rulecollection->getTitle()) . "<br>"
-         . __s('Replay the rules dictionary') . "</div>";
-    echo "<div class='text-center mb-3'>";
-    echo Html::getProgressBar(
-        $current_offset / $total_items * 100,
-        __('Work in progress...')
-    );
-    echo '</div>';
-    Html::footer();
-    flush(); // force displaying the output
-
-    $offset = $rulecollection->replayRulesOnExistingDB($current_offset, $max, [], ['manufacturer' => $manufacturer]);
-
-    if ($offset < 0) {
-        // Work ended
-        $duration = round(microtime(true) - $start);
-        Session::addMessageAfterRedirect(sprintf(
-            __s('Task completed in %s'),
-            htmlescape(Html::timestampToString($duration))
-        ));
-        Html::redirect($rule_class::getSearchURL());
-    } else {
-        // Need more work
-        Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$offset&total=$total_items&manufacturer="
-                     . "$manufacturer");
-    }
-}
-
-Html::header(
-    Rule::getTypeName(Session::getPluralNumber()),
-    '',
-    'admin',
-    $rulecollection->menu_type,
-    $rulecollection->menu_option
-);
-
-$rulecollection->display([
-    'display_criterias' => true,
-    'display_actions'   => true,
-]);
-Html::footer();
+$controller = new RuleListController();
+$response = $controller($request);
+$response->send();
