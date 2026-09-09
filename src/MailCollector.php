@@ -1477,13 +1477,14 @@ class MailCollector extends CommonDBTM
                     if ($email === null) {
                         continue;
                     }
-                    $mailto = Toolbox::strtolower($email);
-                    if ($mailto === $this->fields['name']) {
-                        $to = $mailto;
-                    }
-                    $tos[] = $mailto;
+                    $tos[] = Toolbox::strtolower($email);
                 }
             }
+        }
+        // Use the whole recipients list (not just the first one) so that rule criteria
+        // matching against the "To" address work regardless of the recipient's position.
+        if (!empty($tos)) {
+            $to = implode(', ', $tos);
         }
 
         $ccs     = [];

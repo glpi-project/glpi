@@ -1750,6 +1750,37 @@ HTML,
         );
     }
 
+    /**
+     * See https://github.com/glpi-project/glpi/issues/20892
+     * The "To" header value used for rule criteria matching must contain every
+     * recipient, not just the first one, otherwise a "contains" criterion fails
+     * to match when the targeted address is not listed first.
+     */
+    public function testGetHeadersToContainsAllRecipients()
+    {
+        $raw = implode("\r\n", [
+            'From: sender@example.com',
+            'To: First Recipient <first@glpi-project.org>, Second Recipient <second@glpi-project.org>',
+            'Subject: Multiple recipients',
+            'Date: ' . date('r'),
+            'Message-ID: <multi-to-test@glpi-project.org>',
+            '',
+            'Body',
+            '',
+        ]);
+
+        $message = new Message(['raw' => $raw]);
+        $collector = new \MailCollector();
+        $headers = $collector->getHeaders($message);
+
+        $this->assertStringContainsString('first@glpi-project.org', $headers['to']);
+        $this->assertStringContainsString('second@glpi-project.org', $headers['to']);
+        $this->assertSame(
+            ['first@glpi-project.org', 'second@glpi-project.org'],
+            $headers['tos']
+        );
+    }
+
     public static function decodedContentProvider(): iterable
     {
         // Charset handled by mbstring.
