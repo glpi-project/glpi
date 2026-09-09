@@ -34,6 +34,7 @@ Incomplete reports are returned once and **closed** if not completed within seve
 5. Working proof of concept.
 6. Impact and preconditions.
 7. AI disclosure: which tools, if any, you used to find or draft the report.
+8. An realistic estimated cvss scoring
 
 Group related findings into a single report. Multiple instances of the same vulnerability class — for example XSS across different fields, or missing capability checks on related endpoints — belong in one submission, not several.
 
