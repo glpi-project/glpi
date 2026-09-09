@@ -183,26 +183,6 @@ class AuthTest extends DbTestCase
         $auth = new \Auth();
         $_SESSION["glpiextauth"] = false; //required to prevent undefined array index
 
-        //create a user - with a md5 password
-        $user = $this->createItem(User::class, ['name' => 'MD5 Passwd test', 'password' => md5('dapass')]);
-        $user->getFromDB($user->getID());
-        $this->assertSame('6902587896395f6b27f5aa550f69008a', $user->fields['password']);
-
-        //log in should update password to default PHP (BCRYPT currently)
-        $this->assertTrue($auth->login('MD5 Passwd test', 'dapass'));
-        $user->getFromDB($user->getID());
-        $this->assertStringStartsWith('$2y$', $user->fields['password']);
-
-        //create a user - with a sha1 password
-        $user = $this->createItem(User::class, ['name' => 'SHA1 Passwd test', 'password' => sha1('dapass')]);
-        $user->getFromDB($user->getID());
-        $this->assertSame('a5c805c5e55c0ce85e515e34ff9ae0b6a94d142a', $user->fields['password']);
-
-        //log in should update password to default PHP (BCRYPT currently)
-        $this->assertTrue($auth->login('SHA1 Passwd test', 'dapass'));
-        $user->getFromDB($user->getID());
-        $this->assertStringStartsWith('$2y$', $user->fields['password']);
-
         //create a user - with a low cost password
         $user = $this->createItem(User::class, ['name' => 'BCRYPT low cost Passwd test', 'password' => password_hash('dapass', PASSWORD_DEFAULT, ['cost' => 5])]);
         $user->getFromDB($user->getID());
@@ -214,6 +194,73 @@ class AuthTest extends DbTestCase
         $new_cost = null;
         preg_match('/\$2y\$(\d+)\$.+/', $user->fields['password'], $new_cost);
         $this->assertGreaterThan(5, (int) $new_cost[1]);
+    }
+
+    public function testCheckPasswordWithCurrentHash(): void
+    {
+        $hash = \Auth::getPasswordHash('mypassword');
+
+        $this->assertTrue(\Auth::checkPassword('mypassword', $hash));
+        $this->assertFalse(\Auth::checkPassword('wrongpassword', $hash));
+    }
+
+    public function testCheckPasswordNeverValidatesLegacyHashes(): void
+    {
+        $this->assertFalse(\Auth::checkPassword('mypassword', md5('mypassword')));
+        $this->assertFalse(\Auth::checkPassword('mypassword', sha1('mypassword')));
+    }
+
+    public static function outdatedPasswordHashProvider(): iterable
+    {
+        // Legacy
+        yield 'md5' => [md5('mypassword')];
+        yield 'sha1' => [sha1('mypassword')];
+        // Legacy salted sha1
+        yield 'salted sha1' => ['abcdefgh' . sha1('abcdefgh' . 'mypassword')];
+    }
+
+    /**
+     * A user password has never been migrated from the 0.85 hashing scheme
+     * @dataProvider outdatedPasswordHashProvider
+     */
+    public function testLoginWithOutdatedPasswordHashIsRejected(string $hash): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+
+        $username = 'test_outdated_password_' . mt_rand();
+        $user = new User();
+        $user_id = (int) $user->add([
+            'name'         => $username,
+            'password'     => 'mypassword',
+            'password2'    => 'mypassword',
+            '_profiles_id' => 1,
+        ]);
+        $this->assertGreaterThan(0, $user_id);
+
+        // Write the legacy hash directly in DB, as User::update() would rehash it.
+        $this->assertTrue(
+            $DB->update(
+                User::getTable(),
+                ['password' => $hash],
+                ['id' => $user_id]
+            )
+        );
+
+        $this->logOut();
+
+        $auth = new \Auth();
+        $this->assertFalse($auth->login($username, 'mypassword', true));
+        $this->assertContains(
+            __('For security reasons, your password has expired. Please contact your administrator to reset it.'),
+            $auth->getErrors()
+        );
+
+        // The stored hash must remain untouched (not silently rehashed).
+        $this->assertTrue($user->getFromDB($user_id));
+        $this->assertSame($hash, $user->fields['password']);
     }
 
     public function testRememberMeLastLogin(): void
