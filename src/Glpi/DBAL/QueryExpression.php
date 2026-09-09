@@ -112,8 +112,9 @@ class QueryExpression
         return $this;
     }
 
-    public function withAlias(bool $with = true)
+    public function withAlias(bool $with = true): static
     {
         $this->with_alias = $with;
+        return $this;
     }
 }
