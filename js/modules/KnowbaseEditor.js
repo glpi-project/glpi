@@ -43,6 +43,7 @@ import { FileUploader } from '/js/modules/FileUploader.js';
 import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors } from '/js/modules/TipTap/CommentHighlightExtension.js';
 import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
 import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
+import { showLinkDialog } from '/js/modules/TipTap/LinkDialog.js';
 
 // Used to hide the bubble menu explicitly when focus leaves it or the editor.
 const BUBBLE_MENU_PLUGIN_KEY = 'kb-editor-bubble-menu';
@@ -135,6 +136,7 @@ class KnowbaseEditor {
                 link: {
                     openOnClick: false,
                     HTMLAttributes: {
+                        target: null,
                         rel: 'noopener noreferrer',
                     },
                 },
@@ -510,14 +512,7 @@ class KnowbaseEditor {
         // No `.focus()` in these chains: keeping DOM focus wherever it
         // already is lets a keyboard user chain another toolbar action.
         if (special === 'link') {
-            const previousUrl = this.#editor.getAttributes('link').href || '';
-            const url = window.prompt(__('Enter URL'), previousUrl);
-            if (url === null) return; // Cancelled
-            if (url === '') {
-                this.#editor.chain().unsetLink().run();
-            } else {
-                this.#editor.chain().setLink({ href: url }).run();
-            }
+            showLinkDialog(this.#editor);
         } else if (special === 'heading') {
             this.#editor.chain().toggleHeading({ level }).run();
         } else if (special === 'comment') {

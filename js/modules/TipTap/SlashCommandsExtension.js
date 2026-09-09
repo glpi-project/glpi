@@ -33,6 +33,7 @@
 /* global TiptapCore, TiptapSuggestion, FloatingUI */
 
 import { showVideoDialog } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { createEditorDialog, createDialogField } from '/js/modules/TipTap/EditorDialog.js';
 
 /**
  * Slash commands extension for Tiptap editor
@@ -47,60 +48,42 @@ const { Extension } = TiptapCore;
  * @param {object|null} existing_attrs - Existing image attributes for editing (null for new)
  */
 function showImageDialog(editor, existing_attrs = null) {
-    const overlay = document.createElement('div');
-    overlay.className = 'image-dialog-overlay';
-
-    const dialog = document.createElement('div');
-    dialog.className = 'image-dialog';
-
-    const title = document.createElement('div');
-    title.className = 'image-dialog-header';
-    title.innerHTML = `<span>${__('Insert/Edit Image')}</span><button type="button" class="image-dialog-close" aria-label="${__('Close')}"><i class="ti ti-x" aria-hidden="true"></i></button>`;
-    dialog.appendChild(title);
-
-    const body = document.createElement('div');
-    body.className = 'image-dialog-body';
-
     const uid = Math.random().toString(36).slice(2, 9);
 
-    // Source field
-    const source_group = createField(__('Source'), 'text', `image-src-${uid}`, existing_attrs?.src || '');
-    body.appendChild(source_group);
+    const source_group = createDialogField(__('Source'), 'text', `image-src-${uid}`, existing_attrs?.src || '');
+    const src_input = source_group.querySelector('input');
 
-    // Alt field
-    const alt_group = createField(__('Alternative description'), 'text', `image-alt-${uid}`, existing_attrs?.alt || '');
-    body.appendChild(alt_group);
+    const alt_group = createDialogField(__('Alternative description'), 'text', `image-alt-${uid}`, existing_attrs?.alt || '');
+    const alt_input = alt_group.querySelector('input');
 
-    // Width / Height row
-    const size_row = document.createElement('div');
-    size_row.className = 'image-dialog-size-row';
-
-    const width_group = createField(__('Width'), 'number', `image-width-${uid}`, existing_attrs?.width || '');
-    const height_group = createField(__('Height'), 'number', `image-height-${uid}`, existing_attrs?.height || '');
+    const width_group = createDialogField(__('Width'), 'number', `image-width-${uid}`, existing_attrs?.width || '');
+    const height_group = createDialogField(__('Height'), 'number', `image-height-${uid}`, existing_attrs?.height || '');
+    const width_input = width_group.querySelector('input');
+    const height_input = height_group.querySelector('input');
 
     const lock_btn = document.createElement('button');
     lock_btn.type = 'button';
     lock_btn.className = 'image-dialog-lock is-locked';
     lock_btn.title = __('Constrain proportions');
     lock_btn.innerHTML = '<i class="ti ti-lock" aria-hidden="true"></i>';
+
     let ratio_locked = true;
     lock_btn.addEventListener('click', () => {
         ratio_locked = !ratio_locked;
         lock_btn.classList.toggle('is-locked', ratio_locked);
-        lock_btn.innerHTML = ratio_locked ? '<i class="ti ti-lock" aria-hidden="true"></i>' : '<i class="ti ti-lock-open" aria-hidden="true"></i>';
+        lock_btn.innerHTML = ratio_locked
+            ? '<i class="ti ti-lock" aria-hidden="true"></i>'
+            : '<i class="ti ti-lock-open" aria-hidden="true"></i>';
     });
 
+    const size_row = document.createElement('div');
+    size_row.className = 'image-dialog-size-row';
     size_row.appendChild(width_group);
     size_row.appendChild(lock_btn);
     size_row.appendChild(height_group);
-    body.appendChild(size_row);
 
     // Ratio tracking
     let aspect_ratio = null;
-    const width_input = width_group.querySelector('input');
-    const height_input = height_group.querySelector('input');
-
-    const src_input = source_group.querySelector('input');
     src_input.addEventListener('change', () => {
         // Try to load image to get natural dimensions
         const img = new Image();
@@ -125,109 +108,39 @@ function showImageDialog(editor, existing_attrs = null) {
         }
     });
 
-    dialog.appendChild(body);
+    const { body } = createEditorDialog({
+        editor,
+        title: __('Insert/Edit Image'),
+        confirmLabel: __('Save'),
+        onConfirm: ({ close }) => {
+            const src = src_input.value.trim();
+            if (!src) {
+                src_input.focus();
+                return;
+            }
 
-    // Footer
-    const footer = document.createElement('div');
-    footer.className = 'image-dialog-footer';
+            const attrs = { src };
+            const alt = alt_input.value.trim();
+            if (alt) {
+                attrs.alt = alt;
+            }
+            if (width_input.value) {
+                attrs.width = parseInt(width_input.value, 10);
+            }
+            if (height_input.value) {
+                attrs.height = parseInt(height_input.value, 10);
+            }
 
-    const cancel_btn = document.createElement('button');
-    cancel_btn.type = 'button';
-    cancel_btn.className = 'btn btn-outline-secondary';
-    cancel_btn.textContent = __('Cancel');
+            editor.chain().focus().setImage(attrs).run();
+            close();
+        },
+    });
 
-    const save_btn = document.createElement('button');
-    save_btn.type = 'button';
-    save_btn.className = 'btn btn-primary';
-    save_btn.textContent = __('Save');
+    body.appendChild(source_group);
+    body.appendChild(alt_group);
+    body.appendChild(size_row);
 
-    footer.appendChild(cancel_btn);
-    footer.appendChild(save_btn);
-    dialog.appendChild(footer);
-
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-
-    // Focus the source input
     src_input.focus();
-
-    const alt_input = alt_group.querySelector('input');
-
-    const close = () => {
-        document.removeEventListener('keydown', handle_keydown);
-        overlay.remove();
-        editor.commands.focus();
-    };
-
-    const handle_keydown = (e) => {
-        if (e.key === 'Escape') {
-            close();
-        }
-    };
-    document.addEventListener('keydown', handle_keydown);
-
-    cancel_btn.addEventListener('click', close);
-    title.querySelector('.image-dialog-close').addEventListener('click', close);
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            close();
-        }
-    });
-
-    save_btn.addEventListener('click', () => {
-        const src = src_input.value.trim();
-        if (!src) {
-            src_input.focus();
-            return;
-        }
-
-        const attrs = { src };
-        const alt = alt_input.value.trim();
-        if (alt) {
-            attrs.alt = alt;
-        }
-        const width = width_input.value;
-        const height = height_input.value;
-        if (width) {
-            attrs.width = parseInt(width, 10);
-        }
-        if (height) {
-            attrs.height = parseInt(height, 10);
-        }
-
-        editor.chain().focus().setImage(attrs).run();
-        close();
-    });
-}
-
-/**
- * Create a form field group
- * @param {string} label_text
- * @param {string} type
- * @param {string} id
- * @param {string} value
- * @returns {HTMLElement}
- */
-function createField(label_text, type, id, value) {
-    const group = document.createElement('div');
-    group.className = 'image-dialog-field';
-
-    const label = document.createElement('label');
-    label.htmlFor = id;
-    label.textContent = label_text;
-    group.appendChild(label);
-
-    const input = document.createElement('input');
-    input.type = type;
-    input.id = id;
-    input.className = 'form-control';
-    input.value = value;
-    if (type === 'number') {
-        input.min = '0';
-    }
-    group.appendChild(input);
-
-    return group;
 }
 
 /**

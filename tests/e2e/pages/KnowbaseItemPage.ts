@@ -94,13 +94,17 @@ export class KnowbaseItemPage extends GlpiPage
 
     public get imageDialog(): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- custom TipTap dialog, no ARIA role available
-        return this.page.locator('.image-dialog');
+        return this.page.getByRole('dialog', { name: 'Insert/Edit Image' });
     }
 
     public get videoDialog(): Locator
     {
         return this.page.getByRole('dialog', { name: 'Insert video' });
+    }
+
+    public get linkDialog(): Locator
+    {
+        return this.page.getByRole('dialog', { name: 'Insert/Edit link' });
     }
 
     public get videoEmbedPlaceholders(): Locator
