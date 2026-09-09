@@ -37,9 +37,9 @@ use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\Clonable;
-use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
+use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\preg_match;
 
@@ -652,6 +652,12 @@ class MassiveAction
             ) {
                 //TRANS: select action 'update' (before doing it)
                 $actions[$self_pref . 'update'] = _sx('button', 'Update');
+
+                // Keep the form access-control action next to the standard update action.
+                if ($item instanceof \Glpi\Form\Form) {
+                    $key = \Glpi\Form\Form::class . self::CLASS_ACTION_SEPARATOR . 'access_controls';
+                    $actions[$key] = "<i class='ti ti-key'></i>" . __s('Configure access controls');
+                }
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
                     $actions[$self_pref . 'clone'] = "<i class='ti ti-copy' aria-hidden='true'></i>" . _sx('button', 'Clone');
@@ -1862,9 +1868,6 @@ class MassiveAction
      **/
     public function itemDone($itemtype, $id, $result)
     {
-        /** @var Kernel $kernel */
-        global $kernel;
-
         $this->current_itemtype = (string) $itemtype;
 
         if (!isset($this->done[$itemtype])) {
@@ -1908,7 +1911,7 @@ class MassiveAction
         // Reload every X seconds to refresh the progress bar
         $refresh_delay = 5;
         if ((microtime(true) - $this->start_time) > $refresh_delay) {
-            $request = $kernel->getMainRequest();
+            $request = Request::createFromGlobals();
             Html::redirect($request->getBasePath() . $request->getPathInfo() . '?identifier=' . $this->identifier);
         }
     }
