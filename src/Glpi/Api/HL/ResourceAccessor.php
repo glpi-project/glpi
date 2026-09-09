@@ -473,11 +473,12 @@ final class ResourceAccessor
      */
     public static function getOneByShareToken(array $schema, array $request_attrs, array $request_params, string $token_field = 'token', string $field = 'id'): Response
     {
+        $itemtype = self::getItemtypeFromSchema($schema);
         $token = $request_attrs[$token_field];
         $manager = new ShareTokenManager();
         $shared_item = $manager->grantSessionAccess($token);
 
-        if ($shared_item === null) {
+        if ($itemtype === null || !($shared_item instanceof $itemtype)) {
             return AbstractController::getNotFoundErrorResponse();
         }
 
