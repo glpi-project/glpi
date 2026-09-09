@@ -840,4 +840,31 @@ class DropdownDefinitionTest extends DbTestCase
             $this->assertEquals($expected[$index]['examples'], $category->examples);
         }
     }
+
+    public function testRemoveProfileFromField(): void
+    {
+        $technician_id  = getItemByTypeName(Profile::class, 'Technician', true);
+        $super_admin_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+
+        $definition = $this->initDropdownDefinition(
+            profiles: [
+                $technician_id  => READ,
+                $super_admin_id => ALLSTANDARDRIGHT,
+            ]
+        );
+
+        // Removing a profile that exists removes it from the field
+        $definition->removeProfileFromField($technician_id);
+        $definition->getFromDB($definition->getID());
+        $profiles = $this->callPrivateMethod($definition, 'getDecodedProfilesField');
+        $this->assertArrayNotHasKey($technician_id, $profiles);
+        $this->assertArrayHasKey($super_admin_id, $profiles);
+
+        // Removing a profile that is not in the field is a no-op
+        $definition->removeProfileFromField($technician_id);
+        $definition->getFromDB($definition->getID());
+        $profiles = $this->callPrivateMethod($definition, 'getDecodedProfilesField');
+        $this->assertArrayNotHasKey($technician_id, $profiles);
+        $this->assertArrayHasKey($super_admin_id, $profiles);
+    }
 }
