@@ -3203,7 +3203,14 @@ TWIG, ['label' => $this->getTitle()]);
 
                 foreach ($iterator as $data) {
                     $input['id'] = $data[$fieldid];
-                    $ruleitem->update($input);
+                    // Update the rule through its concrete class, otherwise the history entry
+                    // would be attached to the `Rule` itemtype and would therefore not be
+                    // visible in the history tab of the rule.
+                    $updated_item = $ruleitem;
+                    if ($ruleitem::getTable() === self::getTable()) {
+                        $updated_item = self::getRuleObjectByID($data[$fieldid]) ?? $ruleitem;
+                    }
+                    $updated_item->update($input);
                 }
                 Session::addMessageAfterRedirect(
                     __s('Rules using the object have been disabled.'),
