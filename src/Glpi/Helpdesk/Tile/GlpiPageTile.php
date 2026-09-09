@@ -108,7 +108,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     #[Override]
     public function getIllustration(): string
     {
-        return $this->fields['illustration'] ?? IllustrationManager::DEFAULT_ILLUSTRATION;
+        return ($this->fields['illustration'] ?? '') ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]
