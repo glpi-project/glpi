@@ -83,7 +83,7 @@ final class ItemAsTextConditionHandler implements ConditionHandlerInterface
         if (!$item) {
             return false;
         }
-        $a = $item->getName();
+        $a = $item->getName(['complete' => true]);
 
         // Normalize values
         $a = strtolower(strval($a));
