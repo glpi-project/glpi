@@ -78,7 +78,7 @@ final class MultipleChoiceFromValuesConditionHandler implements
         // During form rendering, applyValueOperator is called to compute items
         // visibility using the question default value, which is stored as a
         // comma separated list of options.
-        if (is_string($a)) {
+        if (is_string($a) && $a !== '') {
             $a = explode(',', $a);
         }
 
