@@ -10580,6 +10580,17 @@
                 },
                 "is_favorite": {
                     "type": "boolean"
+                },
+                "share_token": {
+                    "type": "object",
+                    "x-full-schema": "ShareToken",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        }
+                    }
                 }
             }
         },
@@ -22619,6 +22630,66 @@
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "ShareToken": {
+            "type": "object",
+            "x-itemtype": "Glpi\\ShareToken",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "itemtype": {
+                    "type": "string"
+                },
+                "items_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "token": {
+                    "type": "string",
+                    "readOnly": true,
+                    "maxLength": 255
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "user": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "username": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User"
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "date_expiration": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             }
         },

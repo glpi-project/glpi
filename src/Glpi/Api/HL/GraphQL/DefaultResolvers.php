@@ -142,6 +142,9 @@ class DefaultResolvers
         if (!is_numeric($id)) {
             //See State Visibilities for example why this can happen
             $return_schema = $this->getSchemaForObjectName($info->parentType->name);
+            if (($return_schema['properties'][$field_name]['type'] ?? null) === Schema::TYPE_OBJECT) {
+                return null;
+            }
             $joined_values = [];
             if (!isset($return_schema['properties'][$field_name]['x-itemtype'])) {
                 foreach ($source as $source_field_name => $source_field_value) {
