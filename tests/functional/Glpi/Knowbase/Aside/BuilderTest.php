@@ -34,6 +34,7 @@
 
 namespace tests\unit\Glpi\Knowbase\Aside;
 
+use Entity_KnowbaseItem;
 use Glpi\Knowbase\Aside\Article;
 use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\Aside\Tree;
@@ -399,6 +400,55 @@ final class BuilderTest extends DbTestCase
 
         $this->assertSame([], (new Builder())->buildChildren(0));
         $this->assertSame([], (new Builder())->buildChildren(99999999));
+    }
+
+    /**
+     * A helpdesk reader gets the hierarchy of the articles published to the
+     * FAQ. The root article is never part of the FAQ, so a published parent is
+     * promoted to the top level and keeps its published children under it.
+     */
+    public function testFaqReaderGetsFaqArticlesNestedUnderTheirFaqParent(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $entity = $this->getTestRootEntity(only_id: true);
+        $parent_title = 'FAQ parent ' . __FUNCTION__;
+        $child_title = 'FAQ child ' . __FUNCTION__;
+
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => $parent_title,
+            'answer'      => '<p>Parent</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => $child_title,
+            'answer'      => '<p>Child</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+        foreach ([$parent, $child] as $item) {
+            $this->createItem(Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $item->getID(),
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(Session::haveRight(KnowbaseItem::$rightname, READ));
+
+        $articles = array_column((new Builder())->buildTree()->getArticles(), null, 'title');
+
+        $this->assertArrayHasKey($parent_title, $articles);
+        $this->assertArrayNotHasKey($child_title, $articles);
+        $this->assertSame(
+            [$child_title],
+            array_column($articles[$parent_title]->getChildren(), 'title'),
+        );
     }
 
     /**
