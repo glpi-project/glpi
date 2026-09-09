@@ -54,11 +54,13 @@ class Item_DeviceMemory extends Item_Devices
 
         return [
             'size'   => [
-                'long name'  => sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')),
-                'short name' => __('Size'),
-                'size'       => 10,
-                'id'         => 20,
-                'datatype'   => 'integer',
+                'long name'    => sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')),
+                'short name'   => __('Size'),
+                'display_name' => __('Size'),
+                'display_unit' => 'binary_size',
+                'size'         => 10,
+                'id'           => 20,
+                'datatype'     => 'integer',
             ],
             'serial' => parent::getSpecificities('serial'),
             'otherserial' => parent::getSpecificities('otherserial'),

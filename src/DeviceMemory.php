@@ -52,17 +52,24 @@ class DeviceMemory extends CommonDevice
             [
                 [
                     'name'  => 'size_default',
-                    'label' => __('Size by default'),
+                    'label' => sprintf(__('%1$s (%2$s)'), __('Size by default'), _x('size', 'MiB')),
                     'type'  => 'integer',
                     'min'   => 0,
-                    'unit'  => __('Mio'),
+                    'unit_factors' => [
+                        _x('size', 'MiB') => 1,
+                        _x('size', 'GiB') => 1024,
+                        _x('size', 'TiB') => 1024 ** 2,
+                    ],
                 ],
                 [
                     'name'  => 'frequence',
                     'label' => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
                     'type'  => 'integer',
                     'min'   => 0,
-                    'unit'  => __('MHz'),
+                    'unit_factors' => [
+                        __('MHz') => 1,
+                        __('GHz') => 1000,
+                    ],
                 ],
                 [
                     'name'  => 'devicememorytypes_id',
@@ -125,6 +132,7 @@ class DeviceMemory extends CommonDevice
      **/
     public function prepareInputForAddOrUpdate($input)
     {
+        $input = $this->prepareUnitAwareInput($input);
         foreach (['size_default'] as $field) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
                 $input[$field] = 0;
