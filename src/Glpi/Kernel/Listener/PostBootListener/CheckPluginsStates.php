@@ -36,6 +36,7 @@ namespace Glpi\Kernel\Listener\PostBootListener;
 
 use Config;
 use DBConnection;
+use Glpi\Application\Environment;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
@@ -64,8 +65,25 @@ final readonly class CheckPluginsStates implements EventSubscriberInterface
 
         Profiler::getInstance()->start('CheckPluginsStates::execute', Profiler::CATEGORY_BOOT);
 
+        // Must be done before checking the plugins states, as the state check is responsible for loading
+        // the plugin `setup.php` file, which declares the plugin hooks (`plugin_tester_boot()`, ...).
+        if (Environment::get()->shouldSetupTesterPlugin()) {
+            $this->setupTesterPlugin();
+        }
+
         (new Plugin())->checkStates();
 
         Profiler::getInstance()->stop('CheckPluginsStates::execute');
+    }
+
+    private function setupTesterPlugin(): void
+    {
+        global $DB;
+        $DB->updateOrInsert(table: Plugin::getTable(), params: [
+            'directory' => 'tester',
+            'name'      => 'tester',
+            'state'     => 1,
+            'version'   => '1.0.0',
+        ], where: ['directory' => 'tester']);
     }
 }

@@ -54,6 +54,8 @@ test('Can attach a video to a ticket and download it', async ({ profile, page })
     await page.locator('.sub-documents .pswp-trigger').click();
     // eslint-disable-next-line playwright/no-raw-locators -- PhotoSwipe has no accessible roles
     const download_button = page.locator('.pswp a[download]');
+    // eslint-disable-next-line playwright/no-raw-locators -- PhotoSwipe has no accessible roles
+    await expect(page.locator('.pswp video')).toBeVisible();
 
     const download_promise = page.waitForEvent('download');
     await download_button.click();

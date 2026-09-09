@@ -1,0 +1,14 @@
+Date: Tue, 01 Sep 2026 09:12:00 +0200 (CEST)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <invalid-utf8-body@glpi-project.org>
+Subject: 55 - Invalid UTF-8 body
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+<html>
+<body>
+<p>This message declares the UTF-8 charset but contains invalid bytes: café and pièces jointes.</p>
+</body>
+</html>

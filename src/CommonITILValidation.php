@@ -475,7 +475,7 @@ abstract class CommonITILValidation extends CommonDBChild
                             $user->getName()
                         )),
                         false,
-                        ERROR
+                        WARNING
                     );
                 }
             } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {

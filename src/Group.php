@@ -751,7 +751,7 @@ class Group extends CommonTreeDropdown
                 $show_massive_actions = true;
             } else {
                 // This row cannot have massive actions due to lack of rights.
-                $entry['skip_ma'] = true;
+                $entry['showmassiveactions'] = false;
             }
 
             $assignees = [];

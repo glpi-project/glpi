@@ -455,16 +455,19 @@ class Supplier extends CommonDBTM
             $linkfield = 'consumableitems_id';
         }
 
-        if ($itemtype === Item_DeviceControl::class) {
-            $criteria['INNER JOIN']['glpi_devicecontrols'] = [
+        if (is_a($itemtype, Item_Devices::class, true) && !$item->isField($itemtype::getNameField())) {
+            $devicetype  = $itemtype::getDeviceType();
+            $devicetable = getTableForItemType($devicetype);
+
+            $criteria['INNER JOIN'][$devicetable] = [
                 'ON' => [
-                    'glpi_items_devicecontrols'   => 'devicecontrols_id',
-                    'glpi_devicecontrols'         => 'id',
+                    $itemtable   => $itemtype::$items_id_2,
+                    $devicetable => 'id',
                 ],
             ];
 
-            $linktype = 'DeviceControl';
-            $linkfield = 'devicecontrols_id';
+            $linktype  = $devicetype;
+            $linkfield = $itemtype::$items_id_2;
         }
 
         $linktable = getTableForItemType($linktype);

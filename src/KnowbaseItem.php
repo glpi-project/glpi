@@ -1066,7 +1066,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 $attachments[] = [
                     'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                     'filename' => $downloadlink,
-                    'heading' => $heading_names[$data["documentcategories_id"]],
+                    'headings' => $heading_names[$data["documentcategories_id"]],
                     'assocdate' => $data["assocdate"],
                 ];
             }
