@@ -252,6 +252,41 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $name = $kb_item->getTabNameForItem($ticket3);
         $this->assertSame("Knowledge base", strip_tags($name));
     }
+
+    public function testDropdownAllTypesEntityRestrict()
+    {
+        $this->login();
+
+        $kb = new KnowbaseItem();
+
+        // 1. Test non-recursive KB article
+        $kb->getEmpty();
+        $kb->fields['entities_id'] = 123;
+        $kb->fields['is_recursive'] = 0;
+
+        ob_start();
+        KnowbaseItem_Item::dropdownAllTypes($kb, 'items_id');
+        $output = ob_get_clean();
+
+        // Ensure the dropdown ajax config contains the specific entity ID (unquoted key in JS object literal)
+        $this->assertStringContainsString('entity_restrict:123', $output, 'Dropdown should restrict to exact entity for non-recursive KB articles.');
+
+        // 2. Test recursive KB article
+        $kb->getEmpty();
+        $kb->fields['entities_id'] = 123;
+        $kb->fields['is_recursive'] = 1;
+
+        ob_start();
+        KnowbaseItem_Item::dropdownAllTypes($kb, 'items_id');
+        $output = ob_get_clean();
+
+        // For recursive KB articles, it should use getSonsOf()
+        $expected_entities = getSonsOf('glpi_entities', 123);
+        $expected_json = json_encode(array_values($expected_entities));
+
+        $this->assertStringContainsString('entity_restrict:' . $expected_json, $output, 'Dropdown should restrict to child entities for recursive KB articles.');
+    }
+
     public static function normalizeForDisplayProvider(): iterable
     {
         yield 'empty string is returned as-is' => [
