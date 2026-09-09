@@ -53,6 +53,7 @@ use Group_Item;
 use Infocom;
 use Link;
 use Location;
+use Log;
 use ManualLink;
 use Manufacturer;
 use NetworkPort;
@@ -142,6 +143,33 @@ final class SearchOption implements ArrayAccess
     public function isComputationGroupBy(): bool
     {
         return $this['computationgroupby'] ?? false;
+    }
+
+    /**
+     * Whether a field can be searched in the item's own textual history.
+     * Related objects and computed fields do not share this history mapping.
+     */
+    public static function canSearchHistory(string $itemtype, int|string $field): bool
+    {
+        if (!Log::canView() || !is_subclass_of($itemtype, CommonDBTM::class)) {
+            return false;
+        }
+
+        $item = getItemForItemtype($itemtype);
+        $option = self::getOptionsForItemtype($itemtype)[$field] ?? null;
+        if (!$item || !$item->dohistory || !is_array($option)) {
+            return false;
+        }
+
+        return ($option['table'] ?? null) === $itemtype::getTable()
+            && in_array($option['datatype'] ?? 'string', ['string', 'text', 'itemlink'], true)
+            && (($option['datatype'] ?? '') !== 'itemlink' || $option['field'] === 'name')
+            && $item->isField($option['field'])
+            && !in_array($option['field'], $item->getNonLoggedFields(), true)
+            && !isset($option['computation'])
+            && !isset($option['usehaving'])
+            && empty($option['joinparams'])
+            && empty($option['nosearch']);
     }
 
     /**
