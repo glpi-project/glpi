@@ -557,6 +557,65 @@ class RuleTest extends DbTestCase
         $this->assertFalse($action->getFromDB($action_1));
     }
 
+    public function testCleanForItemCriteriaLogsUnderConcreteRuleType()
+    {
+        $collector     = new \MailCollector();
+        $collectors_id = $collector->add([
+            'name'        => 'Test collector',
+            'host'        => '{imap.example.org/imap/ssl}INBOX',
+            'login'       => 'test',
+            'passwd'      => 'test',
+            'is_active'   => 1,
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, (int) $collectors_id);
+
+        $rule     = new \RuleMailCollector();
+        $rules_id = $rule->add([
+            'name'        => 'Test rule',
+            'sub_type'    => 'RuleMailCollector',
+            'match'       => Rule::AND_MATCHING,
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'condition'   => 0,
+            'description' => '',
+        ]);
+        $this->assertGreaterThan(0, (int) $rules_id);
+
+        $criteria = new \RuleCriteria();
+        $this->assertGreaterThan(0, (int) $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'mailcollector',
+            'condition' => Rule::PATTERN_IS,
+            'pattern'   => $collectors_id,
+        ]));
+
+        // Purging the collector disables the rules using it as a criterion.
+        $this->assertTrue($collector->delete(['id' => $collectors_id], true));
+
+        $this->assertTrue($rule->getFromDB($rules_id));
+        $this->assertSame(0, (int) $rule->fields['is_active']);
+
+        // The deactivation must be traceable from the rule history tab, which only
+        // displays entries logged under the concrete rule type.
+        $is_active_so = 8;
+        $this->assertSame(
+            1,
+            countElementsInTable(
+                'glpi_logs',
+                [
+                    'itemtype'         => 'RuleMailCollector',
+                    'items_id'         => $rules_id,
+                    'id_search_option' => $is_active_so,
+                ]
+            )
+        );
+        $this->assertSame(
+            0,
+            countElementsInTable('glpi_logs', ['itemtype' => 'Rule', 'items_id' => $rules_id])
+        );
+    }
+
     public function testPrepareInputForAdd()
     {
         $rule     = new \RuleRight();
