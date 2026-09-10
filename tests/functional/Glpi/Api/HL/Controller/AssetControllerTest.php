@@ -46,8 +46,6 @@ use Group;
 use Group_Item;
 use Infocom;
 use Item_RemoteManagement;
-use Monitor;
-use NetworkPort;
 use OperatingSystem;
 use OperatingSystemArchitecture;
 use OperatingSystemEdition;

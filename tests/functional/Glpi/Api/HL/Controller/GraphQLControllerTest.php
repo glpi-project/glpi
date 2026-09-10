@@ -177,7 +177,7 @@ class GraphQLControllerTest extends HLAPITestCase
             'is_visible_computer' => 1,
             'is_visible_monitor' => 0,
         ]));
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertGreaterThan(0, $computers_id = $computer->add([
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),

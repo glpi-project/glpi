@@ -34,7 +34,6 @@
 
 namespace Glpi\Api\HL\GraphQL\Error;
 
-use GraphQL\Error\ClientAware;
 use GraphQL\Error\Error;
 use GraphQL\Language\Source;
 

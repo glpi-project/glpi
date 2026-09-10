@@ -257,7 +257,7 @@ EOD,
                         'x-rights-conditions' => [
                             'read' => static function () {
                                 return Session::haveRight(User::$rightname, User::READAUTHENT);
-                            }
+                            },
                         ],
                     ],
                     'title' => self::getDropdownTypeSchema(class: UserTitle::class, full_schema: 'UserTitle') + ['x-version-introduced' => '2.2.0'],
@@ -430,7 +430,7 @@ EOD,
                         'x-rights-conditions' => [
                             'read' => static function () {
                                 return Session::haveRight(User::$rightname, User::READAUTHENT);
-                            }
+                            },
                         ],
                     ],
                     'date_creation' => [

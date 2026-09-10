@@ -122,11 +122,11 @@ class DefaultResolvers
     /**
      * @param mixed $source
      * @param array<string, mixed> $args
-     * @param object $context
+     * @param stdClass $context
      * @param ResolveInfo $info
      * @return array<string, mixed>|Deferred|null
      */
-    public function resolveObjectField(mixed $source, array $args, object $context, ResolveInfo $info): array|Deferred|null
+    public function resolveObjectField(mixed $source, array $args, stdClass $context, ResolveInfo $info): array|Deferred|null
     {
         $fields_requested = array_keys($info->getFieldSelection(1));
         $field_name = $info->fieldName;
@@ -308,11 +308,11 @@ class DefaultResolvers
     /**
      * @param mixed $source
      * @param array<string, mixed> $args
-     * @param object $context
+     * @param stdClass $context
      * @param ResolveInfo $info
      * @return mixed
      */
-    public function resolveScalarField(mixed $source, array $args, object $context, ResolveInfo $info): mixed
+    public function resolveScalarField(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
     {
         $field_name = $info->fieldName;
         $parent_schema = $this->getSchemaForObjectName($info->parentType->name);
@@ -345,10 +345,10 @@ class DefaultResolvers
      * As the field selection in the GraphQL resolve info is not changed, only the fetching of data will be blocked.
      * The fields will still be present in the GraphQL response, but will be null if the user does not have permission to view them.
      * Instead, an error will be added to the context for each field that the user does not have permission to view to inform the user of the issue.
-     * @param array $schema
-     * @param array $requested_fields
+     * @param array<string, mixed> $schema
+     * @param string[] $requested_fields
      * @param stdClass $context
-     * @return array
+     * @return string[]
      */
     private function getValidFieldSelection(array $schema, array $requested_fields, ResolveInfo $info, stdClass $context): array
     {

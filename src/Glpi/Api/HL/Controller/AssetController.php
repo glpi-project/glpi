@@ -685,7 +685,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
                     'x-rights-conditions' => [
-                        'read' => static fn () => Session::haveRight(Infocom::$rightname, READ)
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
                     ],
                 ],
                 'last_inventory_update' => [
@@ -811,7 +811,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
                     'x-rights-conditions' => [
-                        'read' => static fn () => Session::haveRight(Infocom::$rightname, READ)
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
                     ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
@@ -871,7 +871,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
                     'x-rights-conditions' => [
-                        'read' => static fn () => Session::haveRight(Infocom::$rightname, READ)
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
                     ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
@@ -940,7 +940,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
                     'x-rights-conditions' => [
-                        'read' => static fn () => Session::haveRight(Infocom::$rightname, READ)
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
                     ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
@@ -999,7 +999,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'x-version-introduced' => '2.3.0',
                     'x-rights-conditions' => [
-                        'read' => static fn () => Session::haveRight(Infocom::$rightname, READ)
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
                     ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
@@ -1090,7 +1090,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
                     'x-rights-conditions' => [
-                        'read' => static fn () => Session::haveRight(Infocom::$rightname, READ)
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
                     ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
@@ -1614,7 +1614,7 @@ final class AssetController extends AbstractController
                     'minimum' => 0,
                     'x-version-introduced' => '2.3.0',
                     'x-rights-conditions' => [
-                        'read' => static fn () => Session::haveRight(Infocom::$rightname, READ)
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
                     ],
                 ],
             ],
