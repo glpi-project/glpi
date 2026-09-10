@@ -81,7 +81,7 @@ class StatTest extends DbTestCase
             foreach ($types as $type) {
                 yield [
                     'type' => $type,
-                    'param' => $param,
+                    'field' => $param,
                     'expected' => [
                         '2023-01' => 0,
                         '2023-02' => 0,
@@ -111,7 +111,7 @@ class StatTest extends DbTestCase
             foreach ($types_avg as $type_avg) {
                 yield [
                     'type' => $type_avg,
-                    'param' => $param,
+                    'field' => $param,
                     'expected' => [
                         '2023-01' => 0,
                         '2023-02' => 0,
@@ -133,7 +133,7 @@ class StatTest extends DbTestCase
         foreach ($params as $param) {
             yield [
                 'type' => 'inter_avgsatisfaction',
-                'param' => $param,
+                'field' => $param,
                 'expected' => [
                     '2023-01' => 0,
                     '2023-02' => 0,
@@ -156,7 +156,7 @@ class StatTest extends DbTestCase
      * Test constructEntryValues method with all combinations of param and type
      */
     #[DataProvider('constructEntryValuesProvider')]
-    public function testConstructEntryValues($type, $param, $expected)
+    public function testConstructEntryValues($type, $field, $expected)
     {
         $this->login('glpi', 'glpi');
 
@@ -166,25 +166,25 @@ class StatTest extends DbTestCase
         $itemtype = \Ticket::class;
         $begin = '2023-01-01';
         $end = '2023-12-31';
-        $value = getItemByTypeName(\User::class, 'tech', true);
-        $value2 = '';
+        $item_id = getItemByTypeName(\User::class, 'tech', true);
+        $itemtype_2 = '';
         $add_criteria = [];
 
         // Handle parameter-specific value setup
-        switch ($param) {
+        switch ($field) {
             // Set correct value2 for specific params that require it
             case 'device':
-                $value2 = 'DeviceSoundCard';
+                $itemtype_2 = 'DeviceSoundCard';
                 break;
             case 'comp_champ':
-                $value2 = 'OperatingSystem';
+                $itemtype_2 = 'OperatingSystem';
                 break;
             case 'usertitles_id':
                 // Create a user title
                 $title = $this->createItem(\UserTitle::class, [
                     'name' => 'Test Title ' . uniqid(),
                 ]);
-                $value = $title->getID(); // Use the title ID, not the user ID
+                $item_id = $title->getID(); // Use the title ID, not the user ID
                 break;
 
             case 'usercategories_id':
@@ -192,7 +192,7 @@ class StatTest extends DbTestCase
                 $usercat = $this->createItem(\UserCategory::class, [
                     'name' => 'Test User Category ' . uniqid(),
                 ]);
-                $value = $usercat->getID(); // Use the category ID, not the user ID
+                $item_id = $usercat->getID(); // Use the category ID, not the user ID
                 break;
 
             case 'locations_tree':
@@ -201,7 +201,7 @@ class StatTest extends DbTestCase
                     'name' => 'Test Location ' . uniqid(),
                     'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
                 ]);
-                $value = $location->getID(); // Use the location ID
+                $item_id = $location->getID(); // Use the location ID
                 break;
 
             case 'group_tree':
@@ -211,7 +211,7 @@ class StatTest extends DbTestCase
                     'name' => 'Test Group ' . uniqid(),
                     'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
                 ]);
-                $value = $group->getID(); // Use the group ID
+                $item_id = $group->getID(); // Use the group ID
                 break;
 
             case 'suppliers_id_assign':
@@ -220,19 +220,19 @@ class StatTest extends DbTestCase
                     'name' => 'Test Supplier ' . uniqid(),
                     'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
                 ]);
-                $value = $supplier->getID(); // Use the supplier ID
+                $item_id = $supplier->getID(); // Use the supplier ID
                 break;
 
             case 'requesttypes_id':
-                $value = 1; // Web form - this should match the requesttypes_id set in createTestDataForStatistics
+                $item_id = 1; // Web form - this should match the requesttypes_id set in createTestDataForStatistics
                 break;
 
             case 'urgency':
-                $value = 4; // High urgency - this should match the urgency set in createTestDataForStatistics
+                $item_id = 4; // High urgency - this should match the urgency set in createTestDataForStatistics
                 break;
 
             case 'type':
-                $value = \Ticket::INCIDENT_TYPE; // This should match the type set in createTestDataForStatistics
+                $item_id = \Ticket::INCIDENT_TYPE; // This should match the type set in createTestDataForStatistics
                 break;
 
             case 'solutiontypes_id':
@@ -240,12 +240,12 @@ class StatTest extends DbTestCase
                 $soltype = $this->createItem(\SolutionType::class, [
                     'name' => 'Test Solution Type',
                 ]);
-                $value = $soltype->getID(); // Use the solution type ID
+                $item_id = $soltype->getID(); // Use the solution type ID
                 break;
         }
 
         // Create test data based on expected values
-        $ticket = $this->createTestDataForStatistics($param, $value);
+        $ticket = $this->createTestDataForStatistics($field, $item_id);
 
         // Handle different statistic types - tickets need different statuses and dates
         switch ($type) {
@@ -330,7 +330,7 @@ class StatTest extends DbTestCase
         }
 
         // For device and comp_champ tests, we need a computer
-        if (in_array($param, ['device', 'comp_champ'])) {
+        if (in_array($field, ['device', 'comp_champ'])) {
             $computer = $this->createItem(\Computer::class, [
                 'name' => 'Test computer',
                 'entities_id' => 0,
@@ -346,7 +346,7 @@ class StatTest extends DbTestCase
             ]);
 
             // For device test, create a sound card device and link it
-            if ($param === 'device') {
+            if ($field === 'device') {
                 $soundcard = $this->createItem(\DeviceSoundCard::class, [
                     'designation' => 'Test SoundCard',
                     'entities_id' => 0,
@@ -360,11 +360,11 @@ class StatTest extends DbTestCase
                 ]);
 
                 // Update value to match the created device
-                $value = $soundcard_id;
+                $item_id = $soundcard_id;
             }
 
             // For comp_champ test, create an operating system and link it
-            if ($param === 'comp_champ') {
+            if ($field === 'comp_champ') {
                 $os = $this->createItem(\OperatingSystem::class, [
                     'name' => 'Test OS',
                 ]);
@@ -377,35 +377,35 @@ class StatTest extends DbTestCase
                 ]);
 
                 // Update value to match the created OS
-                $value = $os_id;
+                $item_id = $os_id;
             }
         }
 
         // For group-related tests, assign groups and use a consistent ID
-        if (strpos($param, 'group') !== false && $ticket->getID()) {
-            $value = $this->createTestGroup($ticket->getID(), $param);
+        if (str_contains($field, 'group') && $ticket->getID()) {
+            $item_id = $this->createTestGroup($ticket->getID(), $field);
         }
 
         // For supplier tests, assign suppliers and get the ID
-        if ($param === 'suppliers_id_assign' && $ticket->getID()) {
-            $value = $this->createTestSupplier($ticket->getID());
+        if ($field === 'suppliers_id_assign' && $ticket->getID()) {
+            $item_id = $this->createTestSupplier($ticket->getID());
         }
 
         // For category tests, assign category and get the ID
-        if (strpos($param, 'itilcategories') !== false && $ticket->getID()) {
-            $value = $this->updateTicketCategory($ticket->getID());
+        if (str_contains($field, 'itilcategories') && $ticket->getID()) {
+            $item_id = $this->updateTicketCategory($ticket->getID());
             // Assign category to a ticket
             $this->updateItem(\Ticket::class, $ticket->getID(), [
-                'itilcategories_id' => $value,
+                'itilcategories_id' => $item_id,
             ]);
         }
 
         // For location tests, assign location and get the ID
-        if (strpos($param, 'locations') !== false && $ticket->getID()) {
-            $value = $this->addTicketLocation($ticket->getID());
+        if (str_contains($field, 'locations') && $ticket->getID()) {
+            $item_id = $this->addTicketLocation($ticket->getID());
             // Assign location to a ticket
             $this->updateItem(\Ticket::class, $ticket->getID(), [
-                'locations_id' => $value,
+                'locations_id' => $item_id,
             ]);
         }
 
@@ -415,22 +415,20 @@ class StatTest extends DbTestCase
             $type,
             $begin,
             $end,
-            $param,
-            $value,
-            $value2,
+            $field,
+            $item_id,
+            $itemtype_2,
             $add_criteria
         );
 
         // Instead of exact comparison, just verify the structure matches expected keys
-        $this->assertSame($expected, $result);
+        $this->assertSame($expected, $result, "Failed for type: $type, field: $field");
     }
 
     /**
      * Create test data for statistics
      * @param string $param Parameter type
-     * @param array $expected Expected values
      * @param mixed $value Parameter value
-     * @param mixed $value2 Secondary parameter value
      * @return \Ticket $ticket
      */
     private function createTestDataForStatistics($param, $value)
@@ -483,14 +481,10 @@ class StatTest extends DbTestCase
         switch ($param) {
             case 'technician':
             case 'technician_followup':
-                $this->assignExistingUserToTicket($tickets_id, $param, $value);
-                break;
-
             case 'user':
             case 'users_id_recipient':
                 $this->assignExistingUserToTicket($tickets_id, $param, $value);
                 break;
-
             case 'usertitles_id':
                 // The $value here is actually the title ID, so create user with this title
                 $titled_user = $this->createItem(\User::class, [
@@ -519,7 +513,7 @@ class StatTest extends DbTestCase
             case 'group_tree':
             case 'groups_tree_assign':
                 // The $value here is already the group ID, so just assign it to the ticket
-                if (strpos($param, 'assign') !== false) {
+                if (str_contains($param, 'assign')) {
                     $type = \CommonITILActor::ASSIGN;
                 } else {
                     $type = \CommonITILActor::REQUESTER;
