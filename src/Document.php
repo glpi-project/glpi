@@ -134,16 +134,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
               || Session::haveRight('followup', ITILFollowup::ADDMY));
     }
 
-    /**
-     * Can the current user attach a document to $item?
-     * True when they can edit the item, or hold the document CREATE right while being able to view it.
-     */
-    public static function canAttachToItem(CommonDBTM $item): bool
-    {
-        return $item->canAddItem('Document')
-            || (Session::haveRight(self::$rightname, CREATE) && $item->can($item->getID(), READ));
-    }
-
     public function canCreateItem(): bool
     {
         if (isset($this->input['itemtype'], $this->input['items_id'])) {
@@ -151,10 +141,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 ($item = getItemForItemtype($this->input['itemtype']))
                 && $item->getFromDB($this->input['items_id'])
             ) {
-                // "One write is enough": edit right on the item, or document CREATE + view
-                // (document entity still enforced by parent::canCreateItem()).
-                return $item->canAddItem('Document')
-                    || (self::canAttachToItem($item) && parent::canCreateItem());
+                // canAddItem() holds the "one write is enough" rule; parent::canCreateItem()
+                // still enforces the document's own entity.
+                return $item->canAddItem('Document') && parent::canCreateItem();
             } else {
                 unset($this->input['itemtype'], $this->input['items_id']);
             }
