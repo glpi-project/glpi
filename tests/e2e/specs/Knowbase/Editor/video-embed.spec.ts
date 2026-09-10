@@ -123,8 +123,35 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(kb.videoEmbedPlaceholders).toHaveCount(0);
         });
 
-        // Regression: the dialog registered its keydown handler during the very
-        // Enter that opened it, so that Enter confirmed the untouched form.
+        // Regression: Escape also reached the aside controller's own document handler.
+        test('Escape in the dialog leaves the KB aside overlay open', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            await page.setViewportSize({ width: 800, height: 900 }); // below the 992px breakpoint
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Video dialog over the aside overlay',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            // Keyboard-only: a click would hit the overlay's backdrop.
+            await kb.doExpandAside();
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByKeyboard('Video');
+            await expect(kb.videoDialog).toBeVisible();
+
+            await page.keyboard.press('Escape');
+            await expect(kb.videoDialog).toBeHidden();
+            // aria-expanded is synchronous, the slide-out transition is not.
+            await expect(kb.getAsideExpandButton()).toHaveAttribute('aria-expanded', 'true');
+        });
+
+        // Regression: the handler was registered during the Enter that opened the dialog.
         test('Opening the dialog with Enter does not submit it', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);

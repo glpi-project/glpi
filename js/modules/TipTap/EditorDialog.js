@@ -39,10 +39,6 @@
  * to dismiss, and focus restored to the editor on close.
  *
  * Callers own only their fields: append them to the returned `body`.
- *
- * The CSS class names are the historical `.image-dialog*` ones
- * (css/includes/components/_kb.scss:1107). They predate this shell and are
- * shared by all three dialogs; renaming them is deliberately out of scope.
  */
 
 /**
@@ -64,17 +60,17 @@ export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
     const uid = Math.random().toString(36).slice(2, 9);
 
     const overlay = document.createElement('div');
-    overlay.className = 'image-dialog-overlay';
+    overlay.className = 'editor-dialog-overlay';
 
     const dialog = document.createElement('div');
-    dialog.className = 'image-dialog';
+    dialog.className = 'editor-dialog';
     dialog.setAttribute('role', 'dialog');
     dialog.setAttribute('aria-modal', 'true');
     dialog.setAttribute('aria-labelledby', `editor-dialog-title-${uid}`);
 
     // Header
     const header = document.createElement('div');
-    header.className = 'image-dialog-header';
+    header.className = 'editor-dialog-header';
 
     const header_title = document.createElement('span');
     header_title.id = `editor-dialog-title-${uid}`;
@@ -82,7 +78,7 @@ export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
 
     const close_btn = document.createElement('button');
     close_btn.type = 'button';
-    close_btn.className = 'image-dialog-close';
+    close_btn.className = 'editor-dialog-close';
     close_btn.setAttribute('aria-label', __('Close'));
     const close_icon = document.createElement('i');
     close_icon.className = 'ti ti-x';
@@ -95,12 +91,12 @@ export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
 
     // Body ; filled by the caller
     const body = document.createElement('div');
-    body.className = 'image-dialog-body';
+    body.className = 'editor-dialog-body';
     dialog.appendChild(body);
 
     // Footer
     const footer = document.createElement('div');
-    footer.className = 'image-dialog-footer';
+    footer.className = 'editor-dialog-footer';
 
     const cancel_btn = document.createElement('button');
     cancel_btn.type = 'button';
@@ -121,7 +117,7 @@ export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
 
     const close = () => {
         clearTimeout(keydown_timer);
-        document.removeEventListener('keydown', handleKeydown);
+        document.removeEventListener('keydown', handleKeydown, true);
         overlay.remove();
         editor.commands.focus();
     };
@@ -137,14 +133,19 @@ export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
     ];
 
     const handleKeydown = (e) => {
+        // Mid-composition, Enter and Escape belong to the IME.
+        if (e.isComposing) {
+            return;
+        }
+
         if (e.key === 'Escape') {
-            // Stop here: other document-level Escape handlers (the KB aside overlay, Bootstrap tooltips) would fire too.
-            e.stopPropagation();
+            // The page's own Escape handlers are on document too, and registered first.
+            e.stopImmediatePropagation();
             close();
             return;
         }
 
-        // Enter submits from any field, but must stay available to activate a focused button.
+        // Enter submits from a field, not from a focused button.
         const active = document.activeElement;
         if (
             e.key === 'Enter'
@@ -172,9 +173,8 @@ export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
             }
         }
     };
-    // Deferred: the Enter that opens the dialog from a slash command bubbles to document after
-    // this function has returned, and would confirm the untouched form right away.
-    const keydown_timer = setTimeout(() => document.addEventListener('keydown', handleKeydown), 0);
+    // Deferred: the Enter that opens the dialog would otherwise confirm it right away.
+    const keydown_timer = setTimeout(() => document.addEventListener('keydown', handleKeydown, true), 0);
 
     cancel_btn.addEventListener('click', close);
     close_btn.addEventListener('click', close);
@@ -203,7 +203,7 @@ export function createEditorDialog({ editor, title, confirmLabel, onConfirm }) {
  */
 export function createDialogField(label_text, type, id, value) {
     const group = document.createElement('div');
-    group.className = 'image-dialog-field';
+    group.className = 'editor-dialog-field';
 
     const label = document.createElement('label');
     label.htmlFor = id;
