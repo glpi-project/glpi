@@ -59,6 +59,8 @@ use Toolbox;
 use Unmanaged;
 use WifiNetwork;
 
+use function Safe\preg_replace;
+
 trait InventoryNetworkPort
 {
     /** @var object[]  */
@@ -597,18 +599,19 @@ trait InventoryNetworkPort
                 }
             }
 
-            //`mode` and `version` only accept a limited set of values
-            $known_values = [
-                'mode'    => WifiNetwork::getWifiCardModes(),
-                'version' => WifiNetwork::getWifiCardVersion(),
-            ];
-            foreach ($known_values as $field => $values) {
-                $property = 'wifi_' . $field;
-                if (property_exists($data, $property)) {
-                    $value = strtolower((string) $data->$property);
-                    if (isset($values[$value])) {
-                        $input[$field] = $value;
-                    }
+            //`mode` only accepts a limited set of values
+            if (property_exists($data, 'wifi_mode')) {
+                $modes = WifiNetwork::getWifiCardModes();
+                $mode = strtolower(trim((string) $data->wifi_mode));
+                if ($mode !== '' && array_key_exists($mode, $modes)) {
+                    $input['mode'] = $mode;
+                }
+            }
+
+            if (property_exists($data, 'wifi_version')) {
+                $version = $this->getWifiVersion((string) $data->wifi_version);
+                if ($version !== null) {
+                    $input['version'] = $version;
                 }
             }
         } else {
@@ -673,6 +676,45 @@ trait InventoryNetworkPort
         } else {
             $instance->update($input);
         }
+    }
+
+    /**
+     * Get the Wi-Fi protocol version to store from the inventoried one
+     *
+     * Inventory reports the version the way the operating system does, prefixed with the
+     * standard name (`802.11`, `802.11ac`, `802.11abgn`, ...).
+     *
+     * @param string $value Inventoried version
+     *
+     * @return ?string Version to store, or null if it is not a known one
+     */
+    private function getWifiVersion(string $value): ?string
+    {
+        $versions = WifiNetwork::getWifiCardVersion();
+
+        //drop the standard name; `802.11` alone does not tell anything on the protocol
+        //also drop potential `ieee` prefix, and normalize to lowercase
+        $version = (string) preg_replace(
+            '/^(ieee[\s_-]*)?802\.11[\s_-]*/',
+            '',
+            strtolower(trim($value))
+        );
+
+        if ($version === '') {
+            return null;
+        }
+
+        if (array_key_exists($version, $versions)) {
+            return $version;
+        }
+
+        //protocols may be reported as a plain letters list (`abgn`)
+        $listed = implode('/', str_split($version));
+        if (array_key_exists($listed, $versions)) {
+            return $listed;
+        }
+
+        return null;
     }
 
     /**

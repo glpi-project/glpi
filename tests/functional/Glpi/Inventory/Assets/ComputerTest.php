@@ -2228,4 +2228,48 @@ JSON;
         //unknown version has been ignored, previous one is kept
         $this->assertSame('ax', $portwifi->fields['version']);
     }
+
+    public static function wifiVersionProvider(): iterable
+    {
+        //inventory reports the version prefixed with the standard name, the way the
+        //operating system does, while only the protocol part is stored
+        yield 'standard name only' => ['802.11', null];
+        yield 'prefixed' => ['802.11ac', 'ac'];
+        yield 'prefixed, uppercased' => ['802.11AX', 'ax'];
+        yield 'prefixed with standard body' => ['IEEE 802.11be', 'be'];
+        yield 'legacy letters list' => ['802.11abgn', 'a/b/g/n'];
+        yield 'already stored form' => ['a/b/g/n', 'a/b/g/n'];
+        yield 'unknown' => ['not a version', null];
+        //`n`, `g/n`, `b/g/n`, ... are missing from WifiNetwork::getWifiCardVersion()
+        yield 'not a listed protocol' => ['802.11n', null];
+    }
+
+    #[DataProvider('wifiVersionProvider')]
+    public function testWifiVersionImport(string $inventoried, ?string $expected)
+    {
+        $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/computer_networkportwifi.json');
+        $json = json_decode($json_str);
+
+        $network = $json->content->networks[1];
+        $this->assertSame('wifi', $network->type);
+        $network->wifi_version = $inventoried;
+
+        $inventory = $this->doInventory($json);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        $networkport = new \NetworkPort();
+        $this->assertTrue(
+            $networkport->getFromDBByCrit([
+                'itemtype'           => \Computer::class,
+                'items_id'           => $computers_id,
+                'instantiation_type' => \NetworkPortWifi::class,
+            ])
+        );
+
+        $portwifi = new \NetworkPortWifi();
+        $this->assertTrue($portwifi->getFromDBByCrit(['networkports_id' => $networkport->fields['id']]));
+        $this->assertSame($expected, $portwifi->fields['version']);
+    }
 }
