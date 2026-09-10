@@ -680,6 +680,18 @@ trait PlanningEvent
             $events += $events_toadd;
         }
 
+        return static::translatePlanningEvents($events);
+    }
+
+    /**
+     * Apply the translations of the current language to the planning events.
+     *
+     * @param array<array<string, mixed>> $events
+     *
+     * @return array<array<string, mixed>>
+     */
+    protected static function translatePlanningEvents(array $events): array
+    {
         return $events;
     }
 

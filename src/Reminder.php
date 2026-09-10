@@ -52,7 +52,6 @@ class Reminder extends CommonDBVisible implements
 {
     use PlanningEvent {
         post_getEmpty as trait_post_getEmpty;
-        populatePlanning as trait_populatePlanning;
     }
     use VobjectConverterTrait;
     /** @use Clonable<static> */
@@ -568,11 +567,14 @@ class Reminder extends CommonDBVisible implements
         ]);
     }
 
-    public static function populatePlanning($options = []): array
+    /**
+     * @param array<array<string, mixed>> $events
+     *
+     * @return array<array<string, mixed>>
+     */
+    protected static function translatePlanningEvents(array $events): array
     {
         global $DB;
-
-        $events = self::trait_populatePlanning($options);
 
         $language = $_SESSION['glpilanguage'] ?? null;
         $reminders_ids = array_unique(array_column($events, 'reminders_id'));
