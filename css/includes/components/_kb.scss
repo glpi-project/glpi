@@ -1403,6 +1403,7 @@ body.in_modal .kb-editor-reserved {
     [data-glpi-kb-aside-favorites] {
         min-height: 0;
         overflow-y: auto;
+        max-height: min(200px, 25%);
     }
 
     // The tree pane takes what the header leaves and scrolls as a whole, so the
