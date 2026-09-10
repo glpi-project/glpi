@@ -39,8 +39,13 @@ import { getWorkerEntityId } from "../../utils/WorkerEntities";
 test('Can terminate sessions', async ({
     page,
     anonymousPage,
+    profile,
     api,
 }) => {
+    // The session list is part of the security configuration, which requires
+    // more rights than the profile another test may have left on this session.
+    await profile.set(Profiles.SuperAdmin);
+
     // Arrange: create a dedicated user with a unique name so this test's
     // session can't be confused with sessions left behind by other tests.
     const user_name = `session_manager_${randomUUID().slice(0, 8)}`;
@@ -66,20 +71,34 @@ test('Can terminate sessions', async ({
     ).toBeVisible();
 
     // Act: with the other page, terminate the session of our new user.
+    const revoke_buttons = page.getByRole("button", { name: "Revoke", exact: true });
+
     await page.goto("/front/security/securityconfig.form.php?forcetab=Glpi\\Security\\SecurityConfig$2");
     await expect(page.getByText("Session list")).toBeVisible();
     await page.getByRole("textbox", { name: "User" }).fill(user_name);
     await page.getByRole("button", { name: "Filter" }).click();
-    await page.getByRole("button", { name: "Revoke", exact: true }).click();
-    await page.getByRole('dialog') // Confirmation dialog
-        .getByRole("button", { name: "Revoke" })
-        .click()
-    ;
+
+    // Wait for the filtered list before acting on it: until the tab is
+    // reloaded, the rows still are the unfiltered ones.
+    await expect(revoke_buttons).toHaveCount(1);
+    await revoke_buttons.click();
+
+    const confirm_dialog = page.getByRole('dialog'); // Confirmation dialog
+    // Bootstrap ignores a `hide()` requested while the modal is still fading in,
+    // which would leave the dialog open forever, so wait for it to be shown.
+    await expect(confirm_dialog).toHaveAttribute('data-cy-shown', 'true');
+    const session_revoked = page.waitForResponse(
+        (response) => response.url().endsWith('/Revoke')
+            && response.request().method() === 'POST'
+    );
+    await confirm_dialog.getByRole("button", { name: "Revoke" }).click();
+    await session_revoked;
 
     // Confirm the session was removed on the list
     await page.getByRole("textbox", { name: "User" }).fill(user_name);
     await page.getByRole("button", { name: "Filter" }).click();
-    await expect(page.getByRole("button", { name: "Revoke" })).toHaveCount(0);
+    await expect(page.getByText("No results found")).toBeVisible();
+    await expect(revoke_buttons).toHaveCount(0);
 
     // Assert: the session used by anonymousPage is correctly dismissed.
     await anonymousPage.reload();
