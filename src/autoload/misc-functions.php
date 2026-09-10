@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
 use Glpi\Api\HL\Router;
+use Glpi\Kernel\Kernel;
 use Twig\Runtime\EscaperRuntime;
 
 use function Safe\preg_match;
