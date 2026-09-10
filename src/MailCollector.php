@@ -744,7 +744,7 @@ class MailCollector extends CommonDBTM
 
                         if (!$tkt['_blacklisted']) {
                             $rejinput['from']              = $requester ?? '';
-                            $rejinput['to']                = $headers['to'] ?? '';
+                            $rejinput['to']                = mb_substr($headers['to'] ?? '', 0, 255);
                             $rejinput['users_id']          = $tkt['_users_id_requester'];
                             $rejinput['subject']           = $this->cleanSubject($headers['subject']);
                             $rejinput['messageid']         = $headers['message_id'];
