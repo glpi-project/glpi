@@ -181,6 +181,45 @@ test.describe('Knowledge Base Editor - Link Dialog', () => {
         await expect(kb.editor.contentContainer.getByRole('link')).toHaveCount(0);
     });
 
+    // Regression: a host:port URL read as an unsupported scheme and was refused.
+    test('A host:port URL is saved as https', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Link dialog host port',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Link text</p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.bubbleMenu.selectAllContent();
+        await kb.bubbleMenu.setLink('intranet:8080/admin');
+        await kb.editor.save();
+
+        await kb.editor.assertHasLink('Link text', 'https://intranet:8080/admin');
+    });
+
+    test('Unchecking the box turns an existing new-tab link back to same-tab', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Link dialog back to same tab',
+            entities_id: getWorkerEntityId(),
+            answer: '<p><a href="https://example.com" target="_blank">Linked text</a></p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.bubbleMenu.selectAllContent();
+        await kb.bubbleMenu.setLink('https://example.com', false);
+        await kb.editor.save();
+
+        await kb.editor.assertLinkOpensInSameTab('Linked text');
+    });
+
     // The tests below cover the shared dialog shell (EditorDialog.js); the link
     // dialog is just the cheapest way in.
 

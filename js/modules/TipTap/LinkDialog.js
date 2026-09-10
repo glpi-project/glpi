@@ -36,6 +36,29 @@ import {
     createDialogCheckbox,
 } from '/js/modules/TipTap/EditorDialog.js';
 
+// extension-link's isAllowedUri list.
+const ALLOWED_SCHEME = /^(https?|ftps?|mailto|tel|callto|sms|cid|xmpp):/i;
+const RELATIVE = /^[#/?]/;
+const SCHEME_SHAPED = /^[a-z][a-z0-9+.-]*:/i;
+// "intranet:8080/admin": scheme-shaped, but a host and a port.
+const HOST_PORT = /^[^\s:/?#]+:\d+($|[/?#])/;
+
+/**
+ * Complete an input that names a host, since tiptap stores a scheme-less URL as
+ * relative and it then 404s against the article. An input that names a scheme is
+ * left for the extension to refuse.
+ *
+ * @param {string} raw
+ * @returns {string}
+ */
+function toHref(raw) {
+    if (raw === '' || ALLOWED_SCHEME.test(raw) || RELATIVE.test(raw)) {
+        return raw;
+    }
+
+    return SCHEME_SHAPED.test(raw) && !HOST_PORT.test(raw) ? raw : `https://${raw}`;
+}
+
 /**
  * Insert/Edit link dialog for the Knowledge Base editor.
  *
@@ -87,9 +110,7 @@ export function showLinkDialog(editor) {
         title: __('Insert/Edit link'),
         confirmLabel: __('Save'),
         onConfirm: ({ close }) => {
-            const raw = url_input.value.trim();
-            // Anchors and root-relative paths are meant to be relative; a bare "example.com" is not.
-            const href = raw === '' || /^([a-z][a-z0-9+.-]*:|[#/?])/i.test(raw) ? raw : `https://${raw}`;
+            const href = toHref(url_input.value.trim());
 
             if (href === '') {
                 editor.chain().focus().extendMarkRange('link').unsetLink().run();

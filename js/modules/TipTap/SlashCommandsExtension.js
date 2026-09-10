@@ -63,7 +63,7 @@ function showImageDialog(editor, existing_attrs = null) {
 
     const lock_btn = document.createElement('button');
     lock_btn.type = 'button';
-    lock_btn.className = 'image-dialog-lock is-locked';
+    lock_btn.className = 'image-size-lock is-locked';
     lock_btn.title = __('Constrain proportions');
     lock_btn.innerHTML = '<i class="ti ti-lock" aria-hidden="true"></i>';
 
@@ -77,7 +77,7 @@ function showImageDialog(editor, existing_attrs = null) {
     });
 
     const size_row = document.createElement('div');
-    size_row.className = 'image-dialog-size-row';
+    size_row.className = 'image-size-row';
     size_row.appendChild(width_group);
     size_row.appendChild(lock_btn);
     size_row.appendChild(height_group);

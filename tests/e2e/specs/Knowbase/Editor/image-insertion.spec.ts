@@ -72,6 +72,48 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await expect(img).toHaveAttribute('src', imageUrl);
         });
 
+        // Regression: the Enter that commits an IME candidate read as a confirmation.
+        test('An IME commit in the description does not close the dialog', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Image dialog IME commit',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('Image');
+
+            const dialog = kb.imageDialog;
+            await expect(dialog).toBeVisible();
+            await dialog.getByLabel('Source').fill('/pics/glpi.png');
+
+            const description = dialog.getByLabel('Alternative description');
+            await description.focus();
+
+            const cdp = await page.context().newCDPSession(page);
+            await cdp.send('Input.imeSetComposition', { text: 'ろご', selectionStart: 2, selectionEnd: 2 });
+            await cdp.send('Input.dispatchKeyEvent', {
+                type: 'keyDown',
+                key: 'Enter',
+                code: 'Enter',
+                windowsVirtualKeyCode: 13,
+                nativeVirtualKeyCode: 13,
+            });
+
+            await description.fill('Logo');
+            await dialog.getByRole('button', { name: 'Save' }).click();
+            await expect(dialog).toBeHidden();
+
+            await expect(kb.editor.contentContainer.getByRole('img')).toHaveAttribute('alt', 'Logo');
+        });
+
         test('Dialog closes on Cancel', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);

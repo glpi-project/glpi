@@ -122,9 +122,7 @@ export class BubbleMenuHelper {
         await expect(dialog).toBeVisible();
 
         await dialog.getByLabel('URL', { exact: true }).fill(url);
-        if (open_in_new_tab) {
-            await dialog.getByLabel('Open in new tab').check();
-        }
+        await dialog.getByLabel('Open in new tab').setChecked(open_in_new_tab);
 
         await dialog.getByRole('button', { name: 'Save' }).click();
         await expect(dialog).toBeHidden();
