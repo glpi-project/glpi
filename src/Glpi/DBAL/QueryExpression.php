@@ -39,15 +39,13 @@ use RuntimeException;
 /**
  *  Query expression class
  **/
-class QueryExpression implements QueryElementInterface
+class QueryExpression extends AbstractQueryAlias implements QueryElementInterface
 {
     private string $expression;
 
     private ?string $alias;
     /** @var array<int, mixed> */
     private array $params = [];
-
-    private bool $with_alias = true;
 
 
     /**
@@ -109,12 +107,6 @@ class QueryExpression implements QueryElementInterface
     public function setParams(array $params): static
     {
         $this->params = $params;
-        return $this;
-    }
-
-    public function withAlias(bool $with = true): static
-    {
-        $this->with_alias = $with;
         return $this;
     }
 }

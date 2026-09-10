@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\AbstractQueryAlias;
 use Glpi\DBAL\QueryElementInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
@@ -386,8 +387,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $groupby = [];
         foreach ($fields as $field) {
-            if ($field instanceof QueryExpression) {
-                $field->withAlias(false);
+            if ($field instanceof QueryElementInterface) {
+                if ($field instanceof AbstractQueryAlias) {
+                    $field->withAlias(false);
+                }
                 $this->values = array_merge($this->values, $field->getParams());
                 $groupby[] = $field->getValue();
             } else {
