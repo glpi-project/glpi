@@ -224,6 +224,40 @@ export function createDialogField(label_text, type, id, value) {
 }
 
 /**
+ * The error line of a dialog field. The node stays in the DOM with a live role,
+ * so a screen reader announces the text written into it; an empty one is invisible.
+ *
+ * @param {HTMLInputElement} input - Cleared, and marked invalid, along with the message.
+ * @param {string} id
+ * @returns {{element: HTMLElement, show: function(string): void}}
+ */
+export function createDialogError(input, id) {
+    const element = document.createElement('p');
+    element.id = id;
+    element.className = 'text-danger small mt-1 mb-0';
+    element.setAttribute('role', 'alert');
+
+    input.addEventListener('input', () => {
+        element.textContent = '';
+        input.removeAttribute('aria-invalid');
+        input.removeAttribute('aria-describedby');
+    });
+
+    return {
+        element,
+        show: (message) => {
+            // Re-assigning the same text would announce it twice.
+            if (element.textContent === message) {
+                return;
+            }
+            element.textContent = message;
+            input.setAttribute('aria-invalid', 'true');
+            input.setAttribute('aria-describedby', id);
+        },
+    };
+}
+
+/**
  * A labelled checkbox, using Tabler's form-check layout so no bespoke CSS is needed.
  *
  * @param {string} label_text

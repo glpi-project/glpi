@@ -114,6 +114,31 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await expect(kb.editor.contentContainer.getByRole('img')).toHaveAttribute('alt', 'Logo');
         });
 
+        test('Saving without a source reports it', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Image dialog empty source',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('Image');
+
+            const dialog = kb.imageDialog;
+            await dialog.getByRole('button', { name: 'Save' }).click();
+
+            await expect(dialog).toBeVisible();
+            await expect(dialog.getByRole('alert')).toBeVisible();
+            await expect(dialog.getByLabel('Source')).toHaveAttribute('aria-invalid', 'true');
+        });
+
         test('Dialog closes on Cancel', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);

@@ -178,7 +178,27 @@ test.describe('Knowledge Base Editor - Link Dialog', () => {
 
         await expect(dialog).toBeVisible();
         await expect(dialog.getByRole('alert')).toBeVisible();
+        await expect(dialog.getByLabel('URL', { exact: true })).toHaveAttribute('aria-invalid', 'true');
         await expect(kb.editor.contentContainer.getByRole('link')).toHaveCount(0);
+    });
+
+    test('A relative path is kept relative', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Link dialog relative path',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Link text</p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.bubbleMenu.selectAllContent();
+        await kb.bubbleMenu.setLink('docs/faq.html');
+        await kb.editor.save();
+
+        await kb.editor.assertHasLink('Link text', 'docs/faq.html');
     });
 
     // Regression: a host:port URL read as an unsupported scheme and was refused.
