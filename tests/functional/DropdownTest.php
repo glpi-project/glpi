@@ -64,6 +64,7 @@ use Phone;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Printer;
 use Profile;
+use Profile_User;
 use Project;
 use ProjectTask;
 use Session;
@@ -2614,6 +2615,71 @@ HTML;
         $this->assertCount(1, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
             return $result['id'] === Supplier::class . '_' . $inactive_supplier->getID();
         }));
+    }
+
+    /**
+     * Test that `getDropdownActors` uses the `is_notif_enable_default` config of the item's entity,
+     * not the one of the session's active entity.
+     *
+     * @return void
+     */
+    public function testGetDropdownActorsUsesItemEntityNotifDefault()
+    {
+        $this->login();
+        $_SESSION['glpiactive_entity'] = 0; // root entity: different from the item's entities below
+
+        $root_id = getItemByTypeName('Entity', 'Root entity', true);
+
+        $notif_entity = $this->createItem(Entity::class, [
+            'name'                   => __FUNCTION__ . '_notif',
+            'entities_id'            => $root_id,
+            'is_notif_enable_default' => 1,
+        ]);
+        $no_notif_entity = $this->createItem(Entity::class, [
+            'name'                   => __FUNCTION__ . '_no_notif',
+            'entities_id'            => $root_id,
+            'is_notif_enable_default' => 0,
+        ]);
+
+        // A user with a default email, visible in the dropdown
+        $user = $this->createItem(User::class, [
+            'name'        => __FUNCTION__,
+            '_useremails' => [
+                -1 => 'user-default-email@example.com',
+            ],
+            '_default_email' => -1,
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'     => $user->getID(),
+            'profiles_id'  => getItemByTypeName(Profile::class, 'Technician', true),
+            'entities_id'  => $root_id,
+            'is_recursive' => 1,
+        ]);
+
+        $base_post = [
+            'itemtype'           => Ticket::class,
+            'actortype'          => 'requester',
+            'returned_itemtypes' => [User::class],
+            'searchText'         => '',
+        ];
+
+        $results = Dropdown::getDropdownActors($base_post + [
+            'item'        => ['entities_id' => $notif_entity->getID()],
+            '_idor_token' => Session::getNewIDORToken(Ticket::class, $base_post),
+        ], false);
+        $this->assertNotEmpty($results['results']);
+        $user_result = array_filter($results['results'], static fn ($r) => $r['id'] === 'User_' . $user->getID());
+        $this->assertNotEmpty($user_result);
+        $this->assertSame(1, (int) reset($user_result)['use_notification']);
+
+        $results = Dropdown::getDropdownActors($base_post + [
+            'item'        => ['entities_id' => $no_notif_entity->getID()],
+            '_idor_token' => Session::getNewIDORToken(Ticket::class, $base_post),
+        ], false);
+        $this->assertNotEmpty($results['results']);
+        $user_result = array_filter($results['results'], static fn ($r) => $r['id'] === 'User_' . $user->getID());
+        $this->assertNotEmpty($user_result);
+        $this->assertSame(0, (int) reset($user_result)['use_notification']);
     }
 
     public function testGetDeviceItemTypes()
