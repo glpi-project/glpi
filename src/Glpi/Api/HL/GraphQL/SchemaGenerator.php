@@ -67,10 +67,10 @@ final readonly class SchemaGenerator
                 $has_custom_resolver = array_key_exists('x-graphql-resolver', $schema_info);
                 $should_have_query = (
                     !str_starts_with($schema_name, '_')
+                    && !($schema_info['x-graphql-noquery'] ?? false)
                     && (
                         (isset($schema_info['x-itemtype']) && !$has_custom_resolver)
                         || ($has_custom_resolver && $schema_info['x-graphql-resolver'] !== null)
-                        || ($schema_info['x-graphql-noquery'] ?? false)
                     )
                 );
                 if (!$should_have_query) {

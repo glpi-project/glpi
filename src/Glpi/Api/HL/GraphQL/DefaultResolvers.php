@@ -138,6 +138,9 @@ class DefaultResolvers
         }
 
         $id = $source[$field_name . chr(0x1F) . 'id'] ?? $source[$field_name]['id'] ?? null;
+        if ($id === chr(0x00)) {
+            return null;
+        }
 
         if (!is_numeric($id)) {
             //See State Visibilities for example why this can happen

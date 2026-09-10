@@ -86,6 +86,12 @@ use function Safe\preg_replace;
  *     </li>
  *     <li>0x1F: Unit separator. Used as a replacement for '.' in property names (which would be used as a table/column alias).</li>
  * </ul>
+ * @phpstan-type SearchOptions array{
+ *     is_direct_access_granted?: bool,
+ * }
+ * @phpstan-type ComputedSearchOptions array{
+ *     is_direct_access_granted: bool,
+ * }
  */
 final class Search
 {
@@ -94,12 +100,22 @@ final class Search
     private DBmysql $db_read;
     /** @var array<string, string> */
     private array $sql_field_cache = [];
+    /** @var ComputedSearchOptions */
+    private array $options;
 
-    public function __construct(array $schema, array $request_params)
+    /**
+     * @param array<string, mixed> $schema
+     * @param array<string, mixed> $request_params
+     * @param SearchOptions $options
+     */
+    public function __construct(array $schema, array $request_params, array $options = [])
     {
         $this->context = new SearchContext($schema, $request_params);
         $this->rsql_parser = new Parser($this);
         $this->db_read = DBConnection::getReadConnection();
+        $this->options = array_replace([
+            'is_direct_access_granted' => false,
+        ], $options);
     }
 
     public function getContext(): SearchContext
@@ -377,7 +393,9 @@ final class Search
 
         $this->addJoinsCriteria($criteria);
         $this->addRSQLCriteria($criteria);
-        $this->addVisibilityCriteria($criteria);
+        if (!$this->options['is_direct_access_granted']) {
+            $this->addVisibilityCriteria($criteria);
+        }
         $this->addPaginationCriteria($criteria);
         $this->addSortingCriteria($criteria);
 
@@ -837,11 +855,13 @@ final class Search
      * Use {@link ResourceAccessor::getOneBySchema()} or {@link ResourceAccessor::searchBySchema()} instead of suing this directly.
      * @param array $schema
      * @param array $request_params
+     * @param SearchOptions $options Extra options to control search behavior. Currently supported options:
+     * - is_direct_access_granted: Whether the user has direct access to the resource which was already validated. This will disable the default entity and visibility restrictions. Default: false.
      * @return array The search results
      * @phpstan-return array{results: array, start: int, limit: int, total: int}
      * @throws RSQLException|APIException
      */
-    public static function getSearchResultsBySchema(array $schema, array $request_params): array
+    public static function getSearchResultsBySchema(array $schema, array $request_params, array $options = []): array
     {
         // Schema must be an object type
         if ($schema['type'] !== Doc\Schema::TYPE_OBJECT) {
@@ -852,7 +872,7 @@ final class Search
         }
         Profiler::getInstance()->start('Search::getSearchResultsBySchema', Profiler::CATEGORY_HLAPI);
         // Initialize a new search
-        $search = new self($schema, $request_params);
+        $search = new self($schema, $request_params, $options);
         Profiler::getInstance()->start('Get matching records', Profiler::CATEGORY_HLAPI);
         $record_set = $search->getMatchingRecords();
         Profiler::getInstance()->stop('Get matching records');
