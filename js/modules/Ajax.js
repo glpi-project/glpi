@@ -40,10 +40,12 @@
  *   in the request body, or null if no data.
  *   Plain objects are serialized as JSON. FormData and URLSearchParams are sent
  *   as-is (form data).
+ * @param {number[]} handled_statuses - Error statuses the caller reports itself:
+ *   the response is returned instead of raising the generic error.
  * @returns {Promise<Response>} The fetch Response object.
- * @throws {Error} If the request fails or returns a non-ok status.
+ * @throws {Error} If the request fails or returns an unhandled non-ok status.
  */
-export async function post(url, values = null)
+export async function post(url, values = null, handled_statuses = [])
 {
     try {
         const is_plain_object = values !== null
@@ -69,7 +71,7 @@ export async function post(url, values = null)
         }
 
         const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);
-        if (!response.ok) {
+        if (!response.ok && !handled_statuses.includes(response.status)) {
             throw new Error("POST request failed");
         }
 

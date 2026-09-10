@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, glpi_ajax_dialog, glpi_confirm_danger, glpi_toast_error */
+/* global _, glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error */
 
 import { get, post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseMoveModalController } from "/js/modules/Knowbase/MoveModalController.js";
@@ -1025,6 +1025,14 @@ export class GlpiKnowbaseAsideController
         const response = await deleteArticle(id);
         const body = await response.json();
 
+        if (!response.ok) {
+            glpi_alert({
+                title: __('Delete article'),
+                message: body.message,
+            });
+            return;
+        }
+
         // Deleting the article currently being viewed: leave the page.
         const current = this.#aside.querySelector('[data-glpi-kb-article-current]');
         if (current && parseInt(current.dataset.glpiKbArticleId) === id) {
@@ -1033,31 +1041,8 @@ export class GlpiKnowbaseAsideController
         }
 
         // Otherwise remove every entry for this article (tree + favorites) in
-        // place. A tree entry may nest child articles inside its own <li>
-        // (recursive tree), and those children are NOT deleted server-side:
-        // on reload the Builder promotes any article left without a visible
-        // parent up to the root. Mirror that here so children don't vanish
-        // until reload — reparent them to the root <ul> before removing the
-        // deleted node, unless they remain reachable under another parent.
-        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
-        const root_list = tree ? tree.querySelector(':scope > ul') : null;
-
+        // place.
         for (const entry of this.#aside.querySelectorAll(`[data-glpi-kb-article-id="${CSS.escape(id)}"]`)) {
-            const child_list = entry.querySelector(':scope > ul');
-            if (child_list && root_list) {
-                for (const child of [...child_list.querySelectorAll(':scope > [data-glpi-kb-article-id]')]) {
-                    const child_id = child.dataset.glpiKbArticleId;
-                    // Still reachable under another (non-deleted) parent
-                    // elsewhere in the tree? Then it stays there; promoting it
-                    // would duplicate it, and on reload it would not be a root.
-                    const still_reachable = [...this.#aside.querySelectorAll(
-                        `[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${CSS.escape(child_id)}"]`
-                    )].some(el => !entry.contains(el));
-                    if (!still_reachable) {
-                        root_list.appendChild(child);
-                    }
-                }
-            }
             entry.remove();
         }
 

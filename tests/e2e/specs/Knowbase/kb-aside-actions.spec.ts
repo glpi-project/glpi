@@ -204,3 +204,79 @@ test('Can delete an article from the aside dots menu without leaving the page', 
     await expect(kb.getAsideTreeArticleRow(target_id)).toHaveCount(0);
     await expect(page).toHaveURL(new RegExp(`knowbaseitem\\.form\\.php\\?id=${viewed_id}(\\D|$)`));
 });
+
+test("Can't delete an article with children", async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const parent_name = getUniqueName(`Aside undeletable parent`);
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_name = getUniqueName(`Aside undeletable child`);
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    // Viewing the child unfolds the path to it, so both rows are on screen.
+    await kb.goto(child_id);
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
+
+    // The action is offered on the parent, and the server explains the refusal:
+    // deleting it would leave the child outside the tree.
+    await kb.doOpenAsideArticleMenu(parent_id);
+    await kb.getAsideArticleAction(parent_id, 'Delete article').click();
+    await page.getByRole('dialog')
+        .getByRole('button', { name: 'Delete', exact: true })
+        .click();
+
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toContainText(
+        'This article cannot be deleted because it contains sub-articles. They must be moved or deleted first.'
+    );
+
+    // Nothing was deleted.
+    await dialog.getByRole('button', { name: 'OK' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(kb.getAsideTreeArticleRow(parent_id)).toBeVisible();
+    await expect(kb.getAsideTreeArticleRow(child_id)).toBeVisible();
+});
+
+test('An article can be deleted right after its last child was deleted', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const viewed_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside viewed`),
+        answer: 'My answer',
+    });
+    const parent_name = getUniqueName(`Aside emptied parent`);
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: getUniqueName(`Aside emptied child`),
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    // Delete the only child
+    await kb.goto(viewed_id);
+    await kb.doExpandAsideCategory(parent_name);
+    await kb.doOpenAsideArticleMenu(child_id);
+    await kb.doDeleteAsideArticle(child_id);
+    await expect(kb.getAsideTreeArticleRow(child_id)).toHaveCount(0);
+
+    // Now delete the parent
+    await kb.doOpenAsideArticleMenu(parent_id);
+    await kb.doDeleteAsideArticle(parent_id);
+    await expect(kb.getAsideTreeArticleRow(parent_id)).toHaveCount(0);
+});
