@@ -956,7 +956,87 @@ class SoftwareTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
     }
+    
+    public function testDuplicatedSoftPrefersActiveOverDeleted()
+    {
+        $this->login();
 
+        $computer     = new \Computer();
+        $soft         = new \Software();
+        $manufacturer = new \Manufacturer();
+        $version      = new SoftwareVersion();
+
+        $computers_id = $computer->add([
+            'name'        => 'pc-dup-active',
+            'serial'      => 'dupactive01',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computers_id);
+
+        $manufacturers_id = $manufacturer->add(['name' => 'Duplicate Test Corp']);
+        $this->assertGreaterThan(0, $manufacturers_id);
+
+        // Active duplicate created FIRST -> lower id (mirrors production: the
+        // legitimate entry usually predates the accidental duplicate).
+        $active_softwares_id = $soft->add([
+            'name'             => 'Duplicate Test Software',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+        ]);
+        $this->assertGreaterThan(0, $active_softwares_id);
+
+        // Duplicate created SECOND -> higher id, then trashed (not purged).
+        $deleted_softwares_id = $soft->add([
+            'name'             => 'Duplicate Test Software',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+        ]);
+        $this->assertGreaterThan($active_softwares_id, $deleted_softwares_id);
+        $this->assertTrue((bool) $soft->delete(['id' => $deleted_softwares_id]));
+        $this->assertTrue($soft->getFromDB($deleted_softwares_id));
+        $this->assertEquals(1, $soft->fields['is_deleted']);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <NAME>Duplicate Test Software</NAME>
+      <PUBLISHER>Duplicate Test Corp</PUBLISHER>
+      <VERSION>1.0.0</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc-dup-active</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>dupactive01</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc-dup-active</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $on_active = $version->find([
+            'name'         => '1.0.0',
+            'softwares_id' => $active_softwares_id,
+        ]);
+        $this->assertCount(
+            1,
+            $on_active,
+            'the new version/installation must attach to the active software, not the deleted duplicate'
+        );
+
+        $on_deleted = $version->find([
+            'name'         => '1.0.0',
+            'softwares_id' => $deleted_softwares_id,
+        ]);
+        $this->assertCount(0, $on_deleted, 'the trashed duplicate must not receive the new version/installation');
+    }
+    
     public function testSameSoft()
     {
         global $DB;
