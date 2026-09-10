@@ -57,6 +57,7 @@ use function Safe\file_put_contents;
 use function Safe\iconv;
 use function Safe\mb_convert_encoding;
 use function Safe\preg_match;
+use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
