@@ -2241,7 +2241,7 @@ JSON;
         yield 'already stored form' => ['a/b/g/n', 'a/b/g/n'];
         yield 'unknown' => ['not a version', null];
         //`n`, `g/n`, `b/g/n`, ... are missing from WifiNetwork::getWifiCardVersion()
-        yield 'not a listed protocol' => ['802.11n', null];
+        yield 'not a listed protocol' => ['802.11z', null];
     }
 
     #[DataProvider('wifiVersionProvider')]
