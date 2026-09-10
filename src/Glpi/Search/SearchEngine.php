@@ -430,8 +430,15 @@ final class SearchEngine
         $data['search']['no_search']   = true;
 
         $data['toview'] = SearchOption::getDefaultToView($itemtype, $params);
-        if ($p['sort'] === [0]) {
+        if (
+            $p['sort'] === [0]
+            && !($data['search']['disable_order_by_fallback'] ?? false)
+        ) {
             $p['sort'] = [array_values($data['toview'])[0]];
+            // Sync the resolved default sort back into the search params snapshot.
+            // Otherwise SQLProvider still reads the initial `[0]` (which never matches
+            // any search option id) and silently falls back to `ORDER BY id`.
+            $data['search']['sort'] = $p['sort'];
         }
         $data['meta_toview'] = [];
         if (!$forcetoview) {
