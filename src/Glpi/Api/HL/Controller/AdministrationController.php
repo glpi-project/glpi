@@ -255,9 +255,7 @@ EOD,
                         'readOnly' => true,
                         'x-version-introduced' => '2.2.0',
                         'x-rights-conditions' => [
-                            'read' => static function () {
-                                return Session::haveRight(User::$rightname, User::READAUTHENT);
-                            },
+                            'read' => static fn() => Session::haveRight(User::$rightname, User::READAUTHENT),
                         ],
                     ],
                     'title' => self::getDropdownTypeSchema(class: UserTitle::class, full_schema: 'UserTitle') + ['x-version-introduced' => '2.2.0'],
@@ -428,9 +426,7 @@ EOD,
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is two-factor authentication enforced for members of this group',
                         'x-rights-conditions' => [
-                            'read' => static function () {
-                                return Session::haveRight(User::$rightname, User::READAUTHENT);
-                            },
+                            'read' => static fn() => Session::haveRight(User::$rightname, User::READAUTHENT),
                         ],
                     ],
                     'date_creation' => [
