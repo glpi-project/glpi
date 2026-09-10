@@ -6,6 +6,13 @@ The present file will list all changes made to the project; according to the
 ## [11.0.9] unreleased
 
 ### Added
+- New schemas/endpoints for Service Catalog information in High-Level API v2.4.
+- New schemas/endpoints for reminder translations in High-Level API v2.4.
+- New endpoints for viewing, adding and deleting emails for other users in High-Level API v2.4.
+- Endpoints to add or remove relations for links between assets and appliances in High-Level API v2.4.
+- New schemas/endpoints for custom asset definitions and fields in High-Level API v2.4.
+- New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
+- `supervisor` property added for `User` schema in High-Level API v2.4.
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
@@ -30,13 +37,6 @@ The present file will list all changes made to the project; according to the
 ## [11.0.8] 2026-06-24
 
 ### Added
-- New schemas/endpoints for Service Catalog information in High-Level API v2.4.
-- New schemas/endpoints for reminder translations in High-Level API v2.4.
-- New endpoints for viewing, adding and deleting emails for other users in High-Level API v2.4.
-- Endpoints to add or remove relations for links between assets and appliances in High-Level API v2.4.
-- New schemas/endpoints for custom asset definitions and fields in High-Level API v2.4.
-- New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
-- `supervisor` property added for `User` schema in High-Level API v2.4.
 
 ### Changed
 

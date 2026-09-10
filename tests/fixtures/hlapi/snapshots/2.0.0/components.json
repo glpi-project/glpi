@@ -2147,6 +2147,21 @@
                 },
                 "is_deleted": {
                     "type": "boolean"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -2538,6 +2553,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -3845,6 +3875,21 @@
                 "date_mod": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -6829,6 +6874,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -7265,6 +7325,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -7776,6 +7851,21 @@
                 "date_mod": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -8355,6 +8445,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -8576,6 +8681,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -9006,6 +9126,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -13077,6 +13212,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
