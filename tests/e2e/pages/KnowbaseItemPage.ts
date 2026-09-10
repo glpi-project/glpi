@@ -365,6 +365,33 @@ export class KnowbaseItemPage extends GlpiPage
         await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
     }
 
+    /**
+     * Enter translation mode and wait until it is usable. ArticleController
+     * shows the alert first, then loads the current translation, and only
+     * enables edit mode once that load resolves: acting in between either
+     * no-ops (the title is not editable yet) or gets overwritten by the load.
+     */
+    public async doEnterTranslationMode(): Promise<void>
+    {
+        await this.page.getByTestId('translations-count').click();
+        await expect(this.page.getByTestId('translation-mode-alert')).toBeVisible();
+        await expect(this.subject).toHaveClass(/is-editing/);
+    }
+
+    /**
+     * Pick a language in translation mode and wait for its content to be
+     * loaded. The change handler makes the title read-only while it fetches the
+     * translation, then rewrites both the title and the editor with the
+     * response, so anything typed before it resolves is lost.
+     */
+    public async doSelectTranslationLanguage(language: string): Promise<void>
+    {
+        await this.page
+            .getByTestId('translation-language-select')
+            .selectOption(language);
+        await expect(this.subject).toHaveAttribute('contenteditable', 'true');
+    }
+
     public getCommentByContent(content: string): Locator
     {
         return this.page.getByText(content).filter({
@@ -710,6 +737,24 @@ export class KnowbaseItemPage extends GlpiPage
         return this.getAsideCategory(title).getByRole('button', {
             name: new RegExp(`Create an article under ${title}`, 'i'),
         });
+    }
+
+    /**
+     * Hover an article's aside row until its "+" add-child button is actually
+     * revealed. The button is only shown while the row is hovered or focused,
+     * and the tree still moves under the pointer after init (current article
+     * scrolled into view, children lazy loaded, inline input inserted and
+     * removed): such a reflow drops the hover state without emitting any
+     * further mouse event, so a single `hover()` is not enough.
+     */
+    public async doRevealAsideCategoryAddButton(title: string): Promise<void>
+    {
+        await expect(async () => {
+            await this.getAsideArticleTitleLink(title).hover();
+            await expect(this.getAsideCategoryAddButton(title)).toBeVisible({
+                timeout: 1000,
+            });
+        }).toPass();
     }
 
     public async doToggleAsideCategory(title: string): Promise<void>
