@@ -44,7 +44,10 @@ use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Group;
 use Group_Item;
+use Infocom;
 use Item_RemoteManagement;
+use Monitor;
+use NetworkPort;
 use OperatingSystem;
 use OperatingSystemArchitecture;
 use OperatingSystemEdition;
@@ -954,6 +957,48 @@ class AssetControllerTest extends HLAPITestCase
                         $this->assertContains($id, $returned_ids);
                     }
                 });
+        });
+    }
+
+    public function testTicketTCOFieldRights(): void
+    {
+        $this->loginWeb('tech', 'tech');
+        $_SESSION['glpiactiveprofile'][Infocom::$rightname] |= READ;
+        $this->graphql->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $this->graphql->call(<<<GRAPHQL
+            query {
+                Computer { id ticket_tco }
+                Monitor { id ticket_tco }
+                NetworkEquipment { id ticket_tco }
+                Peripheral { id ticket_tco }
+                Phone { id ticket_tco }
+                Printer { id ticket_tco }
+                Software { id ticket_tco }
+            }
+GRAPHQL, function ($call) {
+            $call->response->isOK();
+        });
+        $_SESSION['glpiactiveprofile'][Infocom::$rightname] &= ~READ;
+        $this->graphql->call(<<<GRAPHQL
+            query {
+                Computer { id ticket_tco }
+                Monitor { id ticket_tco }
+                NetworkEquipment { id ticket_tco }
+                Peripheral { id ticket_tco }
+                Phone { id ticket_tco }
+                Printer { id ticket_tco }
+                Software { id ticket_tco }
+            }
+GRAPHQL, function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('Computer.ticket_tco')
+                ->hasFieldAccessDenied('Monitor.ticket_tco')
+                ->hasFieldAccessDenied('NetworkEquipment.ticket_tco')
+                ->hasFieldAccessDenied('Peripheral.ticket_tco')
+                ->hasFieldAccessDenied('Phone.ticket_tco')
+                ->hasFieldAccessDenied('Printer.ticket_tco')
+                ->hasFieldAccessDenied('Software.ticket_tco');
         });
     }
 }

@@ -39,6 +39,7 @@ use Glpi\Event;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ValidatorSubstitute;
 
 class AdministrationControllerTest extends HLAPITestCase
 {
@@ -755,5 +756,109 @@ class AdministrationControllerTest extends HLAPITestCase
             create_params: $create_params,
             extra_options: ['skip_update_test' => $itemtype === 'ApprovalSubstitute']
         );
+    }
+
+    public function testCannotViewLastSyncWithoutPermission(): void
+    {
+        // Technician profile can read users but doesn't have Read auth permission
+        $this->login('tech', 'tech');
+
+        $this->graphql->call('query { User { id username date_sync } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('User.date_sync');
+        });
+        $this->api->call(new Request('GET', '/Administration/User/' . getItemByTypeName('User', 'tech', true)), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayHasKey('id', $content);
+                    $this->assertArrayHasKey('username', $content);
+                    $this->assertArrayNotHasKey('date_sync', $content);
+                });
+        });
+    }
+
+    public function testCannotViewGroupMFAWithoutPermission(): void
+    {
+        // Technician profile can read groups but doesn't have Read auth permission
+        $this->login('tech', 'tech');
+
+        $this->graphql->call('query { Group { mfa_enforced } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('Group.mfa_enforced');
+        });
+
+        $this->api->call(new Request('GET', '/Administration/Group/' . getItemByTypeName('Group', '_test_group_1', true)), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayHasKey('id', $content);
+                    $this->assertArrayHasKey('name', $content);
+                    $this->assertArrayNotHasKey('mfa_enforced', $content);
+                });
+        });
+    }
+
+    public function testCannotViewEntityNotificationFieldsWithoutPermission(): void
+    {
+        $to_check = [
+            'admin_email', 'admin_email_name', 'from_email', 'from_email_name', 'noreply_email', 'noreply_email_name',
+            'replyto_email', 'replyto_email_name', 'notification_subject_tag', 'mailing_signature',
+        ];
+        // Tech has permission to read entities but is missing the READ permission for notifications, so they shouldn't see notification fields on entities
+        $this->login('tech', 'tech');
+
+        $this->graphql->call('query { Entity { id name ' . implode(' ', $to_check) . ' } }', function ($call) use ($to_check) {
+            $call->response
+                ->isPartialError();
+            foreach ($to_check as $field) {
+                $call->response->hasFieldAccessDenied('Entity.' . $field);
+            }
+        });
+
+        $this->api->call(new Request('GET', '/Administration/Entity/' . getItemByTypeName('Entity', '_test_root_entity', true)), function ($call) use ($to_check) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($to_check) {
+                    $this->assertArrayHasKey('id', $content);
+                    $this->assertArrayHasKey('name', $content);
+                    foreach ($to_check as $field) {
+                        $this->assertArrayNotHasKey($field, $content);
+                    }
+                });
+        });
+    }
+
+    public function testCanSeeOnlyOwnApprovalSubstitute(): void
+    {
+        $postonly_users_id = getItemByTypeName('User', 'post-only', true);
+        $tech_users_id = getItemByTypeName('User', 'tech', true);
+        $this->createItem(ValidatorSubstitute::class, [
+            'users_id' => $postonly_users_id,
+            'users_id_substitute' => $tech_users_id,
+        ]);
+        $this->createItem(ValidatorSubstitute::class, [
+            'users_id' => $tech_users_id,
+            'users_id_substitute' => $postonly_users_id,
+        ]);
+        $this->login('post-only', 'postonly');
+        $this->graphql->call('query { ApprovalSubstitute { id substitute { id } } }', function ($call) use ($tech_users_id) {
+            $call->response
+                ->data('ApprovalSubstitute', function ($data) use ($tech_users_id) {
+                    $this->assertCount(1, $data);
+                    $this->assertEquals($tech_users_id, $data[0]['substitute']['id']);
+                });
+        });
+
+        $this->login('tech', 'tech');
+        $this->graphql->call('query { ApprovalSubstitute { substitute { id } } }', function ($call) use ($postonly_users_id) {
+            $call->response
+                ->data('ApprovalSubstitute', function ($data) use ($postonly_users_id) {
+                    $this->assertCount(1, $data);
+                    $this->assertEquals($postonly_users_id, $data[0]['substitute']['id']);
+                });
+        });
     }
 }

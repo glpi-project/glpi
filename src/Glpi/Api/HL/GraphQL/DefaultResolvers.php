@@ -38,6 +38,8 @@ use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\GraphQL\Error\FieldAccessDeniedError;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Schemas;
@@ -168,6 +170,9 @@ class DefaultResolvers
         if ($schema === null) {
             throw new Error('Unable to resolve field "' . $field_name . '": schema not found');
         }
+
+        $fields_requested = $this->getValidFieldSelection($schema, $fields_requested, $info, $context);
+
         $needed = $this->object_cache->getNeeded($schema_name, [$id], $fields_requested);
         if ($needed === []) {
             // Object is already cached with all requested fields
@@ -176,23 +181,23 @@ class DefaultResolvers
         $fields_requested = $needed[$id];
 
         $this->object_cache->add($schema_name, $id, $fields_requested);
-        return new Deferred(function () use ($schema_name, $schema, $id, &$args) {
-            Profiler::getInstance()->start('GraphQL2::resolveObjectField::deferred::' . $schema_name, Profiler::CATEGORY_HLAPI);
+        return new Deferred(function () use ($schema_name, $schema, $id, &$args, $info) {
+            Profiler::getInstance()->start('GraphQL::resolveObjectField::deferred::' . $schema_name, Profiler::CATEGORY_HLAPI);
             $to_load = $this->object_cache->getPending($schema_name);
             if ($to_load === []) {
                 $r = $this->object_cache->get($schema_name, $id)?->data;
-                Profiler::getInstance()->stop('GraphQL2::resolveObjectField::deferred::' . $schema_name);
+                Profiler::getInstance()->stop('GraphQL::resolveObjectField::deferred::' . $schema_name);
                 return $r;
             }
 
             $args['id'] = $to_load['id'];
-            $it = $this->db->request($this->getCriteriaForObject($schema, $to_load['fields'], $args));
+            $it = $this->db->request($this->getCriteriaForObject($schema, $to_load['fields'], $args, $info));
             foreach ($it as $data) {
                 $this->object_cache->set($schema_name, $data['id'], $data);
             }
 
             $r = $this->object_cache->get($schema_name, $id)?->data;
-            Profiler::getInstance()->stop('GraphQL2::resolveObjectField::deferred::' . $schema_name);
+            Profiler::getInstance()->stop('GraphQL::resolveObjectField::deferred::' . $schema_name);
             return $r;
         });
     }
@@ -224,12 +229,14 @@ class DefaultResolvers
             return $source[$field_name];
         }
 
+        $fields_requested = $this->getValidFieldSelection($schema, $fields_requested, $info, $context);
+
         foreach ($ids as $id) {
             $this->object_cache->add($schema_name, (int) $id, $fields_requested);
         }
 
         $executor = function () use (&$context, $source, $schema_name, $schema, $ids, &$args, $info) {
-            Profiler::getInstance()->start('GraphQL2::resolveListField::executor::' . $schema_name, Profiler::CATEGORY_HLAPI);
+            Profiler::getInstance()->start('GraphQL::resolveListField::executor::' . $schema_name, Profiler::CATEGORY_HLAPI);
             $to_load = $this->object_cache->getPending($schema_name);
             if ($to_load === []) {
                 $results = [];
@@ -239,7 +246,7 @@ class DefaultResolvers
                         $results[] = $cached_object->data;
                     }
                 }
-                Profiler::getInstance()->stop('GraphQL2::resolveListField::executor::' . $schema_name);
+                Profiler::getInstance()->stop('GraphQL::resolveListField::executor::' . $schema_name);
                 return $results;
             }
             if ($source !== null) {
@@ -247,7 +254,7 @@ class DefaultResolvers
             } else {
                 $ids = [];
             }
-            $criteria = $this->getCriteriaForObject($schema, $to_load['fields'], $args);
+            $criteria = $this->getCriteriaForObject($schema, $to_load['fields'], $args, $info);
             $it = $this->db->request($criteria);
             foreach ($it as $data) {
                 // decode all array fields so that parsing can continue as expected
@@ -288,7 +295,7 @@ class DefaultResolvers
                     $results[] = $cached_object->data;
                 }
             }
-            Profiler::getInstance()->stop('GraphQL2::resolveListField::executor::' . $schema_name);
+            Profiler::getInstance()->stop('GraphQL::resolveListField::executor::' . $schema_name);
             return $results;
         };
 
@@ -334,18 +341,52 @@ class DefaultResolvers
     }
 
     /**
+     * Checks the requested fields against the schema, applying any field-level read permission checks and removing any fields that the user does not have permission to view.
+     * As the field selection in the GraphQL resolve info is not changed, only the fetching of data will be blocked.
+     * The fields will still be present in the GraphQL response, but will be null if the user does not have permission to view them.
+     * Instead, an error will be added to the context for each field that the user does not have permission to view to inform the user of the issue.
+     * @param array $schema
+     * @param array $requested_fields
+     * @param stdClass $context
+     * @return array
+     */
+    private function getValidFieldSelection(array $schema, array $requested_fields, ResolveInfo $info, stdClass $context): array
+    {
+        $valid_fields = [];
+        foreach ($requested_fields as $field) {
+            if (!array_key_exists($field, $schema['properties'])) {
+                continue;
+            }
+            if (isset($schema['properties'][$field]['x-rights-conditions']['read'])) {
+                $check_result = $schema['properties'][$field]['x-rights-conditions']['read']();
+                if (is_array($check_result)) {
+                    throw new \LogicException('SQL condition field right checks are not currently supported.');
+                }
+                if ((bool) $check_result === false) {
+                    $context->field_errors ??= [];
+                    $context->field_errors[] = new FieldAccessDeniedError(nodes: $info->fieldNodes, path: [...$info->path, $field]);
+                    continue;
+                }
+            }
+            $valid_fields[] = $field;
+        }
+        return $valid_fields;
+    }
+
+    /**
      * @param array<string, mixed> $schema
      * @param string[] $field_selection
      * @param array<string, mixed> $request_params
+     * @param ResolveInfo $info
      * @return array<string, mixed>
      * @throws Error
      * @throws APIException
      * @throws RSQLException
      * @throws RightConditionNotMetException
      */
-    private function getCriteriaForObject(array $schema, array $field_selection, array $request_params): array
+    private function getCriteriaForObject(array $schema, array $field_selection, array $request_params, ResolveInfo $info): array
     {
-        Profiler::getInstance()->start('GraphQL2::getCriteriaForObject', Profiler::CATEGORY_HLAPI);
+        Profiler::getInstance()->start('GraphQL::getCriteriaForObject', Profiler::CATEGORY_HLAPI);
         if (!array_key_exists('x-table', $schema) && !array_key_exists('x-itemtype', $schema)) {
             throw new Error("Schema does not define a table or itemtype to query.");
         }
@@ -356,6 +397,7 @@ class DefaultResolvers
             'WHERE' => [],
         ];
 
+        $schema = ResourceAccessor::applyFieldReadRestrictions($schema, true);
         $search = new Search($schema, $request_params);
 
         if (!in_array('id', $field_selection, true)) {
@@ -423,10 +465,14 @@ class DefaultResolvers
         $criteria['GROUPBY'] = ['_.id'];
 
         $search->addVisibilityCriteria($criteria);
-        $search->addReadRestrictCriteria($criteria);
+        try {
+            $search->addReadRestrictCriteria($criteria);
+        } catch (RightConditionNotMetException $e) {
+            throw new Error('Unable to resolve field "' . $info->fieldName . '": schema not found or not viewable');
+        }
         $search->addPaginationCriteria($criteria);
         $search->addSortingCriteria($criteria);
-        Profiler::getInstance()->stop('GraphQL2::getCriteriaForObject');
+        Profiler::getInstance()->stop('GraphQL::getCriteriaForObject');
 
         return $criteria;
     }
