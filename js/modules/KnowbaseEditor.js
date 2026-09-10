@@ -576,6 +576,9 @@ class KnowbaseEditor {
                 // Hide unlink button if no link, show link button always
                 if (special === 'unlink') {
                     btn.style.display = isActive ? '' : 'none';
+                } else {
+                    // Inline code and code blocks can't carry a link mark: the dialog would be impossible to confirm.
+                    btn.disabled = !this.#editor.can().setMark('link');
                 }
             } else if (special === 'heading' && level) {
                 isActive = this.#editor.isActive('heading', { level });

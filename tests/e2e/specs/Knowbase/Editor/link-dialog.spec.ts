@@ -181,7 +181,7 @@ test.describe('Knowledge Base Editor - Link Dialog', () => {
         await expect(kb.editor.contentContainer.getByRole('link')).toHaveCount(0);
     });
 
-    // The two below cover the shared dialog shell (EditorDialog.js); the link
+    // The tests below cover the shared dialog shell (EditorDialog.js); the link
     // dialog is just the cheapest way in.
 
     // Regression: clicking a non-focusable part of the dialog blurs to
@@ -241,5 +241,103 @@ test.describe('Knowledge Base Editor - Link Dialog', () => {
 
         await expect(dialog).toBeVisible();
         await expect(url_input).toHaveValue('https://example.com/keep-me');
+    });
+
+    // Regression: the click-outside guard only tracked where the press started,
+    // so a press on the backdrop released inside the dialog dismissed it too.
+    test('Releasing a drag inside the dialog keeps it open', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Link dialog drag inward',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Link text</p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.bubbleMenu.selectAllContent();
+        await kb.bubbleMenu.clickButton('Link');
+
+        const dialog = kb.linkDialog;
+        const url_input = dialog.getByLabel('URL', { exact: true });
+        await url_input.fill('https://example.com/keep-me');
+
+        // Press on the backdrop, release over the dialog header.
+        await page.mouse.move(5, 5);
+        await page.mouse.down();
+        await dialog.getByText('Insert/Edit link').hover();
+        await page.mouse.up();
+
+        await expect(dialog).toBeVisible();
+        await expect(url_input).toHaveValue('https://example.com/keep-me');
+    });
+
+    // Regression: a selection carrying the code mark can't take a link mark, so
+    // the dialog reported a scheme error no URL could satisfy.
+    test('The Link button is disabled on a selection that cannot carry a link', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Link dialog code selection',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Link text</p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.bubbleMenu.selectAllContent();
+        await kb.bubbleMenu.clickButton('Code');
+
+        await kb.bubbleMenu.assertButtonDisabled('Link');
+    });
+
+    // Regression: tiptap reads a scheme-less URL as relative, so "example.com"
+    // was stored verbatim and resolved against the article URL.
+    test('A scheme-less URL is saved as https', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Link dialog scheme-less URL',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Link text</p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.bubbleMenu.selectAllContent();
+        await kb.bubbleMenu.setLink('example.com');
+        await kb.editor.save();
+
+        await kb.editor.assertHasLink('Link text', 'https://example.com');
+    });
+
+    test('Enter saves from the new-tab checkbox', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Link dialog enter from checkbox',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Link text</p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.bubbleMenu.selectAllContent();
+        await kb.bubbleMenu.clickButton('Link');
+
+        const dialog = kb.linkDialog;
+        await dialog.getByLabel('URL', { exact: true }).fill('https://example.com');
+        await dialog.getByLabel('Open in new tab').focus();
+        await page.keyboard.press('Enter');
+
+        await expect(dialog).toBeHidden();
+        await kb.editor.save();
+
+        await kb.editor.assertHasLink('Link text', 'https://example.com');
     });
 });
