@@ -52,6 +52,7 @@ class Reminder extends CommonDBVisible implements
 {
     use PlanningEvent {
         post_getEmpty as trait_post_getEmpty;
+        populatePlanning as trait_populatePlanning;
     }
     use VobjectConverterTrait;
     /** @use Clonable<static> */
@@ -565,6 +566,49 @@ class Reminder extends CommonDBVisible implements
             'parent_link' => $parent->getLink(['icon' => true, 'forceid' => true]),
             'parent_entity_badge' => Entity::badgeCompletenameById($parent->getEntityID()),
         ]);
+    }
+
+    public static function populatePlanning($options = []): array
+    {
+        global $DB;
+
+        $events = self::trait_populatePlanning($options);
+
+        $language = $_SESSION['glpilanguage'] ?? null;
+        $reminders_ids = array_unique(array_column($events, 'reminders_id'));
+        if (empty($language) || $reminders_ids === []) {
+            return $events;
+        }
+
+        // Use the translations of the current language, if any
+        $translations = [];
+        $iterator = $DB->request([
+            'SELECT' => ['reminders_id', 'name', 'text'],
+            'FROM'   => ReminderTranslation::getTable(),
+            'WHERE'  => [
+                'reminders_id' => $reminders_ids,
+                'language'     => $language,
+            ],
+        ]);
+        foreach ($iterator as $data) {
+            $translations[$data['reminders_id']] = $data;
+        }
+
+        foreach ($events as &$event) {
+            $translation = $translations[$event['reminders_id'] ?? 0] ?? null;
+            if ($translation === null) {
+                continue;
+            }
+            if (!empty($translation['name'])) {
+                $event['name'] = $translation['name'];
+            }
+            if (!empty($translation['text'])) {
+                $event['text'] = RichText::getSafeHtml($translation['text']);
+            }
+        }
+        unset($event);
+
+        return $events;
     }
 
     final public static function getListCriteria(): array

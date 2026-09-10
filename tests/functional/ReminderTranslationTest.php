@@ -77,6 +77,63 @@ class ReminderTranslationTest extends DbTestCase
         $this->assertSame($text_fr, $text);
     }
 
+    public function testPlanningUsesTranslation(): void
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $reminder = new \Reminder();
+        $reminders_id = (int) $reminder->add([
+            'name'        => '_test_planned_reminder',
+            'text'        => '<p>Original text</p>',
+            'entities_id' => 0,
+            'plan'        => [
+                'begin' => '2025-01-15 10:00:00',
+                'end'   => '2025-01-15 11:00:00',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $reminders_id);
+
+        $translation = new \ReminderTranslation();
+        $this->assertGreaterThan(0, (int) $translation->add([
+            'reminders_id' => $reminders_id,
+            'users_id'     => \Session::getLoginUserID(),
+            'language'     => 'fr_FR',
+            'name'         => 'Titre traduit',
+            'text'         => '<p>Texte traduit</p>',
+        ]));
+
+        $get_event = function () use ($reminders_id): array {
+            $events = \Reminder::populatePlanning([
+                'who'      => \Session::getLoginUserID(),
+                'whogroup' => 0,
+                'begin'    => '2025-01-15 00:00:00',
+                'end'      => '2025-01-16 00:00:00',
+            ]);
+            foreach ($events as $event) {
+                if ((int) $event['reminders_id'] === $reminders_id) {
+                    return $event;
+                }
+            }
+            $this->fail('Reminder not found in planning');
+        };
+
+        $current_lang = $_SESSION['glpilanguage'];
+
+        // No translation for the current language, the original values are used
+        $_SESSION['glpilanguage'] = 'en_GB';
+        $event = $get_event();
+        $this->assertSame('_test_planned_reminder', $event['name']);
+        $this->assertStringContainsString('Original text', $event['text']);
+
+        // The translation for the current language is used
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $event = $get_event();
+        $_SESSION['glpilanguage'] = $current_lang;
+        $this->assertSame('Titre traduit', $event['name']);
+        $this->assertStringContainsString('Texte traduit', $event['text']);
+    }
+
     /**
      * Add translation into database
      *
