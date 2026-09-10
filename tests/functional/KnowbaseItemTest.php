@@ -2979,38 +2979,123 @@ HTML,
         $this->assertSame([$root_id], $this->getParentIds($child->getID()));
     }
 
-    public function testPurgingAnArticleAttachesItsOrphanedChildrenToTheRoot(): void
+    public function testDeletingAnArticleIsRefusedWhenItWouldDetachAChild(): void
     {
         $this->login();
-        $root_id = KnowbaseItem::getRootId();
+        $this->setEntity(0, true);
 
         $parent = $this->createItem(KnowbaseItem::class, [
-            'name'   => 'Parent ' . __FUNCTION__,
-            'answer' => '',
+            'name'         => 'Parent ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Only child ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            '_parents'     => [$parent->getID()],
+        ]);
+
+        // Deletion rights are untouched: the refusal is about the tree, not
+        // about what the user is allowed to do.
+        $this->assertTrue($parent->canDeleteItem());
+        $this->assertTrue($parent->canPurgeItem());
+
+        // The action is still offered: the refusal is decided when it is used,
+        // so that it never rests on what the page was rendered with.
+        $this->assertContains(
+            EditorActionType::DELETE_ARTICLE,
+            $this->getAsideActionTypes($parent),
+        );
+
+        // Every deletion path goes through the model, which refuses.
+        $expected_message = 'This article cannot be deleted because it contains sub-articles. They must be moved or deleted first.';
+        $this->assertFalse($parent->delete(['id' => $parent->getID()]));
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+        $this->assertFalse($parent->delete(['id' => $parent->getID()], true));
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+
+        // Nothing moved: the child is still attached to its parent, and both
+        // articles are still there.
+        $this->assertTrue($parent->getFromDB($parent->getID()));
+        $this->assertTrue($child->getFromDB($child->getID()));
+        $this->assertSame([$parent->getID()], $this->getParentIds($child->getID()));
+    }
+
+    public function testDeletingAnArticleIsAllowedWhenItsChildrenHaveAnotherParent(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Parent ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
         ]);
         $other_parent = $this->createItem(KnowbaseItem::class, [
-            'name'   => 'Other parent ' . __FUNCTION__,
-            'answer' => '',
-        ]);
-        $only_child = $this->createItem(KnowbaseItem::class, [
-            'name'     => 'Only child ' . __FUNCTION__,
-            'answer'   => '',
-            '_parents' => [$parent->getID()],
+            'name'         => 'Other parent ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
         ]);
         $shared_child = $this->createItem(KnowbaseItem::class, [
-            'name'     => 'Shared child ' . __FUNCTION__,
-            'answer'   => '',
-            '_parents' => [$parent->getID(), $other_parent->getID()],
+            'name'         => 'Shared child ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            '_parents'     => [$parent->getID(), $other_parent->getID()],
         ]);
 
+        // The child would not leave the tree, so nothing stands in the way.
         $this->assertTrue($parent->delete(['id' => $parent->getID()], true));
 
-        // The child that just lost its only parent is kept in the tree, under
-        // the root article, instead of becoming a second root.
-        $this->assertSame([$root_id], $this->getParentIds($only_child->getID()));
-
-        // The one that still has a parent is left alone.
+        // The child is left alone, under its remaining parent.
         $this->assertSame([$other_parent->getID()], $this->getParentIds($shared_child->getID()));
+    }
+
+    public function testDeletingChildlessArticleIsAllowed(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Article ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->assertTrue($article->delete(['id' => $article->getID()], true));
+    }
+
+    public function testAnArticleBecomesDeletableAsSoonAsItsLastChildIsGone(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Parent ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Only child ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            '_parents'     => [$parent->getID()],
+        ]);
+
+        $this->assertTrue($parent->hasChildrenWithoutOtherParent());
+        $this->assertTrue($child->delete(['id' => $child->getID()], true));
+
+        // No reload stands between the two deletions: the parent is a leaf now.
+        $this->assertFalse($parent->hasChildrenWithoutOtherParent());
+        $this->assertTrue($parent->delete(['id' => $parent->getID()], true));
     }
 
     /**

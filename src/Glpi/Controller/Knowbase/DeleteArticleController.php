@@ -36,6 +36,8 @@ namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use KnowbaseItem;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,7 +58,27 @@ final class DeleteArticleController extends AbstractController
     )]
     public function __invoke(int $id): Response
     {
-        $this->delete(KnowbaseItem::class, $id);
+        $article = new KnowbaseItem();
+        if (!$article->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        // Note: duplicated by the $this->purge call later but necessary to
+        // avoid disclosing information about child articles to someone that
+        // doesn't have the required rights.
+        if (!$article->can($id, PURGE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if ($article->hasChildrenWithoutOtherParent()) {
+            return new JsonResponse([
+                'success' => false,
+                // Rendered as HTML by `glpi_alert()`.
+                'message' => \htmlescape(KnowbaseItem::getChildrenDeletionRefusalMessage()),
+            ], Response::HTTP_CONFLICT);
+        }
+
+        $this->purge(KnowbaseItem::class, $id);
         Session::addMessageAfterRedirect(__s('Item successfully deleted.'));
 
         return new JsonResponse([
