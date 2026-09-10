@@ -123,6 +123,30 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(kb.videoEmbedPlaceholders).toHaveCount(0);
         });
 
+        // Regression: the dialog registered its keydown handler during the very
+        // Enter that opened it, so that Enter confirmed the untouched form.
+        test('Opening the dialog with Enter does not submit it', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Video dialog opened with Enter',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByKeyboard('Video');
+
+            const dialog = kb.videoDialog;
+            await expect(dialog).toBeVisible();
+            await expect(dialog.getByRole('alert')).toBeHidden();
+        });
+
         test('Error alert clears live when a valid URL replaces an invalid one', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);

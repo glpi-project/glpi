@@ -87,7 +87,9 @@ export function showLinkDialog(editor) {
         title: __('Insert/Edit link'),
         confirmLabel: __('Save'),
         onConfirm: ({ close }) => {
-            const href = url_input.value.trim();
+            const raw = url_input.value.trim();
+            // Anchors and root-relative paths are meant to be relative; a bare "example.com" is not.
+            const href = raw === '' || /^([a-z][a-z0-9+.-]*:|[#/?])/i.test(raw) ? raw : `https://${raw}`;
 
             if (href === '') {
                 editor.chain().focus().extendMarkRange('link').unsetLink().run();
