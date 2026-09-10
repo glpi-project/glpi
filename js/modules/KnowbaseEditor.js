@@ -44,6 +44,27 @@ import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors
 import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
 import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 
+// Used to hide the bubble menu explicitly when focus leaves it or the editor.
+const BUBBLE_MENU_PLUGIN_KEY = 'kb-editor-bubble-menu';
+
+const SHORTCUT_MAC_SYMBOLS = { Control: '⌘', Alt: '⌥', Shift: '⇧' };
+const SHORTCUT_OTHER_LABELS = { Control: 'Ctrl', Alt: 'Alt', Shift: 'Shift' };
+
+/**
+ * Derives the Mac and non-Mac display labels from an `aria-keyshortcuts`
+ * string (e.g. 'Control+Shift+s' -> { mac: '⌘⇧S', other: 'Ctrl+Shift+S' }).
+ * @param {string} ariaShortcut
+ * @returns {{mac: string, other: string}}
+ */
+function formatShortcut(ariaShortcut) {
+    const parts = ariaShortcut.split('+');
+    const key = parts.pop().toUpperCase();
+    return {
+        mac: parts.map((mod) => SHORTCUT_MAC_SYMBOLS[mod]).join('') + key,
+        other: [...parts.map((mod) => SHORTCUT_OTHER_LABELS[mod]), key].join('+'),
+    };
+}
+
 /**
  * Knowbase article editor based on Tiptap
  */
@@ -97,14 +118,10 @@ class KnowbaseEditor {
 
         this.#isEditable = !this.#options.readonly;
 
-        // Clear the container before initializing Tiptap
-        // Tiptap appends its .ProseMirror element without clearing existing content
-        // This ensures we get a clean in-place editing experience (Notion-like)
+        // Tiptap appends its .ProseMirror element without clearing existing content.
         this.#element.innerHTML = '';
 
-        // Create bubble menu element for text formatting
-        // Not appended to DOM here — the BubbleMenu plugin manages
-        // insertion/removal via show()/hide() to avoid ghost appearances on scroll
+        // Not appended to DOM here: the BubbleMenu plugin manages insertion/removal.
         this.#bubbleMenuElement = this.#createBubbleMenu();
 
         // Get SlashCommands extension
@@ -131,10 +148,12 @@ class KnowbaseEditor {
                 showOnlyCurrent: true,
             }),
             TiptapBubbleMenu.configure({
+                pluginKey: BUBBLE_MENU_PLUGIN_KEY,
                 element: this.#bubbleMenuElement,
                 appendTo: () => this.#element.closest('.kb-article') ?? document.body,
-                shouldShow: ({ editor, state }) => editor.isEditable
+                shouldShow: ({ editor, state, view }) => editor.isEditable
                     && !state.selection.empty
+                    && (view.hasFocus() || this.#bubbleMenuElement.contains(document.activeElement))
                     && !editor.isActive('image')
                     && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
@@ -195,13 +214,8 @@ class KnowbaseEditor {
             content: this.#options.content,
             editable: this.#isEditable,
             editorProps: {
-                // Chromium/Brave mis-place the caret when clicking inside a
-                // ProseMirror table cell (the caret drops into the block above
-                // the table). posAtCoords is correct, but native contenteditable
-                // placement ignores it; ProseMirror follows the wrong native
-                // position on a plain click. Force the selection to the
-                // PM-computed pos so the click lands in the clicked cell.
-                // Firefox already places it correctly, so this is idempotent there.
+                // Chromium/Brave mis-place the caret in table cells on click;
+                // force it back to the PM-computed pos (no-op on Firefox).
                 handleClick: (view, pos) => {
                     const $pos = view.state.doc.resolve(pos);
                     for (let depth = $pos.depth; depth > 0; depth--) {
@@ -213,6 +227,46 @@ class KnowbaseEditor {
                     }
                     return false;
                 },
+                // Jump straight into the bubble menu on Tab instead of leaving
+                // the keyboard user to tab through unrelated page controls first.
+                handleKeyDown: (view, event) => {
+                    // Escape closes the menu even if focus never left the editor.
+                    if (event.key === 'Escape') {
+                        if (!this.#bubbleMenuElement?.isConnected || this.#bubbleMenuElement.style.visibility === 'hidden') {
+                            return false;
+                        }
+                        // No stopPropagation(): let page-level Escape handlers still see this.
+                        event.preventDefault();
+                        this.#closeBubbleMenu();
+                        return true;
+                    }
+
+                    if (event.key !== 'Tab' || event.shiftKey) {
+                        return false;
+                    }
+                    // Don't hijack Tab's pre-existing meaning inside a list
+                    // item (indent) or a table cell (next cell).
+                    if (this.#editor.isActive('listItem') || this.#editor.isActive('tableCell') || this.#editor.isActive('tableHeader')) {
+                        return false;
+                    }
+                    if (view.state.selection.empty || !this.#bubbleMenuElement) {
+                        return false;
+                    }
+                    // isConnected also covers "not shown yet": Tiptap detaches
+                    // the element (`element.remove()`) when hiding the menu.
+                    const menuVisible = this.#bubbleMenuElement.isConnected
+                        && this.#bubbleMenuElement.style.visibility !== 'hidden';
+                    if (!menuVisible) {
+                        return false;
+                    }
+                    const buttons = this.#getVisibleButtons(this.#bubbleMenuElement);
+                    if (buttons.length === 0) {
+                        return false;
+                    }
+                    event.preventDefault();
+                    this.#focusBubbleButton(buttons[0]);
+                    return true;
+                },
             },
             onUpdate: ({ editor }) => {
                 if (typeof this.#options.onUpdate === 'function') {
@@ -223,6 +277,23 @@ class KnowbaseEditor {
             onSelectionUpdate: () => {
                 this.#updateBubbleMenuState();
             },
+        });
+
+        // BubbleMenuView's constructor overwrites tabIndex to 0; re-assert -1
+        // so the container itself isn't a second, dead tab stop.
+        if (this.#bubbleMenuElement) {
+            this.#bubbleMenuElement.tabIndex = -1;
+        }
+
+        // Tiptap's own blur handling wrongly treats focus moving anywhere
+        // under appendTo's `.kb-article` (e.g. the Documents tab) as still
+        // inside the menu, so hide it ourselves whenever focus lands outside.
+        this.#editor.on('blur', ({ event }) => {
+            if (event?.relatedTarget instanceof Node && this.#bubbleMenuElement?.contains(event.relatedTarget)) {
+                return;
+            }
+            if (!this.#editor || this.#editor.isDestroyed) return;
+            this.#editor.view.dispatch(this.#editor.view.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'hide'));
         });
 
         // Add class to wrapper for styling
@@ -241,21 +312,42 @@ class KnowbaseEditor {
         menu.classList.add('bubble-menu');
         menu.style.position = 'absolute';
         menu.style.width = 'max-content';
+        menu.setAttribute('role', 'toolbar');
+        menu.setAttribute('aria-label', __('Text formatting'));
+        menu.setAttribute('aria-orientation', 'horizontal');
+        menu.tabIndex = -1;
+        menu.addEventListener('keydown', (e) => this.#handleBubbleMenuKeyDown(e));
+        menu.addEventListener('focusout', (e) => {
+            const visible = this.#getVisibleButtons(menu);
+            // Don't key off relatedTarget===null for this
+            const targetHidden = e.target instanceof HTMLElement && !visible.includes(e.target);
+            if (targetHidden) {
+                if (menu.isConnected && menu.style.visibility !== 'hidden' && visible.length > 0) {
+                    this.#focusBubbleButton(visible[0]);
+                }
+                return;
+            }
+            // Focus left the toolbar for another page element: hide the now-stale menu.
+            if (e.relatedTarget !== null && !menu.contains(e.relatedTarget) && this.#editor && !this.#editor.isDestroyed) {
+                this.#editor.view.dispatch(this.#editor.view.state.tr.setMeta(BUBBLE_MENU_PLUGIN_KEY, 'hide'));
+            }
+        });
 
         const buttons = [
-            { command: 'toggleBold', icon: 'ti ti-bold', title: __('Bold') },
-            { command: 'toggleItalic', icon: 'ti ti-italic', title: __('Italic') },
-            { command: 'toggleStrike', icon: 'ti ti-strikethrough', title: __('Strikethrough') },
-            { command: 'toggleCode', icon: 'ti ti-code', title: __('Code') },
+            { command: 'toggleBold', icon: 'ti ti-bold', title: __('Bold'), shortcutAria: 'Control+b', toggle: true },
+            { command: 'toggleItalic', icon: 'ti ti-italic', title: __('Italic'), shortcutAria: 'Control+i', toggle: true },
+            { command: 'toggleStrike', icon: 'ti ti-strikethrough', title: __('Strikethrough'), shortcutAria: 'Control+Shift+s', toggle: true },
+            { command: 'toggleCode', icon: 'ti ti-code', title: __('Code'), shortcutAria: 'Control+e', toggle: true },
             { type: 'divider' },
-            { command: 'toggleHeading1', icon: 'ti ti-h-1', title: __('Heading 1'), special: 'heading', level: 1 },
-            { command: 'toggleHeading2', icon: 'ti ti-h-2', title: __('Heading 2'), special: 'heading', level: 2 },
-            { command: 'toggleHeading3', icon: 'ti ti-h-3', title: __('Heading 3'), special: 'heading', level: 3 },
+            { command: 'toggleHeading1', icon: 'ti ti-h-1', title: __('Heading 1'), special: 'heading', level: 1, shortcutAria: 'Control+Alt+1', toggle: true },
+            { command: 'toggleHeading2', icon: 'ti ti-h-2', title: __('Heading 2'), special: 'heading', level: 2, shortcutAria: 'Control+Alt+2', toggle: true },
+            { command: 'toggleHeading3', icon: 'ti ti-h-3', title: __('Heading 3'), special: 'heading', level: 3, shortcutAria: 'Control+Alt+3', toggle: true },
             { type: 'divider' },
-            { command: 'toggleBulletList', icon: 'ti ti-list', title: __('Bullet List') },
-            { command: 'toggleOrderedList', icon: 'ti ti-list-numbers', title: __('Numbered List') },
-            { command: 'toggleBlockquote', icon: 'ti ti-blockquote', title: __('Quote') },
+            { command: 'toggleBulletList', icon: 'ti ti-list', title: __('Bullet List'), shortcutAria: 'Control+Shift+8', toggle: true },
+            { command: 'toggleOrderedList', icon: 'ti ti-list-numbers', title: __('Numbered List'), shortcutAria: 'Control+Shift+7', toggle: true },
+            { command: 'toggleBlockquote', icon: 'ti ti-blockquote', title: __('Quote'), shortcutAria: 'Control+Shift+b', toggle: true },
             { type: 'divider' },
+            // Not toggles: Link opens a prompt, Remove link is one-shot.
             { command: 'setLink', icon: 'ti ti-link', title: _x('button', 'Link'), special: 'link' },
             { command: 'unsetLink', icon: 'ti ti-link-off', title: __('Remove link'), special: 'unlink' },
         ];
@@ -285,21 +377,125 @@ class KnowbaseEditor {
             if (btn.level) {
                 button.dataset.level = btn.level;
             }
-            button.title = btn.title;
+            // Without aria-hidden on the icon + an explicit aria-label, a
+            // screen reader gets either no name or the glyph's raw code point.
+            button.setAttribute('aria-label', btn.title);
+            if (btn.toggle) {
+                button.setAttribute('aria-pressed', 'false');
+            }
+            if (btn.shortcutAria) {
+                const isMac = TiptapCore.isMacOS() || TiptapCore.isiOS();
+                const { mac, other } = formatShortcut(btn.shortcutAria);
+                button.title = `${btn.title} (${isMac ? mac : other})`;
+                // Tiptap's "Mod" shortcuts resolve to Cmd on macOS, not Ctrl.
+                const ariaShortcut = isMac ? btn.shortcutAria.replace(/^Control\+/, 'Meta+') : btn.shortcutAria;
+                button.setAttribute('aria-keyshortcuts', ariaShortcut);
+            } else {
+                button.title = btn.title;
+            }
+            button.tabIndex = -1;
 
             const icon = document.createElement('i');
             icon.className = btn.icon;
+            icon.setAttribute('aria-hidden', 'true');
             button.appendChild(icon);
 
+            button.addEventListener('mousedown', (e) => {
+                // Keeps a mouse user's focus in the editor (doesn't affect keyboard activation).
+                e.preventDefault();
+            });
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.#executeBubbleCommand(btn.command, btn.special, btn.level);
+                if (this.#getVisibleButtons(this.#bubbleMenuElement).includes(button)) {
+                    this.#setRovingTabIndex(button);
+                }
+                // If this command hid `button` itself, the focusout listener above handles it.
             });
 
             menu.appendChild(button);
         });
 
+        const initialButtons = this.#getVisibleButtons(menu);
+        if (initialButtons.length > 0) {
+            initialButtons[0].tabIndex = 0;
+        }
+
         return menu;
+    }
+
+    /**
+     * Buttons reachable via keyboard: not a divider, not hidden, not disabled.
+     * @param {HTMLElement} container
+     * @returns {HTMLButtonElement[]}
+     */
+    #getVisibleButtons(container) {
+        return Array.from(container.querySelectorAll('.bubble-menu-btn'))
+            .filter((btn) => btn.style.display !== 'none' && !btn.disabled);
+    }
+
+    /**
+     * Roving tabindex: exactly one visible button is a tab stop at a time.
+     * @param {HTMLButtonElement} activeButton
+     */
+    #setRovingTabIndex(activeButton) {
+        if (!this.#bubbleMenuElement) return;
+        this.#bubbleMenuElement.querySelectorAll('.bubble-menu-btn').forEach((btn) => {
+            btn.tabIndex = btn === activeButton ? 0 : -1;
+        });
+    }
+
+    /**
+     * @param {HTMLButtonElement} button
+     */
+    #focusBubbleButton(button) {
+        this.#setRovingTabIndex(button);
+        button.focus();
+    }
+
+    /**
+     * Tab/Shift+Tab/Arrow/Home/End navigation between the toolbar's visible
+     * buttons; Tab cycles within the toolbar instead of leaving it.
+     * @param {KeyboardEvent} event
+     */
+    #handleBubbleMenuKeyDown(event) {
+        if (!this.#bubbleMenuElement) return;
+
+        const buttons = this.#getVisibleButtons(this.#bubbleMenuElement);
+        const currentIndex = buttons.indexOf(document.activeElement);
+
+        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft' || event.key === 'Tab') {
+            event.preventDefault();
+            if (buttons.length === 0) return;
+            if (currentIndex === -1) {
+                this.#focusBubbleButton(buttons[0]);
+                return;
+            }
+            const backward = event.key === 'ArrowLeft' || (event.key === 'Tab' && event.shiftKey);
+            const delta = backward ? -1 : 1;
+            const nextIndex = (currentIndex + delta + buttons.length) % buttons.length;
+            this.#focusBubbleButton(buttons[nextIndex]);
+        } else if (event.key === 'Home') {
+            event.preventDefault();
+            if (buttons.length > 0) this.#focusBubbleButton(buttons[0]);
+        } else if (event.key === 'End') {
+            event.preventDefault();
+            if (buttons.length > 0) this.#focusBubbleButton(buttons[buttons.length - 1]);
+        } else if (event.key === 'Escape') {
+            // No stopPropagation(): let page-level Escape handlers still see this.
+            event.preventDefault();
+            this.#closeBubbleMenu();
+        }
+    }
+
+    /**
+     * Closes the menu and refocuses the editor, collapsing the selection so
+     * `shouldShow` (selection-driven) doesn't reopen it right after.
+     */
+    #closeBubbleMenu() {
+        if (!this.#editor || this.#editor.isDestroyed) return;
+        const { to } = this.#editor.state.selection;
+        this.#editor.chain().setTextSelection(to).focus().run();
     }
 
     /**
@@ -311,21 +507,23 @@ class KnowbaseEditor {
     #executeBubbleCommand(command, special, level) {
         if (!this.#editor) return;
 
+        // No `.focus()` in these chains: keeping DOM focus wherever it
+        // already is lets a keyboard user chain another toolbar action.
         if (special === 'link') {
             const previousUrl = this.#editor.getAttributes('link').href || '';
             const url = window.prompt(__('Enter URL'), previousUrl);
             if (url === null) return; // Cancelled
             if (url === '') {
-                this.#editor.chain().focus().unsetLink().run();
+                this.#editor.chain().unsetLink().run();
             } else {
-                this.#editor.chain().focus().setLink({ href: url }).run();
+                this.#editor.chain().setLink({ href: url }).run();
             }
         } else if (special === 'heading') {
-            this.#editor.chain().focus().toggleHeading({ level }).run();
+            this.#editor.chain().toggleHeading({ level }).run();
         } else if (special === 'comment') {
             this.#dispatchCommentSelection();
-        } else if (this.#editor.chain().focus()[command]) {
-            this.#editor.chain().focus()[command]().run();
+        } else if (this.#editor.chain()[command]) {
+            this.#editor.chain()[command]().run();
         }
     }
 
@@ -405,7 +603,17 @@ class KnowbaseEditor {
             }
 
             btn.classList.toggle('is-active', isActive);
+            // is-active is CSS-only; toggle buttons also need aria-pressed.
+            if (btn.hasAttribute('aria-pressed')) {
+                btn.setAttribute('aria-pressed', String(isActive));
+            }
         });
+
+        const visible = this.#getVisibleButtons(this.#bubbleMenuElement);
+        const hasRovingTarget = visible.some((btn) => btn.tabIndex === 0);
+        if (!hasRovingTarget && visible.length > 0) {
+            this.#setRovingTabIndex(visible[0]);
+        }
     }
 
     /**

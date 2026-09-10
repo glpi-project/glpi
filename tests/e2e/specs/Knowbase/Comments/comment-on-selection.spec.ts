@@ -849,4 +849,64 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
             .poll(() => kb.getCommentHighlightThicknesses())
             .toEqual(['2px', '2px']);
     });
+
+    test.describe('Keyboard accessibility', () => {
+
+        test('Tab from a read-mode selection focuses the comment button', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test read mode comment bubble tab entry',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Some text to comment on</p>',
+            });
+
+            await kb.goto(id);
+            await kb.selectTextInReadMode('Some text to comment on');
+
+            const bubble = await kb.readModeCommentBubble.assertVisible();
+            await page.keyboard.press('Tab');
+            await expect(bubble).toBeFocused();
+        });
+
+        test('Enter activates the comment button once focused', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test read mode comment bubble enter activation',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Some text to comment on</p>',
+            });
+
+            await kb.goto(id);
+            await kb.selectTextInReadMode('Some text to comment on');
+
+            await page.keyboard.press('Tab');
+            await page.keyboard.press('Enter');
+
+            await expect(kb.getPendingAnchorQuote()).toBeVisible();
+        });
+
+        test('Escape hides the comment bubble', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test read mode comment bubble escape',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Some text to comment on</p>',
+            });
+
+            await kb.goto(id);
+            await kb.selectTextInReadMode('Some text to comment on');
+
+            await page.keyboard.press('Tab');
+            await expect(await kb.readModeCommentBubble.assertVisible()).toBeFocused();
+
+            await page.keyboard.press('Escape');
+            await kb.readModeCommentBubble.assertHidden();
+        });
+    });
 });

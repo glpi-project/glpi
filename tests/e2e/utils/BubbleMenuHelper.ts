@@ -62,6 +62,10 @@ export class BubbleMenuHelper {
         return this.page.locator('.bubble-menu');
     }
 
+    getButton(command: BubbleMenuCommand): Locator {
+        return this.getMenu().getByRole('button', { name: command, exact: true });
+    }
+
     async selectAllContent(): Promise<void> {
         const editor = this.editorHelper.getEditor();
         await editor.click();
@@ -80,37 +84,35 @@ export class BubbleMenuHelper {
     }
 
     async clickButton(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        const button = menu.getByTitle(command, { exact: true });
+        await this.assertVisible();
+        const button = this.getButton(command);
         await expect(button).toBeVisible();
         await button.click();
     }
 
     async assertButtonActive(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        const button = menu.getByTitle(command, { exact: true });
-        await expect(button).toHaveClass(/is-active/);
+        await this.assertVisible();
+        await expect(this.getButton(command)).toHaveClass(/is-active/);
     }
 
     async assertButtonInactive(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        const button = menu.getByTitle(command, { exact: true });
-        await expect(button).not.toHaveClass(/is-active/);
+        await this.assertVisible();
+        await expect(this.getButton(command)).not.toHaveClass(/is-active/);
     }
 
     async assertButtonDisabled(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        await expect(menu.getByTitle(command, { exact: true })).toBeDisabled();
+        await this.assertVisible();
+        await expect(this.getButton(command)).toBeDisabled();
     }
 
     async assertButtonVisible(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        await expect(menu.getByTitle(command, { exact: true })).toBeVisible();
+        await this.assertVisible();
+        await expect(this.getButton(command)).toBeVisible();
     }
 
     async assertButtonHidden(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        await expect(menu.getByTitle(command, { exact: true })).toBeHidden();
+        await this.assertVisible();
+        await expect(this.getButton(command)).toBeHidden();
     }
 
     async setLink(url: string): Promise<void> {
