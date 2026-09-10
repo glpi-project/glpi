@@ -33,7 +33,7 @@
 /* global TiptapCore, TiptapSuggestion, FloatingUI */
 
 import { showVideoDialog } from '/js/modules/TipTap/VideoEmbedExtension.js';
-import { createEditorDialog, createDialogField } from '/js/modules/TipTap/EditorDialog.js';
+import { createEditorDialog, createDialogField, createDialogError } from '/js/modules/TipTap/EditorDialog.js';
 
 /**
  * Slash commands extension for Tiptap editor
@@ -108,6 +108,8 @@ function showImageDialog(editor, existing_attrs = null) {
         }
     });
 
+    const error = createDialogError(src_input, `image-error-${uid}`);
+
     const { body } = createEditorDialog({
         editor,
         title: __('Insert/Edit Image'),
@@ -115,6 +117,7 @@ function showImageDialog(editor, existing_attrs = null) {
         onConfirm: ({ close }) => {
             const src = src_input.value.trim();
             if (!src) {
+                error.show(__('An image source is required.'));
                 src_input.focus();
                 return;
             }
@@ -137,6 +140,7 @@ function showImageDialog(editor, existing_attrs = null) {
     });
 
     body.appendChild(source_group);
+    body.appendChild(error.element);
     body.appendChild(alt_group);
     body.appendChild(size_row);
 

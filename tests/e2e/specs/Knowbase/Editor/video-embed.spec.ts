@@ -174,7 +174,7 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(dialog.getByRole('alert')).toBeHidden();
         });
 
-        test('Error alert clears live when a valid URL replaces an invalid one', async ({ page, profile, api }) => {
+        test('The error clears as soon as the URL is edited', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
 
@@ -194,7 +194,11 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             const dialog = kb.videoDialog;
             await expect(dialog.getByRole('alert')).toBeHidden();
 
+            // Nothing is reported until Insert: a URL is incomplete while being typed.
             await dialog.getByLabel('Video URL').fill('not-a-url');
+            await expect(dialog.getByRole('alert')).toBeHidden();
+
+            await dialog.getByRole('button', { name: 'Insert' }).click();
             await expect(dialog.getByRole('alert')).toBeVisible();
 
             await dialog.getByLabel('Video URL').fill('https://www.youtube.com/watch?v=dQw4w9WgXcQ');

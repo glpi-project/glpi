@@ -34,6 +34,7 @@ import {
     createEditorDialog,
     createDialogField,
     createDialogCheckbox,
+    createDialogError,
 } from '/js/modules/TipTap/EditorDialog.js';
 
 // extension-link's isAllowedUri list.
@@ -42,11 +43,13 @@ const RELATIVE = /^[#/?]/;
 const SCHEME_SHAPED = /^[a-z][a-z0-9+.-]*:/i;
 // "intranet:8080/admin": scheme-shaped, but a host and a port.
 const HOST_PORT = /^[^\s:/?#]+:\d+($|[/?#])/;
+// A host carries a dot, or is localhost; "docs/faq.html" is a relative path.
+const HOSTLIKE = /^(localhost([:/?#]|$)|[^\s/?#]+\.[^\s/?#]+)/i;
 
 /**
  * Complete an input that names a host, since tiptap stores a scheme-less URL as
  * relative and it then 404s against the article. An input that names a scheme is
- * left for the extension to refuse.
+ * left for the extension to refuse, a relative path is left relative.
  *
  * @param {string} raw
  * @returns {string}
@@ -56,7 +59,11 @@ function toHref(raw) {
         return raw;
     }
 
-    return SCHEME_SHAPED.test(raw) && !HOST_PORT.test(raw) ? raw : `https://${raw}`;
+    if (SCHEME_SHAPED.test(raw) && !HOST_PORT.test(raw)) {
+        return raw;
+    }
+
+    return HOST_PORT.test(raw) || HOSTLIKE.test(raw) ? `https://${raw}` : raw;
 }
 
 /**
@@ -87,23 +94,7 @@ export function showLinkDialog(editor) {
     );
     const new_tab_input = new_tab_group.querySelector('input');
 
-    const error_msg = document.createElement('p');
-    error_msg.className = 'text-danger small mt-1 mb-0';
-    error_msg.style.display = 'none';
-
-    const showError = () => {
-        if (error_msg.style.display !== 'none') {
-            return;
-        }
-        error_msg.textContent = __('This URL is not accepted. Check the scheme (http, https, mailto, tel, ftp).');
-        error_msg.setAttribute('role', 'alert');
-        error_msg.style.display = '';
-    };
-
-    url_input.addEventListener('input', () => {
-        error_msg.removeAttribute('role');
-        error_msg.style.display = 'none';
-    });
+    const error = createDialogError(url_input, `link-error-${uid}`);
 
     const { body } = createEditorDialog({
         editor,
@@ -116,7 +107,7 @@ export function showLinkDialog(editor) {
                 editor.chain().focus().extendMarkRange('link').unsetLink().run();
             } else {
                 if (!editor.can().setLink({ href })) {
-                    showError();
+                    error.show(__('This URL is not accepted. Check the scheme (http, https, mailto, tel, ftp).'));
                     url_input.focus();
                     return;
                 }
@@ -131,7 +122,7 @@ export function showLinkDialog(editor) {
     });
 
     body.appendChild(url_group);
-    body.appendChild(error_msg);
+    body.appendChild(error.element);
     body.appendChild(new_tab_group);
 
     url_input.focus();

@@ -32,7 +32,7 @@
 
 /* global TiptapCore */
 
-import { createEditorDialog, createDialogField } from '/js/modules/TipTap/EditorDialog.js';
+import { createEditorDialog, createDialogField, createDialogError } from '/js/modules/TipTap/EditorDialog.js';
 
 /**
  * VideoEmbed Tiptap node — stores videos as inert
@@ -170,34 +170,8 @@ export function showVideoDialog(editor) {
     help.className = 'text-muted small mt-1 mb-0';
     help.textContent = __('Supported: a YouTube URL, or a direct video file URL (MP4, WebM, Ogg).');
 
-    const error_msg = document.createElement('p');
-    error_msg.className = 'text-danger small mt-1 mb-0';
-    error_msg.style.display = 'none';
-
-    // showError() guards against re-mutating the live region on every
-    // keystroke: re-assigning textContent on an aria-live node makes some
-    // screen readers announce again.
-    const showError = () => {
-        if (error_msg.style.display !== 'none') {
-            return;
-        }
-        error_msg.textContent = __('This video URL is not recognized. Use a YouTube URL or a direct video file URL (MP4, WebM, Ogg).');
-        error_msg.setAttribute('role', 'alert');
-        error_msg.style.display = '';
-    };
-    const hideError = () => {
-        error_msg.removeAttribute('role');
-        error_msg.style.display = 'none';
-    };
-
-    url_input.addEventListener('input', () => {
-        const value = url_input.value.trim();
-        if (value === '' || parseVideoUrl(value)) {
-            hideError();
-            return;
-        }
-        showError();
-    });
+    // Checked on confirm, not on input: a URL is unrecognized until it is fully typed.
+    const error = createDialogError(url_input, `video-error-${uid}`);
 
     const { body } = createEditorDialog({
         editor,
@@ -206,7 +180,7 @@ export function showVideoDialog(editor) {
         onConfirm: ({ close }) => {
             const attrs = parseVideoUrl(url_input.value.trim());
             if (!attrs) {
-                showError();
+                error.show(__('This video URL is not recognized. Use a YouTube URL or a direct video file URL (MP4, WebM, Ogg).'));
                 url_input.focus();
                 return;
             }
@@ -220,7 +194,7 @@ export function showVideoDialog(editor) {
 
     body.appendChild(url_group);
     body.appendChild(help);
-    body.appendChild(error_msg);
+    body.appendChild(error.element);
 
     url_input.focus();
 }
