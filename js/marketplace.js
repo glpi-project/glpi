@@ -75,6 +75,37 @@ $(document).ready(function() {
                 } else {
                     html = html.replace('cleaned', '');
                     buttons.html(html);
+
+                    const new_version = buttons.find('.new-version').data('new-version');
+                    if (new_version) {
+                        const version_span = li.find('.misc-right .version');
+                        if (version_span.length > 0) {
+                            version_span.html(`<i class="ti ti-git-branch"></i> ${new_version}`);
+                        }
+
+                        const main_div = li.find('.main');
+                        if (main_div.hasClass('bg-warning-subtle')) {
+                            main_div.removeClass('bg-warning-subtle');
+
+                            const alert_div = $('.marketplace .alert-important.alert-warning');
+                            if (alert_div.length > 0) {
+                                const text_div = alert_div.children('div');
+                                const text = text_div.text();
+                                const matches = text.match(/\d+/);
+                                if (matches && matches.length > 0) {
+                                    const count = parseInt(matches[0], 10);
+                                    if (count > 1) {
+                                        text_div.text(text.replace(count, count - 1));
+                                    } else {
+                                        alert_div.remove();
+                                    }
+                                } else {
+                                    alert_div.remove();
+                                }
+                            }
+                        }
+                    }
+
                     displayAjaxMessageAfterRedirect();
                     addTooltips();
                 }
