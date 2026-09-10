@@ -50,6 +50,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use GraphQL\Deferred;
 use GraphQL\Error\Error;
+use GraphQL\Language\AST\FieldNode;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\ResolveInfo;
 use stdClass;
@@ -354,8 +355,8 @@ class DefaultResolvers
         $root_field_node = $info->fieldNodes[0];
         if (isset($root_field_node->selectionSet)) {
             foreach ($root_field_node->selectionSet->selections as $selection) {
-                if ($selection->name->value === $field_name) {
-                    $requested_field_name = $selection->alias?->value ?? $field_name;
+                if ($selection instanceof FieldNode && $selection->name->value === $field_name) {
+                    $requested_field_name = $selection->alias->value ?? $field_name;
                     break;
                 }
             }
