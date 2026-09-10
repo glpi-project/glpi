@@ -35,11 +35,13 @@
 namespace tests\units\Glpi\Api\HL;
 
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\Controller\AdministrationController;
 use Glpi\Api\HL\ResourceAccessor;
-use Glpi\Tests\GLPITestCase;
+use Glpi\Api\HL\Router;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class ResourceAccessorTest extends GLPITestCase
+class ResourceAccessorTest extends DbTestCase
 {
     public static function getInputParamsBySchemaProvider()
     {
@@ -195,5 +197,91 @@ class ResourceAccessorTest extends GLPITestCase
                 'maximum' => 300,
             ],
         ], $response_data['detail']['weight']);
+    }
+
+    public function testApplyFieldReadRestrictions(): void
+    {
+        global $DB;
+
+        $this->login('post-only', 'postonly');
+        $user_schema = AdministrationController::getKnownSchemas(Router::API_VERSION)['User'];
+        $filtered = $this->callPrivateMethod(ResourceAccessor::class, 'applyFieldReadRestrictions', $user_schema);
+        $this->assertArrayHasKey('properties', $filtered);
+        $this->assertArrayHasKey('id', $filtered['properties']);
+        $this->assertArrayHasKey('username', $filtered['properties']);
+        $this->assertArrayHasKey('phone', $filtered['properties']);
+        $this->assertArrayHasKey('picture', $filtered['properties']);
+        $this->assertArrayNotHasKey('date_sync', $filtered['properties']);
+
+        $this->login('tech', 'tech');
+        $result = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['limit' => 1])->getBody(), true);
+        $this->assertArrayHasKey('id', $result[0]);
+        $this->assertArrayHasKey('username', $result[0]);
+        $this->assertArrayNotHasKey('date_sync', $result[0]);
+
+        $result = json_decode((string) ResourceAccessor::getOneBySchema($user_schema, ['id' => 2], [])->getBody(), true);
+        $this->assertArrayHasKey('id', $result);
+        $this->assertArrayHasKey('username', $result);
+        $this->assertArrayNotHasKey('date_sync', $result);
+
+        // clear readOnly flag on date_sync field to test updates
+        $user_schema['properties']['date_sync']['readOnly'] = false;
+
+        // test updating as Super-Admin just to ensure the test is set up correctly
+        $this->login();
+        ResourceAccessor::updateBySchema($user_schema, ['id' => 2], ['date_sync' => '2026-07-01 05:06:00']);
+        $this->assertEquals(
+            expected: '2026-07-01 05:06:00',
+            actual: $DB->request([
+                'SELECT' => ['date_sync'],
+                'FROM' => 'glpi_users',
+                'WHERE' => ['id' => 2],
+            ])->current()['date_sync']
+        );
+
+        $this->login('tech', 'tech');
+        $response = ResourceAccessor::updateBySchema($user_schema, ['id' => 2], ['date_sync' => '2026-07-02 06:07:00']);
+        // Request is OK but the field is ignored as it isn't in the schema anymore
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(
+            expected: '2026-07-01 05:06:00',
+            actual: $DB->request([
+                'SELECT' => ['date_sync'],
+                'FROM' => 'glpi_users',
+                'WHERE' => ['id' => 2],
+            ])->current()['date_sync']
+        );
+
+        $this->login();
+        ResourceAccessor::createBySchema($user_schema, ['username' => 'testuser', 'date_sync' => '2026-07-03 07:08:00'], [AdministrationController::class, 'getUserByID']);
+        $this->assertEquals(
+            expected: '2026-07-03 07:08:00',
+            actual: $DB->request([
+                'SELECT' => ['date_sync'],
+                'FROM' => 'glpi_users',
+                'WHERE' => ['name' => 'testuser'],
+            ])->current()['date_sync']
+        );
+
+        $this->login('tech', 'tech');
+        $response = ResourceAccessor::createBySchema($user_schema, ['username' => 'testuser2', 'date_sync' => '2026-07-04 08:09:00'], [AdministrationController::class, 'getUserByID']);
+        // Request is OK but the field is ignored as it isn't in the schema anymore
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals(
+            expected: null,
+            actual: $DB->request([
+                'SELECT' => ['date_sync'],
+                'FROM' => 'glpi_users',
+                'WHERE' => ['name' => 'testuser2'],
+            ])->current()['date_sync']
+        );
+
+        // Sorting by the date_sync field should be ignored for the tech user
+        $response = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['sort' => 'date_sync'])->getBody(), true);
+        $this->assertEquals("Invalid property for sorting: date_sync", $response['title']);
+
+        // Filtering by the date_sync field should be ignored for the tech user
+        $response = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['filter' => 'date_sync=gt="2040-01-01"'])->getBody(), true);
+        $this->assertGreaterThan(5, count($response));
     }
 }

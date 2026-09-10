@@ -42,6 +42,7 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use GraphQL\Error\Error;
 use GraphQL\Utils\SchemaPrinter;
 
 #[Route(path: '/GraphQL', priority: 1, tags: ['GraphQL'])]
@@ -72,6 +73,20 @@ final class GraphQLController extends AbstractController
             // More correct handling of paginations is adding a "pagination" field to the "extensions" part of the response, which is designed for this kind of metadata.
             $response_data['extensions']['pagination'] = $result['context']->pagination;
         }
+        if (isset($result['context']->field_errors)) {
+            /** @var Error $field_error */
+            foreach ($result['context']->field_errors as $field_error) {
+                $response_data['errors'][] = [
+                    'message' => $field_error->getMessage(),
+                    'path' => $field_error->getPath(),
+                    'locations' => $field_error->getLocations(),
+                    'extensions' => [
+                        'code' => 'field_access_denied',
+                    ],
+                ];
+            }
+        }
+
         return new JSONResponse($response_data, 200, $headers);
     }
 
