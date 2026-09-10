@@ -531,6 +531,13 @@ class GraphQLControllerTest extends HLAPITestCase
                 ->hasFieldAccessDenied('Computer.user.date_sync');
         });
 
+        // Error message adapts to aliases
+        $this->graphql->call('query { Computer { id name owner:user { id username last_sync:date_sync } } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('Computer.owner.last_sync');
+        });
+
         $DB->insert('glpi_users', [
             'name' => __FUNCTION__,
             'date_sync' => '2026-07-01 06:07:00',

@@ -341,6 +341,30 @@ class DefaultResolvers
     }
 
     /**
+     * Returns the requested field name for a given field and path.
+     * This may be the real field name, or an alias.
+     * @param string $field_name The real field name.
+     * @param ResolveInfo $info
+     * @return string
+     */
+    private function getRequestedFieldName(string $field_name, ResolveInfo $info): string
+    {
+        $requested_field_name = $field_name;
+
+        $root_field_node = $info->fieldNodes[0];
+        if (isset($root_field_node->selectionSet)) {
+            foreach ($root_field_node->selectionSet->selections as $selection) {
+                if ($selection->name->value === $field_name) {
+                    $requested_field_name = $selection->alias?->value ?? $field_name;
+                    break;
+                }
+            }
+        }
+
+        return $requested_field_name;
+    }
+
+    /**
      * Checks the requested fields against the schema, applying any field-level read permission checks and removing any fields that the user does not have permission to view.
      * As the field selection in the GraphQL resolve info is not changed, only the fetching of data will be blocked.
      * The fields will still be present in the GraphQL response, but will be null if the user does not have permission to view them.
@@ -353,6 +377,7 @@ class DefaultResolvers
     private function getValidFieldSelection(array $schema, array $requested_fields, ResolveInfo $info, stdClass $context): array
     {
         $valid_fields = [];
+
         foreach ($requested_fields as $field) {
             if (!array_key_exists($field, $schema['properties'])) {
                 continue;
@@ -364,7 +389,8 @@ class DefaultResolvers
                 }
                 if ((bool) $check_result === false) {
                     $context->field_errors ??= [];
-                    $context->field_errors[] = new FieldAccessDeniedError(nodes: $info->fieldNodes, path: [...$info->path, $field]);
+                    $requested_field_name = $this->getRequestedFieldName($field, $info);
+                    $context->field_errors[] = new FieldAccessDeniedError(nodes: $info->fieldNodes, path: [...$info->path, $requested_field_name]);
                     continue;
                 }
             }
