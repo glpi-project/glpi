@@ -2280,14 +2280,12 @@ class MailCollector extends CommonDBTM
                     // notification subject tag, and fall back to the last match.
                     $known_tags = $this->getNotificationSubjectTags();
                     foreach ($matches as $match) {
+                        // Keep the last seen id as fallback, but stop as soon as a
+                        // known notification subject tag is found.
+                        $candidate = $match[2];
                         if (in_array(trim($match[1]), $known_tags, true)) {
-                            $candidate = $match[2];
                             break;
                         }
-                    }
-                    if ($candidate === null) {
-                        $last = end($matches);
-                        $candidate = $last[2];
                     }
                 }
 
