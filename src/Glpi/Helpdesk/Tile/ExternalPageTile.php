@@ -84,7 +84,7 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
     #[Override]
     public function getIllustration(): string
     {
-        return $this->fields['illustration'] ?? IllustrationManager::DEFAULT_ILLUSTRATION;
+        return ($this->fields['illustration'] ?? '') ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]
