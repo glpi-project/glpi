@@ -221,7 +221,7 @@ EOT;
     }
 
     /**
-     * @return array<string, array{name: string, in: string, description: string, schema: array<string, mixed>, example?: mixed, required?: bool}>
+     * @return array<string, array{name: string, in: string, description?: string, schema: array<string, mixed>, example?: mixed, required?: bool}>
      */
     public static function getParameterComponents(): array
     {
@@ -263,6 +263,16 @@ EOT;
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                 ],
+            ],
+            'If-Modified-Since' => [
+                'name' => 'If-Modified-Since',
+                'in' => Doc\Parameter::LOCATION_HEADER,
+                'schema' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+            'If-Unmodified-Since' => [
+                'name' => 'If-Unmodified-Since',
+                'in' => Doc\Parameter::LOCATION_HEADER,
+                'schema' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
     }
