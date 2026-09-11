@@ -44,6 +44,7 @@
 add_groups_id_field_in_olas($migration);
 create_items_olas_table($migration, $DB);
 migrate_items_olas_data($migration, $DB);
+fix_wrong_ttr_ola_type($migration, $DB);
 remove_olas_fields_in_tickets($migration);
 update_crontask($migration, $DB);
 
@@ -75,7 +76,7 @@ function create_items_olas_table(Migration $migration, DBmysql $DB): void
         `itemtype`      varchar(255) NOT NULL,
         `items_id`      int unsigned NOT NULL,
         `olas_id`       int unsigned NOT NULL,
-        `ola_type`      tinyint NOT NULL, -- 1: TTO, 2: TTR
+        `ola_type`      tinyint NOT NULL, -- SLM::TTR (0) or SLM::TTO (1)
         `start_time`    timestamp NULL DEFAULT NULL,
         `due_time`      timestamp NULL DEFAULT NULL,
         `end_time`      timestamp NULL DEFAULT NULL,
@@ -117,7 +118,7 @@ function migrate_items_olas_data(Migration $migration, DBmysql $DB): void
                         'itemtype'      => 'Ticket',
                         'items_id'      => $ticket['id'],
                         'olas_id'       => $ticket['olas_id_tto'],
-                        'ola_type'      => 1,
+                        'ola_type'      => 1, // SLM::TTO
                         'start_time'    => $ticket['ola_tto_begin_date'],
                         'due_time'      => $ticket['internal_time_to_own'],
                         'end_time'      => null,
@@ -137,7 +138,7 @@ function migrate_items_olas_data(Migration $migration, DBmysql $DB): void
                         'itemtype'      => 'Ticket',
                         'items_id'      => $ticket['id'],
                         'olas_id'       => $ticket['olas_id_ttr'],
-                        'ola_type'      => 2,
+                        'ola_type'      => 0, // SLM::TTR
                         'start_time'    => $ticket['ola_ttr_begin_date'],
                         'due_time'      => $ticket['internal_time_to_resolve'],
                         'end_time'      => null,
@@ -149,6 +150,25 @@ function migrate_items_olas_data(Migration $migration, DBmysql $DB): void
             );
         }
     }
+}
+
+function fix_wrong_ttr_ola_type(Migration $migration, DBmysql $DB): void
+{
+    // An earlier version of this migration stored the TTR type as 2 instead of
+    // SLM::TTR (0). All the code expects SLM::TTR/SLM::TTO, so TTR OLAs were not
+    // displayed and tickets with an exceeded TTR OLA could not be opened.
+    // Repair the rows that were migrated with the wrong value.
+    if (!$DB->tableExists('glpi_items_olas')) {
+        return;
+    }
+
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_items_olas',
+            ['ola_type' => 0], // SLM::TTR
+            ['ola_type' => 2]
+        )
+    );
 }
 
 function remove_olas_fields_in_tickets(Migration $migration): void
