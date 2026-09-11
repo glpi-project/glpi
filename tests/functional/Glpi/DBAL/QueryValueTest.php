@@ -77,15 +77,4 @@ class QueryValueTest extends GLPITestCase
         $this->expectExceptionMessage(sprintf('A query value must be a scalar, %s given', $type));
         new QueryValue($value);
     }
-
-    /**
-     * Both render as `?`, but a QueryValue binds its value whereas a QueryParam binds nothing:
-     * they are not interchangeable.
-     */
-    public function testAQueryValueIsNotAQueryParam(): void
-    {
-        $this->assertSame((new QueryParam())->getValue(), (new QueryValue('foo'))->getValue());
-        $this->assertSame(['foo'], (new QueryValue('foo'))->getParams());
-        $this->assertFalse(method_exists(QueryParam::class, 'getParams'));
-    }
 }

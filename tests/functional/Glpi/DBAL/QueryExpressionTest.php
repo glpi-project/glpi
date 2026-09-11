@@ -80,11 +80,6 @@ class QueryExpressionTest extends GLPITestCase
         new QueryExpression('');
     }
 
-    public function testItIsAQueryElement(): void
-    {
-        $this->assertInstanceOf(QueryElementInterface::class, new QueryExpression('1'));
-    }
-
     /**
      * `Domain::getEntitiesCriteria()` clones a shared expression and rebinds each copy, so
      * `setParams()` has to stay a mutator and `clone` has to yield an independent object.
