@@ -202,7 +202,8 @@ function step3(string $host, string $user, string $password, string $update): vo
         };
 
         $engine_requirement = new DbEngine($db);
-        $config_requirement = new DbConfiguration($db);
+        // Enable the `max_allowed_packet` check as it is needed to import the default data.
+        $config_requirement = new DbConfiguration($db, true);
 
         // get databases
         if (
