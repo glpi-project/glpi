@@ -744,7 +744,7 @@ class MailCollector extends CommonDBTM
 
                         if (!$tkt['_blacklisted']) {
                             $rejinput['from']              = $requester ?? '';
-                            $rejinput['to']                = $headers['to'] ?? '';
+                            $rejinput['to']                = mb_substr($headers['to'] ?? '', 0, 255);
                             $rejinput['users_id']          = $tkt['_users_id_requester'];
                             $rejinput['subject']           = $this->cleanSubject($headers['subject']);
                             $rejinput['messageid']         = $headers['message_id'];
@@ -1477,13 +1477,14 @@ class MailCollector extends CommonDBTM
                     if ($email === null) {
                         continue;
                     }
-                    $mailto = Toolbox::strtolower($email);
-                    if ($mailto === $this->fields['name']) {
-                        $to = $mailto;
-                    }
-                    $tos[] = $mailto;
+                    $tos[] = Toolbox::strtolower($email);
                 }
             }
+        }
+        // Use the whole recipients list (not just the first one) so that rule criteria
+        // matching against the "To" address work regardless of the recipient's position.
+        if ($tos !== []) {
+            $to = implode(', ', $tos);
         }
 
         $ccs     = [];
