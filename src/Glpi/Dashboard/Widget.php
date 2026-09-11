@@ -1111,14 +1111,20 @@ TWIG, $twig_params);
         } else {
             if ($p['distributed']) {
                 array_splice($series, $nb_labels);
+                $series = [
+                    [
+                        'data' => $series,
+                    ],
+                ];
             } else {
+                // $series is already wrapped as [[...]] by the caller (single non-distributed serie)
                 array_splice($series[0], 0, -$nb_labels);
+                $series = [
+                    [
+                        'data' => $series[0],
+                    ],
+                ];
             }
-            $series = [
-                [
-                    'data' => $series,
-                ],
-            ];
         }
 
         $nb_series = count($series);
