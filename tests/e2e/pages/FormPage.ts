@@ -103,31 +103,123 @@ export class FormPage extends GlpiPage
 
     public async setQuestionType(question: Locator, type: string): Promise<void>
     {
-        await this.doSetDropdownValue(
-            this.getDropdownByLabel('Question type', question)
-                .filter({visible : true}),
+        const dropdown = this.getDropdownByLabel('Question type', question).filter({visible : true});
+        await this.runActionAndWaitForEditorEvent(
+            dropdown,
             type,
-            false
+            () => this.doSetDropdownValue(dropdown, type, false),
+            'glpi-form-editor-question-type-changed'
         );
     }
 
     public async setSubQuestionType(question: Locator, type: string): Promise<void>
     {
-        await this.doSetDropdownValue(
-            this.getDropdownByLabel('Question sub type', question)
-                .filter({visible : true}),
+        const dropdown = this.getDropdownByLabel('Question sub type', question).filter({visible : true});
+        await this.runActionAndWaitForEditorEvent(
+            dropdown,
             type,
-            false
+            () => this.doSetDropdownValue(dropdown, type, false),
+            'glpi-form-editor-question-type-changed'
         );
     }
 
-    public async setItemTypeForItemQuestion(question: Locator, item_type: string): Promise<void>
+    public async setItemTypeForItemQuestion(question: Locator, item_type: string, exact: boolean = false): Promise<void>
     {
-        await this.doSetDropdownValue(
-            this.getDropdownByLabel('Select an itemtype', question)
-                .filter({visible : true}),
+        const type_dropdown = this.getDropdownByLabel('Select an itemtype', question).filter({visible : true});
+        await this.runAndWaitForDefaultValueRebuild(
+            type_dropdown,
             item_type,
-            false
+            () => this.doSetDropdownValue(type_dropdown, item_type, exact),
+            this.getDropdownByLabel('Select an item', question).filter({visible : true})
+        );
+    }
+
+    public async setDropdownQuestionType(question: Locator, type: string): Promise<void>
+    {
+        const type_dropdown = this.getDropdownByLabel('Select a dropdown type', question).filter({visible : true});
+        await this.runAndWaitForDefaultValueRebuild(
+            type_dropdown,
+            type,
+            () => this.doSetDropdownValue(type_dropdown, type),
+            this.getDropdownByLabel('Select a dropdown item', question).filter({visible : true})
+        );
+    }
+
+    /**
+     * Type changes rebuild the default value combobox via AJAX with no completion
+     * event (QuestionItem.js), so wait for the old widget to detach. Skip if
+     * target_value is already selected: nothing would rebuild.
+     */
+    private async runAndWaitForDefaultValueRebuild(
+        type_dropdown: Locator,
+        target_value: string,
+        action: () => Promise<void>,
+        stale_default_value_dropdown: Locator,
+    ): Promise<void>
+    {
+        const current_text = (await type_dropdown.textContent()) ?? '';
+        if (current_text.includes(target_value)) {
+            await action();
+            return;
+        }
+
+        // elementHandle() waits for the element; count() doesn't and would race the render.
+        const stale_handle = await stale_default_value_dropdown.elementHandle({timeout: 5000}).catch(() => null);
+
+        await action();
+
+        if (stale_handle !== null) {
+            await stale_handle.evaluate((el) => new Promise<void>((resolve) => {
+                if (!el.isConnected) {
+                    resolve();
+                    return;
+                }
+                const observer = new MutationObserver(() => {
+                    if (!el.isConnected) {
+                        observer.disconnect();
+                        resolve();
+                    }
+                });
+                observer.observe(document.body, {childList: true, subtree: true});
+            }));
+            await stale_handle.dispose();
+        }
+    }
+
+    /**
+     * Category changes rebuild option lists after an AJAX call, signaled only via
+     * a jQuery-only event (invisible to addEventListener). Skip if target_value is
+     * already selected: nothing would fire.
+     */
+    private async runActionAndWaitForEditorEvent(
+        dropdown: Locator,
+        target_value: string,
+        action: () => Promise<void>,
+        event_name: string,
+    ): Promise<void>
+    {
+        const current_text = (await dropdown.textContent()) ?? '';
+        if (current_text.includes(target_value)) {
+            await action();
+            return;
+        }
+
+        const marker = `__glpi_e2e_${event_name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+        await this.page.evaluate(([marker, event_name]) => {
+            type JQueryLike = (target: Document) => {one: (event: string, handler: () => void) => void};
+            const jq = (window as unknown as {jQuery: JQueryLike}).jQuery;
+            (window as unknown as Record<string, boolean>)[marker] = false;
+            jq(document).one(event_name, () => {
+                (window as unknown as Record<string, boolean>)[marker] = true;
+            });
+        }, [marker, event_name] as [string, string]);
+
+        await action();
+
+        await this.page.waitForFunction(
+            (marker) => (window as unknown as Record<string, boolean>)[marker] === true,
+            marker
         );
     }
 
