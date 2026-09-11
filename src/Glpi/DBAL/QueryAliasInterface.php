@@ -39,5 +39,5 @@ namespace Glpi\DBAL;
  */
 interface QueryAliasInterface
 {
-
+    public function withAlias(bool $with = true): static;
 }
