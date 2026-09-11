@@ -35,11 +35,10 @@
  #
  # - `can_create`   whether to show the "+" (create a child article) action.
  # - `show_actions` whether to show the per-article kebab (favorite/FAQ/delete) menu.
- # - `add_margin`   extra bottom margin on the row (used by the favorites list).
  # - `favorite_state` null | 'active' | 'pending' (used by the favorites list; see
  #   `data-glpi-kb-favorite-current` consumers in AsideController.js).
  #}
-{% macro render_article(article, can_create = false, show_actions = false, add_margin = false, favorite_state = null) %}
+{% macro render_article(article, can_create = false, show_actions = false, favorite_state = null) %}
     {% import _self as macros %}
     {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
     {% set is_node = article.hasChildren or can_create %}
@@ -58,9 +57,9 @@
             data-glpi-kb-article-current
             aria-current="page"
         {% endif %}
-        class="article {{ is_node ? 'node' : '' }} {{ add_margin ? 'mb-2' : '' }}"
+        class="article {{ is_node ? 'node' : '' }}"
     >
-        <div class="article-line d-flex align-items-center {{ is_node ? 'mb-2' : '' }}" {{ is_node ? 'data-glpi-kb-aside-category-header' : '' }}>
+        <div class="article-line d-flex align-items-center mb-2" {{ is_node ? 'data-glpi-kb-aside-category-header' : '' }}>
             {% if article.hasChildren %}
                 <button
                     type="button"

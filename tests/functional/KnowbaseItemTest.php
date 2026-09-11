@@ -3204,6 +3204,172 @@ HTML,
         $this->assertFalse(KnowbaseItem::hasRoot());
     }
 
+    /**
+     * The helpdesk FAQ renders the same aside as the central knowledge base, so
+     * a reader can jump between articles instead of going back to the list. It
+     * lists only what is shared with them, and offers no way to author the tree.
+     */
+    public function testFaqAsideListsSharedArticlesOnlyAndCannotAuthorTheTree(): void
+    {
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $shared = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_shared',
+            'answer'      => '<p>Shared</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $shared->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+        // Not in the FAQ and shared with nobody: out of the helpdesk reader's reach.
+        $private = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_private',
+            'answer'      => '<p>Private</p>',
+            'is_faq'      => 0,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($shared->getID()));
+        $html = (string) $item->getAsideContent();
+
+        // The shared article is listed, and the aside knows it is the one being read.
+        $this->assertStringContainsString(
+            'data-glpi-kb-article-id="' . $shared->getID() . '"',
+            $html,
+        );
+        $this->assertStringContainsString($shared->fields['name'], $html);
+        $this->assertStringContainsString('data-glpi-kb-article-current', $html);
+
+        // Navigation targets the FAQ page, not the central article form.
+        $this->assertStringContainsString('/front/helpdesk.faq.php?id=' . $shared->getID(), $html);
+
+        $this->assertStringNotContainsString(
+            'data-glpi-kb-article-id="' . $private->getID() . '"',
+            $html,
+        );
+        $this->assertStringNotContainsString($private->fields['name'], $html);
+
+        // Search and favorites are part of the FAQ aside.
+        $this->assertStringContainsString('data-glpi-kb-aside-search-input', $html);
+        $this->assertStringContainsString('data-glpi-kb-aside-favorites', $html);
+
+        // But nothing that restructures the knowledge base.
+        $this->assertStringNotContainsString('data-glpi-kb-aside-category-add', $html);
+        $this->assertStringNotContainsString('AsideDragController', $html);
+    }
+
+    public function testAsideTreeIsAuthoredFromTheCentralInterfaceOnly(): void
+    {
+        $this->login();
+        $this->assertTrue(KnowbaseItem::canAuthorAsideTree());
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(KnowbaseItem::canAuthorAsideTree());
+    }
+
+    /**
+     * Anonymous readers lose the visibility `WHERE`, so the FAQ filter is all
+     * that keeps a non-FAQ article out of their reach.
+     */
+    public function testAnonymousListRequestKeepsNonFaqArticlesOut(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+
+        $this->login();
+        $faq = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_faq',
+            'answer'   => '<p>Public</p>',
+            'is_faq'   => 1,
+            'users_id' => $glpi_user,
+        ]);
+        $not_faq = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_not_faq',
+            'answer'   => '<p>Internal runbook</p>',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        // All the anonymous branch checks on its own.
+        foreach ([$faq, $not_faq] as $item) {
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $item->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->logOut();
+
+        // `faq` is forced, not defaulted: a crafted `?faq=0` must not lift the filter.
+        foreach ([[], ['faq' => 0], ['faq' => false]] as $params) {
+            $ids = [];
+            foreach ($DB->request(KnowbaseItem::getListRequest($params, 'browse')) as $row) {
+                $ids[] = (int) $row['id'];
+            }
+
+            $this->assertContains($faq->getID(), $ids);
+            $this->assertNotContains($not_faq->getID(), $ids);
+        }
+    }
+
+    /**
+     * Those endpoints all 403 outside the central interface, right or no right.
+     */
+    public function testAsideActionsOfferNoAuthoringOutsideTheCentralInterface(): void
+    {
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__,
+            'answer'      => '<p>Shared</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        // A profile flipped to simplified keeps its rights value.
+        $this->addRightToProfile(
+            'Self-Service',
+            'knowbase',
+            KnowbaseItem::PUBLISHFAQ | KnowbaseItem::KNOWBASEADMIN | UPDATE | PURGE,
+        );
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($article->getID()));
+
+        $types = array_map(
+            fn($action) => $action instanceof EditorAction ? $action->type : null,
+            $item->getAsideActions(with_move: true),
+        );
+
+        $this->assertNotContains(EditorActionType::TOGGLE_VALUE, $types);
+        $this->assertNotContains(EditorActionType::OPEN_MODAL, $types);
+        $this->assertNotContains(EditorActionType::DELETE_ARTICLE, $types);
+
+        $this->assertTrue($item->can($article->getID(), READ));
+        $this->assertContains(EditorActionType::TOGGLE_FAVORITE, $types);
+    }
+
     public function testGetRootIdFailIfNotConfigured(): void
     {
         global $CFG_GLPI;
