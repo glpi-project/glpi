@@ -40,6 +40,7 @@ use CommonDBTM;
 use CommonITILObject;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -164,6 +165,14 @@ final class AdministrationController extends AbstractController
                         'format' => Doc\Schema::FORMAT_STRING_PASSWORD,
                         'description' => 'Password confirmation',
                         'writeOnly' => true,
+                    ],
+                    'picture_upload' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-input-field' => 'picture',
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+                        'x-version-introduced' => '2.4.0',
                     ],
                     'picture' => [
                         'type' => Doc\Schema::TYPE_STRING,

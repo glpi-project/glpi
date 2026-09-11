@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Api\HL\Router;
 use Glpi\Kernel\Kernel;
 use Twig\Runtime\EscaperRuntime;
 
@@ -63,6 +64,16 @@ function isAPI()
     $path = $kernel->getMainRequest()->getPathInfo();
 
     return str_starts_with($path, '/api.php') || str_starts_with($path, '/apirest.php');
+}
+
+/**
+ * Is the script launched From HLAPI?
+ * @return bool
+ */
+function isHLAPI(): bool
+{
+    $script = $_SERVER['REQUEST_URI'] ?? '';
+    return str_contains($script, 'api.php') && Router::getInstance()->getOriginalRequest() !== null;
 }
 
 /**
