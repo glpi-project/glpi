@@ -753,4 +753,89 @@ class CustomFieldDefinitionTest extends DbTestCase
             $this->assertEquals($name === __FUNCTION__ . '_yes' ? 1 : 0, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
         }
     }
+
+    /**
+     * A dropdown custom field may target another custom asset.
+     * In this case, the joined table is the same as the main itemtype table, and the
+     * table alias must be computed the same way in every part of the search query.
+     *
+     * @see https://github.com/glpi-project/glpi/issues/25026
+     */
+    public function testSearchDropdownFieldOnCustomAsset(): void
+    {
+        $linked_itemtype  = 'Glpi\\CustomAsset\\Test02Asset';
+        $asset_definition = $this->initAssetDefinition();
+        $asset_classname  = $asset_definition->getAssetClassName();
+
+        $this->createItem(CustomFieldDefinition::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'system_name' => 'singlelinkedasset',
+            'label' => 'Single linked asset',
+            'type' => DropdownType::class,
+            'itemtype' => $linked_itemtype,
+        ]);
+        $this->createItem(CustomFieldDefinition::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'system_name' => 'multilinkedasset',
+            'label' => 'Multiple linked assets',
+            'type' => DropdownType::class,
+            'itemtype' => $linked_itemtype,
+            'field_options' => ['multiple' => '1'],
+        ], ['field_options']); // JSON encoded field cannot be automatically checked
+
+        // Login after the definition creation to get the corresponding rights in the session
+        $this->login();
+
+        $opts = SearchOption::getOptionsForItemtype($asset_classname);
+        $single_dropdown_opt = null;
+        $multiple_dropdown_opt = null;
+        foreach ($opts as $num => $opt) {
+            if (!is_array($opt)) {
+                continue;
+            }
+            if ($opt['name'] === 'Single linked asset') {
+                $single_dropdown_opt = $num;
+            } elseif ($opt['name'] === 'Multiple linked assets') {
+                $multiple_dropdown_opt = $num;
+            }
+        }
+        $this->assertNotNull($single_dropdown_opt);
+        $this->assertNotNull($multiple_dropdown_opt);
+
+        $linked_a = getItemByTypeName($linked_itemtype, 'Test02 A', true);
+        $linked_b = getItemByTypeName($linked_itemtype, 'Test02 B', true);
+
+        $this->createItem($asset_classname, [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__,
+            'custom_singlelinkedasset' => $linked_a,
+            'custom_multilinkedasset' => [$linked_a, $linked_b],
+        ], ['custom_singlelinkedasset', 'custom_multilinkedasset']);
+
+        $data = SearchEngine::getData($asset_classname, [
+            'sort' => [$single_dropdown_opt],
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => $single_dropdown_opt,
+                    'searchtype' => 'contains',
+                    'value' => 'Test02 A',
+                ],
+                [
+                    'link' => 'AND',
+                    'field' => $multiple_dropdown_opt,
+                    'searchtype' => 'contains',
+                    'value' => 'Test02',
+                ],
+            ],
+        ], [$single_dropdown_opt, $multiple_dropdown_opt]);
+
+        $this->assertCount(1, $data['data']['rows']);
+        $row = reset($data['data']['rows'])['raw'];
+        $this->assertEquals('Test02 A', $row['ITEM_' . $asset_classname . '_' . $single_dropdown_opt]);
+        $this->assertEquals(
+            'Test02 A$#$' . $linked_a . '$$##$$Test02 B$#$' . $linked_b,
+            $row['ITEM_' . $asset_classname . '_' . $multiple_dropdown_opt]
+        );
+    }
 }
