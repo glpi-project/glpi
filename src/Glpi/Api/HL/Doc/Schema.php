@@ -264,6 +264,7 @@ class Schema implements ArrayAccess
                 $new_join = $prop['x-join'] + [
                     'parent_type' => self::TYPE_OBJECT,
                     'x-full-schema' => $prop['x-full-schema'] ?? null,
+                    'x-skipped' => $prop['x-skipped'] ?? false,
                 ];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 $joins += self::getJoins($prop['properties'], $prefix . $name . '.', $new_join);
@@ -271,6 +272,7 @@ class Schema implements ArrayAccess
                 $new_join = $prop['items']['x-join'] + [
                     'parent_type' => self::TYPE_ARRAY,
                     'x-full-schema' => $prop['items']['x-full-schema'] ?? null,
+                    'x-skipped' => $prop['x-skipped'] ?? false,
                 ];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 if (array_key_exists('properties', $prop['items'])) {
@@ -365,10 +367,14 @@ class Schema implements ArrayAccess
             return null;
         }
 
-        $schema['properties'] = self::filterPropertiesByAPIVersion($schema['properties'], $schema_versions, $api_version);
+        if (array_key_exists('type', $schema) && $schema['type'] === self::TYPE_ARRAY && isset($schema['items']['properties'])) {
+            $schema['items']['properties'] = self::filterPropertiesByAPIVersion($schema['items']['properties'], $schema_versions, $api_version);
+        } else {
+            $schema['properties'] = self::filterPropertiesByAPIVersion($schema['properties'], $schema_versions, $api_version);
+        }
 
         // If all properties were filtered out, the schema can be considered not applicable
-        if (empty($schema['properties'])) {
+        if (empty($schema['properties']) && empty($schema['items']['properties'] ?? [])) {
             return null;
         }
 

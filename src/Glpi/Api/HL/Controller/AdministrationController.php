@@ -129,39 +129,18 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Mobile phone number',
                     ],
-                    'emails' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'description' => 'Email addresses',
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'EmailAddress',
-                            'x-join' => [
-                                'table' => 'glpi_useremails',
-                                'fkey' => 'id',
-                                'field' => 'users_id',
-                                'primary-property' => 'id', // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'description' => 'ID',
-                                ],
-                                'email' => [
-                                    'type' => Doc\Schema::TYPE_STRING,
-                                    'description' => 'Email address',
-                                ],
-                                'is_default' => [
-                                    'type' => Doc\Schema::TYPE_BOOLEAN,
-                                    'description' => 'Is default',
-                                ],
-                                'is_dynamic' => [
-                                    'type' => Doc\Schema::TYPE_BOOLEAN,
-                                    'description' => 'Is dynamic',
-                                ],
+                    'emails' => self::getChildrenTypeSchema(
+                        parent_class: User::class,
+                        class: UserEmail::class,
+                        name_field: 'email',
+                        full_schema: 'EmailAddress',
+                        params: [
+                            'additional_properties' => [
+                                'is_default' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'description' => 'Is default'],
+                                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'description' => 'Is dynamic'],
                             ],
                         ],
-                    ],
+                    ),
                     'comment' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Comment',
@@ -207,7 +186,11 @@ final class AdministrationController extends AbstractController
                         'readOnly' => true,
                         'x-field' => 'password_last_update',
                     ],
-                    'location' => self::getDropdownTypeSchema(class: 'Location', full_schema: 'Location') + ['x-version-introduced' => '2.1.0'],
+                    'location' => self::getDropdownTypeSchema(
+                        class: 'Location',
+                        full_schema: 'Location',
+                        params: ['x-version-introduced' => '2.1.0']
+                    ),
                     'authtype' => [
                         'x-version-introduced' => '2.1.0',
                         'type' => Doc\Schema::TYPE_NUMBER,
@@ -226,14 +209,22 @@ EOD,
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     ],
-                    'default_profile' => self::getDropdownTypeSchema(class: Profile::class, full_schema: 'Profile') + [
-                        'x-version-introduced' => '2.1.0',
-                        'description' => 'Default profile',
-                    ],
-                    'default_entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + [
-                        'x-version-introduced' => '2.1.0',
-                        'description' => 'Default entity',
-                    ],
+                    'default_profile' => self::getDropdownTypeSchema(
+                        class: Profile::class,
+                        full_schema: 'Profile',
+                        params: [
+                            'x-version-introduced' => '2.1.0',
+                            'description' => 'Default profile',
+                        ],
+                    ),
+                    'default_entity' => self::getDropdownTypeSchema(
+                        class: Entity::class,
+                        full_schema: 'Entity',
+                        params: [
+                            'x-version-introduced' => '2.1.0',
+                            'description' => 'Default entity',
+                        ],
+                    ),
                     'date_creation' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
@@ -250,8 +241,8 @@ EOD,
                         'readOnly' => true,
                         'x-version-introduced' => '2.2.0',
                     ],
-                    'title' => self::getDropdownTypeSchema(class: UserTitle::class, full_schema: 'UserTitle') + ['x-version-introduced' => '2.2.0'],
-                    'category' => self::getDropdownTypeSchema(class: UserCategory::class, full_schema: 'UserCategory') + ['x-version-introduced' => '2.2.0'],
+                    'title' => self::getDropdownTypeSchema(class: UserTitle::class, full_schema: 'UserTitle', params: ['x-version-introduced' => '2.2.0']),
+                    'category' => self::getDropdownTypeSchema(class: UserCategory::class, full_schema: 'UserCategory', params: ['x-version-introduced' => '2.2.0']),
                     'registration_number' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-version-introduced' => '2.2.0',
@@ -283,6 +274,7 @@ EOD,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                         'x-version-introduced' => '2.2.0',
                     ],
+                    'supervisor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_supervisor', full_schema: 'User', params: ['x-version-introduced' => '2.4.0']),
                 ],
             ],
             'Group' => [
@@ -309,28 +301,7 @@ EOD,
                         'description' => 'Complete name',
                         'readOnly' => true,
                     ],
-                    'parent' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-itemtype' => Group::class,
-                        'x-full-schema' => 'Group',
-                        'x-join' => [
-                            'table' => 'glpi_groups',
-                            'fkey' => 'groups_id',
-                            'field' => 'id',
-                        ],
-                        'description' => 'Parent group',
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'ID',
-                            ],
-                            'name' => [
-                                'type' => Doc\Schema::TYPE_STRING,
-                                'description' => 'Name',
-                            ],
-                        ],
-                    ],
+                    'parent' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
                     'level' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
@@ -454,28 +425,7 @@ EOD,
                         'description' => 'Complete name',
                         'readOnly' => true,
                     ],
-                    'parent' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-itemtype' => Entity::class,
-                        'x-full-schema' => 'Entity',
-                        'x-join' => [
-                            'table' => 'glpi_entities',
-                            'fkey' => 'entities_id',
-                            'field' => 'id',
-                        ],
-                        'description' => 'Parent entity',
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'ID',
-                            ],
-                            'name' => [
-                                'type' => Doc\Schema::TYPE_STRING,
-                                'description' => 'Name',
-                            ],
-                        ],
-                    ],
+                    'parent' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                     'level' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
@@ -609,7 +559,7 @@ EOD,
                         'maxLength' => 255,
                         'description' => 'Tag of the entity populated by an inventory tool.',
                     ],
-                    'authldap' => self::getDropdownTypeSchema(class: 'AuthLDAP', full_schema: 'LDAPDirectory') + ['x-version-introduced' => '2.3.0'],
+                    'authldap' => self::getDropdownTypeSchema(class: 'AuthLDAP', full_schema: 'LDAPDirectory', params: ['x-version-introduced' => '2.3.0']),
                     'mail_domain' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
@@ -707,6 +657,7 @@ EOT,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
                     ],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['x-version-introduced' => '2.4.0'],
                     'email' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Email address',
@@ -850,7 +801,7 @@ EOD,
                 ],
                 'list_limit' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
-                    'min' => 5,
+                    'minimum' => 5,
                     'multipleOf' => 5,
                 ],
                 'date_format' => [
@@ -956,8 +907,8 @@ EOD,
                 'refresh_view_interval' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'description' => 'Auto-refresh interval for tickets list, kanbans, and dashboards in minutes',
-                    'min' => 0,
-                    'max' => 30,
+                    'minimum' => 0,
+                    'maximum' => 30,
                     'x-field' => 'refresh_views',
                 ],
                 'set_default_tech' => [
@@ -978,8 +929,8 @@ EOD,
                 ],
                 'home_list_limit' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
-                    'min' => 0,
-                    'max' => 30,
+                    'minimum' => 0,
+                    'maximum' => 30,
                     'description' => 'Results to display on home page',
                     'x-field' => 'display_count_on_home',
                 ],
@@ -1340,6 +1291,105 @@ EOT,
             }
         }
         return self::getNotFoundErrorResponse();
+    }
+
+    #[Route(path: '/User/{users_id}/Email', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(schema_name: 'EmailAddress[]')]
+    public function getUserEmails(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        $user = new User();
+        if (!$user->can($users_id, READ) && $users_id !== $this->getMyUserID()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';user.id==' . $users_id;
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/Email/{id}', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(schema_name: 'EmailAddress')]
+    public function getUserEmail(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        $user = new User();
+        if (!$user->can($users_id, READ) && $users_id !== $this->getMyUserID()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getAttributes(),
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/Email', methods: ['POST'], requirements: [
+        'users_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(schema_name: 'EmailAddress')]
+    public function addUserEmail(Request $request): Response
+    {
+        global $DB;
+        $users_id = (int) $request->getAttribute('users_id');
+        $request->setParameter('user', $users_id);
+
+        $user = new User();
+        if (!$user->can($users_id, UPDATE) && $users_id !== $this->getMyUserID()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        // Do our own unicity check since UserEmail doesn't and it will result in a SQL error
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => UserEmail::getTable(),
+            'WHERE' => [
+                'users_id' => $users_id,
+                'email' => $request->getParameter('email'),
+            ],
+            'LIMIT' => 1,
+        ]);
+        if (count($it)) {
+            return new Response(409);
+        }
+
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getUserEmail'],
+            extra_get_route_params: ['mapped' => ['users_id' => $users_id]]
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/Email/{id}', methods: ['DELETE'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\DeleteRoute(schema_name: 'EmailAddress')]
+    public function deleteUserEmail(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        $user = new User();
+        if (!$user->can($users_id, UPDATE) && $users_id !== $this->getMyUserID()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getAttributes()
+        );
     }
 
     /**

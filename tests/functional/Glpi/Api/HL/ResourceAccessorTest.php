@@ -38,6 +38,8 @@ use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionMethod;
+use Ticket;
 
 class ResourceAccessorTest extends GLPITestCase
 {
@@ -80,7 +82,7 @@ class ResourceAccessorTest extends GLPITestCase
                 'name' => ['type' => 'string', 'maxLength' => 32, 'required' => true],
                 'age' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 120, 'required' => true],
                 'height' => ['type' => 'number', 'minimum' => 10, 'required' => true],
-                'weight' => ['type' => 'number', 'maximum' => 300, 'required' => true],
+                'weight' => ['type' => 'number', 'maximum' => 300, 'multipleOf' => 0.5, 'required' => true],
                 'eye_color' => ['type' => 'number', 'required' => true],
             ],
         ];
@@ -89,7 +91,7 @@ class ResourceAccessorTest extends GLPITestCase
             'name' => str_repeat('a', 40), // Exceeds maxLength
             'age' => -5, // Below minimum
             'height' => 5, // Below minimum
-            'weight' => 350, // Above maximum
+            'weight' => 349.8, // Above maximum and not multiple of 0.5
             // Missing required eye_color
         ];
 
@@ -127,6 +129,11 @@ class ResourceAccessorTest extends GLPITestCase
                 'error' => 'maximum',
                 'message' => 'This field must be at most 300',
                 'maximum' => 300,
+            ],
+            [
+                'error' => 'multipleOf',
+                'message' => 'This field must be a multiple of 0.5',
+                'multipleOf' => 0.5,
             ],
         ], $response_data['detail']['weight']);
         $this->assertArrayIsEqualIgnoringKeysOrder([
@@ -195,5 +202,31 @@ class ResourceAccessorTest extends GLPITestCase
                 'maximum' => 300,
             ],
         ], $response_data['detail']['weight']);
+    }
+
+    public function testValidatePreconditions(): void
+    {
+        $ticket = new Ticket();
+        $ticket->fields = [
+            'id' => 1,
+            'name' => 'Test Ticket',
+            'content' => 'This is a test ticket.',
+            'date_mod' => '2026-09-01 12:00:00',
+        ];
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'validatePreconditions');
+
+        $this->assertEmpty($rm->invoke(null, $ticket, [
+            'If-Modified-Since' => ['2026-08-15 12:00:00'],
+        ]));
+        $this->assertArrayHasKey('If-Modified-Since', $rm->invoke(null, $ticket, [
+            'If-Modified-Since' => ['2026-09-02 2:00:00'],
+        ]));
+
+        $this->assertEmpty($rm->invoke(null, $ticket, [
+            'If-Unmodified-Since' => ['2026-09-02 12:00:00'],
+        ]));
+        $this->assertArrayHasKey('If-Unmodified-Since', $rm->invoke(null, $ticket, [
+            'If-Unmodified-Since' => ['2026-08-15 12:00:00'],
+        ]));
     }
 }

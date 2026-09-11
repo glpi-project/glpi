@@ -220,24 +220,32 @@ final class ResourceAccessor
 
             $min = $prop['minimum'] ?? null;
             $max = $prop['maximum'] ?? null;
+            $multiple_of = $prop['multipleOf'] ?? null;
             if ($min !== null && $max !== null && is_numeric($value) && ($value < $min || $value > $max)) {
                 $errors[$key][] = [
                     'error' => 'range',
-                    'message' => "This field must be between {$prop['minimum']} and {$prop['maximum']}",
-                    'minimum' => $prop['minimum'] ?? null,
-                    'maximum' => $prop['maximum'] ?? null,
+                    'message' => "This field must be between $min and $max",
+                    'minimum' => $min,
+                    'maximum' => $max,
                 ];
             } elseif ($min !== null && is_numeric($value) && $value < $min) {
                 $errors[$key][] = [
                     'error' => 'minimum',
-                    'message' => "This field must be at least {$prop['minimum']}",
-                    'minimum' => $prop['minimum'] ?? null,
+                    'message' => "This field must be at least $min",
+                    'minimum' => $min,
                 ];
             } elseif ($max !== null && is_numeric($value) && $value > $max) {
                 $errors[$key][] = [
                     'error' => 'maximum',
-                    'message' => "This field must be at most {$prop['maximum']}",
-                    'maximum' => $prop['maximum'] ?? null,
+                    'message' => "This field must be at most $max",
+                    'maximum' => $max,
+                ];
+            }
+            if ($multiple_of !== null && is_numeric($value) && fmod((float) $value, (float) $multiple_of) !== 0.0) {
+                $errors[$key][] = [
+                    'error' => 'multipleOf',
+                    'message' => "This field must be a multiple of $multiple_of",
+                    'multipleOf' => $multiple_of,
                 ];
             }
             if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {
@@ -252,6 +260,63 @@ final class ResourceAccessor
     }
 
     /**
+     * Filter the schema properties based on the read restrictions.
+     * @param array<string, mixed> $schema The schema
+     * @param bool $is_graphql_mode Whether the schema is being used in GraphQL mode. If false, the x-graphql-only properties are filtered out.
+     * @return array<string, mixed> The filtered schema
+     */
+    public static function applyFieldReadRestrictions(array $schema, bool $is_graphql_mode = false): array
+    {
+        $filtered_schema = $schema;
+
+        if (!$is_graphql_mode) {
+            foreach ($filtered_schema['properties'] as $key => $prop) {
+                if ($prop['x-graphql-only'] ?? false) {
+                    unset($filtered_schema['properties'][$key]);
+                }
+            }
+        }
+
+        return $filtered_schema;
+    }
+
+    /**
+     * @param CommonDBTM $item
+     * @param array<string, string[]> $headers
+     * @return array<string, string> Array of failed preconditions. Empty array if all preconditions passed.
+     * @throws \DateMalformedStringException
+     */
+    private static function validatePreconditions(CommonDBTM $item, array $headers): array
+    {
+        $failures = [];
+
+        $item_date_mod = $item->fields['date_mod'] ?? null;
+
+        if ($item_date_mod !== null && isset($headers['If-Unmodified-Since'])) {
+            $if_unmodified_since = $headers['If-Unmodified-Since'];
+            if (is_array($if_unmodified_since)) {
+                $if_unmodified_since = $if_unmodified_since[0];
+            }
+            $item_last_update_dt = new DateTime($item_date_mod);
+            $if_unmodified_since_dt = new DateTime($if_unmodified_since);
+            if ($item_last_update_dt > $if_unmodified_since_dt) {
+                $failures['If-Unmodified-Since'] = 'The item has been modified since the specified date';
+            }
+        } elseif ($item_date_mod !== null && isset($headers['If-Modified-Since'])) {
+            $if_modified_since = $headers['If-Modified-Since'];
+            if (is_array($if_modified_since)) {
+                $if_modified_since = $if_modified_since[0];
+            }
+            $item_last_update_dt = new DateTime($item_date_mod);
+            $if_modified_since_dt = new DateTime($if_modified_since);
+            if ($item_last_update_dt <= $if_modified_since_dt) {
+                $failures['If-Modified-Since'] = 'The item has not been modified since the specified date';
+            }
+        }
+        return $failures;
+    }
+
+    /**
      * Update an item of the given schema using the given request parameters.
      * @param array $schema The schema
      * @param array $request_attrs The request attributes
@@ -263,6 +328,7 @@ final class ResourceAccessor
      */
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
+        $schema = self::applyFieldReadRestrictions($schema);
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
         // Ignore entity updates. This needs to be done through the Transfer process
         // TODO This should probably be handled in a more generic way (support other fields that can be used during creation but not updates)
@@ -283,6 +349,22 @@ final class ResourceAccessor
         if (!$item->can($items_id, UPDATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
+
+        if (!$item->getFromDB($items_id)) {
+            return AbstractController::getNotFoundErrorResponse();
+        }
+
+        $final_request = Router::getInstance()->getFinalRequest();
+        if ($final_request !== null) {
+            $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            if ($precondition_failures !== []) {
+                return new JSONResponse(
+                    AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),
+                    412
+                );
+            }
+        }
+
         $result = $item->update($input);
 
         if ($result === false) {
@@ -307,6 +389,7 @@ final class ResourceAccessor
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
+        $schema = self::applyFieldReadRestrictions($schema);
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
             $request_params['entity'] = $_SESSION['glpiactive_entity'];
         }
@@ -348,6 +431,7 @@ final class ResourceAccessor
      */
     public static function searchBySchema(array $schema, array $request_params): Response
     {
+        $schema = self::applyFieldReadRestrictions($schema);
         $itemtype = self::getItemtypeFromSchema($schema);
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
@@ -406,6 +490,7 @@ final class ResourceAccessor
      */
     public static function getOneBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
+        $schema = self::applyFieldReadRestrictions($schema);
         $itemtype = self::getItemtypeFromSchema($schema);
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
@@ -435,7 +520,23 @@ final class ResourceAccessor
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();
         }
-        return new JSONResponse($results['results'][0]);
+
+        $result = $results['results'][0];
+
+        $final_request = Router::getInstance()->getFinalRequest();
+        if ($final_request !== null && !empty($result['date_mod'])) {
+            $item = self::getItemFromSchema($schema);
+            $item->fields['date_mod'] = $result['date_mod'];
+            $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            if ($precondition_failures !== []) {
+                return new JSONResponse(
+                    AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),
+                    array_key_exists('If-Modified-Since', $precondition_failures) ? 304 : 412
+                );
+            }
+        }
+
+        return new JSONResponse($result);
     }
 
     /**
