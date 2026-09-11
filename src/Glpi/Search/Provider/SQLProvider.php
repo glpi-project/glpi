@@ -68,6 +68,7 @@ use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\Parts\Where;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Features\AssignableItemInterface;
@@ -278,7 +279,7 @@ final class SQLProvider implements SearchProviderInterface
 
         $tocompute      = "$table$addtable.$field";
         $tocomputeid    = "$table$addtable.id";
-        $tocomputetrans = QueryFunction::ifnull("{$table}{$addtable}_trans_{$field}.value", new QueryExpression($DB::quoteValue(Search::NULLVALUE)));
+        $tocomputetrans = QueryFunction::ifnull(new QueryIdentifier("{$table}{$addtable}_trans_{$field}.value"), new QueryExpression($DB::quoteValue(Search::NULLVALUE)));
 
         $ADDITONALFIELDS = [];
         if (
@@ -297,11 +298,11 @@ final class SQLProvider implements SearchProviderInterface
                         expression: QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
                                 QueryFunction::ifnull(
-                                    expression: $additionalfield_field,
+                                    expression: new QueryIdentifier($additionalfield_field),
                                     value: new QueryExpression($DB::quoteValue(Search::NULLVALUE))
                                 ),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                $tocomputeid,
+                                new QueryIdentifier($tocomputeid),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -335,9 +336,9 @@ final class SQLProvider implements SearchProviderInterface
                             $ticket_user_table = $before_join['table'] . "_" . Search::computeComplexJoinID($before_join['joinparams']) . $addmeta;
                             $addaltemail = QueryFunction::groupConcat(
                                 expression: QueryFunction::concat([
-                                    "{$ticket_user_table}.users_id",
+                                    new QueryIdentifier("{$ticket_user_table}.users_id"),
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    "{$ticket_user_table}.alternative_email",
+                                    new QueryIdentifier("{$ticket_user_table}.alternative_email"),
                                 ]),
                                 separator: Search::LONGSEP,
                                 distinct: true,
@@ -346,7 +347,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $SELECT = [
                             QueryFunction::groupConcat(
-                                expression: "{$table}{$addtable}.id",
+                                expression: new QueryIdentifier("{$table}{$addtable}.id"),
                                 separator: Search::LONGSEP,
                                 distinct: true,
                                 alias: $NAME
@@ -371,12 +372,12 @@ final class SQLProvider implements SearchProviderInterface
                 $_table_add_table = $table . ($meta ? $addtable2 : $addtable);
                 $SELECT = [
                     QueryFunction::floor(
-                        expression: new QueryExpression(QueryFunction::sum("{$_table_add_table}.{$field}") . ' * '
-                            . QueryFunction::count("{$_table_add_table}.id", true) . ' / '
-                            . QueryFunction::count("{$_table_add_table}.id")),
+                        expression: new QueryExpression(QueryFunction::sum(new QueryIdentifier("{$_table_add_table}.{$field}")) . ' * '
+                            . QueryFunction::count(new QueryIdentifier("{$_table_add_table}.id"), true) . ' / '
+                            . QueryFunction::count(new QueryIdentifier("{$_table_add_table}.id"))),
                         alias: $NAME
                     ),
-                    QueryFunction::min("{$_table_add_table}.{$field}", "{$NAME}_min"),
+                    QueryFunction::min(new QueryIdentifier("{$_table_add_table}.{$field}"), "{$NAME}_min"),
                 ];
                 return array_merge($SELECT, $ADDITONALFIELDS);
 
@@ -389,13 +390,13 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "{$table}{$addtable}.{$field}",
+                                new QueryIdentifier("{$table}{$addtable}.{$field}"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.entities_id",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.entities_id"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_recursive",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.is_recursive"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_dynamic",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.is_dynamic"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -415,13 +416,13 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "{$table}{$addtable}.completename",
+                                new QueryIdentifier("{$table}{$addtable}.completename"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.profiles_id",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.profiles_id"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_recursive",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.is_recursive"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_dynamic",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.is_dynamic"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -437,11 +438,11 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "glpi_softwares.name",
+                                new QueryIdentifier("glpi_softwares.name"),
                                 new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable2}.{$field}",
+                                new QueryIdentifier("{$table}{$addtable2}.{$field}"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "{$table}{$addtable2}.id",
+                                new QueryIdentifier("{$table}{$addtable2}.id"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -458,11 +459,11 @@ final class SQLProvider implements SearchProviderInterface
                 $SELECT = [
                     QueryFunction::groupConcat(
                         expression: QueryFunction::concat([
-                            "{$_table}.name",
+                            new QueryIdentifier("{$_table}.name"),
                             new QueryExpression($DB::quoteValue(" - ")),
-                            "{$_table_add_table}.{$field}",
+                            new QueryIdentifier("{$_table_add_table}.{$field}"),
                             new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                            "{$_table_add_table}.id",
+                            new QueryIdentifier("{$_table_add_table}.id"),
                         ]),
                         separator: Search::LONGSEP,
                         distinct: true,
@@ -476,13 +477,13 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "glpi_softwares.name",
+                                new QueryIdentifier("glpi_softwares.name"),
                                 new QueryExpression($DB::quoteValue(" - ")),
-                                "glpi_softwareversions{$addtable}.name",
+                                new QueryIdentifier("glpi_softwareversions{$addtable}.name"),
                                 new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable2}.{$field}",
+                                new QueryIdentifier("{$table}{$addtable2}.{$field}"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "{$table}{$addtable2}.id",
+                                new QueryIdentifier("{$table}{$addtable2}.id"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -494,11 +495,11 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "glpi_softwareversions.name",
+                                new QueryIdentifier("glpi_softwareversions.name"),
                                 new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable}.{$field}",
+                                new QueryIdentifier("{$table}{$addtable}.{$field}"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "{$table}{$addtable}.id",
+                                new QueryIdentifier("{$table}{$addtable}.id"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -533,9 +534,9 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
+                                QueryFunction::ifnull(new QueryIdentifier($tocompute), new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                $tocomputeid,
+                                new QueryIdentifier($tocomputeid),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -583,7 +584,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     return array_merge([
                         QueryFunction::count(
-                            expression: "$table$addtable.$field",
+                            expression: new QueryIdentifier("$table$addtable.$field"),
                             distinct: true,
                             alias: $NAME
                         ),
@@ -600,7 +601,7 @@ final class SQLProvider implements SearchProviderInterface
                         return array_merge([
                             QueryFunction::groupConcat(
                                 expression: QueryFunction::dateAdd(
-                                    date: "{$table}{$addtable}.{$opt['datafields'][1]}",
+                                    date: new QueryIdentifier("{$table}{$addtable}.{$opt['datafields'][1]}"),
                                     interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus),
                                     interval_unit: $interval
                                 ),
@@ -612,7 +613,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     return array_merge([
                         QueryFunction::dateAdd(
-                            date: "{$table}{$addtable}.{$opt['datafields'][1]}",
+                            date: new QueryIdentifier("{$table}{$addtable}.{$opt['datafields'][1]}"),
                             interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus),
                             interval_unit: $interval,
                             alias: $NAME
@@ -627,7 +628,7 @@ final class SQLProvider implements SearchProviderInterface
                                 expression: QueryFunction::concat([
                                     QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
                                     new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                    $tocomputeid,
+                                    new QueryIdentifier($tocomputeid),
                                 ]),
                                 separator: Search::LONGSEP,
                                 distinct: true,
@@ -640,7 +641,7 @@ final class SQLProvider implements SearchProviderInterface
                                 expression: QueryFunction::concat([
                                     $tocompute,
                                     new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                    "{$table}{$addtable}.id",
+                                    new QueryIdentifier("{$table}{$addtable}.id"),
                                 ])->setParams($tocompute->getParams()),
                                 separator: Search::LONGSEP,
                                 distinct: true,
@@ -677,7 +678,7 @@ final class SQLProvider implements SearchProviderInterface
                     expression: QueryFunction::concat([
                         QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
                         new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                        $tocomputeid,
+                        new QueryIdentifier($tocomputeid),
                     ]),
                     separator: $DB::quoteValue(Search::LONGSEP),
                     distinct: true,
@@ -690,7 +691,7 @@ final class SQLProvider implements SearchProviderInterface
                     expression: QueryFunction::concat([
                         QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
                         new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                        $tocomputeid,
+                        new QueryIdentifier($tocomputeid),
                     ]),
                     separator: Search::LONGSEP,
                     distinct: true,
@@ -1931,7 +1932,7 @@ final class SQLProvider implements SearchProviderInterface
                         // FIXME Maybe address the existing fixme instead of bypassing it when the field is computed (uses a function)
                         // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = DBConnection::getDefaultCharset();
-                        $date_computation = QueryFunction::convert($date_computation, $default_charset);
+                        $date_computation = QueryFunction::convert(new QueryIdentifier($date_computation), $default_charset);
                     }
                     $search_unit = $opt['searchunit'] ?? 'MONTH';
                     if ($opt["datatype"] === "date_delay") {
@@ -1941,7 +1942,7 @@ final class SQLProvider implements SearchProviderInterface
                             $add_minus = '-' . $DB::quoteName($table . '.' . $opt["datafields"][3]);
                         }
                         $date_computation = QueryFunction::dateAdd(
-                            date: "$table." . $opt["datafields"][1],
+                            date: new QueryIdentifier("$table." . $opt["datafields"][1]),
                             interval: new QueryExpression($DB::quoteName("$table." . $opt["datafields"][2]) . $add_minus),
                             interval_unit: $delay_unit
                         );
@@ -4487,7 +4488,7 @@ final class SQLProvider implements SearchProviderInterface
                         );
                     }
                     $criterion = QueryFunction::dateAdd(
-                        date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
+                        date: new QueryIdentifier("{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}"),
                         interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
                         interval_unit: $interval,
                     ) . " $order";

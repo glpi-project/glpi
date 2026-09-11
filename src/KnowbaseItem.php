@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Features\Clonable;
@@ -2052,10 +2053,10 @@ TWIG, $twig_params);
             'SELECT' => [
                 'glpi_knowbaseitems.*',
                 new QueryExpression(
-                    QueryFunction::count('glpi_knowbaseitems_users.id') . ' + '
-                    . QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + '
-                    . QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + '
-                    . QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS '
+                    QueryFunction::count(new QueryIdentifier('glpi_knowbaseitems_users.id')) . ' + '
+                    . QueryFunction::count(new QueryIdentifier('glpi_groups_knowbaseitems.id')) . ' + '
+                    . QueryFunction::count(new QueryIdentifier('glpi_knowbaseitems_profiles.id')) . ' + '
+                    . QueryFunction::count(new QueryIdentifier('glpi_entities_knowbaseitems.id')) . ' AS '
                     . $DB::quoteName('visibility_count')
                 ),
             ],

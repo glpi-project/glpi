@@ -36,7 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\ChangeParameters;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 use Glpi\Search\DefaultSearchRequestInterface;
 
@@ -250,7 +250,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_changes', 'glpi_changes_users'],
                             [
-                                'glpi_changes_users.changes_id'  => new QueryExpression(DBmysql::quoteName('glpi_changes.id')),
+                                'glpi_changes_users.changes_id'  => new QueryIdentifier('glpi_changes.id'),
                                 'glpi_changes_users.users_id'    => $item->getID(),
                                 'glpi_changes_users.type'        => CommonITILActor::REQUESTER,
                                 'glpi_changes.is_deleted'        => 0,
@@ -265,7 +265,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_changes', 'glpi_changes_groups'],
                             [
-                                'glpi_changes_groups.changes_id' => new QueryExpression(DBmysql::quoteName('glpi_changes.id')),
+                                'glpi_changes_groups.changes_id' => new QueryIdentifier('glpi_changes.id'),
                                 'glpi_changes_groups.groups_id'  => $item->getID(),
                                 'glpi_changes_groups.type'       => CommonITILActor::REQUESTER,
                                 'glpi_changes.is_deleted'        => 0,

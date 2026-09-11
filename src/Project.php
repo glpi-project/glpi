@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Features\Clonable;
@@ -748,7 +749,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'joinparams'         => [
                 'jointype'           => 'child',
                 'specific_itemtype'  => 'ProjectCost',
-                'condition'          => ['NEWTABLE.projects_id' => new QueryExpression($DB::quoteName('REFTABLE.id'))],
+                'condition'          => ['NEWTABLE.projects_id' => new QueryIdentifier('REFTABLE.id')],
                 'beforejoin'         => [
                     'table'        => static::getTable(),
                     'joinparams'   => [
@@ -756,7 +757,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                     ],
                 ],
             ],
-            'computation'        => QueryFunction::sum('TABLE.cost'),
+            'computation'        => QueryFunction::sum(new QueryIdentifier('TABLE.cost')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -2529,7 +2530,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => [
                 QueryFunction::cast(
-                    expression: QueryFunction::avg('percent_done'),
+                    expression: QueryFunction::avg(new QueryIdentifier('percent_done')),
                     type: 'UNSIGNED',
                     alias: 'percent_done'
                 ),
