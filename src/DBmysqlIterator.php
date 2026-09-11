@@ -34,7 +34,6 @@
  */
 
 use Glpi\DBAL\QueryAliasInterface;
-use Glpi\DBAL\QueryAliasTrait;
 use Glpi\DBAL\QueryElementInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
