@@ -92,7 +92,6 @@ use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\md5_file;
 use function Safe\preg_match;
-use function Safe\tempnam;
 use function Safe\unlink;
 
 final class FormSerializer extends AbstractFormSerializer
@@ -1175,7 +1174,7 @@ final class FormSerializer extends AbstractFormSerializer
 
         // Save file
         $data = base64_decode($illustration->data);
-        $tmp_path = tempnam(GLPI_TMP_DIR, 'illustration_');
+        $tmp_path = GLPI_TMP_DIR . "/" . mt_rand() . $illustration->key;
         file_put_contents($tmp_path, $data);
         if (!Document::isImage($tmp_path)) {
             unlink($tmp_path);
