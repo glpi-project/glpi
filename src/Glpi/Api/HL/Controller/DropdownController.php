@@ -2302,7 +2302,7 @@ EOT,
             'ContractType', 'ConsumableItemType', 'DomainRecordType', 'DomainType', 'LineType', 'NetworkPortType',
             'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType', 'Filesystem',
             'ApplianceEnvironment', 'Network', 'DomainRelation', 'Stencil', 'CameraImageFormat', 'CameraImageResolution',
-            'CalendarCloseTime', 'CalendarTimeRange', 'Plug', 'Item_Plug', 'PhonePowerSupply',
+            'CalendarTimeRange', 'Plug', 'Item_Plug', 'PhonePowerSupply',
         ];
     }
 
