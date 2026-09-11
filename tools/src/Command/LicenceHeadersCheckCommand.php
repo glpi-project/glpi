@@ -777,6 +777,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
                     'tests\/config',
                     'tests\/config_db\.php',
                     'tests\/files',
+                    'tests\/fixtures',
                     'tests\/e2e\/glpi_config',
                     'tests\/e2e\/glpi_files',
                 ]

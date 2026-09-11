@@ -365,6 +365,19 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * Password is using and old encryption method like md5 or sha1
+     *
+     * @param string $hash Hash
+     *
+     * @return bool
+     */
+    private static function passwordIsOutdated(string $hash): bool
+    {
+        $info = password_get_info($hash);
+        return !isset($info['algo']) || !$info['algo'];
+    }
+
+    /**
      * Check is a password match the stored hash
      *
      * @since 0.85
@@ -376,20 +389,7 @@ class Auth extends CommonGLPI
      */
     public static function checkPassword($pass, $hash)
     {
-        $tmp = password_get_info($hash);
-
-        if (isset($tmp['algo']) && $tmp['algo']) {
-            $ok = password_verify($pass, $hash);
-        } elseif (strlen($hash) === 32) {
-            $ok = md5($pass) === $hash;
-        } elseif (strlen($hash) === 40) {
-            $ok = sha1($pass) === $hash;
-        } else {
-            $salt = substr($hash, 0, 8);
-            $ok = ($salt . sha1($salt . $pass) === $hash);
-        }
-
-        return $ok;
+        return password_verify($pass, $hash);
     }
 
     /**
@@ -474,6 +474,11 @@ class Auth extends CommonGLPI
         if (count($result) === 1) {
             $row = $result->current();
             $password_db = $row['password'];
+
+            if (self::passwordIsOutdated($password_db)) {
+                $this->addToError(__('For security reasons, your password has expired. Please contact your administrator to reset it.'));
+                return false;
+            }
 
             if (self::checkPassword($password, $password_db)) {
                 // Disable account if password expired
