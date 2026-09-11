@@ -82,11 +82,8 @@ test('A row the pointer rests on gets its actions menu prefetched', async ({ pag
     await response;
 
     // Checked in the DOM, not via role/visibility: the dropdown stays closed (display:none).
-    // eslint-disable-next-line playwright/no-raw-locators -- no accessible role while the dropdown is closed
-    const menu = kb.getAsideTreeArticleLine(id).locator('[data-glpi-kb-actions-menu]');
-    await expect(menu).toHaveAttribute('data-glpi-kb-actions-loaded', '');
-    // eslint-disable-next-line playwright/no-raw-locators -- no accessible role while the dropdown is closed
-    await expect(menu.locator('button[data-glpi-kb-action="TOGGLE_FAVORITE"]')).toBeAttached();
+    await expect(kb.getAsideArticleActionsMenu(id)).toHaveAttribute('data-glpi-kb-actions-loaded', '');
+    await expect(kb.getAsideArticleActionsMenuButton(id, 'TOGGLE_FAVORITE')).toBeAttached();
 });
 
 test('Sweeping across many aside rows only prefetches the one the pointer rests on', async ({ page, profile, api }) => {
@@ -112,15 +109,7 @@ test('Sweeping across many aside rows only prefetches the one the pointer rests 
     });
 
     // Simulate a fast pointer sweep: mouseout the previous row, then mouseover the next.
-    await page.evaluate((ids) => {
-        const rowOf = (id: number) => document.querySelector(`[data-glpi-kb-aside-tree] li[data-glpi-kb-article-id="${id}"]`);
-        for (let i = 0; i < ids.length; i++) {
-            if (i > 0) {
-                rowOf(ids[i - 1])?.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
-            }
-            rowOf(ids[i])?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
-        }
-    }, ids);
+    await kb.sweepPointerAcrossAsideTreeRows(ids);
 
     // Only the last row (the one never left) should have triggered a request.
     await expect.poll(() => requested_ids).toEqual([ids[ids.length - 1]]);

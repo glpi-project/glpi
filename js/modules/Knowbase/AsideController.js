@@ -805,7 +805,8 @@ export class GlpiKnowbaseAsideController
         const timer = window.setTimeout(() => {
             this.#prefetch_timers.delete(line);
             this.#ensureActionsMenu(line);
-            this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
+            // Quiet: nothing here is a request the reader is waiting on.
+            this.#populateMenus(parseInt(line.dataset.glpiKbArticleId), { quiet: true });
         }, GlpiKnowbaseAsideController.#PREFETCH_DELAY_MS);
         this.#prefetch_timers.set(line, timer);
     }
@@ -852,8 +853,10 @@ export class GlpiKnowbaseAsideController
      * not-yet-populated menu bearing that id (tree + favorites).
      *
      * @param {number} id
+     * @param {Object} [options]
+     * @param {boolean} [options.quiet=false] Suppress the error toast on failure.
      */
-    async #populateMenus(id)
+    async #populateMenus(id, { quiet = false } = {})
     {
         if (!Number.isInteger(id)) {
             return;
@@ -869,6 +872,9 @@ export class GlpiKnowbaseAsideController
         } catch {
             // Drop the cached rejection so a later hover/open can retry.
             this.#actions_cache.delete(id);
+            if (!quiet) {
+                glpi_toast_error(__("An unexpected error occurred."));
+            }
             return;
         }
 
@@ -928,10 +934,7 @@ export class GlpiKnowbaseAsideController
         if (!this.#actions_cache.has(id)) {
             this.#actions_cache.set(
                 id,
-                // Quiet: this is a speculative prefetch (hover/focus, or the
-                // dropdown-open fallback), never a request the reader is
-                // waiting on with nothing else to look at. A failure here
-                // leaves the menu empty; reopening it retries.
+                // Always quiet: #populateMenus decides whether to toast, per call.
                 get(`Knowbase/${id}/AsideActions`, { quiet: true }).then((response) => response.text()),
             );
         }

@@ -305,6 +305,48 @@ export class KnowbaseItemPage extends GlpiPage
         return this.getAsideTreeArticleLine(id).getByRole('button', { name });
     }
 
+    /**
+     * An aside tree article row's (lazy) actions menu, queryable while its
+     * dropdown stays closed (no accessible role, unlike getAsideArticleAction()).
+     */
+    public getAsideArticleActionsMenu(id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- no accessible role while the dropdown is closed
+        return this.getAsideTreeArticleLine(id).locator('[data-glpi-kb-actions-menu]');
+    }
+
+    /**
+     * A button inside an aside tree article row's (lazy) actions menu,
+     * addressed by its data-glpi-kb-action (e.g. 'TOGGLE_FAVORITE').
+     */
+    public getAsideArticleActionsMenuButton(id: number, action: string): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- no accessible role while the dropdown is closed
+        return this.getAsideArticleActionsMenu(id).locator(`button[data-glpi-kb-action="${action}"]`);
+    }
+
+    /**
+     * Simulates a fast pointer sweep: mouseout the previous row before
+     * mouseover on the next (Locator.hover() can't express that ordering).
+     */
+    public async sweepPointerAcrossAsideTreeRows(ids: number[]): Promise<void>
+    {
+        for (let i = 0; i < ids.length; i++) {
+            if (i > 0) {
+                await this.dispatchAsideTreeRowMouseEvent(ids[i - 1], 'mouseout');
+            }
+            await this.dispatchAsideTreeRowMouseEvent(ids[i], 'mouseover');
+        }
+    }
+
+    private async dispatchAsideTreeRowMouseEvent(id: number, type: string): Promise<void>
+    {
+        await this.getAsideTreeArticleRow(id).evaluate(
+            (element, event_type) => element.dispatchEvent(new MouseEvent(event_type, { bubbles: true })),
+            type,
+        );
+    }
+
     public async doToggleAsideFavorite(id: number): Promise<void>
     {
         const response_promise = this.page.waitForResponse(
