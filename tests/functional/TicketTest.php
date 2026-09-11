@@ -9570,7 +9570,7 @@ HTML,
             Ticket::class,
             [
                 'name'        => 'ITILsolution Title',
-                'content'     => '',
+                'content'     => 'content',
                 'entities_id' => 0,
                 '_actors'     => [
                     'requester' => [
@@ -10351,6 +10351,62 @@ HTML,
                 $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled']);
             }
         }
+    }
+
+    /**
+     * A mandatory template field added to a ticket after a solution was already submitted
+     * must not prevent that solution from being validated, nor the ticket from being closed.
+     */
+    public function testValidateSolutionNotBlockedByMandatoryTemplateFieldAddedAfterward(): void
+    {
+        $this->login();
+
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity');
+
+        // Create a ticket with an empty category
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket with empty category',
+            'content'     => 'content',
+            'entities_id' => $entity->getID(),
+        ]);
+        $this->assertEquals(0, (int) $ticket->fields['itilcategories_id']);
+
+        // Add a solution, which is waiting for approval by default
+        $solution = $this->createItem(ITILSolution::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'solution content',
+        ]);
+        $this->assertEquals(CommonITILValidation::WAITING, (int) $solution->fields['status']);
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::SOLVED, (int) $ticket->fields['status']);
+
+        // Only now, add a ticket template with the category as a mandatory field,
+        // and assign it to the ticket's entity
+        $template = $this->createItem(TicketTemplate::class, [
+            'name' => 'Template with mandatory category',
+        ]);
+        $mandatory_field = new TicketTemplateMandatoryField();
+        $this->createItem(TicketTemplateMandatoryField::class, [
+            'tickettemplates_id' => $template->getID(),
+            'num'                => $mandatory_field->getFieldNum($template, 'Category'),
+        ]);
+        $this->updateItem(Entity::class, $entity->getID(), [
+            'tickettemplates_id' => $template->getID(),
+        ]);
+
+        // Validate the solution
+        $this->createItem(ITILFollowup::class, [
+            'itemtype'  => Ticket::class,
+            'items_id'  => $ticket->getID(),
+            'add_close' => '1',
+        ], ['add_close']);
+
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertEquals(CommonITILValidation::ACCEPTED, (int) $solution->fields['status'], 'Solution should have been accepted');
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::CLOSED, (int) $ticket->fields['status'], 'Ticket should have been closed');
     }
 
     /**
