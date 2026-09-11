@@ -564,10 +564,6 @@ final class ResourceAccessor
             return AbstractController::getAccessDeniedErrorResponse();
         }
 
-        if (!$item->getFromDB($items_id)) {
-            return AbstractController::getNotFoundErrorResponse();
-        }
-
         $final_request = Router::getInstance()->getFinalRequest();
         if ($final_request !== null) {
             $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
