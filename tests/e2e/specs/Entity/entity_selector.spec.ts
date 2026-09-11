@@ -156,3 +156,28 @@ test('Can switch to another entity without sub entities', async ({ page, profile
         'Root entity'
     );
 });
+
+test('Can select an entity by clicking on its row in the tree', async ({ page, profile }) => {
+    // Regression test: the entity tree (Fancytree) used to redraw the clicked
+    // row on focus, detaching the button before its form submission could go
+    // through, so the click was silently ignored.
+    // The active entity breadcrumb is left-truncated, so only assert on the
+    // entity's own name rather than the full "Root entity > ..." path.
+    const entity_name = 'E2E worker entity 05';
+
+    await page.goto('/front/preference.php');
+    await profile.set(Profiles.SuperAdmin);
+    const glpi_page = new GlpiPage(page);
+
+    await glpi_page.doOpenEntitySelector();
+    await expect(glpi_page.active_entity).not.toContainText(entity_name);
+
+    // Open the entity selector
+    await glpi_page.doOpenEntitySelector();
+
+    // Click directly on the row's button, the same way a user does, rather
+    // than going through an API shortcut.
+    await glpi_page.doSwitchToEntityWithoutRecursion(entity_name);
+
+    await expect(glpi_page.active_entity).toContainText(entity_name);
+});
