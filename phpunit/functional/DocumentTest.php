@@ -454,11 +454,16 @@ class DocumentTest extends DbTestCase
     {
         return [
             [__FILE__, false],
-            [__DIR__ . "/../../pics/add_dropdown.png", true],
-            [__DIR__ . "/../../pics/corners.gif", true],
-            [__DIR__ . "/../../pics/PICS-AUTHORS.txt", false],
-            [__DIR__ . "/../notanimage.jpg", false],
-            [__DIR__ . "/../notafile.jpg", false],
+            [__DIR__ . '/../../tests/fixtures/images/blank.bmp', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.jpg', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.JPEG', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.webp', true],
+            [__DIR__ . '/../../tests/fixtures/images/empty.gif', true],
+            [__DIR__ . '/../../tests/fixtures/images/empty.png', true],
+            [__DIR__ . "/../../tests/fixtures/images/fake_gif.php", false],
+            [__DIR__ . "/../../tests/fixtures/images/notanimage.php", false],
+            [__DIR__ . '/../../tests/fixtures/images/readme.txt', false],
+            [__DIR__ . '/../../tests/fixtures/images/this/file/does/no/exists.png', false],
         ];
     }
 

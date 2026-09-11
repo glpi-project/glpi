@@ -43,6 +43,19 @@ class Document extends CommonDBTM
 {
     use Glpi\Features\TreeBrowse;
     use Glpi\Features\ParentStatus;
+    /**
+     * List of file extension allowed for images documents.
+     *
+     * @var string[]
+     */
+    public const ALLOWED_IMAGE_EXTENSIONS = [
+        'bmp',
+        'gif',
+        'jpeg',
+        'jpg',
+        'png',
+        'webp',
+    ];
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -1840,6 +1853,13 @@ class Document extends CommonDBTM
         if (!file_exists($file)) {
             return false;
         }
+
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if (!in_array(strtolower($ext), self::ALLOWED_IMAGE_EXTENSIONS)) {
+            // Filter by file extensions, since `exif_imagetype()` can be fooled.
+            return false;
+        }
+
         if (extension_loaded('exif')) {
             if (filesize($file) < 12) {
                 return false;

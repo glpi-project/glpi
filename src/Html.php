@@ -5575,6 +5575,24 @@ HTML;
             // manage file upload without tinymce editor
             $display .= "<span class='b'>" . __('Drag and drop your file here, or') . '</span><br>';
         }
+
+        if ($p['onlyimages']) {
+            $accept = sprintf(
+                ' accept="%s"',
+                implode(
+                    ',',
+                    array_map(
+                        function ($ext) {
+                            return '.' . $ext;
+                        },
+                        Document::ALLOWED_IMAGE_EXTENSIONS
+                    )
+                )
+            );
+        } else {
+            $accept = ''; // no accept attribute when all types are allowed
+        }
+
         $display .= "<input id='fileupload{$p['rand']}' type='file' name='_uploader_" . $p['name'] . "[]'
                       class='form-control'
                       $required
@@ -5582,7 +5600,7 @@ HTML;
                       data-url='" . $CFG_GLPI["root_doc"] . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_" . $p['name'] . "\", \"showfilesize\": \"" . $p['showfilesize'] . "\"}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
+                      . $accept . ">";
 
         $display .= "<div id='progress{$p['rand']}' style='display:none'>" .
                 "<div class='uploadbar' style='width: 0%;'></div></div>";
@@ -5609,7 +5627,7 @@ HTML;
                            ? "$('#{$p['dropZone']}')"
                            : "false") . ",
             acceptFileTypes: " . ($p['onlyimages']
-                                    ? "/(\.|\/)(gif|jpe?g|png)$/i"
+                                    ? "/(\.|\/)(" . implode('|', Document::ALLOWED_IMAGE_EXTENSIONS) . ")$/i"
                                  : DocumentType::getUploadableFilePattern()) . ",
             maxFileSize: {$max_file_size},
             maxChunkSize: {$max_chunk_size},
