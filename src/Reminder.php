@@ -567,6 +567,58 @@ class Reminder extends CommonDBVisible implements
         ]);
     }
 
+    /**
+     * @param array<array<string, mixed>> $events
+     *
+     * @return array<array<string, mixed>>
+     */
+    protected static function translatePlanningEvents(array $events): array
+    {
+        global $DB;
+
+        $language = $_SESSION['glpilanguage'] ?? null;
+        $reminders_ids = array_unique(array_column($events, 'reminders_id'));
+        if (empty($language) || $reminders_ids === []) {
+            return $events;
+        }
+
+        // Use the translations of the current language, if any.
+        // Order by id and keep the first row for each reminder, so that the
+        // result is deterministic and matches `ReminderTranslation::getTranslatedValue()`
+        // when several rows exist for the same reminder and language.
+        $translations = [];
+        $iterator = $DB->request([
+            'SELECT' => ['reminders_id', 'name', 'text'],
+            'FROM'   => ReminderTranslation::getTable(),
+            'WHERE'  => [
+                'reminders_id' => $reminders_ids,
+                'language'     => $language,
+            ],
+            'ORDER'  => 'id',
+        ]);
+        foreach ($iterator as $data) {
+            if (!isset($translations[$data['reminders_id']])) {
+                $translations[$data['reminders_id']] = $data;
+            }
+        }
+
+        foreach ($events as &$event) {
+            $translation = $translations[$event['reminders_id'] ?? 0] ?? null;
+            if ($translation === null) {
+                continue;
+            }
+            if (!empty($translation['name'])) {
+                $event['name'] = $translation['name'];
+            }
+            if (!empty($translation['text'])) {
+                $event['text'] = RichText::getSafeHtml($translation['text']);
+            }
+        }
+        unset($event);
+
+        return $events;
+    }
+
     final public static function getListCriteria(): array
     {
         $users_id = Session::getLoginUserID();

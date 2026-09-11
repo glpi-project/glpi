@@ -77,6 +77,82 @@ class ReminderTranslationTest extends DbTestCase
         $this->assertSame($text_fr, $text);
     }
 
+    public function testPlanningUsesTranslation(): void
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $reminder = new \Reminder();
+        $reminders_id = (int) $reminder->add([
+            'name'        => '_test_planned_reminder',
+            'text'        => '<p>Original text</p>',
+            'entities_id' => 0,
+            'plan'        => [
+                'begin' => '2025-01-15 10:00:00',
+                'end'   => '2025-01-15 11:00:00',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $reminders_id);
+
+        $translation = new \ReminderTranslation();
+        $this->assertGreaterThan(0, (int) $translation->add([
+            'reminders_id' => $reminders_id,
+            'users_id'     => \Session::getLoginUserID(),
+            'language'     => 'ja_JP',
+            'name'         => 'Translated title',
+            'text'         => '<p>Translated text</p>',
+        ]));
+
+        $get_event = function () use ($reminders_id): array {
+            $events = \Reminder::populatePlanning([
+                'who'      => \Session::getLoginUserID(),
+                'whogroup' => 0,
+                'begin'    => '2025-01-15 00:00:00',
+                'end'      => '2025-01-16 00:00:00',
+            ]);
+            foreach ($events as $event) {
+                if ((int) $event['reminders_id'] === $reminders_id) {
+                    return $event;
+                }
+            }
+            $this->fail('Reminder not found in planning');
+        };
+
+        $current_lang = $_SESSION['glpilanguage'];
+
+        // No translation for the current language, the original values are used
+        $_SESSION['glpilanguage'] = 'en_GB';
+        $event = $get_event();
+        $this->assertSame('_test_planned_reminder', $event['name']);
+        $this->assertStringContainsString('Original text', $event['text']);
+
+        // The translation for the current language is used
+        $_SESSION['glpilanguage'] = 'ja_JP';
+        $event = $get_event();
+        $this->assertSame('Translated title', $event['name']);
+        $this->assertStringContainsString('Translated text', $event['text']);
+
+        // With several rows for the same reminder and language, the planning must
+        // pick the same one as `getTranslatedValue()` (the first, ordered by id).
+        $this->assertGreaterThan(0, (int) (new \ReminderTranslation())->add([
+            'reminders_id' => $reminders_id,
+            'users_id'     => \Session::getLoginUserID(),
+            'language'     => 'ja_JP',
+            'name'         => 'Second translated title',
+            'text'         => '<p>Second translated text</p>',
+        ]));
+
+        $reminder1 = new \Reminder();
+        $this->assertTrue($reminder1->getFromDB($reminders_id));
+
+        $event = $get_event();
+        // Read the single-item value under the same language before restoring it.
+        $single_value = \ReminderTranslation::getTranslatedValue($reminder1, 'name');
+        $_SESSION['glpilanguage'] = $current_lang;
+        $this->assertSame($single_value, $event['name']);
+        $this->assertSame('Translated title', $event['name']);
+    }
+
     /**
      * Add translation into database
      *
