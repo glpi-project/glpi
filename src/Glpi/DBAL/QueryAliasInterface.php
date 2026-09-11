@@ -35,16 +35,9 @@
 namespace Glpi\DBAL;
 
 /**
- * Abstract class to manage alias.
+ * Common contract for the SQL alias.
  */
-abstract class AbstractQueryAlias
+interface QueryAliasInterface
 {
-    protected bool $with_alias = true;
-
-    public function withAlias(bool $with = true): static
-    {
-        $this->with_alias = $with;
-        return $this;
-    }
 
 }

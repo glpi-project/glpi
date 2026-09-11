@@ -40,8 +40,10 @@ use Glpi\Exception\Database\QueryException;
 /**
  * A database identifier (table or field name) that has to be quoted.
  */
-final class QueryIdentifier extends AbstractQueryAlias implements QueryElementInterface
+final class QueryIdentifier implements QueryElementInterface, QueryAliasInterface
 {
+    use QueryAliasTrait;
+
     /**
      * @param string  $name  Identifier to quote. May be qualified (`table.field`), the `*`
      *                       wildcard, or already quoted.

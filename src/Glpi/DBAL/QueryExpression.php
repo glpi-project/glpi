@@ -39,8 +39,10 @@ use RuntimeException;
 /**
  *  Query expression class
  **/
-class QueryExpression extends AbstractQueryAlias implements QueryElementInterface
+class QueryExpression implements QueryElementInterface, QueryAliasInterface
 {
+    use QueryAliasTrait;
+
     private string $expression;
 
     private ?string $alias;
