@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\DBAL;
 
-use Glpi\DBAL\QueryElementInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\GLPITestCase;
 use RuntimeException;
