@@ -313,4 +313,58 @@ class Document_ItemTest extends DbTestCase
         $this->assertContains($linked_kb->getID(), $ids);
         $this->assertNotContains($unrelated_kb->getID(), $ids);
     }
+
+    public function testCanAttachDocumentToItemUserCanOnlyView()
+    {
+        // "One write is enough": a user who can view (but not edit) an entity-assigned
+        // item and who is allowed to create documents may still attach a document to it.
+        $this->login();
+        $child_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $computer = $this->createItem('Computer', ['name' => 'doc_link_computer', 'entities_id' => $child_id]);
+
+        $this->addRightToProfile('Technician', 'document', READ | CREATE | UPDATE);
+        $this->removeRightFromProfile('Technician', 'computer', CREATE | UPDATE);
+
+        $actor = $this->createItem('User', ['name' => 'doc_actor_' . mt_rand()]);
+        $this->createItem('Profile_User', [
+            'users_id'     => $actor->getID(),
+            'profiles_id'  => getItemByTypeName('Profile', 'Technician', true),
+            'entities_id'  => $child_id,
+            'is_recursive' => 0,
+        ]);
+
+        $this->login($actor->fields['name']);
+        \Session::changeProfile(getItemByTypeName('Profile', 'Technician', true));
+        $this->setEntity('_test_child_1', false);
+
+        // The item is visible but not editable for this user.
+        $this->assertTrue($computer->can($computer->getID(), READ));
+        $this->assertFalse($computer->can($computer->getID(), UPDATE));
+
+        // "Add a new file" path (front/document.form.php) is now allowed.
+        $doc = new \Document();
+        $input = [
+            'name'        => 'linked doc',
+            'itemtype'    => 'Computer',
+            'items_id'    => $computer->getID(),
+            'entities_id' => $child_id,
+        ];
+        $this->assertTrue($doc->can(-1, CREATE, $input));
+
+        // The add form is offered on the item's "Documents" tab.
+        ob_start();
+        Document_Item::showForItem($computer);
+        $html = ob_get_clean();
+        $this->assertStringContainsString('Add a document', $html);
+
+        // The document entity is still enforced: creating it outside the user's entities is refused.
+        $doc2 = new \Document();
+        $input2 = [
+            'name'        => 'linked doc 2',
+            'itemtype'    => 'Computer',
+            'items_id'    => $computer->getID(),
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ];
+        $this->assertFalse($doc2->can(-1, CREATE, $input2));
+    }
 }

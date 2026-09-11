@@ -141,7 +141,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 ($item = getItemForItemtype($this->input['itemtype']))
                 && $item->getFromDB($this->input['items_id'])
             ) {
-                return $item->canAddItem('Document');
+                // canAddItem() holds the "one write is enough" rule; parent::canCreateItem()
+                // still enforces the document's own entity.
+                return $item->canAddItem('Document') && parent::canCreateItem();
             } else {
                 unset($this->input['itemtype'], $this->input['items_id']);
             }
