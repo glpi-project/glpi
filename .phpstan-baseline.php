@@ -11132,12 +11132,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'innodb_page_size\' on array\\<string, float\\|int\\|string\\|null\\>\\|false\\|null\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Requirement/DbConfiguration.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$size of static method Toolbox\\:\\:getSize\\(\\) expects int, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

@@ -49,6 +49,7 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 16384,
+                    'max_allowed_packet'  => 67108864,
                 ],
                 'validated' => true,
                 'messages'  => [
@@ -60,6 +61,7 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 8192,
+                    'max_allowed_packet'  => 16777216,
                 ],
                 'validated' => true,
                 'messages'  => [
@@ -71,6 +73,7 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 4096,
+                    'max_allowed_packet'  => 67108864,
                 ],
                 'validated' => false,
                 'messages'  => [
@@ -82,6 +85,7 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '10.11.18-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 16384,
+                    'max_allowed_packet'  => 16777216,
                 ],
                 'validated' => true,
                 'messages'  => [
@@ -93,10 +97,36 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '10.11.18-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 4096,
+                    'max_allowed_packet'  => 16777216,
                 ],
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
+                ],
+            ],
+            [
+                // "max_allowed_packet" too low
+                'version'   => '10.11.18-MariaDB',
+                'variables' => [
+                    'innodb_page_size'    => 16384,
+                    'max_allowed_packet'  => 1048576,
+                ],
+                'validated' => false,
+                'messages'  => [
+                    '"max_allowed_packet" must be >= 16 MiB (current value is 1024 KiB).',
+                ],
+            ],
+            [
+                // Both variables incompatible
+                'version'   => '10.11.18-MariaDB',
+                'variables' => [
+                    'innodb_page_size'    => 4096,
+                    'max_allowed_packet'  => 1048576,
+                ],
+                'validated' => false,
+                'messages'  => [
+                    '"innodb_page_size" must be >= 8KB.',
+                    '"max_allowed_packet" must be >= 16 MiB (current value is 1024 KiB).',
                 ],
             ],
         ];
