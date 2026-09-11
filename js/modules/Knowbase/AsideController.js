@@ -82,6 +82,13 @@ export class GlpiKnowbaseAsideController
     #actions_cache = new Map();
 
     /**
+     * Pending prefetch timers, keyed by row: a row left before its delay
+     * elapses never fetches at all.
+     * @type {Map<HTMLElement, number>}
+     */
+    #prefetch_timers = new Map();
+
+    /**
      * Viewport width (px) under which the aside becomes a sliding overlay.
      * @type {number}
      */
@@ -92,6 +99,9 @@ export class GlpiKnowbaseAsideController
      * @type {string}
      */
     static #STORAGE_KEY = 'glpi-kb-aside-collapsed';
+
+    /** Dwell delay (ms) before a hovered/focused row prefetches its actions menu. @type {number} */
+    static #PREFETCH_DELAY_MS = 150;
 
     /** @type {HTMLElement|null} */
     #collapse_btn = null;
@@ -743,32 +753,73 @@ export class GlpiKnowbaseAsideController
             }
         });
 
-        // Create the row's menu and prefetch its content as soon as the row is
-        // hovered or focused, so both are ready by the time the user opens the
-        // kebab (no visible latency).
-        const prepare = (e) => {
-            const line = e.target.closest('.article[data-glpi-kb-article-id]');
+        const lineOf = (e) => e.target.closest('.article[data-glpi-kb-article-id]');
+
+        // Prefetch after a short dwell so a fast sweep across many rows fires no request per row merely passed over (see #PREFETCH_DELAY_MS).
+        const schedulePrepare = (e) => {
+            const line = lineOf(e);
             if (line && this.#aside.contains(line)) {
+                this.#schedulePrefetch(line);
+            }
+        };
+        const cancelPrepare = (e) => {
+            const line = lineOf(e);
+            if (line && !line.contains(e.relatedTarget)) {
+                this.#cancelPrefetch(line);
+            }
+        };
+        this.#aside.addEventListener('mouseover', schedulePrepare);
+        this.#aside.addEventListener('mouseout', cancelPrepare);
+        this.#aside.addEventListener('focusin', schedulePrepare);
+        this.#aside.addEventListener('focusout', cancelPrepare);
+
+        // Immediate: opens that skip hover/focus (touch, synthetic clicks) need the menu ready before Bootstrap looks it up.
+        const prepareNow = (e) => {
+            const line = lineOf(e);
+            if (line && this.#aside.contains(line)) {
+                this.#cancelPrefetch(line);
                 this.#ensureActionsMenu(line);
                 this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
             }
         };
-        this.#aside.addEventListener('mouseover', prepare);
-        this.#aside.addEventListener('focusin', prepare);
-        // Safety net for opens that skip hover and focus (touch, synthetic
-        // clicks): the menu has to exist before Bootstrap looks it up, and the
-        // capture phase runs before its own delegated click handler.
-        this.#aside.addEventListener('pointerdown', prepare);
-        this.#aside.addEventListener('click', prepare, true);
+        this.#aside.addEventListener('pointerdown', prepareNow);
+        this.#aside.addEventListener('click', prepareNow, true);
 
         // Fallback for opens that outran the prefetch (touch, instant clicks,
         // keyboard): make sure the content is loaded when the menu opens.
         this.#aside.addEventListener('show.bs.dropdown', (e) => {
-            const line = e.target.closest('.article[data-glpi-kb-article-id]');
+            const line = lineOf(e);
             if (line) {
+                this.#cancelPrefetch(line);
                 this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
             }
         });
+    }
+
+    /**
+     * @param {HTMLElement} line
+     */
+    #schedulePrefetch(line)
+    {
+        this.#cancelPrefetch(line);
+        const timer = window.setTimeout(() => {
+            this.#prefetch_timers.delete(line);
+            this.#ensureActionsMenu(line);
+            this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
+        }, GlpiKnowbaseAsideController.#PREFETCH_DELAY_MS);
+        this.#prefetch_timers.set(line, timer);
+    }
+
+    /**
+     * @param {HTMLElement} line
+     */
+    #cancelPrefetch(line)
+    {
+        const timer = this.#prefetch_timers.get(line);
+        if (timer !== undefined) {
+            window.clearTimeout(timer);
+            this.#prefetch_timers.delete(line);
+        }
     }
 
     /**
@@ -877,7 +928,11 @@ export class GlpiKnowbaseAsideController
         if (!this.#actions_cache.has(id)) {
             this.#actions_cache.set(
                 id,
-                get(`Knowbase/${id}/AsideActions`).then((response) => response.text()),
+                // Quiet: this is a speculative prefetch (hover/focus, or the
+                // dropdown-open fallback), never a request the reader is
+                // waiting on with nothing else to look at. A failure here
+                // leaves the menu empty; reopening it retries.
+                get(`Knowbase/${id}/AsideActions`, { quiet: true }).then((response) => response.text()),
             );
         }
         return this.#actions_cache.get(id);
