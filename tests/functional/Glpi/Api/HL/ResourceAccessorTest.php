@@ -38,6 +38,8 @@ use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionMethod;
+use Ticket;
 
 class ResourceAccessorTest extends GLPITestCase
 {
@@ -195,5 +197,31 @@ class ResourceAccessorTest extends GLPITestCase
                 'maximum' => 300,
             ],
         ], $response_data['detail']['weight']);
+    }
+
+    public function testValidatePreconditions(): void
+    {
+        $ticket = new Ticket();
+        $ticket->fields = [
+            'id' => 1,
+            'name' => 'Test Ticket',
+            'content' => 'This is a test ticket.',
+            'date_mod' => '2026-09-01 12:00:00',
+        ];
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'validatePreconditions');
+
+        $this->assertEmpty($rm->invoke(null, $ticket, [
+            'If-Modified-Since' => ['2026-08-15 12:00:00'],
+        ]));
+        $this->assertArrayHasKey('If-Modified-Since', $rm->invoke(null, $ticket, [
+            'If-Modified-Since' => ['2026-09-02 2:00:00'],
+        ]));
+
+        $this->assertEmpty($rm->invoke(null, $ticket, [
+            'If-Unmodified-Since' => ['2026-09-02 12:00:00'],
+        ]));
+        $this->assertArrayHasKey('If-Unmodified-Since', $rm->invoke(null, $ticket, [
+            'If-Unmodified-Since' => ['2026-08-15 12:00:00'],
+        ]));
     }
 }

@@ -5276,12 +5276,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/TicketFollowup.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getErrorResponseBody\\(\\) should return array\\{status\\: string, title\\: string, detail\\: string\\|null, additional_messages\\?\\: array\\<array\\{priority\\: string, message\\: string\\}\\>\\} but returns array\\{status\\: \'ERROR\'\\|\'ERROR_ALREADY_EXISTS\'\\|\'ERROR_BAD_ARRAY\'\\|\'ERROR_INVALID…\'\\|\'ERROR_ITEM_NOT_FOUND\'\\|\'ERROR_METHOD_NOT…\'\\|\'ERROR_RIGHT_MISSING\'\\|\'ERROR_SESSION_TOKEN…\', title\\: string, detail\\: array\\|string\\|null, additional_messages\\?\\: non\\-empty\\-array\\<array\\{priority\\: string, message\\: string\\}\\>\\}\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$headers of class Glpi\\\\Http\\\\Response constructor expects array\\<array\\<string\\>\\|string\\>, array\\<string, list\\<string\\|null\\>\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,

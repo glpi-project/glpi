@@ -57,7 +57,7 @@ use Toolbox;
 
 /**
  * @phpstan-type AdditionalErrorMessage array{priority: string, message: string}
- * @phpstan-type ErrorResponseBody array{status: string, title: string, detail: string|null, additional_messages?: AdditionalErrorMessage[]}
+ * @phpstan-type ErrorResponseBody array{status: string, title: string, detail: array<mixed, mixed>|string|null, additional_messages?: AdditionalErrorMessage[]}
  * @phpstan-type InvalidParameterInfo array{name: string, reason?: string}
  */
 abstract class AbstractController
@@ -71,6 +71,7 @@ abstract class AbstractController
     public const ERROR_INVALID_PARAMETER = 'ERROR_INVALID_PARAMETER';
     public const ERROR_METHOD_NOT_ALLOWED = 'ERROR_METHOD_NOT_ALLOWED';
     public const ERROR_ALREADY_EXISTS = 'ERROR_ALREADY_EXISTS';
+    public const ERROR_PRECONDITION_FAILED = 'ERROR_PRECONDITION_FAILED';
 
     public const CRUD_ACTION_CREATE = 'create';
     public const CRUD_ACTION_READ = 'read';
@@ -288,7 +289,7 @@ abstract class AbstractController
                 'type' => Doc\Schema::TYPE_STRING,
                 'readOnly' => true,
             ];
-        } else {
+        } elseif ($graphql_only) {
             $schema['x-graphql-only'] = true;
         }
 
@@ -326,7 +327,7 @@ abstract class AbstractController
      * @param string $status
      * @phpstan-param self::ERROR_* $status
      * @param string $title
-     * @param string|array|null $detail
+     * @param string|array<mixed, mixed>|null $detail
      * @param AdditionalErrorMessage[] $additionalMessages
      * @return array
      * @phpstan-return ErrorResponseBody

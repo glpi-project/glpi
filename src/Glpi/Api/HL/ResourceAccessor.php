@@ -273,6 +273,42 @@ final class ResourceAccessor
     }
 
     /**
+     * @param CommonDBTM $item
+     * @param array<string, string[]> $headers
+     * @return array<string, string> Array of failed preconditions. Empty array if all preconditions passed.
+     * @throws \DateMalformedStringException
+     */
+    private static function validatePreconditions(CommonDBTM $item, array $headers): array
+    {
+        $failures = [];
+
+        $item_date_mod = $item->fields['date_mod'] ?? null;
+
+        if ($item_date_mod !== null && isset($headers['If-Unmodified-Since'])) {
+            $if_unmodified_since = $headers['If-Unmodified-Since'];
+            if (is_array($if_unmodified_since)) {
+                $if_unmodified_since = $if_unmodified_since[0];
+            }
+            $item_last_update_dt = new DateTime($item_date_mod);
+            $if_unmodified_since_dt = new DateTime($if_unmodified_since);
+            if ($item_last_update_dt > $if_unmodified_since_dt) {
+                $failures['If-Unmodified-Since'] = 'The item has been modified since the specified date';
+            }
+        } elseif ($item_date_mod !== null && isset($headers['If-Modified-Since'])) {
+            $if_modified_since = $headers['If-Modified-Since'];
+            if (is_array($if_modified_since)) {
+                $if_modified_since = $if_modified_since[0];
+            }
+            $item_last_update_dt = new DateTime($item_date_mod);
+            $if_modified_since_dt = new DateTime($if_modified_since);
+            if ($item_last_update_dt <= $if_modified_since_dt) {
+                $failures['If-Modified-Since'] = 'The item has not been modified since the specified date';
+            }
+        }
+        return $failures;
+    }
+
+    /**
      * Update an item of the given schema using the given request parameters.
      * @param array $schema The schema
      * @param array $request_attrs The request attributes
@@ -305,6 +341,22 @@ final class ResourceAccessor
         if (!$item->can($items_id, UPDATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
+
+        if (!$item->getFromDB($items_id)) {
+            return AbstractController::getNotFoundErrorResponse();
+        }
+
+        $final_request = Router::getInstance()->getFinalRequest();
+        if ($final_request !== null) {
+            $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            if ($precondition_failures !== []) {
+                return new JSONResponse(
+                    AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),
+                    412
+                );
+            }
+        }
+
         $result = $item->update($input);
 
         if ($result === false) {
@@ -460,7 +512,23 @@ final class ResourceAccessor
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();
         }
-        return new JSONResponse($results['results'][0]);
+
+        $result = $results['results'][0];
+
+        $final_request = Router::getInstance()->getFinalRequest();
+        if ($final_request !== null && !empty($result['date_mod'])) {
+            $item = self::getItemFromSchema($schema);
+            $item->fields['date_mod'] = $result['date_mod'];
+            $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            if ($precondition_failures !== []) {
+                return new JSONResponse(
+                    AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),
+                    array_key_exists('If-Modified-Since', $precondition_failures) ? 304 : 412
+                );
+            }
+        }
+
+        return new JSONResponse($result);
     }
 
     /**
