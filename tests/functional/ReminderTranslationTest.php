@@ -98,9 +98,9 @@ class ReminderTranslationTest extends DbTestCase
         $this->assertGreaterThan(0, (int) $translation->add([
             'reminders_id' => $reminders_id,
             'users_id'     => \Session::getLoginUserID(),
-            'language'     => 'fr_FR',
-            'name'         => 'Titre traduit',
-            'text'         => '<p>Texte traduit</p>',
+            'language'     => 'ja_JP',
+            'name'         => 'Translated title',
+            'text'         => '<p>Translated text</p>',
         ]));
 
         $get_event = function () use ($reminders_id): array {
@@ -127,11 +127,30 @@ class ReminderTranslationTest extends DbTestCase
         $this->assertStringContainsString('Original text', $event['text']);
 
         // The translation for the current language is used
-        $_SESSION['glpilanguage'] = 'fr_FR';
+        $_SESSION['glpilanguage'] = 'ja_JP';
         $event = $get_event();
+        $this->assertSame('Translated title', $event['name']);
+        $this->assertStringContainsString('Translated text', $event['text']);
+
+        // With several rows for the same reminder and language, the planning must
+        // pick the same one as `getTranslatedValue()` (the first, ordered by id).
+        $this->assertGreaterThan(0, (int) (new \ReminderTranslation())->add([
+            'reminders_id' => $reminders_id,
+            'users_id'     => \Session::getLoginUserID(),
+            'language'     => 'ja_JP',
+            'name'         => 'Second translated title',
+            'text'         => '<p>Second translated text</p>',
+        ]));
+
+        $reminder1 = new \Reminder();
+        $this->assertTrue($reminder1->getFromDB($reminders_id));
+
+        $event = $get_event();
+        // Read the single-item value under the same language before restoring it.
+        $single_value = \ReminderTranslation::getTranslatedValue($reminder1, 'name');
         $_SESSION['glpilanguage'] = $current_lang;
-        $this->assertSame('Titre traduit', $event['name']);
-        $this->assertStringContainsString('Texte traduit', $event['text']);
+        $this->assertSame($single_value, $event['name']);
+        $this->assertSame('Translated title', $event['name']);
     }
 
     /**

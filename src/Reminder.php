@@ -582,7 +582,10 @@ class Reminder extends CommonDBVisible implements
             return $events;
         }
 
-        // Use the translations of the current language, if any
+        // Use the translations of the current language, if any.
+        // Order by id and keep the first row for each reminder, so that the
+        // result is deterministic and matches `ReminderTranslation::getTranslatedValue()`
+        // when several rows exist for the same reminder and language.
         $translations = [];
         $iterator = $DB->request([
             'SELECT' => ['reminders_id', 'name', 'text'],
@@ -591,9 +594,12 @@ class Reminder extends CommonDBVisible implements
                 'reminders_id' => $reminders_ids,
                 'language'     => $language,
             ],
+            'ORDER'  => 'id',
         ]);
         foreach ($iterator as $data) {
-            $translations[$data['reminders_id']] = $data;
+            if (!isset($translations[$data['reminders_id']])) {
+                $translations[$data['reminders_id']] = $data;
+            }
         }
 
         foreach ($events as &$event) {
