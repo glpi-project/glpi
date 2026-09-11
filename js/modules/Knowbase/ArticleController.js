@@ -578,11 +578,17 @@ export class GlpiKnowbaseArticleController
         }
 
         const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
-        const entries = aside.querySelectorAll(
-            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] [data-glpi-kb-article-title]`
+        const articles = aside.querySelectorAll(
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"]`
         );
-        for (const entry of entries) {
-            entry.textContent = title;
+        for (const article of articles) {
+            for (const entry of article.querySelectorAll('[data-glpi-kb-article-title]')) {
+                // Child articles are nested inside this article's element, so only
+                // update the title that belongs to this article and not its children.
+                if (entry.closest('[data-glpi-kb-article-id]') === article) {
+                    entry.textContent = title;
+                }
+            }
         }
     }
 
@@ -597,22 +603,29 @@ export class GlpiKnowbaseArticleController
         }
 
         const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
-        const containers = aside.querySelectorAll(
-            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] [data-glpi-kb-article-illustration]`
+        const articles = aside.querySelectorAll(
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"]`
         );
 
         // The illustration picker preview already holds a freshly rendered node
         // for the selected illustration. We clone it with a different size.
         const source = this.#getIllustrationPreviewNode();
-        for (const container of containers) {
-            if (source === null) {
-                container.replaceChildren();
-            } else {
-                const icon = source.cloneNode(true);
-                // The aside renders illustrations at size 20 (see aside.html.twig).
-                icon.setAttribute('width', '20');
-                icon.setAttribute('height', '20');
-                container.replaceChildren(icon);
+        for (const article of articles) {
+            for (const container of article.querySelectorAll('[data-glpi-kb-article-illustration]')) {
+                // Child articles are nested inside this article's element, so only
+                // update the illustration that belongs to this article.
+                if (container.closest('[data-glpi-kb-article-id]') !== article) {
+                    continue;
+                }
+                if (source === null) {
+                    container.replaceChildren();
+                } else {
+                    const icon = source.cloneNode(true);
+                    // The aside renders illustrations at size 20 (see aside.html.twig).
+                    icon.setAttribute('width', '20');
+                    icon.setAttribute('height', '20');
+                    container.replaceChildren(icon);
+                }
             }
         }
     }
