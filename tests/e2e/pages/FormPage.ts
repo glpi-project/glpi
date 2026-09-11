@@ -119,7 +119,7 @@ export class FormPage extends GlpiPage
             dropdown,
             type,
             () => this.doSetDropdownValue(dropdown, type, false),
-            'glpi-form-editor-question-type-changed'
+            'glpi-form-editor-question-sub-type-changed'
         );
     }
 
