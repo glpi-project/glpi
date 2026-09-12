@@ -47,29 +47,9 @@ if (
     ($item = getItemForItemtype($_POST['type']))
     && ($parent = getItemForItemtype($_POST['parenttype']))
 ) {
-    $parent_fk = $parent::getForeignKeyField();
-    $parent_id = $_POST[$parent_fk] ?? null;
-
-    // SLA/OLA forms send their parent identifier as rules_id.
     if (
-        $parent_id === null
-        && isset($_POST['rules_id'])
-        && (
-            $parent instanceof SlaLevel
-            || $parent instanceof OlaLevel
-        )
-        && (
-            $item instanceof RuleCriteria
-            || $item instanceof RuleAction
-        )
-    ) {
-        $parent_id = $_POST['rules_id'];
-    }
-
-    if (
-        $parent_id !== null
-        && isset($_POST["id"])
-        && $parent->getFromDB($parent_id)
+        isset($_POST[$parent::getForeignKeyField()], $_POST["id"])
+        && $parent->getFromDB($_POST[$parent::getForeignKeyField()])
     ) {
         $item->showForm($_POST["id"], ['parent' => $parent]);
     } else {
