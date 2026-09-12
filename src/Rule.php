@@ -1166,7 +1166,7 @@ TWIG, $twig_params);
                             $('#viewaction{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->ruleactionclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: action_id
                             });
                         }
@@ -1280,10 +1280,10 @@ TWIG, $twig_params);
                         }
                         const criteria_id = $(e.currentTarget).data('id');
                         if (criteria_id) {
-                            $('#viewcriteria{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
+                            $('#viewcriteria{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->rulecriteriaclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: criteria_id
                             });
                         }
