@@ -2682,6 +2682,40 @@ var GLPIImpact = {
     }, 100, false),
 
     /**
+    * Replace temporary compound IDs with their persisted database IDs.
+    *
+    * @param {Object} mapping temporary id -> real database id
+    */
+    remapCompoundIds: function(mapping) {
+        Object.keys(mapping).forEach(function(tmpId) {
+            var realId = String(mapping[tmpId]);
+            var compound = GLPIImpact.cy.getElementById(tmpId);
+
+            // Nothing to do if the compound is no longer on the graph
+            if (compound.length === 0) {
+                return;
+            }
+
+            // Cytoscape element IDs are immutable, so recreate the compound.
+            var newData = _.clone(compound.data());
+            newData.id = realId;
+
+            var children = compound.children();
+            GLPIImpact.cy.add({
+                group    : "nodes",
+                data     : newData,
+                classes  : compound.classes(),
+                selected : compound.selected(),
+                grabbable: compound.grabbable(),
+            });
+            children.forEach(function(child) {
+                child.move({parent: realId});
+            });
+            compound.remove();
+        });
+    },
+
+    /**
     * Remove an element from the graph
     *
     * @param {object} ele
@@ -3872,7 +3906,12 @@ var GLPIImpact = {
                 data: {
                     'impacts': JSON.stringify(GLPIImpact.computeDelta())
                 },
-                success: function(){
+                success: function(data){
+                    // Sync the newly created compounds with their real database
+                    // ids so the next save uses them instead of temporary ids
+                    if (data && data.compounds_mapping) {
+                        GLPIImpact.remapCompoundIds(data.compounds_mapping);
+                    }
                     GLPIImpact.initialState = GLPIImpact.getCurrentState();
                     $(document).trigger('impactUpdated');
                 },

@@ -189,4 +189,105 @@ describe('Impact', () => {
     it('Make ID selector', () => {
         expect(window.GLPIImpact.makeIDSelector('node1')).toBe('[id=\'node1\']');
     });
+    it('Remap compound ids after save', () => {
+        const child1 = {move: jest.fn()};
+        const child2 = {move: jest.fn()};
+        const compound = {
+            length   : 1,
+            data     : () => ({id: 'tmp-abc', label: 'My group', color: '#dadada'}),
+            children : () => [child1, child2],
+            classes  : () => [],
+            selected : () => false,
+            grabbable: () => true,
+            remove   : jest.fn(),
+        };
+        const added = [];
+        window.GLPIImpact.cy = {
+            getElementById: (id) => (id === 'tmp-abc' ? compound : {length: 0}),
+            add           : (ele) => added.push(ele),
+        };
+
+        window.GLPIImpact.remapCompoundIds({'tmp-abc': 5});
+
+        expect(added).toHaveLength(1);
+        expect(added[0].group).toBe('nodes');
+        expect(added[0].data.id).toBe('5');
+        expect(added[0].data.label).toBe('My group');
+        expect(child1.move).toHaveBeenCalledWith({parent: '5'});
+        expect(child2.move).toHaveBeenCalledWith({parent: '5'});
+        expect(compound.remove).toHaveBeenCalled();
+    });
+    it('Remap compound ids preserves cytoscape element state', () => {
+        const compound = {
+            length   : 1,
+            data     : () => ({id: 'tmp-abc', label: 'My group'}),
+            children : () => [],
+            classes  : () => ['some-class'],
+            selected : () => true,
+            grabbable: () => false,
+            remove   : jest.fn(),
+        };
+        const added = [];
+        window.GLPIImpact.cy = {
+            getElementById: () => compound,
+            add           : (ele) => added.push(ele),
+        };
+
+        window.GLPIImpact.remapCompoundIds({'tmp-abc': 5});
+
+        expect(added).toHaveLength(1);
+        expect(added[0].classes).toEqual(['some-class']);
+        expect(added[0].selected).toBe(true);
+        expect(added[0].grabbable).toBe(false);
+    });
+    it('Remap compound ids ignores missing compounds', () => {
+        window.GLPIImpact.cy = {
+            getElementById: () => ({length: 0}),
+            add           : jest.fn(),
+        };
+
+        window.GLPIImpact.remapCompoundIds({'tmp-gone': 7});
+
+        expect(window.GLPIImpact.cy.add).not.toHaveBeenCalled();
+    });
+    it('Regression #25192: second save uses the real compound id, not the temporary one', () => {
+        // Real cytoscape core, not a mock — exercises the actual selector/delta logic.
+        const cytoscape = require('cytoscape');
+        const cy = cytoscape({
+            elements: [
+                {group: 'nodes', data: {id: 'Computer::1', impactitem_id: 1}},
+                {group: 'nodes', data: {id: 'Computer::2', impactitem_id: 2}},
+                {group: 'nodes', data: {id: 'Computer::3', impactitem_id: 3}},
+            ],
+        });
+        window.GLPIImpact.cy = cy;
+        window.GLPIImpact.startNode = 'Computer::1';
+        window.GLPIImpact.initialState = window.GLPIImpact.getCurrentState();
+
+        // Group nodes 2 and 3, same as addCompoundFromSelection() — cytoscape assigns the compound a random id.
+        const compound = cy.add({group: 'nodes', data: {color: '#dadada', label: 'Grp'}});
+        const tmpId = compound.id();
+        cy.getElementById('Computer::2').move({parent: tmpId});
+        cy.getElementById('Computer::3').move({parent: tmpId});
+
+        const firstSaveDelta = window.GLPIImpact.computeDelta();
+        expect(firstSaveDelta.compounds[tmpId].action).toBe(window.GLPIImpact.DELTA_ACTION_ADD);
+        expect(firstSaveDelta.items['2'].parent_id).toBe(tmpId);
+
+        // Simulate the first save's response and the save handler reacting to it.
+        window.GLPIImpact.remapCompoundIds({[tmpId]: 5});
+        window.GLPIImpact.initialState = window.GLPIImpact.getCurrentState();
+
+        // Without reloading the page, add a 3rd node straight into the group
+        cy.add({group: 'nodes', data: {id: 'Computer::4', impactitem_id: 4}});
+        cy.getElementById('Computer::4').move({parent: '5'});
+
+        const secondSaveDelta = window.GLPIImpact.computeDelta();
+
+        // The bug: before the fix this would carry the stale temp id as parent_id.
+        expect(secondSaveDelta.items['4'].parent_id).toBe('5');
+        expect(secondSaveDelta.items['4'].parent_id).not.toBe(tmpId);
+        // Unchanged since the first save, so it must not be re-sent as an ADD.
+        expect(secondSaveDelta.compounds).not.toHaveProperty(tmpId);
+    });
 });
