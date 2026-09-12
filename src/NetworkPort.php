@@ -1825,10 +1825,13 @@ class NetworkPort extends CommonDBChild
 
     public static function getConnexityMassiveActionsSpecificities()
     {
+        global $CFG_GLPI;
+
         $specificities                           = parent::getConnexityMassiveActionsSpecificities();
 
         $specificities['reaffect']               = true;
-        $specificities['itemtypes']              = ['Computer', 'NetworkEquipment'];
+        // Any itemtype that can hold network ports is a valid reaffectation target.
+        $specificities['itemtypes']              = $CFG_GLPI['networkport_types'];
 
         $specificities['normalized']['unaffect'] = [];
         $specificities['action_name']['affect']  = _sx('button', 'Move');
