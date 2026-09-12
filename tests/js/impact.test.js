@@ -290,4 +290,39 @@ describe('Impact', () => {
         // Unchanged since the first save, so it must not be re-sent as an ADD.
         expect(secondSaveDelta.compounds).not.toHaveProperty(tmpId);
     });
+    it('Regression #25192: undo can still remove a compound after its id is remapped', () => {
+        const cytoscape = require('cytoscape');
+        const cy = cytoscape({
+            elements: [
+                {group: 'nodes', data: {id: 'Computer::1'}},
+                {group: 'nodes', data: {id: 'Computer::2'}},
+                {group: 'nodes', data: {id: 'Computer::3'}},
+            ],
+        });
+        window.GLPIImpact.cy = cy;
+        window.GLPIImpact.startNode = 'Computer::1';
+
+        // Group nodes 2 and 3, same as addCompoundFromSelection().
+        const compound = cy.add({group: 'nodes', data: {color: '#dadada', label: 'Grp'}});
+        const tmpId = compound.id();
+        cy.getElementById('Computer::2').move({parent: tmpId});
+        cy.getElementById('Computer::3').move({parent: tmpId});
+
+        // Record the undo entry the way the "edit compound" dialog does on creation.
+        window.GLPIImpact.addToUndo(window.GLPIImpact.ACTION_ADD_COMPOUND, {
+            data: {id: tmpId, label: 'Grp', color: '#dadada'},
+            children: ['Computer::2', 'Computer::3'],
+        });
+
+        // Simulate the save's response remapping the compound to its real id.
+        window.GLPIImpact.remapCompoundIds({[tmpId]: 5});
+
+        // The bug: before the fix, this undo entry still pointed at the temp
+        // id and could not find the (now renamed) compound node to remove.
+        window.GLPIImpact.undo();
+
+        expect(cy.getElementById('5').length).toBe(0);
+        expect(cy.getElementById('Computer::2').isOrphan()).toBe(true);
+        expect(cy.getElementById('Computer::3').isOrphan()).toBe(true);
+    });
 });

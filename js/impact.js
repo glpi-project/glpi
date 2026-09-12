@@ -2689,6 +2689,19 @@ var GLPIImpact = {
     remapCompoundIds: function(mapping) {
         Object.keys(mapping).forEach(function(tmpId) {
             var realId = String(mapping[tmpId]);
+
+            // Update stale temp-id refs in undo/redo entries.
+            [GLPIImpact.undoStack, GLPIImpact.redoStack].forEach(function(stack) {
+                stack.forEach(function(action) {
+                    if (action.code === GLPIImpact.ACTION_ADD_COMPOUND && action.data.data.id === tmpId) {
+                        action.data.data.id = realId;
+                    }
+                    if (action.code === GLPIImpact.ACTION_MOVE && action.data.newParent === tmpId) {
+                        action.data.newParent = realId;
+                    }
+                });
+            });
+
             var compound = GLPIImpact.cy.getElementById(tmpId);
 
             // Nothing to do if the compound is no longer on the graph
