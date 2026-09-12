@@ -35,11 +35,12 @@
 namespace tests\units\Glpi\Api\HL;
 
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\ResourceAccessor;
-use Glpi\Tests\GLPITestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class ResourceAccessorTest extends GLPITestCase
+class ResourceAccessorTest extends DbTestCase
 {
     public static function getInputParamsBySchemaProvider()
     {
@@ -195,5 +196,70 @@ class ResourceAccessorTest extends GLPITestCase
                 'maximum' => 300,
             ],
         ], $response_data['detail']['weight']);
+    }
+
+    public function testSearchCursors(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $test_entity_id = $this->getTestRootEntity(true);
+        for ($i = 0; $i < 30; $i++) {
+            $DB->insert('glpi_computers', [
+                'name' => __FUNCTION__ . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'entities_id' => $test_entity_id,
+            ]);
+        }
+
+        $response = ResourceAccessor::searchBySchema(AssetController::getKnownSchemas(null)['Computer'], [
+            'filter' => 'name=like=' . __FUNCTION__ . '*',
+            'limit' => 10,
+        ]);
+        $response_data = json_decode((string) $response->getBody(), true);
+        $response_headers = $response->getHeaders();
+        $this->assertCount(10, $response_data);
+        $this->assertEquals(__FUNCTION__ . '000', $response_data[0]['name']);
+        $this->assertEquals(__FUNCTION__ . '009', $response_data[9]['name']);
+        //FIXME When cursors are used, the Content-Range header should not be returned because it would be wrong.
+        $this->assertEquals('0-9/30', $response_headers['Content-Range'][0]);
+        $this->assertArrayHasKey('GLPI-Previous-Cursor', $response_headers);
+        $this->assertArrayHasKey('GLPI-Next-Cursor', $response_headers);
+        $next_cursor = $response_headers['GLPI-Next-Cursor'][0];
+
+        $response = ResourceAccessor::searchBySchema(AssetController::getKnownSchemas(null)['Computer'], [
+            'filter' => 'name=like=' . __FUNCTION__ . '*',
+            'limit' => 10,
+            'cursor' => $next_cursor,
+        ]);
+        $response_data = json_decode((string) $response->getBody(), true);
+        $response_headers = $response->getHeaders();
+        $this->assertCount(10, $response_data);
+        $this->assertEquals(__FUNCTION__ . '010', $response_data[0]['name']);
+        $this->assertEquals(__FUNCTION__ . '019', $response_data[9]['name']);
+        $next_cursor = $response_headers['GLPI-Next-Cursor'][0];
+
+        $response = ResourceAccessor::searchBySchema(AssetController::getKnownSchemas(null)['Computer'], [
+            'filter' => 'name=like=' . __FUNCTION__ . '*',
+            'limit' => 10,
+            'cursor' => $next_cursor,
+        ]);
+        $response_data = json_decode((string) $response->getBody(), true);
+        $response_headers = $response->getHeaders();
+        $this->assertCount(10, $response_data);
+        $this->assertEquals(__FUNCTION__ . '020', $response_data[0]['name']);
+        $this->assertEquals(__FUNCTION__ . '029', $response_data[9]['name']);
+
+        //FIXME Previous cursors are not properly implemented yet. They always return the first page.
+        $previous_cursor = $response_headers['GLPI-Previous-Cursor'][0];
+        $response = ResourceAccessor::searchBySchema(AssetController::getKnownSchemas(null)['Computer'], [
+            'filter' => 'name=like=' . __FUNCTION__ . '*',
+            'limit' => 10,
+            'cursor' => $previous_cursor,
+        ]);
+        $response_data = json_decode((string) $response->getBody(), true);
+        $this->assertCount(10, $response_data);
+        $this->assertEquals(__FUNCTION__ . '010', $response_data[0]['name']);
+        $this->assertEquals(__FUNCTION__ . '019', $response_data[9]['name']);
     }
 }
