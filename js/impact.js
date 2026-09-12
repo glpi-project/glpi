@@ -3923,7 +3923,9 @@ var GLPIImpact = {
                     // Sync the newly created compounds with their real database
                     // ids so the next save uses them instead of temporary ids
                     if (data && data.compounds_mapping) {
+                        // Remapping re-dirties the graph (add/remove)
                         GLPIImpact.remapCompoundIds(data.compounds_mapping);
+                        GLPIImpact.showCleanWorkspaceStatus();
                     }
                     GLPIImpact.initialState = GLPIImpact.getCurrentState();
                     $(document).trigger('impactUpdated');

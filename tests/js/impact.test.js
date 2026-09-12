@@ -325,4 +325,35 @@ describe('Impact', () => {
         expect(cy.getElementById('Computer::2').isOrphan()).toBe(true);
         expect(cy.getElementById('Computer::3').isOrphan()).toBe(true);
     });
+    it('Regression #25192: save stays clean after a successful compound remap', () => {
+        document.body.innerHTML = '<button id="save_impact"></button>'
+            + '<form name="form_impact_network" action="/ajax/impact.php"></form>';
+
+        const cytoscape = require('cytoscape');
+        const cy = cytoscape({elements: [{group: 'nodes', data: {id: 'Computer::1'}}]});
+        window.GLPIImpact.cy = cy;
+        window.GLPIImpact.startNode = 'Computer::1';
+
+        // Wire the same add/remove -> dirty handler the real graph uses.
+        cy.on('add remove', window.GLPIImpact.onChange);
+
+        const compound = cy.add({group: 'nodes', data: {color: '#dadada', label: 'Grp'}});
+        const tmpId = compound.id();
+        window.GLPIImpact.initialState = window.GLPIImpact.getCurrentState();
+
+        const originalAjax = window.$.ajax;
+        window.$.ajax = function(options) {
+            options.success({compounds_mapping: {[tmpId]: 5}});
+        };
+
+        window.GLPIImpact.initToolbar();
+        window.$(window.GLPIImpact.selectors.save).trigger('click');
+
+        window.$.ajax = originalAjax;
+
+        // The bug: remapCompoundIds() adds/removes graph elements, which
+        // marks the workspace dirty again right after the save succeeded.
+        expect(window.$(window.GLPIImpact.selectors.save).hasClass('dirty')).toBe(false);
+        expect(window.$(window.GLPIImpact.selectors.save).hasClass('clean')).toBe(true);
+    });
 });
