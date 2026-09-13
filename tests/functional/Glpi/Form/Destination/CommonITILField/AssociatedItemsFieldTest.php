@@ -53,6 +53,31 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
+    public function testDeserializedFallbackMatchesTheFieldDefaultStrategy(): void
+    {
+        $this->assertEquals(
+            (new AssociatedItemsField())->getDefaultConfig($this->createForm(new FormBuilder()))
+                ->getStrategies(),
+            AssociatedItemsFieldConfig::jsonDeserialize([])->getStrategies(),
+        );
+    }
+
+    public function testEmptyStrategyValueIsIgnoredWhenDeserializingConfig(): void
+    {
+        // "0" is the empty value of the strategy dropdown. It may have been
+        // stored by a configuration form saved without picking any strategy.
+        $config = AssociatedItemsFieldConfig::jsonDeserialize([
+            AssociatedItemsFieldConfig::STRATEGIES => ['0'],
+        ]);
+
+        // An unknown strategy must be discarded, so the field falls back on its
+        // default strategy instead of exposing a `null` strategy.
+        $this->assertEquals(
+            AssociatedItemsFieldConfig::jsonDeserialize([])->getStrategies(),
+            $config->getStrategies(),
+        );
+    }
+
     public function testAssociatedItemsFromSpecificItems(): void
     {
         $this->login();

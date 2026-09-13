@@ -1,0 +1,52 @@
+# Qodo Review. Read only from the root of the default branch, so a pull request
+# cannot alter the rules that apply to itself.
+# https://docs.qodo.ai/install-and-configure/configuration-overview/configuration-and-command-reference
+
+[config]
+ignore_pr_authors = ["\\[bot\\]$"] # GitHub reserves the suffix for apps
+ignore_pr_labels = ["no-ai-review"]
+
+[github_app]
+pr_commands = ["/agentic_review"] # default also runs /agentic_describe
+
+[review_agent]
+comments_routing_preset = "custom"
+publish_in_progress_comment = false
+persistent_comment_notification = false
+
+issues_user_guidelines = """\
+Restrict every finding to the lines this pull request adds or modifies. \
+Surrounding code shown as context is out of scope, including its style, naming, \
+structure and type coverage.
+Do not report anything the project tooling already enforces: PHP CS Fixer, \
+PHPStan, Psalm, Rector, ESLint, Stylelint. The .phpstan-baseline*.php files \
+record known pre-existing violations that are deliberately accepted; never \
+report those, and never suggest reducing the baselines.
+Report a finding only when it changes behaviour, breaks a public API, or has a \
+security impact. Skip stylistic and naming preferences.\
+"""
+
+[review_agent.comments_routing]
+action_required = "both"            # High
+remediation_recommended = "summary" # Medium
+informational = "drop"              # Low
+
+[review_agent_ux]
+finding_overflow_count = 1
+resolved_overflow_count = 0
+use_images_and_animations = false
+show_context_used = false
+show_persistent_review_section = false
+show_daily_tips = false
+show_dividers = false
+show_comment_footer = false
+
+[ignore]
+# Documented for v1 only: check on the first review that these are skipped.
+glob = [
+    "vendor/**",
+    "lib/**",                            # vendored third-party JavaScript
+    "locales/**",
+    ".phpstan-baseline*.php",
+    "tests/fixtures/hlapi/snapshots/**",
+]

@@ -172,11 +172,19 @@ enum EntityFieldStrategy: string
         if (count($it) === 0) {
             return null;
         }
-        $profile = $it->current();
+        $entities = array_map('intval', array_column(iterator_to_array($it), 'entities_id'));
 
         // If only one profile, use its entity
-        if (count($it) === 1) {
-            return $profile['entities_id'];
+        if (count($entities) === 1) {
+            return $entities[0];
+        }
+
+        // Prefer the requester's own configured default entity (Preferences >
+        // Default entity), if they are actually assigned to it. This mirrors
+        // the entity GLPI itself would activate for that user on login.
+        $default_entity = $requester->fields['entities_id'];
+        if ($default_entity !== null && in_array((int) $default_entity, $entities, true)) {
+            return (int) $default_entity;
         }
 
         $default_profiles = $DB->request([
@@ -219,6 +227,6 @@ enum EntityFieldStrategy: string
         }
 
         // Fallback to first profile
-        return $profile['entities_id'];
+        return $entities[0];
     }
 }

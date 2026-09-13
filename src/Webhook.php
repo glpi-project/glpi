@@ -640,17 +640,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
         } else {
             return;
         }
-        $parent_schema = self::getParentItemSchema($itemtype);
-        // filter properties in parent schema by the resolved parent itemtype (checks the x-parent-itemtype property)
-        foreach ($parent_schema['properties'] as $property_name => $property_data) {
-            if (in_array($parent_itemtype, $property_data['x-parent-itemtype'] ?? [], true)) {
-                $parent_schema['properties'][$property_name] = $property_data;
-            } else {
-                unset($parent_schema['properties'][$property_name]);
-            }
+        $parent_schema = self::getAPISchemaBySupportedItemtype($parent_itemtype);
+        if ($parent_schema === null) {
+            throw new LogicException("Parent itemtype $parent_itemtype does not have a valid API schema");
         }
-        $parent_schema['x-itemtype'] = $parent_itemtype;
-        unset($parent_schema['x-subtypes']);
         $parent_result = ResourceAccessor::getOneBySchema($parent_schema, [
             'itemtype' => $parent_itemtype,
             'id' => $parent_id,

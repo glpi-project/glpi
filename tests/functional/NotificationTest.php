@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Config;
 use Contract;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
@@ -987,5 +988,24 @@ HTML,
             sort($expected_queue);
             $this->assertEquals($expected_queue, $emails);
         }
+    }
+
+    public function testShowFormItemtypeFieldIsEditableWithoutConfigRight(): void
+    {
+        $this->login();
+        $this->removeRightFromProfile('Super-Admin', Config::$rightname, UPDATE);
+
+        $notification = new Notification();
+        $this->assertTrue($notification->getFromDB(1));
+
+        // Act
+        ob_start();
+        $notification->showForm(1);
+        $output = ob_get_clean();
+
+        $this->assertMatchesRegularExpression(
+            '/<select[^>]*id=\'dropdown_itemtype\d+\'/',
+            $output
+        );
     }
 }

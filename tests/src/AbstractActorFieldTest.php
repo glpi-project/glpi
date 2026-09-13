@@ -507,6 +507,41 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
         );
     }
 
+    public function testEmptyStrategyValueIsIgnoredWhenDeserializingConfig(): void
+    {
+        $config_class = (new ($this->getFieldClass())())->getConfigClass();
+
+        // "0" is the empty value of the strategy dropdown. It may have been
+        // stored by a configuration form saved without picking any strategy.
+        $config = $config_class::jsonDeserialize([
+            ITILActorFieldConfig::STRATEGIES => ['0'],
+        ]);
+
+        // An unknown strategy must be discarded, so the field falls back on its
+        // default strategy instead of exposing a `null` strategy.
+        $this->assertEquals(
+            $config_class::jsonDeserialize([])->getStrategies(),
+            $config->getStrategies(),
+        );
+    }
+
+    public function testEmptyStrategyValueIsDiscardedFromDeserializedStrategies(): void
+    {
+        $config_class = (new ($this->getFieldClass())())->getConfigClass();
+
+        $config = $config_class::jsonDeserialize([
+            ITILActorFieldConfig::STRATEGIES => [
+                '0',
+                ITILActorFieldStrategy::FORM_FILLER->value,
+            ],
+        ]);
+
+        $this->assertEquals(
+            [ITILActorFieldStrategy::FORM_FILLER],
+            $config->getStrategies(),
+        );
+    }
+
     private function createAndGetFormWithItemQuestions(): Form
     {
         $builder = new FormBuilder();

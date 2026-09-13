@@ -38,16 +38,21 @@ namespace Glpi\System\Log;
 use CommonGLPI;
 use RuntimeException;
 use Safe\Exceptions\FilesystemException;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Toolbox;
 
+use function Safe\fclose;
 use function Safe\file_get_contents;
 use function Safe\file_put_contents;
 use function Safe\filemtime;
 use function Safe\filesize;
+use function Safe\fopen;
+use function Safe\fread;
 use function Safe\preg_match;
 use function Safe\preg_replace_callback;
 use function Safe\preg_split;
-use function Safe\readfile;
 use function Safe\realpath;
 use function Safe\scandir;
 use function Safe\unlink;
@@ -198,21 +203,38 @@ final class LogParser extends CommonGLPI
      *
      * @param string $filepath  Path of file to display (relative to log directory)
      *
-     * @return void
+     * @return Response
      */
-    public function download(string $filepath): void
+    public function download(string $filepath): Response
     {
         $fullpath = $this->getFullPath($filepath);
 
         if ($fullpath === null) {
-            header('HTTP/1.0 404 Not Found');
-            return;
+            return new Response(status: Response::HTTP_NOT_FOUND);
         }
 
-        header('Content-Type: application/octet-stream');
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-disposition: attachment; filename=\"" . basename($fullpath) . "\"");
-        readfile($fullpath);
+        return new StreamedResponse(
+            function () use ($fullpath) {
+                $file_stream = fopen($fullpath, 'rb');
+
+                try {
+                    while (!feof($file_stream)) {
+                        echo fread($file_stream, 8192);
+                        flush();
+                    }
+                } finally {
+                    fclose($file_stream);
+                }
+            },
+            status: 200,
+            headers: [
+                'Content-Type' => 'application/octet-stream',
+                'Content-Disposition' => HeaderUtils::makeDisposition(
+                    HeaderUtils::DISPOSITION_ATTACHMENT,
+                    basename($fullpath)
+                ),
+            ]
+        );
     }
 
     /**

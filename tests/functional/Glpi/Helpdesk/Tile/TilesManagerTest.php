@@ -661,7 +661,7 @@ final class TilesManagerTest extends DbTestCase
         $this->assertTrue($this->tilesExist("Report an issue", $tiles));
     }
 
-    public function testFormsTilesAreHiddenIfUserCantCreateTicket(): void
+    public function testFormsTilesAreVisibleEvenIfUserCantCreateTicket(): void
     {
         // Arrange: remove the right to create ticket from self service user.
         $this->removeRightFromProfile("Self-Service", Ticket::$rightname, CREATE);
@@ -673,13 +673,14 @@ final class TilesManagerTest extends DbTestCase
             Session::getCurrentSessionInfo()
         );
 
-        // Assert: tiles related to ticket creation should not be found
+        // Assert: form tiles are only gated by their own access control
+        // policy, not by the ticket creation right.
         $this->assertTrue($this->tilesExist("Browse help articles", $tiles));
         $this->assertTrue($this->tilesExist("Make a reservation", $tiles));
         $this->assertTrue($this->tilesExist("See your tickets", $tiles));
         $this->assertTrue($this->tilesExist("Create a ticket", $tiles));
-        $this->assertFalse($this->tilesExist("Request a service", $tiles));
-        $this->assertFalse($this->tilesExist("Report an issue", $tiles));
+        $this->assertTrue($this->tilesExist("Request a service", $tiles));
+        $this->assertTrue($this->tilesExist("Report an issue", $tiles));
     }
 
     /** @param array<TileInterface> $tiles */

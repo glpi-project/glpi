@@ -55,8 +55,7 @@ if ($logparser->getFullPath($filepath) === null) {
 }
 
 if (($_GET['action'] ?? '') === 'download_log_file') {
-    $logparser = new LogParser();
-    $logparser->download($filepath);
+    return $logparser->download($filepath);
 } elseif (($_POST['action'] ?? '') === 'empty') {
     Session::checkRight(Config::$rightname, UPDATE); // no UPDATE right for LogViewer -> Config::$rightname used
     $logparser->empty($filepath);

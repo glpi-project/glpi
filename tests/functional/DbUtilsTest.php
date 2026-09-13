@@ -243,6 +243,14 @@ class DbUtilsTest extends DbTestCase
         }
     }
 
+    public function testGetTableForItemtypeDoesNotConflictWithGetItemTypeForTable()
+    {
+        $instance = new \DbUtils();
+        $this->assertSame('glpi_rules', $instance->getTableForItemType(\RuleRight::class));
+        $this->assertSame('glpi_rules', $instance->getTableForItemType(\RuleTicket::class));
+        $this->assertSame(\Rule::class, $instance->getItemTypeForTable('glpi_rules'));
+    }
+
     #[DataProvider('dataTableType')]
     public function testGetItemForTable($table, $type, $is_valid_type)
     {

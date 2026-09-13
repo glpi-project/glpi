@@ -3012,8 +3012,7 @@ class Plugin extends CommonDBTM
                 if (!empty($value)) {
                     $value = htmlescape($value);
                     return "<a href=\"" . $value . "\" target='_blank'>
-                     <i class='ti ti-external-link-alt fs-2x'></i><span class='sr-only'>$value</span>
-                  </a>";
+                     <i class='ti ti-external-link fs-2x'></i><span class='sr-only'>$value</span></a>";
                 }
                 return "&nbsp;";
             case 'name':

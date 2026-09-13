@@ -460,6 +460,59 @@ class RuleTest extends DbTestCase
         }
     }
 
+    public function testCloneMultiple()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $rule = $this->createItem(RuleTicket::class, [
+            'name'        => 'Clone with altered runtime state',
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => RuleTicket::class,
+            'match'       => Rule::AND_MATCHING,
+            'condition'   => \RuleCommonITILObject::ONADD,
+            'description' => '',
+        ]);
+        $rules_id = $rule->getID();
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rules_id,
+            'criteria'  => 'name',
+            'condition' => Rule::PATTERN_CONTAIN,
+            'pattern'   => 'printer',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'urgency',
+            'value'       => '5',
+        ]);
+
+        $this->assertSame('rules_id', \RuleCriteria::getItemField(RuleTicket::class));
+        $this->assertSame('rules_id', \RuleAction::getItemField(RuleTicket::class));
+
+        $this->assertTrue($rule->cloneMultiple(2));
+
+        $clones = [
+            'Clone with altered runtime state (copy)',
+            'Clone with altered runtime state (copy 2)',
+        ];
+        foreach ($clones as $clone_name) {
+            $clone = getItemByTypeName(RuleTicket::class, $clone_name);
+            $this->assertInstanceOf(RuleTicket::class, $clone);
+            $this->assertSame(
+                1,
+                countElementsInTable(\RuleCriteria::getTable(), ['rules_id' => $clone->getID()])
+            );
+            $this->assertSame(
+                1,
+                countElementsInTable(\RuleAction::getTable(), ['rules_id' => $clone->getID()])
+            );
+        }
+    }
+
     public function testCleanDBonPurge()
     {
         $rule       = new Rule();
@@ -502,6 +555,65 @@ class RuleTest extends DbTestCase
         $this->assertFalse($criteria->getFromDB($criterion_1));
         $this->assertFalse($criteria->getFromDB($criterion_2));
         $this->assertFalse($action->getFromDB($action_1));
+    }
+
+    public function testCleanForItemCriteriaLogsUnderConcreteRuleType()
+    {
+        $collector     = new \MailCollector();
+        $collectors_id = $collector->add([
+            'name'        => 'Test collector',
+            'host'        => '{imap.example.org/imap/ssl}INBOX',
+            'login'       => 'test',
+            'passwd'      => 'test',
+            'is_active'   => 1,
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, (int) $collectors_id);
+
+        $rule     = new \RuleMailCollector();
+        $rules_id = $rule->add([
+            'name'        => 'Test rule',
+            'sub_type'    => 'RuleMailCollector',
+            'match'       => Rule::AND_MATCHING,
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'condition'   => 0,
+            'description' => '',
+        ]);
+        $this->assertGreaterThan(0, (int) $rules_id);
+
+        $criteria = new \RuleCriteria();
+        $this->assertGreaterThan(0, (int) $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'mailcollector',
+            'condition' => Rule::PATTERN_IS,
+            'pattern'   => $collectors_id,
+        ]));
+
+        // Purging the collector disables the rules using it as a criterion.
+        $this->assertTrue($collector->delete(['id' => $collectors_id], true));
+
+        $this->assertTrue($rule->getFromDB($rules_id));
+        $this->assertSame(0, (int) $rule->fields['is_active']);
+
+        // The deactivation must be traceable from the rule history tab, which only
+        // displays entries logged under the concrete rule type.
+        $is_active_so = 8;
+        $this->assertSame(
+            1,
+            countElementsInTable(
+                'glpi_logs',
+                [
+                    'itemtype'         => 'RuleMailCollector',
+                    'items_id'         => $rules_id,
+                    'id_search_option' => $is_active_so,
+                ]
+            )
+        );
+        $this->assertSame(
+            0,
+            countElementsInTable('glpi_logs', ['itemtype' => 'Rule', 'items_id' => $rules_id])
+        );
     }
 
     public function testPrepareInputForAdd()

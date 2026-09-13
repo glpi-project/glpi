@@ -1813,6 +1813,10 @@ abstract class API
                     $tmp_fields = [$col_ref_field => $current_values];
                     if (array_key_exists('additionalfields', $col['searchopt'])) {
                         foreach ($col['searchopt']['additionalfields'] as $field_name) {
+                            // The search engine removes the `TABLE.` prefix from the column alias
+                            if (str_starts_with($field_name, 'TABLE.')) {
+                                $field_name = substr($field_name, strlen('TABLE.'));
+                            }
                             $field_value_key = 'ITEM_' . $col['itemtype'] . '_' . $col['id'] . '_' . $field_name;
                             $tmp_fields[$field_name] = $raw[$field_value_key];
                         }

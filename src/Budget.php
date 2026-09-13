@@ -355,7 +355,6 @@ class Budget extends CommonDropdown
             /** @var CommonDBTM $item */
             $item = new $itemtype();
 
-            $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : new QueryExpression('0', 'is_deleted');
             $criteria['SELECT'][] = $item->isField('serial') ? "$item_table.serial" : new QueryExpression('NULL', 'serial');
             $criteria['SELECT'][] = $item->isField('otherserial') ? "$item_table.otherserial" : new QueryExpression('NULL', 'otherserial');
             if ($item instanceof Item_Devices) {
@@ -364,6 +363,7 @@ class Budget extends CommonDropdown
                 $criteria['SELECT'][] = new QueryExpression('NULL', 'devices_id');
             }
             $criteria['SELECT'][] = 'glpi_infocoms.value';
+            $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : new QueryExpression('0', 'is_deleted');
             if ($item->maybeTemplate()) {
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
             }

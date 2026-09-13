@@ -42,6 +42,12 @@ export function getWorkerEntityId(): number
     return test.info().parallelIndex + 2;
 }
 
+export function getWorkerEntityName(): string
+{
+    const worker_index = String(test.info().parallelIndex + 1).padStart(2, '0');
+    return `E2E worker entity ${worker_index}`;
+}
+
 export function getWorkerUserId(): number
 {
     return test.info().parallelIndex + 8;

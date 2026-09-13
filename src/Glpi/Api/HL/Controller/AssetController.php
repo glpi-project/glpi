@@ -570,6 +570,7 @@ final class AssetController extends AbstractController
 
         $fn_get_group_property = (static fn(string $asset_type) => [
             'type' => Doc\Schema::TYPE_ARRAY,
+            'x-input-field' => 'groups_id',
             'items' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-full-schema' => 'Group',
@@ -599,6 +600,7 @@ final class AssetController extends AbstractController
         ]);
         $fn_get_group_tech_property = (static fn(string $asset_type) => [
             'type' => Doc\Schema::TYPE_ARRAY,
+            'x-input-field' => 'groups_id_tech',
             'items' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-full-schema' => 'Group',
@@ -747,7 +749,14 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'autoupdatesystem' => $autoupdatesystem_property,
-                'size' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0, 'x-version-introduced' => '2.3.0'],
+                'size' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                    'maximum' => 999.99,
+                    'multipleOf' => 0.01,
+                    'x-version-introduced' => '2.3.0',
+                ],
                 'has_microphone' => [
                     'x-version-introduced' => '2.3.0',
                     'x-field' => 'have_micro',
@@ -1392,6 +1401,7 @@ final class AssetController extends AbstractController
                             'table' => Cartridge::getTable(),
                             'fkey' => 'id',
                             'field' => CartridgeItem::getForeignKeyField(),
+                            'primary-property' => 'id',
                         ],
                         'properties' => [
                             'id' => [
@@ -1475,6 +1485,7 @@ final class AssetController extends AbstractController
                             'table' => Consumable::getTable(),
                             'fkey' => 'id',
                             'field' => ConsumableItem::getForeignKeyField(),
+                            'primary-property' => 'id',
                         ],
                         'properties' => [
                             'id' => [

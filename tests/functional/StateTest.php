@@ -36,12 +36,14 @@ namespace tests\units;
 
 use CommonDBTM;
 use Computer;
+use Dropdown;
 use DropdownVisibility;
 use Glpi\Features\StateInterface;
 use Glpi\Tests\DbTestCase;
 use Phone;
 use Printer;
 use ReflectionClass;
+use Session;
 
 class StateTest extends DbTestCase
 {
@@ -350,5 +352,54 @@ class StateTest extends DbTestCase
             ['itemtype' => \State::getType(), 'items_id' => $state->getID(), 'visible_itemtype' => $custom_asset->getAssetClassName()],
         ));
 
+    }
+
+    public function testDropdownGetDropdownValueCombinesMultipleVisibilityCriteriaWithOr(): void
+    {
+        // getDropdownValue() used to collapse a list of per-itemtype OR'd conditions
+        // (see Glpi\Inventory\Conf::showConfigForm()) into just the last one via array_merge().
+        $this->login();
+
+        $entities_id = $this->getTestRootEntity(true);
+
+        $state_computer_only = $this->createItem(\State::class, [
+            'name' => __FUNCTION__ . ' computer only',
+            'entities_id' => $entities_id,
+            'is_visible_computer' => 1,
+            'is_visible_phone' => 0,
+        ]);
+        $state_phone_only = $this->createItem(\State::class, [
+            'name' => __FUNCTION__ . ' phone only',
+            'entities_id' => $entities_id,
+            'is_visible_computer' => 0,
+            'is_visible_phone' => 1,
+        ]);
+        $state_neither = $this->createItem(\State::class, [
+            'name' => __FUNCTION__ . ' neither',
+            'entities_id' => $entities_id,
+            'is_visible_computer' => 0,
+            'is_visible_phone' => 0,
+        ]);
+
+        // Mirrors the exact pattern used in Glpi\Inventory\Conf::showConfigForm().
+        $condition = [
+            (new Computer())->getStateVisibilityCriteria(),
+            (new Phone())->getStateVisibilityCriteria(),
+        ];
+        $condition_key = Dropdown::addNewCondition($condition);
+
+        $results = Dropdown::getDropdownValue([
+            'itemtype'            => \State::getType(),
+            'display_emptychoice' => 0,
+            'condition'           => $condition_key,
+            '_idor_token'         => Session::getNewIDORToken(\State::getType(), ['condition' => $condition_key]),
+        ], false)['results'];
+
+        // Results are grouped by entity (single optgroup here, since all test states
+        // belong to the same entity).
+        $names = array_column($results[0]['children'] ?? [], 'text');
+        $this->assertContains($state_computer_only->fields['name'], $names);
+        $this->assertContains($state_phone_only->fields['name'], $names);
+        $this->assertNotContains($state_neither->fields['name'], $names);
     }
 }
