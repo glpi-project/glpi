@@ -114,7 +114,11 @@
                 return false;
             }
 
-            var ajax = $.getJSON(`${CFG_GLPI.root_doc}/ajax/notifications_ajax.php`);
+            var ajax = $.ajax({
+                url: `${CFG_GLPI.root_doc}/ajax/notifications_ajax.php`,
+                dataType: 'json',
+                timeout: _this.options.interval
+            });
             ajax.done((data) => {
                 if (data) {
                     for (var i = 0; i < data.length; i++) {

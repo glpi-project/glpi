@@ -55,7 +55,7 @@ describe('Ajax notifications', () => {
         const interval = 1000;
         const first_request = $.Deferred();
         const second_request = $.Deferred();
-        const get_json_spy = jest.spyOn($, 'getJSON')
+        const ajax_spy = jest.spyOn($, 'ajax')
             .mockReturnValueOnce(first_request.promise())
             .mockReturnValueOnce(second_request.promise());
         const notifications = new window.GLPINotificationsAjax({
@@ -65,17 +65,53 @@ describe('Ajax notifications', () => {
 
         notifications.startMonitoring();
 
-        expect(get_json_spy).toHaveBeenCalledTimes(1);
-        expect(get_json_spy).toHaveBeenCalledWith('//ajax/notifications_ajax.php');
+        expect(ajax_spy).toHaveBeenCalledTimes(1);
+        expect(ajax_spy).toHaveBeenCalledWith({
+            url: '//ajax/notifications_ajax.php',
+            dataType: 'json',
+            timeout: interval,
+        });
 
         jest.advanceTimersByTime(interval * 2);
-        expect(get_json_spy).toHaveBeenCalledTimes(1);
+        expect(ajax_spy).toHaveBeenCalledTimes(1);
 
         first_request.resolve(false);
         jest.advanceTimersByTime(interval - 1);
-        expect(get_json_spy).toHaveBeenCalledTimes(1);
+        expect(ajax_spy).toHaveBeenCalledTimes(1);
 
         jest.advanceTimersByTime(1);
-        expect(get_json_spy).toHaveBeenCalledTimes(2);
+        expect(ajax_spy).toHaveBeenCalledTimes(2);
+    });
+
+    test('Schedules the next check after a stalled request times out', () => {
+        const interval = 1000;
+        const xhr = {
+            open: jest.fn(),
+            setRequestHeader: jest.fn(),
+            send: jest.fn(),
+            abort: jest.fn(),
+            getAllResponseHeaders: jest.fn(),
+        };
+        jest.spyOn($.ajaxSettings, 'xhr').mockReturnValue(xhr);
+        const ajax_spy = jest.spyOn($, 'ajax');
+        const notifications = new window.GLPINotificationsAjax({
+            interval: interval,
+            user_id: 1,
+        });
+
+        notifications.startMonitoring();
+
+        expect(ajax_spy).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(interval);
+        expect(xhr.abort).toHaveBeenCalledTimes(1);
+        expect(ajax_spy).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(1);
+        jest.advanceTimersByTime(interval - 1);
+        expect(ajax_spy).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(1);
+        expect(ajax_spy).toHaveBeenCalledTimes(2);
     });
 });
