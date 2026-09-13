@@ -117,7 +117,8 @@
             var ajax = $.ajax({
                 url: `${CFG_GLPI.root_doc}/ajax/notifications_ajax.php`,
                 dataType: 'json',
-                timeout: _this.options.interval
+                // Allow one extra polling interval for slow responses before aborting a stalled request.
+                timeout: _this.options.interval * 2
             });
             ajax.done((data) => {
                 if (data) {

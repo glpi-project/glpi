@@ -69,7 +69,7 @@ describe('Ajax notifications', () => {
         expect(ajax_spy).toHaveBeenCalledWith({
             url: '//ajax/notifications_ajax.php',
             dataType: 'json',
-            timeout: interval,
+            timeout: interval * 2,
         });
 
         jest.advanceTimersByTime(interval * 2);
@@ -85,6 +85,7 @@ describe('Ajax notifications', () => {
 
     test('Schedules the next check after a stalled request times out', () => {
         const interval = 1000;
+        const request_timeout = interval * 2;
         const xhr = {
             open: jest.fn(),
             setRequestHeader: jest.fn(),
@@ -103,7 +104,10 @@ describe('Ajax notifications', () => {
 
         expect(ajax_spy).toHaveBeenCalledTimes(1);
 
-        jest.advanceTimersByTime(interval);
+        jest.advanceTimersByTime(request_timeout - 1);
+        expect(xhr.abort).not.toHaveBeenCalled();
+
+        jest.advanceTimersByTime(1);
         expect(xhr.abort).toHaveBeenCalledTimes(1);
         expect(ajax_spy).toHaveBeenCalledTimes(1);
 
