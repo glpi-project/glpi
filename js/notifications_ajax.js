@@ -128,6 +128,8 @@
 
                 }
             });
+
+            return ajax;
         };
 
         this.checkConcurrence = function() {
@@ -145,14 +147,18 @@
             //50ms tolerance
             if (lastCheck <= timestamp - this.options.interval + 50) {
                 localStorage.setItem(lastcheck_key, timestamp);
-                this.checkNewNotifications();
+                return this.checkNewNotifications();
             }
-
         };
 
         this.startMonitoring = function() {
-            this.checkConcurrence();
-            setInterval(this.checkConcurrence.bind(this), this.options.interval);
+            var schedule_next_check = () => {
+                $.when(this.checkConcurrence()).always(() => {
+                    setTimeout(schedule_next_check, this.options.interval);
+                });
+            };
+
+            schedule_next_check();
         };
 
         this.checkPermission = function () {
