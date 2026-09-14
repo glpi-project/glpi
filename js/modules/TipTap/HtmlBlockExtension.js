@@ -35,8 +35,8 @@
 import { showHtmlBlockDialog } from '/js/modules/TipTap/HtmlBlockDialog.js';
 
 /**
- * KB "HTML Block" node holding HTML sanitized by `RichText::getSafeHtml()`.
- * Stored as the children of `div.kb-html-block`. The marker is a class because
+ * KB "HTML Block" node holding HTML sanitized by `RichText::getSafeHtml()`,
+ * stored as the children of `div.kb-html-block`. The marker is a class because
  * the sanitizer strips unlisted `data-*` attributes.
  */
 const { Node, createNodeFromContent } = TiptapCore;
@@ -76,8 +76,7 @@ export const HtmlBlock = Node.create({
         const { schema } = this.editor;
         const type = this.type;
 
-        // `parseHTML` trusts the inner HTML, which is only safe for stored
-        // content. Pasted or dropped blocks are unwrapped into regular nodes,
+        // `parseHTML` trusts the inner HTML, which holds for stored content but not for pasted or dropped blocks. Unwrap those into regular nodes,
         // recursively since a block may contain another one.
         const unwrapBlocks = (fragment) => {
             const nodes = [];
@@ -89,14 +88,14 @@ export const HtmlBlock = Node.create({
                     nodes.push(child.isLeaf ? child : child.copy(unwrapBlocks(child.content)));
                 }
             });
-            // ProseMirror's Fragment is not exposed (`TiptapCore.Fragment` is unrelated).
+            // ProseMirror's Fragment is not exported by Tiptap.
             return fragment.constructor.fromArray(nodes);
         };
 
         return [
             new Plugin({
                 props: {
-                    // Drags within this editor move content that is already trusted.
+                    // Drags inside this editor move already trusted content.
                     transformPasted: (slice, view) => (view.dragging
                         ? slice
                         : new slice.constructor(unwrapBlocks(slice.content), slice.openStart, slice.openEnd)),
@@ -106,9 +105,7 @@ export const HtmlBlock = Node.create({
     },
 
     renderHTML({ node }) {
-        // Returning a DOM node lets the children be arbitrary sanitized markup.
-        // No ARIA on the stored form: the sanitizer strips `aria-*`, and the
-        // node view carries it instead.
+        // A DOM node lets the children be arbitrary sanitized markup. No ARIA here: the sanitizer strips `aria-*`, the node view carries it instead.
         const div = document.createElement('div');
         div.className = 'kb-html-block';
         div.innerHTML = node.attrs.html || '';
@@ -117,7 +114,7 @@ export const HtmlBlock = Node.create({
 
     addNodeView() {
         return ({ node, editor, getPos }) => {
-            // Kept current by `update()`, so Edit always shows the latest source.
+            // Kept current by `update()` so Edit shows the latest source.
             let currentNode = node;
 
             const wrapper = document.createElement('div');

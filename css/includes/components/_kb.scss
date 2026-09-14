@@ -1202,8 +1202,7 @@ body.in_modal .kb-editor-reserved {
     border-top: 1px solid var(--tblr-border-color);
 }
 
-// HTML block frame and edit button, editor only. Scoped to `.is-editing`
-// because the node view stays mounted after Save or Cancel.
+// Editor-only frame and edit button. Scoped to `.is-editing`: the node view stays mounted after Save or Cancel.
 .kb-editor-wrapper:not(.is-editing) .kb-html-block-edit {
     display: none;
 }

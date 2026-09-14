@@ -668,8 +668,8 @@ test.describe('Knowledge Base Editor - Bubble Menu', () => {
             await expect(kb.bubbleMenu.getButton('Bold')).toBeFocused();
             await page.keyboard.press('Escape');
 
-            // The menu's own visibility recompute is debounced by 250ms; the
-            // old bug reopened it once that debounce fired.
+            // The menu's own visibility recompute is debounced by 250ms; the old bug reopened it once that debounce fired.
+            /* eslint-disable-next-line playwright/no-wait-for-timeout -- letting that debounce elapse is the point of the test */
             await page.waitForTimeout(400);
             await kb.bubbleMenu.assertHidden();
 
