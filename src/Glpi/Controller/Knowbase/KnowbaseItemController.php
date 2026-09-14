@@ -221,10 +221,7 @@ final class KnowbaseItemController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // The one and only sanitization boundary for a "custom HTML block":
-        // no separate allowlist, no placeholder/renderer pair like video
-        // embeds. This is exactly what gets re-applied to the whole answer
-        // at save time, so the preview always matches the stored result.
+        // Same sanitizer as updateAnswer(), so the preview matches what is stored.
         return new JsonResponse([
             'success' => true,
             'html'    => RichText::getSafeHtml($html),

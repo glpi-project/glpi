@@ -50,8 +50,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             });
 
             await kb.goto(id);
-            // Read mode is plain stored HTML with no node-view chrome, so the
-            // assertion is on the rendered article, not on the wrapper.
+            // Read mode has no node view, so check the article text.
             await expect(kb.editor.contentContainer).toContainText('Custom markup');
 
             await kb.editor.enterEditMode();
@@ -61,8 +60,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await kb.editor.save();
             await page.reload();
 
-            // Re-entering edit mode is what actually proves the round-trip: the
-            // wrapper had to survive storage *and* be re-parsed into the node.
+            // Proves the block survived storage and was parsed back into a node.
             await kb.editor.enterEditMode();
             await expect(kb.htmlBlock).toBeVisible();
             await expect(kb.htmlBlock).toContainText('Custom markup');
@@ -86,8 +84,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await kb.goto(id);
             await kb.editor.enterEditMode();
 
-            // ProseMirror reads `clipboardData` the same way for a real Ctrl+V
-            // of attacker-controlled HTML from another site.
+            // Same code path as a real Ctrl+V of external HTML.
             await page.evaluate(() => {
                 const data = new DataTransfer();
                 data.setData(
@@ -102,7 +99,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await expect(kb.editor.contentContainer).toContainText('Pasted');
             await expect(kb.htmlBlock).toHaveCount(0);
 
-            // Wait for the broken `src` to error, so `onerror` would have run by now.
+            // Wait for the broken `src` to fail, so `onerror` would have fired.
             const image = kb.editor.contentContainer.getByRole('img', { name: 'Pasted image' });
             await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.complete)).toBe(true);
             expect(await page.evaluate(() => (window as Window & { __kbXss?: boolean }).__kbXss)).toBeUndefined();
@@ -117,16 +114,10 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
 
             await page.goto('/front/knowbaseitem.form.php');
 
-            // No read/edit toggle exists on the add-article page, so
-            // enterEditMode() is skipped — but `#kb-tiptap-editor` and
-            // `[data-glpi-kb-content]` are the same element
-            // (templates/pages/tools/kb/article.html.twig:297-299), so
-            // TipTapEditorHelper.getEditor()'s fallback resolves here and
-            // SlashMenuHelper works unchanged. No raw locator needed.
+            // The add page has no edit toggle, but the helpers still find the editor.
             const menu = await kb.slashMenu.open();
             await expect(menu.getByRole('button', { name: 'HTML Block' })).toBeHidden();
-            // Sanity check: the menu really is populated, so the assertion
-            // above is about this one entry and not an empty menu.
+            // Ensures the menu is populated.
             await expect(menu.getByRole('button', { name: 'Table' })).toBeVisible();
 
             await kb.slashMenu.close();
@@ -160,9 +151,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await dialog.getByRole('button', { name: 'Save' }).click();
             await expect(dialog).toBeHidden();
 
-            // `toHaveText` (not `toContainText`): the `<script>` was dropped
-            // outright by the sanitizer, so its "alert(1)" body must not have
-            // leaked into the block as text either.
+            // `toHaveText`: the script body must not leak in as text either.
             await expect(kb.htmlBlock).toHaveText('Hi');
 
             await kb.editor.save();
@@ -193,19 +182,49 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             const source = dialog.getByLabel('HTML source');
             const saveBtn = dialog.getByRole('button', { name: 'Save' });
 
-            // Nothing typed yet: no round trip has happened, so Save is inert.
+            // No preview yet.
             await expect(saveBtn).toBeDisabled();
 
             await source.fill('<p>Something</p>');
             await expect(saveBtn).toBeEnabled();
 
-            // Emptying the source must revoke the previously sanitized value
-            // rather than leave the stale one behind.
+            // Clearing the source must discard the previous preview.
             await source.fill('   ');
             await expect(saveBtn).toBeDisabled();
 
             await page.keyboard.press('Escape');
             await expect(dialog).toBeHidden();
+        });
+
+        test('Tab stays inside the dialog while Save is disabled', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'HTML block focus trap',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('HTML Block');
+
+            const dialog = kb.htmlBlockDialog;
+            const cancelBtn = dialog.getByRole('button', { name: 'Cancel' });
+            const closeBtn = dialog.getByRole('button', { name: 'Close' });
+            await expect(dialog.getByRole('button', { name: 'Save' })).toBeDisabled();
+
+            // Save is disabled, so Cancel is the last focusable button.
+            await cancelBtn.focus();
+            await page.keyboard.press('Tab');
+            await expect(closeBtn).toBeFocused();
+
+            await page.keyboard.press('Shift+Tab');
+            await expect(cancelBtn).toBeFocused();
         });
 
         test('Source with no rich-text tag is escaped to visible text, not rejected', async ({ page, profile, api }) => {
@@ -228,15 +247,8 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             const dialog = kb.htmlBlockDialog;
             await dialog.getByLabel('HTML source').fill('<script>alert(1)</script>');
 
-            // `RichText::getSafeHtml()` only takes its sanitizing path when
-            // `isRichTextHtmlContent()` finds one of its allowlisted tags
-            // (RichText.php:186) — `script` is not among them, so this input
-            // takes the plain-text branch instead and comes back HTML-escaped
-            // and wrapped in a <p>, never empty.
-            //
-            // Asserting the angle brackets are present *as text* is what proves
-            // it was escaped rather than parsed: real markup would contribute no
-            // such characters to textContent.
+            // `getSafeHtml()` treats input without a known tag as plain text and
+            // escapes it. Visible angle brackets prove it was not parsed.
             await expect(dialog.getByRole('region', { name: 'Preview' }))
                 .toContainText('<script>alert(1)</script>');
             await expect(dialog.getByRole('button', { name: 'Save' })).toBeEnabled();
@@ -265,7 +277,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             const dialog = kb.htmlBlockDialog;
             const source = dialog.getByLabel('HTML source');
 
-            // Same pattern as kb-aside-search.spec.ts:215-224.
+            // Same pattern as kb-aside-search.spec.ts.
             await page.route('**/Knowbase/KnowbaseItem/*/SanitizeHtmlBlock', (route) =>
                 route.fulfill({ status: 500, body: '' })
             );
@@ -273,7 +285,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await source.fill('<p>Hi</p>');
             await expect(dialog.getByRole('alert')).toBeVisible();
             await expect(dialog.getByRole('button', { name: 'Save' })).toBeDisabled();
-            // No data loss: whatever was typed is still there to retry with.
+            // The typed source is kept.
             await expect(source).toHaveValue('<p>Hi</p>');
 
             await page.keyboard.press('Escape');
@@ -304,8 +316,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await source.fill('<p>Old</p>');
             await expect(saveBtn).toBeEnabled();
 
-            // Hold every further sanitize response, so the edit below stays
-            // un-previewed for as long as the assertion needs.
+            // Hold sanitize responses so the new source stays unpreviewed.
             let release!: () => void;
             const held = new Promise<void>((resolve) => { release = resolve; });
             await page.route('**/Knowbase/KnowbaseItem/*/SanitizeHtmlBlock', async (route) => {
@@ -314,7 +325,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             });
 
             await source.fill('<p>New</p>');
-            // Still enabled here would mean a click saves "Old".
+            // Otherwise a click would save "Old".
             await expect(saveBtn).toBeDisabled();
 
             release();
@@ -374,8 +385,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await kb.editor.enterEditMode();
             await kb.editor.save();
 
-            // The node view stays mounted after leaving edit mode, so its
-            // edit button must not survive into read mode.
+            // The node view stays mounted after leaving edit mode.
             await kb.htmlBlock.hover();
             await expect(page.getByRole('button', { name: 'Edit HTML block' })).toBeHidden();
         });

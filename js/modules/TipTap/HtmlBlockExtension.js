@@ -35,20 +35,9 @@
 import { showHtmlBlockDialog } from '/js/modules/TipTap/HtmlBlockDialog.js';
 
 /**
- * KB "HTML Block" Tiptap node — holds a chunk of user-authored HTML that has
- * already been through `RichText::getSafeHtml()` (client-side, via the
- * sanitize-preview endpoint; authoritatively again on save). Stored as the
- * literal children of a `div.kb-html-block` wrapper, so it survives in the
- * article's `answer` field like any other rich content.
- *
- * Unlike VideoEmbed, there is no placeholder/allowlist-renderer pair here:
- * there is no fixed set of "known safe blocks" to allowlist against, so the
- * sanitizer itself is the one and only trust boundary.
- *
- * The marker is a plain CSS class, not a `data-*` attribute: GLPI's
- * sanitizer allows `class` on every element already but only allows an
- * explicit, hand-picked set of `data-*` attributes — reusing the class
- * avoids extending that allowlist for this feature.
+ * KB "HTML Block" node holding HTML sanitized by `RichText::getSafeHtml()`.
+ * Stored as the children of `div.kb-html-block`. The marker is a class because
+ * the sanitizer strips unlisted `data-*` attributes.
  */
 const { Node, createNodeFromContent } = TiptapCore;
 const { Plugin } = TiptapPMState;
@@ -87,11 +76,9 @@ export const HtmlBlock = Node.create({
         const { schema } = this.editor;
         const type = this.type;
 
-        // `parseHTML` trusts the block's inner HTML, which only holds for
-        // content loaded through `enhanced_html`. Pasted or dropped HTML is
-        // unsanitized, so re-parse each block through the schema instead:
-        // it lands as ordinary rich content. Recursive, as that HTML may wrap
-        // another block.
+        // `parseHTML` trusts the inner HTML, which is only safe for stored
+        // content. Pasted or dropped blocks are unwrapped into regular nodes,
+        // recursively since a block may contain another one.
         const unwrapBlocks = (fragment) => {
             const nodes = [];
             fragment.forEach((child) => {
@@ -102,16 +89,14 @@ export const HtmlBlock = Node.create({
                     nodes.push(child.isLeaf ? child : child.copy(unwrapBlocks(child.content)));
                 }
             });
-            // ProseMirror's Fragment class isn't exposed by the lib bundle
-            // (`TiptapCore.Fragment` is Tiptap's unrelated extension).
+            // ProseMirror's Fragment is not exposed (`TiptapCore.Fragment` is unrelated).
             return fragment.constructor.fromArray(nodes);
         };
 
         return [
             new Plugin({
                 props: {
-                    // `view.dragging` is only set when moving content within
-                    // this editor, which is already trusted.
+                    // Drags within this editor move content that is already trusted.
                     transformPasted: (slice, view) => (view.dragging
                         ? slice
                         : new slice.constructor(unwrapBlocks(slice.content), slice.openStart, slice.openEnd)),
@@ -121,16 +106,9 @@ export const HtmlBlock = Node.create({
     },
 
     renderHTML({ node }) {
-        // A real DOM node is a valid ProseMirror DOMOutputSpec (not just the
-        // array-tuple form), which is what lets the node's *children* be
-        // arbitrary already-sanitized markup rather than something the
-        // schema has to describe structurally.
-        //
-        // No role/aria here on purpose: this is the persisted form. `aria-*`
-        // is stripped by `RichText::getSafeHtml()` anyway, and tagging the
-        // reader-facing article with role="figure" would add noise to markup
-        // that is meant to pass through transparently. The editor-only node
-        // view below carries the ARIA instead.
+        // Returning a DOM node lets the children be arbitrary sanitized markup.
+        // No ARIA on the stored form: the sanitizer strips `aria-*`, and the
+        // node view carries it instead.
         const div = document.createElement('div');
         div.className = 'kb-html-block';
         div.innerHTML = node.attrs.html || '';
@@ -139,9 +117,7 @@ export const HtmlBlock = Node.create({
 
     addNodeView() {
         return ({ node, editor, getPos }) => {
-            // Tracks the node's current attrs across `update()` calls, so a
-            // later "Edit" click always shows the latest source, not the
-            // one this view was first created with.
+            // Kept current by `update()`, so Edit always shows the latest source.
             let currentNode = node;
 
             const wrapper = document.createElement('div');
