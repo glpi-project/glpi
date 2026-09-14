@@ -191,6 +191,47 @@ final class KnowbaseItemController extends AbstractController
     }
 
     #[Route(
+        "/Knowbase/KnowbaseItem/{knowbaseitems_id}/SanitizeHtmlBlock",
+        name: "knowbaseitem_sanitize_html_block",
+        methods: ["POST"],
+        requirements: [
+            'knowbaseitems_id' => '\d+',
+        ]
+    )]
+    public function sanitizeHtmlBlock(Request $request): JsonResponse
+    {
+        $id = $request->attributes->getInt('knowbaseitems_id');
+
+        $kbitem = new KnowbaseItem();
+        if (!$kbitem->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$kbitem->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $html = $data['html'] ?? null;
+
+        if ($html === null) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => __('Missing HTML content'),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // The one and only sanitization boundary for a "custom HTML block":
+        // no separate allowlist, no placeholder/renderer pair like video
+        // embeds. This is exactly what gets re-applied to the whole answer
+        // at save time, so the preview always matches the stored result.
+        return new JsonResponse([
+            'success' => true,
+            'html'    => RichText::getSafeHtml($html),
+        ]);
+    }
+
+    #[Route(
         "/Knowbase/KnowbaseItem/Search/{itemtype}/{items_id}",
         name: "knowbaseitem_search",
         requirements: [
