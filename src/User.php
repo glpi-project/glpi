@@ -5745,8 +5745,15 @@ HTML;
         // Check new password validity, throws exception on failure
         Config::validatePassword($input["password"], false);
 
+        $update_input = [
+            'id'                    => $input['id'],
+            'password'              => $input['password'],
+            'password2'             => $input['password2'] ?? $input['password'],
+            'password_forget_token' => $input['password_forget_token'],
+        ];
+
         // Try to set new password
-        if (!$user->update($input)) {
+        if (!$user->update($update_input)) {
             return false;
         }
 
