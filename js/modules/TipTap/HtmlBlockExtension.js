@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global TiptapCore */
+/* global TiptapCore, TiptapPMState */
 
 import { showHtmlBlockDialog } from '/js/modules/TipTap/HtmlBlockDialog.js';
 
@@ -50,7 +50,8 @@ import { showHtmlBlockDialog } from '/js/modules/TipTap/HtmlBlockDialog.js';
  * explicit, hand-picked set of `data-*` attributes — reusing the class
  * avoids extending that allowlist for this feature.
  */
-const { Node } = TiptapCore;
+const { Node, createNodeFromContent } = TiptapCore;
+const { Plugin } = TiptapPMState;
 
 export const HtmlBlock = Node.create({
     name: 'kbHtmlBlock',
@@ -79,6 +80,43 @@ export const HtmlBlock = Node.create({
                 tag: 'div.kb-html-block',
                 getAttrs: (dom) => ({ html: dom.innerHTML }),
             },
+        ];
+    },
+
+    addProseMirrorPlugins() {
+        const { schema } = this.editor;
+        const type = this.type;
+
+        // `parseHTML` trusts the block's inner HTML, which only holds for
+        // content loaded through `enhanced_html`. Pasted or dropped HTML is
+        // unsanitized, so re-parse each block through the schema instead:
+        // it lands as ordinary rich content. Recursive, as that HTML may wrap
+        // another block.
+        const unwrapBlocks = (fragment) => {
+            const nodes = [];
+            fragment.forEach((child) => {
+                if (child.type === type) {
+                    const doc = createNodeFromContent(child.attrs.html || '', schema, { slice: false });
+                    unwrapBlocks(doc.content).forEach((node) => nodes.push(node));
+                } else {
+                    nodes.push(child.isLeaf ? child : child.copy(unwrapBlocks(child.content)));
+                }
+            });
+            // ProseMirror's Fragment class isn't exposed by the lib bundle
+            // (`TiptapCore.Fragment` is Tiptap's unrelated extension).
+            return fragment.constructor.fromArray(nodes);
+        };
+
+        return [
+            new Plugin({
+                props: {
+                    // `view.dragging` is only set when moving content within
+                    // this editor, which is already trusted.
+                    transformPasted: (slice, view) => (view.dragging
+                        ? slice
+                        : new slice.constructor(unwrapBlocks(slice.content), slice.openStart, slice.openEnd)),
+                },
+            }),
         ];
     },
 
