@@ -2465,6 +2465,13 @@ class CommonDBTM extends CommonGLPI
      */
     public function canAddItem(string $type): bool
     {
+        if ($type === Document::class) {
+            // "One write is enough". Stricter itemtypes (e.g. no document on a closed
+            // ticket) override this method and keep their own rule.
+            return $this->can($this->getID(), UPDATE)
+                || (Session::haveRight(Document::$rightname, CREATE) && $this->can($this->getID(), READ));
+        }
+
         return $this->can($this->getID(), UPDATE);
     }
 
