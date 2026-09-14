@@ -42,6 +42,13 @@ import { showHtmlBlockDialog } from '/js/modules/TipTap/HtmlBlockDialog.js';
 const { Node, createNodeFromContent } = TiptapCore;
 const { Plugin } = TiptapPMState;
 
+/**
+ * HTML of the blocks copied or cut from a KB editor on this page. Pasting one back must not unwrap it.
+ *
+ * @type {Set<string>}
+ */
+const copiedHtml = new Set();
+
 export const HtmlBlock = Node.create({
     name: 'kbHtmlBlock',
     group: 'block',
@@ -81,7 +88,7 @@ export const HtmlBlock = Node.create({
         const unwrapBlocks = (fragment) => {
             const nodes = [];
             fragment.forEach((child) => {
-                if (child.type === type) {
+                if (child.type === type && !copiedHtml.has(child.attrs.html || '')) {
                     const doc = createNodeFromContent(child.attrs.html || '', schema, { slice: false });
                     unwrapBlocks(doc.content).forEach((node) => nodes.push(node));
                 } else {
@@ -92,9 +99,24 @@ export const HtmlBlock = Node.create({
             return fragment.constructor.fromArray(nodes);
         };
 
+        // Remember the blocks leaving this editor through the clipboard, so pasting them back keeps them whole. An outside page can only hit this
+        // set with markup that already passed through the editor, so it stays a trust check and not just an origin guess.
+        const rememberCopiedBlocks = (view) => {
+            view.state.selection.content().content.descendants((node) => {
+                if (node.type === type) {
+                    copiedHtml.add(node.attrs.html || '');
+                }
+            });
+            return false;
+        };
+
         return [
             new Plugin({
                 props: {
+                    handleDOMEvents: {
+                        copy: rememberCopiedBlocks,
+                        cut: rememberCopiedBlocks,
+                    },
                     // Drags inside this editor move already trusted content.
                     transformPasted: (slice, view) => (view.dragging
                         ? slice
@@ -141,11 +163,13 @@ export const HtmlBlock = Node.create({
                     itemId: this.options.itemId,
                     initialHtml: currentNode.attrs.html,
                     onSave: (sanitizedHtml) => {
-                        if (typeof getPos !== 'function') {
+                        // `getPos()` returns undefined once the node view is detached.
+                        const pos = typeof getPos === 'function' ? getPos() : undefined;
+                        if (pos === undefined) {
                             return;
                         }
                         editor.view.dispatch(
-                            editor.state.tr.setNodeMarkup(getPos(), undefined, { html: sanitizedHtml })
+                            editor.state.tr.setNodeMarkup(pos, undefined, { html: sanitizedHtml })
                         );
                     },
                     onClose: () => editor.chain().focus().run(),

@@ -171,6 +171,8 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
             }
             lastSanitizedHtml = null;
             saveBtn.disabled = true;
+            // Drop the previous preview: it no longer matches the source.
+            preview.innerHTML = '';
             showError(__('The preview could not be generated. Please try again.'));
         }
     };

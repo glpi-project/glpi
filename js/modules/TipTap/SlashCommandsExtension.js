@@ -385,12 +385,6 @@ const SlashCommands = Extension.create({
                     }
                     return true;
                 },
-                items: ({ query }) => {
-                    const lowerQuery = query.toLowerCase();
-                    return SLASH_COMMANDS.filter((item) =>
-                        item.title.toLowerCase().includes(lowerQuery)
-                    );
-                },
                 render: () => {
                     const { computePosition, autoUpdate, offset, flip, shift } = FloatingUI;
                     let floatingElement = null;
@@ -553,10 +547,6 @@ const SlashCommands = Extension.create({
                             menuElement = null;
                         },
                     };
-                },
-                command: ({ editor, range, props }) => {
-                    // Execute the command with range - deletion happens in the same chain
-                    props.command(editor, range);
                 },
             },
         };
