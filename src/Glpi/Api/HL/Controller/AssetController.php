@@ -1869,6 +1869,7 @@ final class AssetController extends AbstractController
                 'asset' => [
                     'type' => Doc\Schema::TYPE_OBJECT,
                     'x-graphql-only' => true,
+                    'x-version-introduced' => '2.4.0',
                     'oneOf' => ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'],
                     'discriminator' => [
                         'propertyName' => '_itemtype',
