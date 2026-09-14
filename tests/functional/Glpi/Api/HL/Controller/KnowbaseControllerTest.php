@@ -110,16 +110,16 @@ class KnowbaseControllerTest extends HLAPITestCase
             'knowbaseitems_id' => $kbi->getID(),
             'language' => 'fr_FR',
             'name' => 'Traduction française',
-            'answer' => 'Contenu initial',
+            'answer' => '<p>Contenu initial</p>',
         ]);
         // update the content to create a revision
         $this->assertTrue($trans->update([
             'id' => $trans->getID(),
-            'answer' => 'Contenu mis à jour',
+            'answer' => '<p>Contenu mis à jour</p>',
         ]));
         $this->assertTrue($trans->update([
             'id' => $trans->getID(),
-            'answer' => 'Contenu mis à jour 2',
+            'answer' => '<p>Contenu mis à jour 2</p>',
         ]));
 
         $last_revision_id = null;
@@ -136,7 +136,7 @@ class KnowbaseControllerTest extends HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->assertEquals('Contenu mis à jour', $content['content']);
+                    $this->assertEquals('<p>Contenu mis à jour</p>', $content['content']);
                 });
         });
     }

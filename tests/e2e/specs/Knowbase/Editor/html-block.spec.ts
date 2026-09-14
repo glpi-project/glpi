@@ -114,7 +114,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
 
             await page.goto('/front/knowbaseitem.form.php');
 
-            // The add page has no edit toggle, but the helpers still find the editor.
+            // The add page has no edit toggle, helpers still find the editor.
             const menu = await kb.slashMenu.open();
             await expect(menu.getByRole('button', { name: 'HTML Block' })).toBeHidden();
             // Ensures the menu is populated.
@@ -247,8 +247,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             const dialog = kb.htmlBlockDialog;
             await dialog.getByLabel('HTML source').fill('<script>alert(1)</script>');
 
-            // `getSafeHtml()` treats input without a known tag as plain text and
-            // escapes it. Visible angle brackets prove it was not parsed.
+            // `getSafeHtml()` escapes unknown tags, so the brackets stay visible.
             await expect(dialog.getByRole('region', { name: 'Preview' }))
                 .toContainText('<script>alert(1)</script>');
             await expect(dialog.getByRole('button', { name: 'Save' })).toBeEnabled();
@@ -277,7 +276,6 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             const dialog = kb.htmlBlockDialog;
             const source = dialog.getByLabel('HTML source');
 
-            // Same pattern as kb-aside-search.spec.ts.
             await page.route('**/Knowbase/KnowbaseItem/*/SanitizeHtmlBlock', (route) =>
                 route.fulfill({ status: 500, body: '' })
             );

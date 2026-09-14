@@ -34,6 +34,7 @@
  */
 
 use Glpi\Event;
+use Glpi\RichText\RichText;
 
 /**
  * KnowbaseItemTranslation Class
@@ -62,6 +63,33 @@ class KnowbaseItemTranslation extends CommonDBChild
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    /**
+     * Sanitize the translated answer. Done here, not in the controllers, so
+     * every writer is covered: legacy form, `revertTo()` and API alike. The
+     * answer is injected raw in the DOM by `GetTranslationContentController`.
+     *
+     * @param array<string, mixed> $input
+     *
+     * @return array<string, mixed>
+     */
+    private function prepareInput(array $input): array
+    {
+        if (isset($input['answer'])) {
+            $input['answer'] = RichText::getSafeHtml($input['answer']);
+        }
+        return $input;
     }
 
     /**

@@ -35,15 +35,14 @@ import { post } from '/js/modules/Ajax.js';
 const DEBOUNCE_MS = 400;
 
 /**
- * "Insert/Edit HTML Block" dialog. The preview shows the server-sanitized HTML,
- * so it matches what gets stored. Takes callbacks instead of a Tiptap editor so
- * it can be reused by other editors.
+ * "Insert/Edit HTML Block" dialog. Previews the server-sanitized HTML, so it
+ * matches what gets stored. Editor-agnostic: takes callbacks, not an editor.
  *
  * @param {object} options
  * @param {number} options.itemId - Saved KB article id.
  * @param {string} options.initialHtml - Existing source, or '' for a new block.
  * @param {(sanitizedHtml: string) => void} options.onSave
- * @param {() => void} [options.onClose] - Called whenever the dialog closes.
+ * @param {() => void} [options.onClose]
  */
 export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () => {} }) {
     const uid = Math.random().toString(36).slice(2, 9);
@@ -88,7 +87,6 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
     previewLabel.id = `html-block-preview-label-${uid}`;
     previewLabel.className = 'html-block-preview-label';
     previewLabel.textContent = __('Preview');
-    // Labelled region, reachable by role and name.
     const preview = document.createElement('div');
     preview.className = 'html-block-preview';
     preview.setAttribute('role', 'region');
@@ -124,7 +122,7 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
     document.body.appendChild(overlay);
     sourceInput.focus();
 
-    // Save only uses this server-sanitized value, never the raw source.
+    // Save uses this sanitized value, never the raw source.
     let lastSanitizedHtml = null;
     let debounceTimer = null;
 
@@ -150,12 +148,12 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
         try {
             const response = await post(`Knowbase/KnowbaseItem/${itemId}/SanitizeHtmlBlock`, { html: raw });
             const data = await response.json();
-            // The source changed during the request: a newer one owns the state.
+            // Source changed during the request: a newer one owns the state.
             if (sourceInput.value !== raw) {
                 return;
             }
-            // Unreachable today: `getSafeHtml()` escapes input without a known
-            // tag rather than emptying it. Guards against a sanitizer change.
+            // Unreachable today: `getSafeHtml()` escapes unknown tags rather
+            // than emptying. Guards against a sanitizer change.
             if (!data.success || data.html.trim() === '') {
                 lastSanitizedHtml = null;
                 saveBtn.disabled = true;
@@ -178,7 +176,7 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
     };
 
     sourceInput.addEventListener('input', () => {
-        // The previous preview is stale until the new request returns.
+        // Previous preview is stale until the new request returns.
         lastSanitizedHtml = null;
         saveBtn.disabled = true;
         if (debounceTimer) {

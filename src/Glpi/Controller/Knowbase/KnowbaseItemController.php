@@ -221,7 +221,7 @@ final class KnowbaseItemController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // Same sanitizer as updateAnswer(), so the preview matches what is stored.
+        // Same sanitizer as updateAnswer(), so the preview matches storage.
         return new JsonResponse([
             'success' => true,
             'html'    => RichText::getSafeHtml($html),

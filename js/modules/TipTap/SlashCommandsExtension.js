@@ -563,8 +563,7 @@ const SlashCommands = Extension.create({
     },
 
     addProseMirrorPlugins() {
-        // `this.options` is undefined inside `addOptions()`, so options that
-        // depend on `itemId` are set here.
+        // `this.options` is undefined inside `addOptions()`, hence read here.
         const { itemId } = this.options;
 
         return [
