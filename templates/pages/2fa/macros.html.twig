@@ -42,6 +42,15 @@
        $(document).ready(function() {
            const input_fields = $('input[name="totp_code[]"]');
            input_fields.first().focus();
+           // On the last digit, the handlers below click button[name="continue"] then
+           // disable these fields unconditionally.
+           // On a page without that button, nothing submits the form, but the fields stay disabled
+           input_fields.closest('form').on('submit', function() {
+               const wrapper = input_fields.closest('[data-code-type]');
+               if (wrapper.length === 0 || wrapper.attr('data-code-type') !== 'backup_code') {
+                   input_fields.prop('disabled', false);
+               }
+           });
            input_fields.parent().on('keyup', 'input[name="totp_code[]"]', function(e) {
                if (e.which === 8) {
                    return;
@@ -84,6 +93,41 @@
               // focus on the field after the last one filled (or the last if all filled)
               input_fields.eq(Math.min(input_fields.length, last_filled + 1)).focus();
           });
+       });
+   </script>
+{% endmacro %}
+
+{#
+ # Pairs with tfa_code_input().
+ # Should be wrap in an element with data-code-type="code",
+ # which is toggled to "backup_code" and used to show/hide the right input.
+ #
+ # @param update_card_title bool Also swap the closest .card-title text when toggling (used by the full-page MFA prompt).
+ #}
+{% macro tfa_backup_code_toggle(update_card_title = false) %}
+   <input type="text" name="backup_code" class="form-control d-none" disabled="disabled" placeholder="{{ __('Backup code') }}"/>
+   <button type="button" class="btn btn-link px-1 js-tfa-switch-code-type">{{ __('Use a backup code') }}</button>
+   <script>
+       $(document).ready(function() {
+           $('.js-tfa-switch-code-type').on('click', function(e) {
+               const btn = $(e.currentTarget);
+               const wrapper = btn.closest('[data-code-type]');
+               const card_title = {{ update_card_title ? 'true' : 'false' }} ? btn.closest('.card').find('.card-title') : $();
+
+               if (wrapper.attr('data-code-type') === 'code') {
+                   wrapper.attr('data-code-type', 'backup_code');
+                   $('input[name="totp_code[]"]').attr('disabled', 'disabled').addClass('d-none');
+                   $('input[name="backup_code"]').removeAttr('disabled').removeClass('d-none');
+                   btn.text('{{ __('Use a code from your authenticator app')|e('js') }}');
+                   card_title.text('{{ __('Please enter a backup code')|e('js') }}');
+               } else {
+                   wrapper.attr('data-code-type', 'code');
+                   $('input[name="backup_code"]').attr('disabled', 'disabled').addClass('d-none');
+                   $('input[name="totp_code[]"]').removeAttr('disabled').removeClass('d-none');
+                   btn.text('{{ __('Use a backup code')|e('js') }}');
+                   card_title.text('{{ __('Please enter the code from your authenticator app')|e('js') }}');
+               }
+           });
        });
    </script>
 {% endmacro %}
@@ -166,7 +210,7 @@
 
             btn.find('i').removeClass('ti ti-copy').addClass('ti ti-check');
             btn.removeClass('btn-outline-secondary').addClass('btn-success');
-            btn.text('{{ __('Copied') }}');
+            btn.text('{{ __('Copied')|e('js') }}');
         });
 
         function showCodes(codes) {
