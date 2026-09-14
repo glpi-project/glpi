@@ -112,9 +112,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public get htmlBlock(): Locator
     {
-        // HtmlBlockExtension's nodeView exposes each block as role="figure"
-        // labelled "HTML block". Editor-only: read mode renders the stored
-        // markup as-is, with no wrapper chrome.
+        // Editor only: read mode renders the stored markup without the node view.
         return this.page.getByRole('figure', { name: 'HTML block' });
     }
 

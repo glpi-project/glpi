@@ -301,8 +301,7 @@ const SLASH_COMMANDS = [
     {
         title: __('HTML Block'),
         icon: 'ti ti-code-dots',
-        // Only offered once the article has been saved at least once — the
-        // sanitize-preview endpoint needs a real KnowbaseItem id.
+        // The sanitize endpoint needs a saved article id.
         requiresSavedItem: true,
         command: (editor, range, itemId) => {
             editor.chain().focus().deleteRange(range).run();
@@ -564,9 +563,8 @@ const SlashCommands = Extension.create({
     },
 
     addProseMirrorPlugins() {
-        // `this.options` is not available inside `addOptions()` (Tiptap binds it
-        // to `{ name, parent }` there), so the `itemId`-dependent overrides are
-        // applied here, after the base `suggestion` config is spread in.
+        // `this.options` is undefined inside `addOptions()`, so options that
+        // depend on `itemId` are set here.
         const { itemId } = this.options;
 
         return [

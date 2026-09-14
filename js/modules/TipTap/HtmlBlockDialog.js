@@ -35,21 +35,15 @@ import { post } from '/js/modules/Ajax.js';
 const DEBOUNCE_MS = 400;
 
 /**
- * "Insert/Edit HTML Block" dialog: a raw HTML source textarea plus a preview
- * pane that always shows the *server-sanitized* result, never the raw
- * textarea content — so what's previewed is exactly what will be stored.
- *
- * Deliberately takes no Tiptap `editor` reference, only plain callbacks, so
- * this (and the sanitize round trip) can be reused by a future non-Tiptap
- * editor without a rewrite.
+ * "Insert/Edit HTML Block" dialog. The preview shows the server-sanitized HTML,
+ * so it matches what gets stored. Takes callbacks instead of a Tiptap editor so
+ * it can be reused by other editors.
  *
  * @param {object} options
- * @param {number} options.itemId - KB article id. Callers only open this
- *   dialog once the article has been saved at least once (item_id > 0).
- * @param {string} options.initialHtml - Pre-existing source, or '' for a new block.
+ * @param {number} options.itemId - Saved KB article id.
+ * @param {string} options.initialHtml - Existing source, or '' for a new block.
  * @param {(sanitizedHtml: string) => void} options.onSave
- * @param {() => void} [options.onClose] - Called after Save, Cancel, Escape,
- *   or an overlay click — whatever else closed the dialog.
+ * @param {() => void} [options.onClose] - Called whenever the dialog closes.
  */
 export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () => {} }) {
     const uid = Math.random().toString(36).slice(2, 9);
@@ -94,9 +88,7 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
     previewLabel.id = `html-block-preview-label-${uid}`;
     previewLabel.className = 'html-block-preview-label';
     previewLabel.textContent = __('Preview');
-    // A labelled landmark, so the preview is reachable by role + name — both
-    // for screen readers and for the e2e specs, which use semantic locators
-    // only (no raw `.locator()` on the class).
+    // Labelled region, reachable by role and name.
     const preview = document.createElement('div');
     preview.className = 'html-block-preview';
     preview.setAttribute('role', 'region');
@@ -132,8 +124,7 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
     document.body.appendChild(overlay);
     sourceInput.focus();
 
-    // The only value Save is ever allowed to use — always server-sanitized,
-    // never the raw textarea content.
+    // Save only uses this server-sanitized value, never the raw source.
     let lastSanitizedHtml = null;
     let debounceTimer = null;
 
@@ -159,16 +150,12 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
         try {
             const response = await post(`Knowbase/KnowbaseItem/${itemId}/SanitizeHtmlBlock`, { html: raw });
             const data = await response.json();
-            // The source changed while this request was in flight: a newer
-            // round trip owns the preview and Save state.
+            // The source changed during the request: a newer one owns the state.
             if (sourceInput.value !== raw) {
                 return;
             }
-            // Defensive: with today's `RichText::getSafeHtml()` no non-blank
-            // input ever sanitizes to an empty string — content with no
-            // allowlisted tag takes the plain-text branch and comes back
-            // escaped and wrapped in a <p> instead. Kept as a guard so a
-            // future sanitizer change cannot silently insert an empty block.
+            // Unreachable today: `getSafeHtml()` escapes input without a known
+            // tag rather than emptying it. Guards against a sanitizer change.
             if (!data.success || data.html.trim() === '') {
                 lastSanitizedHtml = null;
                 saveBtn.disabled = true;
@@ -191,8 +178,7 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
     };
 
     sourceInput.addEventListener('input', () => {
-        // The last sanitized value no longer matches the source: Save must
-        // wait for the new round trip instead of storing the stale HTML.
+        // The previous preview is stale until the new request returns.
         lastSanitizedHtml = null;
         saveBtn.disabled = true;
         if (debounceTimer) {
@@ -229,8 +215,10 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
             return;
         }
         if (e.key === 'Tab') {
-            const first = focusableEls[0];
-            const last = focusableEls[focusableEls.length - 1];
+            // A disabled Save cannot take focus.
+            const enabledEls = focusableEls.filter((el) => !el.disabled);
+            const first = enabledEls[0];
+            const last = enabledEls[enabledEls.length - 1];
             if (e.shiftKey && document.activeElement === first) {
                 e.preventDefault();
                 last.focus();
