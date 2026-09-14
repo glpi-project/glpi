@@ -159,6 +159,11 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
         try {
             const response = await post(`Knowbase/KnowbaseItem/${itemId}/SanitizeHtmlBlock`, { html: raw });
             const data = await response.json();
+            // The source changed while this request was in flight: a newer
+            // round trip owns the preview and Save state.
+            if (sourceInput.value !== raw) {
+                return;
+            }
             // Defensive: with today's `RichText::getSafeHtml()` no non-blank
             // input ever sanitizes to an empty string — content with no
             // allowlisted tag takes the plain-text branch and comes back
@@ -176,6 +181,9 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
             saveBtn.disabled = false;
             preview.innerHTML = data.html;
         } catch {
+            if (sourceInput.value !== raw) {
+                return;
+            }
             lastSanitizedHtml = null;
             saveBtn.disabled = true;
             showError(__('The preview could not be generated. Please try again.'));
@@ -183,6 +191,10 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
     };
 
     sourceInput.addEventListener('input', () => {
+        // The last sanitized value no longer matches the source: Save must
+        // wait for the new round trip instead of storing the stale HTML.
+        lastSanitizedHtml = null;
+        saveBtn.disabled = true;
         if (debounceTimer) {
             clearTimeout(debounceTimer);
         }
