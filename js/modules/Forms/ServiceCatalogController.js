@@ -214,9 +214,13 @@ export class GlpiFormServiceCatalogController
 
     #updateBreadcrumb() {
         const breadcrumbContainer = document.querySelector('[data-breadcrumbs-container]');
+
         const categoryAncestors = document.querySelector('#category-ancestors');
         if (categoryAncestors) {
             this.breadcrumb = [{
+                // Use the title rendered by the server instead of `__()`:
+                // JS translations are fetched asynchronously and may not be
+                // loaded yet when the breadcrumb is built on page load.
                 title: breadcrumbContainer.dataset.rootTitle,
                 params: 'category=0'
             }];
