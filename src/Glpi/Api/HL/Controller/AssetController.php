@@ -715,6 +715,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
                 'os_installs' => self::getChildrenTypeSchema(
                     parent_class: Computer::class,
@@ -871,6 +872,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
                 'os_installs' => self::getChildrenTypeSchema(
                     parent_class: Monitor::class,
@@ -957,6 +959,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
                 'os_installs' => self::getChildrenTypeSchema(
                     parent_class: NetworkEquipment::class,
@@ -1051,6 +1054,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
                 'os_installs' => self::getChildrenTypeSchema(
                     parent_class: Peripheral::class,
@@ -1134,6 +1138,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
                 'os_installs' => self::getChildrenTypeSchema(
                     parent_class: Phone::class,
@@ -1266,6 +1271,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
                 'os_installs' => self::getChildrenTypeSchema(
                     parent_class: Printer::class,
@@ -1477,6 +1483,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
             ],
         ];
@@ -2145,6 +2152,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
             ],
         ];
@@ -2241,6 +2249,7 @@ final class AssetController extends AbstractController
                     class: NetworkPort::class,
                     full_schema: 'NetworkPort',
                     graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
             ],
         ];

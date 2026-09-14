@@ -343,6 +343,7 @@ final class ManagementController extends AbstractController
                         class: NetworkPort::class,
                         full_schema: 'NetworkPort',
                         graphql_only: true,
+                        params: ['x-version-introduced' => '2.4.0']
                     ),
                 ],
             ],
