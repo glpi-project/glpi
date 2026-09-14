@@ -71,6 +71,44 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
     });
 
+    test.describe('Pasted HTML', () => {
+
+        test('A pasted HTML block is re-parsed as plain content, never rendered raw', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Pasted HTML block',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+
+            // ProseMirror reads `clipboardData` the same way for a real Ctrl+V
+            // of attacker-controlled HTML from another site.
+            await page.evaluate(() => {
+                const data = new DataTransfer();
+                data.setData(
+                    'text/html',
+                    '<div class="kb-html-block"><p>Pasted</p><img src="x" alt="Pasted image" onerror="window.__kbXss = true"></div>'
+                );
+                document.activeElement?.dispatchEvent(
+                    new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true })
+                );
+            });
+
+            await expect(kb.editor.contentContainer).toContainText('Pasted');
+            await expect(kb.htmlBlock).toHaveCount(0);
+
+            // Wait for the broken `src` to error, so `onerror` would have run by now.
+            const image = kb.editor.contentContainer.getByRole('img', { name: 'Pasted image' });
+            await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.complete)).toBe(true);
+            expect(await page.evaluate(() => (window as Window & { __kbXss?: boolean }).__kbXss)).toBeUndefined();
+        });
+    });
+
     test.describe('Slash command /HTML Block dialog', () => {
 
         test('HTML Block is hidden from the menu while composing a brand-new article', async ({ page, profile }) => {
