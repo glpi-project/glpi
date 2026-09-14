@@ -779,8 +779,6 @@ class MailCollectorTest extends DbTestCase
             'Header with Name date or date not found' => LogLevel::ERROR,
             // 35-message-with-some-invalid-headers.eml
             'Invalid header "X-Invalid-Encoding"' => LogLevel::WARNING,
-            // 43.5-invalid-utf8-content.eml - Invalid UTF-8 byte sequence rejected by the DB on insert
-            'Incorrect string value' => LogLevel::ERROR,
             // 49-invalid-cc-email-address.eml - Invalid CC address caught by Laminas patch
             'Invalid address "} <}>"' => LogLevel::WARNING,
             // 50-all-invalid-addresses.eml - All addresses are invalid (From and CC)
@@ -795,7 +793,7 @@ class MailCollectorTest extends DbTestCase
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
         $expected_refused_count          = 14;
-        $expected_error_count            = 2;
+        $expected_error_count            = 1;
         $expected_blacklist_count        = 1;
         $expected_expected_already_seen  = 0;
 
@@ -836,14 +834,6 @@ class MailCollectorTest extends DbTestCase
                 'subject' => null, // Subject is empty has mail was not processed
                 'from'    => '', // '' as value is not nullable in DB
                 'to'      => '', // '' as value is not nullable in DB
-                'reason'  => \NotImportedEmail::FAILED_OPERATION,
-            ],
-            [
-                // 43.5-invalid-utf8-content.eml - invalid byte sequence makes the DB insert fail,
-                // placed mid-batch to prove the remaining messages still get processed.
-                'subject' => '43.5 - Invalid UTF-8 byte sequence in content',
-                'from'    => 'normal@glpi-project.org',
-                'to'      => 'unittests@glpi-project.org',
                 'reason'  => \NotImportedEmail::FAILED_OPERATION,
             ],
             [
@@ -1275,6 +1265,23 @@ HTML,
                 sprintf("Followup not found:\n> %s", $expected_followup['content'])
             );
         }
+    }
+
+    public function testAddItemFromMessageCatchesInsertFailure(): void
+    {
+        $collector = new \MailCollector();
+
+        $item = new class extends \CommonDBTM {
+            public function add(array $input, $options = [], $history = true)
+            {
+                throw new \RuntimeException('Simulated DB insert failure');
+            }
+        };
+
+        $result = $this->callPrivateMethod($collector, 'addItemFromMessage', $item, []);
+
+        $this->assertFalse($result);
+        $this->hasPhpLogRecordThatContains('Simulated DB insert failure', LogLevel::ERROR);
     }
 
     public static function mailServerProtocolsProvider()
