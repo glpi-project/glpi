@@ -33,6 +33,7 @@
 /* global TiptapCore, TiptapSuggestion, FloatingUI */
 
 import { showVideoDialog } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { showHtmlBlockDialog } from '/js/modules/TipTap/HtmlBlockDialog.js';
 
 /**
  * Slash commands extension for Tiptap editor
@@ -297,6 +298,27 @@ const SLASH_COMMANDS = [
             showVideoDialog(editor);
         },
     },
+    {
+        title: __('HTML Block'),
+        icon: 'ti ti-code-dots',
+        // Only offered once the article has been saved at least once — the
+        // sanitize-preview endpoint needs a real KnowbaseItem id.
+        requiresSavedItem: true,
+        command: (editor, range, itemId) => {
+            editor.chain().focus().deleteRange(range).run();
+            showHtmlBlockDialog({
+                itemId,
+                initialHtml: '',
+                onSave: (sanitizedHtml) => {
+                    editor.chain().focus().insertContent({
+                        type: 'kbHtmlBlock',
+                        attrs: { html: sanitizedHtml },
+                    }).run();
+                },
+                onClose: () => editor.chain().focus().run(),
+            });
+        },
+    },
 ];
 
 /**
@@ -349,6 +371,7 @@ const SlashCommands = Extension.create({
 
     addOptions() {
         return {
+            itemId: null,
             suggestion: {
                 char: '/',
                 allowSpaces: false,
@@ -541,10 +564,25 @@ const SlashCommands = Extension.create({
     },
 
     addProseMirrorPlugins() {
+        // `this.options` is not available inside `addOptions()` (Tiptap binds it
+        // to `{ name, parent }` there), so the `itemId`-dependent overrides are
+        // applied here, after the base `suggestion` config is spread in.
+        const { itemId } = this.options;
+
         return [
             TiptapSuggestion({
                 editor: this.editor,
                 ...this.options.suggestion,
+                items: ({ query }) => {
+                    const lowerQuery = query.toLowerCase();
+                    return SLASH_COMMANDS
+                        .filter((item) => !item.requiresSavedItem || itemId > 0)
+                        .filter((item) => item.title.toLowerCase().includes(lowerQuery));
+                },
+                command: ({ editor, range, props }) => {
+                    // Execute the command with range - deletion happens in the same chain
+                    props.command(editor, range, itemId);
+                },
             }),
         ];
     },

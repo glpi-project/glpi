@@ -110,6 +110,19 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByRole('figure', { name: /\bvideo$/i });
     }
 
+    public get htmlBlock(): Locator
+    {
+        // HtmlBlockExtension's nodeView exposes each block as role="figure"
+        // labelled "HTML block". Editor-only: read mode renders the stored
+        // markup as-is, with no wrapper chrome.
+        return this.page.getByRole('figure', { name: 'HTML block' });
+    }
+
+    public get htmlBlockDialog(): Locator
+    {
+        return this.page.getByRole('dialog', { name: 'Insert/Edit HTML Block' });
+    }
+
     public get videoEmbedIframes(): Locator
     {
         // VideoEmbedRenderer emits iframes with title="<Provider> video player".

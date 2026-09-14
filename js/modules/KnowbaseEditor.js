@@ -37,6 +37,7 @@
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { HtmlBlock } from '/js/modules/TipTap/HtmlBlockExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
@@ -125,7 +126,7 @@ class KnowbaseEditor {
         this.#bubbleMenuElement = this.#createBubbleMenu();
 
         // Get SlashCommands extension
-        const slashCommandsExt = SlashCommands;
+        const slashCommandsExt = SlashCommands.configure({ itemId: this.#options.item_id });
 
         const extensions = [
             TiptapStarterKit.configure({
@@ -168,6 +169,7 @@ class KnowbaseEditor {
             }),
             TableGrips,
             VideoEmbed,
+            HtmlBlock.configure({ itemId: this.#options.item_id }),
             CommentHighlight.configure({ anchors: this.#options.comment_anchors }),
         ];
 
