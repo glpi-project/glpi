@@ -3440,7 +3440,8 @@
                     "type": "string"
                 },
                 "sha1sum": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 }
             }
         },
