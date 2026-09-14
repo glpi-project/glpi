@@ -6302,7 +6302,8 @@
                     "type": "string"
                 },
                 "sha1sum": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 },
                 "category": {
                     "type": "object",
@@ -6340,7 +6341,8 @@
                 },
                 "checksum_sha1": {
                     "type": "string",
-                    "maxLength": 40
+                    "maxLength": 40,
+                    "readOnly": true
                 },
                 "is_import_denied": {
                     "type": "boolean"
