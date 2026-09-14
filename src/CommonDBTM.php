@@ -4513,6 +4513,25 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
+     * Locked field names that cleanLockeds() will strip from this update.
+     *
+     * @return string[]
+     */
+    private function getLockedFieldsForUnicityCheck(): array
+    {
+        if (
+            ($this->input['_skip_locks'] ?? false) === true
+            || (isset($this->input['_transfer']) && !($this->input['_lock_updated_fields'] ?? false))
+            || !$this->isDynamic()
+            || !(isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true)
+        ) {
+            return [];
+        }
+
+        return (new Lockedfield())->getLockedNames($this->getType(), $this->fields['id']);
+    }
+
+    /**
      * Check field unicity before insert or update
      *
      * @param bool $add     true for insert, false for update (false by default)
@@ -4567,28 +4586,36 @@ class CommonDBTM extends CommonGLPI
             }
 
             $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
+
+            $locked_fields = $add ? [] : $this->getLockedFieldsForUnicityCheck();
+
             foreach ($all_fields as $key => $fields) {
                 //If there's fields to check
                 if (!empty($fields) && !empty($fields['fields'])) {
                     $where    = [];
                     $continue = true;
                     foreach (explode(',', $fields['fields']) as $field) {
+                        // Locked field: check against the value that will actually remain stored.
+                        $value = (isset($this->input[$field]) && in_array($field, $locked_fields, true))
+                            ? ($this->fields[$field] ?? $this->input[$field])
+                            : ($this->input[$field] ?? null);
+
                         if (
                             isset($this->input[$field]) //Field is set
                             //Standard field not null
                             && (((getTableNameForForeignKeyField($field) == '')
-                            && ($this->input[$field] != ''))
+                            && ($value != ''))
                             //Foreign key and value is not 0
                             || ((getTableNameForForeignKeyField($field) != '')
-                              && ($this->input[$field] > 0)))
+                              && ($value > 0)))
                             && !Fieldblacklist::isFieldBlacklisted(
                                 get_class($this),
                                 $entities_id,
                                 $field,
-                                $this->input[$field]
+                                $value
                             )
                         ) {
-                            $where[static::getTable() . '.' . $field] = $this->input[$field];
+                            $where[static::getTable() . '.' . $field] = $value;
                         } else {
                             $continue = false;
                         }
