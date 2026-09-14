@@ -213,10 +213,11 @@ export class GlpiFormServiceCatalogController
     }
 
     #updateBreadcrumb() {
+        const breadcrumbContainer = document.querySelector('[data-breadcrumbs-container]');
         const categoryAncestors = document.querySelector('#category-ancestors');
         if (categoryAncestors) {
             this.breadcrumb = [{
-                title: __('Service catalog'),
+                title: breadcrumbContainer.dataset.rootTitle,
                 params: 'category=0'
             }];
 
@@ -229,7 +230,6 @@ export class GlpiFormServiceCatalogController
             });
         }
 
-        const breadcrumbContainer = document.querySelector('[data-breadcrumbs-container]');
         breadcrumbContainer.innerHTML = '';
 
         this.breadcrumb.forEach((item, index) => {
