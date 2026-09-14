@@ -1525,7 +1525,7 @@ final class SQLProvider implements SearchProviderInterface
                         $subquery_specific_username_anonymous = [
                             'alternative_email' => ['LIKE', self::makeTextSearchValue($val)],
                         ];
-                    );
+                    }
                     break;
                 } else {
                     $criteria = [
