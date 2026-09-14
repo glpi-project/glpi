@@ -136,14 +136,9 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(4, $prepare);
         $this->assertSame('A_name.pdf', $prepare['filename']);
         $this->assertSame('A_name.pdf', $prepare['name']);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(4, $prepare);
+        $this->assertCount(3, $prepare);
 
         $this->login();
         $uid = getItemByTypeName('User', TU_USER, true);
@@ -152,13 +147,8 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(5, $prepare);
         $this->assertSame($uid, $prepare['users_id']);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(5, $prepare);
+        $this->assertCount(4, $prepare);
 
         $item = new \Computer();
         $cid = $item->add([
@@ -186,23 +176,29 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('items_id', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
         $this->assertSame($uid, $prepare['users_id']);
         $this->assertSame('Computer', $prepare['itemtype']);
         $this->assertSame($cid, $prepare['items_id']);
         $this->assertSame('A_name.pdf', $prepare['name']);
-        $this->assertCount(7, $prepare);
+        $this->assertCount(6, $prepare);
     }
 
     public function testPrepareInputForAddIgnoreBlacklistedFields(): void
     {
         $_ignored = 'should_be_ignored';
-        $input = ['name' => 'legit name', 'filepath' => $_ignored, 'sha1sum' =>  $_ignored];
+        $input = [
+            'name'              => 'legit name',
+            'filepath'          => $_ignored,
+            'sha1sum'           => $_ignored,
+            'current_filename'  => $_ignored,
+            'current_filepath'  => $_ignored,
+        ];
         $prepare = (new \Document())->prepareInputForAdd($input);
 
         $this->assertArrayNotHasKey('filepath', $prepare);
         $this->assertArrayNotHasKey('sha1sum', $prepare);
+        $this->assertArrayNotHasKey('current_filename', $prepare);
+        $this->assertArrayNotHasKey('current_filepath', $prepare);
     }
 
     /**

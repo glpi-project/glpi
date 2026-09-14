@@ -242,9 +242,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $input = $this->filterFields($input);
 
-        // current_filename is not necessary (item is new, current_filename should not exist
-        // but used for display can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
-        $input['current_filename'] = '';
+        // current_filename/current_filepath are not necessary (item is new, there is no current file)
+        // an unexpected value can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
+        unset($input['current_filepath'], $input['current_filename']);
 
         if ($uid = Session::getLoginUserID()) {
             $input["users_id"] = Session::getLoginUserID();
