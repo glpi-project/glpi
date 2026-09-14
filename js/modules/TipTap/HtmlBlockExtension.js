@@ -161,6 +161,9 @@ export const HtmlBlock = Node.create({
             editBtn.setAttribute('aria-label', __('Edit HTML block'));
             editBtn.innerHTML = '<i class="ti ti-pencil" aria-hidden="true"></i>';
             editBtn.addEventListener('click', () => {
+                if (!editor.isEditable) {
+                    return;
+                }
                 showHtmlBlockDialog({
                     itemId: this.options.itemId,
                     initialHtml: currentNode.attrs.html,

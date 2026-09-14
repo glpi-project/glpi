@@ -1205,8 +1205,13 @@ body.in_modal .kb-editor-reserved {
 // HTML Block — user-authored raw HTML. Read mode renders it with no extra
 // chrome (it's just the stored, already-sanitized markup); the dashed
 // border only appears in the editor, to mark it as a distinct, selectable
-// unit distinct from ordinary paragraphs.
-.kb-editor-wrapper .kb-html-block {
+// unit distinct from ordinary paragraphs. Scoped to `.is-editing`: the node
+// view stays mounted after Save/Cancel.
+.kb-editor-wrapper:not(.is-editing) .kb-html-block-edit {
+    display: none;
+}
+
+.kb-editor-wrapper.is-editing .kb-html-block {
     position: relative;
     border: 1px dashed var(--tblr-border-color);
     border-radius: var(--tblr-border-radius);
