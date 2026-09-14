@@ -359,5 +359,25 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await kb.editor.enterEditMode();
             await expect(kb.htmlBlock).toContainText('Updated');
         });
+
+        test('The edit button is gone once back in read mode', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'HTML block read mode after save',
+                entities_id: getWorkerEntityId(),
+                answer: '<div class="kb-html-block"><p>Original</p></div>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.save();
+
+            // The node view stays mounted after leaving edit mode, so its
+            // edit button must not survive into read mode.
+            await kb.htmlBlock.hover();
+            await expect(page.getByRole('button', { name: 'Edit HTML block' })).toBeHidden();
+        });
     });
 });
