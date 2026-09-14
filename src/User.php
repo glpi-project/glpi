@@ -5159,7 +5159,7 @@ HTML;
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
                             $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
                         }
-                        $link = "<a href='" . $link_item . "'>" . $link . "</a>";
+                        $link = "<a href='" . htmlescape($link_item) . "'>" . htmlescape($link) . "</a>";
                     }
 
                     $group_names = [];
