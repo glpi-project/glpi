@@ -279,6 +279,49 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await page.keyboard.press('Escape');
             await expect(dialog).toBeHidden();
         });
+
+        test('Save never stores a preview older than the current source', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'HTML block stale preview',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('HTML Block');
+
+            const dialog = kb.htmlBlockDialog;
+            const source = dialog.getByLabel('HTML source');
+            const saveBtn = dialog.getByRole('button', { name: 'Save' });
+
+            await source.fill('<p>Old</p>');
+            await expect(saveBtn).toBeEnabled();
+
+            // Hold every further sanitize response, so the edit below stays
+            // un-previewed for as long as the assertion needs.
+            let release!: () => void;
+            const held = new Promise<void>((resolve) => { release = resolve; });
+            await page.route('**/Knowbase/KnowbaseItem/*/SanitizeHtmlBlock', async (route) => {
+                await held;
+                await route.continue();
+            });
+
+            await source.fill('<p>New</p>');
+            // Still enabled here would mean a click saves "Old".
+            await expect(saveBtn).toBeDisabled();
+
+            release();
+            await expect(dialog.getByRole('region', { name: 'Preview' })).toHaveText('New');
+            await saveBtn.click();
+            await expect(kb.htmlBlock).toHaveText('New');
+        });
     });
 
     test.describe('Edit an inserted HTML block', () => {
