@@ -1521,7 +1521,7 @@ final class SQLProvider implements SearchProviderInterface
                             ],
                         ],
                     ];
-                    if ($DB->getField($searchopt[$ID]['joinparams']['beforejoin']['table'], 'alternative_email')) {
+                    if ($DB->getField($opt['joinparams']['beforejoin']['table'], 'alternative_email')) {
                         $subquery_specific_username_anonymous = [
                             'alternative_email' => ['LIKE', self::makeTextSearchValue($val)],
                         ];
