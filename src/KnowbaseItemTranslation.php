@@ -67,11 +67,19 @@ class KnowbaseItemTranslation extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        $input = parent::prepareInputForAdd($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->prepareInput($input);
     }
 
     public function prepareInputForUpdate($input)
     {
+        $input = parent::prepareInputForUpdate($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->prepareInput($input);
     }
 
