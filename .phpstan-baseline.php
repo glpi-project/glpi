@@ -6806,12 +6806,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbTimezones constructor expects DBmysql, DBmysql\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
