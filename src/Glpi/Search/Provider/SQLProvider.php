@@ -4447,6 +4447,7 @@ final class SQLProvider implements SearchProviderInterface
             $HAVING = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
 
             // if criteria (with meta flag) need additional join/from SQL
+            $data['meta_toview'] = [];
             self::constructAdditionalSqlForMetacriteria($data['search']['criteria'], $SELECT, $FROM, $already_link_tables, $data);
         }
 
@@ -5029,7 +5030,6 @@ final class SQLProvider implements SearchProviderInterface
         &$already_link_tables = [],
         &$data = []
     ) {
-        $data['meta_toview'] = [];
         foreach ($criteria as $criterion) {
             // manage sub criteria
             if (isset($criterion['criteria'])) {
@@ -5056,6 +5056,15 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $m_itemtype = $criterion['itemtype'];
+
+            // If a column for this itemtype's field is already loaded, we go directly to the next iteration.
+            if (
+                isset($data["meta_toview"][$m_itemtype])
+                && in_array($criterion['field'], $data["meta_toview"][$m_itemtype])
+            ) {
+                continue;
+            }
+
             $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
