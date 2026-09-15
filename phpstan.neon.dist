@@ -5,6 +5,7 @@ includes:
     - .phpstan-baseline.php
     - .phpstan-baseline.missingType.iterableValue.php
     - .phpstan-baseline.specific.php
+    - .phpstan-baseline.rawSql.php
 
 parameters:
     level: 8
@@ -86,6 +87,14 @@ parameters:
         -
             message: '~/(xhprof_runs\.php|xhprof_lib\.php|downstream\.php|local_define\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
             reportUnmatched: false
+
+services:
+    -
+        class: Glpi\Tools\PHPStan\Rules\ForbidNonLiteralSqlExpressionRule
+        arguments:
+            treatPhpDocTypesAsCertain: %treatPhpDocTypesAsCertain%
+        tags:
+            - phpstan.rules.rule
 
 # Copy and uncomment this content into a "phpstan.neon" file to add your own config values
 #
