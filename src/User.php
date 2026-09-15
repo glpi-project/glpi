@@ -2630,12 +2630,19 @@ class User extends CommonDBTM implements TreeBrowseInterface
                             $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
                             break;
                         case 'locations_id':
+                            // Import the location in the entity assigned to the user by the LDAP
+                            // rules, so an existing location in that entity is reused instead of
+                            // creating a duplicate in the root entity. Fall back to the root entity
+                            // (recursive) when no single entity can be determined.
+                            $location_entity    = $this->getLdapImportLocationEntity();
+                            $location_recursive = $location_entity === 0 ? 1 : 0;
+
                             // use import to build the location tree
                             $this->fields[$k] = Dropdown::import(
                                 'Location',
                                 ['completename' => $val,
-                                    'entities_id'  => 0,
-                                    'is_recursive' => 1,
+                                    'entities_id'  => $location_entity,
+                                    'is_recursive' => $location_recursive,
                                 ]
                             );
                             break;
@@ -6259,6 +6266,37 @@ HTML;
         );
 
         return $ret == $map ? ($res[0][$map][0] ?? '') : $ret;
+    }
+
+    /**
+     * Compute the entity in which an LDAP imported user location must be created.
+     *
+     * The location is created in the entity assigned to the user by the LDAP
+     * rules (`_ldap_rules`), so an existing location in that entity is reused
+     * instead of creating a duplicate in the root entity. When no single entity
+     * can be determined (none assigned, or several different ones), the root
+     * entity (0) is returned.
+     *
+     * @return int
+     */
+    private function getLdapImportLocationEntity(): int
+    {
+        $ldap_entities = [];
+        foreach (
+            array_merge(
+                $this->fields['_ldap_rules']['rules_entities_rights'] ?? [],
+                $this->fields['_ldap_rules']['rules_entities'] ?? []
+            ) as $rule
+        ) {
+            // A single rule may assign several entities at once,
+            // in which case $rule[0] is an array of entity ids.
+            foreach (is_array($rule[0]) ? $rule[0] : [$rule[0]] as $entity_id) {
+                $ldap_entities[] = (int) $entity_id;
+            }
+        }
+        $ldap_entities = array_values(array_unique($ldap_entities));
+
+        return count($ldap_entities) === 1 ? $ldap_entities[0] : 0;
     }
 
     /**

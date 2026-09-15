@@ -2815,6 +2815,66 @@ class UserTest extends DbTestCase
         $this->assertEmpty($user2->fields['_groups'] ?? []);
     }
 
+    public static function ldapImportLocationEntityProvider(): iterable
+    {
+        // No entity assigned by the LDAP rules -> root entity.
+        yield 'no rules' => [
+            'ldap_rules' => [],
+            'expected'   => 0,
+        ];
+
+        // A single entity assigned through the rights rules -> that entity.
+        yield 'single entity (rights)' => [
+            'ldap_rules' => ['rules_entities_rights' => [[5, 4]]],
+            'expected'   => 5,
+        ];
+
+        // A single entity assigned through the entities rules -> that entity.
+        yield 'single entity (entities)' => [
+            'ldap_rules' => ['rules_entities' => [[7]]],
+            'expected'   => 7,
+        ];
+
+        // The same entity assigned by both rule sets -> that entity.
+        yield 'same entity twice' => [
+            'ldap_rules' => [
+                'rules_entities_rights' => [[5, 4]],
+                'rules_entities'        => [[5]],
+            ],
+            'expected'   => 5,
+        ];
+
+        // Several different entities -> ambiguous, fall back to root.
+        yield 'two different entities' => [
+            'ldap_rules' => ['rules_entities_rights' => [[5, 4], [6, 4]]],
+            'expected'   => 0,
+        ];
+
+        // A single rule assigning one entity as an array -> that entity.
+        yield 'entity given as array' => [
+            'ldap_rules' => ['rules_entities_rights' => [[[5], 4]]],
+            'expected'   => 5,
+        ];
+
+        // A single rule assigning several entities at once -> ambiguous, root.
+        yield 'multiple entities in one rule' => [
+            'ldap_rules' => ['rules_entities_rights' => [[[5, 6], 4]]],
+            'expected'   => 0,
+        ];
+    }
+
+    #[DataProvider('ldapImportLocationEntityProvider')]
+    public function testGetLdapImportLocationEntity(array $ldap_rules, int $expected): void
+    {
+        $user = new User();
+        $user->fields['_ldap_rules'] = $ldap_rules;
+
+        $this->assertSame(
+            $expected,
+            $this->callPrivateMethod($user, 'getLdapImportLocationEntity')
+        );
+    }
+
     public function testIsValidUserForEntity(): void
     {
         $this->login();
