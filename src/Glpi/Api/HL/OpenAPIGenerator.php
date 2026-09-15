@@ -715,6 +715,12 @@ EOT;
                 $resolved_schema = $response->getSchema()?->toArray() ?? [];
             }
             $response_media_type = $response->getMediaType();
+            if ($resolved_schema === []) {
+                $response_schemas[$response->getStatusCode()] = [
+                    'description' => $response->getDescription(),
+                ];
+                continue;
+            }
             $response_schema = [
                 'description' => $response->getDescription(),
                 'content' => [
