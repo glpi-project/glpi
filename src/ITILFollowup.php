@@ -334,6 +334,15 @@ class ITILFollowup extends CommonDBChild
 
     private function addToMergedTickets(): void
     {
+        // Ticket merge relationships must only be applied to ticket follow-ups.
+        // Tickets, Problems and Changes share the same id space, so resolving a
+        // Problem or Change follow-up parent id against the ticket merge graph
+        // could copy the follow-up onto an unrelated item that happens to have a
+        // colliding id.
+        if ($this->fields['itemtype'] !== Ticket::class) {
+            return;
+        }
+
         $merged = Ticket::getMergedTickets($this->fields['items_id']);
         foreach ($merged as $ticket_id) {
             $input = $this->input;
