@@ -191,6 +191,46 @@ final class KnowbaseItemController extends AbstractController
     }
 
     #[Route(
+        "/Knowbase/KnowbaseItem/{knowbaseitems_id}/SanitizeHtmlBlock",
+        name: "knowbaseitem_sanitize_html_block",
+        methods: ["POST"],
+        requirements: [
+            'knowbaseitems_id' => '\d+',
+        ]
+    )]
+    public function sanitizeHtmlBlock(Request $request): JsonResponse
+    {
+        $id = $request->attributes->getInt('knowbaseitems_id');
+
+        $kbitem = new KnowbaseItem();
+        if (!$kbitem->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$kbitem->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $html = $data['html'] ?? null;
+
+        if (!is_string($html)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => __('Missing HTML content'),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // `is_html`: the dialog field holds HTML by definition, so skip the plain-text branch that would wrap the source in `<p>` and nl2br it.
+        // Note this differs from updateAnswer(), which passes `is_html: false` and lets isRichTextHtmlContent() decide.
+        // Consequence: malformed markup is dropped with its children by the HTML parser, as in any HTML source editor. The live preview shows the result.
+        return new JsonResponse([
+            'success' => true,
+            'html'    => RichText::getSafeHtml($html, false, true),
+        ]);
+    }
+
+    #[Route(
         "/Knowbase/KnowbaseItem/Search/{itemtype}/{items_id}",
         name: "knowbaseitem_search",
         requirements: [

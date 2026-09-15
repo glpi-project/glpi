@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
@@ -108,6 +109,11 @@ class Auth extends CommonGLPI
      */
     public const API      = 7;
     public const COOKIE   = 8;
+    /** @var int OAuth 2 authentication.
+     * This type of authentication is not actually handled by this class but this constant is here as a placeholder.
+     * {@link self::getAuthType()} will return this if the internal auth_type property is set to {@link self::NOT_YET_AUTHENTIFIED} and the HLAPI router reports a current client.
+     */
+    public const OAUTH    = 9;
     public const NOT_YET_AUTHENTIFIED = 0;
 
     public const USER_DOESNT_EXIST       = 0;
@@ -1186,6 +1192,49 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * @return array<int, string>
+     */
+    public static function getAuthSources(bool $force_all = false): array
+    {
+        global $DB;
+
+        $methods = [
+            self::DB_GLPI  => __('Authentication on GLPI database'),
+            self::EXTERNAL => __('External authentications'),
+        ];
+
+        if (!$force_all) {
+            $result = $DB->request([
+                'FROM' => 'glpi_authldaps',
+                'COUNT' => 'cpt',
+                'WHERE' => [
+                    'is_active' => 1,
+                ],
+            ])->current();
+
+            if ($result['cpt'] > 0) {
+                $methods[self::LDAP] = __('Authentication on a LDAP directory');
+            }
+
+            $result = $DB->request([
+                'FROM' => 'glpi_authmails',
+                'COUNT' => 'cpt',
+                'WHERE' => [
+                    'is_active' => 1,
+                ],
+            ])->current();
+
+            if ($result['cpt'] > 0) {
+                $methods[self::MAIL] = __('Authentication on mail server');
+            }
+        } else {
+            $methods[self::LDAP] = __('Authentication on a LDAP directory');
+            $methods[self::MAIL] = __('Authentication on mail server');
+        }
+        return $methods;
+    }
+
+    /**
      * Print all the authentication methods
      *
      * @param array<string,mixed> $options Possible options:
@@ -1199,8 +1248,6 @@ class Auth extends CommonGLPI
      */
     public static function dropdown($options = [])
     {
-        global $DB;
-
         $p = [
             'name'                => 'auths_id',
             'value'               => 0,
@@ -1215,34 +1262,7 @@ class Auth extends CommonGLPI
             }
         }
 
-        $methods = [
-            self::DB_GLPI  => __('Authentication on GLPI database'),
-            self::EXTERNAL => __('External authentications'),
-        ];
-
-        $result = $DB->request([
-            'FROM'   => 'glpi_authldaps',
-            'COUNT'  => 'cpt',
-            'WHERE'  => [
-                'is_active' => 1,
-            ],
-        ])->current();
-
-        if ($result['cpt'] > 0) {
-            $methods[self::LDAP] = __('Authentication on a LDAP directory');
-        }
-
-        $result = $DB->request([
-            'FROM'   => 'glpi_authmails',
-            'COUNT'  => 'cpt',
-            'WHERE'  => [
-                'is_active' => 1,
-            ],
-        ])->current();
-
-        if ($result['cpt'] > 0) {
-            $methods[self::MAIL] = __('Authentication on mail server');
-        }
+        $methods = self::getAuthSources();
 
         return Dropdown::showFromArray($p['name'], $methods, $p);
     }
@@ -1802,6 +1822,9 @@ class Auth extends CommonGLPI
      */
     public function getAuthType(): int
     {
+        if ($this->auth_type === self::NOT_YET_AUTHENTIFIED && Router::getInstance()->getCurrentClient() !== null) {
+            return self::OAUTH;
+        }
         return $this->auth_type;
     }
 }

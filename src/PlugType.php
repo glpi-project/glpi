@@ -32,40 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase\SidePanel;
-
-use KnowbaseItem;
-use Override;
-
-final class TargetsRenderer implements RendererInterface
+/// Class PlugType
+class PlugType extends CommonType
 {
-    #[Override]
-    public function canView(KnowbaseItem $item): bool
+    public static function getTypeName($nb = 0)
     {
-        return $item->can($item->getID(), READ);
-    }
-
-    #[Override]
-    public function getTemplate(): string
-    {
-        return "pages/tools/kb/modal/targets.html.twig";
-    }
-
-    #[Override]
-    public function getParams(KnowbaseItem $item): array
-    {
-        $can_edit = $item->canEdit($item->getID());
-
-        $params = [
-            'id'          => $item->getID(),
-            'can_edit'    => $can_edit,
-            'permissions' => (new PermissionsRenderer())->getParams($item),
-        ];
-
-        if ($can_edit) {
-            $params['sharing'] = (new SharingRenderer())->getParams($item);
-        }
-
-        return $params;
+        return _n('Plug type', 'Plug types', $nb);
     }
 }

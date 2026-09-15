@@ -34,6 +34,7 @@
  */
 
 use Glpi\Event;
+use Glpi\RichText\RichText;
 
 /**
  * KnowbaseItemTranslation Class
@@ -62,6 +63,42 @@ class KnowbaseItemTranslation extends CommonDBChild
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+        if ($input === false) {
+            return false;
+        }
+        return $this->prepareInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+        if ($input === false) {
+            return false;
+        }
+        return $this->prepareInput($input);
+    }
+
+    /**
+     * Sanitize the translated answer. Done here, not in the controllers, so
+     * every writer is covered: legacy form, `revertTo()` and API alike. The
+     * answer is injected raw in the DOM by `GetTranslationContentController`.
+     *
+     * @param array<string, mixed> $input
+     *
+     * @return array<string, mixed>
+     */
+    private function prepareInput(array $input): array
+    {
+        // `is_string`: the API can post any JSON type, and the sanitizer is typed `?string`.
+        if (isset($input['answer']) && is_string($input['answer'])) {
+            $input['answer'] = RichText::getSafeHtml($input['answer']);
+        }
+        return $input;
     }
 
     /**

@@ -86,7 +86,7 @@ use Session;
 )]
 final class RuleController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         $schemas = [
             'RuleCriteria' => [

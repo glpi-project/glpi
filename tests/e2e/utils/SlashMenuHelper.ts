@@ -44,7 +44,8 @@ export type SlashCommand =
     | 'Table'
     | 'Divider'
     | 'Image'
-    | 'Video';
+    | 'Video'
+    | 'HTML Block';
 
 export class SlashMenuHelper {
     private readonly page: Page;

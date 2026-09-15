@@ -99,7 +99,6 @@ class PendingReasonCron extends CommonDBTM
             'FROM'   => PendingReason_Item::getTable(),
             'WHERE'  => [
                 'pendingreasons_id'  => ['>', 0],
-                'followup_frequency' => ['>', 0],
                 'itemtype'           => $targets,
             ],
         ]);
@@ -108,15 +107,13 @@ class PendingReasonCron extends CommonDBTM
             $pending_item = PendingReason_Item::getById($row['id']);
             $itemtype = $pending_item->fields['itemtype'];
             $item = $itemtype::getById($pending_item->fields['items_id']);
-            if (!$item instanceof $itemtype || !$pending_item instanceof PendingReason_Item) {
+            if (!$item instanceof CommonITILObject || !$pending_item instanceof PendingReason_Item) {
                 trigger_error("Failed to load item", E_USER_WARNING);
                 continue;
             }
 
             if ($item->fields['status'] != CommonITILObject::WAITING) {
-                $pending_item->delete([
-                    'id' => $pending_item->fields['id'],
-                ]);
+                PendingReason_Item::deleteForItem($item);
                 continue;
             }
 
@@ -160,7 +157,7 @@ class PendingReasonCron extends CommonDBTM
                 // Add reminder (new ITILReminder)
                 $reminder = new ITILReminder();
                 $reminder->add([
-                    'itemtype' => $item::getType(),
+                    'itemtype' => $item::class,
                     'items_id' => $item->getID(),
                     'pendingreasons_id' => $pending_reason->getID(),
                     'name' => $pending_reason->fields['name'],
@@ -181,7 +178,7 @@ class PendingReasonCron extends CommonDBTM
                 // Add solution
                 $solution = new ITILSolution();
                 $solution->add([
-                    'itemtype'             => $item::getType(),
+                    'itemtype'             => $item::class,
                     'items_id'             => $item->getID(),
                     'solutiontypes_id'     => $solution_template->fields['solutiontypes_id'],
                     'content'              => $solution_template->getRenderedContent($item),

@@ -100,7 +100,7 @@
 
 .kb-sidepanel {
     background-color: var(--tblr-card-cap-bg);
-    border-left: 1px solid #e1e4e8;
+    border-left: 1px solid var(--tblr-border-color);
     height: calc(100vh - 150px);
 
     // Mirror .kb-article's transition so the pair always sums to the row width;
@@ -201,8 +201,14 @@ body.in_modal .kb-article {
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     font-weight: 400;
+    background-color: var(--tblr-bg-surface-secondary);
+    color: var(--tblr-body-color);
     border: 1px solid var(--tblr-border-color);
     transition: all 0.2s ease;
+
+    a {
+        color: inherit;
+    }
 
     .kb-unlink-item {
         &:hover {
@@ -218,10 +224,6 @@ body.in_modal .kb-article {
 
     &:hover {
         border-color: var(--tblr-secondary);
-
-        a {
-            color: var(--tblr-dark);
-        }
     }
 }
 
@@ -246,23 +248,31 @@ body.in_modal .kb-article {
 // KB revision diff - inline highlights
 .kb-article--diff-mode {
     ins.diffins {
-        background-color: #d4edda;
+        background-color: rgb(var(--tblr-success-rgb), 0.25);
         text-decoration: none;
     }
 
     del.diffdel {
-        background-color: #f8d7da;
+        background-color: rgb(var(--tblr-danger-rgb), 0.25);
         text-decoration: line-through;
     }
 
     ins.diffmod {
-        background-color: #d4edda;
+        background-color: rgb(var(--tblr-success-rgb), 0.25);
         text-decoration: none;
     }
 
     del.diffmod {
-        background-color: #f8d7da;
+        background-color: rgb(var(--tblr-danger-rgb), 0.25);
         text-decoration: line-through;
+    }
+}
+
+[data-glpi-revisions] > .list-group-item {
+    border: none;
+
+    &.active:not(:hover, .kb-revision--selected) {
+        background-color: transparent;
     }
 }
 
@@ -276,8 +286,12 @@ body.in_modal .kb-article {
         background-color 0.15s ease,
         box-shadow 0.15s ease;
 
-    &:hover {
-        background-color: var(--tblr-bg-surface-secondary);
+    &.active {
+        border: none;
+
+        &:not(:hover) {
+            background-color: unset;
+        }
     }
 
     &.kb-revision--selected {
@@ -370,6 +384,7 @@ body.in_modal .kb-article {
         // Overlap the container line so the active/hover underline replaces it
         // instead of stacking just above it.
         margin-bottom: -1px;
+        color: var(--glpi-tabs-fg);
 
         &:hover,
         &:focus {
@@ -633,7 +648,7 @@ body.in_modal .kb-editor-reserved {
         .table-grip-column,
         .table-grip-row {
             &::after {
-                background: var(--tblr-gray-400);
+                background: rgb(var(--tblr-body-color-rgb), 0.4);
             }
 
             &.is-hovered::after {
@@ -679,7 +694,7 @@ body.in_modal .kb-editor-reserved {
             width: 11px;
             height: 11px;
             border-radius: 50%;
-            background: var(--tblr-gray-400);
+            background: rgb(var(--tblr-body-color-rgb), 0.4);
         }
 
         .table-grip.is-hovered::after {
@@ -703,7 +718,7 @@ body.in_modal .kb-editor-reserved {
                 font-family: tabler-icons !important;
                 font-size: 18px;
                 line-height: 1;
-                color: var(--tblr-gray-400);
+                color: rgb(var(--tblr-body-color-rgb), 0.4);
             }
 
             &.is-hovered::after {
@@ -948,7 +963,7 @@ body.in_modal .kb-editor-reserved {
         border: none;
         background: none;
         cursor: pointer;
-        color: var(--tblr-gray-400);
+        color: rgb(var(--tblr-body-color-rgb), 0.4);
 
         &::before {
             content: "\ea68";
@@ -1187,6 +1202,71 @@ body.in_modal .kb-editor-reserved {
     border-top: 1px solid var(--tblr-border-color);
 }
 
+// Editor-only frame and edit button. Scoped to `.is-editing`: the node view stays mounted after Save or Cancel.
+.kb-editor-wrapper:not(.is-editing) .kb-html-block-edit {
+    display: none;
+}
+
+.kb-editor-wrapper.is-editing .kb-html-block {
+    position: relative;
+    border: 1px dashed var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+
+    .kb-html-block-edit {
+        position: absolute;
+        top: 0.375rem;
+        right: 0.375rem;
+        border: 1px solid var(--tblr-border-color);
+        background: var(--tblr-bg-surface);
+        border-radius: var(--tblr-border-radius);
+        padding: 0.25rem 0.4rem;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        color: var(--tblr-secondary);
+
+        &:hover {
+            background: var(--tblr-bg-surface-secondary);
+        }
+    }
+
+    &:hover .kb-html-block-edit,
+    &:focus-within .kb-html-block-edit {
+        opacity: 1;
+    }
+}
+
+// HTML block dialog
+.html-block-dialog {
+    width: 640px;
+}
+
+.html-block-dialog-body {
+    .html-block-source {
+        width: 100%;
+        min-height: 140px;
+        font-family: var(--tblr-font-monospace, monospace);
+        font-size: 0.875rem;
+        resize: vertical;
+    }
+
+    .html-block-preview-label {
+        margin-top: 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--tblr-secondary);
+    }
+
+    .html-block-preview {
+        border: 1px solid var(--tblr-border-color);
+        border-radius: var(--tblr-border-radius);
+        padding: 0.75rem;
+        min-height: 60px;
+    }
+}
+
 // Video embed — responsive 16:9 wrapper around the provider iframe
 .video-embed-wrapper {
     position: relative;
@@ -1269,7 +1349,7 @@ body.in_modal .kb-editor-reserved {
 
 [data-main-page-aside="knowbaseitem"] {
     max-width: 300px;
-    background-color: #fff;
+    background-color: var(--tblr-bg-surface);
 
     .node,
     .article {

@@ -90,6 +90,7 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group;
+use Group_Item;
 use InterfaceType;
 use Item_DeviceBattery;
 use Item_DeviceCamera;
@@ -137,7 +138,7 @@ class ComponentController extends AbstractController
 {
     use CRUDControllerTrait;
 
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         $common_device_properties = [
             'id' => [
@@ -683,9 +684,8 @@ class ComponentController extends AbstractController
                     'puk2' => ['type' => Doc\Schema::TYPE_STRING],
                     'msin' => ['type' => Doc\Schema::TYPE_STRING],
                     'line' => self::getDropdownTypeSchema(class: Line::class, full_schema: 'Line'),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                    'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 ],
             ],
             'SoundCardItem' => [
@@ -762,6 +762,40 @@ EOT,
             ],
         ];
 
+        if (version_compare($api_version, '3.0', '<')) {
+            $schemas['SIMCardItem']['properties']['group'] = self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group');
+        } else {
+            $schemas['SIMCardItem']['properties']['group'] = [
+                'type' => Doc\Schema::TYPE_ARRAY,
+                'items' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-full-schema' => 'Group',
+                    'x-join' => [
+                        'table' => 'glpi_groups', // The table with the desired data
+                        'fkey' => 'groups_id',
+                        'field' => 'id',
+                        'ref-join' => [
+                            'table' => 'glpi_groups_items',
+                            'fkey' => 'id',
+                            'field' => 'items_id',
+                            'condition' => [
+                                'itemtype' => Item_DeviceSimcard::class,
+                                'type' => Group_Item::GROUP_TYPE_NORMAL,
+                            ],
+                        ],
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            'description' => 'ID',
+                        ],
+                        'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    ],
+                ],
+            ];
+        }
+
         // Remove some properties that refer to missing fields in the database, but should be added later
         unset(
             $schemas['GenericDeviceType']['properties']['date_creation'],
@@ -807,7 +841,7 @@ EOT,
     public function index(Request $request): Response
     {
         $supported_types = [];
-        $schemas = self::getRawKnownSchemas();
+        $schemas = self::getRawKnownSchemas($this->getAPIVersion($request));
 
         foreach (self::getComponentTypes() as $device_type) {
             $device_class = $schemas[$device_type]['x-itemtype'];
@@ -1069,5 +1103,64 @@ EOT,
     {
         $item_schema = $this->getKnownSchema('Volume', $this->getAPIVersion($request));
         return ResourceAccessor::deleteBySchema($item_schema, $request->getAttributes(), $request->getParameters());
+    }
+
+    /**
+     * BC in v2 of the API where SoftwareLicense was in the list of assets and endpoints existed for components on it.
+     * Always returns a response with an empty array.
+     * @param Request $request
+     * @return Response
+     */
+    #[Route(path: '/Assets/SoftwareLicense/{id}/Component/{component_type}', methods: ['GET'], requirements: [
+        'component_type' => [self::class, 'getComponentTypes'],
+        'id' => '\d+',
+    ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0', removed: '3.0')]
+    #[Doc\SearchRoute(
+        schema_name: '{component_type}Item',
+        description: 'List or search all components for an asset'
+    )]
+    public function bcGetSoftwareLicenseComponents(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    /**
+     * BC in v2 of the API where SoftwareLicense was in the list of assets and endpoints existed for components on it.
+     * Always returns a response with an empty array.
+     * @param Request $request
+     * @return Response
+     */
+    #[Route(path: '/Assets/SoftwareLicense/{asset_id}/Volume', methods: ['GET'], requirements: [
+        'asset_id' => '\d+',
+    ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0', removed: '3.0')]
+    #[Doc\SearchRoute(
+        schema_name: 'Volume',
+        description: 'List or search all volumes for an asset'
+    )]
+    public function bcSearchSoftwareLicenseVolumes(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    /**
+     * BC in v2 of the API where SoftwareLicense was in the list of assets and endpoints existed for components on it.
+     * Always returns a response with an empty array.
+     * @param Request $request
+     * @return Response
+     */
+    #[Route(path: '/Assets/SoftwareLicense/{asset_id}/Volume/{id}', methods: ['GET'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Volume',
+        description: 'Get a specific volume for an asset'
+    )]
+    public function bcGetSoftwareLicenseVolume(Request $request): Response
+    {
+        return new JSONResponse([]);
     }
 }

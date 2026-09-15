@@ -18,6 +18,8 @@ The present file will list all changes made to the project; according to the
 - A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration. It can be edited like any other article but it cannot be deleted. **On upgrade, articles that have no parent (including the ones created from the former categories) become children of it.**
 - Knowledge base articles can be moved in the aside tree by dragging them: onto an article to become its child, or onto the top or bottom edge of an article to become its sibling. Dragging is mouse-only for now, and reorders nothing: only the parent changes.
 - Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
+- High-Level API version 3.0.0.
+- `=istruthy=` and `=isnottruthy=` RSQL operators.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
@@ -33,6 +35,8 @@ The present file will list all changes made to the project; according to the
 - New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
 - "Logs purge" tab moved from `Setup > General` to `Setup > Data and Privacy` and renamed to "Historical logs".
 - Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents). The root article is an exception: it is readable by anyone who can read the knowledge base, and it never grants access to its descendants.
+- Using `==` and `!=` RSQL operators with boolean fields are coerced to `=istruthy=` and `=isnottruthy=`. There should be no noticeable change in behavior with any existing queries, but this was done to fix behavior with a field added with HLAPI v3.
+- Custom asset schemas renamed `state` to `status` to align with the built-in asset schemas in High-Level API v3. The name remains unchanged in v2.
 
 ### Deprecated
 
@@ -70,6 +74,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_KnowbaseItemCategory` renamed to `KnowbaseItem_KnowbaseItem`; table `glpi_knowbaseitems_knowbaseitemcategories` renamed to `glpi_knowbaseitems_knowbaseitems` with columns `knowbaseitems_id` (child) and `knowbaseitems_id_parent` (parent).
 - The `knowbaseitemcategories_id` column of `ITILCategory` and `TaskCategory` is renamed to `knowbaseitems_id` and now references a knowledge base article.
 - `KnowbaseItem::getForCategory()` renamed to `KnowbaseItem::getChildrenArticles()`; the HL API `/Knowledge base/Category` endpoints and the `KBCategory` schema are removed.
+- `Glpi\Api\HL\Controller\AbstractController::getRawKnownSchemas()` now has an optional `$api_version` parameter to accommodate complex schema differences between API versions.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.

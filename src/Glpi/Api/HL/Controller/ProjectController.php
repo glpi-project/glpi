@@ -78,7 +78,7 @@ use User;
 )]
 final class ProjectController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         return [
             'Project' => [
@@ -198,8 +198,8 @@ final class ProjectController extends AbstractController
                     'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
-                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User') + ['x-version-introduced' => '2.3'],
-                    'group' => self::getDropdownTypeSchema(class: 'Group', full_schema: 'Group') + ['x-version-introduced' => '2.3'],
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User') + ['x-version-introduced' => '2.3'],
+                    'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group') + ['x-version-introduced' => '2.3'],
                     'plan_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
                     'plan_end_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
                     'real_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
@@ -447,7 +447,7 @@ final class ProjectController extends AbstractController
                         'description' => 'If true, the status of the task will be automatically updated based on the percent done and the global configuration for project task states',
                     ],
                     'type' => self::getDropdownTypeSchema(class: ProjectTaskType::class, full_schema: 'ProjectTaskType') + ['x-version-introduced' => '2.3'],
-                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User') + ['x-version-introduced' => '2.3'],
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User') + ['x-version-introduced' => '2.3'],
                     'percent_done' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'x-version-introduced' => '2.3',

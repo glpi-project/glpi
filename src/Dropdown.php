@@ -1299,6 +1299,7 @@ HTML;
                     'LineType' => null,
                     'RackType' => null,
                     'PDUType' => null,
+                    'PlugType' => null,
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null,
@@ -1880,6 +1881,7 @@ HTML;
             'width'                           => $params['width'],
             'container_css_class'             => $params['container_css_class'],
             'specific_tags_items_id_dropdown' => $params['specific_tags_items_id_dropdown'],
+            'display_emptychoice'             => $params['display_emptychoice'],
         ];
 
         // manage condition

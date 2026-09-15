@@ -33,7 +33,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 <form method='POST' enctype='multipart/form-data' action="{{ path('Inventory/ImportFiles') }}">
-    <h2>
+    <h2 id="import-inventory-files">
         {{ __("Import inventory files") }}
     </h2>
     <div class="alert alert-info" role="alert">
@@ -52,6 +52,9 @@
             'no_label': true,
             'multiple': true,
             'required': true,
+            'additional_attributes': {
+                'aria-labelledby': 'import-inventory-files',
+            },
         }
     ) }}
 

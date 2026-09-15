@@ -2960,18 +2960,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: \'1\', version\\: string, description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.4\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
@@ -5164,12 +5152,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'table\' might not exist on array\\{ids\\: non\\-empty\\-list\\<string\\>\\}\\|array\\{table\\: string, itemtype\\: class\\-string\\<CommonDBTM\\>\\|null, ids\\: list\\<string\\>\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$itemtype of method Glpi\\\\Api\\\\HL\\\\Search\\\\RecordSet\\:\\:getHydrationCriteria\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
 ];
@@ -12776,27 +12758,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Lock.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method isField\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTableField\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on string\\|null\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 3,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$haystack of function str_starts_with expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Lock.php',
 ];
 $ignoreErrors[] = [
@@ -13172,6 +13136,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PDU.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Monitor\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -13200,6 +13176,18 @@ $ignoreErrors[] = [
 	'identifier' => 'property.nonObject',
 	'count' => 4,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 4,
+	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
@@ -14534,6 +14522,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/OlaLevel.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Inventory\\\\MainAsset\\\\PDU\\:\\:prepare\\(\\) should return array\\<int, stdClass\\> but returns array\\<int, object\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/PDU.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$agent of method Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:setAgent\\(\\) expects Agent, Agent\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/PDU.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method PDU\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -14582,38 +14582,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PendingReason.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$fields\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method object\\:\\:getID\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method object\\:\\:getType\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on PendingReason_Item\\|false\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itil_item of method AbstractITILChildTemplate\\:\\:getRenderedContent\\(\\) expects CommonITILObject, object given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReasonCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$item of static method NotificationEvent\\:\\:raiseEvent\\(\\) expects CommonGLPI, object given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/PendingReasonCron.php',
 ];

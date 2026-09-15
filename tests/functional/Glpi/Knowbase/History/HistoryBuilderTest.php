@@ -1549,7 +1549,7 @@ final class HistoryBuilderTest extends DbTestCase
             'knowbaseitems_id' => $kb->getID(),
             'language' => 'fr_FR',
             'name' => 'Article de test',
-            'answer' => 'Contenu de test',
+            'answer' => '<p>Contenu de test</p>',
             'users_id' => Session::getLoginUserID(),
         ]);
 
@@ -1558,7 +1558,7 @@ final class HistoryBuilderTest extends DbTestCase
             'knowbaseitems_id' => $kb->getID(),
             'language' => 'de_DE',
             'name' => 'Testartikel',
-            'answer' => 'Testinhalt',
+            'answer' => '<p>Testinhalt</p>',
             'users_id' => Session::getLoginUserID(),
         ]);
 
@@ -1604,17 +1604,17 @@ final class HistoryBuilderTest extends DbTestCase
             'knowbaseitems_id' => $kb->getID(),
             'language' => 'fr_FR',
             'name' => 'Article de test',
-            'answer' => 'Contenu V1',
+            'answer' => '<p>Contenu V1</p>',
         ]);
 
         $this->setCurrentTime("2026-01-15 11:00:00");
         $this->updateItem(KnowbaseItemTranslation::class, $translation->getID(), [
-            'answer' => 'Contenu V2',
+            'answer' => '<p>Contenu V2</p>',
         ]);
 
         $this->setCurrentTime("2026-01-15 12:00:00");
         $this->updateItem(KnowbaseItemTranslation::class, $translation->getID(), [
-            'answer' => 'Contenu V3',
+            'answer' => '<p>Contenu V3</p>',
         ]);
 
         // Act: build history for this KB and get all TranslationRevisionEvent
@@ -1661,24 +1661,24 @@ final class HistoryBuilderTest extends DbTestCase
             'knowbaseitems_id' => $kb->getID(),
             'language' => 'fr_FR',
             'name' => 'French',
-            'answer' => 'FR V1',
+            'answer' => '<p>FR V1</p>',
         ]);
 
         $this->setCurrentTime("2026-01-15 11:00:00");
         $this->updateItem(KnowbaseItemTranslation::class, $fr_translation->getID(), [
-            'answer' => 'FR V2',
+            'answer' => '<p>FR V2</p>',
         ]);
 
         $de_translation = $this->createItem(KnowbaseItemTranslation::class, [
             'knowbaseitems_id' => $kb->getID(),
             'language' => 'de_DE',
             'name' => 'German',
-            'answer' => 'DE V1',
+            'answer' => '<p>DE V1</p>',
         ]);
 
         $this->setCurrentTime("2026-01-15 12:00:00");
         $this->updateItem(KnowbaseItemTranslation::class, $de_translation->getID(), [
-            'answer' => 'DE V2',
+            'answer' => '<p>DE V2</p>',
         ]);
 
         // Act: build history for this KB and get all TranslationRevisionEvent
@@ -1739,11 +1739,11 @@ final class HistoryBuilderTest extends DbTestCase
             'knowbaseitems_id' => $kb->getID(),
             'language'         => 'fr_FR',
             'name'             => 'Article de test',
-            'answer'           => 'Version 1',
+            'answer'           => '<p>Version 1</p>',
         ]);
         $this->setCurrentTime("2026-01-02 11:00:00");
         $this->updateItem(KnowbaseItemTranslation::class, $translation->getID(), [
-            'answer' => 'Version 2',
+            'answer' => '<p>Version 2</p>',
         ]);
 
         $kb->getFromDB($kb->getID());

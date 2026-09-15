@@ -135,68 +135,86 @@ TWIG;
             // get locked field for other lockable object
             foreach ($CFG_GLPI['inventory_lockable_objects'] as $lockable_itemtype) {
                 $lockable_itemtype_table = getTableForItemType($lockable_itemtype);
-                $lockable_object = getItemForItemtype($lockable_itemtype);
-                $query  = [
-                    'SELECT' => $lockedfield_table . ".*",
-                    'FROM'   => $lockedfield_table,
-                    'LEFT JOIN' => [
-                        $lockable_itemtype_table   => [
-                            'FKEY'   => [
-                                $lockedfield_table  => 'items_id',
-                                $lockable_itemtype_table   => 'id',
+                if ($lockable_object = getItemForItemtype($lockable_itemtype)) {
+                    $query  = [
+                        'SELECT' => $lockedfield_table . ".*",
+                        'FROM'   => $lockedfield_table,
+                        'LEFT JOIN' => [
+                            $lockable_itemtype_table   => [
+                                'FKEY'   => [
+                                    $lockedfield_table  => 'items_id',
+                                    $lockable_itemtype_table   => 'id',
+                                ],
                             ],
                         ],
-                    ],
-                    'WHERE'  => [
-                        'OR' => [
-                            [
-                                $lockedfield_table . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield_table . '.items_id'  => new QueryExpression($DB::quoteName($lockable_itemtype_table . '.id')),
-                            ], [
-                                $lockedfield_table . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield_table . '.is_global' => 1,
+                        'WHERE'  => [
+                            'OR' => [
+                                [
+                                    $lockedfield_table . '.itemtype'  => $lockable_itemtype,
+                                    $lockedfield_table . '.items_id'  => new QueryExpression($DB::quoteName($lockable_itemtype_table . '.id')),
+                                ], [
+                                    $lockedfield_table . '.itemtype'  => $lockable_itemtype,
+                                    $lockedfield_table . '.is_global' => 1,
+                                ],
                             ],
                         ],
-                    ],
-                ];
+                    ];
 
-                if ($lockable_object instanceof CommonDBConnexity) {
-                    $connexity_criteria = $lockable_itemtype::getSQLCriteriaToSearchForItem($itemtype, $ID);
-                    if ($connexity_criteria === null) {
+                    if ($lockable_object instanceof CommonDBConnexity) {
+                        $connexity_criteria = $lockable_itemtype::getSQLCriteriaToSearchForItem($itemtype, $ID);
+                        if ($connexity_criteria === null) {
+                            continue;
+                        }
+                        $query['WHERE'][] = $connexity_criteria['WHERE'];
+                        if ($lockable_object->isField('is_deleted')) {
+                            $query['WHERE'][] = [
+                                $lockable_object::getTableField('is_deleted') => 0,
+                            ];
+                        }
+                    } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
+                        //we need to restrict scope with Asset_PeripheralAsset to prevent loading of all lockedfield
+                        $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()]
+                        = [
+                            'FKEY'   => [
+                                Asset_PeripheralAsset::getTable() => 'items_id_peripheral',
+                                $lockable_itemtype::getTable()    => 'id',
+                            ],
+                        ];
+                        $query['WHERE'][] = [
+                            Asset_PeripheralAsset::getTable() . '.' . 'itemtype_asset' => $itemtype,
+                            Asset_PeripheralAsset::getTable() . '.' . 'items_id_asset' => $ID,
+                            Asset_PeripheralAsset::getTable() . '.is_deleted'          => 0,
+                        ];
+                    } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
+                        $query['WHERE'][] = [
+                            $lockable_itemtype::getTable() . '.itemtype'  => $itemtype,
+                            $lockable_itemtype::getTable() . '.items_id'  => $ID,
+                        ];
+                        if ($lockable_object->isField('is_deleted')) {
+                            $query['WHERE'][] = [
+                                $lockable_object::getTableField('is_deleted') => 0,
+                            ];
+                        }
+                    } elseif ($lockable_object->isField('itemtype_asset') && $lockable_object->isField('items_id_asset')) {
+                        // not a directconnect_types but with itemtype_asset / items_id_asset (Plug.php)
+                        $query['WHERE'][] = [
+                            $lockable_itemtype::getTable() . '.itemtype_asset'  => $itemtype,
+                            $lockable_itemtype::getTable() . '.items_id_asset'  => $ID,
+                        ];
+                        if ($lockable_object->isField('is_deleted')) {
+                            $query['WHERE'][] = [
+                                $lockable_object::getTableField('is_deleted') => 0,
+                            ];
+                        }
+                    } else {
+                        // skip other inventory_lockable_objects seen as CommonDBTM without
+                        // - itemtype / items_id
+                        // - itemtype_asset / items_id_asset
+                        // - directconnect_types reference
                         continue;
                     }
-                    $query['WHERE'][] = $connexity_criteria['WHERE'];
-                    if ($lockable_object->isField('is_deleted')) {
-                        $query['WHERE'][] = [
-                            $lockable_object::getTableField('is_deleted') => 0,
-                        ];
-                    }
-                } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
-                    //we need to restrict scope with Asset_PeripheralAsset to prevent loading of all lockedfield
-                    $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()]
-                    = [
-                        'FKEY'   => [
-                            Asset_PeripheralAsset::getTable() => 'items_id_peripheral',
-                            $lockable_itemtype::getTable()    => 'id',
-                        ],
-                    ];
-                    $query['WHERE'][] = [
-                        Asset_PeripheralAsset::getTable() . '.' . 'itemtype_asset' => $itemtype,
-                        Asset_PeripheralAsset::getTable() . '.' . 'items_id_asset' => $ID,
-                        Asset_PeripheralAsset::getTable() . '.is_deleted'          => 0,
-                    ];
-                } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
-                    $query['WHERE'][] = [
-                        $lockable_itemtype::getTable() . '.itemtype'  => $itemtype,
-                        $lockable_itemtype::getTable() . '.items_id'  => $ID,
-                    ];
-                    if ($lockable_object->isField('is_deleted')) {
-                        $query['WHERE'][] = [
-                            $lockable_object::getTableField('is_deleted') => 0,
-                        ];
-                    }
+                    $subquery[] = new QuerySubQuery($query);
                 }
-                $subquery[] = new QuerySubQuery($query);
             }
 
             $union = new QueryUnion($subquery);
@@ -255,12 +273,21 @@ TWIG;
                     // For CommonDBRelation
                     // $itemtype_1 / $items_id_1 and $itemtype_2 / $items_id_2 can be inverted
 
-                    // ex: Item_Software have
-                    // $itemtype_1 = 'itemtype';
-                    // $items_id_1 = 'items_id';
-                    // $itemtype_2 = SoftwareVersion::class;
-                    // $items_id_2 = 'softwareversions_id';
-                    if (str_starts_with($row['itemtype']::$itemtype_1, 'itemtype')) {
+                    if (str_starts_with((string) $row['itemtype']::$itemtype_1, 'itemtype_')) {
+                        // ex: Plug have
+                        // $itemtype_1 = 'itemtype_main';
+                        // $items_id_1 = 'items_id_main';
+                        // $itemtype_2 = 'itemtype_asset';
+                        // $items_id_2 = 'items_id_asset';
+                        $default_itemtype =  $row['itemtype']; //load itemtype directly
+                        $default_items_id =  'id'; // related key storing 'id'
+                        $default_itemtype_label = $default_itemtype::getTypeName();
+                    } elseif (str_starts_with((string) $row['itemtype']::$itemtype_1, 'itemtype')) {
+                        // ex: Item_Software have
+                        // $itemtype_1 = 'itemtype';
+                        // $items_id_1 = 'items_id';
+                        // $itemtype_2 = SoftwareVersion::class;
+                        // $items_id_2 = 'softwareversions_id';
                         $default_itemtype =  $row['itemtype']::$itemtype_2;
                         $default_items_id =  $row['itemtype']::$items_id_2;
                         $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
@@ -398,7 +425,7 @@ TWIG, $twig_params);
                 $relation_item = new Asset_PeripheralAsset();
                 $show_checkbox = $relation_item->can($result['id'], UPDATE) || $relation_item->can($result['id'], PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Glpi\\Asset\\Asset_PeripheralAsset[" . ((int) $result['id']) . "]'>" : '',
+                    'chk' => $show_checkbox ? self::getUnlockCheckbox("Glpi\\Asset\\Asset_PeripheralAsset[" . ((int) $result['id']) . "]") : '',
                     'type' => $peripheral::getTypeName(),
                     'item' => $peripheral->getLink(),
                     'serial' => $peripheral->fields['serial'],
@@ -442,11 +469,52 @@ TWIG, $twig_params);
                 $item_disk->getFromResultSet($line);
                 $show_checkbox = $item_disk->can($line['id'], UPDATE) || $item_disk->can($item_disk->getID(), PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Item_Disk[{$item_disk->getID()}]'>" : '',
+                    'chk' => $show_checkbox ? self::getUnlockCheckbox("Item_Disk[{$item_disk->getID()}]") : '',
                     'item' => $item_disk->getLink(),
                     'partition' => $item_disk->fields['device'],
                     'mountpoint' => $item_disk->fields['mountpoint'],
                     'is_dynamic' => Dropdown::getYesNo($item_disk->fields['is_dynamic']),
+                ];
+            }
+            $subtables[] = $subtable;
+        }
+
+        if (in_array($itemtype, $CFG_GLPI['plug_types'], true)) {
+            //plugs
+            $plug = new Plug();
+            $plugs = $DB->request([
+                'FROM'  => $plug::getTable(),
+                'WHERE' => [
+                    'is_dynamic'        => 1,
+                    'is_deleted'        => 1,
+                    'items_id_main'     => $ID,
+                    'itemtype_main'     => $itemtype,
+                ],
+            ]);
+            $subtable = [
+                'nosort'    => true,
+                'nofilter'  => true,
+                'columns'   => [
+                    'chk'   => '',
+                    'item'  => $plug::getTypeName(1),
+                    'type'  => _n('Plug type', 'Plug types', 0),
+                    'is_dynamic' => __('Automatic inventory'),
+                ],
+                'formatters' => [
+                    'chk' => 'raw_html',
+                    'item' => 'raw_html',
+                ],
+                'entries' => [],
+            ];
+
+            foreach ($plugs as $line) {
+                $plug->getFromResultSet($line);
+                $show_checkbox = $plug->can($line['id'], UPDATE) || $plug->can($plug->getID(), PURGE);
+                $subtable['entries'][] = [
+                    'chk'           => $show_checkbox ? self::getUnlockCheckbox("Plug[{$plug->getID()}]") : '',
+                    'item'          => $plug->getLink(),
+                    'type'          =>  Dropdown::getDropdownName(PlugType::getTable(), $plug->fields['plugtypes_id']),
+                    'is_dynamic'    => Dropdown::getYesNo($plug->fields['is_dynamic']),
                 ];
             }
             $subtables[] = $subtable;
@@ -484,7 +552,7 @@ TWIG, $twig_params);
                 $remote_management->getFromResultSet($line);
                 $show_checkbox = $remote_management->can($line['id'], UPDATE) || $remote_management->can($remote_management->getID(), PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Item_RemoteManagement[{$remote_management->getID()}]'>" : '',
+                    'chk' => $show_checkbox ? self::getUnlockCheckbox("Item_RemoteManagement[{$remote_management->getID()}]") : '',
                     'item' => $remote_management->getLink(),
                     'type' => $remote_management->fields['type'],
                     'is_dynamic' => Dropdown::getYesNo($remote_management->fields['is_dynamic']),
@@ -547,7 +615,7 @@ TWIG, $twig_params);
                 }
             }
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='ItemVirtualMachine[{$item_vm->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("ItemVirtualMachine[{$item_vm->getID()}]") : '',
                 'type' => $item_vm::getTypeName(),
                 'uuid' => $item_vm->fields['uuid'],
                 'machine' => $url,
@@ -607,7 +675,7 @@ TWIG, $twig_params);
             $item_sv->getFromDB($data['id']);
             $show_checkbox = $item_sv->can($data['id'], UPDATE) || $item_sv->can($data['id'], PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='Item_SoftwareVersion[{$item_sv->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("Item_SoftwareVersion[{$item_sv->getID()}]") : '',
                 'software' => $data['software'],
                 'version' => $data['version'],
                 'date_install' => $item_sv->fields['date_install'],
@@ -681,7 +749,7 @@ TWIG, $twig_params);
             }
 
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='Item_SoftwareLicense[{$item_sl->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("Item_SoftwareLicense[{$item_sl->getID()}]") : '',
                 'license' => $slicence->fields['name'],
                 'software' => $software_name,
                 'version' => $version_name,
@@ -719,7 +787,7 @@ TWIG, $twig_params);
             $networkport->getFromResultSet($line);
             $show_checkbox = $networkport->can($networkport->getID(), UPDATE) || $networkport->can($networkport->getID(), PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='NetworkPort[{$networkport->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("NetworkPort[{$networkport->getID()}]") : '',
                 'item' => $networkport->getLink(),
                 'port_type' => $networkport->fields['instantiation_type'],
                 'mac' => $networkport->fields['mac'],
@@ -776,7 +844,7 @@ TWIG, $twig_params);
             }
 
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='NetworkName[{$networkname->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("NetworkName[{$networkname->getID()}]") : '',
                 'item' => $networkname->getLink(),
                 'fqdn' => $fqdn_name,
                 'placeholder' => '',
@@ -836,7 +904,7 @@ TWIG, $twig_params);
             $ipaddress->getFromResultSet($line);
             $show_checkbox = $ipaddress->can($ipaddress->getID(), UPDATE) || $ipaddress->can($ipaddress->getID(), PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='IPAddress[{$ipaddress->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("IPAddress[{$ipaddress->getID()}]") : '',
                 'item' => $ipaddress->fields['name'],
                 'version' => $ipaddress->fields['version'],
                 'placeholder' => '',
@@ -911,7 +979,7 @@ TWIG, $twig_params);
                     $object_link = "<a href='" . htmlescape($object_item_type->getLinkURL()) . "'>{$object_name}</a>";
 
                     $subtable['entries'][] = [
-                        'chk' => $show_checkbox ? "<input type='checkbox' name='" . htmlescape("{$type}[{$data['id']}") . "]'>" : '',
+                        'chk' => $show_checkbox ? self::getUnlockCheckbox("{$type}[{$data['id']}]") : '',
                         'item' => $object_link,
                         'placeholder_1' => '',
                         'placeholder_2' => '',
@@ -956,7 +1024,7 @@ TWIG, $twig_params);
 
             $show_checkbox = $database_instance->can($database_instance->getID(), UPDATE) || $database_instance->can($database_instance->getID(), PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='DatabaseInstance[{$database_instance->getID()}]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("DatabaseInstance[{$database_instance->getID()}]") : '',
                 'item' => $database_instance->getLink(),
                 'name' => $database_instance->getName(),
                 'version' => $database_instance->fields['version'],
@@ -1008,7 +1076,7 @@ TWIG, $twig_params);
 
             $show_checkbox = $domain_item->can($row['id'], UPDATE) || $domain_item->can($row['id'], PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='Domain_Item[" . ((int) $row['id']) . "]'>" : '',
+                'chk' => $show_checkbox ? self::getUnlockCheckbox("Domain_Item[" . ((int) $row['id']) . "]") : '',
                 'item' => $link,
                 'relation' => $relation_name,
                 'placeholder_1' => '',
@@ -1066,9 +1134,11 @@ TWIG, $twig_params);
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div>
                     <i class='ti ti-corner-left-up mx-3' aria-hidden='true'></i>
-                    <a onclick="if ( markCheckboxes('lock_form') ) return false;" href='#'>{{ check_all_msg }}</a>
+                    <button type="button" class="btn btn-link p-0 align-baseline"
+                            onclick="markCheckboxes('lock_form');">{{ check_all_msg }}</button>
                     <span>/</span>
-                    <a onclick="if ( unMarkCheckboxes('lock_form') ) return false;" href='#'>{{ uncheck_all_msg }}</a>
+                    <button type="button" class="btn btn-link p-0 align-baseline"
+                            onclick="unMarkCheckboxes('lock_form');">{{ uncheck_all_msg }}</button>
                     <button type="submit" name="unlock" class="btn btn-primary">{{ unlock_msg }}</button>
                     <button type="submit" name="purge" class="btn btn-danger">{{ purge_msg }}</button>
                 </div>
@@ -1102,6 +1172,23 @@ TWIG, $twig_params);
             self::showForItem($item);
         }
         return true;
+    }
+
+    /**
+     * Build the "select this row" checkbox - which are rendered as raw HTML
+     * into `components/datatable.html.twig` of the locks table.
+     *
+     * @param string $name Input name, e.g. `Item_Disk[42]`
+     *
+     * @return string
+     */
+    private static function getUnlockCheckbox(string $name): string
+    {
+        return sprintf(
+            '<input type="checkbox" name="%s" aria-label="%s">',
+            htmlescape($name),
+            __s('Select item')
+        );
     }
 
     /**

@@ -47,6 +47,8 @@ class QueryExpression
     /** @var array<int, mixed> */
     private array $params = [];
 
+    private bool $with_alias = true;
+
 
     /**
      * Create a query expression
@@ -82,7 +84,7 @@ class QueryExpression
     {
         global $DB;
         $sql = $this->expression;
-        if (!empty($this->alias)) {
+        if ($this->with_alias && !empty($this->alias)) {
             $sql .= ' AS ' . $DB::quoteName($this->alias);
         }
         return $sql;
@@ -107,6 +109,12 @@ class QueryExpression
     public function setParams(array $params): static
     {
         $this->params = $params;
+        return $this;
+    }
+
+    public function withAlias(bool $with = true): static
+    {
+        $this->with_alias = $with;
         return $this;
     }
 }

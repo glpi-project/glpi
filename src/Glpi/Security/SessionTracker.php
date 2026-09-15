@@ -47,6 +47,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\OAuth\Server;
 use Glpi\Toolbox\IPUtilities;
+use JsonException;
 use Log;
 use RuntimeException;
 use Safe\Exceptions\NetworkException;
@@ -59,10 +60,11 @@ use function Safe\json_decode;
 use function Safe\parse_url;
 use function Safe\session_id;
 use function Safe\session_save_path;
+use function Safe\strtotime;
 use function Safe\unlink;
 
 /**
- * @phpstan-type SessionFilterCriteria array{user?: string, status?: 'all'|'active', type?: 'all'|'web'|'api', ip?: string}
+ * @phpstan-type SessionFilterCriteria array{user?: string, status?: 'all'|'active', type?: 'all'|'web'|'api', authtype?: 'all'|integer, ip?: string, date?: list{string, string}}
  */
 final class SessionTracker
 {
@@ -356,6 +358,10 @@ final class SessionTracker
             $where['glpi_users_sessionhistories.auth_type'] = Auth::API;
         }
 
+        if (isset($filters['authtype']) && $filters['authtype'] !== 'all') {
+            $where['glpi_users_sessionhistories.auth_type'] = $filters['authtype'];
+        }
+
         if (isset($filters['user']) && $filters['user'] !== '') {
             $joins['glpi_users'] = [
                 'ON' => [
@@ -393,10 +399,34 @@ final class SessionTracker
         }
 
         if (isset($filters['ip']) && $filters['ip'] !== '') {
-            $having[] = $this->getIPAddressHavingCriteria($filters['ip']);
+            $ip_having = $this->getIPAddressHavingCriteria($filters['ip']);
+            if ($ip_having !== []) {
+                $having[] = $ip_having;
+            }
         }
 
-        return [
+        if (!empty($filters['date'] ?? [])) {
+            [$start_date, $end_date] = $filters['date'];
+            // restrict results to ones where the logged_in_at, last_activity_at or logged_out_at is between these two dates.
+            $where[] = [
+                'OR' => [
+                    [
+                        ['glpi_users_sessionhistories.logged_in_at' => ['>=', $start_date]],
+                        ['glpi_users_sessionhistories.logged_in_at' => ['<=', $end_date]],
+                    ],
+                    [
+                        ['glpi_users_sessionhistories.logged_out_at' => ['>=', $start_date]],
+                        ['glpi_users_sessionhistories.logged_out_at' => ['<=', $end_date]],
+                    ],
+                    [
+                        ['glpi_users_sessions.last_activity_at' => ['>=', $start_date]],
+                        ['glpi_users_sessions.last_activity_at' => ['<=', $end_date]],
+                    ],
+                ],
+            ];
+        }
+
+        $criteria = [
             'SELECT' => [
                 new QueryExpression($DB::quoteValue('web'), '_type'),
                 'glpi_users_sessionhistories.id',
@@ -404,7 +434,7 @@ final class SessionTracker
                 'glpi_users_sessionhistories.login_session_uid',
                 QueryFunction::ifnull('glpi_users_sessions.ip_address', 'glpi_users_sessionhistories.ip_address', 'ip_address'),
                 QueryFunction::ifnull('glpi_users_sessions.user_agent', 'glpi_users_sessionhistories.user_agent', 'user_agent'),
-                'glpi_users_sessions.auth_type',
+                'glpi_users_sessionhistories.auth_type',
                 QueryFunction::ifnull('glpi_users_sessions.created_at', 'glpi_users_sessionhistories.logged_in_at', 'logged_in_at'),
                 'glpi_users_sessions.last_activity_at',
                 'glpi_users_sessionhistories.logged_out_at',
@@ -418,8 +448,11 @@ final class SessionTracker
             'FROM' => 'glpi_users_sessionhistories',
             "LEFT JOIN" => $joins,
             'WHERE' => $where,
-            'HAVING' => $having,
         ];
+        if ($having !== []) {
+            $criteria['HAVING'] = $having;
+        }
+        return $criteria;
     }
 
     /**
@@ -477,6 +510,9 @@ final class SessionTracker
         if (!in_array($filters['type'] ?? 'all', ['all', 'api'], true)) {
             $criteria['WHERE'][] = new QueryExpression('false');
         }
+        if (($filters['authtype'] ?? 'all') !== 'all') {
+            $criteria['WHERE'][] = new QueryExpression('false');
+        }
 
         if ($users_id > 0) {
             $criteria['WHERE']['user_identifier'] = $users_id;
@@ -518,7 +554,31 @@ final class SessionTracker
         }
 
         if (isset($filters['ip']) && $filters['ip'] !== '') {
-            $criteria['HAVING'][] = $this->getIPAddressHavingCriteria($filters['ip']);
+            $ip_having = $this->getIPAddressHavingCriteria($filters['ip']);
+            if ($ip_having !== []) {
+                $criteria['HAVING'][] = $ip_having;
+            }
+        }
+
+        if (!empty($filters['date'] ?? [])) {
+            [$start_date, $end_date] = $filters['date'];
+            // restrict results to ones where the logged_in_at or date_expiration is between these two dates.
+            $criteria['HAVING'][] = [
+                'OR' => [
+                    [
+                        ['logged_in_at' => ['>=', $start_date]],
+                        ['logged_in_at' =>  ['<=', $end_date]],
+                    ],
+                    [
+                        ['date_expiration' => ['>=', $start_date]],
+                        ['date_expiration' => ['<=', $end_date]],
+                    ],
+                ],
+            ];
+        }
+
+        if ($criteria['HAVING'] === []) {
+            unset($criteria['HAVING']);
         }
 
         return $criteria;
@@ -692,9 +752,22 @@ final class SessionTracker
             'user' => $_GET['user'] ?? '',
             'status' => $_GET['status'] ?? 'active',
             'type' => $_GET['type'] ?? 'all',
+            'authtype' => $_GET['authtype'] ?? 'all',
             'ip' => $_GET['ip'] ?? '',
+            'date' => $_GET['date'] ?? '',
         ];
         $start = (int) ($_GET['start'] ?? 0);
+        try {
+            $filters['date'] = json_decode($filters['date'], true);
+            if (!empty($filters['date']) && (count($filters['date']) === 1 || $filters['date'][0] === $filters['date'][1])) {
+                // Same date selected. cover the full days as may be expected
+                $new_start_date = date('Y-m-d 00:00:00', strtotime($filters['date'][0]));
+                $new_end_date = date('Y-m-d 23:59:59', strtotime($filters['date'][0]));
+                $filters['date'] = [$new_start_date, $new_end_date];
+            }
+        } catch (JsonException) {
+            $filters['date'] = '';
+        }
 
         if ($users_id !== Session::getLoginUserID() && !Session::haveRight(\Config::$rightname, UPDATE)) {
             throw new AccessDeniedHttpException();

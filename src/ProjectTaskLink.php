@@ -50,18 +50,22 @@ class ProjectTaskLink extends CommonDBRelation
     public static ?string $items_id_2 = 'projecttasks_id_target';
 
     /**
-     * @param string $projecttaskIds Comma-separated list of project task IDs
+     * @param int[] $projecttaskIds List of project task IDs
      * @return DBmysqlIterator
      * @used-by gantt plugin
      */
-    public function getFromDBForItemIDs($projecttaskIds)
+    public function getFromDBForItemIDs(array $projecttaskIds)
     {
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => ['glpi_projecttasklinks.*'],
-            'FROM' => 'glpi_projecttasklinks',
-            'WHERE' => "projecttasks_id_source IN (" . $projecttaskIds . ") AND projecttasks_id_target IN (" . $projecttaskIds . ")",
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'AND' => [
+                    'projecttasks_id_source' => $projecttaskIds,
+                    'projecttasks_id_target' => $projecttaskIds,
+                ],
+            ],
         ]);
 
         return $iterator;

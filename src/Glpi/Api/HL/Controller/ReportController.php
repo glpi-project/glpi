@@ -57,7 +57,7 @@ use function Safe\strtotime;
 
 class ReportController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         return [
             'StatReport' => [

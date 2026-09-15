@@ -74,7 +74,7 @@ use WebhookCategory;
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
 {
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         global $DB;
 
@@ -921,7 +921,7 @@ EOT,
 EOT,
                         'readOnly' => true,
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['readOnly' => true],
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User') + ['readOnly' => true],
                 ],
             ],
             'OAuthClient' => [

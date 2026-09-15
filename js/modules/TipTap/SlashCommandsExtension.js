@@ -33,6 +33,7 @@
 /* global TiptapCore, TiptapSuggestion, FloatingUI */
 
 import { showVideoDialog } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { showHtmlBlockDialog } from '/js/modules/TipTap/HtmlBlockDialog.js';
 
 /**
  * Slash commands extension for Tiptap editor
@@ -297,6 +298,26 @@ const SLASH_COMMANDS = [
             showVideoDialog(editor);
         },
     },
+    {
+        title: __('HTML Block'),
+        icon: 'ti ti-code-dots',
+        // The sanitize endpoint needs a saved article id.
+        requiresSavedItem: true,
+        command: (editor, range, itemId) => {
+            editor.chain().focus().deleteRange(range).run();
+            showHtmlBlockDialog({
+                itemId,
+                initialHtml: '',
+                onSave: (sanitizedHtml) => {
+                    editor.chain().focus().insertContent({
+                        type: 'kbHtmlBlock',
+                        attrs: { html: sanitizedHtml },
+                    }).run();
+                },
+                onClose: () => editor.chain().focus().run(),
+            });
+        },
+    },
 ];
 
 /**
@@ -349,6 +370,7 @@ const SlashCommands = Extension.create({
 
     addOptions() {
         return {
+            itemId: null,
             suggestion: {
                 char: '/',
                 allowSpaces: false,
@@ -362,12 +384,6 @@ const SlashCommands = Extension.create({
                         }
                     }
                     return true;
-                },
-                items: ({ query }) => {
-                    const lowerQuery = query.toLowerCase();
-                    return SLASH_COMMANDS.filter((item) =>
-                        item.title.toLowerCase().includes(lowerQuery)
-                    );
                 },
                 render: () => {
                     const { computePosition, autoUpdate, offset, flip, shift } = FloatingUI;
@@ -532,19 +548,28 @@ const SlashCommands = Extension.create({
                         },
                     };
                 },
-                command: ({ editor, range, props }) => {
-                    // Execute the command with range - deletion happens in the same chain
-                    props.command(editor, range);
-                },
             },
         };
     },
 
     addProseMirrorPlugins() {
+        // `this.options` is undefined inside `addOptions()`, hence read here.
+        const { itemId } = this.options;
+
         return [
             TiptapSuggestion({
                 editor: this.editor,
                 ...this.options.suggestion,
+                items: ({ query }) => {
+                    const lowerQuery = query.toLowerCase();
+                    return SLASH_COMMANDS
+                        .filter((item) => !item.requiresSavedItem || itemId > 0)
+                        .filter((item) => item.title.toLowerCase().includes(lowerQuery));
+                },
+                command: ({ editor, range, props }) => {
+                    // Execute the command with range - deletion happens in the same chain
+                    props.command(editor, range, itemId);
+                },
             }),
         ];
     },

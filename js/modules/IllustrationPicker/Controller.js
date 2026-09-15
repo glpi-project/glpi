@@ -430,9 +430,10 @@ export class GlpiIllustrationPickerController
     {
         const url = `${CFG_GLPI.root_doc}/UI/Illustration/Search`;
         const url_params = new URLSearchParams({
-            filter   : filter,
-            page     : page,
-            page_size: this.#getPageSizeValue(),
+            filter     : filter,
+            page       : page,
+            page_size  : this.#getPageSizeValue(),
+            allow_empty: this.#getAllowEmptyValueUrlParameter(),
         });
         const response = await fetch(`${url}?${url_params}`);
 
@@ -484,6 +485,16 @@ export class GlpiIllustrationPickerController
     {
         return this.#container.querySelector('[data-glpi-icon-picker-page-size]')
             .dataset['glpiIconPickerPageSize']
+        ;
+    }
+
+    /**
+     * @return {string} '1' or '0' (not a boolean because it is only used as an url parameter)
+     */
+    #getAllowEmptyValueUrlParameter()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-allow-empty]')
+            ?.dataset['glpiIconPickerAllowEmpty'] ?? '0'
         ;
     }
 

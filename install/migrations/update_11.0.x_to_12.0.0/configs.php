@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,30 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-export class GlpiKnowbaseTargetsModalController
-{
-    constructor()
-    {
-        this.#init();
-    }
-
-    #init()
-    {
-        const navWrapper = document.querySelector('[data-glpi-targets-nav]');
-        const navList = navWrapper.querySelector('ul');
-        const modalBody = navWrapper.closest('.modal-body');
-
-        if (modalBody) {
-            const modalContent = modalBody.closest('.modal-content');
-            const modalDialog = modalContent.closest('.modal-dialog');
-            const modalHeader = modalContent.querySelector('.modal-header');
-            const closeBtn = modalHeader.querySelector('.btn-close');
-
-            modalDialog.classList.add('modal-dialog-centered');
-            modalHeader.className = 'modal-header border-0 pb-0 pt-3';
-            modalHeader.replaceChildren(navList, closeBtn);
-            modalBody.classList.add('p-4');
-            navWrapper.remove();
-        }
-    }
-}
+/**
+ * @var Migration $migration
+ */
+$migration->addConfig(
+    [
+        'import_pdu' => 1,
+    ],
+    'inventory'
+);

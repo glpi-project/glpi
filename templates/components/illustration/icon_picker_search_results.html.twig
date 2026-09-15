@@ -30,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set allow_empty = allow_empty ?? false %}
 {% set total_pages = (countIcons(filter) / page_size)|round(0, 'ceil') %}
 {% set icon_ids = searchIcons(filter, page, page_size) %}
 
@@ -38,10 +39,13 @@
     {# Keep track of our page size as we will need to request the same size
     when querying the server for others pages #}
     data-glpi-icon-picker-page-size="{{ page_size }}"
+    {# Same for the "No illustration" tile, which must not reappear on the
+    pages fetched by AJAX when the picker does not allow an empty value. #}
+    data-glpi-icon-picker-allow-empty="{{ allow_empty ? 1 : 0 }}"
 >
     {% if icon_ids|length %}
         <div class="row g-3 mb-4 align-items-start" role="group" aria-label="{{ __('Illustrations') }}">
-            {% if page == 1 and filter is empty %}
+            {% if allow_empty and page == 1 and filter is empty %}
                 {# Tile to clear the selection — only shown on the first page with no filter. #}
                 <button
                     type="button"

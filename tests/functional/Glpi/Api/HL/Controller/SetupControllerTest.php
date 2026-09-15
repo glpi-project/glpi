@@ -449,28 +449,6 @@ class SetupControllerTest extends HLAPITestCase
         });
     }
 
-    public function testConfigNotIn2_0()
-    {
-        $this->login();
-
-        $v2_api = $this->api->withVersion('2.0.0');
-        $v2_api->call(new Request('GET', '/Setup/Config/core/test'), function ($call) {
-            $call->response->isNotFoundError();
-        });
-        $v2_api->call(new Request('PATCH', '/Setup/Config/core/test'), function ($call) {
-            $call->response->isNotFoundError();
-        });
-        $v2_api->call(new Request('DELETE', '/Setup/Config/core/test'), function ($call) {
-            $call->response->isNotFoundError();
-        });
-
-        $this->graphql->withVersion('2.0.0')->call('query { Config(filter: "context==core;name==test") { context, name, value } }', function ($call) {
-            $call->response
-                ->isCompletelyError()
-                ->hasErrorWithMessage('Cannot query field "Config" on type "Query".');
-        });
-    }
-
     private function createQueuedWebhook()
     {
         $webhook = $this->createItem('Webhook', [

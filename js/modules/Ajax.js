@@ -40,10 +40,12 @@
  *   in the request body, or null if no data.
  *   Plain objects are serialized as JSON. FormData and URLSearchParams are sent
  *   as-is (form data).
+ * @param {boolean} toast_error - Show the global error toast on failure. Pass
+ *   `false` when the caller reports the failure itself, e.g. inline in a dialog.
  * @returns {Promise<Response>} The fetch Response object.
  * @throws {Error} If the request fails or returns a non-ok status.
  */
-export async function post(url, values = null)
+export async function post(url, values = null, toast_error = true)
 {
     try {
         const is_plain_object = values !== null
@@ -75,7 +77,9 @@ export async function post(url, values = null)
 
         return response;
     } catch (e) {
-        glpi_toast_error(__("An unexpected error occurred."));
+        if (toast_error) {
+            glpi_toast_error(__("An unexpected error occurred."));
+        }
         throw e;
     }
 }

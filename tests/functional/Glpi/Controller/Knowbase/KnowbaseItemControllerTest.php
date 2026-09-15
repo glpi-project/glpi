@@ -35,11 +35,15 @@
 namespace tests\units\Glpi\Controller\Knowbase;
 
 use Glpi\Controller\Knowbase\KnowbaseItemController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class KnowbaseItemControllerTest extends DbTestCase
 {
@@ -75,6 +79,19 @@ class KnowbaseItemControllerTest extends DbTestCase
         $request->attributes->set('knowbaseitems_id', $id);
 
         return (new KnowbaseItemController())->updateAnswer($request);
+    }
+
+    private function sanitizeHtmlBlock(int $id, array $body): JsonResponse
+    {
+        $request = Request::create(
+            '/Knowbase/KnowbaseItem/' . $id . '/SanitizeHtmlBlock',
+            'POST',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode($body),
+        );
+        $request->attributes->set('knowbaseitems_id', $id);
+
+        return (new KnowbaseItemController())->sanitizeHtmlBlock($request);
     }
 
     public function testOrphanedAnchorsAreDroppedOnSave(): void
@@ -165,5 +182,78 @@ class KnowbaseItemControllerTest extends DbTestCase
         $comment = new KnowbaseItem_Comment();
         $comment->getFromDB($comment_id);
         $this->assertTrue($comment->hasAnchor());
+    }
+
+    public function testSanitizeHtmlBlockStripsDisallowedContent(): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        $response = $this->sanitizeHtmlBlock($id, [
+            'html' => '<p onclick="alert(1)">Hi</p><script>alert(1)</script>',
+        ]);
+
+        $payload = json_decode($response->getContent(), true);
+        $this->assertTrue($payload['success']);
+        $this->assertStringContainsString('<p>Hi</p>', $payload['html']);
+        $this->assertStringNotContainsString('<script', $payload['html']);
+        $this->assertStringNotContainsString('onclick', $payload['html']);
+    }
+
+    public function testSanitizeHtmlBlockDeniedWithoutUpdateRight(): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        // Drop the knowbase UPDATE right, keeping READ so the article loads.
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->sanitizeHtmlBlock($id, ['html' => '<p>Hi</p>']);
+    }
+
+    /**
+     * The dialog field holds HTML by definition. Without `is_html`, isRichTextHtmlContent()
+     * only knows a few common tags and would escape the rest into a `<p>` block.
+     */
+    public function testSanitizeHtmlBlockKeepsTagsIsRichTextHtmlContentDoesNotKnow(): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        $response = $this->sanitizeHtmlBlock($id, ['html' => '<figure><figcaption>Caption</figcaption></figure>']);
+        $html = json_decode($response->getContent(), true)['html'];
+
+        $this->assertStringContainsString('<figure>', $html);
+        $this->assertStringNotContainsString('&lt;figure&gt;', $html);
+    }
+
+    public static function invalidHtmlBodyProvider(): iterable
+    {
+        yield 'missing' => [[]];
+        yield 'null' => [['html' => null]];
+        yield 'array' => [['html' => ['<p>Hi</p>']]];
+        yield 'int' => [['html' => 5]];
+    }
+
+    #[DataProvider('invalidHtmlBodyProvider')]
+    public function testSanitizeHtmlBlockRejectsInvalidHtml(array $body): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        $response = $this->sanitizeHtmlBlock($id, $body);
+
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $this->assertFalse(json_decode($response->getContent(), true)['success']);
+    }
+
+    public function testSanitizeHtmlBlockRejectsUnknownArticle(): void
+    {
+        $this->login();
+
+        $this->expectException(NotFoundHttpException::class);
+        $this->sanitizeHtmlBlock(999999, ['html' => '<p>Hi</p>']);
     }
 }
