@@ -44,7 +44,7 @@ global $CFG_GLPI;
 $CFG_GLPI = [];
 
 // set the default app_name
-$CFG_GLPI['app_name'] = 'GLPI';
+$CFG_GLPI['app_name'] = 'Afyadesk';
 
 // Languages dictionnary:
 // 0 => regionalized lang code

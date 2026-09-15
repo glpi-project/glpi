@@ -5978,18 +5978,19 @@ JS);
      * @param bool $withVersion include GLPI version ?
      * @return string HTML copyright
      */
-    public static function getCopyrightMessage($withVersion = true)
-    {
-        $message = "<a href=\"https://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
-        $message .= "GLPI ";
-        // if required, add GLPI version (eg not for login page)
-        if ($withVersion) {
-            $message .= htmlescape(GLPI_VERSION) . " ";
-        }
-        $message .= "Copyright (C) 2015-" . htmlescape(GLPI_YEAR) . " Teclib' and contributors"
-         . "</a>";
-        return $message;
+public static function getCopyrightMessage($withVersion = true)
+{
+    global $CFG_GLPI;
+    $message = "<a href=\"https://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
+    $message .= $CFG_GLPI['app_name'] . " ";
+    // if required, add GLPI version (eg not for login page)
+    if ($withVersion) {
+        $message .= htmlescape(GLPI_VERSION) . " ";
     }
+    $message .= "Copyright (C) 2015-" . htmlescape(GLPI_YEAR) . " Living Goods"
+     . "</a>";
+    return $message;
+}
 
     /**
      * A a required javascript lib

@@ -71,7 +71,7 @@
       <a class="visually-hidden-focusable skip-link" href="#page">{{ __('Go to main content') }}</a>
    </div>
    <main id="page" class="page-anonymous" role="main" tabindex="-1">
-      <div class="flex-fill d-flex flex-column justify-content-center py-4 mt-4">
+      <div class="flex-fill d-flex flex-column justify-content-center py-2">
          {% set style = null %}
          {% if card_md_width is defined %}
             {% set style = 'max-width: 40rem' %}
@@ -80,10 +80,10 @@
             {% set style = 'max-width: 60rem' %}
          {% endif %}
 
-         <div class="container-tight py-6" {% if style is not null %}style="{{ style }}"{% endif %}>
+         <div class="container-tight py-3" {% if style is not null %}style="{{ style }}"{% endif %}>
             <div class="text-center">
                <div class="col-md">
-                  <span class="glpi-logo mb-4" title="GLPI"></span>
+                  <span class="glpi-logo mb-4" title="Afyadesk"></span>
                </div>
             </div>
             <div class="card card-md main-content-card">
