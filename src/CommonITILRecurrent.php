@@ -443,8 +443,10 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $occurence_time = strtotime($begin_date);
             $creation_time  = $occurence_time - $create_before;
 
-            // Add steps while creation time is in past
-            while ($creation_time < $now) {
+            // Add steps while creation time is in past or equal to now.
+            // Using <= prevents returning a next_creation_date identical to the session
+            // start time, which MySQL NOW() would already exceed, causing a J+1 duplicate.
+            while ($creation_time <= $now) {
                 $creation_time  = strtotime("+ $periodicity_as_interval", $creation_time);
                 $occurence_time = $creation_time + $create_before;
 
@@ -500,7 +502,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $occurence_time = strtotime($occurence_date);
             $creation_time  = $occurence_time - $create_before;
 
-            while ($creation_time < $now) {
+            while ($creation_time <= $now) {
                 $occurence_date = $calendar->computeEndDate(
                     date('Y-m-d H:i:s', $occurence_time),
                     $periodicity_in_seconds,

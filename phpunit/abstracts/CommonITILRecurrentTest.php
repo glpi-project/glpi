@@ -401,6 +401,22 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             'expected_value' => date('Y-m-d H:i:s', $next_time),
         ];
 
+        // Regression: creation_time equal to session time must advance to the next period.
+        // When begin_date - create_before lands exactly on the current time, the old strict-<
+        // loop condition would exit without advancing, storing a next_creation_date identical
+        // to the frozen PHP session time. MySQL NOW() being slightly ahead would then select
+        // the item again the next day, producing a J+1 duplicate.
+        $data[] = [
+            'begin_date'     => '2026-06-11 13:37:00', // begin_date - 7 days = 2026-06-04 13:37:00
+            'end_date'       => '2028-01-01 00:00:00',
+            'periodicity'    => '1YEAR',
+            'create_before'  => DAY_TIMESTAMP * 7,
+            'calendars_id'   => 0,
+            'expected_value' => '2027-06-04 13:37:00', // must advance past current_date, never return it
+            'messages'       => null,
+            'current_date'   => '2026-06-04 13:37:00',
+        ];
+
         // Special case: calendar where monday to friday are full working days
         $calendar_id = $calendar->add(['name' => $this->getChildClass() . ' testing calendar 2']);
         $this->assertGreaterThan(0, $calendar_id);
@@ -530,6 +546,28 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 $this->hasSessionMessages(ERROR, $messages);
             }
         }
+    }
+
+    public function testNextCreationDateNeverEqualsCurrentTime(): void
+    {
+        // When begin_date - create_before lands exactly on the current session time,
+        // next_creation_date must advance to the next period, not return the current time.
+        // Returning the current time causes a J+1 duplicate: MySQL NOW() is a few ms
+        // ahead of the frozen session time, so the item is reselected by the next cron run.
+        $_SESSION['glpi_currenttime'] = '2026-06-04 13:37:00';
+
+        $child_class = $this->getChildClass();
+        $recurrent   = new $child_class();
+
+        $result = $recurrent->computeNextCreationDate(
+            '2026-06-11 13:37:00', // begin_date - 7 days = 2026-06-04 13:37:00 (= session time)
+            '2028-01-01 00:00:00',
+            '1YEAR',
+            DAY_TIMESTAMP * 7,
+            0
+        );
+
+        $this->assertSame('2027-06-04 13:37:00', $result);
     }
 
     /**
