@@ -203,6 +203,68 @@ class NotificationTargetTicketTest extends DbTestCase
         $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
     }
 
+    public function testSolutionNotificationIgnoresRefusedSolution()
+    {
+        global $DB;
+
+        $this->login();
+        $root = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => 'content',
+            'entities_id' => $root,
+        ]);
+
+        // Solve the ticket, then simulate the solution being refused and the
+        // ticket reopened (done at DB level to avoid re-solve business rules).
+        $solution = new \ITILSolution();
+        $refused_id = $solution->add([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket->getID(),
+            'content'  => 'Refused solution content',
+        ]);
+        $this->assertGreaterThan(0, $refused_id);
+        $this->assertTrue($DB->update(
+            'glpi_itilsolutions',
+            ['status' => \CommonITILValidation::REFUSED],
+            ['id' => $refused_id]
+        ));
+        $this->assertTrue($DB->update(
+            'glpi_tickets',
+            ['status' => \CommonITILObject::ASSIGNED],
+            ['id' => $ticket->getID()]
+        ));
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+
+        $options = ['additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]];
+
+        // Resolution notification: the refused solution must not appear.
+        $target_solved = new \NotificationTargetTicket($root, 'solved', $ticket);
+        $ret = $target_solved->getDataForObject($ticket, $options);
+        $this->assertSame('', $ret['##ticket.solution.description##']);
+
+        // Rejection notification: the refused solution is still available.
+        $target_reject = new \NotificationTargetTicket($root, 'rejectsolution', $ticket);
+        $ret = $target_reject->getDataForObject($ticket, $options);
+        $this->assertSame('Refused solution content', $ret['##ticket.solution.description##']);
+
+        // Resolve again with a new solution, which must not be refused and must
+        // be the one used by the resolution notification.
+        $solution2 = new \ITILSolution();
+        $accepted_id = $solution2->add([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket->getID(),
+            'content'  => 'Accepted solution content',
+        ]);
+        $this->assertGreaterThan(0, $accepted_id);
+        $this->assertTrue($solution2->getFromDB($accepted_id));
+        $this->assertNotEquals(\CommonITILValidation::REFUSED, (int) $solution2->fields['status']);
+
+        $ret = $target_solved->getDataForObject($ticket, $options);
+        $this->assertSame('Accepted solution content', $ret['##ticket.solution.description##']);
+    }
+
 
     public function testTimelineTag()
     {
