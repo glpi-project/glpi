@@ -44,6 +44,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
+use Lockedfield;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareVersion;
@@ -1375,6 +1376,69 @@ class CommonDBTMTest extends DbTestCase
         ]));
 
         $this->hasSessionMessages(ERROR, [$err_msg]);
+    }
+
+    public function testCheckUnicityIgnoresLockedFields()
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $field_unicity = new FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => 'Computer',
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => $entities_id,
+            ])
+        );
+
+        $computer = new Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id1 = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $computers_id2 = $computer->add([
+                'name' => __FUNCTION__ . '02',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        // manual rename (no is_dynamic) locks the name field on computer 2
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '02-locked',
+            ])
+        );
+        $lockedfield = new Lockedfield();
+        $this->assertSame(['name'], $lockedfield->getLockedNames('Computer', $computers_id2));
+
+        // a later inventory reporting computer 1's name for computer 2 must not be
+        // flagged as a duplicate: the locked name field is discarded, never persisted
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '01',
+                'is_dynamic' => 1,
+            ])
+        );
+        $this->hasNoSessionMessages([ERROR]);
+
+        $this->assertTrue($computer->getFromDB($computers_id2));
+        $this->assertSame(__FUNCTION__ . '02-locked', $computer->fields['name']);
     }
 
     public function testSkipCheckUnicityWithTemplate()
