@@ -4528,7 +4528,7 @@ class CommonDBTM extends CommonGLPI
             return [];
         }
 
-        return (new Lockedfield())->getLockedNames($this->getType(), $this->fields['id']);
+        return (new Lockedfield())->getLockedNames(static::class, $this->fields['id']);
     }
 
     /**
