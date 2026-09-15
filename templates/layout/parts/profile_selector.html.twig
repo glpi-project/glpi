@@ -284,6 +284,69 @@
             searchTree();
         });
 
+        // Fancytree redraws the row on focus, detaching the clicked button before
+        // "click" fires and silently cancelling its form submission. Intercepting
+        // "mousedown" instead lets us submit before that redraw happens; the "click"
+        // listener just swallows the click that follows (or handles keyboard
+        // activation). "submitted" prevents rapid clicks from reusing the same
+        // single-use CSRF token across several requests.
+        (function() {
+            const container = document.getElementById('tree_entity{{ rand }}');
+            let pendingButton = null;
+            let submitted = false;
+
+            function submitEntityForm(btn) {
+                if (submitted) {
+                    return;
+                }
+                submitted = true;
+                const form = document.getElementById(btn.getAttribute('form'));
+                if (!form) {
+                    return;
+                }
+                let input = form.querySelector('input[name="id"]');
+                if (!input) {
+                    input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'id';
+                    form.appendChild(input);
+                }
+                input.value = btn.value;
+                form.requestSubmit();
+            }
+
+            container.addEventListener('mousedown', function(e) {
+                const btn = e.target.closest('button[type="submit"]');
+                if (!btn || !btn.getAttribute('form')) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                pendingButton = btn;
+                submitEntityForm(btn);
+            }, true);
+
+            container.addEventListener('click', function(e) {
+                if (pendingButton) {
+                    // Click that followed a mousedown we already handled: swallow it.
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    pendingButton = null;
+                    return;
+                }
+                // Keyboard activation (Enter/Space on a focused button) fires "click"
+                // directly, without a preceding mousedown, so it isn't affected by the
+                // focus-triggered redraw race and can be handled here directly.
+                const btn = e.target.closest('button[type="submit"]');
+                if (!btn || !btn.getAttribute('form')) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                submitEntityForm(btn);
+            }, true);
+        })();
+
         // when the shortcut for entity form is called
         hotkeys('ctrl+alt+e, option+command+e', async function(e) {
             e.stopPropagation();
