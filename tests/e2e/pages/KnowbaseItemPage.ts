@@ -137,6 +137,18 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * The helpdesk FAQ view of an article, which renders the same aside as the
+     * central knowledge base.
+     */
+    public async gotoFaq(id: number): Promise<void>
+    {
+        await this.page.goto(
+            `/front/helpdesk.faq.php?id=${id}`,
+            { waitUntil: 'domcontentloaded' }
+        );
+    }
+
+    /**
      * The article header's dots menu trigger, scoped to avoid other "More
      * actions" menus (aside rows, comments); `.first()` picks the header's.
      */
