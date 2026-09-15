@@ -37,10 +37,13 @@ namespace tests\units;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_User;
+use Laminas\Mail\Storage\Message as MailMessage;
+use MailCollector;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleAction;
 use RuleCriteria;
+use RuleMailCollector;
 use RuleMailCollectorCollection;
 
 class RuleMailCollectorTest extends DbTestCase
@@ -64,7 +67,7 @@ class RuleMailCollectorTest extends DbTestCase
         $this->checkInput($group, $group_id, $group_input);
 
         // Create rule
-        $rule     = new \RuleMailCollector();
+        $rule     = new RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => 'test assign entity based on group',
             'match'        => 'AND',
@@ -161,7 +164,7 @@ class RuleMailCollectorTest extends DbTestCase
         $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
 
         // Create rule
-        $rule     = new \RuleMailCollector();
+        $rule     = new RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => 'test assign entity based on known domain',
             'match'        => 'AND',
@@ -250,7 +253,7 @@ class RuleMailCollectorTest extends DbTestCase
         $this->checkInput($group, $group_id, $group_input);
 
         // Create rule
-        $rule     = new \RuleMailCollector();
+        $rule     = new RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => 'test assign ExternalID based on subject',
             'match'        => 'AND',
@@ -411,7 +414,7 @@ class RuleMailCollectorTest extends DbTestCase
         $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
 
         // Create rule
-        $rule     = new \RuleMailCollector();
+        $rule     = new RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => __FUNCTION__,
             'match'        => $rule_param['match'],
@@ -463,5 +466,91 @@ class RuleMailCollectorTest extends DbTestCase
                 $output
             );
         }
+    }
+
+    /**
+     * "To email address contains" business rule must
+     * match even when the targeted address is not the first "To" recipient.
+     *
+     * See https://github.com/glpi-project/glpi/issues/20892
+     */
+    public function testAssignEntityFromToAddressWhenNotFirstRecipient()
+    {
+        $this->login();
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // Delete all existing rule
+        $rule = new Rule();
+        $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
+
+        // Create rule matching the customer's setup: "To email address" contains a
+        // support mailbox that is not necessarily the first recipient of the mail.
+        $rule_id = $this->createItem(
+            RuleMailCollector::class,
+            [
+                'name'      => __FUNCTION__,
+                'match'     => 'AND',
+                'is_active' => 1,
+                'sub_type'  => 'RuleMailCollector',
+            ],
+        )->getID();
+
+        $criteria = $this->createItem(
+            RuleCriteria::class,
+            $criteria_input = [
+                'rules_id'  => $rule_id,
+                'criteria'  => 'to',
+                'condition' => Rule::PATTERN_CONTAIN,
+                'pattern'   => 'support@glpi-project.org',
+            ]
+        );
+
+        $this->checkInput($criteria, $criteria->getID(), $criteria_input);
+
+        $action = $this->createItem(
+            RuleAction::class,
+            $action_input = [
+                'rules_id'    => $rule_id,
+                'action_type' => 'assign',
+                'field'       => 'entities_id',
+                'value'       => $entity_id,
+            ]
+        );
+
+        $this->checkInput($action, $action->getID(), $action_input);
+
+        // Real email import: "support@glpi-project.org" is the SECOND recipient of
+        // the "To" header, exactly as reported by the customer.
+        $raw = implode("\r\n", [
+            'From: John Doe <john.doe@glpi-project.org>',
+            'To: Jane Roe <jane.roe@glpi-project.org>, Support <support@glpi-project.org>',
+            'Subject: ' . __FUNCTION__,
+            'Date: ' . date('r'),
+            'Message-ID: <' . __FUNCTION__ . '@glpi-project.org>',
+            '',
+            'Test body.',
+            '',
+        ]);
+        $message = new MailMessage(['raw' => $raw]);
+        $headers = (new MailCollector())->getHeaders($message);
+
+        $rulecollection = new RuleMailCollectorCollection();
+        $output         = $rulecollection->processAllRules(
+            [],
+            [],
+            [
+                'headers'       => $headers,
+                'mailcollector' => 0,
+            ]
+        );
+
+        $this->assertEquals(
+            [
+                'entities_id' => $entity_id,
+                '_ruleid'     => $rule_id,
+            ],
+            $output
+        );
     }
 }
