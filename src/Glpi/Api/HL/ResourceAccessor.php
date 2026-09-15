@@ -269,6 +269,34 @@ final class ResourceAccessor
             }
         }
 
+        $fn_filter_properties = static function (array $props, string $parent_path = '', array &$removed_paths = []) use (&$fn_filter_properties) {
+            foreach ($props as $key => $prop) {
+                if (isset($prop['x-rights-conditions']['read'])) {
+                    $check_result = $prop['x-rights-conditions']['read']();
+                    if (is_array($check_result)) {
+                        throw new \LogicException('SQL condition field right checks are not currently supported.');
+                    }
+                    if ((bool) $check_result === false) {
+                        $removed_paths[] = $parent_path === '' ? $key : $parent_path . '.' . $key;
+                        unset($props[$key]);
+                        continue;
+                    }
+                }
+                if (isset($prop['properties'])) {
+                    $props[$key]['properties'] = $fn_filter_properties($prop['properties'], $parent_path === '' ? $key : $parent_path . '.' . $key, $removed_paths);
+                } elseif (isset($prop['items']['properties'])) {
+                    $props[$key]['items']['properties'] = $fn_filter_properties($prop['items']['properties'], $parent_path === '' ? $key : $parent_path . '.' . $key, $removed_paths);
+                }
+            }
+            return $props;
+        };
+        $removed_paths = [];
+        if (isset($filtered_schema['properties'])) {
+            $filtered_schema['properties'] = $fn_filter_properties($filtered_schema['properties'], '', $removed_paths);
+        } elseif (isset($filtered_schema['items']['properties'])) {
+            $filtered_schema['items']['properties'] = $fn_filter_properties($filtered_schema['items']['properties'], '', $removed_paths);
+        }
+
         return $filtered_schema;
     }
 
