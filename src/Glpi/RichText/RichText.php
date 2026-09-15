@@ -57,20 +57,21 @@ final class RichText
      *
      * @param null|string $content              HTML string to be made safe
      * @param bool        $encode_output        Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool        $is_html              Indicates that the content is known to be HTML, skipping the plain-text detection
      *
      * @return string
      *
      * @psalm-taint-escape html
      * @psalm-taint-escape has_quotes
      */
-    public static function getSafeHtml(?string $content, bool $encode_output = false): string
+    public static function getSafeHtml(?string $content, bool $encode_output = false, bool $is_html = false): string
     {
 
         if (empty($content)) {
             return '';
         }
 
-        $content = self::normalizeHtmlContent($content);
+        $content = self::normalizeHtmlContent($content, $is_html);
 
         $content = preg_replace_callback(
             '/href="([^"]*)"/',
@@ -221,12 +222,13 @@ final class RichText
      * Normalize HTML content.
      *
      * @param string $content
+     * @param bool   $is_html Skip the `isRichTextHtmlContent()` guess, which only knows a few common tags and escapes anything else
      *
      * @return string
      */
-    private static function normalizeHtmlContent(string $content)
+    private static function normalizeHtmlContent(string $content, bool $is_html = false)
     {
-        if (self::isRichTextHtmlContent($content)) {
+        if ($is_html || self::isRichTextHtmlContent($content)) {
             // Remove contentless HTML tags
             // Remove also surrounding spaces:
             // - only horizontal spacing chars leading the tag in its line (\h*),
