@@ -1105,8 +1105,8 @@ body.in_modal .kb-editor-reserved {
     }
 }
 
-// Image insert/edit dialog
-.image-dialog-overlay {
+// Shared shell for the editor dialogs (link, video, image)
+.editor-dialog-overlay {
     position: fixed;
     inset: 0;
     background: rgb(0 0 0 / 50%);
@@ -1116,7 +1116,7 @@ body.in_modal .kb-editor-reserved {
     z-index: 1060;
 }
 
-.image-dialog {
+.editor-dialog {
     background: var(--tblr-bg-surface);
     border-radius: var(--tblr-border-radius-lg);
     box-shadow: var(--tblr-box-shadow-lg);
@@ -1124,7 +1124,7 @@ body.in_modal .kb-editor-reserved {
     max-width: 90vw;
 }
 
-.image-dialog-header {
+.editor-dialog-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1133,7 +1133,7 @@ body.in_modal .kb-editor-reserved {
     font-weight: 600;
     font-size: 1rem;
 
-    .image-dialog-close {
+    .editor-dialog-close {
         border: none;
         background: none;
         cursor: pointer;
@@ -1147,14 +1147,14 @@ body.in_modal .kb-editor-reserved {
     }
 }
 
-.image-dialog-body {
+.editor-dialog-body {
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.image-dialog-field {
+.editor-dialog-field {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -1166,16 +1166,16 @@ body.in_modal .kb-editor-reserved {
     }
 }
 
-.image-dialog-size-row {
+.image-size-row {
     display: flex;
     align-items: flex-end;
     gap: 0.5rem;
 
-    .image-dialog-field {
+    .editor-dialog-field {
         flex: 1;
     }
 
-    .image-dialog-lock {
+    .image-size-lock {
         border: 1px solid var(--tblr-border-color);
         background: var(--tblr-bg-surface);
         border-radius: var(--tblr-border-radius);
@@ -1194,7 +1194,7 @@ body.in_modal .kb-editor-reserved {
     }
 }
 
-.image-dialog-footer {
+.editor-dialog-footer {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
