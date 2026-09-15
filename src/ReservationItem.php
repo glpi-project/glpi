@@ -624,10 +624,13 @@ TWIG, $twig_params);
                 }
                 $entry['item'] = $item_link;
 
-                if (!isset($location_cache[$row["location"]])) {
-                    $location_cache[$row["location"]] = Dropdown::getDropdownName("glpi_locations", $row["location"]);
+                // `location` comes from a LEFT JOIN on `glpi_locations`, so it
+                // is null for an item that has no location.
+                $locations_id = (int) $row["location"];
+                if (!isset($location_cache[$locations_id])) {
+                    $location_cache[$locations_id] = Dropdown::getDropdownName("glpi_locations", $locations_id);
                 }
-                $entry['location'] = $location_cache[$row["location"]];
+                $entry['location'] = $location_cache[$locations_id];
 
                 $entry['comment'] = RichText::getSafeHtml($row["comment"]);
 

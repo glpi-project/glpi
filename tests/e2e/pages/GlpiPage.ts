@@ -306,8 +306,6 @@ export class GlpiPage
         base?: Locator,
         exact: boolean = true,
     ): Locator {
-        // Fields carrying a help tooltip render it inside the <label>, so their accessible name
-        // is not the label text alone: pass exact = false to match on the label text only.
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
             .getByLabel(label, {exact: exact})
@@ -337,11 +335,14 @@ export class GlpiPage
      * TinyMCE's container is the div right after the textarea.
      * The interactive element is the body of the iframe.
      */
-    public getRichTextByLabel(label: string, base?: Locator): Locator
-    {
+    public getRichTextByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = false,
+    ): Locator {
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
-            .getByLabel(label)
+            .getByLabel(label, {exact: exact})
             .locator('+ div')
             .locator('iframe:visible')
             .contentFrame()
@@ -352,11 +353,18 @@ export class GlpiPage
     /**
      * Initialize a rich text editor by clicking on it, then return its body locator.
      */
-    public async initRichTextByLabel(label: string, base?: Locator): Promise<Locator>
-    {
+    public async initRichTextByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = false,
+    ): Promise<Locator> {
         // eslint-disable-next-line playwright/no-raw-locators
-        await (base ?? this.page).getByLabel(label).locator('+ div').click();
-        return this.getRichTextByLabel(label, base);
+        await (base ?? this.page)
+            .getByLabel(label, {exact: exact})
+            .locator('+ div')
+            .click()
+        ;
+        return this.getRichTextByLabel(label, base, exact);
     }
 
     /**

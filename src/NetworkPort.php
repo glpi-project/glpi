@@ -331,7 +331,10 @@ class NetworkPort extends CommonDBChild
     public function post_clone($source, $history)
     {
         $instantiation = $source->getInstantiation();
-        if ($instantiation !== false) {
+        // `getInstantiation()` also returns an empty instance when the source port has no
+        // instantiation row; there is nothing to clone in that case, and its blank fields
+        // would not fit the instantiation table columns.
+        if ($instantiation !== false && !$instantiation->isNewItem()) {
             $instantiation->fields[$instantiation->getIndexName()] = $this->getID();
             $instantiation->clone([], $history);
         }

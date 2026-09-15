@@ -3545,6 +3545,7 @@ JAVASCRIPT;
                 if ($pt->getFromDB($options['_projecttasks_id'])) {
                     $options['name'] = $pt->fields['name'];
                     $options['content'] = $pt->fields['content'];
+                    $options['entities_id'] = $pt->fields['entities_id'];
                 }
             }
             // Override default values from followup if needed

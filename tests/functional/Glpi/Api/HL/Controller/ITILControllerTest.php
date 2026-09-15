@@ -264,6 +264,8 @@ class ITILControllerTest extends HLAPITestCase
      */
     public function testBlockOverridingParentItem()
     {
+        $this->loginWeb();
+
         $ticket = new Ticket();
         $this->assertGreaterThan(0, $tickets_id = $ticket->add([
             'name' => __FUNCTION__,

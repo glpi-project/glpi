@@ -53996,12 +53996,13 @@
                                         "User",
                                         "Group",
                                         "Supplier"
-                                    ]
+                                    ],
+                                    "description": "The type of team member. The applicable types of members will depend on the role."
                                 },
                                 "id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "readOnly": true
+                                    "description": "The ID of the team member"
                                 },
                                 "role": {
                                     "type": "string",
@@ -54010,7 +54011,8 @@
                                         "requester",
                                         "assigned",
                                         "observer"
-                                    ]
+                                    ],
+                                    "description": "The role of the team member"
                                 }
                             }
                         }
@@ -54136,12 +54138,13 @@
                                         "User",
                                         "Group",
                                         "Supplier"
-                                    ]
+                                    ],
+                                    "description": "The type of team member. The applicable types of members will depend on the role."
                                 },
                                 "id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "readOnly": true
+                                    "description": "The ID of the team member"
                                 },
                                 "role": {
                                     "type": "string",
@@ -54150,7 +54153,8 @@
                                         "requester",
                                         "assigned",
                                         "observer"
-                                    ]
+                                    ],
+                                    "description": "The role of the team member"
                                 }
                             }
                         }
@@ -54276,12 +54280,13 @@
                                         "User",
                                         "Group",
                                         "Supplier"
-                                    ]
+                                    ],
+                                    "description": "The type of team member. The applicable types of members will depend on the role."
                                 },
                                 "id": {
                                     "type": "integer",
                                     "format": "int32",
-                                    "readOnly": true
+                                    "description": "The ID of the team member"
                                 },
                                 "role": {
                                     "type": "string",
@@ -54290,7 +54295,8 @@
                                         "requester",
                                         "assigned",
                                         "observer"
-                                    ]
+                                    ],
+                                    "description": "The role of the team member"
                                 }
                             }
                         }
@@ -54382,7 +54388,8 @@
                                         "requester",
                                         "assigned",
                                         "observer"
-                                    ]
+                                    ],
+                                    "description": "The role of the team member"
                                 }
                             }
                         }
@@ -54451,7 +54458,8 @@
                                         "requester",
                                         "assigned",
                                         "observer"
-                                    ]
+                                    ],
+                                    "description": "The role of the team member"
                                 }
                             }
                         }
@@ -54520,7 +54528,8 @@
                                         "requester",
                                         "assigned",
                                         "observer"
-                                    ]
+                                    ],
+                                    "description": "The role of the team member"
                                 }
                             }
                         }
@@ -57633,12 +57642,14 @@
                             "properties": {
                                 "email": {
                                     "type": "string",
-                                    "format": "string"
+                                    "format": "string",
+                                    "description": "The email address to add"
                                 },
                                 "is_default": {
                                     "type": "boolean",
                                     "format": "boolean",
-                                    "default": false
+                                    "default": false,
+                                    "description": "Whether this email address should be the default one"
                                 }
                             }
                         }
