@@ -40,6 +40,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -212,12 +213,37 @@ class KnowbaseItemControllerTest extends DbTestCase
         $this->sanitizeHtmlBlock($id, ['html' => '<p>Hi</p>']);
     }
 
-    public function testSanitizeHtmlBlockRejectsMissingHtml(): void
+    /**
+     * The dialog field holds HTML by definition. Without `is_html`, isRichTextHtmlContent()
+     * only knows a few common tags and would escape the rest into a `<p>` block.
+     */
+    public function testSanitizeHtmlBlockKeepsTagsIsRichTextHtmlContentDoesNotKnow(): void
     {
         $this->login();
         $id = $this->makeArticle();
 
-        $response = $this->sanitizeHtmlBlock($id, []);
+        $response = $this->sanitizeHtmlBlock($id, ['html' => '<figure><figcaption>Caption</figcaption></figure>']);
+        $html = json_decode($response->getContent(), true)['html'];
+
+        $this->assertStringContainsString('<figure>', $html);
+        $this->assertStringNotContainsString('&lt;figure&gt;', $html);
+    }
+
+    public static function invalidHtmlBodyProvider(): iterable
+    {
+        yield 'missing' => [[]];
+        yield 'null' => [['html' => null]];
+        yield 'array' => [['html' => ['<p>Hi</p>']]];
+        yield 'int' => [['html' => 5]];
+    }
+
+    #[DataProvider('invalidHtmlBodyProvider')]
+    public function testSanitizeHtmlBlockRejectsInvalidHtml(array $body): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        $response = $this->sanitizeHtmlBlock($id, $body);
 
         $this->assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertFalse(json_decode($response->getContent(), true)['success']);

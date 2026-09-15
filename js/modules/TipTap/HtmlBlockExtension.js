@@ -153,7 +153,8 @@ export const HtmlBlock = Node.create({
 
     renderHTML({ node }) {
         // A DOM node lets the children be arbitrary sanitized markup. No ARIA here: the sanitizer strips `aria-*`, the node view carries it instead.
-        const div = document.createElement('div');
+        // Inert document: `getHTML()` runs this on every transaction, and a live document would refetch every `<img>` in the block per keystroke.
+        const div = inertDocument.createElement('div');
         div.className = 'kb-html-block';
         div.innerHTML = node.attrs.html || '';
         return div;

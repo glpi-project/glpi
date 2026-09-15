@@ -214,14 +214,16 @@ final class KnowbaseItemController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $html = $data['html'] ?? null;
 
-        if ($html === null) {
+        if (!is_string($html)) {
             return new JsonResponse([
                 'success' => false,
                 'message' => __('Missing HTML content'),
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // Same sanitizer as updateAnswer(), so the preview matches storage. `is_html`: the dialog field holds HTML by definition.
+        // `is_html`: the dialog field holds HTML by definition, so skip the plain-text branch that would wrap the source in `<p>` and nl2br it.
+        // Note this differs from updateAnswer(), which passes `is_html: false` and lets isRichTextHtmlContent() decide.
+        // Consequence: malformed markup is dropped with its children by the HTML parser, as in any HTML source editor. The live preview shows the result.
         return new JsonResponse([
             'success' => true,
             'html'    => RichText::getSafeHtml($html, false, true),
