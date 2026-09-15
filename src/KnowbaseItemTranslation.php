@@ -94,7 +94,8 @@ class KnowbaseItemTranslation extends CommonDBChild
      */
     private function prepareInput(array $input): array
     {
-        if (isset($input['answer'])) {
+        // `is_string`: the API can post any JSON type, and the sanitizer is typed `?string`.
+        if (isset($input['answer']) && is_string($input['answer'])) {
             $input['answer'] = RichText::getSafeHtml($input['answer']);
         }
         return $input;

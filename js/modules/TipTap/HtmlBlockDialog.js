@@ -146,14 +146,15 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
             return;
         }
         try {
-            const response = await post(`Knowbase/KnowbaseItem/${itemId}/SanitizeHtmlBlock`, { html: raw });
+            // No toast: the failure is reported inline below, right where the user is looking.
+            const response = await post(`Knowbase/KnowbaseItem/${itemId}/SanitizeHtmlBlock`, { html: raw }, [], false);
             const data = await response.json();
             // Source changed during the request: a newer one owns the state.
             if (sourceInput.value !== raw) {
                 return;
             }
-            // Reached when every tag is dropped, e.g. a lone `<script>`.
-            if (!data.success || data.html.trim() === '') {
+            // Reached when every tag is dropped, e.g. a lone `<script>`. A non-2xx never gets here: `post()` throws.
+            if (data.html.trim() === '') {
                 lastSanitizedHtml = null;
                 saveBtn.disabled = true;
                 preview.innerHTML = '';

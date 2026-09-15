@@ -42,10 +42,12 @@
  *   as-is (form data).
  * @param {number[]} handled_statuses - Error statuses the caller reports itself:
  *   the response is returned instead of raising the generic error.
+ * @param {boolean} toast_error - Show the global error toast on failure. Pass
+ *   `false` when the caller reports the failure itself, e.g. inline in a dialog.
  * @returns {Promise<Response>} The fetch Response object.
  * @throws {Error} If the request fails or returns an unhandled non-ok status.
  */
-export async function post(url, values = null, handled_statuses = [])
+export async function post(url, values = null, handled_statuses = [], toast_error = true)
 {
     try {
         const is_plain_object = values !== null
@@ -77,7 +79,9 @@ export async function post(url, values = null, handled_statuses = [])
 
         return response;
     } catch (e) {
-        glpi_toast_error(__("An unexpected error occurred."));
+        if (toast_error) {
+            glpi_toast_error(__("An unexpected error occurred."));
+        }
         throw e;
     }
 }
