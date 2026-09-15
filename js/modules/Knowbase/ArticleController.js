@@ -691,6 +691,15 @@ export class GlpiKnowbaseArticleController
 
         const response = await deleteArticle(id);
         const body = await response.json();
+
+        if (!response.ok) {
+            glpi_alert({
+                title: __('Delete article'),
+                message: body.message,
+            });
+            return;
+        }
+
         window.location.href = body.redirect;
     }
 
