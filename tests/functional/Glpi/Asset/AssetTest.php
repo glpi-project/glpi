@@ -402,12 +402,12 @@ class AssetTest extends DbTestCase
         $definition = $this->initAssetDefinition();
         $this->login();
 
-        $classname = $definition->getAssetClassName();
-        $encoded   = rawurlencode($classname);
+        $class_name = $definition->getAssetClassName();
+        $encoded    = rawurlencode($class_name);
 
         // A namespaced class name contains backslashes, which are unsafe in a raw query
         // value; they must be percent-encoded in the generated template URLs.
-        $menu = $classname::getMenuContent();
+        $menu = $class_name::getMenuContent();
         $this->assertSame(
             '/front/setup.templates.php?itemtype=' . $encoded . '&add=1',
             $menu['links']['add']
@@ -423,7 +423,7 @@ class AssetTest extends DbTestCase
         $saved_get = $_GET;
         $_GET['withtemplate'] = 1;
         try {
-            $redirect = (new $classname())->getRedirectToListUrl();
+            $redirect = (new $class_name())->getRedirectToListUrl();
         } finally {
             $_GET = $saved_get;
         }
