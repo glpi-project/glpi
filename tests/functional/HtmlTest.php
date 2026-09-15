@@ -1591,6 +1591,26 @@ SCSS,
         }
     }
 
+    public function testMassiveActionContainerIdEscaping(): void
+    {
+        $container_id = 'massGlpiPlugin\Samlsso\RuleSamlCollection1891979255';
+        $cleaned_id = Html::cleanId($container_id);
+
+        // Test getCheckAllAsCheckbox
+        $html = Html::getCheckAllAsCheckbox($container_id);
+        $this->assertStringContainsString(jsescape($cleaned_id), $html);
+
+        // Test getCriterionForMassiveCheckboxes
+        $html = Html::getCriterionForMassiveCheckboxes(['container_id' => $container_id]);
+        $this->assertStringContainsString('#' . $cleaned_id, $html);
+
+        // Test showMassiveActions
+        ob_start();
+        Html::showMassiveActions(['container' => $container_id, 'forcecreate' => true, 'tag_to_send' => 'common']);
+        $html = ob_get_clean();
+        $this->assertStringContainsString('#' . jsescape($cleaned_id), $html);
+    }
+
     public function testShowMassiveActionsSelectionTooLarge(): void
     {
         $this->login();
