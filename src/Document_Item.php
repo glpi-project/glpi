@@ -109,6 +109,43 @@ class Document_Item extends CommonDBRelation
         return true;
     }
 
+    /**
+     * Returns criteria restricting a `glpi_documents_items` query to the links the current user
+     * is allowed to see, i.e. excluding the private ones when the user does not hold the
+     * `self::SEEPRIVATE` right and is not the author of the link.
+     *
+     * Mirrors the restriction enforced by `self::canViewItem()` on display.
+     *
+     * @return list<array<string, mixed>> Criteria to spread into a `WHERE` clause,
+     *                                      empty when no restriction applies.
+     */
+    public static function getPrivacyRestrictionCriteria(): array
+    {
+        if (Session::haveRight(Document::$rightname, self::SEEPRIVATE)) {
+            return [];
+        }
+
+        $users_id = Session::getLoginUserID();
+        if ($users_id === false) {
+            // Anonymous access (public FAQ, share token): no link can belong to the current
+            // user, and comparing `false` would match the ownerless links stored with a 0.
+            return [
+                [
+                    self::getTableField('is_private') => 0,
+                ],
+            ];
+        }
+
+        return [
+            [
+                'OR' => [
+                    self::getTableField('is_private') => 0,
+                    self::getTableField('users_id')   => $users_id,
+                ],
+            ],
+        ];
+    }
+
     public function prepareInputForAdd($input)
     {
         if (empty($input['itemtype'])) {
@@ -681,6 +718,7 @@ TWIG, $twig_params);
             $reverse_criteria['WHERE'] = [
                 'glpi_documents_items.documents_id' => $item->getID(),
                 'glpi_documents_items.itemtype' => $item::class,
+                ...self::getPrivacyRestrictionCriteria(),
             ];
             $criteria = ['FROM' => new QueryUnion([$criteria, $reverse_criteria])];
         }
@@ -1034,6 +1072,10 @@ TWIG, $twig_params);
             // Anonymous access from FAQ
             $criteria['WHERE']['glpi_documents.entities_id'] = 0;
         }
+
+        // Applied after the entity restriction: the latter may return a numerically keyed
+        // criterion, which the union above would silently drop on collision.
+        $criteria['WHERE'] = [...$criteria['WHERE'], ...self::getPrivacyRestrictionCriteria()];
 
         return $criteria;
     }

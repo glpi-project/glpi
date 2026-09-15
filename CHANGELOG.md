@@ -46,6 +46,7 @@ The present file will list all changes made to the project; according to the
 - Type declarations for some `CronTask` methods have been added.
 
 #### Added
+- `Document_Item::getPrivacyRestrictionCriteria()` returns the criteria restricting a `glpi_documents_items` query to the links the current user is allowed to see.
 
 #### Changes
 - `Session::haveRight()` now only returns a boolean

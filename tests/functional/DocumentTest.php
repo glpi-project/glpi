@@ -783,7 +783,7 @@ class DocumentTest extends DbTestCase
     }
 
     /**
-     * Data provider for self::testCanViewItilFile().
+     * Data provider for self::testCanViewItilFile() and self::testCanViewPrivateItilFile().
      */
     public static function itilTypeProvider()
     {
@@ -887,6 +887,93 @@ class DocumentTest extends DbTestCase
         $this->assertTrue($inlinedDocument->canViewFile([$fkey => $item->getID()]));
         $this->assertTrue($basicDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]));
         $this->assertTrue($inlinedDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]));
+    }
+
+    /**
+     * Check that a document privately attached to an ITIL object cannot be downloaded by a user
+     * that does not hold the `Document_Item::SEEPRIVATE` right, even when it can read that object.
+     */
+    #[DataProvider('itilTypeProvider')]
+    public function testCanViewPrivateItilFile($itemtype)
+    {
+        // --- arrange : glpi user creates private documents ---
+        $this->login('glpi', 'glpi');
+
+        // Create documents
+        [$private_document, $own_document] = $this->createItems(\Document::class, [
+            ['name' => 'private document', 'filename' => 'private.xls'],
+            ['name' => 'own private document', 'filename' => 'own.xls'],
+        ]);
+
+        // Create itilobject
+        $item = $this->createItem($itemtype, [
+            'name'    => 'New ' . $itemtype,
+            'content' => 'content',
+        ]);
+        $fkey = $item->getForeignKeyField();
+
+        // Associate created itilobject and document
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $private_document->getID(),
+            'items_id'     => $item->getID(),
+            'itemtype'     => $itemtype,
+            'is_private'   => 1,
+        ]);
+
+        // --- arrange : post-only observes the itilobject, with no right on documents ---
+        $this->login('post-only', 'postonly');
+        $_SESSION["glpiactiveprofile"][$item::$rightname] = READ; // force READ right for tested ITIL type
+        assert(
+            !\Session::haveRight(\Document::$rightname, \Document_Item::SEEPRIVATE),
+            'post-only should not hold the SEEPRIVATE right to start test'
+        );
+
+        // Make post-only an observer of the itilobject
+        $this->createItem($itemtype . '_User', [
+            $fkey      => $item->getID(),
+            'type'     => \CommonITILActor::OBSERVER,
+            'users_id' => \Session::getLoginUserID(),
+        ]);
+
+        // Associate the same itilobject and another document, this time as post-only
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $own_document->getID(),
+            'items_id'     => $item->getID(),
+            'itemtype'     => $itemtype,
+            'is_private'   => 1,
+        ]);
+
+        // --- act + assert ---
+        // A document someone else attached privately stays out of reach ...
+        $this->assertFalse(
+            $private_document->canViewFile([$fkey => $item->getID()]),
+            'Private document should not be visible using the legacy option'
+        );
+        $this->assertFalse(
+            $private_document->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]),
+            'Private document should not be visible using the itemtype/items_id options'
+        );
+
+        // ... unless post-only attached it itself ...
+        $this->assertTrue(
+            $own_document->canViewFile([$fkey => $item->getID()]),
+            'Author of the private link should see its document using the legacy option'
+        );
+        $this->assertTrue(
+            $own_document->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]),
+            'Author of the private link should see its document using the itemtype/items_id options'
+        );
+
+        // ... or unless post-only is allowed to see private documents
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = \Document_Item::SEEPRIVATE;
+        $this->assertTrue(
+            $private_document->canViewFile([$fkey => $item->getID()]),
+            'SEEPRIVATE right should grant access using the legacy option'
+        );
+        $this->assertTrue(
+            $private_document->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]),
+            'SEEPRIVATE right should grant access using the itemtype/items_id options'
+        );
     }
 
     /**

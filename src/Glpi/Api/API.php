@@ -48,6 +48,7 @@ use CommonDevice;
 use CommonITILObject;
 use Contract;
 use Document;
+use Document_Item;
 use Dropdown;
 use Entity;
 use Glpi\Api\Deprecated\DeprecatedInterface;
@@ -917,6 +918,7 @@ abstract class API
                         'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
                     ];
                 }
+                $doc_criteria = [...$doc_criteria, ...Document_Item::getPrivacyRestrictionCriteria()];
                 $doc_iterator = $DB->request([
                     'SELECT'    => [
                         'glpi_documents_items.id AS assocID',

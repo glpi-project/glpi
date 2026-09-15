@@ -766,4 +766,167 @@ class Document_ItemTest extends DbTestCase
         $this->assertContains($linked_kb->getID(), $ids);
         $this->assertNotContains($unrelated_kb->getID(), $ids);
     }
+
+    /**
+     * The document list of an item must not expose the links flagged as private to a user
+     * that does not hold the SEEPRIVATE right.
+     */
+    public function testGetDocumentForItemRequestHidesPrivateDocuments()
+    {
+        global $DB;
+
+        // --- arrange : glpi user attaches a private and a public document to a ticket ---
+        $this->login('glpi', 'glpi');
+
+        [$private_document, $public_document] = $this->createItems(\Document::class, [
+            ['name' => 'private document', 'filename' => 'private.xls'],
+            ['name' => 'public document', 'filename' => 'public.xls'],
+        ]);
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'    => 'New ticket',
+            'content' => 'content',
+        ]);
+
+        $this->createItems(Document_Item::class, [
+            [
+                'documents_id' => $private_document->getID(),
+                'items_id'     => $ticket->getID(),
+                'itemtype'     => \Ticket::class,
+                'is_private'   => 1,
+            ],
+            [
+                'documents_id' => $public_document->getID(),
+                'items_id'     => $ticket->getID(),
+                'itemtype'     => \Ticket::class,
+            ],
+        ]);
+
+        // --- arrange : post-only observes the ticket, with no right on documents ---
+        $this->login('post-only', 'postonly');
+        $_SESSION["glpiactiveprofile"][\Ticket::$rightname] = READ;
+        $this->createItem(\Ticket_User::class, [
+            'tickets_id' => $ticket->getID(),
+            'type'       => \CommonITILActor::OBSERVER,
+            'users_id'   => \Session::getLoginUserID(),
+        ]);
+        $ticket->getFromDB($ticket->getID());
+
+        $listed_documents = static function (\Ticket $ticket) use ($DB): array {
+            $criteria = Document_Item::getDocumentForItemRequest($ticket, ['assocdate DESC']);
+            return array_column(iterator_to_array($DB->request($criteria)), 'name');
+        };
+
+        // --- act + assert ---
+        // Only the public document is listed ...
+        $this->assertSame(['public document'], $listed_documents($ticket));
+
+        // ... unless post-only is allowed to see private documents
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = Document_Item::SEEPRIVATE;
+        $this->assertEqualsCanonicalizing(
+            ['private document', 'public document'],
+            $listed_documents($ticket)
+        );
+    }
+
+    /**
+     * An anonymous session has no user id: the privacy criteria must not compare the link owner
+     * with `false`, which the database would match against the ownerless links stored with a 0.
+     */
+    public function testGetPrivacyRestrictionCriteriaOnAnonymousSession()
+    {
+        global $DB;
+
+        $this->login('glpi', 'glpi');
+
+        $document = $this->createItem(\Document::class, [
+            'name'     => 'private document',
+            'filename' => 'private.xls',
+        ]);
+        $ticket = $this->createItem(\Ticket::class, ['name' => 'New ticket', 'content' => 'content']);
+
+        // A private link left without an owner, as an import or a crontask would create it
+        $ownerless_link = $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'items_id'     => $ticket->getID(),
+            'itemtype'     => \Ticket::class,
+            'is_private'   => 1,
+            'users_id'     => 0,
+        ]);
+
+        \Session::destroy();
+
+        $matches = $DB->request([
+            'FROM'  => Document_Item::getTable(),
+            'COUNT' => 'cpt',
+            'WHERE' => [
+                ['id' => $ownerless_link->getID()],
+                ...Document_Item::getPrivacyRestrictionCriteria(),
+            ],
+        ])->current();
+
+        $this->assertSame(
+            0,
+            (int) $matches['cpt'],
+            'An ownerless private link must not be exposed to an anonymous session'
+        );
+    }
+
+    /**
+     * The document list of a Document unions a forward and a reverse query. The reverse one
+     * rebuilds its own WHERE clause, and must restrict private links just like the forward one.
+     */
+    public function testShowListForItemReverseBranchHidesPrivateDocuments()
+    {
+        global $DB;
+
+        // --- arrange : a private link whose document is the browsed one ---
+        $this->login('glpi', 'glpi');
+
+        [$browsed_document, $linked_document] = $this->createItems(\Document::class, [
+            ['name' => 'browsed document', 'filename' => 'browsed.xls'],
+            ['name' => 'privately linked document', 'filename' => 'linked.xls'],
+        ]);
+
+        // `filepath` is derived from the upload, so it is set aside of the add(). Without it the
+        // rendering emits a deprecation, which the test case treats as a failure.
+        foreach ([$browsed_document, $linked_document] as $document) {
+            $DB->update(
+                \Document::getTable(),
+                ['filepath' => 'xls/' . $document->fields['filename']],
+                ['id' => $document->getID()]
+            );
+        }
+
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $browsed_document->getID(),
+            'items_id'     => $linked_document->getID(),
+            'itemtype'     => \Document::class,
+            'is_private'   => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = READ;
+        $browsed_document->getFromDB($browsed_document->getID());
+
+        $rendered_list = static function (\Document $document): string {
+            ob_start();
+            Document_Item::showListForItem($document);
+            return (string) ob_get_clean();
+        };
+
+        // --- act + assert ---
+        $this->assertStringNotContainsString(
+            'privately linked document',
+            $rendered_list($browsed_document),
+            'The reverse branch must not list a private link'
+        );
+
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = Document_Item::SEEPRIVATE;
+        $this->assertStringContainsString(
+            'privately linked document',
+            $rendered_list($browsed_document),
+            'The SEEPRIVATE right must restore the private link in the reverse branch'
+        );
+    }
 }
