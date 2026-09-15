@@ -1061,6 +1061,10 @@ TWIG, $twig_params);
             $criteria['WHERE']['glpi_documents.entities_id'] = 0;
         }
 
+        // Applied after the entity restriction: the latter may return a numerically keyed
+        // criterion, which the union above would silently drop on collision.
+        $criteria['WHERE'] = [...$criteria['WHERE'], ...self::getPrivacyRestrictionCriteria()];
+
         return $criteria;
     }
 

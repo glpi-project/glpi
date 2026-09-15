@@ -766,4 +766,66 @@ class Document_ItemTest extends DbTestCase
         $this->assertContains($linked_kb->getID(), $ids);
         $this->assertNotContains($unrelated_kb->getID(), $ids);
     }
+
+    /**
+     * The document list of an item must not expose the links flagged as private to a user
+     * that does not hold the SEEPRIVATE right.
+     */
+    public function testGetDocumentForItemRequestHidesPrivateDocuments()
+    {
+        global $DB;
+
+        // --- arrange : glpi user attaches a private and a public document to a ticket ---
+        $this->login('glpi', 'glpi');
+
+        [$private_document, $public_document] = $this->createItems(\Document::class, [
+            ['name' => 'private document', 'filename' => 'private.xls'],
+            ['name' => 'public document', 'filename' => 'public.xls'],
+        ]);
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'    => 'New ticket',
+            'content' => 'content',
+        ]);
+
+        $this->createItems(Document_Item::class, [
+            [
+                'documents_id' => $private_document->getID(),
+                'items_id'     => $ticket->getID(),
+                'itemtype'     => \Ticket::class,
+                'is_private'   => 1,
+            ],
+            [
+                'documents_id' => $public_document->getID(),
+                'items_id'     => $ticket->getID(),
+                'itemtype'     => \Ticket::class,
+            ],
+        ]);
+
+        // --- arrange : post-only observes the ticket, with no right on documents ---
+        $this->login('post-only', 'postonly');
+        $_SESSION["glpiactiveprofile"][\Ticket::$rightname] = READ;
+        $this->createItem(\Ticket_User::class, [
+            'tickets_id' => $ticket->getID(),
+            'type'       => \CommonITILActor::OBSERVER,
+            'users_id'   => \Session::getLoginUserID(),
+        ]);
+        $ticket->getFromDB($ticket->getID());
+
+        $listed_documents = static function (\Ticket $ticket) use ($DB): array {
+            $criteria = Document_Item::getDocumentForItemRequest($ticket, ['assocdate DESC']);
+            return array_column(iterator_to_array($DB->request($criteria)), 'name');
+        };
+
+        // --- act + assert ---
+        // Only the public document is listed ...
+        $this->assertSame(['public document'], $listed_documents($ticket));
+
+        // ... unless post-only is allowed to see private documents
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = Document_Item::SEEPRIVATE;
+        $this->assertEqualsCanonicalizing(
+            ['private document', 'public document'],
+            $listed_documents($ticket)
+        );
+    }
 }
