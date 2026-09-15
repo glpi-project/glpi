@@ -6252,13 +6252,33 @@ HTML;
     private static function getLdapFieldValue($map, array $res)
     {
 
+        $has_placeholder = false;
+        $has_value       = false;
+
         $ret = preg_replace_callback(
             '/%{(.*)}/U',
-            fn($matches) => $res[0][$matches[1]][0] ?? '',
+            function ($matches) use ($res, &$has_placeholder, &$has_value) {
+                $has_placeholder = true;
+                $value = $res[0][$matches[1]][0] ?? '';
+                if ($value !== '') {
+                    $has_value = true;
+                }
+                return $value;
+            },
             $map
         );
 
-        return $ret == $map ? ($res[0][$map][0] ?? '') : $ret;
+        if ($has_placeholder) {
+            // A template with placeholders is only meaningful when at least one
+            // placeholder resolved to an actual value. When every placeholder is
+            // empty, only the static text remains (e.g. "Site - ") and it must
+            // not be treated as a real value, otherwise an incomplete location
+            // would be created during LDAP synchronization.
+            return $has_value ? $ret : '';
+        }
+
+        // No placeholder: the map is a plain field name, return its raw value.
+        return $res[0][$map][0] ?? '';
     }
 
     /**
