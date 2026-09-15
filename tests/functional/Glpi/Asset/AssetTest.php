@@ -393,4 +393,60 @@ class AssetTest extends DbTestCase
         ]);
         $this->assertFalse((new ($definition->getAssetClassName()))::canView());
     }
+
+    public function testTemplateUrlsAreUrlEncoded(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $definition = $this->initAssetDefinition();
+        $this->login();
+
+        $classname = $definition->getAssetClassName();
+        $encoded   = rawurlencode($classname);
+
+        // A namespaced class name contains backslashes, which are unsafe in a raw query
+        // value; they must be percent-encoded in the generated template URLs.
+        $menu = $classname::getMenuContent();
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=' . $encoded . '&add=1',
+            $menu['links']['add']
+        );
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=' . $encoded . '&add=0',
+            $menu['links']['template']
+        );
+        $this->assertStringNotContainsString('\\', $menu['links']['add']);
+        $this->assertStringNotContainsString('\\', $menu['links']['template']);
+
+        // The redirect back to the templates list after a template action encodes it too.
+        $saved_get = $_GET;
+        $_GET['withtemplate'] = 1;
+        try {
+            $redirect = (new $classname())->getRedirectToListUrl();
+        } finally {
+            $_GET = $saved_get;
+        }
+        $this->assertSame(
+            $CFG_GLPI['root_doc'] . '/front/setup.templates.php?add=0&itemtype=' . $encoded,
+            $redirect
+        );
+        $this->assertStringNotContainsString('\\', $redirect);
+    }
+
+    public function testTemplateUrlLeavesPlainItemtypeUnchanged(): void
+    {
+        $this->login();
+
+        // A non-namespaced itemtype has nothing to encode and must be untouched.
+        $menu = \Computer::getMenuContent();
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=Computer&add=1',
+            $menu['links']['add']
+        );
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=Computer&add=0',
+            $menu['links']['template']
+        );
+    }
 }
