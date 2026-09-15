@@ -116,8 +116,8 @@ class Document_Item extends CommonDBRelation
      *
      * Mirrors the restriction enforced by `self::canViewItem()` on display.
      *
-     * @return list<array{OR: array<string, mixed>}> Criteria to spread into a `WHERE` clause,
-     *                                                 empty when no restriction applies.
+     * @return list<array<string, mixed>> Criteria to spread into a `WHERE` clause,
+     *                                      empty when no restriction applies.
      */
     public static function getPrivacyRestrictionCriteria(): array
     {
@@ -125,11 +125,22 @@ class Document_Item extends CommonDBRelation
             return [];
         }
 
+        $users_id = Session::getLoginUserID();
+        if ($users_id === false) {
+            // Anonymous access (public FAQ, share token): no link can belong to the current
+            // user, and comparing `false` would match the ownerless links stored with a 0.
+            return [
+                [
+                    self::getTableField('is_private') => 0,
+                ],
+            ];
+        }
+
         return [
             [
                 'OR' => [
                     self::getTableField('is_private') => 0,
-                    self::getTableField('users_id')   => Session::getLoginUserID(),
+                    self::getTableField('users_id')   => $users_id,
                 ],
             ],
         ];
@@ -707,6 +718,7 @@ TWIG, $twig_params);
             $reverse_criteria['WHERE'] = [
                 'glpi_documents_items.documents_id' => $item->getID(),
                 'glpi_documents_items.itemtype' => $item::class,
+                ...self::getPrivacyRestrictionCriteria(),
             ];
             $criteria = ['FROM' => new QueryUnion([$criteria, $reverse_criteria])];
         }
