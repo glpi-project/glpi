@@ -48,8 +48,10 @@ use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\DashboardController;
 use Glpi\Api\HL\Controller\DropdownController;
 use Glpi\Api\HL\Controller\GraphQLController;
+use Glpi\Api\HL\Controller\HelpdeskController;
 use Glpi\Api\HL\Controller\InventoryController;
 use Glpi\Api\HL\Controller\ITILController;
+use Glpi\Api\HL\Controller\KanbanController;
 use Glpi\Api\HL\Controller\KnowbaseController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Controller\NotepadController;
@@ -95,7 +97,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.3.0';
+    public const API_VERSION = '2.4.0';
 
     /**
      * @var AbstractController[]
@@ -187,6 +189,12 @@ EOT;
                 'api_version' => '2',
                 'version' => '2.3.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
+                'deprecated' => true,
+            ],
+            [
+                'api_version' => '2',
+                'version' => '2.4.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.4',
             ],
         ];
     }
@@ -261,6 +269,8 @@ EOT;
             self::$instance->registerController(new KnowbaseController());
             self::$instance->registerController(new InventoryController());
             self::$instance->registerController(new NotificationController());
+            self::$instance->registerController(new HelpdeskController());
+            self::$instance->registerController(new KanbanController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
@@ -315,6 +325,16 @@ EOT;
             }
         }
         return self::$instance;
+    }
+
+    public function getRegisteredController(string $controller_class): ?AbstractController
+    {
+        foreach ($this->controllers as $controller) {
+            if ($controller::class === $controller_class) {
+                return $controller;
+            }
+        }
+        return null;
     }
 
     /**

@@ -192,31 +192,19 @@ class KnowbaseController extends AbstractController
                             ],
                         ],
                     ],
-                    'translations' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'KBArticleTranslation',
-                            'x-join' => [
-                                'table' => KnowbaseItemTranslation::getTable(),
-                                'fkey' => 'id',
-                                'field' => KnowbaseItem::getForeignKeyField(),
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'readOnly' => true,
-                                ],
+                    'translations' => self::getChildrenTypeSchema(
+                        parent_class: KnowbaseItem::class,
+                        class: KnowbaseItemTranslation::class,
+                        full_schema: 'KBArticleTranslation',
+                        params: [
+                            'additional_properties' => [
                                 'language' => [
                                     'type' => Doc\Schema::TYPE_STRING,
                                     'description' => 'Language code (POSIX compliant format e.g. en_US or fr_FR)',
                                 ],
-                                'name' => ['type' => Doc\Schema::TYPE_STRING],
                             ],
                         ],
-                    ],
+                    ),
                 ],
             ],
             'KBCategory' => [
@@ -261,24 +249,12 @@ class KnowbaseController extends AbstractController
                         'description' => 'Language code (POSIX compliant format e.g. en_US or fr_FR)',
                     ],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                    'parent' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'KBArticleComment',
-                        'x-field' => 'parent_comment_id',
-                        'x-itemtype' => KnowbaseItem_Comment::class,
-                        'x-join' => [
-                            'table' => KnowbaseItem_Comment::getTable(),
-                            'fkey' => 'parent_comment_id',
-                            'field' => 'id',
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'readOnly' => true,
-                            ],
-                        ],
-                    ],
+                    'parent' => self::getDropdownTypeSchema(
+                        class: KnowbaseItem_Comment::class,
+                        field: 'parent_comment_id',
+                        name_field: null,
+                        full_schema: 'KBArticleComment'
+                    ),
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],

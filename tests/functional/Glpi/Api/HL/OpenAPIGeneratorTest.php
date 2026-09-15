@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Api\HL;
 
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\Schemas;
 use Glpi\Tests\HLAPITestCase;
 
 class OpenAPIGeneratorTest extends HLAPITestCase
@@ -196,6 +197,14 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                 continue;
             }
 
+            // If an enum is present in the property, it should be sorted for stable comparison
+            if (isset($snapshot_prop['enum'])) {
+                sort($snapshot_prop['enum']);
+            }
+            if (isset($schema_prop['enum'])) {
+                sort($schema_prop['enum']);
+            }
+
             // Recursively compare nested properties
             if (isset($snapshot_prop['properties'], $schema_prop['properties'])) {
                 $nested_diffs = $this->diffSchemaProperties(
@@ -306,6 +315,48 @@ class OpenAPIGeneratorTest extends HLAPITestCase
             if (!empty($path_differences) || !empty($component_differences)) {
                 $this->fail("Schema for v{$version} does not match snapshot:\n" . implode("\n", $path_differences + $component_differences));
             }
+        }
+    }
+
+    public function testCommonOpenAPITypos(): void
+    {
+        $typos = [];
+
+        $fn_check_props = static function ($properties, $parent_path) use (&$fn_check_props, &$typos) {
+            foreach ($properties as $prop_name => $prop) {
+                if (isset($prop['min'])) {
+                    $typos[$parent_path . '.' . $prop_name]['min'] = 'minimum';
+                }
+                if (isset($prop['max'])) {
+                    $typos[$parent_path . '.' . $prop_name]['max'] = 'maximum';
+                }
+                if (isset($prop['step'])) {
+                    $typos[$parent_path . '.' . $prop_name]['step'] = 'multipleOf';
+                }
+
+                if ($prop['type'] === 'object' && isset($prop['properties'])) {
+                    $fn_check_props($prop['properties'], $parent_path . '.' . $prop_name);
+                } elseif ($prop['type'] === 'array' && isset($prop['items']['properties'])) {
+                    $fn_check_props($prop['items']['properties'], $parent_path . '.' . $prop_name . '[]');
+                }
+            }
+        };
+
+        $schemas = Schemas::getInstance()->getAllSchemas(true);
+        foreach ($schemas as $schema_name => $schema) {
+            $fn_check_props($schema['properties'] ?? $schema['items']['properties'] ?? [], $schema_name);
+        }
+
+        if (!empty($typos)) {
+            self::fail("Found possible typos in OpenAPI schema: \n\t" . implode("\n\t", array_map(
+                static fn($path, $typo) => "$path: " . implode(', ', array_map(
+                    static fn($wrong, $correct) => "'$wrong' should be '$correct'",
+                    array_keys($typo),
+                    array_values($typo)
+                )),
+                array_keys($typos),
+                $typos
+            )));
         }
     }
 }
