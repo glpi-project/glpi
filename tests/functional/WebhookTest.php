@@ -41,6 +41,7 @@ use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
+use RequestType;
 use Ticket;
 use User;
 use Webhook;
@@ -438,6 +439,82 @@ JSON;
         ]);
 
         // Assert: one webhook request should have been added to the queue
+        $this->assertEquals(
+            $base_count + 1,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+    }
+
+    public function testWebhookFilterOnParentItemMetaCriteria(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Request source used to distinguish a matching parent ticket from a non-matching one.
+        $request_type = $this->createItem(RequestType::class, [
+            'name'            => 'Filtered source',
+            'is_active'       => 1,
+            'is_itilfollowup' => 1,
+            'is_ticketheader' => 1,
+        ]);
+
+        // Webhook on followups, filtered on the parent ticket request source (a meta criterion).
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        // Search option 9 is the request source of the ticket itself.
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype'        => Webhook::class,
+            'items_id'        => $webhook->getID(),
+            'search_itemtype' => ITILFollowup::class,
+            'search_criteria' => json_encode([
+                [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'meta'       => true,
+                    'field'      => '9',
+                    'searchtype' => 'equals',
+                    'value'      => (string) $request_type->getID(),
+                ],
+            ]),
+        ], ['search_criteria']);
+
+        $matching_ticket = $this->createItem(Ticket::class, [
+            'name'            => 'Matching ticket',
+            'content'         => 'Matching ticket content',
+            'entities_id'     => $entity_id,
+            'requesttypes_id' => $request_type->getID(),
+        ]);
+        $other_ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Other ticket',
+            'content'     => 'Other ticket content',
+            'entities_id' => $entity_id,
+        ]);
+
+        // A followup on the non-matching ticket must not trigger the webhook.
+        $base_count = $this->countQueuedRequestForWebhook($webhook);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $other_ticket->getID(),
+            'content'  => 'Followup on non-matching ticket',
+        ]);
+        $this->assertEquals(
+            $base_count,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+
+        // A followup on the matching ticket must trigger the webhook.
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $matching_ticket->getID(),
+            'content'  => 'Followup on matching ticket',
+        ]);
         $this->assertEquals(
             $base_count + 1,
             $this->countQueuedRequestForWebhook($webhook),
