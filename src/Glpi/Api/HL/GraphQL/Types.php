@@ -36,6 +36,7 @@ namespace Glpi\Api\HL\GraphQL;
 
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\GraphQL\Type\DateTimeType;
+use Glpi\Api\HL\GraphQL\Type\EncryptedStringType;
 use Glpi\Api\HL\Schemas;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
@@ -54,6 +55,9 @@ class Types
             if ($type_name === DateTimeType::dateTime()->name) {
                 self::$types[$type_name] = DateTimeType::dateTime();
                 return self::$types[$type_name];
+            }
+            if ($type_name === EncryptedStringType::encryptedString()->name) {
+                return EncryptedStringType::encryptedString();
             }
             $schema = Schemas::getInstance($api_version)->getSchema($type_name);
             if ($schema === null) {
@@ -110,7 +114,10 @@ class Types
             && $property['format'] === Doc\Schema::FORMAT_STRING_DATE_TIME
         ) {
             $graphql_type = DateTimeType::dateTime();
+        } elseif ($graphql_type === Type::string() && ($property['x-encrypted'] ?? false) === true) {
+            $graphql_type = EncryptedStringType::encryptedString();
         }
+
         if ($graphql_type !== null) {
             $type_config = ['type' => $graphql_type];
             if (isset($property['x-graphql-resolver'])) {
