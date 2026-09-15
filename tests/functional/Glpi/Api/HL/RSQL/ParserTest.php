@@ -203,23 +203,23 @@ class ParserTest extends GLPITestCase
             ],
             [
                 [[5, 'name'], [6, '=empty='], [7, 'test']],
-                "(((`_`.`name` = ?) OR (`_`.`name` IS NULL)))",
-                [''],
+                "((CAST(`_`.`name` AS CHAR) = '' OR (`_`.`name` IS NULL)))",
+                [],
             ],
             [
                 [[5, 'name'], [6, '=empty='], [8, '']],
-                "(((`_`.`name` = ?) OR (`_`.`name` IS NULL)))",
-                [''],
+                "((CAST(`_`.`name` AS CHAR) = '' OR (`_`.`name` IS NULL)))",
+                [],
             ],
             [
                 [[5, 'name'], [6, '=notempty='], [7, 'test']],
-                "(((`_`.`name` <> ?) AND  NOT (`_`.`name` IS NULL)))",
-                [''],
+                "((CAST(`_`.`name` AS CHAR) <> '' AND  NOT (`_`.`name` IS NULL)))",
+                [],
             ],
             [
                 [[5, 'name'], [6, '=notempty='], [8, '']],
-                "(((`_`.`name` <> ?) AND  NOT (`_`.`name` IS NULL)))",
-                [''],
+                "((CAST(`_`.`name` AS CHAR) <> '' AND  NOT (`_`.`name` IS NULL)))",
+                [],
             ],
             [
                 [[5, 'name'], [6, '=notlike='], [7, 'test']],
