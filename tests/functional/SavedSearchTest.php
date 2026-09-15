@@ -350,6 +350,40 @@ class SavedSearchTest extends DbTestCase
         $this->assertEquals(0, $ma->results['ok']);
     }
 
+    public function testCreateNotifUsesSavedSearchEntity()
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+
+        $savedsearch = $this->createItem(SavedSearch::class, [
+            'name'         => __FUNCTION__,
+            'entities_id'  => $entity_id,
+            'is_recursive' => 1,
+            'users_id'     => $_SESSION['glpiID'],
+            'itemtype'     => Ticket::class,
+            'is_private'   => 0,
+            'type'         => 1,
+            'url'          => '/front/ticket.php',
+        ], ['url']);
+
+        // Reproduce the reported condition: the user has no single default
+        // entity, so the previous code would insert a null `entities_id`.
+        $_SESSION['glpidefault_entity'] = null;
+
+        $savedsearch->createNotif();
+
+        $notif = new \Notification();
+        // The notification must be created (previously the insert failed with a
+        // null entities_id, yet a success message was still shown).
+        $this->assertTrue(
+            $notif->getFromDBByCrit(['event' => 'alert_' . $savedsearch->getID()])
+        );
+        // It must be created in the saved search entity, not the user default.
+        $this->assertEquals($entity_id, (int) $notif->fields['entities_id']);
+        $this->assertEquals(1, (int) $notif->fields['is_recursive']);
+    }
+
     public function testPrepareInputAdd()
     {
         $this->login();
