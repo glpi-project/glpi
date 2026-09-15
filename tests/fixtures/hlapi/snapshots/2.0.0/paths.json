@@ -70,20 +70,7 @@
     "/{req}": {
         "get": {
             "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                },
-                "404": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                }
+                "200": []
             },
             "parameters": [
                 {
@@ -107,20 +94,7 @@
         },
         "post": {
             "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                },
-                "404": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                },
+                "200": [],
                 "201": {
                     "headers": [],
                     "content": {
@@ -164,20 +138,7 @@
         },
         "patch": {
             "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                },
-                "404": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                }
+                "200": []
             },
             "parameters": [
                 {
@@ -201,20 +162,7 @@
         },
         "put": {
             "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                },
-                "404": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                }
+                "200": []
             },
             "parameters": [
                 {
@@ -238,20 +186,7 @@
         },
         "delete": {
             "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                },
-                "404": {
-                    "content": {
-                        "application/json": {
-                            "schema": []
-                        }
-                    }
-                }
+                "200": []
             },
             "parameters": [
                 {
