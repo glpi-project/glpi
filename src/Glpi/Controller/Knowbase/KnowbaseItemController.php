@@ -221,10 +221,10 @@ final class KnowbaseItemController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // Same sanitizer as updateAnswer(), so the preview matches storage.
+        // Same sanitizer as updateAnswer(), so the preview matches storage. `is_html`: the dialog field holds HTML by definition.
         return new JsonResponse([
             'success' => true,
-            'html'    => RichText::getSafeHtml($html),
+            'html'    => RichText::getSafeHtml($html, false, true),
         ]);
     }
 

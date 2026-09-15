@@ -104,6 +104,45 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.complete)).toBe(true);
             expect(await page.evaluate(() => (window as Window & { __kbXss?: boolean }).__kbXss)).toBeUndefined();
         });
+
+        test('A block copied right after insertion survives being pasted back', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'HTML block copy round-trip',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('HTML Block');
+
+            const dialog = kb.htmlBlockDialog;
+            // `@` is numerically encoded by the sanitizer but not by the browser, so the node attribute and its clipboard form differ until the block has made a round trip through the DOM.
+            await dialog.getByLabel('HTML source').fill('<p>Mail: bob@corp.tld</p>');
+            await expect(dialog.getByRole('button', { name: 'Save' })).toBeEnabled();
+            await dialog.getByRole('button', { name: 'Save' }).click();
+            await expect(dialog).toBeHidden();
+            await expect(kb.htmlBlock).toContainText('Mail: bob@corp.tld');
+
+            // Select the freshly inserted node, then copy and paste it back over itself.
+            await kb.htmlBlock.getByText('Mail: bob@corp.tld').click();
+            await page.evaluate(() => {
+                const data = new DataTransfer();
+                const target = document.activeElement;
+                target?.dispatchEvent(new ClipboardEvent('copy', { clipboardData: data, bubbles: true, cancelable: true }));
+                target?.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
+            });
+
+            // Still a block, not unwrapped into a bare paragraph.
+            await expect(kb.htmlBlock).toHaveCount(1);
+            await expect(kb.htmlBlock).toContainText('Mail: bob@corp.tld');
+        });
     });
 
     test.describe('Slash command /HTML Block dialog', () => {
@@ -227,12 +266,12 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             await expect(cancelBtn).toBeFocused();
         });
 
-        test('Source with no rich-text tag is escaped to visible text, not rejected', async ({ page, profile, api }) => {
+        test('Source with nothing left after sanitizing cannot be saved', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
 
             const id = await api.createItem('KnowbaseItem', {
-                name: 'HTML block plain-text fallback',
+                name: 'HTML block fully stripped source',
                 entities_id: getWorkerEntityId(),
                 answer: '<p>Content</p>',
             });
@@ -247,13 +286,44 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
             const dialog = kb.htmlBlockDialog;
             await dialog.getByLabel('HTML source').fill('<script>alert(1)</script>');
 
-            // `getSafeHtml()` escapes unknown tags, so the brackets stay visible.
-            await expect(dialog.getByRole('region', { name: 'Preview' }))
-                .toContainText('<script>alert(1)</script>');
-            await expect(dialog.getByRole('button', { name: 'Save' })).toBeEnabled();
+            // `<script>` is dropped with its contents, so nothing remains to insert.
+            await expect(dialog.getByRole('alert')).toContainText('Nothing safe to insert');
+            await expect(dialog.getByRole('region', { name: 'Preview' })).toBeEmpty();
+            await expect(dialog.getByRole('button', { name: 'Save' })).toBeDisabled();
+        });
 
+        test('Source using tags outside the rich-text guess is rendered, not escaped', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'HTML block uncommon tags',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('HTML Block');
+
+            const dialog = kb.htmlBlockDialog;
+            // None of these tags is in `isRichTextHtmlContent()`'s list, but the sanitizer allows them all.
+            await dialog.getByLabel('HTML source').fill('<figure><figcaption>Schema</figcaption></figure>');
+
+            // `toHaveText` is exact: escaped source would read '<figure><figcaption>Schema</figcaption></figure>'.
+            await expect(dialog.getByRole('region', { name: 'Preview' })).toHaveText('Schema');
             await dialog.getByRole('button', { name: 'Save' }).click();
-            await expect(kb.htmlBlock).toContainText('<script>alert(1)</script>');
+            await expect(dialog).toBeHidden();
+
+            await expect(kb.htmlBlock).toHaveText('Schema');
+
+            await kb.editor.save();
+            await page.reload();
+            await kb.editor.enterEditMode();
+            await expect(kb.htmlBlock).toHaveText('Schema');
         });
 
         test('Save stays disabled when the sanitize request fails', async ({ page, profile, api }) => {

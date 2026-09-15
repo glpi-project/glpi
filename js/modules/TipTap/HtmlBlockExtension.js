@@ -49,6 +49,31 @@ const { Plugin } = TiptapPMState;
  */
 const copiedHtml = new Set();
 
+const COPIED_HTML_LIMIT = 20;
+
+const inertDocument = document.implementation.createHTMLDocument('');
+
+/**
+ * HTML as the browser serializes it. `attrs.html` holds the sanitizer output until the block round-trips through the DOM, and the two forms differ
+ * (`&#64;` vs `@`, `<img />` vs `<img>`). The document is inert, so parsing pasted markup loads nothing and fires no `onerror`.
+ *
+ * @param {string} html
+ * @returns {string}
+ */
+const normalizeHtml = (html) => {
+    const div = inertDocument.createElement('div');
+    div.innerHTML = html || '';
+    return div.innerHTML;
+};
+
+const rememberHtml = (html) => {
+    copiedHtml.add(normalizeHtml(html));
+    // A `Set` iterates in insertion order. ponytail: plain cap, make it an LRU if a real workflow ever overflows it.
+    while (copiedHtml.size > COPIED_HTML_LIMIT) {
+        copiedHtml.delete(copiedHtml.values().next().value);
+    }
+};
+
 export const HtmlBlock = Node.create({
     name: 'kbHtmlBlock',
     group: 'block',
@@ -88,7 +113,7 @@ export const HtmlBlock = Node.create({
         const unwrapBlocks = (fragment) => {
             const nodes = [];
             fragment.forEach((child) => {
-                if (child.type === type && !copiedHtml.has(child.attrs.html || '')) {
+                if (child.type === type && !copiedHtml.has(normalizeHtml(child.attrs.html))) {
                     const doc = createNodeFromContent(child.attrs.html || '', schema, { slice: false });
                     unwrapBlocks(doc.content).forEach((node) => nodes.push(node));
                 } else {
@@ -104,7 +129,7 @@ export const HtmlBlock = Node.create({
         const rememberCopiedBlocks = (view) => {
             view.state.selection.content().content.descendants((node) => {
                 if (node.type === type) {
-                    copiedHtml.add(node.attrs.html || '');
+                    rememberHtml(node.attrs.html);
                 }
             });
             return false;

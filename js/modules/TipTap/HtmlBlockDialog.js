@@ -152,8 +152,7 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
             if (sourceInput.value !== raw) {
                 return;
             }
-            // Unreachable today: `getSafeHtml()` escapes unknown tags rather
-            // than emptying. Guards against a sanitizer change.
+            // Reached when every tag is dropped, e.g. a lone `<script>`.
             if (!data.success || data.html.trim() === '') {
                 lastSanitizedHtml = null;
                 saveBtn.disabled = true;
