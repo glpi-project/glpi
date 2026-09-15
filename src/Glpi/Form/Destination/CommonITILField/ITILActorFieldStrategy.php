@@ -142,10 +142,13 @@ enum ITILActorFieldStrategy: string
                 ],
             ];
         } else {
+            $current_user = new User();
+            $current_user->getFromDB($user_id);
             return [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $user_id,
+                    'items_id' => (int) $user_id,
+                    'use_notification' => (int) $current_user->isUserNotificationEnable(),
                 ],
             ];
         }

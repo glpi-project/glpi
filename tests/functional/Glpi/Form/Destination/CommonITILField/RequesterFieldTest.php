@@ -144,10 +144,31 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             answers: [],
             expected_actors: [
                 [
-                    'items_id' => $auth->getUser()->getID(),
-                    'itemtype' => User::class,
-                    // Make sure notifications are enabled
+                    'items_id'         => $auth->getUser()->getID(),
+                    'itemtype'         => User::class,
                     'use_notification' => 1,
+                ],
+            ]
+        );
+
+        // User with notifications explicitly disabled: use_notification must be 0
+        $user_no_notif = $this->createItem(User::class, [
+            'name'                    => 'testRequesterFormFiller NoNotif',
+            'password'                => 'testRequesterFormFiller NoNotif',
+            'password2'               => 'testRequesterFormFiller NoNotif',
+            'is_notif_enable_default' => 0,
+        ], ['password', 'password2']);
+
+        $this->login($user_no_notif->fields['name'], $user_no_notif->fields['name']);
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_config,
+            answers: [],
+            expected_actors: [
+                [
+                    'items_id'         => $user_no_notif->getID(),
+                    'itemtype'         => User::class,
+                    'use_notification' => 0,
                 ],
             ]
         );
@@ -197,6 +218,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             [
                 'itemtype'          => User::class,
                 'items_id'          => $post_only_id,
+                'use_notification'  => 1,
             ],
             $actors[0]
         );

@@ -938,7 +938,7 @@ TWIG, $twig_params);
                     'completename' => $input['completename'],
                 ],
             ];
-            if ($this->isEntityAssign()) {
+            if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',
@@ -963,7 +963,7 @@ TWIG, $twig_params);
                     $fk      => ($input[$fk] ?? 0),
                 ],
             ];
-            if ($this->isEntityAssign()) {
+            if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',

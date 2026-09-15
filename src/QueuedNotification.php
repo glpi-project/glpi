@@ -573,7 +573,9 @@ class QueuedNotification extends CommonDBTM
                 'mode'         => 'TOFILL',
                 'send_time'    => ['<=', $send_time],
             ] +  $extra_where,
-            'ORDER'  => 'send_time ASC',
+            // `id` breaks ties so notifications queued in the same second are
+            // still sent in the order they were created (oldest first).
+            'ORDER'  => ['send_time ASC', 'id ASC'],
             'START'  => 0,
             'LIMIT'  => $limit,
         ];
