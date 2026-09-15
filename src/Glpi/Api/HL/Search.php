@@ -653,6 +653,7 @@ final class Search
     /**
      * @param bool $count_only
      * @return RecordSet|int
+     * @phpstan-return ($count_only is true ? int : RecordSet)
      * @throws APIException
      * @throws RSQLException
      */
@@ -841,7 +842,7 @@ final class Search
      * @param array $schema
      * @param array $request_params
      * @return array The search results
-     * @phpstan-return array{results: array, start: int, limit: int, total: int}
+     * @phpstan-return array{results: list<array<string, mixed>>, start: int, limit: int, total: int}
      * @throws RSQLException|APIException
      */
     public static function getSearchResultsBySchema(array $schema, array $request_params): array
@@ -916,8 +917,8 @@ final class Search
 
         return [
             'results' => array_values($results),
-            'start' => $criteria['START'] ?? 0,
-            'limit' => $criteria['LIMIT'] ?? count($results),
+            'start' => (int) ($criteria['START'] ?? 0),
+            'limit' => (int) ($criteria['LIMIT'] ?? count($results)),
             'total' => $total,
         ];
     }
