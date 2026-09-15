@@ -106,11 +106,7 @@ test.describe('Item form question type', () => {
         const question = form.getLastQuestion();
         await question.click({ position: { x: 0, y: 0 } });
 
-        await form.doSetDropdownValue(
-            form.getDropdownByLabel('Select an itemtype', question)
-                .filter({ visible: true }),
-            'Tickets'
-        );
+        await form.setItemTypeForItemQuestion(question, 'Tickets', true);
 
         await form.doSetDropdownValue(
             form.getDropdownByLabel('Select an item', question)
@@ -140,12 +136,8 @@ test.describe('Item form question type', () => {
         const question = form.getLastQuestion();
         await question.click({ position: { x: 0, y: 0 } });
         
-        await form.doSetDropdownValue(
-            form.getDropdownByLabel('Select an itemtype', question)
-                .filter({ visible: true }),
-            'Tickets'
-        );
-        
+        await form.setItemTypeForItemQuestion(question, 'Tickets', true);
+
         await form.doEnableMultipleDropdownMode(question);
 
         await form.doSetDropdownValue(
@@ -175,25 +167,15 @@ test.describe('Item form question type', () => {
         await question.click({ position: { x: 0, y: 0 } });
 
         await form.setSubQuestionType(question, 'Dropdowns');
-        await form.doSetDropdownValue(
-            form.getDropdownByLabel('Select a dropdown type', question)
-                .filter({ visible: true }),
-            'ITIL categories'
-        );
+        await form.setDropdownQuestionType(question, 'ITIL categories');
 
-        // Select the new ITIL category as default value.
-        // Tree dropdowns may display the same value multiple times (with a
-        // "»" depth prefix), so the first matching option is used.
+        // This is a remote (ajax-type) select2 dropdown: it only loads real options
+        // once queried, so the search term must be typed to trigger that query
+        // (see itilcategory.spec.ts, which does the same for the same widget kind).
         const item_dropdown = form
             .getDropdownByLabel('Select a dropdown item', question)
             .filter({ visible: true });
-        await item_dropdown.click();
-        await form.page
-            .getByRole('listbox')
-            .getByRole('option', { name: 'Test ITIL category' })
-            .first()
-            .click();
-        await expect(item_dropdown).toContainText('Test ITIL category');
+        await form.doSearchAndClickDropdownValue(item_dropdown, 'Test ITIL category');
 
         // Save and check the default value is set in the preview
         await form.doSaveFormEditor();

@@ -109,6 +109,7 @@ export class FormPage extends GlpiPage
             type,
             false
         );
+        await this.waitForQuestionIdle(question);
     }
 
     public async setSubQuestionType(question: Locator, type: string): Promise<void>
@@ -119,16 +120,35 @@ export class FormPage extends GlpiPage
             type,
             false
         );
+        await this.waitForQuestionIdle(question);
     }
 
-    public async setItemTypeForItemQuestion(question: Locator, item_type: string): Promise<void>
+    public async setItemTypeForItemQuestion(question: Locator, item_type: string, exact: boolean = false): Promise<void>
     {
         await this.doSetDropdownValue(
             this.getDropdownByLabel('Select an itemtype', question)
                 .filter({visible : true}),
             item_type,
-            false
+            exact
         );
+        await this.waitForQuestionIdle(question);
+    }
+
+    public async setDropdownQuestionType(question: Locator, type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Select a dropdown type', question)
+                .filter({visible : true}),
+            type
+        );
+        await this.waitForQuestionIdle(question);
+    }
+
+    private async waitForQuestionIdle(question: Locator): Promise<void>
+    {
+        // Condition check flags data-glpi-loading; default value AJAX reloads flag the old widget with data-to-remove.
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(question.locator('[data-glpi-loading="true"], [data-to-remove]')).toHaveCount(0);
     }
 
     public async addComment(name: string): Promise<Locator>
