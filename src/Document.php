@@ -779,6 +779,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'WHERE' => [
                 'documents_id' => $this->fields['id'],
                 'OR' => $conditions,
+                ...Document_Item::getPrivacyRestrictionCriteria(),
             ],
         ])->current();
 
@@ -819,6 +820,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'WHERE' => [
                 'documents_id' => $this->fields['id'],
                 $itil->getAssociatedDocumentsCriteria(),
+                ...Document_Item::getPrivacyRestrictionCriteria(),
             ],
             'LIMIT' => 1, // Only need to see one result
         ])->current();
@@ -868,6 +870,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 'itemtype'     => $itemtype,
                 'items_id'     => $items_id,
                 'documents_id' => $this->getID(),
+                ...Document_Item::getPrivacyRestrictionCriteria(),
             ],
         ])->current();
 

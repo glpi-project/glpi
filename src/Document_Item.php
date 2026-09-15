@@ -109,6 +109,32 @@ class Document_Item extends CommonDBRelation
         return true;
     }
 
+    /**
+     * Returns criteria restricting a `glpi_documents_items` query to the links the current user
+     * is allowed to see, i.e. excluding the private ones when the user does not hold the
+     * `self::SEEPRIVATE` right and is not the author of the link.
+     *
+     * Mirrors the restriction enforced by `self::canViewItem()` on display.
+     *
+     * @return list<array{OR: array<string, mixed>}> Criteria to spread into a `WHERE` clause,
+     *                                                 empty when no restriction applies.
+     */
+    public static function getPrivacyRestrictionCriteria(): array
+    {
+        if (Session::haveRight(Document::$rightname, self::SEEPRIVATE)) {
+            return [];
+        }
+
+        return [
+            [
+                'OR' => [
+                    self::getTableField('is_private') => 0,
+                    self::getTableField('users_id')   => Session::getLoginUserID(),
+                ],
+            ],
+        ];
+    }
+
     public function prepareInputForAdd($input)
     {
         if (empty($input['itemtype'])) {
