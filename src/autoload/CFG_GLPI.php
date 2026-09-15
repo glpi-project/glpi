@@ -462,7 +462,7 @@ $CFG_GLPI['globalsearch_types']           = [Computer::class, Contact::class, Co
     Document::class,  Monitor::class,
     NetworkEquipment::class, Peripheral::class, Phone::class,
     Printer::class, Software::class, SoftwareLicense::class,
-    Ticket::class, Problem::class, Change::class,
+    Ticket::class, Problem::class, Change::class, Location::class,
     User::class, Group::class, Project::class, Supplier::class,
     Budget::class, Certificate::class, Line::class, Datacenter::class,
     DCRoom::class, Enclosure::class, PDU::class, Rack::class, Cluster::class, PassiveDCEquipment::class,
