@@ -303,9 +303,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                     // manage inline images (and not added as documents in object)
                     // The str_contains() check avoids running the regex on the
-                    // whole body when there is no inline document reference. It
-                    // also prevents a backtrack limit error when the body holds a
-                    // large inline "data:image/...;base64,..." value (see #25265).
+                    // whole body when there is no inline document reference.
                     $matches = [];
                     if (
                         str_contains($current->fields['body_html'], 'document.send.php')
