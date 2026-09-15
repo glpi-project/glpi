@@ -532,7 +532,7 @@ abstract class AbstractController
             'upload_as' => $upload_as,
         ];
         if ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
-            $params['allowed_specifiers'] = ['image/gif', 'image/png', 'image/jpeg', 'image/bmp', 'image/webp'];
+            $params['allowed_specifiers'] = FileManager::getUploadablePictureSpecifiers();
         } else {
             $params['allowed_specifiers'] = FileManager::getUploadableFileSpecifiers();
         }

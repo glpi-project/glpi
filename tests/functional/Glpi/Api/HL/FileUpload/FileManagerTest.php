@@ -43,14 +43,15 @@ class FileManagerTest extends DbTestCase
     {
         // Ensure an img tag with a declared mime type that doesn't match the actual file is removed - security measure
         $html = '<p>Here is an image: <img src="data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAEElEQVR4nGLK06gFBAAA//8CIwEWK2unAQAAAABJRU5ErkJggg==" alt="test image"></p>';
-        $this->assertEquals('<p>Here is an image: </p>', trim(FileManager::handleInlineImagesInHTML($html)));
+        $this->assertEquals('<p>Here is an image: </p>', trim(FileManager::handleInlineImagesInHTML($html, 0, false)));
     }
 
     public function testHandleInlineImagesInHTML_ValidImage(): void
     {
         // Ensure an img tag with a valid base64 image is processed correctly
-        $html = '<p>Here is an image: <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAEElEQVR4nGLK06gFBAAA//8CIwEWK2unAQAAAABJRU5ErkJggg==" alt="test image"></p>';
-        $processedHtml = FileManager::handleInlineImagesInHTML($html);
+        $html = '<p>Été déjà</p><p>Here is an image: <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAEElEQVR4nGLK06gFBAAA//8CIwEWK2unAQAAAABJRU5ErkJggg==" alt="test image"></p>';
+        $processedHtml = FileManager::handleInlineImagesInHTML($html, 0, false);
+        $this->assertStringContainsString('<p>Été déjà</p>', $processedHtml);
         $this->assertStringContainsString('document.send.php?docid=', $processedHtml);
         $this->assertStringContainsString('alt="test image"', $processedHtml);
         $this->assertStringNotContainsString('data:image/png;base64', $processedHtml);
