@@ -877,5 +877,13 @@ EOT;
                     $this->assertStringNotContainsString('picture.png', $content['picture']);
                 });
         });
+
+        $this->api->call(new Request('GET', $new_location . '/Picture'), function ($call) {
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->assertNotEmpty($content);
+                });
+        });
     }
 }

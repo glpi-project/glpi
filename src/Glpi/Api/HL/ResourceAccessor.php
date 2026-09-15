@@ -36,7 +36,9 @@ namespace Glpi\Api\HL;
 
 use CommonDBTM;
 use CommonGLPI;
+use CommonITILObject;
 use Document;
+use Document_Item;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\FileUpload\FileManager;
@@ -174,7 +176,7 @@ final class ResourceAccessor
                 }
             }
 
-            if (isset($prop['x-file-upload-options']) || isset($prop['x-file-removal-options'])) {
+            if (isset($prop['x-file-upload-options'])) {
                 // File uploads and removals are handled elsewhere. Skipping for file uploads here also prevents user's from specifying existing documents/files which is not desired at this point or validated for permissions.
                 continue;
             }
@@ -333,14 +335,18 @@ final class ResourceAccessor
      */
     private static function handleRichTextInputs(array $schema, array $input, array &$created_documents): array
     {
+        $entities_id = $input['entities_id'] ?? Session::getActiveEntity();
+        $is_recursive = (bool) ($input['is_recursive'] ?? false);
+
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         foreach ($flattened_properties as $prop_name => $prop) {
             if (isset($prop['format']) && $prop['format'] === Doc\Schema::FORMAT_STRING_HTML) {
                 if (isset($prop['x-supports-inline-images'])) {
+                    $field_name = self::resolveInternalFieldNameForProperty($prop_name, $prop);
                     // Need to extract base64 data uris from img tags and upload them as documents, replacing the src with the document URL
-                    $html = ArrayPathAccessor::getElementByArrayPath($input, $prop_name);
-                    if ($html !== null && ($html = FileManager::handleInlineImagesInHTML($html, $created_documents)) !== false) {
-                        ArrayPathAccessor::setElementByArrayPath($input, $prop_name, $html);
+                    $html = $input[$field_name] ?? null;
+                    if ($html !== null && ($html = FileManager::handleInlineImagesInHTML($html, $entities_id, $is_recursive, $created_documents)) !== false) {
+                        $input[$field_name] = $html;
                     }
                 }
             }
@@ -425,7 +431,7 @@ final class ResourceAccessor
                     if (!FileManager::isDocumentUploadAllowed($mime, $ext)) {
                         throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
                     }
-                    $result = FileManager::uploadAsDocument($file);
+                    $result = FileManager::uploadAsDocument($file, $item->getEntityID() > 0 ? $item->getEntityID() : 0, $item->isRecursive());
                     if ($result === null) {
                         throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
                     } elseif (is_int($result)) {
@@ -463,7 +469,7 @@ final class ResourceAccessor
 
         if ($new_input !== []) {
             $new_input['id'] = $item->getID();
-            if (!$item->update($new_input, false)) {
+            if (!$item->update($new_input)) {
                 throw new RuntimeException('Failed to handle post-create/update actions');
             }
         }
@@ -656,6 +662,15 @@ final class ResourceAccessor
         if ($items_id) {
             try {
                 self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
+                foreach ($created_documents as $doc) {
+                    $doc_item = new Document_Item();
+                    $doc_item->add([
+                        'documents_id' => $doc->getID(),
+                        'items_id' => $items_id,
+                        'itemtype' => $item::class,
+                        'timeline_position' => CommonITILObject::NO_TIMELINE,
+                    ]);
+                }
             } catch (Throwable $e) {
                 $DB->rollBack();
                 $message = (new APIException())->getUserMessage();

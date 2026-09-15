@@ -103,6 +103,11 @@ final class FileManager
         return $specifiers;
     }
 
+    public static function getUploadablePictureSpecifiers(): array
+    {
+        return array_keys(self::$image_mime_to_extension_map);
+    }
+
     public static function isDocumentUploadAllowed(string $file_mime, string $extension): bool
     {
         $specifiers = self::getUploadableFileSpecifiers();
@@ -129,6 +134,9 @@ final class FileManager
             return UPLOAD_ERR_CANT_WRITE;
         }
         $dest = Document::getUploadFileValidLocationName(strtoupper($ext), $uploaded_file->getHash());
+        if (empty($dest)) {
+            return UPLOAD_ERR_CANT_WRITE;
+        }
         $target_path = GLPI_DOC_DIR . '/' . $dest;
         if (!file_exists($target_path)) {
             try {
@@ -149,9 +157,11 @@ final class FileManager
      * Creates a Document with the uploaded file.
      * This function assumes the file is authorized to be uploaded and meets the GLPI file size requirements.
      * @param HashedUploadedFile $uploaded_file The file to upload
+     * @param int $entities_id The ID of the entity to associate with the Document
+     * @param bool $recursive Whether to apply the entity association recursively to child entities
      * @return Document|int|null An array containing the ID of the created Document, an error status, or null if the Document could not be created
      */
-    public static function uploadAsDocument(HashedUploadedFile $uploaded_file): Document|int|null
+    public static function uploadAsDocument(HashedUploadedFile $uploaded_file, int $entities_id, bool $recursive): Document|int|null
     {
         $result = self::uploadFile($uploaded_file);
         if (is_int($result)) {
@@ -160,6 +170,8 @@ final class FileManager
         $input['filename'] = $result['filename'];
         $input['sha1sum'] = $result['sha1sum'];
         $input['filepath'] = $result['filepath'];
+        $input['entities_id'] = $entities_id;
+        $input['is_recursive'] = $recursive ? 1 : 0;
         $document = new Document();
         $documents_id = $document->add($input);
         return $documents_id !== false ? $document : null;
@@ -226,15 +238,18 @@ final class FileManager
     /**
      * Extracts base64-encoded inline images from HTML content, saves them as documents, and replaces the inline images with document references.
      * @param string $html_content
+     * @param int $entities_id The ID of the entity to associate with the created documents
+     * @param bool $is_recursive Whether to apply the entity association recursively to child entities
      * @param Document[] $created_documents An array to store the created documents. Useful for implementing cleanup logic if needed.
      * @return false|string The modified HTML content with inline images replaced by document references
      */
-    public static function handleInlineImagesInHTML(string $html_content, array &$created_documents = []): false|string
+    public static function handleInlineImagesInHTML(string $html_content, int $entities_id, bool $is_recursive, array &$created_documents = []): false|string
     {
         global $CFG_GLPI;
 
+        // TODO use Dom\HTMLDocument when minimum PHP version requirement for GLPI is at least 8.4
         $dom = new DOMDocument();
-        @$dom->loadHTML($html_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $images = $dom->getElementsByTagName('img');
 
         if ($images->length === 0) {
@@ -255,7 +270,7 @@ final class FileManager
                 $estimated_size = ceil(strlen($base64_data) * 3 / 4);
                 if ($estimated_size > $max_image_size) {
                     // completely remove the image if it exceeds the maximum size
-                    $img->parentNode?->removeChild($img);
+                    $img->remove();
                     continue;
                 }
 
@@ -293,16 +308,16 @@ final class FileManager
                 );
 
                 // Upload the image as a document
-                $upload_result = self::uploadAsDocument($uploaded_file);
+                $upload_result = self::uploadAsDocument($uploaded_file, $entities_id, $is_recursive);
                 if ($upload_result instanceof Document) {
                     // Replace the inline image with a reference to the document
-                    $img->setAttribute('src', '/front/document.send.php?docid=' . $upload_result->getID());
+                    $img->setAttribute('src', $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $upload_result->getID());
                     $created_documents[] = $upload_result;
                 }
             }
         }
 
-        return $dom->saveHTML();
+        return str_replace('<?xml encoding="utf-8" ?>', '', mb_convert_encoding($dom->saveHTML(), 'UTF-8', 'HTML-ENTITIES'));
     }
 
     public static function normalizeClientFileValue(string $value, string $upload_as): ?string

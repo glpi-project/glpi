@@ -37,7 +37,9 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Change;
 use ChangeValidation;
 use CommonITILObject;
+use Document;
 use Document_Item;
+use Entity;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
@@ -767,7 +769,7 @@ class ITILControllerTest extends HLAPITestCase
     public function testAddFollowupWithFiles(): void
     {
         $this->login();
-        $ticket_id = getItemByTypeName(Ticket::class, '_ticket01', true);
+        $ticket_id = getItemByTypeName(Ticket::class, '_ticket03', true);
 
         $foo_txt = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.txt');
         $foo_img = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
@@ -791,8 +793,10 @@ Content-Disposition: form-data; name="file"; filename="bar.txt"
 -----boundary--
 EOT;
 
+        $child_entities_id = getItemByTypeName(Entity::class, '_test_child_1', true);
         $request = new Request('POST', "/Assistance/Ticket/{$ticket_id}/Timeline/Followup", [
             'Content-Type' => 'multipart/form-data; boundary=---boundary',
+            'GLPI-Entity' => $child_entities_id,
         ], $multipart_body);
         $followup_id = null;
         $this->api->call($request, function ($call) use (&$followup_id) {
@@ -803,17 +807,31 @@ EOT;
                 });
         });
 
-        // confirm 2 document items were created and linked to the followup
-        $this->assertEquals(2, countElementsInTable(
-            table: Document_Item::getTable(),
-            condition: [
+        $linked_documents = getAllDataFromTable(
+            Document_Item::getTable(),
+            [
                 'itemtype' => 'ITILFollowup',
                 'items_id' => $followup_id,
             ]
-        ));
+        );
+        $this->assertCount(3, $linked_documents);
+        $this->assertCount(2, array_filter($linked_documents, static function ($doc) {
+            return $doc['timeline_position'] === 0;
+        }));
+        $this->assertCount(1, array_filter($linked_documents, static function ($doc) {
+            return $doc['timeline_position'] === -1;
+        }));
+
+        $docs = getAllDataFromTable(Document::getTable(), ['id' => array_column($linked_documents, 'documents_id')]);
+        $this->assertCount(3, $docs);
+        $this->assertCount(3, array_filter($docs, static function ($doc) use ($child_entities_id) {
+            return $doc['entities_id'] === $child_entities_id;
+        }));
 
         // confirm the content of the followup has the image src replaced with the document item URL
-        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket_id}/Timeline/Followup/{$followup_id}"), function ($call) {
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket_id}/Timeline/Followup/{$followup_id}", [
+            'GLPI-Entity' => $child_entities_id,
+        ]), function ($call) {
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
