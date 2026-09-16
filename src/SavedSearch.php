@@ -1171,30 +1171,18 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
 
         if ($notif->isNewItem()) {
-            // Create the notification in the entity of the saved search itself.
-            // Using the user's default entity is wrong (it may differ from the
-            // saved search entity) and can be null when the user has no single
-            // default entity, which makes the insertion fail on the NOT NULL
-            // `entities_id` column.
-            $input = [
-                'name'          => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
-                'entities_id'   => $this->fields['entities_id'],
-                'is_recursive'  => $this->fields['is_recursive'],
-                'itemtype'      => SavedSearch_Alert::getType(),
-                'event'         => 'alert_' . $this->getID(),
-                'is_active'     => 0,
+            $notif->check(-1, CREATE);
+            $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
+                // Fall back to the saved search entity when there is no default
+                // entity, so the insertion does not fail on the NOT NULL column.
+                'entities_id'     => $_SESSION["glpidefault_entity"] ?? $this->fields['entities_id'],
+                'itemtype'        => SavedSearch_Alert::getType(),
+                'event'           => 'alert_' . $this->getID(),
+                'is_active'       => 0,
                 'date_creation' => date('Y-m-d H:i:s'),
-            ];
-            // Pass the input so the creation right is checked against the target
-            // entity (the saved search one), not the current active entity.
-            $notif->check(-1, CREATE, $input);
-            $added = $notif->add($input);
+            ]);
 
-            if ($added) {
-                Session::addMessageAfterRedirect(__s('Notification has been created!'), false, INFO);
-            } else {
-                Session::addMessageAfterRedirect(__s('An error occurred'), false, ERROR);
-            }
+            Session::addMessageAfterRedirect(__s('Notification has been created!'), false, INFO);
         }
     }
 

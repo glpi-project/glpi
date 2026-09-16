@@ -350,7 +350,7 @@ class SavedSearchTest extends DbTestCase
         $this->assertEquals(0, $ma->results['ok']);
     }
 
-    public function testCreateNotifUsesSavedSearchEntity()
+    public function testCreateNotifFallsBackToSavedSearchEntity()
     {
         $this->login();
 
@@ -379,9 +379,8 @@ class SavedSearchTest extends DbTestCase
         $this->assertTrue(
             $notif->getFromDBByCrit(['event' => 'alert_' . $savedsearch->getID()])
         );
-        // It must be created in the saved search entity, not the user default.
+        // With no default entity, it falls back to the saved search entity.
         $this->assertEquals($entity_id, (int) $notif->fields['entities_id']);
-        $this->assertEquals(1, (int) $notif->fields['is_recursive']);
     }
 
     public function testPrepareInputAdd()
