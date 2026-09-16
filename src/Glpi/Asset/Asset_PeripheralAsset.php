@@ -206,7 +206,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             // Get peripheral fields
             if ($peripheral = getItemForItemtype($this->fields['itemtype_peripheral'])) {
                 if ($peripheral->getFromDB($this->fields['items_id_peripheral'])) {
-                    if (!$peripheral->fields['is_global']) {
+                    if (!$peripheral->isField('is_global') || !$peripheral->fields['is_global']) {
                         $updates = [];
                         if (Entity::getUsedConfig('is_location_autoclean', $peripheral->getEntityID()) && $peripheral->isField('locations_id')) {
                             $updates['locations_id'] = 0;
@@ -452,8 +452,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $canedit = $peripheral->canEdit($ID);
         $rand    = mt_rand();
 
-        // Is global connection ?
-        $global  = $peripheral->fields['is_global'];
+        // Is global connection ? Itemtypes without an `is_global` field (e.g. custom
+        // assets) have no "global management" concept, so they are never global.
+        $global  = $peripheral->isField('is_global') && $peripheral->fields['is_global'];
 
         $linked_assets = [];
         $used          = [];
@@ -687,17 +688,18 @@ TWIG, $twig_params);
         // can exists for Template
         /** @var CommonDBTM $item */
         if ($item->can($item->getID(), READ)) {
-            $nb = 0;
+            // A custom asset can be registered both as a host (peripheralhost_types) and as a peripheral (directconnect_types) at the same time
+            $is_peripheral = in_array($item::class, $CFG_GLPI['directconnect_types'], true);
+            $is_host       = self::canViewPeripherals($item);
+            $canview       = $is_peripheral || $is_host;
 
-            if (in_array($item::class, $CFG_GLPI['directconnect_types'], true)) {
-                $canview = true;
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countLinkedAssets($item);
+            $nb = 0;
+            if ($canview && $_SESSION['glpishow_count_on_tabs']) {
+                if ($is_peripheral) {
+                    $nb += self::countLinkedAssets($item);
                 }
-            } else {
-                $canview = self::canViewPeripherals($item);
-                if ($canview && $_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countPeripherals($item);
+                if ($is_host) {
+                    $nb += self::countPeripherals($item);
                 }
             }
 
@@ -720,15 +722,18 @@ TWIG, $twig_params);
             return false;
         }
 
+        $displayed = false;
+
         if (in_array($item::class, $CFG_GLPI['directconnect_types'], true)) {
             self::showForPeripheral($item, $withtemplate);
-            return true;
-        } elseif (self::canViewPeripherals($item)) {
+            $displayed = true;
+        }
+        if (self::canViewPeripherals($item)) {
             self::showForAsset($item, $withtemplate);
-            return true;
+            $displayed = true;
         }
 
-        return false;
+        return $displayed;
     }
 
     /**
@@ -1011,6 +1016,20 @@ TWIG, $twig_params);
 
         $peripheral = getItemForItemtype($itemtype);
 
+        $where = [
+            self::getTable() . '.is_deleted' => 0,
+        ];
+        if ($peripheral->isField('is_global')) {
+            // Itemtypes without an `is_global` field (e.g. custom assets) have no "global management"
+            $where['OR'] = [
+                $peripheral::getTable() . '.is_global' => 0,
+                [
+                    self::getTable() . '.itemtype_asset' => $asset::class,
+                    self::getTable() . '.items_id_asset' => $asset->getID(),
+                ],
+            ];
+        }
+
         return $DB->request([
             'SELECT' => self::getTypeItemsQueryParams_Select($peripheral),
             'FROM'   => $peripheral::getTable(),
@@ -1027,16 +1046,7 @@ TWIG, $twig_params);
                     ],
                 ],
             ],
-            'WHERE' => [
-                self::getTable() . '.is_deleted' => 0,
-                'OR' => [
-                    $peripheral::getTable() . '.is_global' => 0,
-                    [
-                        self::getTable() . '.itemtype_asset' => $asset::class,
-                        self::getTable() . '.items_id_asset' => $asset->getID(),
-                    ],
-                ],
-            ] + getEntitiesRestrictCriteria($peripheral::getTable()),
+            'WHERE' => $where + getEntitiesRestrictCriteria($peripheral::getTable()),
             'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
         ]);
     }

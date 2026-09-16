@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use Computer;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
@@ -86,9 +87,13 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
             if ($has_capacity) {
                 $this->assertContains($classname, $CFG_GLPI['peripheralhost_types']);
                 $this->assertContains($classname, Asset_PeripheralAsset::getPeripheralHostItemtypes());
+                // The class must also be usable as a peripheral, so that it can be connected
+                // to another asset (native or custom) exposing the capacity.
+                $this->assertContains($classname, $CFG_GLPI['directconnect_types']);
             } else {
                 $this->assertNotContains($classname, $CFG_GLPI['peripheralhost_types']);
                 $this->assertNotContains($classname, Asset_PeripheralAsset::getPeripheralHostItemtypes());
+                $this->assertNotContains($classname, $CFG_GLPI['directconnect_types']);
             }
 
             // Check that the corresponding tab is present on items
@@ -205,6 +210,8 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria)); //create + add relation
         $this->assertContains($classname_1, $CFG_GLPI['peripheralhost_types']);
         $this->assertContains($classname_2, $CFG_GLPI['peripheralhost_types']);
+        $this->assertContains($classname_1, $CFG_GLPI['directconnect_types']);
+        $this->assertContains($classname_2, $CFG_GLPI['directconnect_types']);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->assertTrue($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]));
@@ -212,12 +219,104 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
         $this->assertFalse(DisplayPreference::getById($displaypref_1->getID()));
         $this->assertEquals(0, countElementsInTable(Log::getTable(), $item_1_logs_criteria));
         $this->assertNotContains($classname_1, $CFG_GLPI['peripheralhost_types']);
+        $this->assertNotContains($classname_1, $CFG_GLPI['directconnect_types']);
 
         // Ensure relations, logs and global registration are preserved for other definition
         $this->assertInstanceOf(Asset_PeripheralAsset::class, Asset_PeripheralAsset::getById($relation_2->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria));
         $this->assertContains($classname_2, $CFG_GLPI['peripheralhost_types']);
+        $this->assertContains($classname_2, $CFG_GLPI['directconnect_types']);
+    }
+
+    public function testCustomAssetCanBeConnectedToAnotherCustomAsset(): void
+    {
+        $entity_id = $this->getTestRootEntity(true);
+
+        // Two distinct custom asset definitions, both exposing the capacity, mimicking
+        // a customer defining e.g. "Computers" and "Screens" as generic assets.
+        $host_definition = $this->initAssetDefinition(
+            capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
+        );
+        $host_class = $host_definition->getAssetClassName();
+
+        $peripheral_definition = $this->initAssetDefinition(
+            capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
+        );
+        $peripheral_class = $peripheral_definition->getAssetClassName();
+
+        $host = $this->createItem(
+            $host_class,
+            ['name' => __FUNCTION__, 'entities_id' => $entity_id]
+        );
+        $peripheral = $this->createItem(
+            $peripheral_class,
+            ['name' => __FUNCTION__, 'entities_id' => $entity_id]
+        );
+
+        $relation = $this->createItem(
+            Asset_PeripheralAsset::class,
+            [
+                'itemtype_asset'      => $host_class,
+                'items_id_asset'      => $host->getID(),
+                'itemtype_peripheral' => $peripheral_class,
+                'items_id_peripheral' => $peripheral->getID(),
+            ]
+        );
+        $this->assertInstanceOf(Asset_PeripheralAsset::class, Asset_PeripheralAsset::getById($relation->getID()));
+
+        // The capacity usage counters must account for connections whose peripheral
+        // is itself a custom asset, not only native itemtypes.
+        $capacity = new HasPeripheralAssetsCapacity();
+        $this->assertEquals(
+            '1 peripheral assets attached to 1 assets',
+            $capacity->getCapacityUsageDescription($host_class)
+        );
+    }
+
+    public function testNativeHostConnectionsTabWithCustomPeripheralType(): void
+    {
+        // A custom asset exposing the capacity has no `is_global` column (unlike native
+        // peripheral types Monitor/Peripheral/Phone/Printer), it must not break the
+        // "Connect an item" tab of a native host like Computer.
+        $this->initAssetDefinition(
+            capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
+        );
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
+
+        $this->login();
+        ob_start();
+        Asset_PeripheralAsset::displayTabContentForItem($computer);
+        $output = ob_get_clean();
+        $this->assertStringContainsString('Connect an item', $output);
+    }
+
+    public function testCustomAssetKeepsBothHostAndPeripheralRoles(): void
+    {
+        $entity_id = $this->getTestRootEntity(true);
+
+        // A custom asset with the capacity is registered both as a host and as a
+        // peripheral: its Connections tab must expose both roles, not just one.
+        $definition = $this->initAssetDefinition(
+            capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
+        );
+        $class = $definition->getAssetClassName();
+
+        $item = $this->createItem(
+            $class,
+            ['name' => __FUNCTION__, 'entities_id' => $entity_id]
+        );
+
+        $this->login();
+        ob_start();
+        Asset_PeripheralAsset::displayTabContentForItem($item);
+        $output = ob_get_clean();
+
+        // Host role: can connect a (native) peripheral to this item.
+        $this->assertStringContainsString('Connect an item', $output);
+        // Peripheral role: can connect this item to a (native) host.
+        $this->assertStringContainsString('Connect to an item', $output);
     }
 
     public function testCloneAsset()

@@ -120,6 +120,9 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         // Allow the asset to be linked to peripheral asset
         $this->registerToTypeConfig('peripheralhost_types', $classname);
 
+        // Allow the asset to be connected to another asset as a peripheral
+        $this->registerToTypeConfig('directconnect_types', $classname);
+
         CommonGLPI::registerStandardTab($classname, Asset_PeripheralAsset::class, 55);
     }
 
@@ -127,6 +130,9 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
     {
         // Unregister from peripheral hosts types
         $this->unregisterFromTypeConfig('peripheralhost_types', $classname);
+
+        // Unregister from direct connect types
+        $this->unregisterFromTypeConfig('directconnect_types', $classname);
 
         // Delete related items
         $relation = new Asset_PeripheralAsset();
