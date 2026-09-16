@@ -35,17 +35,21 @@ import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getUniqueName } from '../../utils/Random';
 
-test('Resizes the KB aside from its edge handle, width persists', async ({ page, profile, api }) => {
+let kb: KnowbaseItemPage;
+
+test.beforeEach(async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     await page.setViewportSize({ width: 1280, height: 900 }); // above the 992px breakpoint
 
-    const kb = new KnowbaseItemPage(page);
+    kb = new KnowbaseItemPage(page);
     const article_id = await api.knowbase.createArticle({
         name: getUniqueName('E2E Resize Article'),
         answer: 'Test content',
     });
     await kb.goto(article_id);
+});
 
+test('Resizes the KB aside from its edge handle, width persists', async ({ page }) => {
     const handle = kb.getAsideResizer();
     const asideWidth = async () => Math.round((await kb.aside.boundingBox())!.width);
     // The aside may take up to half of its row
@@ -89,17 +93,7 @@ test('Resizes the KB aside from its edge handle, width persists', async ({ page,
     await expect.poll(asideWidth).toBe(300);
 });
 
-test('Resize handle is hidden when the aside is collapsed', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    await page.setViewportSize({ width: 1280, height: 900 });
-
-    const kb = new KnowbaseItemPage(page);
-    const article_id = await api.knowbase.createArticle({
-        name: getUniqueName('E2E Resize Article'),
-        answer: 'Test content',
-    });
-    await kb.goto(article_id);
-
+test('Resize handle is hidden when the aside is collapsed', async () => {
     await expect(kb.getAsideResizer()).toBeVisible();
     await kb.doCollapseAside();
     await expect(kb.getAsideResizer()).toBeHidden();

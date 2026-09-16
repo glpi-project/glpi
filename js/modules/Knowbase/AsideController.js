@@ -101,13 +101,12 @@ export class GlpiKnowbaseAsideController
     static #STORAGE_KEY = 'glpi-kb-aside-collapsed';
 
     /**
-     * localStorage key persisting the desktop aside width (px).
+     * localStorage key persisting the desktop aside width (px), applied before paint by aside.html.twig.
      * @type {string}
      */
     static #WIDTH_STORAGE_KEY = 'glpi-kb-aside-width';
 
-    /** Aside width bounds and keyboard step (px); the max is 50% of the row, as in CSS. */
-    static #MIN_WIDTH = 300;
+    /** Keyboard resize step (px). */
     static #WIDTH_STEP = 16;
 
     /** Dwell delay (ms) before a hovered/focused row prefetches its actions menu. @type {number} */
@@ -317,25 +316,30 @@ export class GlpiKnowbaseAsideController
         if (!handle) {
             return;
         }
-        const min = GlpiKnowbaseAsideController.#MIN_WIDTH;
+        // Bounds mirror the CSS: min from the handle markup, max is half of the row.
+        const min = Number(handle.getAttribute('aria-valuemin'));
         const step = GlpiKnowbaseAsideController.#WIDTH_STEP;
-        const clamp = (w) => Math.round(Math.min(Math.max(w, min), Math.max(min, this.#aside.parentElement.clientWidth / 2)));
-        const is_rtl = () => getComputedStyle(this.#aside).direction === 'rtl';
+        const maxWidth = () => Math.max(min, this.#aside.parentElement.clientWidth / 2);
+        const clamp = (w, max = maxWidth()) => Math.round(Math.min(Math.max(w, min), max));
 
-        // Requested width; CSS clamps what is rendered, the ARIA values mirror that.
-        let width = this.#readWidth();
-        const syncAria = () => {
-            handle.setAttribute('aria-valuenow', String(clamp(width)));
-            handle.setAttribute('aria-valuemax', String(clamp(Infinity)));
+        // Last set width; re-clamped on read since the row may have shrunk since (CSS clamps the render).
+        // The pre-paint script in aside.html.twig already applied the stored value.
+        let width = parseInt(this.#aside.style.getPropertyValue('--kb-aside-width'), 10) || min;
+        const syncAria = (max = maxWidth()) => {
+            handle.setAttribute('aria-valuenow', String(clamp(width, max)));
+            handle.setAttribute('aria-valuemax', String(clamp(Infinity, max)));
         };
-        const setWidth = (w) => {
-            width = clamp(w);
+        // Pass max when known, to avoid reading layout right after the width write.
+        const setWidth = (w, max = maxWidth()) => {
+            width = clamp(w, max);
             this.#aside.style.setProperty('--kb-aside-width', `${width}px`);
-            syncAria();
+            syncAria(max);
         };
         syncAria();
-        window.addEventListener('resize', syncAria);
+        window.addEventListener('resize', () => syncAria());
 
+        // Layout values fixed for the whole drag, read once so moves only write.
+        let drag = null;
         handle.addEventListener('pointerdown', (e) => {
             if (e.button !== 0) {
                 return;
@@ -343,22 +347,27 @@ export class GlpiKnowbaseAsideController
             e.preventDefault(); // no text selection while dragging
             handle.setPointerCapture(e.pointerId);
             this.#aside.setAttribute('data-glpi-kb-aside-resizing', '');
+            const rect = this.#aside.getBoundingClientRect();
+            const rtl = getComputedStyle(this.#aside).direction === 'rtl';
+            drag = { pointer_id: e.pointerId, edge: rtl ? rect.right : rect.left, sign: rtl ? -1 : 1, max: maxWidth() };
         });
         handle.addEventListener('pointermove', (e) => {
-            if (!handle.hasPointerCapture(e.pointerId)) {
-                return;
+            if (drag?.pointer_id === e.pointerId) {
+                setWidth((e.clientX - drag.edge) * drag.sign, drag.max);
             }
-            const rect = this.#aside.getBoundingClientRect();
-            setWidth(is_rtl() ? rect.right - e.clientX : e.clientX - rect.left);
         });
         // Fires on release and on any capture loss, so the drag always ends cleanly.
-        handle.addEventListener('lostpointercapture', () => {
+        handle.addEventListener('lostpointercapture', (e) => {
+            if (drag?.pointer_id !== e.pointerId) {
+                return;
+            }
+            drag = null;
             this.#aside.removeAttribute('data-glpi-kb-aside-resizing');
             this.#storeWidth(width);
         });
 
         handle.addEventListener('keydown', (e) => {
-            const grow = is_rtl() ? -step : step;
+            const grow = getComputedStyle(this.#aside).direction === 'rtl' ? -step : step;
             const next = {
                 ArrowLeft: clamp(width) - grow,
                 ArrowRight: clamp(width) + grow,
@@ -374,33 +383,15 @@ export class GlpiKnowbaseAsideController
         });
 
         handle.addEventListener('dblclick', () => {
-            width = min;
-            this.#aside.style.removeProperty('--kb-aside-width');
-            syncAria();
-            this.#storeWidth(null);
+            setWidth(min);
+            this.#storeWidth(width);
         });
     }
 
-    /** @returns {number} */
-    #readWidth()
-    {
-        try {
-            const width = parseInt(window.localStorage.getItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY) ?? '', 10);
-            return Number.isFinite(width) ? width : GlpiKnowbaseAsideController.#MIN_WIDTH;
-        } catch {
-            return GlpiKnowbaseAsideController.#MIN_WIDTH;
-        }
-    }
-
-    /** @param {number|null} width null forgets the stored width */
     #storeWidth(width)
     {
         try {
-            if (width === null) {
-                window.localStorage.removeItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY);
-            } else {
-                window.localStorage.setItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY, String(width));
-            }
+            window.localStorage.setItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY, String(width));
         } catch { /* storage unavailable */ }
     }
 

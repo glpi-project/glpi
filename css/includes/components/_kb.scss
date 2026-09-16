@@ -1282,12 +1282,17 @@ body.in_modal .kb-editor-reserved {
     border-end-start-radius: 0 !important;
 }
 
+// Keep in sync with aria-valuemin on the resize handle (aside.html.twig).
+$kb-aside-min-width: 300px;
+
 [data-main-page-aside="knowbaseitem"] {
     // Resizable from the edge handle, up to half of the row; the article column takes the rest.
     // max-width repeats the width so the collapse transition has a value to animate from.
+    --kb-aside-size: clamp(#{$kb-aside-min-width}, var(--kb-aside-width, #{$kb-aside-min-width}), 50%);
+
     flex: 0 0 auto;
-    width: clamp(300px, var(--kb-aside-width, 300px), 50%);
-    max-width: clamp(300px, var(--kb-aside-width, 300px), 50%);
+    width: var(--kb-aside-size);
+    max-width: var(--kb-aside-size);
     background-color: var(--tblr-bg-surface);
 
     .node,
@@ -1585,8 +1590,8 @@ body.in_modal .kb-editor-reserved {
             inset: 0;
         }
 
-        // Drag handle straddling the inline-end edge; a 2px line shows on hover, focus and drag.
-        .kb-aside-resizer {
+        // Drag handle straddling the inline-end edge, hidden while collapsed.
+        &:not([data-glpi-kb-aside-collapsed]) .kb-aside-resizer {
             display: block;
             position: absolute;
             inset-block: 0;
@@ -1595,14 +1600,12 @@ body.in_modal .kb-editor-reserved {
             z-index: 1;
             cursor: col-resize;
             touch-action: none;
-
-            &:hover,
-            &:focus-visible {
-                outline: none;
-                background: linear-gradient(var(--tblr-primary), var(--tblr-primary)) center / 2px 100% no-repeat;
-            }
+            outline: none;
         }
 
+        // A 2px line shows on hover, focus and drag.
+        .kb-aside-resizer:hover,
+        .kb-aside-resizer:focus-visible,
         &[data-glpi-kb-aside-resizing] .kb-aside-resizer {
             background: linear-gradient(var(--tblr-primary), var(--tblr-primary)) center / 2px 100% no-repeat;
         }
@@ -1611,10 +1614,6 @@ body.in_modal .kb-editor-reserved {
         &[data-glpi-kb-aside-collapsed] {
             max-width: 2.75rem;
             overflow: hidden;
-
-            .kb-aside-resizer {
-                display: none;
-            }
 
             [data-glpi-kb-aside-body] {
                 display: none;
@@ -1636,7 +1635,6 @@ body.in_modal .kb-editor-reserved {
 @media (max-width: 991.98px) {
     [data-main-page-aside="knowbaseitem"] {
         // Shrink to the rail; the body floats over content as an overlay.
-        flex: 0 0 auto;
         width: 2.75rem;
         overflow: visible;
 
