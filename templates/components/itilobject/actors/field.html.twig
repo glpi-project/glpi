@@ -103,7 +103,7 @@
             switch (itemtype) {
                 case "User":
                     if (items_id == 0) {
-                        text = alt_email;
+                        text = _.escape(alt_email);
                         icon = `<i class="ti ti-mail mx-1" title="{{ __('Direct email')|e('html')|e('js') }}"></i>`;
                     } else {
                         icon = `<i class="ti ti-user mx-1" title="{{ 'User'|itemtype_name|e('html')|e('js') }}"></i>`;

@@ -29,10 +29,11 @@ concurrency:
 
 jobs:
   lint:
-    # Do not run scheduled lint on tier repositories
-    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    # Do not run scheduled lint on tier repositories, and let tier repositories
+    # opt out of running lint on a push event (e.g. a private mirror branch)
+    if: github.repository == 'glpi-project/glpi' || (github.event_name != 'schedule' && (github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'))
     name: "Lint on PHP ${{ matrix.php-version }}"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ vars.CI_RUNNER_LABEL || 'ubuntu-latest' }}"
     strategy:
       fail-fast: false
       matrix:
@@ -116,10 +117,11 @@ jobs:
           docker compose exec -T app .github/actions/lint_misc-lint.sh
 
   generate-tests-matrix:
-    # Do not run scheduled tests on tier repositories
-    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    # Do not run scheduled tests on tier repositories, and let tier repositories
+    # opt out of running tests on a push event (e.g. a private mirror branch)
+    if: github.repository == 'glpi-project/glpi' || (github.event_name != 'schedule' && (github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'))
     name: "Generate tests matrix"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ vars.CI_RUNNER_LABEL || 'ubuntu-latest' }}"
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
@@ -157,11 +159,12 @@ jobs:
           fi
           echo "matrix=$(echo $MATRIX | jq -c .)" >> $GITHUB_OUTPUT
   tests:
-    # Do not run scheduled tests on tier repositories
-    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    # Do not run scheduled tests on tier repositories, and let tier repositories
+    # opt out of running tests on a push event (e.g. a private mirror branch)
+    if: github.repository == 'glpi-project/glpi' || (github.event_name != 'schedule' && (github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'))
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
     needs: "generate-tests-matrix"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ vars.CI_RUNNER_LABEL || 'ubuntu-latest' }}"
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -239,8 +242,9 @@ jobs:
           docker compose exec -T app .github/actions/test_javascript.sh
 
   e2e:
-    # Do not run scheduled tests on tier repositories
-    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    # Do not run scheduled tests on tier repositories, and let tier repositories
+    # opt out of running tests on a push event (e.g. a private mirror branch)
+    if: github.repository == 'glpi-project/glpi' || (github.event_name != 'schedule' && (github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'))
     name: "E2E and web tests using latest PHP and MariaDB versions"
     runs-on: "ubuntu-latest"
     timeout-minutes: 90
@@ -303,8 +307,9 @@ jobs:
             path: tests/files/_log
 
   playwright:
-    # Do not run scheduled tests on tier repositories
-    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    # Do not run scheduled tests on tier repositories, and let tier repositories
+    # opt out of running tests on a push event (e.g. a private mirror branch)
+    if: github.repository == 'glpi-project/glpi' || (github.event_name != 'schedule' && (github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'))
     name: "Playwright tests (${{ matrix.shardIndex }}/${{ matrix.shardTotal }})"
     runs-on: "ubuntu-latest"
     timeout-minutes: 60

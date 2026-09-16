@@ -618,6 +618,11 @@ class Auth extends CommonGLPI
                 break;
 
             case self::X509:
+                // Defense in depth: never trust the exported DN unless the web
+                // server actually verified the client certificate.
+                if (!self::isX509ClientCertificateVerified()) {
+                    break;
+                }
                 // From eGroupWare  http://www.egroupware.org
                 // an X.509 subject looks like:
                 // CN=john.doe/OU=Department/O=Company/C=xx/Email=john@comapy.tld/L=City/
@@ -1498,6 +1503,28 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * Tell whether the web server actually performed and validated the client
+     * certificate (mTLS) handshake for the current request.
+     *
+     * X.509 authentication relies entirely on the subject DN exported by the web
+     * server in `$_SERVER['SSL_CLIENT_S_DN']`. That value is only trustworthy when
+     * the server was configured to *require* and *verify* the client certificate
+     * against a trusted CA (e.g. Apache `SSLVerifyClient require`), in which case
+     * mod_ssl (or the equivalent) sets `SSL_CLIENT_VERIFY` to `SUCCESS`.
+     *
+     * Without this guard, a server left with `SSLVerifyClient optional`/`none`, or
+     * a reverse proxy forwarding an unfiltered `SSL_CLIENT_S_DN`, would let a client
+     * forge the DN and log in as any user without any credential.
+     *
+     * @return bool
+     */
+    private static function isX509ClientCertificateVerified(): bool
+    {
+        return isset($_SERVER['SSL_CLIENT_S_DN'])
+            && ($_SERVER['SSL_CLIENT_VERIFY'] ?? null) === 'SUCCESS';
+    }
+
+    /**
      * Check alternate authentication systems
      *
      * @param bool $redirect        need to redirect (true) or get type of Auth system which match
@@ -1520,7 +1547,7 @@ class Auth extends CommonGLPI
         // Using x509 server
         if (
             !empty($CFG_GLPI["x509_email_field"])
-            && isset($_SERVER['SSL_CLIENT_S_DN'])
+            && self::isX509ClientCertificateVerified()
             && str_contains($_SERVER['SSL_CLIENT_S_DN'], $CFG_GLPI["x509_email_field"])
         ) {
             if ($redirect) {

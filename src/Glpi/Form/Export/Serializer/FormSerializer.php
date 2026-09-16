@@ -35,6 +35,7 @@
 namespace Glpi\Form\Export\Serializer;
 
 use CommonDBTM;
+use Document;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
@@ -91,6 +92,7 @@ use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\md5_file;
 use function Safe\preg_match;
+use function Safe\unlink;
 
 final class FormSerializer extends AbstractFormSerializer
 {
@@ -1186,11 +1188,16 @@ final class FormSerializer extends AbstractFormSerializer
 
         // Save file
         $data = base64_decode($illustration->data);
-        $tmp_path = GLPI_TMP_DIR . "/" . $illustration->key;
+        $tmp_path = GLPI_TMP_DIR . "/" . mt_rand() . $illustration->key;
         file_put_contents($tmp_path, $data);
+        if (!Document::isImage($tmp_path)) {
+            unlink($tmp_path);
+            throw new RuntimeException("Invalid illustration content: " . $illustration->key);
+        }
         $manager->saveCustomIllustration($illustration->key, $tmp_path);
         $file = $manager->getCustomIllustrationFile($illustration->key);
         if (md5_file($file) !== $illustration->checksum) {
+            $manager->deleteCustomIllustrationFile($illustration->key);
             $message = "Checksum don't match for new file: $illustration->key";
             throw new RuntimeException($message);
         }

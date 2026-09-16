@@ -163,6 +163,15 @@ class Controller extends CommonGLPI
     }
 
     /**
+     * @param string $url
+     * @return string
+     */
+    private static function getPluginArchiveDestination(string $url): string
+    {
+        return GLPI_TMP_DIR . '/' . mt_rand() . '.' . basename(parse_url($url, PHP_URL_PATH));
+    }
+
+    /**
      * Download and uncompress plugin archive
      *
      * @param bool $auto_install Automatically install the plugin after download
@@ -194,7 +203,7 @@ class Controller extends CommonGLPI
             $url = $specific_version['download_url'] ?? null;
         }
 
-        $dest = $url !== null ? GLPI_TMP_DIR . '/' . basename(parse_url($url, PHP_URL_PATH)) : null;
+        $dest = $url !== null ? self::getPluginArchiveDestination($url) : null;
 
         if ($url === null || !$api->downloadArchive($url, $dest, $this->plugin_key)) {
             Session::addMessageAfterRedirect(
@@ -332,7 +341,7 @@ class Controller extends CommonGLPI
 
         $url      = $plugin['installation_url'];
         $filename = basename(parse_url($url, PHP_URL_PATH));
-        $dest     = GLPI_TMP_DIR . '/' . mt_rand() . '.' . $filename;
+        $dest     = self::getPluginArchiveDestination($url);
 
         if (!$api->downloadArchive($url, $dest, $this->plugin_key, false)) {
             $exception = new HttpException(500);

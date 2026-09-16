@@ -205,7 +205,8 @@ final class Parser
                     'sql_where_callable' => fn($a, $b) => [
                         [
                             'OR' => [
-                                [$this->db::quoteName($a) => ''],
+                                // Cast to CHAR so a numeric 0 is not coerced to an empty string
+                                new QueryExpression('CAST(' . $this->db::quoteName($a) . " AS CHAR) = ''"),
                                 [$this->db::quoteName($a) => null],
                             ],
                         ],
@@ -218,7 +219,8 @@ final class Parser
                     'sql_where_callable' => fn($a, $b) => [
                         [
                             'AND' => [
-                                [$this->db::quoteName($a) => ['<>', '']],
+                                // Cast to CHAR so a numeric 0 is not coerced to an empty string
+                                new QueryExpression('CAST(' . $this->db::quoteName($a) . " AS CHAR) <> ''"),
                                 'NOT' => [$this->db::quoteName($a) => null],
                             ],
                         ],

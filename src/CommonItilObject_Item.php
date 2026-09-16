@@ -486,7 +486,7 @@ TWIG, $twig_params);
                     'kb' => $item->getKBLinks(),
                     'showmassiveactions' => $canedit && !$is_closed,
                 ];
-                $name = htmlescape($data["name"]);
+                $name = htmlescape($data["name"] ?? '');
                 if (
                     $_SESSION["glpiis_ids_visible"]
                     || empty($data["name"])

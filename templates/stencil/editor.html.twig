@@ -162,6 +162,6 @@
     {% endif %}
 
     <script>
-        new StencilEditor(document.getElementById('#stencil-editor-{{ rand }}'), {{ rand }}, {{ zones_json|raw }});
+        new StencilEditor(document.getElementById('#stencil-editor-{{ rand }}'), {{ rand }}, {{ zones|json_encode(constant('JSON_FORCE_OBJECT'))|raw }});
     </script>
 </div>
