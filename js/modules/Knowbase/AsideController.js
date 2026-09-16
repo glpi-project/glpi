@@ -330,10 +330,18 @@ export class GlpiKnowbaseAsideController
             handle.setAttribute('aria-valuemax', String(clamp(Infinity, max)));
         };
         // Pass max when known, to avoid reading layout right after the width write.
+        // `width` updates synchronously (callers store it right away); the DOM write
+        // is batched into one animation frame however many pointer moves arrive.
+        let frame = 0;
+        let frame_max;
         const set_width = (w, max = max_width()) => {
             width = clamp(w, max);
-            this.#aside.style.setProperty('--kb-aside-width', `${width}px`);
-            sync_aria(max);
+            frame_max = max;
+            frame ||= requestAnimationFrame(() => {
+                frame = 0;
+                this.#aside.style.setProperty('--kb-aside-width', `${width}px`);
+                sync_aria(frame_max);
+            });
         };
         sync_aria();
         window.addEventListener('resize', () => sync_aria());
