@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Change;
+use Change_Item;
 use Change_User;
 use CommonITILActor;
 use CommonITILObject;
@@ -930,5 +931,58 @@ class ChangeTest extends DbTestCase
         foreach ($expected_config_values as $entity_id => $date) {
             $this->assertEquals($date, \Entity::getUsedConfig('inquest_config_change', $entity_id, 'max_closedate_change'));
         }
+    }
+
+    public function testGetListForItemRestrictWithoutReadAll(): void
+    {
+        global $DB;
+
+        $this->login();
+        $users_id = Session::getLoginUserID();
+        $other_users_id = getItemByTypeName(User::class, 'normal', true);
+        $entities_id = $this->getTestRootEntity(true);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+
+        $cases = [
+            'requester' => ['_users_id_requester' => $users_id, 'users_id_recipient' => $other_users_id],
+            'observer'  => ['_users_id_observer' => $users_id, 'users_id_recipient' => $other_users_id],
+            'assigned'  => ['_users_id_assign' => $users_id, 'users_id_recipient' => $other_users_id],
+            'recipient' => ['users_id_recipient' => $users_id],
+            'other'     => ['_users_id_observer' => $other_users_id, 'users_id_recipient' => $other_users_id],
+        ];
+        $ids = [];
+        foreach ($cases as $case => $input) {
+            $item = $this->createItem(Change::class, $input + [
+                'name'              => __FUNCTION__ . ' ' . $case,
+                'content'           => __FUNCTION__,
+                'entities_id'       => $entities_id,
+                '_skip_auto_assign' => true,
+            ], ['content']);
+            $this->createItem(Change_Item::class, [
+                'changes_id' => $item->getID(),
+                'itemtype'   => Computer::class,
+                'items_id'   => $computer->getID(),
+            ]);
+            $ids[$case] = $item->getID();
+        }
+
+        $get_listed_ids = static function () use ($DB, $computer): array {
+            $criteria = Change::getCommonCriteria();
+            $criteria['WHERE'] = Change::getListForItemRestrict($computer) + getEntitiesRestrictCriteria(Change::getTable());
+            return array_column(iterator_to_array($DB->request($criteria), false), 'id');
+        };
+
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY;
+        $this->assertEqualsCanonicalizing(
+            [$ids['requester'], $ids['observer'], $ids['assigned'], $ids['recipient']],
+            $get_listed_ids()
+        );
+
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY | Change::READALL;
+        $this->assertEqualsCanonicalizing(array_values($ids), $get_listed_ids());
     }
 }
