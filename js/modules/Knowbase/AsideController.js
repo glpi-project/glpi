@@ -319,24 +319,24 @@ export class GlpiKnowbaseAsideController
         // Bounds mirror the CSS: min from the handle markup, max is half of the row.
         const min = Number(handle.getAttribute('aria-valuemin'));
         const step = GlpiKnowbaseAsideController.#WIDTH_STEP;
-        const maxWidth = () => Math.max(min, this.#aside.parentElement.clientWidth / 2);
-        const clamp = (w, max = maxWidth()) => Math.round(Math.min(Math.max(w, min), max));
+        const max_width = () => Math.max(min, this.#aside.parentElement.clientWidth / 2);
+        const clamp = (w, max = max_width()) => Math.round(Math.min(Math.max(w, min), max));
 
         // Last set width; re-clamped on read since the row may have shrunk since (CSS clamps the render).
         // The pre-paint script in aside.html.twig already applied the stored value.
         let width = parseInt(this.#aside.style.getPropertyValue('--kb-aside-width'), 10) || min;
-        const syncAria = (max = maxWidth()) => {
+        const sync_aria = (max = max_width()) => {
             handle.setAttribute('aria-valuenow', String(clamp(width, max)));
             handle.setAttribute('aria-valuemax', String(clamp(Infinity, max)));
         };
         // Pass max when known, to avoid reading layout right after the width write.
-        const setWidth = (w, max = maxWidth()) => {
+        const set_width = (w, max = max_width()) => {
             width = clamp(w, max);
             this.#aside.style.setProperty('--kb-aside-width', `${width}px`);
-            syncAria(max);
+            sync_aria(max);
         };
-        syncAria();
-        window.addEventListener('resize', () => syncAria());
+        sync_aria();
+        window.addEventListener('resize', () => sync_aria());
 
         // Layout values fixed for the whole drag, read once so moves only write.
         let drag = null;
@@ -349,11 +349,11 @@ export class GlpiKnowbaseAsideController
             this.#aside.setAttribute('data-glpi-kb-aside-resizing', '');
             const rect = this.#aside.getBoundingClientRect();
             const rtl = getComputedStyle(this.#aside).direction === 'rtl';
-            drag = { pointer_id: e.pointerId, edge: rtl ? rect.right : rect.left, sign: rtl ? -1 : 1, max: maxWidth() };
+            drag = { pointer_id: e.pointerId, edge: rtl ? rect.right : rect.left, sign: rtl ? -1 : 1, max: max_width() };
         });
         handle.addEventListener('pointermove', (e) => {
             if (drag?.pointer_id === e.pointerId) {
-                setWidth((e.clientX - drag.edge) * drag.sign, drag.max);
+                set_width((e.clientX - drag.edge) * drag.sign, drag.max);
             }
         });
         // Fires on release and on any capture loss, so the drag always ends cleanly.
@@ -378,12 +378,12 @@ export class GlpiKnowbaseAsideController
                 return;
             }
             e.preventDefault();
-            setWidth(next);
+            set_width(next);
             this.#storeWidth(width);
         });
 
         handle.addEventListener('dblclick', () => {
-            setWidth(min);
+            set_width(min);
             this.#storeWidth(width);
         });
     }

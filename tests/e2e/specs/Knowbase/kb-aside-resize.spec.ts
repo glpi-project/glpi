@@ -50,51 +50,43 @@ test.beforeEach(async ({ page, profile, api }) => {
 });
 
 test('Resizes the KB aside from its edge handle, width persists', async ({ page }) => {
-    const handle = kb.getAsideResizer();
-    const asideWidth = async () => Math.round((await kb.aside.boundingBox())!.width);
+    const handle = kb.aside_resizer;
+    const aside_width = async () => Math.round((await kb.aside.boundingBox())!.width);
     // The aside may take up to half of its row
     const max = String(Math.round(await kb.aside.evaluate((el) => el.parentElement!.clientWidth / 2)));
     await expect(handle).toHaveAttribute('aria-valuenow', '300');
     await expect(handle).toHaveAttribute('aria-valuemax', max);
 
     // Keyboard: two steps of 16px
-    await handle.focus();
-    await page.keyboard.press('ArrowRight');
-    await page.keyboard.press('ArrowRight');
+    await kb.doResizeAsideWithKeyboard('ArrowRight', 'ArrowRight');
     await expect(handle).toHaveAttribute('aria-valuenow', '332');
-    await expect.poll(asideWidth).toBe(332);
+    await expect.poll(aside_width).toBe(332);
 
     // End clamps to the maximum
-    await page.keyboard.press('End');
+    await kb.doResizeAsideWithKeyboard('End');
     await expect(handle).toHaveAttribute('aria-valuenow', max);
-    await expect.poll(asideWidth).toBe(Number(max)); // wait for the width transition before measuring the handle
+    await expect.poll(aside_width).toBe(Number(max)); // wait for the width transition before measuring the handle
 
     // Pointer drag to 500px from the aside's left edge
-    const aside_box = (await kb.aside.boundingBox())!;
-    const handle_box = (await handle.boundingBox())!;
-    const y = handle_box.y + 100;
-    await page.mouse.move(handle_box.x + handle_box.width / 2, y);
-    await page.mouse.down();
-    await page.mouse.move(aside_box.x + 500, y, { steps: 5 });
-    await page.mouse.up();
+    await kb.doDragAsideToWidth(500);
     await expect(handle).toHaveAttribute('aria-valuenow', '500');
-    await expect.poll(asideWidth).toBe(500);
+    await expect.poll(aside_width).toBe(500);
 
     // Persists across reload
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(handle).toHaveAttribute('aria-valuenow', '500');
-    await expect.poll(asideWidth).toBe(500);
+    await expect.poll(aside_width).toBe(500);
 
     // Double-click resets to the default width, also after reload
-    await handle.dblclick();
+    await kb.doResetAsideWidth();
     await expect(handle).toHaveAttribute('aria-valuenow', '300');
-    await expect.poll(asideWidth).toBe(300);
+    await expect.poll(aside_width).toBe(300);
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await expect.poll(asideWidth).toBe(300);
+    await expect.poll(aside_width).toBe(300);
 });
 
 test('Resize handle is hidden when the aside is collapsed', async () => {
-    await expect(kb.getAsideResizer()).toBeVisible();
+    await expect(kb.aside_resizer).toBeVisible();
     await kb.doCollapseAside();
-    await expect(kb.getAsideResizer()).toBeHidden();
+    await expect(kb.aside_resizer).toBeHidden();
 });
