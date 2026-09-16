@@ -312,7 +312,7 @@ playwright: e2e-db-check ## Run playwright tests
 playwright-isolated: e2e-db-check ## Run the isolated playwright tests (tests that change global data)
 	@$(eval c ?=)
 	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
-	$(PLAYWRIGHT) test -c playwright.isolated.config.ts --pass-with-no-tests $(c)
+	$(PLAYWRIGHT) test -c playwright.isolated.config.ts $(c)
 .PHONY: playwright-isolated
 
 playwright-report: ## View playwright reports
