@@ -59,9 +59,10 @@ class DbConfiguration extends AbstractRequirement
     private bool $check_max_allowed_packet;
 
     /**
-     * @param bool $check_max_allowed_packet Enable the `max_allowed_packet` check. It is only
-     *                                       relevant for a fresh installation (default data import),
-     *                                       not for migrations, so it is disabled by default.
+     * @param bool $check_max_allowed_packet Enable the `max_allowed_packet` check. It is relevant
+     *                                       whenever the default data is imported (installation or
+     *                                       update), not for the utf8mb4 migration, so it is
+     *                                       disabled by default.
      */
     public function __construct(DBmysql $db, bool $check_max_allowed_packet = false)
     {
@@ -75,7 +76,7 @@ class DbConfiguration extends AbstractRequirement
 
     /**
      * Minimum `max_allowed_packet` value (bytes) required to import the default data.
-     * A lower value makes the installation fail with a "MySQL server has gone away" error.
+     * A lower value makes the default data import fail with a "MySQL server has gone away" error.
      */
     private const MIN_MAX_ALLOWED_PACKET = 16 * 1024 * 1024;
 
