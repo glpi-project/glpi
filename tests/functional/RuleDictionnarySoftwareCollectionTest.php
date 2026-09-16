@@ -163,6 +163,12 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             'entities_id' => 0,
         ]);
         // Same id as the computer, so only the itemtype tells their installations apart
+        // Guard the assumption, so a future dataset that already uses this id fails here
+        // instead of making the insert below fail with an unrelated message.
+        $this->assertSame(
+            0,
+            countElementsInTable(\Phone::getTable(), ['id' => $computer_with_both_versions->getID()])
+        );
         $this->assertNotFalse($DB->insert(\Phone::getTable(), [
             'id'          => $computer_with_both_versions->getID(),
             'name'        => 'Phone ' . $this->getUniqueString(),
