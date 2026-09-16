@@ -164,7 +164,7 @@
             body: new URLSearchParams({
                 action: 'update_event',
                 id: event.id,
-                begin: start.toISOString(),
+                start: start.toISOString(),
                 end: end.toISOString(),
             }),
         }).then(response => {

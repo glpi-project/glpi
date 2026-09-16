@@ -33,10 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryElementInterface;
+
 /**
  *  Sub query class
  **/
-abstract class AbstractQuery
+abstract class AbstractQuery implements QueryElementInterface
 {
     protected ?string $alias = null;
     /** @var array<int, mixed> */
@@ -72,7 +74,15 @@ abstract class AbstractQuery
      */
     abstract public function getQuery();
 
-    public function __toString()
+    /**
+     * @psalm-taint-escape sql
+     */
+    public function getValue(): string
+    {
+        return $this->getQuery();
+    }
+
+    public function __toString(): string
     {
         return $this->getQuery();
     }

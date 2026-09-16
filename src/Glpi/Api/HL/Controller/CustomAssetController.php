@@ -44,6 +44,7 @@ use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -73,7 +74,7 @@ use User;
 )]
 final class CustomAssetController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         global $DB;
 
@@ -112,7 +113,7 @@ final class CustomAssetController extends AbstractController
                     'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                     'contact' => ['type' => Doc\Schema::TYPE_STRING],
                     'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
-                    'user' => self::getDropdownTypeSchema(class: User::class, field: 'users_id', full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'group' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'x-input-field' => 'groups_id',
@@ -143,7 +144,7 @@ final class CustomAssetController extends AbstractController
                             ],
                         ],
                     ],
-                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                     'group_tech' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'x-input-field' => 'groups_id_tech',
@@ -176,7 +177,8 @@ final class CustomAssetController extends AbstractController
                     ],
                     'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
                     'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
-                    'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
+                    'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State') + ['x-version-removed' => '3.0.0'],
+                    'status' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State') + ['x-version-introduced' => '3.0.0'],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -200,7 +202,7 @@ final class CustomAssetController extends AbstractController
                     'computation' =>  QueryFunction::coalesce([
                         QueryFunction::jsonUnquote(
                             expression: QueryFunction::jsonExtract([
-                                '_.custom_fields',
+                                new QueryIdentifier('_.custom_fields'),
                                 new QueryExpression($DB::quoteValue('$."' . $field->fields['id'] . '"')),
                             ])
                         ),

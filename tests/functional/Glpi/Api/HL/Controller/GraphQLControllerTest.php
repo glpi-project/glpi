@@ -349,17 +349,33 @@ class GraphQLControllerTest extends HLAPITestCase
         });
     }
 
-    private function getCompleteFieldsRequestForSchema(array $properties): string
+    private function getCompleteFieldsRequestForSchema(array $properties, int $current_level = 0): string
     {
         $fields_query_part = '';
         // Convert OpenAPI properties to GraphQL fields request
         foreach ($properties as $property_name => $property_info) {
-            if ($property_info['type'] === 'object' && !empty($property_info['properties'])) {
+            if ($property_info['type'] === 'object') {
                 // Nested object, recurse
-                $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['properties']) . ' } ';
-            } elseif ($property_info['type'] === 'array' && !empty($property_info['items']['properties'])) {
+                if ($current_level > 2) {
+                    continue;
+                }
+                if (!empty($property_info['discriminator']['mapping'])) {
+                    continue;
+                }
+                if (!empty($property_info['properties'])) {
+                    $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['properties'], $current_level + 1) . ' } ';
+                }
+            } elseif ($property_info['type'] === 'array') {
                 // Array of objects, recurse
-                $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['items']['properties']) . ' } ';
+                if ($current_level > 2) {
+                    continue;
+                }
+                if (!empty($property_info['items']['discriminator']['mapping'])) {
+                    continue;
+                }
+                if (!empty($property_info['items']['properties'])) {
+                    $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['items']['properties'], $current_level + 1) . ' } ';
+                }
             } else {
                 // Scalar field
                 $fields_query_part .= $property_name . ' ';
@@ -383,7 +399,7 @@ class GraphQLControllerTest extends HLAPITestCase
 
         $schemas_errors = [];
         foreach ($controllers as $controller) {
-            $schemas = $controller::getKnownSchemas(null);
+            $schemas = $controller::getKnownSchemas(Router::API_VERSION);
             foreach ($schemas as $schema_name => $schema) {
                 if (!isset($schema['x-itemtype']) || str_starts_with($schema_name, '_')) {
                     continue;
@@ -402,16 +418,6 @@ class GraphQLControllerTest extends HLAPITestCase
                         });
                 });
             }
-        }
-
-        //TODO v3 of the API should fix the user "name"/"username" properties conflict. The full schema uses "username" while the partial schema uses "name".
-        //Ignore them for now.
-        $schemas_errors = array_filter($schemas_errors, function ($error) {
-            return !str_contains($error, 'Cannot query field \"name\" on type \"User\"');
-        });
-        // An assertion to force the fix of the above in case it is forgotten when the API hits v3
-        if (version_compare(Router::API_VERSION, '3.0.0', '>=')) {
-            $this->fail('The User "name"/"username" conflict should be fixed in API v3');
         }
 
         $this->assertEmpty($schemas_errors, "Schemas with errors when querying with GraphQL: \n" . implode("\n", $schemas_errors));
@@ -475,6 +481,20 @@ class GraphQLControllerTest extends HLAPITestCase
                 ->data('Ticket', function ($tickets) {
                     $ticket = $tickets[0];
                     $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/', $ticket['date']);
+                });
+        });
+    }
+
+    public function testEmbeddedObjectProperties(): void
+    {
+        $this->login();
+
+        $this->graphql->call('query { Ticket(filter: "name==_ticket01") { status { name } } }', function ($call) {
+            $call->response
+                ->isOK()
+                ->data('Ticket', function ($tickets) {
+                    $ticket = $tickets[0];
+                    $this->assertEquals('New', $ticket['status']['name']);
                 });
         });
     }

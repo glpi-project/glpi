@@ -530,7 +530,7 @@ class DbTestCase extends GLPITestCase
         );
 
         $this->assertEqualsCanonicalizing(
-            $capacities,
+            array_values($capacities),
             array_values($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))
         );
         $this->assertEqualsCanonicalizing(

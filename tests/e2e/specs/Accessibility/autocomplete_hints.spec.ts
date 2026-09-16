@@ -35,7 +35,7 @@ import { LoginPage } from '../../pages/LoginPage';
 import { UserPage } from '../../pages/UserPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
-import AxeBuilder from '@axe-core/playwright';
+import { a11yScan } from '../../utils/Accessibility';
 
 // Main tab of the preference page, and of the admin user form.
 const PREFERENCE_TAB = 'User$1';
@@ -49,9 +49,8 @@ test('login fields expose autocomplete tokens', async ({ anonymousPage }) => {
     await expect(login.login_input).toHaveAttribute('autocomplete', 'username');
     await expect(login.password_input).toHaveAttribute('autocomplete', 'current-password');
 
-    const a11y = await new AxeBuilder({ page: anonymousPage })
+    const a11y = await a11yScan(anonymousPage, ['wcag135'])
         .include('form')
-        .withTags(['wcag135'])
         .analyze()
     ;
     expect(a11y.violations).toEqual([]);
@@ -145,9 +144,8 @@ test('profile form has no invalid autocomplete tokens', async ({ page, profile }
     // The tab loads over AJAX; without this axe would scan an empty page.
     await expect(page.getByLabel('Surname', { exact: true })).toBeVisible();
 
-    const a11y = await new AxeBuilder({ page })
+    const a11y = await a11yScan(page, ['wcag135'])
         .include('form')
-        .withTags(['wcag135'])
         .analyze()
     ;
     expect(a11y.violations).toEqual([]);

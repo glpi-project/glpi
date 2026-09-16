@@ -131,14 +131,14 @@ export function toggleField(id, field, value)
 }
 
 /**
- * Delete an article.
+ * Delete an article. A 409 carries the reason the server refused it.
  *
  * @param {number} id
  * @returns {Promise<Response>}
  */
 export function deleteArticle(id)
 {
-    return post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
+    return post(`Knowbase/KnowbaseItem/${id}/Delete`, {}, [409]);
 }
 
 /**

@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 
 use function Safe\preg_match;
@@ -572,7 +573,9 @@ class QueuedNotification extends CommonDBTM
                 'mode'         => 'TOFILL',
                 'send_time'    => ['<=', $send_time],
             ] +  $extra_where,
-            'ORDER'  => 'send_time ASC',
+            // `id` breaks ties so notifications queued in the same second are
+            // still sent in the order they were created (oldest first).
+            'ORDER'  => ['send_time ASC', 'id ASC'],
             'START'  => 0,
             'LIMIT'  => $limit,
         ];
@@ -678,7 +681,7 @@ class QueuedNotification extends CommonDBTM
                 self::getTable(),
                 [
                     'is_deleted'   => 1,
-                    new QueryExpression(QueryFunction::unixTimestamp('send_time') . ' < ' . $DB::quoteValue($send_time)),
+                    new QueryExpression(QueryFunction::unixTimestamp(new QueryIdentifier('send_time')) . ' < ' . $DB::quoteValue($send_time)),
                 ]
             );
             $vol = $DB->getAffectedRows();
@@ -714,7 +717,7 @@ class QueuedNotification extends CommonDBTM
                     'is_deleted'   => 0,
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs
+                        QueryFunction::unixTimestamp(new QueryIdentifier('send_time')) . ' + ' . $secs
                             . ' < ' . QueryFunction::unixTimestamp()
                     ),
                 ]

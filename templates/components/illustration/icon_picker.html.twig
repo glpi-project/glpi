@@ -42,6 +42,7 @@
  #   - backdrop: whether the modal should have a backdrop (defaults to true)
  #   - editable: whether clicking the preview opens the modal (defaults to true).
  #     Renders a <button> when true, a <div> otherwise (see setEditable()).
+ #   - allow_empty: whether the modal offers a "No illustration" value.
  #}
 
 {% set custom_icon_prefix = constant(
@@ -52,6 +53,7 @@
 {% set size = size ?? 100 %}
 {% set backdrop = backdrop ?? true %}
 {% set editable = editable ?? true %}
+{% set allow_empty = allow_empty ?? false %}
 {% set preview_css_classes = preview_css_classes ?? "illustration-selector d-flex align-items-center card border-1" %}
 {% set preview_inner_css_classes = preview_inner_css_classes ?? "card-body aspect-ratio-1" %}
 
@@ -138,6 +140,7 @@
     {{ include('components/illustration/icon_picker_modal.html.twig', {
         'id': modal_id,
         'backdrop': backdrop,
+        'allow_empty': allow_empty,
     }, with_context: false) }}
 
     <script defer type="module">

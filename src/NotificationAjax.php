@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  *  NotificationAjax
@@ -129,7 +130,7 @@ class NotificationAjax implements NotificationInterface
                     'recipient'    => Session::getLoginUserID(),
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs
+                        QueryFunction::unixTimestamp(new QueryIdentifier('send_time')) . ' + ' . $secs
                             . ' > ' . QueryFunction::unixTimestamp()
                     ),
                 ],

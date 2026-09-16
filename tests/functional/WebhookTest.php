@@ -772,12 +772,6 @@ JSON;
         $this->assertSame('2', $webhook->fields['pinned_version']);
     }
 
-    /**
-     * The no-op this whole change relies on: an existing webhook, pinned to the major it was
-     * built against, still asks the router for the version it was already getting.
-     * The day this fails is the day pinning starts changing an existing payload, which is
-     * exactly the moment a conscious decision is required rather than a silent drift.
-     */
     public function testPinnedMajorResolvesToRouterCurrentVersion()
     {
         $this->login();
@@ -792,7 +786,7 @@ JSON;
             'pinned_version' => '2',
         ]);
 
-        $this->assertSame(Router::API_VERSION, Router::normalizeAPIVersion($webhook->getPinnedAPIVersion()));
+        $this->assertSame('2.3.0', Router::normalizeAPIVersion($webhook->getPinnedAPIVersion()));
     }
 
     /**

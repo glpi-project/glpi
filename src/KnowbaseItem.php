@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Features\Clonable;
@@ -664,15 +665,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return false;
         }
 
+        if ($this->hasChildrenWithoutOtherParent()) {
+            Session::addMessageAfterRedirect(
+                msg: htmlescape(self::getChildrenDeletionRefusalMessage()),
+                message_type: ERROR,
+            );
+
+            return false;
+        }
+
         return parent::pre_deleteItem();
     }
 
     public function cleanDBonPurge()
     {
-        // Collect the children that this purge would leave outside the tree
-        // before their links to the purged article are removed below.
-        $orphaned_children = $this->getChildrenWithoutOtherParent();
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Entity_KnowbaseItem::class,
@@ -693,10 +699,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ['knowbaseitems_id_parent' => $this->fields['id']]
         );
 
-        // Attach the children that just lost their only parent back to the root
-        // article, so the knowledge base always is a single tree.
-        self::attachToRootArticle($orphaned_children);
-
         // KnowbaseItem_Comment does not extends CommonDBConnexity
         $kbic = new KnowbaseItem_Comment();
         $kbic->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
@@ -706,23 +708,30 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $kbir->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
     }
 
+    public static function getChildrenDeletionRefusalMessage(): string
+    {
+        return __('This article cannot be deleted because it contains sub-articles. They must be moved or deleted first.');
+    }
+
     /**
-     * Ids of the children of the loaded article that have no other parent, and
+     * Whether the loaded article has children that have no other parent, and
      * would thus be left outside the knowledge base tree if the article is
      * removed from it.
-     *
-     * @return int[]
      */
-    private function getChildrenWithoutOtherParent(): array
+    public function hasChildrenWithoutOtherParent(): bool
     {
+        if ($this->isNewItem()) {
+            throw new LogicException('The article must be loaded from the database.');
+        }
+
         $relation = new KnowbaseItem_KnowbaseItem();
 
         $children_ids = array_map('intval', array_column(
-            $relation->find(['knowbaseitems_id_parent' => $this->fields['id']]),
+            $relation->find(['knowbaseitems_id_parent' => $this->getID()]),
             'knowbaseitems_id'
         ));
         if ($children_ids === []) {
-            return [];
+            return false;
         }
 
         $parents_count = array_count_values(array_map('intval', array_column(
@@ -730,36 +739,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'knowbaseitems_id'
         )));
 
-        return array_values(array_filter(
-            $children_ids,
-            static fn(int $child_id): bool => ($parents_count[$child_id] ?? 0) <= 1,
-        ));
-    }
-
-    /**
-     * Attach the given articles to the root article, ignoring the ones that
-     * can not have a parent.
-     *
-     * @param int[] $article_ids
-     */
-    private static function attachToRootArticle(array $article_ids): void
-    {
-        if ($article_ids === [] || !self::hasRoot()) {
-            return;
-        }
-
-        $root_id  = self::getRootId();
-        $relation = new KnowbaseItem_KnowbaseItem();
-        foreach ($article_ids as $article_id) {
-            if ($article_id === $root_id) {
-                continue;
+        foreach ($children_ids as $child_id) {
+            if (($parents_count[$child_id] ?? 0) <= 1) {
+                return true;
             }
-
-            $relation->add([
-                'knowbaseitems_id'        => $article_id,
-                'knowbaseitems_id_parent' => $root_id,
-            ]);
         }
+
+        return false;
     }
 
     /**
@@ -912,14 +898,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         // Specific case for anonymous users + multi entities
         if (!Session::getLoginUserID()) {
-            $where = ['is_faq' => 1];
+            $where = [self::getTable() . '.is_faq' => 1];
             if (Session::isMultiEntitiesMode()) {
                 $where[Entity_KnowbaseItem::getTableField('entities_id')] = 0;
                 $where[Entity_KnowbaseItem::getTableField('is_recursive')] = 1;
             }
         } else {
             $where = self::getVisibilityCriteriaKB();
-            $where['is_faq'] = 1;
+            $where[self::getTable() . '.is_faq'] = 1;
         }
 
         return $where;
@@ -1748,7 +1734,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     type: EditorActionType::OPEN_MODAL,
                     params: [
                         'id'    => $this->fields['id'],
-                        'key'   => 'SidePanel/targets',
+                        'key'   => 'SidePanel/permissions',
                         'title' => $label,
                         'icon'  => $icon,
                     ],
@@ -2052,10 +2038,10 @@ TWIG, $twig_params);
             'SELECT' => [
                 'glpi_knowbaseitems.*',
                 new QueryExpression(
-                    QueryFunction::count('glpi_knowbaseitems_users.id') . ' + '
-                    . QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + '
-                    . QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + '
-                    . QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS '
+                    QueryFunction::count(new QueryIdentifier('glpi_knowbaseitems_users.id')) . ' + '
+                    . QueryFunction::count(new QueryIdentifier('glpi_groups_knowbaseitems.id')) . ' + '
+                    . QueryFunction::count(new QueryIdentifier('glpi_knowbaseitems_profiles.id')) . ' + '
+                    . QueryFunction::count(new QueryIdentifier('glpi_entities_knowbaseitems.id')) . ' AS '
                     . $DB::quoteName('visibility_count')
                 ),
             ],

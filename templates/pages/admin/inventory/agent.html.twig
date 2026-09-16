@@ -204,11 +204,11 @@
                             'use_module_remote_inventory': __('Remote inventory'),
                         } %}
 
-                        {% if item.fields[modulefield] %}
-                            {% set html = '<i class="ti ti-check green" aria-hidden="true"></i>' %}
-                        {% else %}
-                            {% set html = '<i class="ti ti-x red" aria-hidden="true"></i>' %}
-                        {% endif %}
+                        {% set is_supported = item.fields[modulefield] %}
+                        {% set html %}
+                            <i class="ti {{ is_supported ? 'ti-check green' : 'ti-x red' }}" aria-hidden="true"></i>
+                            <span class="visually-hidden">{{ is_supported ? __('Yes') : __('No') }}</span>
+                        {% endset %}
 
                         {{ fields.htmlField('', html, modulelabel) }}
                         {% endfor %}

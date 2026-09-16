@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 
@@ -2982,7 +2982,7 @@ TWIG, $twig_params);
                 static::getTable(),
             ],
             'WHERE'  => [
-                getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryExpression(DBmysql::quoteName(static::getTable() . '.id')),
+                getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryIdentifier(static::getTable() . '.id'),
                 static::getTable() . '.sub_type'                                           => static::class,
 
             ],
@@ -3193,7 +3193,14 @@ TWIG, ['label' => $this->getTitle()]);
 
                 foreach ($iterator as $data) {
                     $input['id'] = $data[$fieldid];
-                    $ruleitem->update($input);
+                    // Update the rule through its concrete class, otherwise the history entry
+                    // would be attached to the `Rule` itemtype and would therefore not be
+                    // visible in the history tab of the rule.
+                    $updated_item = $ruleitem;
+                    if ($ruleitem::getTable() === self::getTable()) {
+                        $updated_item = self::getRuleObjectByID($data[$fieldid]) ?? $ruleitem;
+                    }
+                    $updated_item->update($input);
                 }
                 Session::addMessageAfterRedirect(
                     __s('Rules using the object have been disabled.'),
@@ -3285,7 +3292,7 @@ TWIG, ['label' => $this->getTitle()]);
                             $nb = countElementsInTable(
                                 ['glpi_rules', 'glpi_ruleactions'],
                                 [
-                                    'glpi_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('glpi_rules.id')),
+                                    'glpi_ruleactions.rules_id'   => new QueryIdentifier('glpi_rules.id'),
                                     'glpi_rules.sub_type'         => $types,
                                     'glpi_ruleactions.field'      => 'entities_id',
                                     'glpi_ruleactions.value'      => $item->getID(),

@@ -38,6 +38,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
@@ -1299,6 +1300,7 @@ HTML;
                     'LineType' => null,
                     'RackType' => null,
                     'PDUType' => null,
+                    'PlugType' => null,
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null,
@@ -1880,6 +1882,7 @@ HTML;
             'width'                           => $params['width'],
             'container_css_class'             => $params['container_css_class'],
             'specific_tags_items_id_dropdown' => $params['specific_tags_items_id_dropdown'],
+            'display_emptychoice'             => $params['display_emptychoice'],
         ];
 
         // manage condition
@@ -3512,9 +3515,9 @@ HTML;
                             "$table.entities_id",
                             QueryFunction::concat(
                                 params: [
-                                    QueryFunction::ifnull('name', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull(new QueryIdentifier('name'), new QueryExpression($DB::quoteValue(''))),
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull(new QueryIdentifier('firstname'), new QueryExpression($DB::quoteValue(''))),
                                 ],
                                 alias: $field
                             ),
@@ -3530,7 +3533,7 @@ HTML;
                         'SELECT' => [
                             "$table.*",
                             QueryFunction::concat(
-                                params: ['glpi_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'glpi_softwarelicenses.name'],
+                                params: [new QueryIdentifier('glpi_softwares.name'), new QueryExpression($DB::quoteValue(' - ')), new QueryIdentifier('glpi_softwarelicenses.name')],
                                 alias: $field
                             ),
                         ],

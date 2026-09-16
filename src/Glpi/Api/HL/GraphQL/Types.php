@@ -36,21 +36,31 @@ namespace Glpi\Api\HL\GraphQL;
 
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\GraphQL\Type\DateTimeType;
-use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\Schemas;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\UnionType;
+use LogicException;
 
 class Types
 {
     /** @var array<string, Type> */
     private static array $types = [];
 
-    public static function load(string $type_name, string $api_version): Type
+    public static function load(string $type_name, string $api_version): ?Type
     {
         if (!isset(self::$types[$type_name])) {
-            $schemas = OpenAPIGenerator::getComponentSchemas($api_version);
-            self::$types[$type_name] = self::convertRESTSchemaToGraphQLSchema($type_name, $schemas[$type_name], $api_version);
+            if ($type_name === DateTimeType::dateTime()->name) {
+                self::$types[$type_name] = DateTimeType::dateTime();
+                return self::$types[$type_name];
+            }
+            $schema = Schemas::getInstance($api_version)->getSchema($type_name);
+            if ($schema === null) {
+                //return null;
+                throw new LogicException("Schema for type {$type_name} not found" . (new \Exception())->getTraceAsString());
+            }
+            self::$types[$type_name] = self::convertRESTSchemaToGraphQLSchema($type_name, $schema, $api_version);
         }
         return self::$types[$type_name];
     }
@@ -67,10 +77,14 @@ class Types
         foreach ($schema['properties'] as $name => $property) {
             $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
         }
-        return new ObjectType([
+        $type_config = [
             'name' => $schema_name,
             'fields' => $fields,
-        ]);
+        ];
+        if (isset($schema['x-graphql-resolver'])) {
+            $type_config['resolveField'] = $schema['x-graphql-resolver'];
+        }
+        return new ObjectType($type_config);
     }
 
     /**
@@ -98,17 +112,51 @@ class Types
             $graphql_type = DateTimeType::dateTime();
         }
         if ($graphql_type !== null) {
-            return ['type' => $graphql_type];
+            $type_config = ['type' => $graphql_type];
+            if (isset($property['x-graphql-resolver'])) {
+                $type_config['resolve'] = $property['x-graphql-resolver'];
+            }
+            return $type_config;
         }
 
         // Handle array and object types
         if ($type === Doc\Schema::TYPE_ARRAY) {
             $items = $property['items'];
+
+            // Unions
+            if (isset($items['anyOf']) || isset($items['oneOf'])) {
+                $type_list = array_map(
+                    static fn($r) => str_replace('#/components/schemas/', '', $r),
+                    $items['anyOf'] ?? $items['oneOf']
+                );
+                $discriminator_property = $items['discriminator']['propertyName'] ?? '';
+                $union_config = [
+                    'name' => "_{$prefix}_{$name}",
+                    'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
+                    'resolveType' => static function ($value) use ($discriminator_property, $api_version): ?Type {
+                        $t = $value;
+                        return self::load($t[$discriminator_property], $api_version);
+                    },
+                ];
+                /** @phpstan-ignore-next-line */
+                $graphql_type = new UnionType($union_config);
+                $type_config = ['type' => new ListOfType($graphql_type)];
+                if (isset($property['x-graphql-resolver'])) {
+                    $type_config['resolve'] = $property['x-graphql-resolver'];
+                }
+                return $type_config;
+            }
+
+            // Regular arrays
             $graphql_type = self::convertRESTPropertyToGraphQLType($items, $name, $prefix, $api_version);
             if ($graphql_type === null) {
                 return null;
             }
-            return ['type' => new ListOfType($graphql_type['type'])];
+            $type_config =  ['type' => new ListOfType($graphql_type['type'])];
+            if (isset($property['x-graphql-resolver'])) {
+                $type_config['resolve'] = $property['x-graphql-resolver'];
+            }
+            return $type_config;
         }
 
         if ($type === Doc\Schema::TYPE_OBJECT) {
@@ -119,16 +167,24 @@ class Types
             }
             if (isset($property['x-full-schema'])) {
                 $full_schema_name = $property['x-full-schema'];
-                return [
+                $type_config = [
                     'type' => static fn() => self::load($full_schema_name, $api_version),
                 ];
-            }
-            return [
-                'type' => new ObjectType([
+            } else {
+                $internal_obj_type = new ObjectType([
                     'name' => "_{$prefix}_{$name}",
                     'fields' => $fields,
-                ]),
-            ];
+                ]);
+                // register the type to avoid trying to resolve it against schemas
+                self::$types["_{$prefix}_{$name}"] = $internal_obj_type;
+                $type_config =  [
+                    'type' => $internal_obj_type,
+                ];
+            }
+            if (isset($property['x-graphql-resolver'])) {
+                $type_config['resolve'] = $property['x-graphql-resolver'];
+            }
+            return $type_config;
         }
         return null;
     }

@@ -44,7 +44,6 @@ use Glpi\Knowbase\SidePanel\RendererInterface;
 use Glpi\Knowbase\SidePanel\ScheduleVisibilityRenderer;
 use Glpi\Knowbase\SidePanel\ServiceCatalogRenderer;
 use Glpi\Knowbase\SidePanel\SharingRenderer;
-use Glpi\Knowbase\SidePanel\TargetsRenderer;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -89,7 +88,6 @@ final class SidePanelController extends AbstractController
             'service-catalog'     => new ServiceCatalogRenderer(),
             'permissions'         => new PermissionsRenderer(),
             'sharing'             => new SharingRenderer(),
-            'targets'             => new TargetsRenderer(),
             'history'             => new HistoryRenderer(),
             'schedule-visibility' => new ScheduleVisibilityRenderer(),
             default               => throw new BadRequestHttpException(),

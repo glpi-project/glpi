@@ -30,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set allow_empty = allow_empty ?? false %}
 {% set rand = random() %}
 {% set upload_an_icon_pane_id = 'upload-an-icon-pane-' ~ rand %}
 {% set pick_an_icon_pane_id = 'pick-an-icon-pane-' ~ rand %}
@@ -116,6 +117,7 @@
                         'filter': '',
                         'page': 1,
                         'page_size': 30,
+                        'allow_empty': allow_empty,
                     }, with_context: false) }}
                 </div>
                 <div id="{{ upload_an_icon_pane_id }}" class="tab-pane fade" role="tabpanel" aria-labelledby="upload-an-icon-{{ rand }}">

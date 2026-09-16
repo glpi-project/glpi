@@ -78,7 +78,7 @@ use function Safe\strtotime;
 
 final class CoreController extends AbstractController
 {
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         $transfer_keep_option = [
             'type' => Doc\Schema::TYPE_INTEGER,

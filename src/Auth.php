@@ -33,8 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
@@ -108,6 +110,11 @@ class Auth extends CommonGLPI
      */
     public const API      = 7;
     public const COOKIE   = 8;
+    /** @var int OAuth 2 authentication.
+     * This type of authentication is not actually handled by this class but this constant is here as a placeholder.
+     * {@link self::getAuthType()} will return this if the internal auth_type property is set to {@link self::NOT_YET_AUTHENTIFIED} and the HLAPI router reports a current client.
+     */
+    public const OAUTH    = 9;
     public const NOT_YET_AUTHENTIFIED = 0;
 
     public const USER_DOESNT_EXIST       = 0;
@@ -362,6 +369,19 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * Password is using and old encryption method like md5 or sha1
+     *
+     * @param string $hash Hash
+     *
+     * @return bool
+     */
+    private static function passwordIsOutdated(string $hash): bool
+    {
+        $info = password_get_info($hash);
+        return !isset($info['algo']) || !$info['algo'];
+    }
+
+    /**
      * Check is a password match the stored hash
      *
      * @since 0.85
@@ -373,20 +393,7 @@ class Auth extends CommonGLPI
      */
     public static function checkPassword($pass, $hash)
     {
-        $tmp = password_get_info($hash);
-
-        if (isset($tmp['algo']) && $tmp['algo']) {
-            $ok = password_verify($pass, $hash);
-        } elseif (strlen($hash) === 32) {
-            $ok = md5($pass) === $hash;
-        } elseif (strlen($hash) === 40) {
-            $ok = sha1($pass) === $hash;
-        } else {
-            $salt = substr($hash, 0, 8);
-            $ok = ($salt . sha1($salt . $pass) === $hash);
-        }
-
-        return $ok;
+        return password_verify($pass, $hash);
     }
 
     /**
@@ -446,13 +453,13 @@ class Auth extends CommonGLPI
                     'id',
                     'password',
                     QueryFunction::dateAdd(
-                        date: 'password_last_update',
+                        date: new QueryIdentifier('password_last_update'),
                         interval: $pass_expiration_delay,
                         interval_unit: 'DAY',
                         alias: 'password_expiration_date'
                     ),
                     QueryFunction::dateAdd(
-                        date: 'password_last_update',
+                        date: new QueryIdentifier('password_last_update'),
                         interval: $pass_expiration_delay + $lock_delay,
                         interval_unit: 'DAY',
                         alias: 'lock_date'
@@ -471,6 +478,11 @@ class Auth extends CommonGLPI
         if (count($result) === 1) {
             $row = $result->current();
             $password_db = $row['password'];
+
+            if (self::passwordIsOutdated($password_db)) {
+                $this->addToError(__('For security reasons, your password has expired. Please contact your administrator to reset it.'));
+                return false;
+            }
 
             if (self::checkPassword($password, $password_db)) {
                 // Disable account if password expired
@@ -1186,6 +1198,49 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * @return array<int, string>
+     */
+    public static function getAuthSources(bool $force_all = false): array
+    {
+        global $DB;
+
+        $methods = [
+            self::DB_GLPI  => __('Authentication on GLPI database'),
+            self::EXTERNAL => __('External authentications'),
+        ];
+
+        if (!$force_all) {
+            $result = $DB->request([
+                'FROM' => 'glpi_authldaps',
+                'COUNT' => 'cpt',
+                'WHERE' => [
+                    'is_active' => 1,
+                ],
+            ])->current();
+
+            if ($result['cpt'] > 0) {
+                $methods[self::LDAP] = __('Authentication on a LDAP directory');
+            }
+
+            $result = $DB->request([
+                'FROM' => 'glpi_authmails',
+                'COUNT' => 'cpt',
+                'WHERE' => [
+                    'is_active' => 1,
+                ],
+            ])->current();
+
+            if ($result['cpt'] > 0) {
+                $methods[self::MAIL] = __('Authentication on mail server');
+            }
+        } else {
+            $methods[self::LDAP] = __('Authentication on a LDAP directory');
+            $methods[self::MAIL] = __('Authentication on mail server');
+        }
+        return $methods;
+    }
+
+    /**
      * Print all the authentication methods
      *
      * @param array<string,mixed> $options Possible options:
@@ -1199,8 +1254,6 @@ class Auth extends CommonGLPI
      */
     public static function dropdown($options = [])
     {
-        global $DB;
-
         $p = [
             'name'                => 'auths_id',
             'value'               => 0,
@@ -1215,34 +1268,7 @@ class Auth extends CommonGLPI
             }
         }
 
-        $methods = [
-            self::DB_GLPI  => __('Authentication on GLPI database'),
-            self::EXTERNAL => __('External authentications'),
-        ];
-
-        $result = $DB->request([
-            'FROM'   => 'glpi_authldaps',
-            'COUNT'  => 'cpt',
-            'WHERE'  => [
-                'is_active' => 1,
-            ],
-        ])->current();
-
-        if ($result['cpt'] > 0) {
-            $methods[self::LDAP] = __('Authentication on a LDAP directory');
-        }
-
-        $result = $DB->request([
-            'FROM'   => 'glpi_authmails',
-            'COUNT'  => 'cpt',
-            'WHERE'  => [
-                'is_active' => 1,
-            ],
-        ])->current();
-
-        if ($result['cpt'] > 0) {
-            $methods[self::MAIL] = __('Authentication on mail server');
-        }
+        $methods = self::getAuthSources();
 
         return Dropdown::showFromArray($p['name'], $methods, $p);
     }
@@ -1802,6 +1828,9 @@ class Auth extends CommonGLPI
      */
     public function getAuthType(): int
     {
+        if ($this->auth_type === self::NOT_YET_AUTHENTIFIED && Router::getInstance()->getCurrentClient() !== null) {
+            return self::OAUTH;
+        }
         return $this->auth_type;
     }
 }

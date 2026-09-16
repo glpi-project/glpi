@@ -1371,7 +1371,7 @@ final class GraphQLResponseAsserter
     public function isOK(): self
     {
         $this->call_asserter->test->assertEquals(200, $this->response->getStatusCode());
-        $this->call_asserter->test->assertArrayNotHasKey('errors', $this->decoded_content);
+        $this->call_asserter->test->assertArrayNotHasKey('errors', $this->decoded_content, json_encode($this->decoded_content['errors'] ?? []));
         return $this;
     }
 

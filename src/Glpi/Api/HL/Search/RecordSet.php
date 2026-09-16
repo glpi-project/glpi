@@ -40,6 +40,7 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Debug\Profiler;
 use Glpi\Toolbox\ArrayPathAccessor;
 use Session;
@@ -118,7 +119,7 @@ final class RecordSet
         return $hydrated_row;
     }
 
-    public function getHydrationCriteria(string $fkey, string $table, string $itemtype, string $schema_name, array $ids_to_fetch): array
+    public function getHydrationCriteria(string $fkey, string $table, ?string $itemtype, string $schema_name, array $ids_to_fetch): array
     {
         $criteria = [
             'SELECT' => [],
@@ -151,7 +152,7 @@ final class RecordSet
                 $field_only = end($field_parts);
                 // Handle translatable fields
                 /** @var class-string<CommonDBTM> $itemtype */
-                if (Session::haveTranslations($itemtype, $field_only)) {
+                if ($itemtype !== null && Session::haveTranslations($itemtype, $field_only)) {
                     $trans_alias = "{$join_name}__{$field_only}__trans";
                     $trans_alias = hash('xxh3', $trans_alias);
                     if (!isset($criteria['LEFT JOIN'])) {
@@ -180,8 +181,8 @@ final class RecordSet
             if (!$is_computed && isset($trans_alias)) {
                 // Try to use the translated value, but fall back to the default value if there is no translation
                 $criteria['SELECT'][] = QueryFunction::ifnull(
-                    expression: "{$trans_alias}.value",
-                    value: $sql_field,
+                    expression: new QueryIdentifier("{$trans_alias}.value"),
+                    value: new QueryIdentifier($sql_field),
                     alias: $alias
                 );
             } else {
@@ -274,6 +275,9 @@ final class RecordSet
                         $hydrated_row = $this->getHydratedPartsOfMainRecord($row);
                         $needed_ids = explode(chr(0x1D), $row[$fkey] ?? '');
                         $needed_ids = array_filter($needed_ids, static fn($id) => $id !== chr(0x0));
+                        if ($needed_ids === []) {
+                            continue;
+                        }
                         $fetched_records[$table][$needed_ids[0]] = $hydrated_row;
                     }
                     Profiler::getInstance()->stop('RecordSet::check if nothing to select');

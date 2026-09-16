@@ -508,9 +508,6 @@ if ($(window).width() <= 700) {
     };
 }
 
-/**
- * @todo Remove? The 'fold_menu' field/$_SESSION['glpifold_menu'] seem unused.
- */
 var switchFoldMenu = function() {
     $.ajax({
         url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
@@ -532,6 +529,15 @@ var switchFoldMenu = function() {
                         $('#navbar-menu .nav-link.active + .dropdown-menu').addClass('show');
                     }
                 }
+
+                // Once collapsed the button only shows a chevron, a CSS pseudo-element that is not
+                // exposed to assistive technologies: its hidden label is the only name it has, and
+                // both that label and its state have to be maintained here.
+                var reduce_menu = $('.reduce-menu');
+                reduce_menu.attr('aria-expanded', collapsed ? 'false' : 'true');
+                reduce_menu.find('.visually-hidden').text(
+                    reduce_menu.attr(collapsed ? 'data-expand-label' : 'data-collapse-label')
+                );
             }
         }
     });
@@ -561,7 +567,6 @@ $(function() {
         }
     });
 
-    //TODO remove? See comment for switchFoldMenu()
     $('.reduce-menu').on('click', function(event) {
         event.preventDefault();
         event.stopPropagation();
