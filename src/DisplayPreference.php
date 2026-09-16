@@ -633,6 +633,14 @@ class DisplayPreference extends CommonDBTM
             'GROUPBY' => 'itemtype',
         ]);
 
+        // Sort by display name rather than by itemtype
+        $sorted_preferences = iterator_to_array($iterator);
+        usort($sorted_preferences, function ($a, $b) {
+            $name_a = is_a($a['itemtype'], CommonGLPI::class, true) ? $a['itemtype']::getTypeName(1) : $a['itemtype'];
+            $name_b = is_a($b['itemtype'], CommonGLPI::class, true) ? $b['itemtype']::getTypeName(1) : $b['itemtype'];
+            return strcasecmp($name_a, $name_b);
+        });
+
         $specific_actions = [];
         if ($users_id > 0) {
             $specific_actions[ self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_for_user'] = _x('button', 'Delete permanently');
@@ -651,7 +659,7 @@ class DisplayPreference extends CommonDBTM
         TemplateRenderer::getInstance()->display('components/search/displaypreference_list.html.twig', [
             'massiveactionparams' => $massiveactionparams,
             'users_id' => $users_id,
-            'preferences' => $iterator,
+            'preferences' => $sorted_preferences,
             'rand' => $rand,
         ]);
     }
