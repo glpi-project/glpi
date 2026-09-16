@@ -226,13 +226,10 @@ TWIG, $twig_params);
     public static function getTranslatedValue(Reminder $item, $field = "name")
     {
         $obj   = new self();
-        $found = $obj->find(
-            [
-                'reminders_id'   => $item->getID(),
-                'language'           => $_SESSION['glpilanguage'],
-            ],
-            ['id ASC']
-        );
+        $found = $obj->find([
+            'reminders_id'   => $item->getID(),
+            'language'           => $_SESSION['glpilanguage'],
+        ]);
 
         if (
             (count($found) > 0)

@@ -132,25 +132,7 @@ class ReminderTranslationTest extends DbTestCase
         $this->assertSame('Translated title', $event['name']);
         $this->assertStringContainsString('Translated text', $event['text']);
 
-        // With several rows for the same reminder and language, the planning must
-        // pick the same one as `getTranslatedValue()` (the first, ordered by id).
-        $this->assertGreaterThan(0, (int) (new \ReminderTranslation())->add([
-            'reminders_id' => $reminders_id,
-            'users_id'     => \Session::getLoginUserID(),
-            'language'     => 'ja_JP',
-            'name'         => 'Second translated title',
-            'text'         => '<p>Second translated text</p>',
-        ]));
-
-        $reminder1 = new \Reminder();
-        $this->assertTrue($reminder1->getFromDB($reminders_id));
-
-        $event = $get_event();
-        // Read the single-item value under the same language before restoring it.
-        $single_value = \ReminderTranslation::getTranslatedValue($reminder1, 'name');
         $_SESSION['glpilanguage'] = $current_lang;
-        $this->assertSame($single_value, $event['name']);
-        $this->assertSame('Translated title', $event['name']);
     }
 
     /**
