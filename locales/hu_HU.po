@@ -14,8 +14,8 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # Gábor Galló, 2026
-# Gábor Bíró, 2026
 # Lukács Péter <lukacspeter1977@gmail.com>, 2026
+# Gábor Bíró, 2026
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Lukács Péter <lukacspeter1977@gmail.com>, 2026\n"
+"Last-Translator: Gábor Bíró, 2026\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/glpi/teams/1637/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -630,6 +630,8 @@ msgstr "Lezár"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Ez a verzió NEM STABIL, és előfordulhat, hogy egyes BIZTONSÁGI JAVÍTÁSOKAT "
+"nem tartalmaz."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -646,7 +648,7 @@ msgstr "Új verzió érhető el : %s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Ugrás a fő tartalomhoz"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -663,7 +665,7 @@ msgstr "Kezdőlap"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Navigációs útvonal"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -697,15 +699,15 @@ msgstr "Megszemélyesítés megszakítása"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Oldalsáv"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Navigáció ki-/bekapcsolása"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Fő navigáció"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -803,7 +805,7 @@ msgstr "Űrlap Importálása"
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "%1s entitás kiválasztása az összes alárendelt entitásával együtt"
 
 #: templates/layout/parts/global_search_form.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -1081,11 +1083,11 @@ msgstr "Jegyzet hozzáadása"
 
 #: templates/components/notepad/form.html.twig
 msgid "Expand all"
-msgstr ""
+msgstr "Összes kibontása"
 
 #: templates/components/notepad/form.html.twig
 msgid "Collapse all"
-msgstr ""
+msgstr "Összecsukás"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
@@ -1208,7 +1210,7 @@ msgstr "Módosít"
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "New %s for this user"
-msgstr ""
+msgstr " Új %s ehhez a felhasználóhoz"
 
 #: templates/components/form/item_itilobject_item_list.html.twig
 #: src/DomainRecord.php:445
@@ -2060,7 +2062,7 @@ msgstr "Státusz"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Határozz meg időt"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
@@ -3880,7 +3882,7 @@ msgstr "Panelek szélességének váltás"
 #: templates/components/itilobject/footer.html.twig
 msgid ""
 "You have unsaved changes in the timeline. Are you sure you want to continue?"
-msgstr ""
+msgstr "Nem mentett módosításai vannak az idővonalon. Biztosan folytatja?"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2905
@@ -4585,10 +4587,12 @@ msgid ""
 "This will reset all filters, cards, and sharing options in this dashboard "
 "with the one selected!"
 msgstr ""
+"Ez visszaállítja az irányítópult összes szűrőjét, kártyáját és megosztási "
+"beállítását a kiválasztott irányítópult beállításaira!"
 
 #: templates/components/dashboard/reset.html.twig
 msgid "Default dashboard to reset to"
-msgstr ""
+msgstr "Alapértelmezett irányítópult, amelyre visszaállítható"
 
 #: templates/components/dashboard/reset.html.twig
 #: js/modules/Dashboard/Dashboard.js:838
@@ -4597,7 +4601,7 @@ msgstr "Visszaállítás alapértelmezésre"
 
 #: templates/components/dashboard/reset.html.twig
 msgid "Resetting this dashboard is not currently supported."
-msgstr ""
+msgstr "Az irányítópult visszaállítása jelenleg nem támogatott."
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
@@ -7685,7 +7689,7 @@ msgstr "Kiszolgáló"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Proxy exclusions"
-msgstr ""
+msgstr " Proxy-kivételek"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 #: src/Telemetry.php:395
@@ -7826,7 +7830,7 @@ msgstr "Regisztrálta"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Remove registration key"
-msgstr ""
+msgstr "Regisztrációs kulcs eltávolítása"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #: front/marketplace.php:52 src/Glpi/Marketplace/Controller.php:118
@@ -7889,6 +7893,8 @@ msgstr "Bejelentések megtartása hardverek törlésekor"
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Show personal information in new ticket form (simplified interface)"
 msgstr ""
+"Személyes adatok megjelenítése az új hibajegy űrlapján (egyszerűsített "
+"felület)"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Allow anonymous ticket creation (receiver)"
@@ -8217,6 +8223,7 @@ msgstr "Dokumentumok hozzáadása bejelentés értesítőhöz"
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Add documents into notifications sent to anonymous users"
 msgstr ""
+"Dokumentumok hozzáadása az anonim felhasználóknak küldött értesítésekhez"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1221
@@ -8644,6 +8651,8 @@ msgid ""
 "Server configuration has changed. Please save the collector before browsing "
 "folders."
 msgstr ""
+"A szerver konfigurációja megváltozott. A mappák tallózása előtt mentse a "
+"gyűjtőt."
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Incoming mail folder (optional, often INBOX)"
@@ -9444,7 +9453,7 @@ msgstr "Tartam"
 
 #: templates/pages/management/contract.html.twig
 msgid "Start date of notice period"
-msgstr ""
+msgstr "Felmondási idő kezdő dátuma"
 
 #: templates/pages/management/contract.html.twig src/Entity.php:1950
 #: src/Contract.php:338 src/Contract.php:583 src/Contract.php:1601
@@ -9816,7 +9825,7 @@ msgstr "Kérdés részletei"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Move question"
-msgstr ""
+msgstr "Kérdés áthelyezése"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid ""
@@ -10236,12 +10245,15 @@ msgstr "Adj meg egy értéket..."
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid "Child items have conditions and cannot be deleted"
 msgstr ""
+"Az alárendelt elemek feltételekhez vannak használva, ezért nem törölhetők."
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid ""
 "This section has child elements that are used in conditions of other form "
 "elements"
 msgstr ""
+"Ez a szakasz olyan alárendelt elemeket tartalmaz, amelyeket más űrlapelemek "
+"feltételei használnak."
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Request categories"
@@ -10288,7 +10300,7 @@ msgstr "Válasszon szereplőt..."
 
 #: templates/pages/admin/form/question_type/actors_admin.html.twig
 msgid "Show more settings"
-msgstr ""
+msgstr "További beállítások megjelenítése"
 
 #: templates/pages/admin/form/question_type/actors_admin.html.twig
 msgid "Allowed types"
@@ -10407,7 +10419,7 @@ msgstr "Nincs alapértelmezett érték"
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Translation row for %s"
-msgstr ""
+msgstr "%s fordítási sora"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10491,7 +10503,7 @@ msgstr "Írd be a fordítást"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Copy default value to translation"
-msgstr ""
+msgstr "Alapértelmezett érték másolása a fordításba"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Remove item"
@@ -10523,15 +10535,15 @@ msgstr "Űrlap cél neve"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete non-empty section"
-msgstr ""
+msgstr "Nem üres szakasz törlése"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "This section contains elements"
-msgstr ""
+msgstr "Ez a szakasz elemeket tartalmaz."
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete section and all its elements"
-msgstr ""
+msgstr "Szakasz és összes elemének törlése"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Templates configuration"
@@ -11427,7 +11439,7 @@ msgstr "Egyedi illusztráció előnézete és kiválasztása"
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #, php-format
 msgid "Recommended size: %s"
-msgstr ""
+msgstr "Ajánlott méret: %s"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Inherited illustration preview"
@@ -11487,7 +11499,7 @@ msgstr "Kategóriák kibontása a szolgáltatáskatalógusban"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default sort order in the service catalog"
-msgstr ""
+msgstr "Alapértelmezett rendezési sorrend a szolgáltatáskatalógusban"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Save general settings"
@@ -11975,7 +11987,7 @@ msgstr "VAGY"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 msgid "No rule criteria to display"
-msgstr ""
+msgstr "Nincs megjeleníthető szabályfeltétel"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 #: templates/pages/admin/rules/form.html.twig
@@ -12066,7 +12078,7 @@ msgstr "Az eszköz létrejön vagy frissül a GLPI-ben"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "You do not have the required permissions"
-msgstr ""
+msgstr "Nincs meg a szükséges jogosultsága"
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2160
@@ -12189,8 +12201,8 @@ msgstr "Az összes bővítmény futtatásának felfüggesztése"
 #, php-format
 msgid "You have %d plugin to update"
 msgid_plural "You have %d plugins to update"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bővítmény frissítése érhető el"
+msgstr[1] "%d bővítmény frissítése érhető el"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "filter logs"
@@ -12655,7 +12667,7 @@ msgstr "haladó-irányítópultok"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Advanced forms"
-msgstr ""
+msgstr "Speciális űrlapok"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -12801,7 +12813,7 @@ msgstr "Üzleti intelligencia és riportolás 3"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 4"
-msgstr ""
+msgstr "Business Intelligence és jelentéskészítés 4"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12916,7 +12928,7 @@ msgstr "Cloud hálózat 2"
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Cloud usage"
-msgstr ""
+msgstr "Felhőhasználat"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
@@ -12973,7 +12985,7 @@ msgstr "adatbázis"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Add database"
-msgstr ""
+msgstr "Adatbázis hozzáadása"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -12983,7 +12995,7 @@ msgstr "Kézbesítés"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Diagnostic"
-msgstr ""
+msgstr " Diagnosztika"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
@@ -13043,7 +13055,7 @@ msgstr "Hibajavítás"
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Fixing bug 2"
-msgstr ""
+msgstr "Hibajavítás 2"
 
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
@@ -13058,7 +13070,7 @@ msgstr "űrlapkészítő"
 #: resources/.illustrations_translations.php:84
 msgctxt "Icon"
 msgid "Gantt"
-msgstr ""
+msgstr "Gantt"
 
 #: resources/.illustrations_translations.php:85
 msgctxt "Icon"
@@ -13143,12 +13155,12 @@ msgstr "Leltár"
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "Inventory numbers"
-msgstr ""
+msgstr "Leltárszámok"
 
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "Items export"
-msgstr ""
+msgstr " Elemek exportálása"
 
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
@@ -13158,17 +13170,17 @@ msgstr "Tudásbázis és GYIK"
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "LDAP diagnostic"
-msgstr ""
+msgstr "LDAP-diagnosztika"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "LDAP inventory"
-msgstr ""
+msgstr "LDAP-leltár"
 
 #: resources/.illustrations_translations.php:106
 msgctxt "Icon"
 msgid "LDAP manage"
-msgstr ""
+msgstr "LDAP-kezelés"
 
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
@@ -13213,7 +13225,7 @@ msgstr "Monitoring"
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "More options"
-msgstr ""
+msgstr " További lehetőségek"
 
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
@@ -13223,7 +13235,7 @@ msgstr "több-elégedetség"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "Network inventory"
-msgstr ""
+msgstr "Hálózati leltár"
 
 #: resources/.illustrations_translations.php:118
 msgctxt "Icon"
@@ -13288,12 +13300,12 @@ msgstr "Partner"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "PDF-exportálás"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
 msgid "Phone inventory"
-msgstr ""
+msgstr "Telefonleltár"
 
 #: resources/.illustrations_translations.php:132
 #: resources/.illustrations_translations.php:382
@@ -13309,7 +13321,7 @@ msgstr "Feladat nyomtatása"
 #: resources/.illustrations_translations.php:134
 msgctxt "Icon"
 msgid "Printer inventory"
-msgstr ""
+msgstr "Nyomtatóleltár"
 
 #: resources/.illustrations_translations.php:135
 msgctxt "Icon"
@@ -13905,7 +13917,7 @@ msgstr "csevegés"
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "billing"
-msgstr ""
+msgstr " számlázás"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13985,12 +13997,12 @@ msgstr "szállítás"
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "troubleshooting"
-msgstr ""
+msgstr "hibaelhárítás"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
 msgid "analysis"
-msgstr ""
+msgstr "elemzés"
 
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
@@ -14120,7 +14132,7 @@ msgstr "könyvtár"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr ""
+msgstr " projektmenedzsment"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -14300,12 +14312,12 @@ msgstr "jelölés"
 #: resources/.illustrations_translations.php:336
 msgctxt "Icon"
 msgid "places"
-msgstr ""
+msgstr "helyek"
 
 #: resources/.illustrations_translations.php:337
 msgctxt "Icon"
 msgid "arborescence"
-msgstr ""
+msgstr "hierarchia"
 
 #: resources/.illustrations_translations.php:338
 msgctxt "Icon"
@@ -14340,12 +14352,12 @@ msgstr "ügyfél-elégedettség (CSAT)"
 #: resources/.illustrations_translations.php:344
 msgctxt "Icon"
 msgid "devices"
-msgstr ""
+msgstr " eszközök"
 
 #: resources/.illustrations_translations.php:345
 msgctxt "Icon"
 msgid "agent"
-msgstr ""
+msgstr " ügynök"
 
 #: resources/.illustrations_translations.php:346
 msgctxt "Icon"
@@ -14400,12 +14412,12 @@ msgstr "beszerzés"
 #: resources/.illustrations_translations.php:356
 msgctxt "Icon"
 msgid "export"
-msgstr ""
+msgstr "exportálás"
 
 #: resources/.illustrations_translations.php:357
 msgctxt "Icon"
 msgid "phone"
-msgstr ""
+msgstr "telefon"
 
 #: resources/.illustrations_translations.php:358
 msgctxt "Icon"
@@ -15567,7 +15579,7 @@ msgstr "Érvénytelen szolgáltató beállítás"
 #: front/reservation.form.php:105
 #, php-format
 msgid "%1$s updates the reservation for item %2$s"
-msgstr ""
+msgstr "%1$s frissíti a(z) %2$s elem foglalását"
 
 #: front/reservation.form.php:124
 #, php-format
@@ -15936,7 +15948,7 @@ msgstr "Elemek száma"
 #: src/NotificationTargetTicket.php:679
 msgctxt "quantity"
 msgid "Number of linked project tasks"
-msgstr ""
+msgstr "Kapcsolódó projektfeladatok száma"
 
 #: src/NotificationTargetTicket.php:694
 msgid "Solution rejection comment"
@@ -15975,8 +15987,8 @@ msgstr "Válasz érkezett érvényesítési kérelemre"
 #: src/NotificationTargetTicket.php:871 src/NotificationTargetTicket.php:876
 msgid "Linked project task"
 msgid_plural "Linked project tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kapcsolódó projektfeladat"
+msgstr[1] "Kapcsolódó projektfeladatok"
 
 #: src/NotificationTargetTicket.php:897
 #: src/NotificationTargetCommonITILObject.php:2539
@@ -16081,11 +16093,11 @@ msgstr "Csoport felhasználói"
 
 #: src/RuleCommonITILObject.php:1021
 msgid "Send an approval request to requester group manager"
-msgstr ""
+msgstr "Jóváhagyási kérelem küldése az igénylői csoport vezetőjének"
 
 #: src/RuleCommonITILObject.php:1025
 msgid "Send an approval request to technician group manager"
-msgstr ""
+msgstr "Jóváhagyási kérelem küldése a technikusi csoport vezetőjének"
 
 #: src/RuleCommonITILObject.php:1030
 msgid "Set approval request step"
@@ -16149,7 +16161,7 @@ msgstr "Nem törölheted a szervezetet, amely al-szervezeteket tartalmaz."
 
 #: src/Entity.php:395
 msgid "You do not have rights for this entity."
-msgstr ""
+msgstr "Nincs jogosultsága ehhez az entitáshoz."
 
 #: src/Entity.php:414
 msgid "You can't add an entity without name"
@@ -16174,6 +16186,7 @@ msgstr "Helpdesk kezdőlap"
 #: src/Entity.php:753
 msgid "To create a child entity, you must enable entity tree structure."
 msgstr ""
+"Alárendelt entitás létrehozásához engedélyeznie kell az entitáshierarchiát."
 
 #: src/Entity.php:882 src/Contract.php:471 src/Profile_User.php:924
 #: src/Budget.php:157 src/PassiveDCEquipment.php:97 src/LevelAgreement.php:565
@@ -17853,7 +17866,7 @@ msgstr "Nem sikerült átméretezni a képet"
 
 #: src/UploadHandler.php:536
 msgid "Invalid file type"
-msgstr ""
+msgstr "Érvénytelen fájltípus"
 
 #: src/ContactType.php:41
 msgid "Contact type"
@@ -17956,12 +17969,12 @@ msgstr "A bejelentés korábbi felelőse"
 #: src/NotificationTargetCommonITILObject.php:965
 #, php-format
 msgid "Manager of the group in charge of the %s"
-msgstr ""
+msgstr "A(z) %s-ért felelős csoport vezetője"
 
 #: src/NotificationTargetCommonITILObject.php:969
 #, php-format
 msgid "Group in charge of the %s except manager users"
-msgstr ""
+msgstr "A(z) %s-ért felelős csoport a vezető felhasználók kivételével"
 
 #: src/NotificationTargetCommonITILObject.php:971
 msgid "Requester group manager"
@@ -17974,12 +17987,12 @@ msgstr "Igénylő csoportja vezetőket kivéve"
 #: src/NotificationTargetCommonITILObject.php:976
 #, php-format
 msgid "Technician in charge of the %s"
-msgstr ""
+msgstr "A(z) %s-ért felelős technikus"
 
 #: src/NotificationTargetCommonITILObject.php:979
 #, php-format
 msgid "Group in charge of the %s"
-msgstr ""
+msgstr "A(z) %s-ért felelős csoport"
 
 #: src/NotificationTargetCommonITILObject.php:982
 msgid "Observer group manager"
@@ -18106,7 +18119,7 @@ msgstr "Kapcsolt problémák száma"
 #: src/NotificationTargetCommonITILObject.php:2261
 msgctxt "quantity"
 msgid "Number of linked projects"
-msgstr ""
+msgstr "Kapcsolódó projektek száma"
 
 #: src/NotificationTargetCommonITILObject.php:2262
 msgid "Number of sent reminders since status is pending"
@@ -18187,8 +18200,8 @@ msgstr[1] "Kapcsolódó problémák"
 #: src/NotificationTargetCommonITILObject.php:2519
 msgid "Linked project"
 msgid_plural "Linked projects"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kapcsolódó projekt"
+msgstr[1] "Kapcsolódó projektek"
 
 #: src/NotificationTargetCommonITILObject.php:2306
 msgid "No defined category"
@@ -18467,7 +18480,7 @@ msgstr "%1$s %2$s által"
 #: src/Log.php:703
 #, php-format
 msgid "%1$s: %2$s (%3$s)"
-msgstr ""
+msgstr " %1$s: %2$s (%3$s)"
 
 #: src/Log.php:836
 #, php-format
@@ -19760,7 +19773,7 @@ msgstr "%1$s egyedi kell legyen!"
 
 #: src/State.php:384
 msgid "Visible"
-msgstr ""
+msgstr "Látható"
 
 #: src/State.php:927
 #, php-format
@@ -19804,12 +19817,12 @@ msgstr "Alfeladat létrehozása ebből"
 #: src/ProjectTask.php:1422
 msgctxt "button"
 msgid "Affect to team"
-msgstr ""
+msgstr "Hozzárendelés a csapathoz"
 
 #: src/ProjectTask.php:1423
 msgctxt "button"
 msgid "Unaffect to team"
-msgstr ""
+msgstr "Hozzárendelés megszüntetése a csapatnál"
 
 #: src/ProjectTask.php:1740
 msgid "Ongoing projects tasks"
@@ -20220,6 +20233,8 @@ msgstr ""
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
 msgstr ""
+"Nem sikerült lekérni a biztonsági kulcsfájl tartalmát. Javítsa a(z) %s fájl "
+"jogosultságait."
 
 #: src/GLPIKey.php:160
 #, php-format
@@ -20227,6 +20242,8 @@ msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
 msgstr ""
+"Érvénytelen a biztonsági kulcsfájl tartalma. A kulcs újragenerálásához "
+"futtatnia kell a(z) „%s” parancsot."
 
 #: src/Vlan.php:48
 msgid "VLAN"
@@ -20386,6 +20403,8 @@ msgstr ""
 #, php-format
 msgid "An error occurred raising \"%1$s\" webhook for item %2$s (ID %3$s)"
 msgstr ""
+"Hiba történt a(z) „%1$s” webhook meghívásakor a(z) %2$s elemhez (azonosító: "
+"%3$s)"
 
 #: src/Webhook.php:1358
 msgid "An event is required"
@@ -21516,7 +21535,7 @@ msgstr "A feladó email címe érvénytelen."
 #: src/NotificationMailing.php:108
 #, php-format
 msgid "Cannot initialize mailer, error is: %s"
-msgstr ""
+msgstr "Nem sikerült inicializálni a levelezőt, a hiba: %s"
 
 #: src/NotificationMailing.php:119
 msgid "This is a test email."
@@ -22031,12 +22050,12 @@ msgstr "Minden oldal Office Open XML formátumban (.xlsx)"
 #: src/Dropdown.php:4263
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Saját %s"
 
 #: src/Dropdown.php:4393
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "Saját csoportjaim %s"
 
 #: src/Dropdown.php:4507 src/CommonItilObject_Item.php:970
 msgid "version"
@@ -22049,7 +22068,7 @@ msgstr "Telepített szoftver"
 #: src/Dropdown.php:4642
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "Csatlakoztatott %s"
 
 #: src/DomainRelation.php:59
 msgid "Domain relation"
@@ -23217,7 +23236,7 @@ msgstr "Definiáltál függő indokokat anélkül, hogy lenne hozzájuk aktív %
 
 #: src/Central.php:662
 msgid "View plugins"
-msgstr ""
+msgstr "Bővítmények megtekintése"
 
 #: src/CertificateType.php:45
 msgid "Certificate type"
@@ -23378,14 +23397,15 @@ msgstr "Hiba történt a frissítés során. Hiba: %s"
 #: src/Update.php:294
 msgid "Creating default forms and helpdesk tiles if needed…"
 msgstr ""
+"Alapértelmezett űrlapok és helpdesk-csempék létrehozása, ha szükséges…"
 
 #: src/Update.php:299
 msgid "Default forms and helpdesk tiles created."
-msgstr ""
+msgstr "Az alapértelmezett űrlapok és helpdesk-csempék létrejöttek."
 
 #: src/Update.php:303
 msgid "Initializing default rules if needed…"
-msgstr ""
+msgstr "Alapértelmezett szabályok inicializálása, ha szükséges…"
 
 #: src/Update.php:307 src/Toolbox.php:2301
 msgid "Default rules initialized."
@@ -23401,7 +23421,7 @@ msgstr "Frissítés véglegesítése…"
 
 #: src/Update.php:392
 msgid "Generating security keys if needed…"
-msgstr ""
+msgstr "Biztonsági kulcsok létrehozása, ha szükséges…"
 
 #: src/Update.php:400
 #, php-format
@@ -23816,7 +23836,7 @@ msgstr "Nem sikerült betölteni a %d jegyet"
 #: src/Ticket.php:5837
 #, php-format
 msgid "Cannot merge ticket %d into itself"
-msgstr ""
+msgstr " itself A(z) %d hibajegy nem vonható össze saját magával"
 
 #: src/Ticket.php:5877 src/Ticket.php:5892
 #, php-format
@@ -24631,7 +24651,7 @@ msgstr "Adatok megtekintése"
 
 #: src/Glpi/Dashboard/Widget.php:86
 msgid "Data view"
-msgstr ""
+msgstr "Adatnézet"
 
 #: src/Glpi/Dashboard/Widget.php:120
 msgid "Pie"
@@ -24777,7 +24797,7 @@ msgstr "Új összesítő hozzáadása"
 
 #: src/Glpi/Dashboard/Grid.php:308
 msgid "Reset dashboard to default"
-msgstr ""
+msgstr "Irányítópult visszaállítása alapértelmezettre"
 
 #: src/Glpi/Dashboard/Grid.php:421
 msgid "Add filter"
@@ -25913,7 +25933,7 @@ msgstr "Válasz az utolsó „Szervezet” elem kérdésre"
 
 #: src/Glpi/Form/Destination/CommonITILField/EntityFieldStrategy.php:64
 msgid "Entity of the requester"
-msgstr ""
+msgstr " Az igénylő entitása"
 
 #: src/Glpi/Form/Destination/CommonITILField/UrgencyField.php:96
 msgid "Select an urgency level..."
@@ -26022,15 +26042,15 @@ msgstr "Konkrét %s"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:56
 msgid "Answer from a specific date question"
-msgstr ""
+msgstr "Egy adott dátumkérdésre adott válasz"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:57
 msgid "Computed date based on form submission date"
-msgstr ""
+msgstr "Az űrlap beküldési dátuma alapján számított dátum"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:58
 msgid "Computed date based on a specific date question answer"
-msgstr ""
+msgstr "Egy adott dátumkérdésre adott válasz alapján számított dátum"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceFieldStrategy.php:49
 msgid "Specific request source"
@@ -26043,15 +26063,15 @@ msgstr "Válasszon %s-t..."
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMField.php:103
 msgid "Select a date question..."
-msgstr ""
+msgstr " Válasszon dátumkérdést..."
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMField.php:111
 msgid "Select time offset..."
-msgstr ""
+msgstr "Válasszon időeltolást..."
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMField.php:119
 msgid "Select time definition..."
-msgstr ""
+msgstr "Válasszon időmeghatározást..."
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupField.php:88
 msgid "Select followup templates..."
@@ -26080,19 +26100,19 @@ msgstr "Válasz az utolsó „%s” vagy „E-mail” kérdésre"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:70
 msgid "User that own an asset from an answer"
-msgstr ""
+msgstr "Az eszközt birtokló felhasználó a válasz alapján"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:71
 msgid "Technician in charge of an asset from an answer"
-msgstr ""
+msgstr "Az eszközért felelős technikus a válasz alapján"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:72
 msgid "Group that own an asset from an answer"
-msgstr ""
+msgstr "Az eszközt birtokló csoport a válasz alapján"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:73
 msgid "Group in charge of an asset from an answer"
-msgstr ""
+msgstr "Az eszközért felelős csoport a válasz alapján"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILTaskFieldStrategy.php:46
 msgid "No Task"
@@ -26292,7 +26312,7 @@ msgstr ""
 #: src/Glpi/Form/Migration/FormMigration.php:790
 #, php-format
 msgid "The \"%1$s\" question type is available in the \"%2$s\" plugin: %3$s"
-msgstr ""
+msgstr "A(z) „%1$s” kérdéstípus a(z) „%2$s” bővítményben érhető el: %3$s"
 
 #: src/Glpi/Form/Migration/FormMigration.php:850
 #, php-format
@@ -26377,7 +26397,7 @@ msgstr "Érvényesítési feltételek importálása..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:2034
 msgid "Updating relations between forms and ITIL objects..."
-msgstr ""
+msgstr "Az űrlapok és az ITIL-objektumok közötti kapcsolatok frissítése..."
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDropdown.php:151
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:449
@@ -26583,12 +26603,12 @@ msgstr "Űrlap neve: %s"
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:146
 #, php-format
 msgid "Unknown custom type: %s"
-msgstr ""
+msgstr " Ismeretlen egyéni típus: %s"
 
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:154
 #, php-format
 msgid "Missing plugin: %s"
-msgstr ""
+msgstr "Hiányzó bővítmény: %s"
 
 #: src/Glpi/Form/AnswersSet.php:63
 msgid "Answers"
@@ -26986,7 +27006,7 @@ msgstr "Felhasználói eszközök"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:553
 msgid "Attachments"
-msgstr ""
+msgstr " Mellékletek"
 
 #: src/Glpi/Features/TreeBrowse.php:120
 msgid "No category found"
@@ -27206,6 +27226,7 @@ msgstr "usage of initSession resource with credentials is disabled"
 #: src/Glpi/Api/API.php:312
 msgid "usage of initSession resource with user token is disabled"
 msgstr ""
+"Az initSession erőforrás használata felhasználói tokennel le van tiltva."
 
 #: src/Glpi/Api/API.php:325
 msgid "parameter(s) login, password or user_token are missing"
@@ -27213,11 +27234,11 @@ msgstr "hiányzó felhasználónév, jelszó vagy user_token paraméter(ek)"
 
 #: src/Glpi/Api/API.php:331
 msgid "parameter(s) login, password are missing"
-msgstr ""
+msgstr "Hiányzó paraméter(ek): login, password"
 
 #: src/Glpi/Api/API.php:337
 msgid "parameter user_token is missing"
-msgstr ""
+msgstr "Hiányzó paraméter: user_token"
 
 #: src/Glpi/Api/API.php:356
 msgid "parameter user_token seems invalid"
@@ -27508,6 +27529,8 @@ msgid ""
 "Unable to find the target type for the \"%s\" field, it will not be imported"
 " as a dropdown field."
 msgstr ""
+"Nem található a(z) „%s” mező céltípusa, ezért nem lesz legördülő mezőként "
+"importálva."
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:1502
 #, php-format
@@ -28407,7 +28430,7 @@ msgstr "Ismeretlen hiba"
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:51
 msgid "(Re)generate OAuth keys"
-msgstr ""
+msgstr " OAuth-kulcsok létrehozása/újragenerálása"
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:52
 msgid ""
@@ -28415,22 +28438,28 @@ msgid ""
 " be invalidated. This only generates missing keys unless the --force option "
 "is used."
 msgstr ""
+"Ez a parancs újragenerálja az OAuth-kulcsokat. Az összes meglévő hozzáférési"
+" token érvénytelenné válik. A rendszer csak a hiányzó kulcsokat hozza létre,"
+" kivéve, ha a --force kapcsolót használja."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:53
 msgid "Force the regeneration of OAuth keys even if they already exist."
 msgstr ""
+"Az OAuth-kulcsok újragenerálásának kényszerítése akkor is, ha már léteznek."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:60
 msgid "OAuth keys already exist. Use --force option to regenerate them."
 msgstr ""
+"Az OAuth-kulcsok már léteznek. Az újragenerálásukhoz használja a --force "
+"kapcsolót."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:67
 msgid "Unable to generate OAuth keys."
-msgstr ""
+msgstr "Nem sikerült létrehozni az OAuth-kulcsokat."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:73
 msgid "OAuth keys have been successfully generated."
-msgstr ""
+msgstr "Az OAuth-kulcsok sikeresen létrehozva."
 
 #: src/Glpi/Console/Security/DisableTFACommand.php:53
 msgid "Disable 2FA for a user"
@@ -29349,6 +29378,9 @@ msgid ""
 "Download all plugins to their latest compatible versions, update all active "
 "plugins and reactivate those that were active."
 msgstr ""
+"Az összes bővítmény legújabb kompatibilis verziójának letöltése, az összes "
+"aktív bővítmény frissítése, valamint a korábban aktív bővítmények "
+"újraaktiválása."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:60
 #: src/Glpi/Console/Plugin/InstallCommand.php:78
@@ -29381,44 +29413,48 @@ msgid ""
 "Plugin \"%s\" was installed manually and therefore has not been updated "
 "automatically."
 msgstr ""
+"A(z) „%s” bővítmény manuálisan lett telepítve, ezért nem frissült "
+"automatikusan."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:112
 #, php-format
 msgid "Plugin \"%s\" is not present in the marketplace."
-msgstr ""
+msgstr "A(z) „%s” bővítmény nem található a piactéren."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:123
 #, php-format
 msgid "Plugin \"%s\" is not available for your GLPI version."
-msgstr ""
+msgstr "A(z) „%s” bővítmény nem érhető el az Ön GLPI-verziójához."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:132
 #, php-format
 msgid "Plugin \"%s\" is already up-to-date."
-msgstr ""
+msgstr "A(z) „%s” bővítmény már naprakész."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:143
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:88
 #, php-format
 msgid "Plugin \"%s\" has a local source versioning directory."
 msgstr ""
+"A(z) „%s” bővítmény helyi forrásverzió-kezelési könyvtárral rendelkezik."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:150
 #, php-format
 msgid "Plugin \"%s\" has an available update but its directory is not writable."
 msgstr ""
+"A(z) „%s” bővítményhez elérhető frissítés van, de a könyvtára nem írható."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:162
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:99
 #, php-format
 msgid "Plugin \"%s\" downloaded successfully"
-msgstr ""
+msgstr "A(z) „%s” bővítmény sikeresen letöltve"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:166
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:100
 #, php-format
 msgid "Plugin \"%s\" could not be downloaded"
-msgstr ""
+msgstr "A(z) „%s” bővítmény letöltése sikertelen"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:200
 #: src/Glpi/Console/Plugin/InstallCommand.php:133
@@ -29435,7 +29471,7 @@ msgstr "A(z) \"%1$s\" bővítmény aktiválása sikertelen."
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:229
 #, php-format
 msgid "Plugin \"%1$s\" has been updated and reactivated."
-msgstr ""
+msgstr "A(z) „%1$s” bővítmény frissítve és újraaktiválva."
 
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:52
 msgid "Download plugin from the GLPI marketplace"
@@ -30375,35 +30411,36 @@ msgstr ""
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:159
 msgid "Enable SSL for database connection"
-msgstr ""
+msgstr "SSL engedélyezése az adatbázis-kapcsolathoz"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:166
 msgid "Path to the database SSL CA certificate file"
-msgstr ""
+msgstr "Az adatbázis SSL CA-tanúsítványfájljának elérési útja"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:173
 msgid "Path to the database SSL client certificate file"
-msgstr ""
+msgstr "Az adatbázis SSL-ügyféltanúsítvány-fájljának elérési útja"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:180
 msgid "Path to the database SSL client key file"
-msgstr ""
+msgstr "Az adatbázis SSL-ügyfélkulcsfájljának elérési útja"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:187
 msgid "Path to a directory containing trusted SSL CA certificates"
-msgstr ""
+msgstr "A megbízható SSL CA-tanúsítványokat tartalmazó könyvtár elérési útja"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:194
 msgid "List of allowable ciphers for SSL database connection"
 msgstr ""
+"Az SSL-adatbázis-kapcsolathoz engedélyezett titkosítási algoritmusok listája"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:205
 msgid "Database host:"
-msgstr ""
+msgstr " Adatbázis-kiszolgáló:"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:206
 msgid "Database port (optional):"
-msgstr ""
+msgstr " Adatbázis portja (opcionális):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:219
 msgid "Database name:"
@@ -30419,27 +30456,31 @@ msgstr "Adatbázis jelszó:"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:237
 msgid "Enable SSL for database connection?"
-msgstr ""
+msgstr "Engedélyezi az SSL-t az adatbázis-kapcsolathoz?"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:245
 msgid "Path to SSL CA certificate file (optional):"
-msgstr ""
+msgstr "Az SSL CA-tanúsítványfájl elérési útja (opcionális):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:246
 msgid "Path to SSL client certificate file (optional):"
-msgstr ""
+msgstr "Az SSL-ügyféltanúsítvány-fájl elérési útja (opcionális):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:247
 msgid "Path to SSL client key file (optional):"
-msgstr ""
+msgstr "Az SSL-ügyfélkulcsfájl elérési útja (opcionális):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:248
 msgid "Path to directory containing trusted SSL CA certificates (optional):"
 msgstr ""
+"A megbízható SSL CA-tanúsítványokat tartalmazó könyvtár elérési útja "
+"(opcionális):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:249
 msgid "List of allowable ciphers for SSL connection (optional):"
 msgstr ""
+" Az SSL-kapcsolathoz engedélyezett titkosítási algoritmusok listája "
+"(opcionális):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:413
 msgid "Saving configuration file..."
@@ -30464,23 +30505,23 @@ msgstr "--db-password opció nem lehet üres."
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:604
 msgid "SSL CA certificate"
-msgstr ""
+msgstr "SSL CA-tanúsítvány"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:605
 msgid "SSL client certificate"
-msgstr ""
+msgstr "SSL-ügyféltanúsítvány"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:606
 msgid "SSL client key"
-msgstr ""
+msgstr "SSL-ügyfélkulcs"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:607
 msgid "SSL CA path"
-msgstr ""
+msgstr "SSL CA elérési útja"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:608
 msgid "SSL cipher"
-msgstr ""
+msgstr " SSL-titkosítás"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:647
 #, php-format
@@ -30663,7 +30704,7 @@ msgstr "Hivatkozások"
 
 #: src/Glpi/Config/ProxyExclusions.php:78
 msgid "Objects that should not use proxy configuration:"
-msgstr ""
+msgstr "Proxybeállítást nem használó objektumok:"
 
 #: src/Glpi/Config/ProxyExclusion.php:60 src/CommonITILObject.php:7970
 #, php-format
@@ -30991,12 +31032,12 @@ msgstr "Sablon létrehozása"
 #: src/MassiveAction.php:681
 msgctxt "button"
 msgid "Associate group"
-msgstr ""
+msgstr " Csoport társítása"
 
 #: src/MassiveAction.php:682
 msgctxt "button"
 msgid "Dissociate group"
-msgstr ""
+msgstr "Csoport társításának megszüntetése"
 
 #: src/MassiveAction.php:708
 msgctxt "button"
@@ -31057,47 +31098,47 @@ msgstr "Nem lehet törölni az elemet mert más elemek használják"
 
 #: src/MassiveAction.php:1776
 msgid "Invalid field name."
-msgstr ""
+msgstr "Érvénytelen mezőnév."
 
 #: src/MassiveAction.php:1938
 #, php-format
 msgid "%1$s deletes item %2$s by massive action"
-msgstr ""
+msgstr "%1$s tömeges művelettel törli a(z) %2$s elemet"
 
 #: src/MassiveAction.php:1939
 #, php-format
 msgid "%1$s purges item %2$s by massive action"
-msgstr ""
+msgstr "%1$s tömeges művelettel véglegesen törli a(z) %2$s elemet"
 
 #: src/MassiveAction.php:1940
 #, php-format
 msgid "%1$s restores item %2$s by massive action"
-msgstr ""
+msgstr "%1$s tömeges művelettel visszaállítja a(z) %2$s elemet"
 
 #: src/MassiveAction.php:1941
 #, php-format
 msgid "%1$s %2$s item %3$s by massive action"
-msgstr ""
+msgstr " %1$s tömeges művelettel %2$s a(z) %3$s elemet"
 
 #: src/MassiveAction.php:1958
 #, php-format
 msgid "%1$s deletes %2$d items by massive action: %3$s"
-msgstr ""
+msgstr "%1$s tömeges művelettel %2$d elemet töröl: %3$s"
 
 #: src/MassiveAction.php:1959
 #, php-format
 msgid "%1$s purges %2$d items by massive action: %3$s"
-msgstr ""
+msgstr "%1$s tömeges művelettel %2$d elemet véglegesen töröl: %3$s"
 
 #: src/MassiveAction.php:1960
 #, php-format
 msgid "%1$s restores %2$d items by massive action: %3$s"
-msgstr ""
+msgstr "%1$s tömeges művelettel visszaállít %2$d elemet: %3$s"
 
 #: src/MassiveAction.php:1961
 #, php-format
 msgid "%1$s %2$s %3$d items by massive action: %4$s"
-msgstr ""
+msgstr "%1$s tömeges művelettel %3$d elemen %2$s műveletet hajt végre: %4$s"
 
 #: src/TicketValidationStep.php:42
 msgid "Ticket approval step"
@@ -31500,7 +31541,7 @@ msgstr "Érvénytelen alap URL!"
 
 #: src/Config.php:218
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "Érvénytelen SSO-kijelentkezési URL."
 
 #: src/Config.php:348
 msgid ""
@@ -31514,10 +31555,12 @@ msgstr ""
 msgid ""
 "GLPI network related calls (marketplace, versions check, telemetry, ..."
 msgstr ""
+"GLPI Networkhez kapcsolódó hívások (piactér, verzióellenőrzés, telemetria, "
+"..."
 
 #: src/Config.php:916
 msgid "SMTP OAuth Authentication"
-msgstr ""
+msgstr "SMTP OAuth-hitelesítés"
 
 #: src/Config.php:1039 src/PurgeLogs.php:44
 msgid "Logs purge"
@@ -32677,7 +32720,7 @@ msgstr[0] "Tudástár kategóriák"
 
 #: src/ProjectTask_Ticket.php:73
 msgid "Relation already exists."
-msgstr ""
+msgstr "A kapcsolat már létezik."
 
 #: src/ProjectTask_Ticket.php:82
 msgid "Link Ticket/Project task"
@@ -32718,7 +32761,7 @@ msgstr "Változás törlése"
 
 #: src/SoftwareLicense_User.php:85
 msgid "Maximum number of items reached for this license."
-msgstr ""
+msgstr "Elérte a licenc által engedélyezett elemek maximális számát."
 
 #: src/RackType.php:41
 msgid "Rack type"
@@ -33459,7 +33502,7 @@ msgstr "Bejelentés #%1$s %2$s"
 
 #: src/Planning.php:2434
 msgid "See personal planning"
-msgstr ""
+msgstr "Személyes tervezés megtekintése"
 
 #: src/Planning.php:2435
 msgid "See schedule of people in my groups"
@@ -33652,7 +33695,7 @@ msgstr "Az elem nem kapcsolódik más objektumhoz"
 #: src/CommonDBChild.php:462
 #, php-format
 msgid "Parent item %s #%s is invalid."
-msgstr ""
+msgstr "A(z) %s #%s szülőelem érvénytelen."
 
 #: src/CommonDBChild.php:895
 #, php-format
@@ -33804,11 +33847,11 @@ msgstr "Új csatlakozó hozzáadása"
 
 #: src/Item_Plug.php:194
 msgid "A plug must be selected"
-msgstr ""
+msgstr "Ki kell választani egy csatlakozót"
 
 #: src/Item_Plug.php:207
 msgid "A number of plugs is required"
-msgstr ""
+msgstr "Meg kell adni a csatlakozók számát"
 
 #: src/ITILReminder.php:46
 msgid "Automatic reminder"
@@ -34176,7 +34219,7 @@ msgstr "mV"
 
 #: src/DeviceBattery.php:117
 msgid "Design capacity"
-msgstr ""
+msgstr "Tervezési kapacitás"
 
 #: src/OlaLevel.php:84
 msgid "Automatic reminders of OLA"
@@ -34503,6 +34546,7 @@ msgstr "A(z) %1$s bővítményt eltávolította: %2$s."
 #, php-format
 msgid "Plugin %1$s prerequisites are not matching, it cannot be installed."
 msgstr ""
+"A(z) %1$s bővítmény előfeltételei nem teljesülnek, ezért nem telepíthető."
 
 #: src/Plugin.php:1257
 #, php-format
@@ -35007,11 +35051,11 @@ msgstr "Mentett"
 
 #: js/modules/Dashboard/Dashboard.js:494
 msgid "Dashboard has been reset to default"
-msgstr ""
+msgstr "Az irányítópult vissza lett állítva az alapértelmezettre"
 
 #: js/modules/Dashboard/Dashboard.js:504
 msgid "An error occurred while resetting the dashboard"
-msgstr ""
+msgstr "Hiba történt az irányítópult visszaállítása közben"
 
 #: js/modules/Dashboard/Dashboard.js:1078
 #, javascript-format
@@ -35371,6 +35415,8 @@ msgstr[1] "kommentek"
 msgid ""
 "Deleting this section will also delete %s. This action cannot be undone."
 msgstr ""
+"Ennek a szakasznak a törlése a(z) %s törlését is eredményezi. Ez a művelet "
+"nem vonható vissza."
 
 #: js/modules/Forms/EditorController.js:2697
 #, javascript-format

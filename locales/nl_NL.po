@@ -22,6 +22,9 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # Roy Hoenen, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
+# Pierre-Antoine ROLAND, 2026
+# Pieter Liekens <pieter.liekens@sint-gillis-waas.be>, 2026
+# informatique Flines, 2026
 # 
 #, fuzzy
 msgid ""
@@ -30,7 +33,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2026\n"
+"Last-Translator: informatique Flines, 2026\n"
 "Language-Team: Dutch (Netherlands) (https://app.transifex.com/glpi/teams/1637/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -648,6 +651,8 @@ msgstr "Sluiten"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Deze versie is ONSTAANBAAR en sommige VEILIGHEIDSFIXES zijn mogelijk niet "
+"inbegrepen."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -664,7 +669,7 @@ msgstr "Een nieuwe versie is beschikbaar: %s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Ga naar hoofdinhoud"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -681,7 +686,7 @@ msgstr "Hoofdpagina"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Broodkruimels"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -715,15 +720,15 @@ msgstr "Stop met je voor te doen als iemand anders"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Navigatiekolom"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr " Navigatiebalk tonen/verbergen"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Hoofd navigatie"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -792,11 +797,11 @@ msgstr "Samenvatting"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Global Kanban"
-msgstr ""
+msgstr "Wereldwijde Kanban"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Transfer list"
-msgstr ""
+msgstr "Transferlijst"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/setup/authentication.html.twig
@@ -816,7 +821,7 @@ msgstr "Setup"
 #: templates/pages/admin/form/import/step4_execute.html.twig
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Import forms"
-msgstr ""
+msgstr "Importeer formulieren"
 
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
@@ -831,7 +836,7 @@ msgstr "Zoeken..."
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "U heeft nog geen opgeslagen zoekopdrachten geregistreerd"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "Default search"
@@ -1041,11 +1046,11 @@ msgstr "Zend"
 
 #: templates/components/pager.html.twig
 msgid "Rows per page"
-msgstr ""
+msgstr "Rijen per pagina"
 
 #: templates/components/pager.html.twig
 msgid "rows / page"
-msgstr ""
+msgstr "Rijen / pagina"
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -1099,19 +1104,19 @@ msgstr "Einde"
 #: templates/components/notepad/form.html.twig
 msgctxt "button"
 msgid "Add a note"
-msgstr ""
+msgstr "Notitie toevoegen"
 
 #: templates/components/notepad/form.html.twig
 msgid "Expand all"
-msgstr ""
+msgstr "Alles uitvouwen"
 
 #: templates/components/notepad/form.html.twig
 msgid "Collapse all"
-msgstr ""
+msgstr "Alles inklappen"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
-msgstr ""
+msgstr "Notitie toevoegen"
 
 #: templates/components/notepad/form.html.twig
 #: templates/pages/tools/kb/article.html.twig
@@ -1136,7 +1141,7 @@ msgstr "Inhoud"
 
 #: templates/components/notepad/form.html.twig
 msgid "Visible on tickets"
-msgstr ""
+msgstr "Zichtbaar op tickets"
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/form/dates.html.twig
@@ -1176,7 +1181,7 @@ msgstr "Verwijderen"
 
 #: templates/components/notepad/form.html.twig
 msgid "Edit a note"
-msgstr ""
+msgstr "Notitie bewerken"
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/form/buttons.html.twig
@@ -1261,6 +1266,7 @@ msgstr "Regenereer"
 #: templates/components/form/fields_macros.html.twig
 msgid "The deletion will only take effect after saving the form"
 msgstr ""
+"De verwijdering wordt pas van kracht nadat het formulier is opgeslagen"
 
 #: templates/components/form/fields_macros.html.twig
 #, php-format
@@ -1274,12 +1280,12 @@ msgstr ""
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 msgid "Add a remote management"
-msgstr ""
+msgstr "Voeg een beheer op afstand toe"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 #: templates/components/form/item_remotemanagement_form.html.twig
 msgid "Remote ID"
-msgstr ""
+msgstr "extern-ID"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 #: templates/components/form/item_remotemanagement_form.html.twig
@@ -1427,7 +1433,7 @@ msgstr "Opmerkingen"
 #: src/Search.php:978 src/CartridgeItem_PrinterModel.php:194
 #: js/modules/Form/GeolocationField.js:87
 msgid "No results found"
-msgstr ""
+msgstr "Geen resultaten gevonden"
 
 #: templates/components/form/item_disk.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
@@ -1514,12 +1520,12 @@ msgstr "Annuleren"
 #: templates/components/form/basic_inputs_macros.html.twig
 #: src/CommonITILValidation.php:1800
 msgid "Validate"
-msgstr "Bevestig"
+msgstr "Valideren"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/components/form/genericdate_picker.html.twig src/Html.php:2639
 msgid "Enter or select a date"
-msgstr ""
+msgstr "Voer een datum in of selecteer deze"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/components/form/rulematchedlogs.html.twig
@@ -1558,15 +1564,15 @@ msgstr[1] "Data"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Field will not be updated from inventory"
-msgstr ""
+msgstr "Veld wordt niet bijgewerkt vanuit inventaris"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Last inventory value was:"
-msgstr ""
+msgstr "Laatste inventariswaarde was:"
 
 #: templates/components/form/item_itilobject_group.html.twig
 msgid "Show child groups objects"
-msgstr ""
+msgstr "Toon objecten voor kindgroepen"
 
 #: templates/components/form/networkname.html.twig
 #: templates/pages/assets/networkport/networkname_short.html.twig
@@ -1722,12 +1728,12 @@ msgstr[1] "Sjablonen"
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/itemvirtualmachine.html.twig
 msgid "Automatic Inventory"
-msgstr ""
+msgstr "Automatische inventaris"
 
 #: templates/components/form/header_content.html.twig src/CommonGLPI.php:1179
 #, php-format
 msgid "Item has been deleted on %s"
-msgstr ""
+msgstr "Item verwijderd op %s"
 
 #: templates/components/form/header_content.html.twig
 #: src/NotificationTargetTicket.php:675 src/CommonGLPI.php:1180
@@ -1739,11 +1745,11 @@ msgstr "Verwijderd"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "Verander de zichtbaarheid in kinderentiteiten."
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr ""
+msgstr "Kan dit kenmerk niet wijzigen. Het is geërfd van zijn ouder."
 
 #: templates/components/form/header_content.html.twig
 msgid "You are not allowed to change the visibility flag for child entities."
@@ -1854,7 +1860,7 @@ msgstr "Luidspreker"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:122
 msgid "Inventory information"
-msgstr ""
+msgstr "voorraadinformatie"
 
 #. TRANS: parameter is the name of the asset
 #: templates/components/form/inventory_info.html.twig
@@ -1866,7 +1872,7 @@ msgstr ""
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:160
 msgid "Inventory file missing"
-msgstr ""
+msgstr "Voorraadbestand ontbreekt"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
@@ -1878,13 +1884,13 @@ msgstr ""
 #: src/RuleLocation.php:92 src/Glpi/Features/Inventoriable.php:207
 #: src/RuleImportEntity.php:90 src/RuleImportAsset.php:166
 msgid "Inventory tag"
-msgstr ""
+msgstr "label geplakt"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:181
 #: src/Agent.php:338
 msgid "Public contact address"
-msgstr ""
+msgstr "Openbaar contactadres"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:122
@@ -1894,7 +1900,7 @@ msgstr "Laatste contact"
 
 #: templates/components/form/inventory_info.html.twig src/RuleAsset.php:154
 msgid "Last inventory update"
-msgstr ""
+msgstr "Laatste inventarisupdate"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:214
@@ -1904,7 +1910,7 @@ msgstr ""
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:215
 msgid "Ask agent about its current status"
-msgstr ""
+msgstr "Vraag de agent naar de huidige status"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/stencil/parts/port/status.html.twig
@@ -1920,17 +1926,17 @@ msgstr "Onbekend"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:218
 msgid "Request inventory"
-msgstr ""
+msgstr "Vraag inventaris aan"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:219
 msgid "Request agent to proceed an new inventory"
-msgstr ""
+msgstr "Verzoek agent om een nieuwe inventaris op te stellen"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:169
 msgid "Agent information is not available."
-msgstr ""
+msgstr "Agentinformatie is niet beschikbaar."
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:209
@@ -2083,7 +2089,7 @@ msgstr "Status"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Een tijdstip opgeven"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
@@ -2105,6 +2111,8 @@ msgstr "Activa URL"
 msgid ""
 "Scan this QRCode to be redirected to the asset page from your mobile device"
 msgstr ""
+"Scan deze QRCode om vanaf uw mobiele apparaat naar de activapagina te worden"
+" geleid"
 
 #: templates/components/form/item_antivirus.html.twig
 #: src/ItemAntivirus.php:356
@@ -2124,7 +2132,7 @@ msgstr "Handtekening database versie"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Rule import logs"
-msgstr ""
+msgstr "Regel import logs"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Rule name"
@@ -2132,7 +2140,7 @@ msgstr "Regel naam"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Module"
-msgstr ""
+msgstr "Bouwsteen"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Input"
@@ -2175,7 +2183,7 @@ msgstr[1] "Gebruikers"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "Versleutelingsprotocol voor authenticatie "
 
 #: templates/components/form/snmpcredential.html.twig
 #: templates/pages/setup/general/systeminfo_form.html.twig
@@ -2191,7 +2199,7 @@ msgstr "Wachtwoord"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for data"
-msgstr ""
+msgstr "Versleutelingsprotocol voor gegevens"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Support hours"
@@ -2299,7 +2307,7 @@ msgstr "Herstellen"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Bewaar de apparaten terwijl u dit item verwijdert"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig
@@ -2750,17 +2758,17 @@ msgstr "Alarm op de financiële of administratieve informatie"
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
 msgid "Update?"
-msgstr ""
+msgstr "Updaten?"
 
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "A new update is available for the %s plugin."
-msgstr ""
+msgstr "Er is een nieuwe update beschikbaar voor de %s plugin."
 
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "Update to version %s?"
-msgstr ""
+msgstr "Bijwerken naar versie %s?"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/SLATTOField.php:48
@@ -3425,15 +3433,15 @@ msgstr "Geschiedenis filter"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 msgid "View TODO list"
-msgstr ""
+msgstr "Bekijk de TODO-lijst"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Upload from"
-msgstr ""
+msgstr "uploaden vanaf"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Screenshot"
-msgstr ""
+msgstr "schermafbeelding"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Screen recording"
@@ -3529,7 +3537,7 @@ msgstr ""
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Approve"
-msgstr ""
+msgstr "Goedkeuren"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/approbation_form.html.twig
@@ -3540,8 +3548,8 @@ msgstr "Weigeren"
 #: src/ValidationStep.php:39
 msgid "Approval step"
 msgid_plural "Approval step"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Goedkeuringsstap"
+msgstr[1] "Goedkeuringsstap"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/actors/main.html.twig
@@ -3631,7 +3639,7 @@ msgstr "Deze taak plannen"
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
 msgid "Set the status to pending"
-msgstr ""
+msgstr "Stel de status in behandeling"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 #, php-format
@@ -3644,7 +3652,7 @@ msgstr "Promoveren naar Ticket"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
-msgstr ""
+msgstr "Deze vermelding is \"intern\" (alleen zichtbaar voor technici)"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Approval of the solution"
@@ -3656,7 +3664,7 @@ msgstr "Facultatief in het geval van acceptatie"
 
 #: templates/components/itilobject/timeline/knowledge_item.html.twig
 msgid "Search in the knowledge base"
-msgstr ""
+msgstr "Zoek in de kennisbank"
 
 #: templates/components/itilobject/timeline/todo-list-summary.html.twig
 #, php-format
@@ -3787,7 +3795,7 @@ msgstr "Toegewezen aan"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Edit notification settings"
-msgstr ""
+msgstr "Meldingsinstellingen bewerken"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: src/Glpi/Csv/PlanningCsv.php:71 src/Planning.php:885
@@ -3811,23 +3819,23 @@ msgstr "E-mail opvolging"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Notifications are disabled because:"
-msgstr ""
+msgstr "Meldingen zijn uitgeschakeld omdat:"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "User does not have an email address."
-msgstr ""
+msgstr "Gebruiker heeft geen e-mailadres."
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "User has disabled notifications from its preferences."
-msgstr ""
+msgstr "De gebruiker heeft meldingen van zijn voorkeuren uitgeschakeld."
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Notifications are disabled in this entity."
-msgstr ""
+msgstr "Meldingen zijn uitgeschakeld in deze entiteit."
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "However, you can reactivate the notifications for this ticket."
-msgstr ""
+msgstr "U kunt de meldingen voor dit ticket echter opnieuw activeren."
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/components/search/criteria_filter_actions.html.twig
@@ -3850,7 +3858,7 @@ msgstr "Bewaren"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Direct email"
-msgstr ""
+msgstr "rechtstreekse e-mail"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Number of tickets already assigned"
@@ -3932,28 +3940,28 @@ msgstr ""
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
-msgstr ""
+msgstr "Voeg een andere soort toe"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 #: templates/components/search/controls.html.twig
 msgid "Sort"
-msgstr ""
+msgstr "Soort"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Reset sort"
-msgstr ""
+msgstr "Reset sorteren"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "Delete a sort"
-msgstr ""
+msgstr "Verwijder een soort"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
-msgstr ""
+msgstr "ASC"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "DESC"
-msgstr ""
+msgstr "DESC"
 
 #: templates/components/search/query_builder/metacriteria.html.twig
 msgid "Delete a global rule"
@@ -3966,7 +3974,7 @@ msgstr "Verwijder een regel"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "Toggle additional default filters"
-msgstr ""
+msgstr "Schakel extra standaardfilters in"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "rule"
@@ -3988,7 +3996,7 @@ msgstr "Leeg"
 #: templates/components/search/query_builder/search_option_value.html.twig
 #: src/Glpi/Search/Input/QueryBuilder.php:387
 msgid "Criteria value"
-msgstr ""
+msgstr "Criteria waarde"
 
 #: templates/components/search/criteria_filter.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -4001,15 +4009,15 @@ msgstr "Voorbeeld"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "No filter found"
-msgstr ""
+msgstr "Geen filter gevonden"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
-msgstr ""
+msgstr "Voor dit artikel is nog geen filter gedefinieerd."
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "Create a filter"
-msgstr ""
+msgstr "Maak een filter"
 
 #: templates/components/search/map.html.twig
 msgid "Search results for localized items only"
@@ -4071,7 +4079,7 @@ msgstr "%1$s %2$s"
 
 #: templates/components/search/map.html.twig
 msgid "An error occurred loading data :("
-msgstr ""
+msgstr "Er is een fout opgetreden bij het laden van de gegevens :("
 
 #: templates/components/search/map.html.twig
 msgid "Reload"
@@ -4082,12 +4090,17 @@ msgid ""
 "These preferences cannot be edited at this time. The item type no longer "
 "exists or is provided by a plugin that is not enabled."
 msgstr ""
+"Deze voorkeuren kunnen op dit moment niet worden bewerkt. Het itemtype "
+"bestaat niet meer of wordt geleverd door een plug-in die niet is "
+"ingeschakeld."
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid ""
 "These preferences are used by everyone that does not have a personal view "
 "configured."
 msgstr ""
+"Deze voorkeuren worden gebruikt door iedereen die geen persoonlijke weergave"
+" heeft geconfigureerd."
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "No personal criteria. Create personal parameters?"
@@ -4101,19 +4114,19 @@ msgstr "Maak"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Select an option to add"
-msgstr ""
+msgstr "Selecteer een optie om toe te voegen"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Delete personal view"
-msgstr ""
+msgstr "Persoonlijke weergave verwijderen"
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
-msgstr ""
+msgstr "Toon opgeslagen zoekopdrachten"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
-msgstr ""
+msgstr "Toon als tafel"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as map"
@@ -4121,7 +4134,7 @@ msgstr "Toon als kaart"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle browse"
-msgstr ""
+msgstr "Schakel door"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -4129,7 +4142,7 @@ msgstr "Toon de prullenbak"
 
 #: templates/components/search/controls.html.twig
 msgid "Show unpublished"
-msgstr ""
+msgstr "Toon niet gepubliceerd"
 
 #: templates/components/search/controls.html.twig
 #: templates/components/search/displaypreference_modal.html.twig
@@ -4140,7 +4153,7 @@ msgstr "Items kiezen die standaard zichtbaar zijn"
 #: templates/components/search/controls.html.twig
 #: src/Glpi/Dashboard/Widget.php:88 js/planning.js:405
 msgid "Refresh"
-msgstr ""
+msgstr "Vernieuwen"
 
 #: templates/components/search/controls.html.twig
 #: templates/components/logs.html.twig
@@ -4150,15 +4163,15 @@ msgstr "Exporteren"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
-msgstr ""
+msgstr "Huidige pagina"
 
 #: templates/components/search/controls.html.twig
 msgid "Landscape PDF"
-msgstr ""
+msgstr "PDF Liggend"
 
 #: templates/components/search/controls.html.twig
 msgid "Portrait PDF"
-msgstr ""
+msgstr "PDF Staand"
 
 #: templates/components/search/controls.html.twig
 #: templates/pages/assistance/planning/single_filter.html.twig
@@ -4172,11 +4185,11 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "All pages"
-msgstr ""
+msgstr "Alle pagina's"
 
 #: templates/components/search/controls.html.twig src/Dropdown.php:2805
 msgid "Copy names to clipboard"
-msgstr ""
+msgstr "Kopieer namen naar het klembord"
 
 #: templates/components/search/table.html.twig src/Html.php:2114
 #: src/Html.php:2115
@@ -4219,19 +4232,19 @@ msgstr ""
 #: templates/components/search/table.html.twig
 #: templates/components/datatable.html.twig
 msgid "Select item"
-msgstr ""
+msgstr "Item selecteren"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Filter saved"
-msgstr ""
+msgstr "Filter opgeslagen"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Unable to save filter"
-msgstr ""
+msgstr "Kan filter niet opslaan"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Failed to delete filter"
-msgstr ""
+msgstr "Filter verwijderen mislukt"
 
 #: templates/components/search/display_data.html.twig
 #: src/Item_DeviceSimcard.php:199 src/NetworkName.php:901
@@ -4372,7 +4385,7 @@ msgstr "Geen historische overeenkomst met uw filters"
 #: templates/components/logs.html.twig
 #: templates/components/datatable.html.twig
 msgid "Entries to show:"
-msgstr ""
+msgstr "Inzendingen om te tonen:"
 
 #: templates/components/user/info_card.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -4393,12 +4406,12 @@ msgstr "Standaard groep"
 
 #: templates/components/user/create_user.html.twig
 msgid "Create user"
-msgstr ""
+msgstr "Gebruiker aanmaken"
 
 #: templates/components/user/password_security_checks.html.twig
 #, php-format
 msgid "Minimum length: %s"
-msgstr ""
+msgstr "Minimum lengte: %s"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Digit"
@@ -4418,7 +4431,7 @@ msgstr "Symbool"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Password must contain"
-msgstr ""
+msgstr "Wachtwoord moet bevatten"
 
 #: templates/components/datatable.html.twig src/Lock.php:1061
 msgid "Check all"
@@ -4505,8 +4518,8 @@ msgstr "Nee"
 #: src/CronTask.php:1252 js/glpi_dialog.js:419 js/modules/ObjectLock.js:104
 msgid "Error"
 msgid_plural "Errors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fout"
+msgstr[1] "Fouten"
 
 #: templates/components/messages_after_redirect_toasts.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
@@ -4544,7 +4557,7 @@ msgstr "Achtergrondkleur"
 #: templates/pages/management/domainrecord.html.twig
 #: src/DomainRecordType.php:388 src/DomainRecord.php:134
 msgid "Data"
-msgstr ""
+msgstr "Data"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Widget"
@@ -4552,31 +4565,31 @@ msgstr "Widget"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use gradient palette"
-msgstr ""
+msgstr "Gebruik een kleurverloop"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "generate a palette from the background color"
-msgstr ""
+msgstr " Genereer een kleurenpalet op basis van de achtergrondkleur"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use palette"
-msgstr ""
+msgstr "Gebruik palet"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Display value labels on points/bars"
-msgstr ""
+msgstr "Waarde-labels weergeven op punten / staven"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Show labels on chart"
-msgstr ""
+msgstr "Toon labels op kaart"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Show legend"
-msgstr ""
+msgstr "Toon legende"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Limit number of data"
-msgstr ""
+msgstr "Grens aantal gegevens"
 
 #. TRANS: select action 'update' (before doing it)
 #: templates/components/dashboard/widget_form.html.twig
@@ -4598,12 +4611,12 @@ msgstr ""
 
 #: templates/components/dashboard/reset.html.twig
 msgid "Default dashboard to reset to"
-msgstr ""
+msgstr "Standaard dashboard om naar te resetten"
 
 #: templates/components/dashboard/reset.html.twig
 #: js/modules/Dashboard/Dashboard.js:838
 msgid "Reset to default"
-msgstr ""
+msgstr "Herstellen naar standaard"
 
 #: templates/components/dashboard/reset.html.twig
 msgid "Resetting this dashboard is not currently supported."
@@ -5263,7 +5276,7 @@ msgstr "Lopende tickets"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Please enter the code from your authenticator app"
-msgstr ""
+msgstr "Voer de code in van uw authenticator-app"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Backup code"
@@ -5439,8 +5452,8 @@ msgstr ""
 #: src/Glpi/Form/Category.php:57
 msgid "Service catalog category"
 msgid_plural "Service catalog categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categorieën servicecatalogi"
+msgstr[1] "Categorieën servicecatalogi"
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
@@ -5448,23 +5461,23 @@ msgstr[1] ""
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:92
 #: js/modules/Forms/ServiceCatalogController.js:219
 msgid "Service catalog"
-msgstr ""
+msgstr "service catalogus"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by: "
-msgstr ""
+msgstr "Sorteren op:"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by"
-msgstr ""
+msgstr "Sorteren op"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Search for forms..."
-msgstr ""
+msgstr "Zoek naar formulieren ..."
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Forms"
-msgstr ""
+msgstr "Vormen"
 
 #: templates/pages/tools/find_available_reservation.html.twig
 #: src/ReservationItem.php:422
@@ -6075,10 +6088,12 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
 msgstr ""
+"Wanneer automatische berekening actief is, wordt het percentage berekend op "
+"basis van het gemiddelde van alle kindproject- en taakpercentages."
 
 #: templates/pages/tools/project.html.twig src/Project.php:604
 msgid "Show on global Gantt"
-msgstr ""
+msgstr "Toon op wereldwijde Gantt"
 
 #: templates/pages/tools/project.html.twig
 #: templates/pages/admin/group_user.html.twig
@@ -7030,12 +7045,16 @@ msgid ""
 "Disable notifications by default on ITIL objects actor configuration, with "
 "ability to derogate to it."
 msgstr ""
+"Schakel meldingen standaard uit op de configuratie van ITIL-objecten, met de"
+" mogelijkheid om hiervan af te wijken."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid ""
 "Disable all notifications on all other objects, without ability to derogate "
 "to it."
 msgstr ""
+"Schakel alle meldingen op alle andere objecten uit, zonder de mogelijkheid "
+"om ervan af te wijken."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/setup/setup_notifications.html.twig
@@ -7090,7 +7109,7 @@ msgstr "Altijd"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Use the replica for the search engine"
-msgstr ""
+msgstr "Gebruik de replica voor de zoekmachine"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replication status"
@@ -7190,6 +7209,8 @@ msgid ""
 "This indicates the delay between the source and the replica for GLPI history"
 " (table: glpi_logs, column: date_mod)."
 msgstr ""
+"Dit geeft de vertraging aan tussen de bron en de replica voor de GLPI-"
+"geschiedenis (tabel: glpi_logs, kolom: date_mod)."
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "IO running:"
@@ -7424,6 +7445,9 @@ msgid ""
 "\"upload_max_filesize\" and \"post_max_size\" PHP settings. The setting "
 "below is to further restrict the uploads for just GLPI."
 msgstr ""
+"De maximale uploadgrootte wordt voornamelijk bepaald door de PHP-"
+"instellingen \"upload_max_filesize\" en \"post_max_size\". De onderstaande "
+"instelling is om de uploads voor alleen GLPI verder te beperken."
 
 #: templates/pages/setup/general/management_setup.html.twig
 msgid "Document files maximum size (Mio)"
@@ -7756,6 +7780,8 @@ msgid ""
 "A registration key is needed to use some advanced features (like the plugin "
 "marketplace) in GLPI"
 msgstr ""
+"Een registratiesleutel is nodig om enkele geavanceerde functies (zoals de "
+"plugin-marktplaats) in GLPI te gebruiken"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #, php-format
@@ -7764,7 +7790,7 @@ msgstr ""
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "And retrieve your key to paste it below"
-msgstr ""
+msgstr "En haal je sleutel op om hem hieronder te plakken"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Registration key"
@@ -7799,7 +7825,7 @@ msgstr ""
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Replace plugins page with marketplace"
-msgstr ""
+msgstr "Vervang plug-ins pagina door marktplaats"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Never replace plugins page"
@@ -7814,10 +7840,12 @@ msgid ""
 "Choose whether to replace the classic plugins page with the new marketplace "
 "interface."
 msgstr ""
+"Kies of u de pagina met klassieke plug-ins wilt vervangen door de nieuwe "
+"marktplaatsinterface."
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Access GLPI Network Marketplace"
-msgstr ""
+msgstr "Toegang tot GLPI Network Marketplace"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Step for the hours (minutes)"
@@ -7851,6 +7879,8 @@ msgstr ""
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Show personal information in new ticket form (simplified interface)"
 msgstr ""
+"Toon persoonlijke informatie in nieuw ticketformulier (vereenvoudigde "
+"interface)"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Allow anonymous ticket creation (receiver)"
@@ -8015,7 +8045,7 @@ msgstr "Forceer synchronisatie"
 
 #: templates/pages/setup/authentication/sync.html.twig src/User.php:3225
 msgid "Clean LDAP fields and force synchronisation"
-msgstr ""
+msgstr "Reinig LDAP-velden en forceer synchronisatie"
 
 #: templates/pages/setup/authentication/sync.html.twig
 msgid "Change of the authentication method"
@@ -8673,6 +8703,8 @@ msgid ""
 "Unable to configure notifications: please configure at least one "
 "notification type using the above configuration."
 msgstr ""
+"Kan meldingen niet configureren: configureer ten minste één meldingstype met"
+" behulp van de bovenstaande configuratie."
 
 #: templates/pages/setup/crontask/statistics.html.twig
 #: front/stat.global.php:47 front/stat.graph.php:50 front/stat.php:38
@@ -8864,6 +8896,9 @@ msgid ""
 "validate requests are actually coming from the GLPI server and that the "
 "content was not modified between GLPI and the target."
 msgstr ""
+"Het webhook-geheim kan worden gedeeld met een doelserver om het in staat te "
+"stellen verzoeken te valideren die daadwerkelijk afkomstig zijn van de GLPI-"
+"server en dat de inhoud niet is gewijzigd tussen GLPI en het doel."
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Expiration delay"
@@ -8879,6 +8914,10 @@ msgid ""
 "the target server before any data is sent from GLPI. This uses the shared "
 "secret that was generated in the above section."
 msgstr ""
+"Challenge-response-verificatie kan worden gebruikt om de identiteit van de "
+"doelserver te valideren voordat gegevens van GLPI worden verzonden. Dit "
+"maakt gebruik van het gedeelde geheim dat in de bovenstaande sectie is "
+"gegenereerd."
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA is mandatory due to GLPI configuration"
@@ -9276,32 +9315,32 @@ msgstr ""
 
 #: templates/pages/form_renderer.html.twig
 msgid "Untitled section"
-msgstr ""
+msgstr "Untitled sectie"
 
 #: templates/pages/form_renderer.html.twig
 #, php-format
 msgid "%s description"
-msgstr ""
+msgstr "%s beschrijving"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Submit"
-msgstr ""
+msgstr "Indienen"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Form submitted"
-msgstr ""
+msgstr "Ingediend formulier"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Your form has been submitted successfully."
-msgstr ""
+msgstr "Uw formulier is succesvol ingediend."
 
 #: templates/pages/form_renderer.html.twig
 msgid "Go back to service catalog"
-msgstr ""
+msgstr "Ga terug naar de servicecatalogus"
 
 #: templates/pages/form_renderer.html.twig
 msgid "See my tickets"
-msgstr ""
+msgstr "Zie mijn kaartjes"
 
 #: templates/pages/management/certificate.html.twig src/Certificate.php:169
 msgid "Self-signed"
@@ -9755,7 +9794,7 @@ msgstr ""
 #: templates/pages/admin/form/form_section.html.twig
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "More actions"
-msgstr ""
+msgstr "meer acties"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: templates/pages/admin/form/form_section.html.twig
@@ -9928,7 +9967,7 @@ msgstr ""
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Click to copy to clipboard"
-msgstr ""
+msgstr "Klik om naar het klembord te kopiëren"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Direct access URL"
@@ -11604,7 +11643,7 @@ msgstr "Sorteer op bestandspad"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by size"
-msgstr ""
+msgstr "Sorteren op maat"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
@@ -12141,11 +12180,11 @@ msgstr "Gedelegeerde"
 
 #: templates/pages/login.html.twig
 msgid "Login to your account"
-msgstr ""
+msgstr "Inloggen op uw account"
 
 #: templates/pages/login.html.twig
 msgid "Login source"
-msgstr ""
+msgstr "Inloggen bron"
 
 #: templates/pages/login.html.twig
 msgid "Remember me"
@@ -18172,6 +18211,8 @@ msgid ""
 "Caution! You are not the author of this item. Deleting targets can result in"
 " loss of access."
 msgstr ""
+"Let op! U bent niet de auteur van dit item. Het verwijderen van doelen kan "
+"leiden tot verlies van toegang."
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/Rack.php:76 src/Rack.php:112
@@ -22122,7 +22163,7 @@ msgstr ""
 #: src/DisplayPreference.php:640
 msgctxt "button"
 msgid "Reset to default"
-msgstr ""
+msgstr "Herstellen naar standaard"
 
 #: src/DisplayPreference.php:672 src/DisplayPreference.php:685
 #: src/Central.php:76 src/Config.php:695

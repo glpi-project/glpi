@@ -9,7 +9,6 @@
 # Emanuel Wasinger <emaw_705@hotmail.com>, 2022
 # Gabriel Queirolo, 2022
 # Emiliano Cagliari <thelordbat@gmail.com>, 2022
-# Luis Angel Uriarte <luisuriarte@gmail.com>, 2022
 # Ricardo Aníbal Pereyra, 2022
 # Mariano Ostuni, 2022
 # Juan Fortuna <jfortuna@antel.com.uy>, 2023
@@ -29,6 +28,7 @@
 # Nicolás Gaviola, 2026
 # Joaquin Etchegaray, 2026
 # Fernando Toledo <ftoledo@docksud.com.ar>, 2026
+# Luis Angel Uriarte <luisuriarte@gmail.com>, 2026
 # Alan Lehoux, 2026
 # 
 #, fuzzy
@@ -675,7 +675,7 @@ msgstr "Hay una nueva versión disponible: %s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Ir al contenido principal"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -692,7 +692,7 @@ msgstr "Inicio"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Ruta de navegación"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -726,15 +726,15 @@ msgstr "Dejar de hacerse pasar"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Barra lateral"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Alternar navegación"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Navegación principal"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -1936,7 +1936,7 @@ msgstr "Desconocido"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:218
 msgid "Request inventory"
-msgstr "Solicitar inventario"
+msgstr "Último inventario"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:219
@@ -2100,7 +2100,7 @@ msgstr "Estado"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Especifique una hora"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
@@ -7151,7 +7151,7 @@ msgid ""
 "Disable notifications by default on ITIL objects actor configuration, with "
 "ability to derogate to it."
 msgstr ""
-"Desactivar notificaciones por defecto en la configuración de actores de "
+"Desactiva las notificaciones por defecto en la configuración de actores de "
 "objetos ITIL, con posibilidad de anularlo."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -7159,7 +7159,7 @@ msgid ""
 "Disable all notifications on all other objects, without ability to derogate "
 "to it."
 msgstr ""
-"Desactivar todas las notificaciones en todos los demás objetos, sin "
+"Desactiva todas las notificaciones en todos los demás objetos, sin "
 "posibilidad de excepción."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -7393,7 +7393,7 @@ msgstr "No desactivar"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Validity period of the password initialization token"
-msgstr "Periodo de validez del token de inicialización de contraseña"
+msgstr "Período de validez del token de inicialización de contraseña"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Last password"
@@ -7757,7 +7757,7 @@ msgstr "Nivel de Registro"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Maximum number of automatic actions (run by CLI)"
-msgstr "Número máximo de acciones automáticas (ejecutadas por CLI)"
+msgstr "Cantidad máxima de acciones automáticas (ejecutadas por CLI)"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Logs in files (SQL, email, automatic action...)"
@@ -8600,7 +8600,7 @@ msgstr "URL del ícono"
 
 #: templates/pages/setup/notification/ajax_setting.html.twig
 msgid "Validity period of notifications (in days)"
-msgstr "Periodo de validez de las notificaciones (en días)"
+msgstr "Período de validez de las notificaciones (en días)"
 
 #: templates/pages/setup/notification/ajax_setting.html.twig
 #, php-format
@@ -9249,7 +9249,7 @@ msgstr "Contraseña (para vinculaciones no-anónimas)"
 
 #: templates/pages/setup/ldap/form.html.twig src/AuthLDAP.php:929
 msgid "Login field"
-msgstr "Campo de inicio de sesión"
+msgstr "Campo de usuario"
 
 #: templates/pages/setup/ldap/form.html.twig
 #: templates/pages/admin/user/user.html.twig
@@ -23282,11 +23282,11 @@ msgstr ""
 
 #: src/CommonITILTask.php:561 src/CommonITILTask.php:813
 msgid "Start of the selected timeframe is not a working hour."
-msgstr "Inicia el periodo de tiempo seleccionado no es una hora de trabajo."
+msgstr "Inicia el período de tiempo seleccionado no es una hora de trabajo."
 
 #: src/CommonITILTask.php:568 src/CommonITILTask.php:820
 msgid "End of the selected timeframe is not a working hour."
-msgstr "Termina el periodo de tiempo seleccionado no es una hora de trabajo."
+msgstr "Termina el período de tiempo seleccionado no es una hora de trabajo."
 
 #: src/CommonITILTask.php:708
 msgid "You can't add a task without description."
@@ -34804,7 +34804,7 @@ msgstr "Leer notas"
 
 #: src/CommonDBTM.php:5420
 msgid "Read the item's notes"
-msgstr "Leé las notas del elemento"
+msgstr "Lee las notas del elemento"
 
 #: src/CommonDBTM.php:5423
 msgid "Update notes"
@@ -34812,7 +34812,7 @@ msgstr "Actualizar notas"
 
 #: src/CommonDBTM.php:5424
 msgid "Update the item's notes"
-msgstr "Actualizá las notas del elemento"
+msgstr "Actualiza las notas del elemento"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: src/CommonDBTM.php:5597

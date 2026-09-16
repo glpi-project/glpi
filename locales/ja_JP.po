@@ -12,7 +12,7 @@
 # Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # peachberry <gtucr7gpw.4g2@gmail.com>, 2026
-# INOUE Daisuke, 2026
+# Daisuke INOUE, 2026
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: INOUE Daisuke, 2026\n"
+"Last-Translator: Daisuke INOUE, 2026\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/glpi/teams/1637/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -843,7 +843,7 @@ msgstr "ロック解除の依頼"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Alert me when unlocked"
-msgstr "ロックが解除されたらアラートを出す"
+msgstr "ロックが解除されたら注意報"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Locked by you!"
@@ -2247,7 +2247,7 @@ msgstr "保存"
 #: src/MassiveAction.php:656
 msgctxt "button"
 msgid "Restore"
-msgstr "リストア"
+msgstr "復元"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
@@ -4067,7 +4067,7 @@ msgstr "未発行を表示"
 #: templates/components/search/displaypreference_modal.html.twig
 #: src/NetworkPort.php:752 src/NetworkPort.php:753 src/NetworkPort.php:761
 msgid "Select default items to show"
-msgstr "標準で表示するアイテムを選択"
+msgstr "標準で表示する項目を選択"
 
 #: templates/components/search/controls.html.twig
 #: src/Glpi/Dashboard/Widget.php:88 js/planning.js:405
@@ -5127,7 +5127,7 @@ msgstr "無効"
 #: templates/generic_show_form.html.twig src/CartridgeItem.php:347
 #: src/ConsumableItem.php:292
 msgid "Alert threshold"
-msgstr "在庫不足警告のしきい値"
+msgstr "在庫不足注意報のしきい値"
 
 #: templates/generic_show_form.html.twig src/Peripheral.php:342
 #: src/Phone.php:406
@@ -5559,7 +5559,7 @@ msgstr "すぐに作成"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Add an alert"
-msgstr "検索件数警告を追加"
+msgstr "注意報を追加"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 #: src/SavedSearch_Alert.php:218
@@ -6873,11 +6873,11 @@ msgstr "正常状態の色"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Warning state color"
-msgstr "警戒状態の色"
+msgstr "警告状態の色"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Warning state threshold"
-msgstr "警戒状態のしきい値"
+msgstr "警告状態のしきい値"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Critical state color"
@@ -10151,7 +10151,7 @@ msgstr "送信ボタンの条件による表示・非表示"
 #: templates/pages/admin/form/form_editor.html.twig
 #: js/src/vue/Kanban/Card.vue:116 js/src/vue/Kanban/Kanban.vue:1430
 msgid "Restore"
-msgstr "リストア"
+msgstr "復元"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Put in trashbin"
@@ -10548,11 +10548,11 @@ msgstr "証明書の警告を通知する頻度"
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1316
 #: src/ReservationItem.php:705
 msgid "Alerts on reservations"
-msgstr "予約に関する警報"
+msgstr "予約の注意報"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Alerts on tickets which are not solved since"
-msgstr "指定日以降未解決のチケットに警告"
+msgstr "指定日以降未解決のチケットに注意報"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Approval reminder frequency"
@@ -12391,7 +12391,7 @@ msgstr "エージェント構成"
 #: resources/.illustrations_translations.php:6
 msgctxt "Icon"
 msgid "alert"
-msgstr "警告"
+msgstr "注意報"
 
 #: resources/.illustrations_translations.php:7
 msgctxt "Icon"
@@ -13526,7 +13526,7 @@ msgstr "FAQ"
 #: resources/.illustrations_translations.php:236
 msgctxt "Icon"
 msgid "articles"
-msgstr "記事"
+msgstr "文書"
 
 #: resources/.illustrations_translations.php:237
 msgctxt "Icon"
@@ -14435,7 +14435,7 @@ msgstr "%s がアイテムを削除"
 #: front/project.form.php:92 front/softwarelicense.form.php:78
 #, php-format
 msgid "%s restores an item"
-msgstr "%s がアイテムをリストア"
+msgstr "%s がアイテムを復元"
 
 #. TRANS: %s is the user login
 #: front/change.form.php:107 front/item_device.common.form.php:94
@@ -14545,19 +14545,19 @@ msgstr "このアイテムへアクセスできなくなったため、リダイ
 #: front/savedsearch_alert.form.php:60
 #, php-format
 msgid "%s adds an alert"
-msgstr "%s が警告を追加"
+msgstr "%s が注意報を追加"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:77
 #, php-format
 msgid "%s purges an alert"
-msgstr "%s が警告を抹消"
+msgstr "%s が注意報を抹消"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:93
 #, php-format
 msgid "%s updates an alert"
-msgstr "%s が警告を更新"
+msgstr "%s が注意報を更新"
 
 #: front/ldap.group.import.php:42 front/ldap.php:42 front/ldap.group.php:44
 #: front/ldap.import.php:46 src/Group.php:153 src/Group.php:242
@@ -15170,7 +15170,7 @@ msgstr "%s がデータベースインスタンスを削除"
 #: front/databaseinstance.form.php:90
 #, php-format
 msgid "%s restores a database instance"
-msgstr "%s がデータベースインスタンスをリストア"
+msgstr "%s がデータベースインスタンスを復元"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:104
@@ -15957,7 +15957,7 @@ msgstr[0] "チケットテンプレート"
 
 #: src/Entity.php:1440
 msgid "Alerts on tickets which are not solved"
-msgstr "未解決チケットを警告"
+msgstr "未解決チケットに注意報"
 
 #: src/Entity.php:1450
 msgid "Automatic assignment of tickets"
@@ -16290,7 +16290,7 @@ msgstr "契約期間の終了"
 
 #: src/Contract.php:1371
 msgid "send contract alert failed"
-msgstr "契約警告の送信に失敗しました"
+msgstr "契約注意報の送信に失敗"
 
 #: src/Contract.php:1648 src/Supplier.php:150
 msgctxt "button"
@@ -16845,7 +16845,7 @@ msgstr "ユーザーは自分自身の代理人にはなれません。"
 #: src/NotificationTargetFieldUnicity.php:46
 #: src/NotificationTargetFieldUnicity.php:90
 msgid "Alert on duplicate record"
-msgstr "重複レコードに関する警告"
+msgstr "重複レコードの注意報"
 
 #: src/NotificationTargetFieldUnicity.php:68 src/FieldUnicity.php:91
 #: src/FieldUnicity.php:357
@@ -17020,7 +17020,7 @@ msgstr "タスク担当グループ"
 
 #: src/CommonITILValidationCron.php:53
 msgid "Alerts on approval which are waiting"
-msgstr "承認待ちが発生したら警告する"
+msgstr "承認待ちの注意報"
 
 #: src/Monitor.php:91 src/Lock.php:1332 src/Profile.php:1593
 msgid "Monitor"
@@ -18274,7 +18274,7 @@ msgstr "インスタンスのデタッチ"
 
 #: src/PlanningExternalEvent.php:173
 msgid "Detach this instance from the series to create an independent event"
-msgstr "独立したイベントを作成するために、このインスタンスをシリーズから切り離す"
+msgstr "このイベントをシリーズから切り離して、固有のイベントにする。"
 
 #: src/PlanningExternalEvent.php:178
 msgid "Delete serie"
@@ -18698,7 +18698,7 @@ msgstr "%1$s カートリッジの型の在庫が少なくなっています : �
 #: src/CartridgeItem.php:518
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr "%s: カートリッジの警告の送信に失敗しました"
+msgstr "%s: カートリッジ注意報の送信に失敗"
 
 #: src/DeviceSensorType.php:43
 msgid "Sensor type"
@@ -19018,7 +19018,7 @@ msgstr "ライセンス %1$s は %2$s に期限が切れます"
 
 #: src/SoftwareLicense.php:831
 msgid "Send licenses alert failed"
-msgstr "ライセンス警告の送信に失敗しました"
+msgstr "ライセンス注意報の送信に失敗"
 
 #: src/SoftwareLicense.php:969 src/Item_SoftwareLicense.php:719
 #: src/Item_SoftwareLicense.php:1062
@@ -20619,7 +20619,7 @@ msgstr "本日予約期限切れデバイス"
 
 #: src/ReservationItem.php:830
 msgid "Send reservation alert failed"
-msgstr "予約警告の送信に失敗しました"
+msgstr "予約注意報の送信に失敗"
 
 #: src/ReservationItem.php:848 src/Glpi/Helpdesk/DefaultDataManager.php:132
 msgid "Make a reservation"
@@ -20923,7 +20923,7 @@ msgstr "更新日"
 #: src/KnowbaseItem_Item.php:299 src/KnowbaseItem_KnowbaseItemCategory.php:147
 msgctxt "button"
 msgid "Link knowledgebase article"
-msgstr "ナレッジをリンク"
+msgstr "ナレッジベース文書へリンク"
 
 #: src/CalendarSegment.php:65
 msgid "Time range"
@@ -21206,11 +21206,11 @@ msgstr "複製者 : "
 #: src/NotificationTargetSavedSearch_Alert.php:61
 #, php-format
 msgid "Search  alert for \"%1$s\" (%2$s)"
-msgstr "\"%1$s\" (%2$s) の検索件数警告"
+msgstr "\"%1$s\" (%2$s) の注意報を検索"
 
 #: src/NotificationTargetSavedSearch_Alert.php:68
 msgid "Private search alert"
-msgstr "非公開の検索警告"
+msgstr "非公開の注意報検索"
 
 #: src/NotificationTargetSavedSearch_Alert.php:106
 msgid "Number of results"
@@ -22592,7 +22592,7 @@ msgstr "保証切れになるアイテムはありません。"
 
 #: src/Infocom.php:775
 msgid "send infocom alert failed"
-msgstr "infocomの警告の送信に失敗しました"
+msgstr "infocom 注意報の送信に失敗"
 
 #: src/Infocom.php:872 src/Infocom.php:897
 msgid "Linear"
@@ -24157,7 +24157,7 @@ msgstr "要約番号"
 
 #: src/Glpi/Dashboard/Widget.php:326
 msgid "List of articles"
-msgstr "記事のリスト"
+msgstr "文書のリスト"
 
 #: src/Glpi/Dashboard/Widget.php:552 src/Glpi/Dashboard/Widget.php:697
 #: src/Glpi/Dashboard/Widget.php:1187 src/Glpi/Dashboard/Widget.php:1912
@@ -24884,7 +24884,7 @@ msgstr "%2$d 個の情報資産に %1$d 個の構成部品が配置済み"
 
 #: src/Glpi/Asset/Capacity/HasKnowbaseCapacity.php:60
 msgid "Knowledge base articles can be associated to these assets"
-msgstr "ナレッジベースの記事は、以下の情報資産と関連付けることができます"
+msgstr "ナレッジベース文書を以下の情報資産と関連付けることができます"
 
 #: src/Glpi/Asset/Capacity/HasKnowbaseCapacity.php:79
 #, php-format
@@ -25251,7 +25251,7 @@ msgstr "無効条件 : "
 
 #: src/Glpi/Form/ServiceCatalog/Provider/KnowbaseItemProvider.php:109
 msgid "FAQ articles"
-msgstr "FAQ 記事"
+msgstr "FAQ 文書"
 
 #: src/Glpi/Form/ServiceCatalog/SortStrategy/AlphabeticalSort.php:51
 msgid "Alphabetical"
@@ -26324,11 +26324,11 @@ msgstr "外部ページ"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:103
 msgid "Browse help articles"
-msgstr "ヘルプを表示"
+msgstr "ヘルプ文書を表示"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:104
 msgid "See all available help articles and our FAQ."
-msgstr "ヘルプの記事と FAQ をご覧ください。"
+msgstr "ヘルプ文書と FAQ をご覧ください。"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:119
 msgid "Go to our service catalog and pick a form to create a new ticket."
@@ -29919,11 +29919,11 @@ msgstr[0] "影響するアイテム"
 #: src/SavedSearch_Alert.php:62
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] "検索件数警告"
+msgstr[0] "保存済み検索結果数注意報"
 
 #: src/SavedSearch_Alert.php:261
 msgid "Saved searches alerts"
-msgstr "検索件数警告"
+msgstr "保存済み検索結果数注意報"
 
 #: src/SavedSearch_Alert.php:386
 msgid "less than"
@@ -31600,7 +31600,7 @@ msgstr "%1$s 日ごと"
 #: src/Alert.php:291
 #, php-format
 msgid "Alert sent on %s"
-msgstr "%s に警告を送信しました"
+msgstr "%s に注意報を送信"
 
 #: src/SlaLevel.php:85
 msgid "Automatic reminders of SLA"
@@ -32134,7 +32134,7 @@ msgstr "%1$s 証明書の期限が %2$s に切れました"
 #: src/Certificate.php:836
 #, php-format
 msgid "Certificate alerts sending failed for entity %1$s"
-msgstr "%1$s エンティティーの証明書警告送信に失敗"
+msgstr "%1$s エンティティーの証明書注意報送信に失敗"
 
 #: src/PhonePowerSupply.php:44
 msgid "Phone power supply type"
@@ -33784,7 +33784,7 @@ msgstr "ドメイン %1$s は %2$s に期限が切れます"
 #: src/Domain.php:779
 #, php-format
 msgid "Domains alerts sending failed for entity %1$s"
-msgstr "%1$s エンティティーのドメイン警告送信に失敗"
+msgstr "%1$s エンティティーのドメイン注意報送信に失敗"
 
 #: src/ConsumableItem.php:78
 msgid "Consumable model"
@@ -33814,7 +33814,7 @@ msgstr "消耗品の型 %1$sの在庫が少なくなっています :  残数 %3
 #: src/ConsumableItem.php:454
 #, php-format
 msgid "%s: send consumable alert failed"
-msgstr "%s: 消耗品の警告の送信に失敗しました"
+msgstr "%s: 消耗品の注意報の送信に失敗しました"
 
 #: src/PurgeLogs.php:85
 msgid "Purge history"
@@ -34010,7 +34010,7 @@ msgstr "選択をする"
 
 #: js/planning.js:366
 msgid "Delete the whole serie of the recurrent event"
-msgstr "一連のくり返しイベントすべてを削除する"
+msgstr "くり返しイベントのシリーズすべてを削除する"
 
 #: js/planning.js:367
 msgid "or just add an exception by deleting this instance?"
@@ -34033,7 +34033,7 @@ msgstr "くり返しイベントをリサイズ"
 msgid ""
 "The resized event is a recurring event. Do you want to change the serie or "
 "instance ?"
-msgstr "サイズ変更したイベントはくり返しイベントです。一連のくり返しイベントすべてを変更しますか？ またはこのイベントのみ変更しますか？"
+msgstr "サイズ変更したイベントはくり返しイベントです。変更するのはシリーズ全体、または、このイベントのみのどちらですか？"
 
 #: js/planning.js:526
 msgid "Recurring event dragged"
@@ -34043,7 +34043,7 @@ msgstr "くり返しイベントをドラッグ"
 msgid ""
 "The dragged event is a recurring event. Do you want to move the serie or "
 "instance?"
-msgstr "ドラッグしたイベントはくり返しのイベントです。一連のイベントを移動しますか？　またはインスタンスを移動しますか？"
+msgstr "ドラッグしたイベントはくり返しイベントです。移動するのはシリーズ全体、または、このイベントのみのどちらですか？"
 
 #: js/planning.js:559
 msgid "Edit an event"
