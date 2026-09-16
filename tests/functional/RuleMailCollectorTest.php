@@ -553,4 +553,152 @@ class RuleMailCollectorTest extends DbTestCase
             $output
         );
     }
+
+    /**
+     * "To email address is" business rule must match a recipient even when it is
+     * not the only one, since the criterion is evaluated against every recipient
+     * individually rather than against the flattened, comma-joined "To" string.
+     */
+    public function testToAddressIsConditionWithMultipleRecipients()
+    {
+        $this->login();
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        $rule = new Rule();
+        $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
+
+        $rule_id = $this->createItem(
+            RuleMailCollector::class,
+            [
+                'name'      => __FUNCTION__,
+                'match'     => 'AND',
+                'is_active' => 1,
+                'sub_type'  => 'RuleMailCollector',
+            ],
+        )->getID();
+
+        $this->createItem(
+            RuleCriteria::class,
+            [
+                'rules_id'  => $rule_id,
+                'criteria'  => 'to',
+                'condition' => Rule::PATTERN_IS,
+                'pattern'   => 'support@glpi-project.org',
+            ]
+        );
+
+        $this->createItem(
+            RuleAction::class,
+            [
+                'rules_id'    => $rule_id,
+                'action_type' => 'assign',
+                'field'       => 'entities_id',
+                'value'       => $entity_id,
+            ]
+        );
+
+        $raw = implode("\r\n", [
+            'From: John Doe <john.doe@glpi-project.org>',
+            'To: Jane Roe <jane.roe@glpi-project.org>, Support <support@glpi-project.org>',
+            'Subject: ' . __FUNCTION__,
+            'Date: ' . date('r'),
+            'Message-ID: <' . __FUNCTION__ . '@glpi-project.org>',
+            '',
+            'Test body.',
+            '',
+        ]);
+        $message = new MailMessage(['raw' => $raw]);
+        $headers = (new MailCollector())->getHeaders($message);
+
+        $rulecollection = new RuleMailCollectorCollection();
+        $output         = $rulecollection->processAllRules(
+            [],
+            [],
+            [
+                'headers'       => $headers,
+                'mailcollector' => 0,
+            ]
+        );
+
+        $this->assertEquals(
+            [
+                'entities_id' => $entity_id,
+                '_ruleid'     => $rule_id,
+            ],
+            $output
+        );
+    }
+
+    /**
+     * "To email address is not" business rule must NOT match as soon as the
+     * pattern equals any recipient, even when other recipients are also present.
+     * Regression test: matching against the flattened "To" string made this
+     * condition always true (false positive) once there was more than one
+     * recipient.
+     */
+    public function testToAddressIsNotConditionWithMultipleRecipients()
+    {
+        $this->login();
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        $rule = new Rule();
+        $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
+
+        $rule_id = $this->createItem(
+            RuleMailCollector::class,
+            [
+                'name'      => __FUNCTION__,
+                'match'     => 'AND',
+                'is_active' => 1,
+                'sub_type'  => 'RuleMailCollector',
+            ],
+        )->getID();
+
+        $this->createItem(
+            RuleCriteria::class,
+            [
+                'rules_id'  => $rule_id,
+                'criteria'  => 'to',
+                'condition' => Rule::PATTERN_IS_NOT,
+                'pattern'   => 'support@glpi-project.org',
+            ]
+        );
+
+        $this->createItem(
+            RuleAction::class,
+            [
+                'rules_id'    => $rule_id,
+                'action_type' => 'assign',
+                'field'       => 'entities_id',
+                'value'       => $entity_id,
+            ]
+        );
+
+        $raw = implode("\r\n", [
+            'From: John Doe <john.doe@glpi-project.org>',
+            'To: Jane Roe <jane.roe@glpi-project.org>, Support <support@glpi-project.org>',
+            'Subject: ' . __FUNCTION__,
+            'Date: ' . date('r'),
+            'Message-ID: <' . __FUNCTION__ . '@glpi-project.org>',
+            '',
+            'Test body.',
+            '',
+        ]);
+        $message = new MailMessage(['raw' => $raw]);
+        $headers = (new MailCollector())->getHeaders($message);
+
+        $rulecollection = new RuleMailCollectorCollection();
+        $output         = $rulecollection->processAllRules(
+            [],
+            [],
+            [
+                'headers'       => $headers,
+                'mailcollector' => 0,
+            ]
+        );
+
+        $this->assertEquals(['_no_rule_matches' => true, '_rule_process' => false], $output);
+    }
 }
