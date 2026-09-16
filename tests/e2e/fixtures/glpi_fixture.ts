@@ -88,8 +88,23 @@ export const test = baseTest.extend<{
 
         // Render the login page in order to extract the CSRF token and find the
         // login and password fields names
-        const response = await context.get(Config.getBaseUrl());
-        const body = await response.text();
+        let response = await context.get(Config.getBaseUrl());
+        let body = await response.text();
+
+        if (body.includes('MAINTENANCE MODE')) {
+            // An isolated test that enables the maintenance mode is supposed to
+            // disable it again, even when it fails (see
+            // `playwright.isolated.config.ts`). If it did not, no session could
+            // be created anymore and the whole suite would fail with a
+            // confusing error.
+            // GLPI's own backdoor puts a flag in the session that lets this
+            // request go through, see `CheckMaintenanceListener`.
+            response = await context.get(
+                `${Config.getBaseUrl()}/index.php?skipMaintenance=1`
+            );
+            body = await response.text();
+        }
+
         const document = new JSDOM(body).window.document;
 
         // Extract CSRF token
