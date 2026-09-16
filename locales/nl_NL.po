@@ -22,6 +22,8 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Roy Hoenen, 2025
 # Roy Hoenen, 2026
+# Pieter Liekens <pieter.liekens@sint-gillis-waas.be>, 2026
+# informatique Flines, 2026
 # 
 #, fuzzy
 msgid ""
@@ -30,7 +32,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Roy Hoenen, 2026\n"
+"Last-Translator: informatique Flines, 2026\n"
 "Language-Team: Dutch (Netherlands) (https://app.transifex.com/glpi/teams/1637/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -516,6 +518,8 @@ msgstr "Sluiten"
 #: templates/layout/parts/user_header.html.twig src/Config.php:1979
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Deze versie is ONSTAANBAAR en sommige VEILIGHEIDSFIXES zijn mogelijk niet "
+"inbegrepen."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -637,11 +641,11 @@ msgstr "Samenvatting"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Global Kanban"
-msgstr ""
+msgstr "Wereldwijde Kanban"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Transfer list"
-msgstr ""
+msgstr "Transferlijst"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/setup/authentication.html.twig front/rule.test.php:64
@@ -661,7 +665,7 @@ msgstr "Zoeken..."
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "U heeft nog geen opgeslagen zoekopdrachten geregistreerd"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "Default search"
@@ -905,11 +909,11 @@ msgstr "Verwijderen"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Field will not be updated from inventory"
-msgstr ""
+msgstr "Veld wordt niet bijgewerkt vanuit inventaris"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Last inventory value was:"
-msgstr ""
+msgstr "Laatste inventariswaarde was:"
 
 #: templates/components/form/item_disk.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
@@ -1071,12 +1075,12 @@ msgstr[0] "Sjablonen"
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
 msgid "Automatic Inventory"
-msgstr ""
+msgstr "Automatische inventaris"
 
 #: templates/components/form/header_content.html.twig src/CommonGLPI.php:1098
 #, php-format
 msgid "Item has been deleted on %s"
-msgstr ""
+msgstr "Item verwijderd op %s"
 
 #: templates/components/form/header_content.html.twig
 #: front/report.contract.list.php:219 front/report.year.list.php:190
@@ -1088,11 +1092,11 @@ msgstr "Verwijderd"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "Verander de zichtbaarheid in kinderentiteiten."
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr ""
+msgstr "Kan dit kenmerk niet wijzigen. Het is geërfd van zijn ouder."
 
 #: templates/components/form/header_content.html.twig
 msgid "You are not allowed to change the visibility flag for child entities."
@@ -1187,7 +1191,7 @@ msgstr "Luidspreker"
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:114
 msgid "Inventory information"
-msgstr ""
+msgstr "voorraadinformatie"
 
 #. TRANS: parameter is the name of the asset
 #: templates/components/form/inventory_info.html.twig
@@ -1199,7 +1203,7 @@ msgstr ""
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:147
 msgid "Inventory file missing"
-msgstr ""
+msgstr "Voorraadbestand ontbreekt"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
@@ -1211,13 +1215,13 @@ msgstr ""
 #: src/RuleLocation.php:93 src/Features/Inventoriable.php:190
 #: src/RuleImportEntity.php:94 src/RuleImportAsset.php:148
 msgid "Inventory tag"
-msgstr ""
+msgstr "label geplakt"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:165
 #: src/Agent.php:319
 msgid "Public contact address"
-msgstr ""
+msgstr "Openbaar contactadres"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:106
@@ -1227,7 +1231,7 @@ msgstr "Laatste contact"
 
 #: templates/components/form/inventory_info.html.twig
 msgid "Last inventory update"
-msgstr ""
+msgstr "Laatste inventarisupdate"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:197
@@ -1237,7 +1241,7 @@ msgstr ""
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:198
 msgid "Ask agent about its current status"
-msgstr ""
+msgstr "Vraag de agent naar de huidige status"
 
 #: templates/components/form/inventory_info.html.twig
 #: front/notificationmailingsetting.form.php:57
@@ -1251,17 +1255,17 @@ msgstr "Onbekend"
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:201
 msgid "Request inventory"
-msgstr ""
+msgstr "Vraag inventaris aan"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:202
 msgid "Request agent to proceed an new inventory"
-msgstr ""
+msgstr "Verzoek agent om een nieuwe inventaris op te stellen"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:156
 msgid "Agent information is not available."
-msgstr ""
+msgstr "Agentinformatie is niet beschikbaar."
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:192
@@ -1537,11 +1541,11 @@ msgstr[1] "Gebruikers"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "Versleutelingsprotocol voor authenticatie "
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for data"
-msgstr ""
+msgstr "Versleutelingsprotocol voor gegevens"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Support hours"
@@ -1686,7 +1690,7 @@ msgstr "Permanent verwijderen"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Bewaar de apparaten terwijl u dit item verwijdert"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/Transfer.php:3935
@@ -2532,7 +2536,7 @@ msgstr "Geschiedenis filter"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 msgid "View TODO list"
-msgstr ""
+msgstr "Bekijk de TODO-lijst"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "File extension"
@@ -2606,7 +2610,7 @@ msgstr ""
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Approve"
-msgstr ""
+msgstr "Goedkeuren"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/approbation_form.html.twig
@@ -2750,7 +2754,7 @@ msgstr "Deze taak plannen"
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
 msgid "Set the status to pending"
-msgstr ""
+msgstr "Stel de status in behandeling"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 #: templates/components/itilobject/timeline/main_description.html.twig
@@ -2926,7 +2930,7 @@ msgstr "Toegekend aan"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Edit notification settings"
-msgstr ""
+msgstr "Meldingsinstellingen bewerken"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: src/Csv/PlanningCsv.php:71 src/Planning.php:1240
@@ -2959,7 +2963,7 @@ msgstr "Bewaren"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Direct email"
-msgstr ""
+msgstr "rechtstreekse e-mail"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Number of tickets already assigned"
@@ -3054,7 +3058,7 @@ msgstr "Toon als kaart"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle browse"
-msgstr ""
+msgstr "Schakel door"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -3111,7 +3115,7 @@ msgstr "Export van alle pagina's in CSV"
 
 #: templates/components/search/controls.html.twig src/Dropdown.php:2576
 msgid "Copy names to clipboard"
-msgstr ""
+msgstr "Kopieer namen naar het klembord"
 
 #: templates/components/search/controls.html.twig
 msgid "Close modal"
@@ -3333,7 +3337,7 @@ msgstr "Achtergrondkleur"
 #: src/DomainRecordType.php:388 src/DomainRecord.php:114
 #: src/DomainRecord.php:418
 msgid "Data"
-msgstr ""
+msgstr "Data"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Widget"
@@ -3341,15 +3345,15 @@ msgstr "Widget"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use gradient palette"
-msgstr ""
+msgstr "Gebruik een kleurverloop"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Display value labels on points/bars"
-msgstr ""
+msgstr "Waarde-labels weergeven op punten / staven"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Limit number of data"
-msgstr ""
+msgstr "Grens aantal gegevens"
 
 #. TRANS: select action 'update' (before doing it)
 #: templates/components/dashboard/widget_form.html.twig
@@ -4807,7 +4811,7 @@ msgstr "Geen LDAP directorie ingesteld in GLPI"
 
 #: templates/pages/login.html.twig
 msgid "Login to your account"
-msgstr ""
+msgstr "Inloggen op uw account"
 
 #: templates/pages/login.html.twig src/AuthMail.php:232 src/AuthLDAP.php:4029
 #: src/MailCollector.php:306 src/MailCollector.php:579 src/Config.php:2177
@@ -4831,7 +4835,7 @@ msgstr "Kies de taal"
 
 #: templates/pages/login.html.twig
 msgid "Login source"
-msgstr ""
+msgstr "Inloggen bron"
 
 #: templates/pages/login.html.twig
 msgid "Remember me"
@@ -11794,7 +11798,7 @@ msgstr "Forceer synchronisatie"
 
 #: src/Auth.php:1550 src/User.php:3667
 msgid "Clean LDAP fields and force synchronisation"
-msgstr ""
+msgstr "Reinig LDAP-velden en forceer synchronisatie"
 
 #: src/Auth.php:1565
 msgid "Change of the authentication method"
@@ -12206,7 +12210,7 @@ msgstr "Mijn taken"
 
 #: src/Project.php:637 src/Project.php:1668
 msgid "Show on global Gantt"
-msgstr ""
+msgstr "Toon op wereldwijde Gantt"
 
 #: src/Project.php:1081
 msgid "Planned Duration"
@@ -12242,6 +12246,8 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
 msgstr ""
+"Wanneer automatische berekening actief is, wordt het percentage berekend op "
+"basis van het gemiddelde van alle kindproject- en taakpercentages."
 
 #: src/Project.php:1720
 msgid "Sum of planned durations of tasks"
@@ -14345,7 +14351,7 @@ msgstr ""
 
 #: src/GLPINetwork.php:83
 msgid "And retrieve your key to paste it below"
-msgstr ""
+msgstr "En haal je sleutel op om hem hieronder te plakken"
 
 #: src/GLPINetwork.php:93 src/Marketplace/View.php:153
 #, php-format
@@ -14917,7 +14923,7 @@ msgstr ""
 
 #: src/RuleMatchedLog.php:225 src/RuleMatchedLog.php:302
 msgid "Rule import logs"
-msgstr ""
+msgstr "Regel import logs"
 
 #: src/RuleMatchedLog.php:236 src/RuleMatchedLog.php:313
 msgid "Rule name"
@@ -14925,7 +14931,7 @@ msgstr "Regel naam"
 
 #: src/RuleMatchedLog.php:244 src/RuleMatchedLog.php:325
 msgid "Module"
-msgstr ""
+msgstr "Bouwsteen"
 
 #: src/NotificationTargetCartridgeItem.php:45
 msgid "Cartridges alarm"
@@ -19382,7 +19388,7 @@ msgstr "Zoekresultaten alleen voor taalafhankelijke items"
 
 #: src/Search.php:406
 msgid "An error occurred loading data :("
-msgstr ""
+msgstr "Er is een fout opgetreden bij het laden van de gegevens :("
 
 #: src/Search.php:413
 msgid "Reload"
@@ -19889,7 +19895,7 @@ msgstr "GLPI server tijdszone"
 
 #: src/Config.php:752
 msgid "Use the replica for the search engine"
-msgstr ""
+msgstr "Gebruik de replica voor de zoekmachine"
 
 #: src/Config.php:754
 msgid "If synced (all changes)"
@@ -22162,11 +22168,11 @@ msgstr ""
 
 #: src/Item_RemoteManagement.php:135
 msgid "Add a remote management"
-msgstr ""
+msgstr "Voeg een beheer op afstand toe"
 
 #: src/Item_RemoteManagement.php:163 src/Item_RemoteManagement.php:357
 msgid "Remote ID"
-msgstr ""
+msgstr "extern-ID"
 
 #: src/ChangeTask.php:43
 msgid "Change task"

@@ -23,7 +23,6 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
 # Miguel Diaz Gonçalves, 2023
-# Pedro Rocha <jpnr79@gmail.com>, 2023
 # Hugo Castelo Branco <hugo.castelobranco@gmail.com>, 2024
 # Rui Paiva, 2024
 # OppPMatos, 2024
@@ -32,6 +31,7 @@
 # Pedro B., 2026
 # Patrick Rolo, 2026
 # Hugo Pilar, 2026
+# Pedro Rocha <jpnr79@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -40,7 +40,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Hugo Pilar, 2026\n"
+"Last-Translator: Pedro Rocha <jpnr79@gmail.com>, 2026\n"
 "Language-Team: Portuguese (Portugal) (https://app.transifex.com/glpi/teams/1637/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3053,7 +3053,7 @@ msgstr "Este ticket preocupa-me"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Check your personal information"
-msgstr ""
+msgstr "Verifique suas informações pessoais"
 
 #: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/NotificationTargetTicket.php:649
@@ -4546,7 +4546,7 @@ msgstr "Duração inicial do contracto"
 
 #: templates/pages/management/contract.html.twig
 msgid "Start date of notice period"
-msgstr ""
+msgstr "Data de início do prazo de pré-aviso"
 
 #: templates/pages/management/contract.html.twig src/Contract.php:338
 #: src/Contract.php:607 src/Contract.php:1674
@@ -5439,6 +5439,7 @@ msgstr "Nenhum dispositivo afetado!"
 #: ajax/mailcollector.php:52
 msgid "Mail collector must be saved before browsing folders."
 msgstr ""
+"O coletor de e-mails tem de ser guardado antes de navegar pelas pastas."
 
 #: ajax/telemetry.php:56
 msgid ""
@@ -7973,6 +7974,8 @@ msgid ""
 "Replace the agent name with a customisable nickname and the group name with "
 "a generic name"
 msgstr ""
+"Substitua o nome do agente por uma alcunha personalizável e o nome do grupo "
+"por um nome genérico"
 
 #: src/Entity.php:3565
 msgid "Replace the agent's name with a generic name"
@@ -8112,7 +8115,7 @@ msgstr "nome"
 
 #: src/PDU_Rack.php:589 src/Item_Rack.php:856 src/Rack.php:934
 msgid "serial"
-msgstr "nº. de série"
+msgstr "série"
 
 #: src/PDU_Rack.php:601 src/Item_Rack.php:868
 msgid "model"
@@ -10761,7 +10764,7 @@ msgstr "Principais entidades de ticket's"
 
 #: src/Dashboard/Grid.php:1328
 msgid "Top ticket's request sources"
-msgstr ""
+msgstr "Fontes de pedidos de bilhetes de primeira categoria"
 
 #: src/Dashboard/Grid.php:1329
 msgid "Top ticket's locations"
@@ -13459,7 +13462,7 @@ msgstr[2] "Tipos de registos"
 
 #: src/GLPIUploadHandler.php:88
 msgid "The file upload has been refused for security reasons."
-msgstr ""
+msgstr "O envio do ficheiro foi recusado por motivos de segurança."
 
 #: src/PrinterLog.php:57
 msgid "Page counters"
@@ -13880,11 +13883,15 @@ msgid ""
 "The security key file does not exist. You have to run the \"%s\" command to "
 "generate a key."
 msgstr ""
+"O ficheiro da chave de segurança não existe. Tem de executar o comando «%s» "
+"para gerar uma chave."
 
 #: src/GLPIKey.php:140
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
 msgstr ""
+"Não foi possível obter o conteúdo do ficheiro da chave de segurança. Corrija"
+" as permissões do ficheiro %s."
 
 #: src/GLPIKey.php:145
 #, php-format
@@ -13892,6 +13899,8 @@ msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
 msgstr ""
+"Conteúdo inválido do ficheiro da chave de segurança. É necessário executar o"
+" comando «%s» para regenerar uma chave."
 
 #: src/Vlan.php:48
 msgid "VLAN"
@@ -14123,7 +14132,7 @@ msgstr "Cabeçalho de email X-UCE-Status"
 
 #: src/RuleMailCollector.php:114
 msgid "Full email headers"
-msgstr ""
+msgstr "Cabeçalhos de e-mail completos"
 
 #: src/RuleMailCollector.php:119
 msgid "Received email header"
@@ -16544,12 +16553,12 @@ msgstr "Gestão unitária"
 #: src/Dropdown.php:4012
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Meu%s"
 
 #: src/Dropdown.php:4121
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "Meus grupos %s"
 
 #: src/Dropdown.php:4234
 msgid "version"
@@ -16562,7 +16571,7 @@ msgstr "Software instalado"
 #: src/Dropdown.php:4368
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "Conectado%s"
 
 #: src/RichText/RichText.php:547 src/Marketplace/View.php:763
 #: src/Impact.php:1130
@@ -16904,9 +16913,9 @@ msgstr "Se rejeitar a solução, deve especificar a razão"
 #: src/CommonITILObject.php:4397
 msgid "Latest date"
 msgid_plural "Latest dates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Data mais recente"
+msgstr[1] "Datas mais recentes"
+msgstr[2] "Datas mais recentes"
 
 #: src/ITILFollowup.php:773
 msgid "Private followup"
@@ -17357,6 +17366,8 @@ msgstr "a utilização do recuso initSession com credenciais está inactiva"
 #: src/Api/API.php:280
 msgid "usage of initSession resource with user token is disabled"
 msgstr ""
+"A utilização do recurso initSession com o token do utilizador está "
+"desativada"
 
 #: src/Api/API.php:293
 msgid "parameter(s) login, password or user_token are missing"
@@ -17364,11 +17375,11 @@ msgstr "parâmetro(s) utilizador, senha ou user_token em falta"
 
 #: src/Api/API.php:299
 msgid "parameter(s) login, password are missing"
-msgstr ""
+msgstr "Faltam os parâmetros «login» e «password»"
 
 #: src/Api/API.php:305
 msgid "parameter user_token is missing"
-msgstr ""
+msgstr "Falta o parâmetro user_token"
 
 #: src/Api/API.php:324
 msgid "parameter user_token seems invalid"
@@ -17425,6 +17436,9 @@ msgid ""
 "will receive an email containing the information required to reset your "
 "password. Please contact your administrator if you do not receive an email."
 msgstr ""
+"Se o endereço de e-mail indicado corresponder a um e apenas um utilizador do"
+" GLPI, receberá um e-mail com as informações necessárias para redefinir a "
+"sua palavra-passe. Se não receber o e-mail, contacte o seu administrador."
 
 #: src/Api/API.php:2264 src/User.php:5769
 msgid "Reset password successful."
@@ -18826,7 +18840,7 @@ msgstr "Adicionar documentos nas notificações de tickets"
 
 #: src/NotificationMailingSetting.php:234
 msgid "Add documents into notifications sent to anonymous users"
-msgstr ""
+msgstr "Adicionar documentos às notificações enviadas a utilizadores anónimos"
 
 #: src/NotificationMailingSetting.php:250
 msgid "Way of sending emails"
@@ -20065,7 +20079,7 @@ msgstr "TTL"
 
 #: src/DomainRecord.php:267
 msgid "A domain is required"
-msgstr ""
+msgstr "É necessário um domínio"
 
 #: src/DomainRecord.php:300
 msgid "You are not allowed to use this type of records"
@@ -20516,7 +20530,7 @@ msgstr "URL base da API inválido!"
 
 #: src/Config.php:197
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "URL de logout SSO inválida."
 
 #: src/Config.php:304
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:80
@@ -20533,7 +20547,7 @@ msgstr "O perfil escolhido não existe, ou não tem autorização de acesso"
 #: src/Config.php:338 src/User.php:7058
 #, php-format
 msgid "The following field has an incorrect value: \"%s\"."
-msgstr ""
+msgstr "O campo seguinte tem um valor incorreto: «%s»."
 
 #: src/Config.php:339 src/Config.php:1237 src/User.php:7059
 msgid "PDF export font"
@@ -21415,7 +21429,7 @@ msgstr "Não é um ficheiro de imagem."
 #: src/User.php:1131
 #, php-format
 msgid "You are not allowed to update the following fields: %s"
-msgstr ""
+msgstr "You are not allowed to update the following fields: %s"
 
 #: src/User.php:1264
 msgid ""
@@ -21446,7 +21460,7 @@ msgstr "Zona horária"
 
 #: src/User.php:2853
 msgid "Not enough rights to change this field"
-msgstr ""
+msgstr "Not enough rights to change this field"
 
 #: src/User.php:2870
 msgid "Valid since"
@@ -22239,7 +22253,7 @@ msgstr "Nenhum dado disponível no web site"
 
 #: src/Toolbox.php:1688
 msgid "Redirection failed"
-msgstr ""
+msgstr "Falha no redirecionamento"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -22560,11 +22574,11 @@ msgstr "Imagem de fundo (blueprint)"
 
 #: src/DCRoom.php:200 src/DCRoom.php:223
 msgid "Number of rows must be >= 1"
-msgstr ""
+msgstr "O número de linhas deve ser ≥ 1"
 
 #: src/DCRoom.php:209 src/DCRoom.php:232
 msgid "Number of columns must be >= 1"
-msgstr ""
+msgstr "O número de colunas deve ser ≥ 1"
 
 #: src/DCRoom.php:469
 msgid "New room for this datacenter..."
@@ -22593,7 +22607,7 @@ msgstr "Alterar a visibilidade"
 
 #: src/SavedSearch.php:99
 msgid "Change entity"
-msgstr ""
+msgstr "Alterar entidade"
 
 #: src/SavedSearch.php:110 src/SavedSearch.php:507 src/SavedSearch.php:1215
 msgid "Auto"
@@ -23320,11 +23334,11 @@ msgstr "Endereço:"
 
 #: src/Reservation.php:194
 msgid "You do not have permission to create reservations"
-msgstr ""
+msgstr "Não tem permissão para criar reservas"
 
 #: src/Reservation.php:204
 msgid "You do not have permission to create reservations for other users"
-msgstr ""
+msgstr "Não tem permissão para criar reservas para outros utilizadores"
 
 #: src/Reservation.php:262
 #, php-format
@@ -23661,6 +23675,8 @@ msgstr "Tem de escolher um item associado"
 msgid ""
 "Predefined task templates will be added according to their creation order"
 msgstr ""
+"Os modelos de tarefas predefinidos serão adicionados de acordo com a ordem "
+"em que foram criados"
 
 #: src/ITILTemplatePredefinedField.php:325
 msgid "Add a predefined field"
@@ -25806,16 +25822,16 @@ msgstr ""
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:206
 msgid "Unable to fetch GLPI version."
-msgstr ""
+msgstr "Não foi possível obter a versão do GLPI."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:218
 msgid "The database contains no GLPI tables."
-msgstr ""
+msgstr "A base de dados não contém tabelas do GLPI."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:219
 #, php-format
 msgid "The database contains no tables of the plugin \"%s\"."
-msgstr ""
+msgstr "A base de dados não contém tabelas do plugin «%s»."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:228
 #, php-format
@@ -27286,7 +27302,7 @@ msgstr "Excluir"
 
 #: js/modules/Search/Table.js:53
 msgid "Submit current search before saving it"
-msgstr ""
+msgstr "Enviar a pesquisa atual antes de a guardar"
 
 #: js/fileupload.js:102
 msgid "Upload successful"

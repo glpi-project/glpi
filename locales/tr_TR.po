@@ -37,7 +37,7 @@ msgstr "Verileri topla"
 #: templates/install/step2.html.twig install/update.php:250
 #: install/install.php:267
 msgid "Continue"
-msgstr "Devam et"
+msgstr "İlerle"
 
 #: templates/install/step3.html.twig
 msgid "Test of the connection at the database"
@@ -434,8 +434,8 @@ msgstr "Ad"
 #: src/Features/PlanningEvent.php:1086
 msgid "Comment"
 msgid_plural "Comments"
-msgstr[0] "Not"
-msgstr[1] "Notlar"
+msgstr[0] "Yorum"
+msgstr[1] "Yorumlar"
 
 #: templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig
@@ -450,7 +450,7 @@ msgstr[1] "Fotoğraflar"
 
 #: templates/dropdown_form.html.twig
 msgid "Rack pictures"
-msgstr "Rack fotoğrafları"
+msgstr "Kabin fotoğrafları"
 
 #: templates/dropdown_form.html.twig
 msgid "Other pictures"
@@ -517,7 +517,7 @@ msgstr "Gerekli bir güncellemeyi atlıyorsunuz"
 #: templates/layout/parts/page_header.html.twig front/helpdesk.public.php:103
 #: src/Html.php:1539
 msgid "Home"
-msgstr "Açılış"
+msgstr "Giriş"
 
 #: templates/layout/parts/impersonate_banner.html.twig
 #, php-format
@@ -570,7 +570,7 @@ msgstr "Option+Command+G"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Find menu"
-msgstr "Menü arama"
+msgstr "Menü ara"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/components/itilobject/linked_tickets.html.twig
@@ -590,7 +590,7 @@ msgstr "Ekle"
 #: templates/layout/parts/profile_selector.html.twig front/search.php:42
 #: src/MapGeolocation.php:92 js/modules/Kanban/Kanban.js:1102
 msgid "Search"
-msgstr "Arama"
+msgstr "Ara"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Lists"
@@ -636,7 +636,7 @@ msgstr "Yapılandırma"
 #: templates/layout/parts/global_search_form.html.twig
 #: src/Features/TreeBrowse.php:159
 msgid "Search…"
-msgstr "Arama…"
+msgstr "Ara…"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
@@ -703,7 +703,7 @@ msgstr ""
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Search entity"
-msgstr "Birim arama"
+msgstr "Birim ara"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Clear search"
@@ -1326,7 +1326,7 @@ msgstr "Seri numarası"
 #: src/Certificate.php:123 src/Certificate.php:400 src/PDU.php:115
 #: src/CommonDBTM.php:3488 src/ConsumableItem.php:176
 msgid "Inventory number"
-msgstr "Stok numarası"
+msgstr "Envanter numarası"
 
 #: templates/components/form/item_device.html.twig
 #: templates/components/itilobject/fields/status.html.twig
@@ -1671,7 +1671,7 @@ msgstr "Bu öge silinirken aygıtlar tutulsun"
 #: src/MassiveAction.php:796 src/Profile.php:1015 src/CommonDBTM.php:5452
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr "Çöp kutusuna at"
+msgstr "Çöpe at"
 
 #: templates/components/form/computerantivirus.html.twig
 #: src/ComputerAntivirus.php:335
@@ -1913,7 +1913,7 @@ msgstr "İç çözümlenme süresi"
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "Next escalation: %s"
-msgstr "Sonraki düzey: %s"
+msgstr "Sonraki üste aktarma: %s"
 
 #. TRANS: %1$s is entity name, %2$s is the message
 #. TRANS: %1$s is a name, %2$s is a number
@@ -2099,8 +2099,8 @@ msgstr "%1$s: %2$s"
 #: src/LevelAgreementLevel.php:93 src/Ticket.php:3298 src/Ticket.php:3349
 msgid "Escalation level"
 msgid_plural "Escalation levels"
-msgstr[0] "Yükseltme düzeyi"
-msgstr[1] "Yükseltme düzeyleri"
+msgstr[0] "Üste aktarma düzeyi"
+msgstr[1] "Üste aktarma düzeyleri"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Also delete date?"
@@ -2689,7 +2689,7 @@ msgstr[1] "Tarihler"
 #: src/TaskTemplate.php:121 src/ITILFollowup.php:640 src/SavedSearch.php:132
 #: src/SavedSearch.php:524 src/SavedSearch.php:541
 msgid "Private"
-msgstr "Kişisel"
+msgstr "Gizli"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -2811,7 +2811,7 @@ msgstr "Çözüm onayı"
 #: src/NetworkPortMigration.php:305 src/Domain.php:151
 #: src/ConsumableItem.php:276
 msgid "Comments"
-msgstr "Notlar"
+msgstr "Yorumlar"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Optional when approved"
@@ -2849,7 +2849,7 @@ msgstr "Onaylanmış"
 #: src/CommonITILValidation.php:533
 msgctxt "validation"
 msgid "Refused"
-msgstr "Reddedilen"
+msgstr "Reddedildi"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 #, php-format
@@ -2983,7 +2983,7 @@ msgstr "kontrol edin!"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Describe the incident or request"
-msgstr "İstek ya da arızayı açıklayın"
+msgstr "İsteği ya da olayı açıklayın"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "This ticket concerns me"
@@ -3009,8 +3009,8 @@ msgstr "Kişisel bilgilerinizi denetleyin"
 #: src/KnowbaseItem.php:2101 src/CommonITILObject.php:6770
 msgid "Associated element"
 msgid_plural "Associated elements"
-msgstr[0] "İlişkilendirilmiş öge"
-msgstr[1] "İlişkilendirilmiş ögeler"
+msgstr[0] "İlişkili öge"
+msgstr[1] "İlişkili ögeler"
 
 #: templates/components/itilobject/selfservice.html.twig
 #: src/RuleTicket.php:717 src/RuleTicket.php:915
@@ -3039,7 +3039,7 @@ msgstr "Göz atmayı aç/kapat"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
-msgstr "Çöp kutusunu görüntüle"
+msgstr "Çöpü görüntüle"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle search filters"
@@ -4074,7 +4074,7 @@ msgstr "Sunucu kimliği"
 #: src/Socket.php:518 src/Socket.php:804 src/Socket.php:938 src/Socket.php:977
 #: src/Socket.php:1037
 msgid "Wiring side"
-msgstr "Kablo bağlantısı tarafı"
+msgstr "Kablo bağlantısı yanı"
 
 #: templates/pages/assets/socket.html.twig src/Socket.php:805
 #: src/Transfer.php:3967 src/NetworkPort.php:179
@@ -5364,7 +5364,7 @@ msgid ""
 "hardware configuration."
 msgstr ""
 "Yalnızca şu veriler toplanır: Eklentilerin kullanımı. başarım ve kullanıcı "
-"arayüzü özellikleri hakkında yanıt istatistikleri ve bellek ve donanım "
+"arayüzü özellikleri ile ilgili yanıt istatistikleri ve bellek ve donanım "
 "yapılandırması."
 
 #: ajax/central.php:93
@@ -5758,13 +5758,13 @@ msgstr "Doldurulmamış zorunlu alanlar var. Lütfen düzeltin: %s"
 #: front/olalevel.form.php:58
 #, php-format
 msgid "%s updates an ola level"
-msgstr "%s bir işletme anlaşması düzeyini güncelledi"
+msgstr "%s bir operasyonel düzey anlaşmasını güncelledi"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:89
 #, php-format
 msgid "%s purges an ola level"
-msgstr "%s bir işletme anlaşması düzeyini yok etti"
+msgstr "%s bir operasyonel düzey anlaşmasını yok etti"
 
 #. TRANS: %s is the user login
 #: front/projecttaskteam.form.php:57 front/projectteam.form.php:57
@@ -5894,20 +5894,20 @@ msgstr "Doldurulmamış zorunlu alanlar var!"
 #: front/knowbaseitem_comment.form.php:67
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr "%s bilgi bankasına bir not ekledi"
+msgstr "%s bilgi bankasına bir yorum ekledi"
 
 #: front/knowbaseitem_comment.form.php:70
 msgid "Your comment has been added"
-msgstr "Notunuz eklendi"
+msgstr "Yorumunuz eklendi"
 
 #: front/knowbaseitem_comment.form.php:93
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr "%s bilgi bankasındaki bir notu düzenledi"
+msgstr "%s bilgi bankasındaki bir yorumu düzenledi"
 
 #: front/knowbaseitem_comment.form.php:96
 msgid "Your comment has been edited"
-msgstr "Notunuz düzenlendi"
+msgstr "Yorumunuz düzenlendi"
 
 #. TRANS: %s is the user login
 #: front/ticket_ticket.form.php:59
@@ -6083,7 +6083,7 @@ msgstr "Dış kimlik doğrulaması kaynakları"
 #: front/monitor.form.php:129 front/printer.form.php:128
 #, php-format
 msgid "%s sets unitary management"
-msgstr "%s birimsel yönetimi ayarladı"
+msgstr "%s merkezi yönetimi ayarladı"
 
 #: front/ipnetwork.form.php:45
 msgid "Successfully recreated network tree"
@@ -6364,7 +6364,7 @@ msgstr "Yeni destek kaydı"
 #: front/contact_supplier.form.php:60 front/contract_supplier.form.php:68
 #, php-format
 msgid "%s adds a link with a supplier"
-msgstr "%s sağlayıcıyla bir bağlantı ekledi"
+msgstr "%s bir tedarikçi ile bir bağlantı ekledi"
 
 #: front/knowbaseitem.form.php:154
 #, php-format
@@ -6933,7 +6933,7 @@ msgstr "Onay isteğinin yanıtı"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Closing of the ticket"
-msgstr "Destek kaydını kapatma"
+msgstr "Destek kaydı kapatma"
 
 #: src/NotificationTargetTicket.php:144
 msgid "Deletion of a ticket"
@@ -6950,7 +6950,7 @@ msgstr "Otomatik hizmet düzeyi sözleşmesi anımsatma"
 
 #: src/NotificationTargetTicket.php:147
 msgid "Automatic reminders of OLAs"
-msgstr "Otomatik işletme sözleşmesi anımsatma"
+msgstr "Otomatik operasyonel düzey anlaşmaları anımsatma"
 
 #: src/NotificationTargetTicket.php:148
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:67
@@ -7009,7 +7009,7 @@ msgstr "%1$s / %2$s"
 #: src/RuleTicket.php:1014 src/OLA.php:51 src/Ticket.php:3314
 #: src/Ticket.php:3322 src/Ticket.php:3336 src/Ticket.php:3349
 msgid "OLA"
-msgstr "İşletme sözleşmesi"
+msgstr "Operasyonel düzey anlaşması"
 
 #: src/NotificationTargetTicket.php:635 src/Ticket.php:3150
 #: src/Ticket.php:3322 src/Ticket.php:6340
@@ -7044,7 +7044,7 @@ msgstr "Konum adı"
 #: src/NotificationTargetTicket.php:655 src/NotificationTargetTicket.php:719
 #: src/Location.php:211
 msgid "Location comments"
-msgstr "Konum notları"
+msgstr "Konum yorumları"
 
 #: src/NotificationTargetTicket.php:660 src/NotificationTargetTicket.php:720
 #: src/Location.php:92 src/Location.php:202 src/Location.php:253
@@ -7121,7 +7121,7 @@ msgstr "Genel onay durumu"
 
 #: src/NotificationTargetTicket.php:731
 msgid "Solution rejection comment"
-msgstr "Çözümün reddedilme nedeni"
+msgstr "Çözümün reddedilmesi ile ilgili yorum"
 
 #: src/NotificationTargetTicket.php:732
 msgid "Solution rejection date"
@@ -7169,7 +7169,7 @@ msgstr "Memnuniyet"
 
 #: src/NotificationTargetTicket.php:796
 msgid "Comments to the satisfaction survey"
-msgstr "Memnuniyet anketi notları"
+msgstr "Memnuniyet anketi yorumları"
 
 #: src/NotificationTargetTicket.php:807
 msgid "Survey type"
@@ -7328,7 +7328,7 @@ msgstr "Birimi belirten LDAP dizin bilgileri özniteliği"
 
 #: src/Entity.php:899 src/Entity.php:1694
 msgid "Information in inventory tool (TAG) representing the entity"
-msgstr "Stok aracında (TAG) birimi belirten bilgiler"
+msgstr "Envanter aracında (TAG) birimi belirten bilgiler"
 
 #: src/Entity.php:908 src/Entity.php:1719
 msgid "LDAP directory of an entity"
@@ -7590,7 +7590,7 @@ msgstr "Varsayılan sunucu"
 
 #: src/Entity.php:1729
 msgid "LDAP filter associated to the entity (if necessary)"
-msgstr "Birimle ilgili LDAP süzgeci (gerekliyse)"
+msgstr "Birimle ilişkili LDAP süzgeci (gerekliyse)"
 
 #: src/Entity.php:1773
 msgid "Autofill dates for financial and administrative information"
@@ -7792,7 +7792,7 @@ msgstr "Destek kayıtları, değişiklikler ve sorunlar otomatik olarak atansın
 #: src/Entity.php:2924
 msgid "Mark followup added by a supplier though an email collector as private"
 msgstr ""
-"Bir sağlayıcı tarafından özel bir e-posta toplayıcı ile izleme işareti "
+"Bir tedarikçi tarafından gizli bir e-posta toplayıcı ile izleme işareti "
 "eklendi"
 
 #: src/Entity.php:2949
@@ -7832,12 +7832,12 @@ msgstr "Memnuniyet anketi yapılandırması"
 #: src/Entity.php:3154 src/Entity.php:3894 src/TicketSatisfaction.php:263
 #: src/TicketSatisfaction.php:315
 msgid "Internal survey"
-msgstr "İç tarama"
+msgstr "İç anket"
 
 #: src/Entity.php:3155 src/Entity.php:3895 src/TicketSatisfaction.php:120
 #: src/TicketSatisfaction.php:266 src/TicketSatisfaction.php:316
 msgid "External survey"
-msgstr "Dış tarama"
+msgstr "Dış anket"
 
 #. TRANS: %d is the percentage. %% to display %
 #: src/Entity.php:3195
@@ -7938,7 +7938,7 @@ msgstr "Bir konum belirtilmelidir"
 
 #: src/PDU_Rack.php:107
 msgid "A side is required"
-msgstr "Bir taraf belirtilmelidir"
+msgstr "Bir yan belirtilmelidir"
 
 #: src/PDU_Rack.php:140 src/Item_Rack.php:1049
 msgid "Item is out of rack bounds"
@@ -7950,7 +7950,7 @@ msgstr "Bu ögeyi yerleştirebilecek yeterli boşluk yok"
 
 #: src/PDU_Rack.php:250
 msgid "Side (from rear perspective)"
-msgstr "Taraf (arkadan görünüm)"
+msgstr "Yan (arkadan görünüm)"
 
 #: src/PDU_Rack.php:308
 msgid "Side pdus"
@@ -7958,7 +7958,7 @@ msgstr "Yan güç dağıtıcıları"
 
 #: src/PDU_Rack.php:341
 msgid "Side"
-msgstr "Taraf"
+msgstr "Yan"
 
 #: src/PDU_Rack.php:423
 msgid "Power units"
@@ -8093,7 +8093,7 @@ msgstr "Bir ögeyi sil"
 #: src/Contract.php:427 src/Contact.php:221
 msgctxt "button"
 msgid "Add a supplier"
-msgstr "Sağlayıcı ekle"
+msgstr "Tedarikçi ekle"
 
 #: src/Contract.php:697
 msgid "Expiration date + notice"
@@ -8102,8 +8102,8 @@ msgstr "Geçerlilik sonu + bildirim"
 #: src/Contract.php:763 src/Contact.php:377
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
-msgstr[0] "İlgili sağlayıcı"
-msgstr[1] "İlgili sağlayıcılar"
+msgstr[0] "İlişkili tedarikçi"
+msgstr[1] "İlişkili tedarikçiler"
 
 #: src/Contract.php:805 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:1866
@@ -8480,7 +8480,7 @@ msgstr[1] "Sanal makine durumları"
 
 #: src/RuleAsset.php:49 src/RuleAssetCollection.php:45 src/Profile.php:1061
 msgid "Business rules for assets"
-msgstr "Varlık iş kuralları"
+msgstr "Varlıkların iş kuralları"
 
 #: src/RuleAsset.php:75 src/RuleAsset.php:79 src/RuleTicket.php:80
 #: src/RuleTicket.php:84 src/Dashboard/Grid.php:1397 src/Supplier.php:411
@@ -9017,7 +9017,7 @@ msgstr[1] "Üçüncü taraf türleri"
 
 #: src/RuleTicket.php:51 src/Profile.php:2840 src/RuleTicketCollection.php:70
 msgid "Business rules for tickets"
-msgstr "Destek kaydı iş kuralları"
+msgstr "Destek kayıtlarının iş kuralları"
 
 #: src/RuleTicket.php:112
 msgid ""
@@ -9074,7 +9074,7 @@ msgstr "Teknisyen grubu"
 #: src/NotificationTargetCommonITILObject.php:1822
 #: src/CommonITILObject.php:4621
 msgid "Assigned to a supplier"
-msgstr "Bir sağlayıcıya atanmış"
+msgstr "Bir tedarikçiye atanmış"
 
 #: src/RuleTicket.php:723 src/RuleTicket.php:924
 #: src/NotificationTargetCommonITILObject.php:867
@@ -9778,8 +9778,8 @@ msgid ""
 "Required for remote access to resources (inventory agent requests, "
 "marketplace, RSS feeds, ...)."
 msgstr ""
-"Kaynaklara uzaktan erişmek için gereklidir (stok aracısı istekleri, mağaza, "
-"RSS akışları, ...)."
+"Kaynaklara uzaktan erişmek için gereklidir (envanter aracısı istekleri, "
+"mağaza, RSS akışları, ...)."
 
 #: src/System/RequirementsManager.php:106
 msgid "Required for images handling."
@@ -9794,8 +9794,8 @@ msgid ""
 "Required for handling of compressed communication with inventory agents, "
 "installation of gzip packages from marketplace and PDF generation."
 msgstr ""
-"Stok aracıları ile sıkıştırılmış iletişim, mağaza gzip paketlerinin kurulumu"
-" ve PDF oluşturma işlemleri için gereklidir."
+"Envanter aracıları ile sıkıştırılmış iletişim, mağaza gzip paketlerinin "
+"kurulumu ve PDF oluşturma işlemleri için gereklidir."
 
 #: src/System/RequirementsManager.php:119
 msgid "Sodium ChaCha20-Poly1305 size constant"
@@ -10032,7 +10032,7 @@ msgstr "Proje ekibinin ilgilisi"
 #: src/NotificationTargetProject.php:78
 #: src/NotificationTargetProjectTask.php:73
 msgid "Supplier of project team"
-msgstr "Proje ekibinin sağlayıcısı"
+msgstr "Proje ekibinin tedarikçisi"
 
 #: src/NotificationTargetProject.php:647 src/Project.php:558
 #: src/Project.php:1606
@@ -10777,11 +10777,11 @@ msgstr "Konum ayırtılmış mı?"
 
 #: src/Item_Rack.php:838
 msgid "asset rear side"
-msgstr "varlığın arka tarafı"
+msgstr "varlığın arka yanı"
 
 #: src/Item_Rack.php:839
 msgid "asset front side"
-msgstr "varlığın ön tarafı"
+msgstr "varlığın ön yanı"
 
 #: src/Item_Rack.php:962 src/Item_Enclosure.php:327 src/Appliance_Item.php:403
 #: src/Item_Cluster.php:302 src/Appliance_Item_Relation.php:117
@@ -11029,7 +11029,7 @@ msgstr "Atanmışlardan yeni grup"
 
 #: src/NotificationTargetCommonITILObject.php:133
 msgid "New supplier in assignees"
-msgstr "Atanmışlardan yeni sağlayıcı"
+msgstr "Atanmışlardan yeni tedarikçi"
 
 #: src/NotificationTargetCommonITILObject.php:134
 msgid "New task"
@@ -11131,12 +11131,12 @@ msgstr "İstekte bulunan kimliği"
 #: src/Supplier.php:63 src/Profile.php:955 src/Profile.php:2358
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] "Sağlayıcı"
-msgstr[1] "Sağlayıcılar"
+msgstr[0] "Tedarikçi"
+msgstr[1] "Tedarikçiler"
 
 #: src/NotificationTargetCommonITILObject.php:1786
 msgid "Supplier ID"
-msgstr "Sağlayıcı kimliği"
+msgstr "Tedarikçi kimliği"
 
 #: src/NotificationTargetCommonITILObject.php:1800 src/Notepad.php:259
 msgid "Last updater"
@@ -11197,7 +11197,7 @@ msgstr "Kategori kimliği"
 
 #: src/NotificationTargetCommonITILObject.php:1924
 msgid "Category comment"
-msgstr "Kategori açıklaması"
+msgstr "Kategori yorumu"
 
 #: src/NotificationTargetCommonITILObject.php:1926
 msgid "User assigned to task"
@@ -11266,8 +11266,8 @@ msgid ""
 "Warning! This operation can put merged software in the trashbin. Ensure to "
 "notify your users."
 msgstr ""
-"Uyarı! Bu işlem birleştirilen yazılımın çöp kutusuna atılmasına neden "
-"olabilir. Kullanıcılarınızı bilgilendirdiğinizden emin olun."
+"Uyarı! Bu işlem birleştirilen yazılımın çöpe atılmasına neden olabilir. "
+"Kullanıcılarınızı bilgilendirdiğinizden emin olun."
 
 #: src/RuleDictionnarySoftwareCollection.php:92
 msgid "Manufacturer choice"
@@ -11355,7 +11355,7 @@ msgstr "Taslak çizim"
 
 #: src/Rack.php:534
 msgid "Grid"
-msgstr "Tablo"
+msgstr "Izgara"
 
 #: src/Rack.php:567
 msgid "Insert a rack here"
@@ -11756,12 +11756,12 @@ msgstr[1] "Soketler"
 #: src/Ticket.php:3239 src/Item_Ticket.php:918 src/Link_Itemtype.php:178
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] "Atanmış öge türü"
-msgstr[1] "Atanmış öge türleri"
+msgstr[0] "İlişkili öge türü"
+msgstr[1] "İlişkili öge türleri"
 
 #: src/Socket.php:445 src/QueuedNotification.php:395 src/Contract_Item.php:160
 msgid "Associated item ID"
-msgstr "İlgili öge kimliği"
+msgstr "İlişkili öge kimliği"
 
 #: src/Socket.php:756
 msgid "New socket for this item..."
@@ -11829,7 +11829,7 @@ msgstr "E-posta sunucusu türü desteklenmiyor:%s."
 
 #: src/Auth.php:309 src/Auth.php:1030 src/Auth.php:1058
 msgid "User not authorized to connect in GLPI"
-msgstr "Kullanıcının GLPI yazılımına bağlanma izni yok"
+msgstr "Kullanıcının GLPI uygulamasına bağlanma izni yok"
 
 #: src/Auth.php:665
 msgid "Login with external token disabled"
@@ -12049,7 +12049,7 @@ msgstr[1] "Sanal makineler"
 
 #: src/ComputerVirtualMachine.php:621
 msgid "Virtual machine Comment"
-msgstr "Sanal makine açıklaması"
+msgstr "Sanal makine yorumu"
 
 #: src/RuleDictionnaryPeripheralTypeCollection.php:46
 msgid "Dictionary of device types"
@@ -12472,7 +12472,7 @@ msgstr "Ögenin ekibindeki bir grup"
 #: src/Project.php:2556 src/CommonITILObject.php:9675
 msgctxt "filters"
 msgid "A supplier in the team of the item"
-msgstr "Ögenin ekibindeki bir sağlayıcı"
+msgstr "Ögenin ekibindeki bir tedarikçi"
 
 #: src/Project.php:2560
 msgctxt "filters"
@@ -12968,12 +12968,12 @@ msgstr[1] "Ağ kartı modelleri"
 #: src/Contact_Supplier.php:52
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] "İlgili  /sağlayıcı bağlantısı"
-msgstr[1] "İlgili / sağlayıcı bağlantıları"
+msgstr[0] "İlgili  / Tedarikçi bağlantısı"
+msgstr[1] "İlgili / Tedarikçi bağlantıları"
 
 #: src/Contact_Supplier.php:136 src/Contract_Supplier.php:279
 msgid "Add a supplier"
-msgstr "Sağlayıcı ekle"
+msgstr "Tedarikçi ekle"
 
 #: src/Contact_Supplier.php:270
 msgid "Add a contact"
@@ -13484,11 +13484,11 @@ msgstr "Telefonlar artık kullanılmıyorsa"
 
 #: src/Transfer.php:4092
 msgid "If suppliers are no longer used"
-msgstr "Sağlayıcılar artık kullanılmıyorsa"
+msgstr "Tedarikçiler artık kullanılmıyorsa"
 
 #: src/Transfer.php:4098
 msgid "Links between suppliers and contacts"
-msgstr "Sağlayıcı ve ilgililer arasındaki bağlantılar"
+msgstr "Tedarikçiler ve ilgililer arasındaki bağlantılar"
 
 #: src/Transfer.php:4102
 msgid "If contacts are no longer used"
@@ -13511,7 +13511,7 @@ msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
 msgstr ""
-"Aktarılacak ögeleri eklemeye devam edebilir ya da aktarımı başlatabilirsiniz"
+"Aktarılacak ögeleri eklemeyi sürdürebilir ya da aktarımı başlatabilirsiniz"
 
 #: src/Transfer.php:4162
 msgid "Think of making a backup before transferring items."
@@ -13561,11 +13561,11 @@ msgstr[1] "SIM kart türleri"
 
 #: src/OlaLevel_Ticket.php:46
 msgid "OLA level for Ticket"
-msgstr "Destek kaydının işletme sözleşmesi düzeyi"
+msgstr "Destek kaydının operasyonel düzey anlaşması düzeyi"
 
 #: src/OlaLevel_Ticket.php:152
 msgid "Automatic actions of OLA"
-msgstr "Otomatik işletme sözleşmesi işlemleri"
+msgstr "Otomatik operasyonel düzey anlaşması işlemleri"
 
 #: src/ITILCategory.php:84 src/ITILCategory.php:245
 msgid "Visible in the simplified interface"
@@ -13573,7 +13573,7 @@ msgstr "Basitleştirilmiş arayüzde görünsün"
 
 #: src/ITILCategory.php:90 src/ITILCategory.php:213
 msgid "Visible for an incident"
-msgstr "Arıza durumunda görünsün"
+msgstr "Bir olay için görünsün"
 
 #: src/ITILCategory.php:96 src/ITILCategory.php:221
 msgid "Visible for a request"
@@ -13593,7 +13593,7 @@ msgstr "İstek kalıbı"
 
 #: src/ITILCategory.php:130 src/ITILCategory.php:187
 msgid "Template for an incident"
-msgstr "Arıza kalıbı"
+msgstr "Bir olay içlin kalıp"
 
 #: src/ITILCategory.php:136 src/ITILCategory.php:196
 msgid "Template for a change"
@@ -13615,7 +13615,7 @@ msgstr "Bu destek kaydı kategorisi kodu zaten kullanılıyor"
 
 #: src/ITILCategory.php:484 src/Ticket.php:3787 src/Ticket.php:3805
 msgid "Incident"
-msgstr "Arıza"
+msgstr "Olay"
 
 #: src/GLPIKey.php:135
 #, php-format
@@ -14074,7 +14074,7 @@ msgstr "Arama türü"
 
 #: src/AuthLDAP.php:874 src/AuthLDAP.php:1299
 msgid "User attribute containing its groups"
-msgstr "Grupları içeren kullanıcı özniteliği"
+msgstr "Kullanıcının gruplarını içeren özniteliği"
 
 #: src/AuthLDAP.php:878 src/AuthLDAP.php:1308 src/AuthLDAP.php:1511
 msgid "Filter to search in groups"
@@ -14139,7 +14139,7 @@ msgstr "Kullanıcılar için arama süzgeci"
 #: src/Planning.php:584
 msgctxt "button"
 msgid "Search"
-msgstr "Arama"
+msgstr "Ara"
 
 #: src/AuthLDAP.php:1710
 msgid ""
@@ -14209,7 +14209,7 @@ msgstr "Değiştir"
 
 #: src/AuthLDAP.php:4062
 msgid "Search criteria for users"
-msgstr "Kullanıcıları arama ölçütleri"
+msgstr "Kullanıcılar için arama ölçütleri"
 
 #: src/AuthLDAP.php:4103
 msgid "No directory selected"
@@ -14221,7 +14221,7 @@ msgstr "Arama yapılamıyor. Birim ile ilişkilendirilmiş bir dizin yok"
 
 #: src/AuthLDAP.php:4313
 msgid "Put in trashbin"
-msgstr "Çöp kutusuna at"
+msgstr "Çöpe at"
 
 #: src/AuthLDAP.php:4314 src/AuthLDAP.php:4316
 msgid "Withdraw dynamic authorizations and groups"
@@ -14425,7 +14425,7 @@ msgstr "En fazla %s MB"
 #: src/Document.php:1129 src/Certificate.php:307
 msgctxt "quantity"
 msgid "Number of associated items"
-msgstr "İlgili öge sayısı"
+msgstr "İlişkili öge sayısı"
 
 #: src/Document.php:1196 src/Document.php:1598
 msgid "Upload directory doesn't exist"
@@ -14695,7 +14695,7 @@ msgstr "Ayırtmalara izin ver"
 
 #: src/ReservationItem.php:404 src/Search.php:7326
 msgid "Modify the comment"
-msgstr "Açıklamayı değiştir"
+msgstr "Yorumu değiştir"
 
 #: src/ReservationItem.php:452
 msgid "See all reservable items"
@@ -15060,7 +15060,7 @@ msgstr "Bilgi bankası yazısına bağla"
 
 #: src/KnowbaseItem_Comment.php:128
 msgid "No comments"
-msgstr "Herhangi bir not yok"
+msgstr "Herhangi bir yorum yok"
 
 #: src/KnowbaseItem_Comment.php:181 src/KnowbaseItem_Comment.php:215
 #: src/ObjectLock.php:165
@@ -15077,11 +15077,11 @@ msgstr "Yanıt ekle"
 
 #: src/KnowbaseItem_Comment.php:364
 msgid "New comment"
-msgstr "Not ekle"
+msgstr "Yorum ekle"
 
 #: src/KnowbaseItem_Comment.php:364
 msgid "Edit comment"
-msgstr "Notu düzenle"
+msgstr "Yorumu düzenle"
 
 #: src/CalendarSegment.php:63
 msgid "Time range"
@@ -15205,14 +15205,14 @@ msgstr "İlgili ekle"
 #: src/Supplier.php:293
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] "İlgili kişi"
-msgstr[1] "İlgili kişiler"
+msgstr[0] "İlişkili kişi"
+msgstr[1] "İlişkili kişiler"
 
 #: src/Supplier.php:338
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] "İlgili sözleşme"
-msgstr[1] "İlgili sözleşmeler"
+msgstr[0] "İlişkili sözleşme"
+msgstr[1] "İlişkili sözleşmeler"
 
 #: src/Supplier.php:404
 msgid "Web"
@@ -15415,7 +15415,7 @@ msgstr "\"%1$s\" (%2$s) için arama uyarısı"
 
 #: src/NotificationTargetSavedSearch_Alert.php:65
 msgid "Private search alert"
-msgstr "Özel arama uyarısı"
+msgstr "Gizli arama uyarısı"
 
 #: src/NotificationTargetSavedSearch_Alert.php:107
 msgid "Number of results"
@@ -15552,7 +15552,7 @@ msgstr "Durumu değiştir"
 
 #: src/Inventory/Conf.php:314
 msgid "Put asset in trashbin"
-msgstr "Varlığı çöp kutusuna at"
+msgstr "Varlığı çöpe at"
 
 #: src/Inventory/Conf.php:332
 msgid "Configuration"
@@ -16215,11 +16215,11 @@ msgstr "Diğer..."
 
 #: src/Dropdown.php:2432
 msgid "Use unitary management"
-msgstr "Birimsel yönetim kullanılsın"
+msgstr "Merkezi yönetim kullanılsın"
 
 #: src/Dropdown.php:2436
 msgid "Do you really want to use unitary management for this item?"
-msgstr "Bu öge için birimsel yönetim kullanmak istediğinize emin misiniz?"
+msgstr "Bu öge için merkezi yönetim kullanmak istediğinize emin misiniz?"
 
 #: src/Dropdown.php:2437 src/Dropdown.php:2443 src/Dropdown.php:2444
 msgid "Duplicate the element as many times as there are connections"
@@ -16587,7 +16587,7 @@ msgstr[1] "Son tarihler"
 
 #: src/ITILFollowup.php:773
 msgid "Private followup"
-msgstr "Özel izleme"
+msgstr "Gizli izleme"
 
 #: src/ITILFollowup.php:843 src/TicketTask.php:266
 msgid "Update all"
@@ -16599,15 +16599,15 @@ msgstr "Tüm destek kayıtlarına ekle"
 
 #: src/ITILFollowup.php:845 src/TicketTask.php:268
 msgid "See private ones"
-msgstr "Kişisel olanları görüntüle"
+msgstr "Gizli olanları görüntüle"
 
 #: src/ITILFollowup.php:849
 msgid "Add followup (associated groups)"
-msgstr "İzleme ekle (atanmış gruplar)"
+msgstr "İzleme ekle (ilişkili gruplar)"
 
 #: src/ITILFollowup.php:850
 msgid "Add a followup to tickets of associated groups"
-msgstr "İlgili gruplardaki destek kayıtlarına izleme ekle"
+msgstr "İlişkili gruplardaki destek kayıtlarına izleme ekle"
 
 #: src/ITILFollowup.php:852
 msgid "Update followups (author)"
@@ -17214,11 +17214,11 @@ msgstr "Bir istek için doğrulama isteği ekle"
 
 #: src/TicketValidation.php:108
 msgid "Create for incident"
-msgstr "Arıza için ekle"
+msgstr "Olay için ekle"
 
 #: src/TicketValidation.php:109
 msgid "Create a validation request for an incident"
-msgstr "Bir arıza için doğrulama isteği ekle"
+msgstr "Bir olay için doğrulama isteği ekle"
 
 #: src/TicketValidation.php:112
 msgid "Validate a request"
@@ -17226,7 +17226,7 @@ msgstr "Bir isteği doğrula"
 
 #: src/TicketValidation.php:114
 msgid "Validate an incident"
-msgstr "Bir arızayı doğrula"
+msgstr "Bir olayı doğrula"
 
 #: src/DocumentCategory.php:44
 msgid "Document heading"
@@ -17249,8 +17249,8 @@ msgstr[1] "Görsel biçimleri"
 #: src/ApplianceEnvironment.php:40
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] "Aygıt ortamı"
-msgstr[1] "Aygıt ortamları"
+msgstr[0] "Özel aygıt ortamı"
+msgstr[1] "Özel aygıt ortamları"
 
 #: src/Item_OperatingSystem.php:51
 msgid "Item operating system"
@@ -17296,7 +17296,7 @@ msgstr "Herkese açık izleme"
 
 #: src/CommonITILTask.php:896
 msgid "Private task"
-msgstr "Özel görev"
+msgstr "Gizli görev"
 
 #. TRANS: %s is user name
 #: src/CommonITILTask.php:1439 src/CommonITILObject.php:6671
@@ -17498,7 +17498,7 @@ msgstr "İptal edildi"
 #: src/Change.php:679
 msgctxt "status"
 msgid "Refused"
-msgstr "Reddedilmiş"
+msgstr "Reddedildi"
 
 #: src/Change.php:811
 msgid "Last changes"
@@ -17546,8 +17546,8 @@ msgid ""
 "Purchase date incompatible with the associated budget. %1$s not in budget "
 "period: %2$s / %3$s"
 msgstr ""
-"Satın alma tarihi ilgili bütçeye uygun değil. %1$s bütçe aralığında değil: "
-"%2$s / %3$s"
+"Satın alma tarihi ilişkili bütçeye uygun değil. %1$s bütçe aralığında değil:"
+" %2$s / %3$s"
 
 #: src/Infocom.php:483
 msgid "Send alarms on financial and administrative information"
@@ -17603,7 +17603,7 @@ msgstr ""
 
 #: src/Infocom.php:1456
 msgid "Comments on financial and administrative information"
-msgstr "İdari ve mali bilgilerle ilgili notlar"
+msgstr "İdari ve mali bilgilerle ilgili yorumlar"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/Datacenter.php:52 src/Datacenter.php:142
@@ -17623,7 +17623,7 @@ msgstr "Onay bekliyor"
 #: src/ITILSolution.php:419
 msgctxt "solution"
 msgid "Refused"
-msgstr "Reddedilmiş"
+msgstr "Reddedildi"
 
 #: src/Central.php:72
 msgid "Group View"
@@ -17859,11 +17859,11 @@ msgstr "Kategori adı"
 
 #: src/Appliance_Item.php:280
 msgid "Add to an appliance"
-msgstr "Bir aygıta ekle"
+msgstr "Bir özel aygıta ekle"
 
 #: src/Appliance_Item.php:415
 msgid "An appliance is required"
-msgstr "Bir aygıt belirtilmelidir"
+msgstr "Bir özel aygıt belirtilmelidir"
 
 #: src/DeviceGenericModel.php:44
 msgid "Device generic model"
@@ -17957,18 +17957,20 @@ msgstr "Wi-Fi ağı türü"
 
 #: src/OLA.php:60
 msgid "The internal time is recalculated when assigning the OLA"
-msgstr "İşletme sözleşmesi atandığında yeniden hesaplanacak iç süre"
+msgstr "Operasyonel düzey anlaşması atandığında yeniden hesaplanacak iç süre"
 
 #: src/OLA.php:65
 msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
 msgstr ""
-"Bir destek kaydına bir işletme sözleşmesi atanması, tarihin yeniden "
-"hesaplanmasına yol açar."
+"Bir destek kaydına bir operasyonel düzey anlaşması atanması, tarihin yeniden"
+" hesaplanmasına yol açar."
 
 #: src/OLA.php:66
 msgid "Escalations defined in the OLA will be triggered under this new date."
-msgstr "İşletme sözleşmesinde belirtilen düzeyler bu yeni tarihte tetiklenir."
+msgstr ""
+"Operasyonel düzey anlaşmasında belirtilen üste aktarmalar bu yeni tarihte "
+"tetiklenir."
 
 #: src/Ticket.php:126
 msgid "Create ticket"
@@ -18115,7 +18117,7 @@ msgstr "İç ele alınma süresi aşıldı"
 
 #: src/Ticket.php:3182
 msgid "Next escalation level"
-msgstr "Sonraki yükseltme düzeyi"
+msgstr "Sonraki üste aktarma düzeyi"
 
 #: src/Ticket.php:3416
 msgid "Response date"
@@ -18317,7 +18319,7 @@ msgstr "%d destek kaydı yüklenemedi"
 #: src/Ticket.php:6649 src/Ticket.php:6664
 #, php-format
 msgid "Failed to add followup to ticket %d"
-msgstr "%d destek kaydına izlemeye yükseltilemedi"
+msgstr "%d destek kaydına izleme eklenemedi"
 
 #: src/Ticket.php:6685
 #, php-format
@@ -18512,7 +18514,7 @@ msgid ""
 "Once the form has been validated, you will be redirected to your supplierʼs "
 "authentication page if necessary."
 msgstr ""
-"Form doğrulandıktan sonra gerekirse hizmet sağlayıcınızın kimlik doğrulama "
+"Form doğrulandıktan sonra gerekirse tedarikçinizin kimlik doğrulama "
 "sayfasına yönlendirileceksiniz."
 
 #: src/NotificationMailingSetting.php:329
@@ -18704,12 +18706,12 @@ msgstr "Ortam"
 #: src/Appliance.php:472
 msgctxt "button"
 msgid "Add to an appliance"
-msgstr "Bir aygıta ekle"
+msgstr "Bir özel aygıta ekle"
 
 #: src/Appliance.php:473
 msgctxt "button"
 msgid "Remove from an appliance"
-msgstr "Bir aygıttan kaldır"
+msgstr "Bir özel aygıttan kaldır"
 
 #: src/Item_SoftwareLicense.php:246
 msgid "A version is required!"
@@ -18872,7 +18874,7 @@ msgstr "Kullanıcıyı sil"
 
 #: src/Group.php:511 src/Group.php:661
 msgid "Attribute of the user containing its groups"
-msgstr "Kullanıcının gruplarını içeren öznitelik"
+msgstr "Kullanıcının gruplarını içeren kullanıcı özniteliği"
 
 #: src/Group.php:519 src/Group.php:667
 msgid "Attribute value"
@@ -19023,7 +19025,7 @@ msgstr "SSS içinde yayınla"
 
 #: src/KnowbaseItem.php:2519
 msgid "Comment KB entries"
-msgstr "BB kayıtlarına not ekle"
+msgstr "BB kayıtlarına yorum ekle"
 
 #: src/KnowbaseItem.php:2521
 msgid "Read the FAQ"
@@ -19102,7 +19104,7 @@ msgstr "Bağlantılı ögeler olsa bile kalıcı olarak sil"
 
 #: src/MassiveAction.php:819
 msgid "Amend comment"
-msgstr "Notu düzelt"
+msgstr "Yorumu düzelt"
 
 #: src/MassiveAction.php:824
 msgid "Add note"
@@ -19929,7 +19931,7 @@ msgstr "Bir yazılıma bir kategori atama kuralları"
 
 #: src/Profile.php:1058
 msgid "Business rules for tickets (entity)"
-msgstr "Destek kaydı iş kuralları (birim)"
+msgstr "Destek kayıtlarının iş kuralları (birim)"
 
 #: src/Profile.php:1070 src/Profile.php:1906 src/Profile.php:2953
 msgid "Dropdowns dictionary"
@@ -20451,7 +20453,7 @@ msgstr "Ters sıralama (üstte yenilerden altta eskilere)"
 
 #: src/Config.php:1386
 msgid "Private followups by default"
-msgstr "Varsayılan kişisel izlemeler"
+msgstr "Varsayılan olarak gizli izlemeler"
 
 #: src/Config.php:1388
 msgid "Show new tickets on the home page"
@@ -20459,7 +20461,7 @@ msgstr "Girişte yeni destek kayıtları görüntülensin"
 
 #: src/Config.php:1401
 msgid "Private tasks by default"
-msgstr "Varsayılan kişisel görevler"
+msgstr "Varsayılan olarak gizli görevler"
 
 #: src/Config.php:1403
 msgid "Request sources by default"
@@ -20705,7 +20707,7 @@ msgstr "Çeviri ön belleği"
 
 #: src/Config.php:1948
 msgid "Information about system installation and configuration"
-msgstr "Kurulu sistem ve yapılandırması hakkında bilgiler"
+msgstr "Kurulu sistem ve yapılandırması ile ilgili bilgiler"
 
 #: src/Config.php:2089
 msgid "To copy/paste in your support request"
@@ -21341,7 +21343,7 @@ msgid ""
 "reference your organization by filling %1$s"
 msgstr ""
 "Ayrıca GLPI ve topluluğunu beğeniyorsanız lütfen bir dakikanızı ayırıp %1$s "
-"doldurarak kuruluşunuz hakkında bilgi verin"
+"doldurarak kuruluşunuz ile ilgili bilgi verin"
 
 #: src/Telemetry.php:473
 msgid "the registration form"
@@ -21957,7 +21959,7 @@ msgstr "Uyarı zamanı %s"
 
 #: src/SlaLevel.php:104 src/OlaLevel.php:102
 msgid "Add an escalation level"
-msgstr "Yükseltme düzeyi ekle"
+msgstr "Üste aktarma düzeyi ekle"
 
 #: src/SlaLevel.php:224
 msgid "Automatic reminders of SLA"
@@ -22169,7 +22171,7 @@ msgstr "Otomatik"
 
 #: src/SavedSearch.php:310
 msgid "Is private"
-msgstr "Kişisel"
+msgstr "Gizli"
 
 #: src/SavedSearch.php:327
 msgid "Last duration (ms)"
@@ -23197,7 +23199,7 @@ msgstr[1] "Hazır alanlar"
 #: src/ITILTemplatePredefinedField.php:81
 #: src/ITILTemplatePredefinedField.php:91
 msgid "You must select an associated item"
-msgstr "İlgili bir öge seçmelisiniz"
+msgstr "İlişkili bir öge seçmelisiniz"
 
 #: src/ITILTemplatePredefinedField.php:319
 msgid ""
@@ -23354,7 +23356,7 @@ msgstr[1] "İlişkiler"
 
 #: src/Appliance_Item_Relation.php:129
 msgid "An appliance item is required"
-msgstr "Bir aygıt ögesi belirtilmelidir"
+msgstr "Bir özel aygıt ögesi belirtilmelidir"
 
 #: src/Appliance_Item_Relation.php:229 src/Appliance_Item_Relation.php:230
 msgid "New relation"
@@ -23439,7 +23441,8 @@ msgstr ""
 #: src/SLA.php:63
 msgid "Escalations defined in the SLA will be triggered under this new date."
 msgstr ""
-"Hizmet düzeyi sözleşmesinde belirtilen düzeyler bu yeni tarihte tetiklenir."
+"Hizmet düzeyi sözleşmesinde belirtilen üste aktarmalar bu yeni tarihte "
+"tetiklenir."
 
 #: src/UserCategory.php:41
 msgid "User category"
@@ -23973,7 +23976,7 @@ msgstr ""
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:143
 msgid "Migrate Appliances plugin data into GLPI core tables"
-msgstr "Aygıtlar eklentisi verilerini GLPI çekirdek tablolarına aktar"
+msgstr "Özel aygıtlar eklentisi verilerini GLPI çekirdek tablolarına aktar"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:149
 #: src/Console/Migration/RacksPluginToCoreCommand.php:173
@@ -23986,29 +23989,30 @@ msgid ""
 "You are about to launch migration of Appliances plugin data into GLPI core "
 "tables."
 msgstr ""
-"Aygıtlar eklentisi verilerini GLPI çekirdek tablolarına aktarma işlemini "
-"başlatmak üzeresiniz."
+"Özel aygıtlar eklentisi verilerini GLPI çekirdek tablolarına aktarma "
+"işlemini başlatmak üzeresiniz."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:160
 msgid "Any previous appliance created in core will be lost."
 msgstr ""
-"Çekirdek veri tabanında daha önce oluşturulmuş aygıtlar varsa silinecek."
+"Çekirdek veri tabanında daha önce oluşturulmuş özel aygıtlar varsa "
+"silinecek."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:161
 #: src/Console/Migration/RacksPluginToCoreCommand.php:216
 #: src/Console/Migration/AbstractPluginToCoreCommand.php:106
 msgid "It is better to make a backup of your existing data before continuing."
-msgstr "Devam etmeden önce var olan verilerinizin yedeğini almanız önerilir."
+msgstr "İlerlemeden önce var olan verilerinizin yedeğini almanız önerilir."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:190
 #, php-format
 msgid "Appliances plugin table \"%s\" is missing."
-msgstr "\"%s\" aygıtlar eklentisi tablosu eksik."
+msgstr "\"%s\" özel aygıtlar eklentisi tablosu eksik."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:198
 #, php-format
 msgid "Appliances plugin field \"%s\" is missing."
-msgstr "\"%s\" aygıtlar eklentisi tablosu eksik."
+msgstr "\"%s\" özel aygıtlar eklentisi tablosu eksik."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:208
 #: src/Console/Migration/RacksPluginToCoreCommand.php:376
@@ -24037,21 +24041,21 @@ msgstr "GLPI öge türleri güncelleniyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:368
 msgid "Creating Appliance Items..."
-msgstr "Aygıt ögeleri ekleniyor..."
+msgstr "Özel aygıt ögeleri ekleniyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:385
 #, php-format
 msgid "Importing Appliance item \"%d\"..."
-msgstr "\"%d\" aygıt ögesi içe aktarılıyor..."
+msgstr "\"%d\" özel aygıt ögesi içe aktarılıyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:406
 #, php-format
 msgid "Unable to create Appliance item %d."
-msgstr "%d aygıt ögesi eklenemedi."
+msgstr "%d özel aygıt ögesi eklenemedi."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:428
 msgid "Creating Appliance Environment..."
-msgstr "Aygıt ortamı oluşturuluyor..."
+msgstr "Özel aygıt ortamı oluşturuluyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:445
 #, php-format
@@ -24062,25 +24066,25 @@ msgstr "\"%s\" ortamı içe aktarılıyor..."
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:602
 #, php-format
 msgid "Unable to create Appliance environment %s (%d)."
-msgstr "%s (%d) aygıt ortamı eklenemedi."
+msgstr "%s (%d) özel aygıt ortamı eklenemedi."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:487
 msgid "Creating Appliances..."
-msgstr "Aygıtlar ekleniyor..."
+msgstr "Özel aygıtlar ekleniyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:503
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr "\"%s\" aygıtı içe aktarılıyor..."
+msgstr "\"%s\" özel aygıtı içe aktarılıyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:540
 #, php-format
 msgid "Unable to create Appliance %s (%d)."
-msgstr "%s (%d) aygıtı eklenemedi."
+msgstr "%s (%d) özel aygıtı eklenemedi."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:562
 msgid "Creating Appliance types..."
-msgstr "Aygıt türleri ekleniyor..."
+msgstr "Özel aygıt türleri ekleniyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:579
 #, php-format
@@ -24089,7 +24093,7 @@ msgstr "\"%s\" türü içe aktarılıyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:624
 msgid "Creating Appliance relations..."
-msgstr "Aygıt ilişkileri ekleniyor..."
+msgstr "Özel aygıt ilişkileri ekleniyor..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:656
 #, php-format
@@ -24099,12 +24103,12 @@ msgstr "\"%s\" ilişkisi içe aktarılıyor..."
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:667
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
-msgstr "%s ilişki türü %d aygıt ögesi ilişkisinden bulunamadı."
+msgstr "%s ilişki türü %d özel aygıt ögesi ilişkisinden bulunamadı."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:694
 #, php-format
 msgid "Unable to create Appliance Item Relation %d."
-msgstr "%d aygıt ögesi ilişkisi eklenemedi."
+msgstr "%d özel aygıt ögesi ilişkisi eklenemedi."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:160
 msgid "Migrate Racks plugin data into GLPI core tables"
@@ -24627,7 +24631,7 @@ msgstr ""
 
 #: src/Console/Marketplace/InfoCommand.php:51
 msgid "Get information about a plugin"
-msgstr "Bir eklenti hakkında bilgi alın"
+msgstr "Bir eklenti ile ilgili bilgi alın"
 
 #: src/Console/Marketplace/InfoCommand.php:72 src/Plugin.php:916
 #: src/Plugin.php:1004 src/Plugin.php:1133 src/Plugin.php:1197
@@ -24637,11 +24641,11 @@ msgstr "%1$s eklentisi bulunamadı!"
 
 #: src/Console/Marketplace/InfoCommand.php:84
 msgid "Which plugin do you want information on?"
-msgstr "Hangi eklenti hakkında bilgi almak istiyorsunuz?"
+msgstr "Hangi eklenti ile ilgili bilgi almak istiyorsunuz?"
 
 #: src/Console/Marketplace/SearchCommand.php:54
 msgid "Search GLPI marketplace"
-msgstr "GLPI mağazasında arama"
+msgstr "GLPI mağazasında ara"
 
 #: src/Console/Marketplace/SearchCommand.php:56
 msgid "The search term"
@@ -25633,7 +25637,7 @@ msgstr "Ögelerin kilidini aç"
 #: src/CommonDBTM.php:4121
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr "Bir aygıt ile ilişkilendir"
+msgstr "Bir özel aygıt ile ilişkilendir"
 
 #: src/CommonDBTM.php:4126
 msgctxt "button"
@@ -25660,7 +25664,7 @@ msgstr "Başka bir öge var"
 
 #: src/CommonDBTM.php:4488
 msgid "Item in the trashbin"
-msgstr "Çöp kutusundaki öge"
+msgstr "Çöpteki öge"
 
 #: src/CommonDBTM.php:4633
 #, php-format
@@ -25824,7 +25828,7 @@ msgstr "mV"
 
 #: src/OlaLevel.php:220
 msgid "Automatic reminders of OLA"
-msgstr "Otomatik işletme sözleşmesi anımsatıcıları"
+msgstr "Otomatik operasyonel düzey anlaşması anımsatıcıları"
 
 #: src/SolutionType.php:41
 msgid "Solution type"
@@ -25887,7 +25891,7 @@ msgstr "İstek tarihi"
 #: src/CommonITILValidation.php:940 src/CommonITILValidation.php:1105
 #: src/CommonITILValidation.php:1207
 msgid "Request comments"
-msgstr "Açıklama iste"
+msgstr "Yorum iste"
 
 #: src/CommonITILValidation.php:940 src/CommonITILValidation.php:1236
 msgid "Approval status"
@@ -25896,7 +25900,7 @@ msgstr "Onay durumu"
 #: src/CommonITILValidation.php:941 src/CommonITILValidation.php:1114
 #: src/CommonITILValidation.php:1221
 msgid "Approval comments"
-msgstr "Onay notları"
+msgstr "Onay yorumları"
 
 #: src/CommonITILValidation.php:941
 msgid "Documents"
@@ -25960,8 +25964,8 @@ msgstr[1] "Atanan gruplar"
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:82
 msgid "Assigned supplier"
 msgid_plural "Assigned suppliers"
-msgstr[0] "Atanan sağlayıcı"
-msgstr[1] "Atanan sağlayıcılar"
+msgstr[0] "Atanmış tedarikçi"
+msgstr[1] "Atanmış tedarikçiler"
 
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:57
 msgid "Duration unit"
@@ -26564,7 +26568,7 @@ msgstr "İstekler"
 
 #: js/impact.js:2495
 msgid "Incidents"
-msgstr "Arızalar"
+msgstr "Olaylar"
 
 #: js/impact.js:2496
 msgid "Changes"

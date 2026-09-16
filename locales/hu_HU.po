@@ -13,9 +13,9 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Lajos Pocsai, 2025
 # Cédric Anne, 2025
-# Gábor Bíró, 2025
 # Márk Klung, 2026
 # Lukács Péter <lukacspeter1977@gmail.com>, 2026
+# Gábor Bíró, 2026
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Lukács Péter <lukacspeter1977@gmail.com>, 2026\n"
+"Last-Translator: Gábor Bíró, 2026\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/glpi/teams/1637/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -503,6 +503,8 @@ msgstr "Lezár"
 #: templates/layout/parts/user_header.html.twig src/Config.php:1979
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Ez a verzió NEM STABIL, és előfordulhat, hogy egyes BIZTONSÁGI JAVÍTÁSOKAT "
+"nem tartalmaz."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -4476,7 +4478,7 @@ msgstr "Tartam"
 
 #: templates/pages/management/contract.html.twig
 msgid "Start date of notice period"
-msgstr ""
+msgstr "Felmondási idő kezdő dátuma"
 
 #: templates/pages/management/contract.html.twig src/Contract.php:338
 #: src/Contract.php:607 src/Contract.php:1674
@@ -13560,6 +13562,8 @@ msgstr ""
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
 msgstr ""
+"Nem sikerült lekérni a biztonsági kulcsfájl tartalmát. Javítsa a(z) %s fájl "
+"jogosultságait."
 
 #: src/GLPIKey.php:145
 #, php-format
@@ -13567,6 +13571,8 @@ msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
 msgstr ""
+"Érvénytelen a biztonsági kulcsfájl tartalma. A kulcs újragenerálásához "
+"futtatnia kell a(z) „%s” parancsot."
 
 #: src/Vlan.php:48
 msgid "VLAN"
@@ -16139,12 +16145,12 @@ msgstr "Egyedi kezelés"
 #: src/Dropdown.php:4012
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Saját %s"
 
 #: src/Dropdown.php:4121
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "Saját csoportjaim %s"
 
 #: src/Dropdown.php:4234
 msgid "version"
@@ -16157,7 +16163,7 @@ msgstr "Telepített szoftver"
 #: src/Dropdown.php:4368
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "Csatlakoztatott %s"
 
 #: src/RichText/RichText.php:547 src/Marketplace/View.php:763
 #: src/Impact.php:1130
@@ -16924,6 +16930,7 @@ msgstr "usage of initSession resource with credentials is disabled"
 #: src/Api/API.php:280
 msgid "usage of initSession resource with user token is disabled"
 msgstr ""
+"Az initSession erőforrás használata felhasználói tokennel le van tiltva."
 
 #: src/Api/API.php:293
 msgid "parameter(s) login, password or user_token are missing"
@@ -16931,11 +16938,11 @@ msgstr "hiányzó felhasználónév, jelszó vagy user_token paraméter(ek)"
 
 #: src/Api/API.php:299
 msgid "parameter(s) login, password are missing"
-msgstr ""
+msgstr "Hiányzó paraméter(ek): login, password"
 
 #: src/Api/API.php:305
 msgid "parameter user_token is missing"
-msgstr ""
+msgstr "Hiányzó paraméter: user_token"
 
 #: src/Api/API.php:324
 msgid "parameter user_token seems invalid"
@@ -18349,6 +18356,7 @@ msgstr "Dokumentumok hozzáadása bejelentés értesítőhöz"
 #: src/NotificationMailingSetting.php:234
 msgid "Add documents into notifications sent to anonymous users"
 msgstr ""
+"Dokumentumok hozzáadása az anonim felhasználóknak küldött értesítésekhez"
 
 #: src/NotificationMailingSetting.php:250
 msgid "Way of sending emails"
@@ -19981,7 +19989,7 @@ msgstr "Érvénytelen API alap URL!"
 
 #: src/Config.php:197
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "Érvénytelen SSO-kijelentkezési URL."
 
 #: src/Config.php:304
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:80

@@ -10,8 +10,8 @@
 # meira <meira@ariel.muni.il>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Александр Гейбух, 2025
-# Rothmann Ehud, 2025
 # Cédric Anne, 2025
+# Rothmann Ehud, 2026
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Cédric Anne, 2025\n"
+"Last-Translator: Rothmann Ehud, 2026\n"
 "Language-Team: Hebrew (Israel) (https://app.transifex.com/glpi/teams/1637/he_IL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -449,9 +449,9 @@ msgstr[2] "הערות"
 #: src/User.php:6775
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תמונה"
+msgstr[1] "תמונות"
+msgstr[2] "תמונות"
 
 #: templates/dropdown_form.html.twig
 msgid "Rack pictures"
@@ -501,7 +501,7 @@ msgstr "סגור"
 
 #: templates/layout/parts/user_header.html.twig src/Config.php:1979
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
-msgstr ""
+msgstr "גרסה זו אינה יציבה וייתכן שתיקוני אבטחה מסוימים לא נכללו בה."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -540,9 +540,9 @@ msgstr "כווץ תפריט"
 #: templates/layout/parts/saved_searches.html.twig src/SavedSearch.php:69
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "חיפוש שמור"
+msgstr[1] "חיפושים שמורים"
+msgstr[2] "חיפושים שמורים"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Manage all saved searches"
@@ -1469,9 +1469,9 @@ msgstr "%1$s (%2$s)"
 #: src/DeviceMemory.php:43 src/DeviceMemory.php:254 src/Config.php:1822
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "זיכרון"
+msgstr[1] "זיכרונות"
+msgstr[2] "זיכרונות"
 
 #: templates/components/form/computervirtualmachine.html.twig
 #: templates/generic_show_form.html.twig src/NetworkEquipment.php:427
@@ -2108,9 +2108,9 @@ msgstr "%1$s : %2$s"
 #: src/LevelAgreementLevel.php:93 src/Ticket.php:3298 src/Ticket.php:3349
 msgid "Escalation level"
 msgid_plural "Escalation levels"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "רמת הסלמה"
+msgstr[1] "רמות הסלמה"
+msgstr[2] "רמות הסלמה"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Also delete date?"
@@ -2493,9 +2493,9 @@ msgstr[2] "מסמכים"
 #: src/RuleCollection.php:2021 src/RuleRightCollection.php:78
 msgid "Validation"
 msgid_plural "Validations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "אימות"
+msgstr[1] "אימותים"
+msgstr[2] "אימותים"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: src/ITILSolution.php:59
@@ -2855,9 +2855,9 @@ msgstr "מקור המעקב"
 #: src/ITILFollowupTemplate.php:50
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תבנית מעקב"
+msgstr[1] "תבניות מעקב"
+msgstr[2] "תבניות מעקב"
 
 #: templates/components/itilobject/timeline/timeline.html.twig
 #: src/Planning.php:245 src/Planning.php:367
@@ -2896,9 +2896,9 @@ msgstr "חפש פתרון"
 #: src/RuleTicket.php:1083 src/SolutionTemplate.php:51
 msgid "Solution template"
 msgid_plural "Solution templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תבנית פתרון"
+msgstr[1] "תבניות פתרון"
+msgstr[2] "תבניות פתרון"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
@@ -4071,9 +4071,9 @@ msgstr[2] "ארכיטקטורות"
 #: src/Item_OperatingSystem.php:492 src/OperatingSystemKernel.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "ליבה (Kernel)"
+msgstr[1] "ליבות (Kernels)"
+msgstr[2] "ליבות (Kernels)"
 
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/OperatingSystemEdition.php:42 src/Item_OperatingSystem.php:535
@@ -4082,9 +4082,9 @@ msgstr[2] ""
 #: src/RuleDictionnaryOperatingSystemEdition.php:82
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מהדורה"
+msgstr[1] "מהדורות"
+msgstr[2] "מהדורות"
 
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/Item_OperatingSystem.php:354 src/Item_OperatingSystem.php:445
@@ -4120,9 +4120,9 @@ msgstr "צד חיבור"
 #: src/Transfer.php:3967 src/NetworkPort.php:179
 msgid "Network port"
 msgid_plural "Network ports"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פורט רשת"
+msgstr[1] "פורטי רשת"
+msgstr[2] "פורטי רשת"
 
 #: templates/pages/assets/printer.html.twig src/Printer.php:527
 msgid "Initial page counter"
@@ -4421,9 +4421,9 @@ msgstr[3] "הודעות"
 #: src/Notification.php:174 src/Notification.php:416
 msgid "Notification template"
 msgid_plural "Notification templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תבנית התראה"
+msgstr[1] "תבניות התראה"
+msgstr[2] "תבניות התראה"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid ""
@@ -4508,7 +4508,7 @@ msgstr "תקופת חוזה ראשונית"
 
 #: templates/pages/management/contract.html.twig
 msgid "Start date of notice period"
-msgstr ""
+msgstr "תאריך תחילת תקופת ההודעה המוקדמת"
 
 #: templates/pages/management/contract.html.twig src/Contract.php:338
 #: src/Contract.php:607 src/Contract.php:1674
@@ -4933,6 +4933,8 @@ msgid ""
 "should retrieve it from your previous installation or encrypted data will be"
 " unreadable."
 msgstr ""
+"קובץ המפתח \\\"%s\\\" המשמש להצפנה/פענוח של נתונים רגישים חסר. עליך לשחזר "
+"אותו מההתקנה הקודמת שלך, אחרת נתונים מוצפנים לא יהיו קריאים."
 
 #: install/update.php:196
 msgid "Ignore warning"
@@ -7241,9 +7243,9 @@ msgstr "פעולות אוטומטיות של SLA"
 #: src/Peripheral.php:78
 msgid "Peripheral"
 msgid_plural "Peripherals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "ציוד היקפי"
+msgstr[1] "ציוד היקפי"
+msgstr[2] "ציוד היקפי"
 
 #: src/Peripheral.php:178 src/NetworkEquipment.php:254 src/Monitor.php:194
 #: src/Phone.php:200 src/SoftwareLicense.php:1033 src/Printer.php:335
@@ -7809,9 +7811,9 @@ msgstr[2] "שנה תבניות"
 #: src/Entity.php:2833 src/ProblemTemplate.php:50
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תבנית בעיה"
+msgstr[1] "תבניות בעיות"
+msgstr[2] "תבניות בעיות"
 
 #: src/Entity.php:2859
 msgid "Tickets configuration"
@@ -8237,9 +8239,9 @@ msgstr ""
 #: src/DeviceSensor.php:45
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "חיישן"
+msgstr[1] "חיישנים"
+msgstr[2] "חיישנים"
 
 #: src/NetworkEquipment.php:79
 msgid "Network device"
@@ -8464,7 +8466,7 @@ msgstr "מיקום עודכן. החברים שהיו מחוברים, נעלמו 
 msgid ""
 "User or group updated. The connected items have been moved in the same "
 "values."
-msgstr ""
+msgstr "משתמש או קבוצה עודכנו. הפריטים המחוברים הועברו לאותם ערכים."
 
 #: src/Computer_Item.php:149 src/Computer.php:277
 msgid ""
@@ -8750,9 +8752,9 @@ msgstr "יום שבת האחרון"
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "- שבוע %d"
+msgstr[1] "- %d שבועות"
+msgstr[2] "- %d שבועות"
 
 #: src/Html.php:3311
 msgid "Beginning of the month"
@@ -8762,9 +8764,9 @@ msgstr "תחילת החודש"
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "- חודש %d"
+msgstr[1] "- %d חודשים"
+msgstr[2] "- %d חודשים"
 
 #: src/Html.php:3319
 msgid "Beginning of the year"
@@ -8774,9 +8776,9 @@ msgstr "תחילת השנה"
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "- שנה %d"
+msgstr[1] "- %d שנים"
+msgstr[2] "- %d שנים"
 
 #: src/Html.php:3329 src/LevelAgreementLevel.php:271
 #, php-format
@@ -8798,9 +8800,9 @@ msgstr[2] "+ %d ימים"
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "+ שבוע %d"
+msgstr[1] "+ %d שבועות"
+msgstr[2] "+ %d שבועות"
 
 #: src/Html.php:3342
 msgid "End of the month"
@@ -8810,9 +8812,9 @@ msgstr "סוף החודש"
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "+ חודש %d"
+msgstr[1] "+ %d חודשים"
+msgstr[2] "+ %d חודשים"
 
 #: src/Html.php:3350
 msgid "End of the year"
@@ -8822,9 +8824,9 @@ msgstr "סוף שנה"
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "+ שנה %d"
+msgstr[1] "+ %d שנים"
+msgstr[2] "+ %d שנים"
 
 #: src/Html.php:3831
 #, php-format
@@ -8941,9 +8943,9 @@ msgstr "חודש הבא"
 #: src/Domain_Item.php:47
 msgid "Domain item"
 msgid_plural "Domain items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פריט דומיין"
+msgstr[1] "פריטי דומיינים"
+msgstr[2] "פריטי דומיינים"
 
 #: src/Domain_Item.php:204 src/Certificate_Item.php:231
 #: src/Document_Item.php:369 src/Log.php:1156 src/Item_Project.php:112
@@ -9013,9 +9015,9 @@ msgstr "פעולה נועדה"
 #: src/Plug.php:41
 msgid "Plug"
 msgid_plural "Plugs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תקע"
+msgstr[1] "תקעים"
+msgstr[2] "תקעים"
 
 #: src/RuleImportAssetCollection.php:78
 msgid "Rules for import and link equipments"
@@ -9032,9 +9034,9 @@ msgstr "הקצה"
 #: src/DomainType.php:42
 msgid "Domain type"
 msgid_plural "Domain types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג דומיין"
+msgstr[1] "סוגי דומיינים"
+msgstr[2] "סוגי דומיינים"
 
 #: src/Document_Item.php:54
 msgid "Document item"
@@ -9387,7 +9389,7 @@ msgstr "התיק הוא נוצר ב %s אך לא יכלו להיות מחק."
 #: src/System/Requirement/DirectoryWriteAccess.php:132
 #, php-format
 msgid "The directory could not be created in %s."
-msgstr ""
+msgstr "לא ניתן ליצור את התיקייה ב-%s."
 
 #: src/System/Requirement/Extension.php:58
 #, php-format
@@ -9428,7 +9430,7 @@ msgstr "לשם הבטחת ביטחון, יש להגדיר SELinux למערכת �
 #: src/System/Requirement/SeLinux.php:142
 #, php-format
 msgid "SELinux boolean %s is %s, some features may require this to be on."
-msgstr ""
+msgstr "SELinux boolean %s הוא %s, תכונות מסוימות עשויות לדרוש שזה יהיה פעיל."
 
 #: src/System/Requirement/SeLinux.php:152
 msgid "SELinux configuration is OK."
@@ -9464,7 +9466,7 @@ msgstr ""
 #: src/System/Requirement/ExtensionGroup.php:83
 #, php-format
 msgid "Following extensions are installed: %s."
-msgstr ""
+msgstr "ההרחבות הבאות מותקנות: %s."
 
 #: src/System/Requirement/ExtensionGroup.php:87
 #, php-format
@@ -9608,7 +9610,7 @@ msgstr ""
 
 #: src/System/Requirement/SessionsSecurityConfiguration.php:95
 msgid "Sessions configuration is secured."
-msgstr ""
+msgstr "תצורת המפגשים (Sessions) מאובטחת."
 
 #: src/System/Requirement/MemoryLimit.php:56
 #: src/System/Requirement/MemoryLimit.php:78
@@ -9822,7 +9824,7 @@ msgstr "נדרש לטיפול בתמונות."
 
 #: src/System/RequirementsManager.php:111
 msgid "Required for internationalization."
-msgstr ""
+msgstr "נדרש עבור בינאום (תרגום)."
 
 #: src/System/RequirementsManager.php:116
 msgid ""
@@ -9841,6 +9843,8 @@ msgid ""
 "Enable usage of ChaCha20-Poly1305 encryption required by GLPI. This is "
 "provided by libsodium 1.0.12 and newer."
 msgstr ""
+"אפשר שימוש בהצפנת ChaCha20-Poly1305 הנדרשת על ידי GLPI. תכונה זו מסופקת על "
+"ידי libsodium 1.0.12 ומעלה."
 
 #: src/System/RequirementsManager.php:136
 msgid "Permissions for GLPI data directories"
@@ -9880,7 +9884,7 @@ msgstr "הגברת במעט הישגי הביצועים."
 
 #: src/System/RequirementsManager.php:194
 msgid "Enable installation of plugins from marketplace."
-msgstr ""
+msgstr "אפשר התקנת תוספים מחנות התוספים (Marketplace)."
 
 #: src/System/Diagnostic/DatabaseSchemaIntegrityChecker.php:168
 msgid "Expected database schema"
@@ -9898,9 +9902,9 @@ msgstr "לא ניתן לקרוא קובץ ההתקנה \"%s\"."
 #: src/PlanningRecall.php:46
 msgid "Planning reminder"
 msgid_plural "Planning reminders"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תזכורת תכנון"
+msgstr[1] "תזכורות תכנון"
+msgstr[2] "תזכורות תכנון"
 
 #: src/PlanningRecall.php:294 src/LevelAgreement.php:724 src/Dropdown.php:2368
 #: src/Dropdown.php:2372
@@ -9926,16 +9930,16 @@ msgstr "שלח התראות תכנוניות"
 #: src/NetworkEquipmentModel.php:41 src/Rule.php:353
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם ציוד רשת"
+msgstr[1] "דגמי ציוד רשת"
+msgstr[2] "דגמי ציוד רשת"
 
 #: src/DeviceProcessorModel.php:44
 msgid "Device processor model"
 msgid_plural "Device processor models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם מעבד מכשיר"
+msgstr[1] "דגמי מעבדי מכשירים"
+msgstr[2] "דגמי מעבדי מכשירים"
 
 #: src/CommonITILActor.php:203 src/CommonITILActor.php:283
 msgid "Email Followup"
@@ -10030,9 +10034,9 @@ msgstr "מחיקת פרויקט"
 #: src/Group_User.php:792
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מנהל"
+msgstr[1] "מנהלים"
+msgstr[2] "מנהלים"
 
 #: src/NotificationTargetProject.php:64 src/NotificationTargetProject.php:659
 #: src/Project.php:657 src/Project.php:1177
@@ -10228,9 +10232,9 @@ msgstr[2] "יצרנים"
 #: src/ProjectTaskTemplate.php:50
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תבנית משימת פרויקט"
+msgstr[1] "תבניות משימות פרויקט"
+msgstr[2] "תבניות משימות פרויקט"
 
 #: src/Dashboard/Dashboard.php:388 src/Planning.php:1819
 #, php-format
@@ -10558,7 +10562,7 @@ msgstr "תקע ריק!"
 
 #: src/Dashboard/Grid.php:909
 msgid "Error rendering card!"
-msgstr ""
+msgstr "שגיאה בהצגת הכרטיס!"
 
 #: src/Dashboard/Grid.php:1133 src/Dashboard/Grid.php:1162
 #: src/Dashboard/Grid.php:1231
@@ -11044,16 +11048,16 @@ msgstr[2] "סוגי אנשי קשר"
 #: src/PassiveDCEquipment.php:53
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מכשיר פסיבי"
+msgstr[1] "מכשירים פסיביים"
+msgstr[2] "מכשירים פסיביים"
 
 #: src/PlanningEventCategory.php:40
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קטגוריית אירוע"
+msgstr[1] "קטגוריות אירועים"
+msgstr[2] "קטגוריות אירועים"
 
 #: src/NotificationTargetCommonITILObject.php:127
 msgid "New user in requesters"
@@ -11320,6 +11324,8 @@ msgid ""
 "Warning! This operation can put merged software in the trashbin. Ensure to "
 "notify your users."
 msgstr ""
+"אזהרה! פעולה זו עלולה להעביר תוכנה ממוזגת לסל המחזור. ודא שאתה מודיע "
+"למשתמשים שלך."
 
 #: src/RuleDictionnarySoftwareCollection.php:92
 msgid "Manufacturer choice"
@@ -11387,9 +11393,9 @@ msgstr ""
 #: src/Rack.php:65 src/Rack.php:90
 msgid "Rack"
 msgid_plural "Racks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מסד (Rack)"
+msgstr[1] "מסדים (Racks)"
+msgstr[2] "מסדים (Racks)"
 
 #: src/Rack.php:400
 msgid "No rack found"
@@ -11434,9 +11440,9 @@ msgstr[2] "קריטריונים"
 #: src/RuleRightParameter.php:87
 msgid "LDAP criterion"
 msgid_plural "LDAP criteria"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קריטריון LDAP"
+msgstr[1] "קריטריוני LDAP"
+msgstr[2] "קריטריוני LDAP"
 
 #: src/LevelAgreement.php:183 src/LevelAgreement.php:693 src/Profile.php:1122
 #: src/Profile.php:2807
@@ -11454,9 +11460,9 @@ msgstr "סוף יום העבודה"
 #: src/LevelAgreement.php:259
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דקה"
+msgstr[1] "דקות"
+msgstr[2] "דקות"
 
 #: src/LevelAgreement.php:260
 #: src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:85
@@ -11471,9 +11477,9 @@ msgstr[2] "שעות"
 #: src/LevelAgreement.php:262
 msgid "Month"
 msgid_plural "Months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "חודש"
+msgstr[1] "חודשים"
+msgstr[2] "חודשים"
 
 #: src/LevelAgreement.php:367
 msgid "Add a new item"
@@ -11580,9 +11586,9 @@ msgstr "ממשק פרופיל"
 #: src/ProjectType.php:45
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג פרויקט"
+msgstr[1] "סוגי פרויקטים"
+msgstr[2] "סוגי פרויקטים"
 
 #: src/Log.php:252
 #, php-format
@@ -11694,9 +11700,9 @@ msgstr "ביטול נעילת פריט"
 #: src/PeripheralModel.php:41 src/Rule.php:341
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם ציוד היקפי"
+msgstr[1] "דגמי ציוד היקפי"
+msgstr[2] "דגמי ציוד היקפי"
 
 #: src/NotificationTargetProblem.php:49
 msgid "New problem"
@@ -11810,9 +11816,9 @@ msgstr "תג ID"
 #: src/Socket.php:402
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "שקע (Socket)"
+msgstr[1] "שקעים (Sockets)"
+msgstr[2] "שקעים (Sockets)"
 
 #: src/Socket.php:430 src/Cable.php:165 src/Cable.php:187
 #: src/Item_Devices.php:185 src/Problem.php:471 src/Change.php:490
@@ -11839,9 +11845,9 @@ msgstr "שם החבילה"
 #: src/NetworkPortFiberchannel.php:157 src/NetworkPortInstantiation.php:690
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "שקע רשת"
+msgstr[1] "שקעי רשת"
+msgstr[2] "שקעי רשת"
 
 #: src/Socket.php:1005 src/Socket.php:1098
 #, php-format
@@ -11891,7 +11897,7 @@ msgstr "שם משתמש או סיסמה שגויים"
 #: src/Auth.php:214 src/MailCollector.php:1518
 #, php-format
 msgid "Unsupported mail server type:%s."
-msgstr ""
+msgstr "סוג שרת דואר לא נתמך: %s."
 
 #: src/Auth.php:309 src/Auth.php:1030 src/Auth.php:1058
 msgid "User not authorized to connect in GLPI"
@@ -12100,9 +12106,9 @@ msgstr "רשימת סביבות וירטואליות"
 #: src/DatabaseInstance.php:426
 msgid "State"
 msgid_plural "States"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מצב"
+msgstr[1] "מצבים"
+msgstr[2] "מצבים"
 
 #: src/ComputerVirtualMachine.php:491 src/ComputerVirtualMachine.php:582
 msgid "processor number"
@@ -12267,9 +12273,9 @@ msgstr "CSV"
 #: src/DeviceMotherboardModel.php:44
 msgid "System board model"
 msgid_plural "System board models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם לוח מערכת"
+msgstr[1] "דגמי לוחות מערכת"
+msgstr[2] "דגמי לוחות מערכת"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"
@@ -12317,9 +12323,9 @@ msgstr "%s: שלח התראת כשל במחסנית"
 #: src/DeviceSensorType.php:43
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג חיישן"
+msgstr[1] "סוגי חיישנים"
+msgstr[2] "סוגי חיישנים"
 
 #: src/LevelAgreementLevel.php:128 src/SlaLevel.php:112 src/SlaLevel.php:158
 #: src/SlaLevel.php:264 src/OlaLevel.php:110 src/OlaLevel.php:154
@@ -12406,16 +12412,16 @@ msgstr "לא נמצאה כתובת IP"
 #: src/PDUModel.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם PDU"
+msgstr[1] "דגמי PDU"
+msgstr[2] "דגמי PDU"
 
 #: src/Project.php:85 src/Profile.php:1489
 msgid "Project"
 msgid_plural "Projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פרויקט"
+msgstr[1] "פרויקטים"
+msgstr[2] "פרויקטים"
 
 #: src/Project.php:144 src/ProjectTask.php:185
 msgid "See (actor)"
@@ -12677,9 +12683,9 @@ msgstr "בני %s"
 #: src/Item_Project.php:55
 msgid "Project item"
 msgid_plural "Project items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פריט פרויקט"
+msgstr[1] "פריטי פרויקט"
+msgstr[2] "פריטי פרויקט"
 
 #: src/Rule.php:119 src/Event.php:168 src/Profile.php:1903
 #: src/RuleCollection.php:2197
@@ -12720,9 +12726,9 @@ msgstr[2] "סוגי מחשבים"
 #: src/Rule.php:389 src/MonitorType.php:41
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג מסך"
+msgstr[1] "סוגי מסכים"
+msgstr[2] "סוגי מסכים"
 
 #: src/Rule.php:401 src/PrinterType.php:41
 msgid "Printer type"
@@ -12734,16 +12740,16 @@ msgstr[2] "סוגי מדפסת"
 #: src/Rule.php:413
 msgid "Peripheral type"
 msgid_plural "Peripheral types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג ציוד היקפי"
+msgstr[1] "סוגי ציוד היקפי"
+msgstr[2] "סוגי ציוד היקפי"
 
 #: src/Rule.php:425 src/NetworkEquipmentType.php:41
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג ציוד רשת"
+msgstr[1] "סוגי ציוד רשת"
+msgstr[2] "סוגי ציוד רשת"
 
 #: src/Rule.php:437 src/PhoneType.php:41
 msgid "Phone type"
@@ -12944,9 +12950,9 @@ msgstr "מהירות מעבד"
 #: src/Lock.php:54
 msgid "Lock"
 msgid_plural "Locks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "נעילה"
+msgstr[1] "נעילות"
+msgstr[2] "נעילות"
 
 #: src/Lock.php:83
 msgid "A locked field is a manually modified field."
@@ -13046,9 +13052,9 @@ msgstr "בחר שדות הפריט שעליהם להיות פתוחים"
 #: src/Problem_Ticket.php:62
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קשר קריאה/בעיה"
+msgstr[1] "קשרי קריאה/בעיה"
+msgstr[2] "קשרי קריאה/בעיה"
 
 #: src/Problem_Ticket.php:326 src/Change_Ticket.php:297
 msgid "Solve tickets"
@@ -13062,9 +13068,9 @@ msgstr "הוסף משימה חדשה"
 #: src/DeviceNetworkCardModel.php:44
 msgid "Network card model"
 msgid_plural "Network card models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם כרטיס רשת"
+msgstr[1] "דגמי כרטיסי רשת"
+msgstr[2] "דגמי כרטיסי רשת"
 
 #: src/Contact_Supplier.php:52
 msgid "Link Contact/Supplier"
@@ -13120,9 +13126,9 @@ msgstr "%1$s חייב להיות ייחודי לכל רמה!"
 #: src/ProjectTask.php:76
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "משימת פרויקט"
+msgstr[1] "משימות פרויקט"
+msgstr[2] "משימות פרויקט"
 
 #: src/ProjectTask.php:186
 msgid "Update (actor)"
@@ -13177,9 +13183,9 @@ msgstr "שינויים חוזרים"
 #: src/DevicePowerSupplyModel.php:44
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם ספק כוח של מכשיר"
+msgstr[1] "דגמי ספקי כוח של מכשירים"
+msgstr[2] "דגמי ספקי כוח של מכשירים"
 
 #: src/Session.php:199 src/Session.php:207
 msgid "You don't have right to connect"
@@ -13189,7 +13195,7 @@ msgstr "אין לך הרשאות כניסה"
 msgid ""
 "You don't have access to this application because your account was "
 "deactivated or removed"
-msgstr ""
+msgstr "אין לך גישה לאפליקציה זו מכיוון שחשבונך נוטרל או הוסר"
 
 #: src/Session.php:367 src/CommonGLPI.php:1039
 msgid "List"
@@ -13213,15 +13219,15 @@ msgstr "פג תוקף ההפעלה שלך."
 
 #: src/Session.php:1892
 msgid "You can't impersonate yourself."
-msgstr ""
+msgstr "אינך יכול להתחזות לעצמך."
 
 #: src/Session.php:1899
 msgid "The user is not active."
-msgstr ""
+msgstr "המשתמש אינו פעיל."
 
 #: src/Session.php:1905
 msgid "The user doesn't have any profile."
-msgstr ""
+msgstr "למשתמש אין פרופיל כלשהו."
 
 #: src/Session.php:1954
 #, php-format
@@ -13312,9 +13318,9 @@ msgstr ""
 #: src/DomainRecordType.php:355
 msgid "Record type"
 msgid_plural "Records types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג רשומה"
+msgstr[1] "סוגי רשומות"
+msgstr[2] "סוגי רשומות"
 
 #: src/GLPIUploadHandler.php:88
 msgid "The file upload has been refused for security reasons."
@@ -13517,9 +13523,9 @@ msgstr[2] "מערכות הפעלה"
 #: src/NetworkPortType.php:45
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג פורט רשת"
+msgstr[1] "סוגי פורטים של רשת"
+msgstr[2] "סוגי פורטים של רשת"
 
 #: src/NetworkPortType.php:54 src/NetworkPortType.php:78
 msgid "Decimal"
@@ -13672,9 +13678,9 @@ msgstr "מספר מדפסות"
 #: src/DeviceSimcardType.php:45
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג כרטיס סים"
+msgstr[1] "סוגי כרטיסי סים"
+msgstr[2] "סוגי כרטיסי סים"
 
 #: src/OlaLevel_Ticket.php:46
 msgid "OLA level for Ticket"
@@ -13723,9 +13729,9 @@ msgstr "תבנית לבעיה"
 #: src/ITILCategory.php:314
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קטגוריית ITIL"
+msgstr[1] "קטגוריות ITIL"
+msgstr[2] "קטגוריות ITIL"
 
 #: src/ITILCategory.php:378 src/ITILCategory.php:400
 msgid "Code representing the ticket category is already used"
@@ -13740,12 +13746,12 @@ msgstr "תקלה"
 msgid ""
 "The security key file does not exist. You have to run the \"%s\" command to "
 "generate a key."
-msgstr ""
+msgstr "קובץ מפתח האבטחה אינו קיים. עליך להריץ את הפקודה \\\"%s\\\" כדי ליצור מפתח."
 
 #: src/GLPIKey.php:140
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
-msgstr ""
+msgstr "לא ניתן לקבל את תוכן קובץ מפתח האבטחה. תקן את הרשאות הקובץ של %s."
 
 #: src/GLPIKey.php:145
 #, php-format
@@ -13753,6 +13759,8 @@ msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
 msgstr ""
+"תוכן קובץ מפתח האבטחה אינו תקין. עליך להריץ את הפקודה \\\"%s\\\" כדי ליצור "
+"מפתח מחדש."
 
 #: src/Vlan.php:48
 msgid "VLAN"
@@ -13789,7 +13797,7 @@ msgstr "הפקרה הבאה ב %s"
 
 #: src/CommonITILRecurrent.php:428
 msgid "Invalid frequency. It must be greater than the preliminary creation."
-msgstr ""
+msgstr "תדירות לא תקינה. עליה להיות גדולה מזמן היצירה המוקדם."
 
 #: src/CommonITILRecurrent.php:617
 #, php-format
@@ -13892,9 +13900,9 @@ msgstr "הערות"
 #: src/DeviceGenericType.php:41
 msgid "Generic type"
 msgid_plural "Generic types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג גנרי"
+msgstr[1] "סוגים גנריים"
+msgstr[2] "סוגים גנריים"
 
 #: src/ReminderTranslation.php:161 src/KnowbaseItemTranslation.php:228
 msgid "Entry translations list"
@@ -13949,9 +13957,9 @@ msgstr "בדיקת התחברות לשרת מייל"
 #: src/ProjectTeam.php:73
 msgid "Project team"
 msgid_plural "Project teams"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "צוות פרויקט"
+msgstr[1] "צוותי פרויקט"
+msgstr[2] "צוותי פרויקט"
 
 #: src/Cluster.php:56
 msgid "Cluster"
@@ -14483,9 +14491,9 @@ msgstr "מוצפן"
 #: src/Unmanaged.php:52
 msgid "Unmanaged asset"
 msgid_plural "Unmanaged assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "נכס לא מנוהל"
+msgstr[1] "נכסים לא מנוהלים"
+msgstr[2] "נכסים לא מנוהלים"
 
 #: src/Unmanaged.php:209 src/Unmanaged.php:221
 msgid "Convert"
@@ -14493,7 +14501,7 @@ msgstr "המרה"
 
 #: src/Unmanaged.php:231
 msgid "Select an itemtype: "
-msgstr ""
+msgstr "בחר סוג פריט: "
 
 #: src/Document.php:194 src/Document.php:1234 src/Document.php:1352
 #: src/Document.php:1449
@@ -14682,15 +14690,15 @@ msgstr "לא ניתן להורדת מידע הרשמה."
 
 #: src/GLPINetwork.php:266
 msgid "The registration key is invalid."
-msgstr ""
+msgstr "מפתח הרישום אינו חוקי."
 
 #: src/GLPINetwork.php:268
 msgid "The registration key refers to a terminated subscription."
-msgstr ""
+msgstr "מפתח הרישום מתייחס למנוי שהסתיים."
 
 #: src/GLPINetwork.php:270
 msgid "The registration key is valid."
-msgstr ""
+msgstr "מפתח הרישום תקף."
 
 #: src/GLPINetwork.php:295
 #, php-format
@@ -14715,6 +14723,8 @@ msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
 "We can help you solve them. Sign up for support on %s."
 msgstr ""
+"נתקלת בקשיים בהגדרת מודול מתקדם של GLPI?\\nאנחנו יכולים לעזור לך לפתור אותם."
+" הרשם לתמיכה ב-%s."
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -14856,14 +14866,14 @@ msgstr "יצור הזמנה"
 
 #: src/ReservationItem.php:1027
 msgid "No reservable item!"
-msgstr ""
+msgstr "אין פריט הניתן להזמנה!"
 
 #: src/OperatingSystemServicePack.php:44
 msgid "Service pack"
 msgid_plural "Service packs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "חבילת שירות"
+msgstr[1] "חבילות שירות"
+msgstr[2] "חבילות שירות"
 
 #: src/Report.php:49 src/Profile.php:2517
 msgid "Report"
@@ -14928,30 +14938,30 @@ msgstr "מספר פורט"
 #: src/DeviceGeneric.php:43
 msgid "Generic device"
 msgid_plural "Generic devices"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מכשיר גנרי"
+msgstr[1] "מכשירים גנריים"
+msgstr[2] "מכשירים גנריים"
 
 #: src/RackModel.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם מסד (rack)"
+msgstr[1] "דגמי מסדים (racks)"
+msgstr[2] "דגמי מסדים (racks)"
 
 #: src/InterfaceType.php:44
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג ממשק (כונן קשיח...)"
+msgstr[1] "סוגי ממשקים (כונן קשיח...)"
+msgstr[2] "סוגי ממשקים (כונן קשיח...)"
 
 #: src/DeviceSimcard.php:43
 msgid "Simcard"
 msgid_plural "Simcards"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "כרטיס סים"
+msgstr[1] "כרטיסי סים"
+msgstr[2] "כרטיסי סים"
 
 #: src/DeviceSimcard.php:59 src/DeviceSimcard.php:81 src/DeviceBattery.php:65
 #: src/DeviceBattery.php:91 src/DeviceBattery.php:122
@@ -14965,9 +14975,9 @@ msgstr "אפשר VOIP"
 #: src/PDUType.php:41
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג PDU"
+msgstr[1] "סוגי PDU"
+msgstr[2] "סוגי PDU"
 
 #: src/NetworkPortEthernet.php:44
 msgid "Ethernet port"
@@ -15036,9 +15046,9 @@ msgstr "מילון של דפי הדפה"
 #: src/NetworkPortFiberchannelType.php:41
 msgid "Fiber type"
 msgid_plural "Fiber types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג סיב"
+msgstr[1] "סוגי סיבים"
+msgstr[2] "סוגי סיבים"
 
 #: src/DatabaseInstance.php:69
 msgid "Database instance"
@@ -15075,9 +15085,9 @@ msgstr[2] "%1$d מאגרי מידע"
 #: src/RSSFeed.php:80 src/Central.php:74
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פיד RSS"
+msgstr[1] "פידי RSS"
+msgstr[2] "פידי RSS"
 
 #: src/RSSFeed.php:82 src/RSSFeed.php:1008
 msgid "Personal RSS feed"
@@ -15099,9 +15109,9 @@ msgstr "קצב רענון"
 #: src/Console/Database/UpdateCommand.php:164
 msgid "Target"
 msgid_plural "Targets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "יעד"
+msgstr[1] "יעדים"
+msgstr[2] "יעדים"
 
 #: src/RSSFeed.php:632 src/Features/PlanningEvent.php:138
 #: src/Features/PlanningEvent.php:197
@@ -15403,9 +15413,9 @@ msgstr "אימייל אל %s נוסף לתור"
 #: src/Enclosure.php:61
 msgid "Enclosure"
 msgid_plural "Enclosures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מארז"
+msgstr[1] "מארזים"
+msgstr[2] "מארזים"
 
 #: src/NetworkAlias.php:54
 msgid "Network alias"
@@ -15452,7 +15462,7 @@ msgstr "מיקום הציוד בבוס שלו"
 
 #: src/Item_Devices.php:362
 msgid "bus ID"
-msgstr ""
+msgstr "מזהה אפיק (bus ID)"
 
 #: src/Item_Devices.php:649
 msgid "Type of component"
@@ -15510,7 +15520,7 @@ msgstr "מספר מכשיר הוא חובה"
 
 #: src/Item_Devices.php:1592
 msgid "Update of "
-msgstr ""
+msgstr "עדכון של "
 
 #: src/Stat/Data/Location/StatDataClosed.php:51
 #, php-format
@@ -15763,6 +15773,8 @@ msgid ""
 "Will attempt to create components from VM information sent from host, do not"
 " use if you plan to inventory any VM directly!"
 msgstr ""
+"ינסה ליצור רכיבים ממידע מכונה וירטואלית (VM) שנשלח מהמארח, אל תשתמש בזה אם "
+"אתה מתכנן לבצע רישום מלאי ל-VM כלשהו ישירות!"
 
 #: src/Inventory/Conf.php:789
 msgid "Virtual network cards"
@@ -16130,9 +16142,9 @@ msgstr "כתובת דוא'ל ברירת מחדל"
 #: src/PCIVendor.php:46
 msgid "PCI vendor"
 msgid_plural "PCI vendors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "יצרן PCI"
+msgstr[1] "יצרני PCI"
+msgstr[2] "יצרני PCI"
 
 #: src/PCIVendor.php:54 src/PCIVendor.php:72 src/USBVendor.php:54
 #: src/USBVendor.php:72
@@ -16165,9 +16177,9 @@ msgstr ""
 #: src/NotificationTemplateTranslation.php:53
 msgid "Template translation"
 msgid_plural "Template translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תרגום תבנית"
+msgstr[1] "תרגומי תבניות"
+msgstr[2] "תרגומי תבניות"
 
 #: src/NotificationTemplateTranslation.php:81
 #: src/NotificationTemplateTranslation.php:148
@@ -16222,9 +16234,9 @@ msgstr "תצוגה מקדימה"
 #: src/PassiveDCEquipmentType.php:41
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג מכשיר פסיבי"
+msgstr[1] "סוגי מכשירים פסיביים"
+msgstr[2] "סוגי מכשירים פסיביים"
 
 #: src/Dropdown.php:324 src/User.php:4863
 #, php-format
@@ -16380,12 +16392,12 @@ msgstr "ניהול יחידה"
 #: src/Dropdown.php:4012
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "ה-%s שלי"
 
 #: src/Dropdown.php:4121
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "ה-%s של הקבוצות שלי"
 
 #: src/Dropdown.php:4234
 msgid "version"
@@ -16398,7 +16410,7 @@ msgstr "תוכנות שהותקנו"
 #: src/Dropdown.php:4368
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "%s מחובר"
 
 #: src/RichText/RichText.php:547 src/Marketplace/View.php:763
 #: src/Impact.php:1130
@@ -16408,16 +16420,16 @@ msgstr "הורדה"
 #: src/DomainRelation.php:58
 msgid "Domain relation"
 msgid_plural "Domains relations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קשר דומיין"
+msgstr[1] "קשרי דומיינים"
+msgstr[2] "קשרי דומיינים"
 
 #: src/DeviceSoundCardModel.php:44
 msgid "Device sound card model"
 msgid_plural "Device sound card models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם כרטיס קול של מכשיר"
+msgstr[1] "דגמי כרטיסי קול של מכשירים"
+msgstr[2] "דגמי כרטיסי קול של מכשירים"
 
 #: src/RuleAction.php:439
 msgid "Assign the value from regular expression"
@@ -16504,9 +16516,9 @@ msgstr "טווח כתובות IPv4"
 #: src/CronTaskLog.php:93
 msgid "Log"
 msgid_plural "Logs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "יומן רישום (Log)"
+msgstr[1] "יומני רישום (Logs)"
+msgstr[2] "יומני רישום (Logs)"
 
 #: src/DeviceSoundCard.php:45
 msgid "Soundcard"
@@ -16637,9 +16649,9 @@ msgstr ""
 #: src/KnowbaseItem_Revision.php:44 src/KnowbaseItem_Revision.php:142
 msgid "Revision"
 msgid_plural "Revisions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "רוויזיה"
+msgstr[1] "רוויזיות"
+msgstr[2] "רוויזיות"
 
 #: src/KnowbaseItem_Revision.php:128
 msgid "No revisions"
@@ -16740,9 +16752,9 @@ msgstr "אם הינך דוחה את הפתרון, אתה חייב לספק סי�
 #: src/CommonITILObject.php:4397
 msgid "Latest date"
 msgid_plural "Latest dates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תאריך אחרון"
+msgstr[1] "תאריכים אחרונים"
+msgstr[2] "תאריכים אחרונים"
 
 #: src/ITILFollowup.php:773
 msgid "Private followup"
@@ -16874,7 +16886,7 @@ msgstr "ההודעה אינה חוקית (%s). בדוק ב-\"%s\" לפרטים �
 #: src/MailCollector.php:921
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
-msgstr ""
+msgstr "שגיאה במהלך ניתוח ההודעה (%s). בדוק ב-\\\"%s\\\" לפרטים נוספים"
 
 #: src/MailCollector.php:1072
 #, php-format
@@ -17096,9 +17108,9 @@ msgstr[2] "%1$s תבניות"
 #: src/ProblemTask.php:43
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "משימת בעיה"
+msgstr[1] "משימות בעיה"
+msgstr[2] "משימות בעיה"
 
 #: src/NotificationTargetObjectLock.php:52
 msgid "Unlock Item Request"
@@ -17181,7 +17193,7 @@ msgstr "API לא מאופשר"
 msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
-msgstr ""
+msgstr "אין לקוח API פעיל התואם לכתובת ה-IP שלך בהגדרות"
 
 #: src/Api/API.php:272
 msgid "usage of initSession resource with credentials is disabled"
@@ -17189,7 +17201,7 @@ msgstr "השימוש במשאב initSession עם אישורים מושבת"
 
 #: src/Api/API.php:280
 msgid "usage of initSession resource with user token is disabled"
-msgstr ""
+msgstr "השימוש במשאב initSession עם אסימון משתמש מנוטרל"
 
 #: src/Api/API.php:293
 msgid "parameter(s) login, password or user_token are missing"
@@ -17197,11 +17209,11 @@ msgstr "מס' הפרמטרים (login, סוורת כניסה או user_token) ח
 
 #: src/Api/API.php:299
 msgid "parameter(s) login, password are missing"
-msgstr ""
+msgstr "פרמטרים של התחברות (login) וסיסמה (password) חסרים"
 
 #: src/Api/API.php:305
 msgid "parameter user_token is missing"
-msgstr ""
+msgstr "פרמטר אסימון משתמש (user_token) חסר"
 
 #: src/Api/API.php:324
 msgid "parameter user_token seems invalid"
@@ -17391,16 +17403,16 @@ msgstr ""
 #: src/DocumentCategory.php:44
 msgid "Document heading"
 msgid_plural "Document headings"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "כותרת מסמך"
+msgstr[1] "כותרות מסמכים"
+msgstr[2] "כותרות מסמכים"
 
 #: src/DevicePciModel.php:44
 msgid "Other component model"
 msgid_plural "Other component models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם רכיב אחר"
+msgstr[1] "דגמי רכיבים אחרים"
+msgstr[2] "דגמי רכיבים אחרים"
 
 #: src/ImageFormat.php:43
 msgid "Image format"
@@ -17419,9 +17431,9 @@ msgstr[2] "סביבות של מכשירים"
 #: src/Item_OperatingSystem.php:51
 msgid "Item operating system"
 msgid_plural "Item operating systems"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מערכת הפעלה של פריט"
+msgstr[1] "מערכות הפעלה של פריטים"
+msgstr[2] "מערכות הפעלה של פריטים"
 
 #: src/Item_OperatingSystem.php:367
 msgid "Operating System"
@@ -17430,9 +17442,9 @@ msgstr "מערכת הפעלה"
 #: src/Item_OperatingSystem.php:516 src/OperatingSystemKernelVersion.php:42
 msgid "Kernel version"
 msgid_plural "Kernel versions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "גרסת ליבה (Kernel)"
+msgstr[1] "גרסאות ליבה (Kernels)"
+msgstr[2] "גרסאות ליבה (Kernels)"
 
 #: src/CommonITILTask.php:298
 msgid "You can't remove description of a task."
@@ -17495,9 +17507,9 @@ msgstr "לא קיימות משימות."
 #: src/USBVendor.php:46
 msgid "USB vendor"
 msgid_plural "USB vendors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "יצרן USB"
+msgstr[1] "יצרני USB"
+msgstr[2] "יצרני USB"
 
 #: src/Migration.php:699
 #, php-format
@@ -17850,9 +17862,9 @@ msgstr[2] "סוגי תעודות"
 #: src/SNMPCredential.php:49
 msgid "SNMP credential"
 msgid_plural "SNMP credentials"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "אישור אבטחה SNMP"
+msgstr[1] "אישורי אבטחה SNMP"
+msgstr[2] "אישורי אבטחה SNMP"
 
 #: src/SNMPCredential.php:235
 msgid "You must select an SNMP version"
@@ -17865,9 +17877,9 @@ msgstr "עליך להזין שם משתמש"
 #: src/ObjectLock.php:64
 msgid "Object Lock"
 msgid_plural "Object Locks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "נעילת אובייקט"
+msgstr[1] "נעילות אובייקטים"
+msgstr[2] "נעילות אובייקטים"
 
 #: src/ObjectLock.php:160 src/ObjectLock.php:275
 msgid "Reload page?"
@@ -17946,16 +17958,16 @@ msgstr "זמן תקיפה לאיוש בלחץ (שעות)"
 #: src/Itil_Project.php:51
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קשר פרויקט/Itil"
+msgstr[1] "קשרי פרויקט/Itil"
+msgstr[2] "קשרי פרויקט/Itil"
 
 #: src/Itil_Project.php:92
 msgid "Itil item"
 msgid_plural "Itil items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פריט Itil"
+msgstr[1] "פריטי Itil"
+msgstr[2] "פריטי Itil"
 
 #: src/Itil_Project.php:188
 msgid "Add a change"
@@ -17987,16 +17999,16 @@ msgstr "ATX"
 #: src/DeviceSensorModel.php:46
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם חיישן של מכשיר"
+msgstr[1] "דגמי חיישנים של מכשירים"
+msgstr[2] "דגמי חיישנים של מכשירים"
 
 #: src/ManualLink.php:52
 msgid "Manual link"
 msgid_plural "Manual links"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קישור ידני"
+msgstr[1] "קישורים ידניים"
+msgstr[2] "קישורים ידניים"
 
 #: src/ManualLink.php:142 src/Link.php:183
 msgid "Open in a new window"
@@ -18056,25 +18068,25 @@ msgstr "ממקד"
 
 #: src/Cache/CacheManager.php:560
 msgid "Redis (TCP)"
-msgstr ""
+msgstr "Redis (TCP)"
 
 #: src/Cache/CacheManager.php:561
 msgid "Redis (TLS)"
-msgstr ""
+msgstr "Redis (TLS)"
 
 #: src/Change_Ticket.php:65
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קשר קריאה/שינוי"
+msgstr[1] "קשרי קריאה/שינוי"
+msgstr[2] "קשרי קריאה/שינוי"
 
 #: src/DeviceMemoryModel.php:44
 msgid "Device memory model"
 msgid_plural "Device memory models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם זיכרון של מכשיר"
+msgstr[1] "דגמי זיכרון של מכשירים"
+msgstr[2] "דגמי זיכרון של מכשירים"
 
 #: src/Update.php:246
 #, php-format
@@ -18536,9 +18548,9 @@ msgstr[2] "רשימות שחורות"
 #: src/LineOperator.php:49
 msgid "Line operator"
 msgid_plural "Line operators"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מפעיל קו"
+msgstr[1] "מפעילי קווים"
+msgstr[2] "מפעילי קווים"
 
 #: src/LineOperator.php:55 src/LineOperator.php:75
 msgid "Mobile Country Code"
@@ -18643,7 +18655,7 @@ msgstr "הוסף מסמכים לתוך התראות על קריאות"
 
 #: src/NotificationMailingSetting.php:234
 msgid "Add documents into notifications sent to anonymous users"
-msgstr ""
+msgstr "הוסף מסמכים להתראות שנשלחות למשתמשים אנונימיים"
 
 #: src/NotificationMailingSetting.php:250
 msgid "Way of sending emails"
@@ -18902,9 +18914,9 @@ msgstr "מספר החברים שנפגעו"
 #: src/SavedSearch_Alert.php:59
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "התראת חיפוש שמור"
+msgstr[1] "התראות חיפוש שמור"
+msgstr[2] "התראות חיפושים שמורים"
 
 #: src/SavedSearch_Alert.php:158 src/SavedSearch_Alert.php:275
 msgid "Operator"
@@ -18931,9 +18943,9 @@ msgstr ""
 #: src/SavedSearch_Alert.php:234
 msgid "Notification used:"
 msgid_plural "Notifications used:"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "התראה בשימוש:"
+msgstr[1] "התראות בשימוש:"
+msgstr[2] "התראות בשימוש:"
 
 #: src/SavedSearch_Alert.php:258
 msgid "Add an alert"
@@ -18970,7 +18982,7 @@ msgstr "גדול מ"
 #: src/SavedSearch_Alert.php:480
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
-msgstr ""
+msgstr "מספר התוצאות עבור %1$s הוא %2$s %3$s"
 
 #: src/Printer_CartridgeInfo.php:44
 msgid "Cartridge inventoried information"
@@ -19088,16 +19100,16 @@ msgstr[2] "סוגי בטריות"
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פורמט"
+msgstr[1] "פורמטים"
+msgstr[2] "פורמטים"
 
 #: src/Contract_Item.php:88
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קשר חוזה/פריט"
+msgstr[1] "קשרי חוזה/פריט"
+msgstr[2] "קשרי חוזה/פריט"
 
 #: src/Contract_Item.php:397 src/Cartridge.php:921 src/Cartridge.php:924
 msgid "month"
@@ -19229,9 +19241,9 @@ msgstr "%1$s מחזיר את הפריט לגרסה %2$s"
 #: src/ProjectTaskType.php:45
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג משימות פרויקט"
+msgstr[1] "סוגי משימות פרויקט"
+msgstr[2] "סוגי משימות פרויקט"
 
 #. TRANS: %1$s is the user login, %2$s the revision number
 #: src/KnowbaseItemTranslation.php:476
@@ -19341,6 +19353,7 @@ msgstr "אבל יש לך את האפשרות לעשות זאת בדמות של �
 #: src/MassiveAction.php:1510
 msgid "You can't delete that item, because it is used for one or more items"
 msgstr ""
+"אינך יכול למחוק פריט זה, מכיוון שהוא נמצא בשימוש עבור פריט אחד או יותר"
 
 #: src/Marketplace/Controller.php:106 src/Marketplace/Controller.php:206
 msgid "Unable to download plugin archive."
@@ -19418,7 +19431,7 @@ msgstr "נדרשת הרשמה, לפחות הרשמה חינמית, כדי להש
 #: src/Marketplace/View.php:171
 #, php-format
 msgid "Register on %1$s"
-msgstr ""
+msgstr "הירשם ב-%1$s"
 
 #: src/Marketplace/View.php:173
 msgid "fill your registration key in setup."
@@ -19432,7 +19445,7 @@ msgstr "המנוי שלך ל-%1$s הופסק."
 #: src/Marketplace/View.php:181
 #, php-format
 msgid "Renew it on %1$s."
-msgstr ""
+msgstr "חדש אותו ב-%1$s."
 
 #: src/Marketplace/View.php:346
 #, php-format
@@ -19440,6 +19453,8 @@ msgid ""
 "Unable to fetch plugin list due to %s services website unavailability. "
 "Please try again later."
 msgstr ""
+"לא ניתן לאחזר את רשימת התוספים עקב חוסר זמינות של אתר השירותים %s. נא לנסות "
+"שוב מאוחר יותר."
 
 #: src/Marketplace/View.php:347
 #, php-format
@@ -19453,7 +19468,7 @@ msgstr ""
 #: src/Marketplace/View.php:361
 #, php-format
 msgid "We can't write on the markeplace directory (%s)."
-msgstr ""
+msgstr "אין לנו הרשאת כתיבה בתיקיית חנות התוספים (%s)."
 
 #: src/Marketplace/View.php:363
 msgid ""
@@ -19547,6 +19562,8 @@ msgid ""
 "The plugin has an available update but its local directory contains source "
 "versioning."
 msgstr ""
+"לתוסף יש עדכון זמין אך התיקייה המקומית שלו מכילה גרסת קוד מקור (Source "
+"versioning)."
 
 #: src/Marketplace/View.php:752 src/Console/Marketplace/DownloadCommand.php:74
 msgid ""
@@ -19668,9 +19685,9 @@ msgstr "לא נמצאו חיבורי רשת"
 #: src/NetworkPort.php:938
 msgid "Management port"
 msgid_plural "Management ports"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פורט ניהול"
+msgstr[1] "פורטי ניהול"
+msgstr[2] "פורטי ניהול"
 
 #. TRANS: list of unit (bps for bytes per second)
 #: src/NetworkPort.php:1034
@@ -19835,16 +19852,16 @@ msgstr "מסלול מקומי"
 #: src/DomainRecord.php:49
 msgid "Domain record"
 msgid_plural "Domains records"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "רשומת דומיין"
+msgstr[1] "רשומות דומיינים"
+msgstr[2] "רשומות דומיינים"
 
 #: src/DomainRecord.php:56 src/DomainRecord.php:58
 msgid "Record"
 msgid_plural "Records"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "רשומה"
+msgstr[1] "רשומות"
+msgstr[2] "רשומות"
 
 #: src/DomainRecord.php:107 src/DomainRecord.php:487 src/DomainRecord.php:615
 msgid "TTL"
@@ -20015,9 +20032,9 @@ msgstr "אחרי"
 #: src/SsoVariable.php:50
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "שדה אחסון של ההתחברות בבקשת HTTP"
+msgstr[1] "שדות אחסון של ההתחברות בבקשת HTTP"
+msgstr[2] "שדות אחסון של ההתחברות בבקשת HTTP"
 
 #: src/DeviceFirmwareType.php:40
 msgid "Firmware type"
@@ -20091,9 +20108,9 @@ msgstr[2] "תזכורות ציבוריות"
 #: src/Profile.php:915 src/Profile.php:3522
 msgid "Public saved search"
 msgid_plural "Public saved searches"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "חיפוש שמור ציבורי"
+msgstr[1] "חיפושים שמורים ציבוריים"
+msgstr[2] "חיפושים שמורים ציבוריים"
 
 #: src/Profile.php:941 src/Profile.php:2254
 msgid "Simcard PIN/PUK"
@@ -20145,9 +20162,9 @@ msgstr "כל לוחות המחוונים"
 #: src/Profile.php:1107
 msgid "Global dropdown"
 msgid_plural "Global dropdowns"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "רשימה נפתחת גלובלית"
+msgstr[1] "רשימות נפתחות גלובליות"
+msgstr[2] "רשימות נפתחות גלובליות"
 
 #: src/Profile.php:1199 src/Profile.php:1583
 msgid "Association"
@@ -20196,9 +20213,9 @@ msgstr "תבנית %1$s ברירת מחדל"
 #: src/Profile.php:1567
 msgid "ITIL object"
 msgid_plural "ITIL objects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "אובייקט ITIL"
+msgstr[1] "אובייקטי ITIL"
+msgstr[2] "אובייקטי ITIL"
 
 #: src/Profile.php:1686 src/Profile.php:1818
 msgid "From \\ To"
@@ -20295,7 +20312,7 @@ msgstr "כללי"
 
 #: src/Config.php:183
 msgid "Invalid base URL!"
-msgstr ""
+msgstr "כתובת URL בסיסית לא תקינה!"
 
 #: src/Config.php:190
 msgid "Invalid API base URL!"
@@ -20303,7 +20320,7 @@ msgstr ""
 
 #: src/Config.php:197
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "כתובת URL של יציאה מ-SSO לא תקינה."
 
 #: src/Config.php:304
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:80
@@ -21444,11 +21461,11 @@ msgstr "משתמש תמיכה"
 
 #: src/User.php:6797
 msgid "This is a special user used for automated actions. "
-msgstr ""
+msgstr "זהו משתמש מיוחד המשמש לפעולות אוטומטיות. "
 
 #: src/User.php:6799
 msgid "You can set its name to your organisation's name. "
-msgstr ""
+msgstr "באפשרותך לקבוע את שמו לשם הארגון שלך. "
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:46
 msgid "Dictionary of monitor types"
@@ -21464,9 +21481,9 @@ msgstr[2] "סוגי סוכנים"
 #: src/Item_Problem.php:53
 msgid "Problem item"
 msgid_plural "Problem items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "פריט בעיה"
+msgstr[1] "פריטי בעיות"
+msgstr[2] "פריטי בעיות"
 
 #: src/RegisteredID.php:54
 msgid "PCI"
@@ -21475,9 +21492,9 @@ msgstr "PCI"
 #: src/RegisteredID.php:62
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מזהה רשום (הונפק על ידי PCI-SIG)"
+msgstr[1] "מזהים רשומים (הונפקו על ידי PCI-SIG)"
+msgstr[2] "מזהים רשומים (הונפקו על ידי PCI-SIG)"
 
 #: src/Telemetry.php:40
 msgid "Telemetry"
@@ -21497,7 +21514,7 @@ msgstr "שלח \"סטטיסטיקות שימוש\""
 
 #: src/Telemetry.php:447 src/Console/Traits/TelemetryActivationTrait.php:100
 msgid "We need your help to improve GLPI and the plugins ecosystem!"
-msgstr ""
+msgstr "אנו זקוקים לעזרתך כדי לשפר את GLPI ואת מערכת התוספים!"
 
 #: src/Telemetry.php:448 src/Console/Traits/TelemetryActivationTrait.php:101
 msgid ""
@@ -21505,6 +21522,8 @@ msgid ""
 "“Telemetry”, that anonymously with your permission, sends data to our "
 "telemetry website."
 msgstr ""
+"מאז גרסה 9.2 של GLPI, הצגנו תכונת סטטיסטיקה חדשה בשם \"טלמטריה\", אשר באופן "
+"אנונימי ובאישורך, שולחת נתונים לאתר הטלמטריה שלנו."
 
 #: src/Telemetry.php:449 src/Console/Traits/TelemetryActivationTrait.php:102
 msgid ""
@@ -21517,6 +21536,7 @@ msgstr ""
 msgid ""
 "Let us know your usage to improve future versions of GLPI and its plugins!"
 msgstr ""
+"ספר לנו על אופן השימוש שלך כדי לשפר גרסאות עתידיות של GLPI והתוספים שלו!"
 
 #: src/Telemetry.php:463
 msgid "Reference your GLPI"
@@ -21584,9 +21604,9 @@ msgstr "קריאות חוזרות"
 #: src/LineType.php:40
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג קו"
+msgstr[1] "סוגי קווים"
+msgstr[2] "סוגי קווים"
 
 #: src/RuleDictionnaryComputerModelCollection.php:46
 #: src/RuleDictionnaryMonitorModelCollection.php:46
@@ -21853,7 +21873,7 @@ msgstr "בקש אישור"
 #: src/CommonITILObject.php:6950
 msgctxt "button"
 msgid "Validation"
-msgstr ""
+msgstr "אימות"
 
 #: src/CommonITILObject.php:7359
 #, php-format
@@ -21937,9 +21957,9 @@ msgstr[2] "דגמי וירטואליזציה"
 #: src/EnclosureModel.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם מארז"
+msgstr[1] "דגמי מארזים"
+msgstr[2] "דגמי מארזים"
 
 #: src/Toolbox.php:984 js/common.js:634
 msgctxt "size"
@@ -22122,16 +22142,16 @@ msgstr "חודש-יום-שנה"
 #: src/Fieldblacklist.php:48
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "ערך להתעלמות לצורך ייחודיות"
+msgstr[1] "ערכים להתעלמות לצורך ייחודיות"
+msgstr[2] "ערכים להתעלמות לצורך ייחודיות"
 
 #: src/DevicePci.php:45
 msgid "PCI device"
 msgid_plural "PCI devices"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מכשיר PCI"
+msgstr[1] "מכשירי PCI"
+msgstr[2] "מכשירי PCI"
 
 #: src/DevicePci.php:100
 msgid "Other component"
@@ -22411,7 +22431,7 @@ msgstr "הספירה עבור החיפוש השמור הזה הושבתה."
 
 #: src/SavedSearch.php:968
 msgid "Counting this saved search would take too long, it has been skipped."
-msgstr ""
+msgstr "ספירת חיפוש שמור זה תיקח זמן רב מדי, הפעולה דולגה."
 
 #: src/SavedSearch.php:1065 js/modules/Search/GenericView.js:95
 #: js/modules/Search/Table.js:57
@@ -22436,9 +22456,9 @@ msgstr[2] "קטגוריות מאגר ידע"
 #: src/ProjectTask_Ticket.php:68
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קשר קריאה/משימת פרויקט"
+msgstr[1] "קשרי קריאה/משימות פרויקט"
+msgstr[2] "קשרי קריאה/משימות פרויקט"
 
 #: src/NotificationTargetChange.php:51
 msgid "New change"
@@ -22467,16 +22487,16 @@ msgstr "הוסף סוג פריט"
 #: src/RackType.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג מסד (rack)"
+msgstr[1] "סוגי מסדים (racks)"
+msgstr[2] "סוגי מסדים (racks)"
 
 #: src/PendingReason.php:52
 msgid "Pending reason"
 msgid_plural "Pending reasons"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סיבת השהיה"
+msgstr[1] "סיבות השהיה"
+msgstr[2] "סיבות השהיה"
 
 #: src/PendingReason.php:60 src/PendingReason.php:93
 msgid "Automatic follow-up frequency"
@@ -22742,9 +22762,9 @@ msgstr "השליחת אזהרות תעודות נכשלה למוגדר %1$s"
 #: src/PhonePowerSupply.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג ספק כוח לטלפון"
+msgstr[1] "סוגי ספקי כוח לטלפונים"
+msgstr[2] "סוגי ספקי כוח לטלפונים"
 
 #: src/DeviceCaseModel.php:44
 msgid "Device case model"
@@ -22834,7 +22854,7 @@ msgstr "מינימום של 64 Mio נדרש בדרך כלל עבור GLPI."
 
 #: src/CronTask.php:996
 msgid "No task with Run mode = CLI, fix your tasks configuration"
-msgstr ""
+msgstr "אין משימה עם מצב הרצה = CLI, תקן את הגדרת המשימות שלך"
 
 #: src/CronTask.php:1006
 msgid "External"
@@ -22991,9 +23011,9 @@ msgstr[2] "נקה %1$d קבצי גרפים שנוצרו מאז יותר מ-%2$s 
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "נקה קובץ זמני %1$d שנוצר לפני יותר מ-%2$s שניות"
+msgstr[1] "נקה %1$d קבצים זמניים שנוצרו לפני יותר מ-%2$s שניות"
+msgstr[2] "נקה %1$d קבצים זמניים שנוצרו לפני יותר מ-%2$s שניות"
 
 #: src/CronTask.php:2078
 msgid "Check for new updates"
@@ -23045,9 +23065,9 @@ msgstr "נדרש אשכול"
 #: src/UserTitle.php:41
 msgid "User title"
 msgid_plural "Users titles"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תואר משתמש"
+msgstr[1] "תוארי משתמשים"
+msgstr[2] "תוארי משתמשים"
 
 #: src/ConsumableItemType.php:41
 msgid "Consumable type"
@@ -23380,9 +23400,9 @@ msgstr "הוסף דגם מדפסת תואם"
 #: src/ProjectState.php:45
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מצב פרויקט"
+msgstr[1] "מצבי פרויקטים"
+msgstr[2] "מצבי פרויקטים"
 
 #: src/ProjectState.php:64 src/ProjectState.php:88
 msgid "Finished state"
@@ -23419,7 +23439,7 @@ msgstr ""
 #: src/CommonDBConnexity.php:322
 #, php-format
 msgid "Cannot update item %s #%s: not enough right on the parent(s) item(s)"
-msgstr ""
+msgstr "לא ניתן לעדכן את הפריט %s מס' %s: אין מספיק הרשאות על פריט(י) האב"
 
 #: src/CommonDBConnexity.php:629
 msgid "First Item"
@@ -23436,7 +23456,7 @@ msgstr "בחר חבר לצד של %s:"
 
 #: src/CommonDBConnexity.php:680
 msgid "Unable to reaffect given elements!"
-msgstr ""
+msgstr "לא ניתן לשייך מחדש את הרכיבים הנתונים!"
 
 #: src/BudgetType.php:44
 msgid "Budget type"
@@ -23448,16 +23468,16 @@ msgstr[2] "סוגי תקציב"
 #: src/PassiveDCEquipmentModel.php:41
 msgid "Passive device model"
 msgid_plural "Passive device models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם מכשיר פסיבי"
+msgstr[1] "דגמי מכשירים פסיביים"
+msgstr[2] "דגמי מכשירים פסיביים"
 
 #: src/DeviceDrive.php:43
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "כונן"
+msgstr[1] "כוננים"
+msgstr[2] "כוננים"
 
 #: src/DeviceDrive.php:53 src/DeviceDrive.php:81 src/DeviceDrive.php:130
 msgid "Writing ability"
@@ -23562,9 +23582,9 @@ msgstr "המאגר החופשי מתאית. הבדל הוא של:"
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "קשר"
+msgstr[1] "קשרים"
+msgstr[2] "קשרים"
 
 #: src/Appliance_Item_Relation.php:129
 msgid "An appliance item is required"
@@ -23617,9 +23637,9 @@ msgstr "מילון של גרסאות מערכת ההפעלה"
 #: src/NotImportedEmail.php:63
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "אימייל שנדחה"
+msgstr[1] "אימיילים שנדחו"
+msgstr[2] "אימיילים שנדחו"
 
 #: src/NotImportedEmail.php:78
 msgid "Delete emails"
@@ -23676,9 +23696,9 @@ msgstr "או חיפוש מלא"
 #: src/PDU.php:59
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "יחידת חלוקת כוח (PDU)"
+msgstr[1] "יחידות חלוקת כוח (PDUs)"
+msgstr[2] "יחידות חלוקת כוח (PDUs)"
 
 #: src/RuleRight.php:227
 msgid "Automatic user assignment"
@@ -23786,12 +23806,12 @@ msgstr "כלל תהליכים עבור כל התוכנות, גם לאלו שכב
 
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:80
 msgid "No software to process."
-msgstr ""
+msgstr "אין תוכנה לעיבוד."
 
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:92
 #, php-format
 msgid "Processing software having id \"%s\"."
-msgstr ""
+msgstr "מעבד תוכנה בעלת מזהה \\\"%s\\\"."
 
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:101
 #, php-format
@@ -23819,22 +23839,22 @@ msgstr "נתיב הקובץ שבו יאוחסנו שאילתות SQL שניתן 
 
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:128
 msgid "No item to fix."
-msgstr ""
+msgstr "אין פריט לתיקון."
 
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:132
 #, php-format
 msgid "Found %d item to fix."
 msgid_plural "Found %d items to fix."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "נמצא פריט %d לתיקון."
+msgstr[1] "נמצאו %d פריטים לתיקון."
+msgstr[2] "נמצאו %d פריטים לתיקון."
 
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:142
 msgid "Do you want to fix it?"
 msgid_plural "Do you want to fix them?"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "האם ברצונך לתקן אותו?"
+msgstr[1] "האם ברצונך לתקן אותם?"
+msgstr[2] "האם ברצונך לתקן אותם?"
 
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:159
 #, php-format
@@ -23873,7 +23893,7 @@ msgstr "לא ניתן לתיקון %s עם ID %s."
 
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:391
 msgid "Scanning database for items to fix..."
-msgstr ""
+msgstr "סורק את מסד הנתונים לאיתור פריטים לתיקון..."
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:55
 msgid "Validate files integrity for GLPI's documents."
@@ -23882,7 +23902,7 @@ msgstr "בדיקת תקינות הקבצים למסמכי GLPI."
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:69
 #, php-format
 msgid "Checking document #%s \"%s\" (%s)..."
-msgstr ""
+msgstr "בודק מסמך מס' %s \\\"%s\\\" (%s)..."
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:163
 msgid "File not found"
@@ -23908,7 +23928,7 @@ msgstr "לא ניתן לשנות מפתח ביטחון!"
 
 #: src/Console/Security/ChangekeyCommand.php:93
 msgid "New security key generated; database updated."
-msgstr ""
+msgstr "מפתח אבטחה חדש נוצר; מסד הנתונים עודכן."
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:53
 msgid "Migrate Domains plugin data into GLPI core tables"
@@ -23974,7 +23994,7 @@ msgstr "לא ניתן למצוא פריט מטרה ל %s # %s."
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:245
 #, php-format
 msgid "Skip existing %s \"%s\"."
-msgstr ""
+msgstr "דלג על %s קיים \\\"%s\\\"."
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:333
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:267
@@ -24004,7 +24024,7 @@ msgstr "%d טבלאות עדיין משתמשות בפורמט שורות קומ
 #: src/Console/Migration/DynamicRowFormatCommand.php:110
 #: src/Console/Database/UpdateCommand.php:177
 msgid "No migration needed."
-msgstr ""
+msgstr "אין צורך במיגרציה."
 
 #: src/Console/Migration/Utf8mb4Command.php:157
 #, php-format
@@ -24022,7 +24042,7 @@ msgstr "מעביר טבלה \"%s\"..."
 #: src/Console/Migration/Utf8mb4Command.php:179
 #, php-format
 msgid "Error migrating table \"%s\"."
-msgstr ""
+msgstr "שגיאה בהעברת הטבלה \\\"%s\\\"."
 
 #: src/Console/Migration/Utf8mb4Command.php:189
 #: src/Console/Migration/MyIsamToInnoDbCommand.php:119
@@ -24041,7 +24061,7 @@ msgstr ""
 #: src/Console/Migration/UnsignedKeysCommand.php:246
 #: src/Console/Migration/DynamicRowFormatCommand.php:156
 msgid "Errors occurred during migration."
-msgstr ""
+msgstr "אירעו שגיאות במהלך המיגרציה."
 
 #: src/Console/Migration/Utf8mb4Command.php:202
 #: src/Console/Migration/MyIsamToInnoDbCommand.php:132
@@ -24054,7 +24074,7 @@ msgstr ""
 #: src/Console/Migration/DynamicRowFormatCommand.php:161
 #: src/Console/Database/UpdateCommand.php:220
 msgid "Migration done."
-msgstr ""
+msgstr "המיגרציה הושלמה."
 
 #: src/Console/Migration/MigrateAllCommand.php:51
 msgid "Execute all recommended optional migrations."
@@ -24169,7 +24189,7 @@ msgstr "הגירת עמודה \"%s.%s\" נכשלה עם ההודעה \"(%s) %s\"
 #: src/Console/Migration/UnsignedKeysCommand.php:256
 #, php-format
 msgid "Some errors are related to following plugins: %s."
-msgstr ""
+msgstr "חלק מהשגיאות קשורות לתוספים הבאים: %s."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:260
 msgid ""
@@ -24218,7 +24238,7 @@ msgstr "שדה תוסף מכשיר \"%s\" לא נמצא."
 #: src/Console/Migration/RacksPluginToCoreCommand.php:376
 #: src/Console/Migration/AbstractPluginToCoreCommand.php:179
 msgid "Migration cannot be done."
-msgstr ""
+msgstr "לא ניתן לבצע את המיגרציה."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:287
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:135
@@ -24633,12 +24653,12 @@ msgstr "תחום המידע של תוסף הבסיס מאגר \"%s\" חסר."
 
 #: src/Console/Migration/AbstractPluginToCoreCommand.php:224
 msgid "Plugin data import failed."
-msgstr ""
+msgstr "ייבוא נתוני התוסף נכשל."
 
 #: src/Console/Migration/AbstractPluginToCoreCommand.php:340
 #, php-format
 msgid "Unable to update %s \"%s\" (%d)."
-msgstr ""
+msgstr "לא ניתן לעדכן את ה-%s \\\"%s\\\" (מזהה %d)."
 
 #: src/Console/Migration/AbstractPluginToCoreCommand.php:404
 #, php-format
@@ -24670,7 +24690,7 @@ msgstr ""
 #: src/Console/Cache/ConfigureCommand.php:136
 #, php-format
 msgid "Invalid cache context: \"%s\"."
-msgstr ""
+msgstr "הקשר מטמון (Cache context) לא תקין: \\\"%s\\\"."
 
 #: src/Console/Cache/ClearCommand.php:102
 msgid "Failed to clear cache."
@@ -24760,7 +24780,7 @@ msgstr "--dsn ו --use-default לא ניתן להשתמש באפשרויות ב�
 #: src/Console/Cache/ConfigureCommand.php:173
 #, php-format
 msgid "Invalid cache DSN: \"%s\"."
-msgstr ""
+msgstr "כתובת DSN של המטמון לא תקינה: \\\"%s\\\"."
 
 #: src/Console/Cache/ConfigureCommand.php:182
 #, php-format
@@ -25318,7 +25338,7 @@ msgstr "אפשר תמיזוני שעה."
 #: src/Console/Database/EnableTimezonesCommand.php:82
 #: src/Console/Database/AbstractConfigureCommand.php:459
 msgid "Timezones usage cannot be activated due to following errors:"
-msgstr ""
+msgstr "לא ניתן להפעיל שימוש באזורי זמן עקב השגיאות הבאות:"
 
 #: src/Console/Database/EnableTimezonesCommand.php:109
 msgid "Timezone usage has been enabled."
@@ -25485,7 +25505,7 @@ msgstr "המסד הנתונים מכיל שולחנות GLPI אפס."
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:219
 #, php-format
 msgid "The database contains no tables of the plugin \"%s\"."
-msgstr ""
+msgstr "מסד הנתונים אינו מכיל טבלאות של התוסף \\\"%s\\\"."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:228
 #, php-format
@@ -25510,7 +25530,7 @@ msgstr "הטבלה \"%s\" חסרה."
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:256
 #, php-format
 msgid "Unknown table \"%s\" has been found in database."
-msgstr ""
+msgstr "טבלה לא ידועה \\\"%s\\\" נמצאה במסד הנתונים."
 
 #: src/Console/Database/InstallCommand.php:104
 msgid "Default language of GLPI"
@@ -25543,7 +25563,7 @@ msgstr ""
 #: src/Console/Database/AbstractConfigureCommand.php:235
 #, php-format
 msgid "Database connection failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "החיבור למסד הנתונים נכשל עם ההודעה \\\"(%s) %s\\\"."
 
 #: src/Console/Database/InstallCommand.php:282
 msgid "Creating the database..."
@@ -25552,7 +25572,7 @@ msgstr "יצירת המאגר הנתונים..."
 #: src/Console/Database/InstallCommand.php:290
 #, php-format
 msgid "Database creation failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "יצירת מסד הנתונים נכשלה עם ההודעה \\\"(%s) %s\\\"."
 
 #: src/Console/Database/InstallCommand.php:311
 msgid ""
@@ -25628,7 +25648,7 @@ msgstr "--db-password ערך האופציה לא יכול להיות null."
 #: src/Console/Database/AbstractConfigureCommand.php:469
 #, php-format
 msgid "Fix them and run the \"%1$s\" command to enable timezones."
-msgstr ""
+msgstr "תקן אותם והרץ את הפקודה \\\"%1$s\\\" כדי לאפשר אזורי זמן."
 
 #: src/Console/Task/UnlockCommand.php:54
 msgid "Unlock automatic tasks"
@@ -25707,14 +25727,14 @@ msgstr "ערך תצורה:"
 #: src/Console/Config/SetCommand.php:89
 #, php-format
 msgid "Invalid context \"%s\"."
-msgstr ""
+msgstr "הקשר לא תקין \\\"%s\\\"."
 
 #: src/SocketModel.php:45
 msgid "Socket model"
 msgid_plural "Socket models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "דגם שקע (Socket)"
+msgstr[1] "דגמי שקעים (Sockets)"
+msgstr[2] "דגמי שקעים (Sockets)"
 
 #: src/NetworkPortInstantiation.php:87
 msgid "No options available for this port type."
@@ -25875,9 +25895,9 @@ msgstr "מספר סידורי של מערכת הפעלה"
 #: src/RuleImportAsset.php:177
 msgid "Linked asset"
 msgid_plural "Linked assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "נכס מקושר"
+msgstr[1] "נכסים מקושרים"
+msgstr[2] "נכסים מקושרים"
 
 #: src/RuleImportAsset.php:183
 msgid "Restrict search in defined entity"
@@ -25918,9 +25938,9 @@ msgstr "לא נקבע סוג מוצר"
 #: src/RefusedEquipment.php:51
 msgid "Equipment refused by rules log"
 msgid_plural "Equipments refused by rules log"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "ציוד שנדחה על ידי יומן כללים"
+msgstr[1] "ציוד שנדחה על ידי יומן כללים"
+msgstr[2] "ציוד שנדחה על ידי יומן כללים"
 
 #: src/RefusedEquipment.php:135
 msgid "Method"
@@ -26367,7 +26387,7 @@ msgstr "הפעל"
 
 #: src/Plugin.php:974
 msgid "Do you want to %activate_link it?"
-msgstr ""
+msgstr "האם ברצונך %activate_link אותו?"
 
 #: src/Plugin.php:980
 #, php-format
@@ -26402,7 +26422,7 @@ msgstr "מודול %1$s נפעל!"
 #: src/Plugin.php:1113
 #, php-format
 msgid "Plugin %1$s has been activated by %2$s."
-msgstr ""
+msgstr "התוסף %1$s הופעל על ידי %2$s."
 
 #: src/Plugin.php:1124
 #, php-format
@@ -26436,7 +26456,7 @@ msgstr "הפלגאין דורש %1$s קטן יותר מ - %2$s."
 #: src/Plugin.php:2107
 #, php-format
 msgid "This plugin requires %1$s >= %2$s."
-msgstr ""
+msgstr "תוסף זה דורש %1$s >= %2$s."
 
 #: src/Plugin.php:2113
 #, php-format
@@ -26807,9 +26827,9 @@ msgstr "סדרה"
 #: js/planning.js:370 js/planning.js:502 js/planning.js:545
 msgid "Instance"
 msgid_plural "Instances"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מופע (Instance)"
+msgstr[1] "מופעים (Instances)"
+msgstr[2] "מופעים (Instances)"
 
 #: js/planning.js:493
 msgid "Recurring event resized"
@@ -26902,6 +26922,8 @@ msgid ""
 "This column cannot support showing cards due to how many cards would be "
 "shown. You can still drag cards into this column."
 msgstr ""
+"עמודה זו אינה יכולה לתמוך בהצגת כרטיסים עקב מספר הכרטיסים שיש להציג. עדיין "
+"ניתן לגרור כרטיסים לעמודה זו."
 
 #: js/modules/Kanban/Kanban.js:2289
 msgid ""

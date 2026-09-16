@@ -2142,7 +2142,7 @@ msgstr "开启日期"
 #: src/CommonITILObject.php:5449
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:68
 msgid "Resolution date"
-msgstr "解决日期"
+msgstr "实际解决日期"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "Close date"

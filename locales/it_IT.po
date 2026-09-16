@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Emanuele Podett <emanuele.podetti@gmail.com>, 2021
+# Emanuele Podetti <emanuele.podetti@gmail.com>, 2021
 # Andrea Garelli <garelli.andrea@gmail.com>, 2021
 # Emiliano Centurelli <emilcen80@gmail.com>, 2021
 # Marco Arrigoni <arri89@hotmail.it>, 2022

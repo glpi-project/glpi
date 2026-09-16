@@ -13,6 +13,7 @@
 # Evert Meulie <evert@arkivo.no>, 2025
 # jostein berge <jbe01@karmoy.kommune.no>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Ola Kleppa, 2026
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Ola Kleppa, 2026\n"
 "Language-Team: Norwegian Bokmål (Norway) (https://app.transifex.com/glpi/teams/1637/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3040,7 +3041,7 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
-msgstr ""
+msgstr "Vis papirkurven"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle search filters"
@@ -3277,7 +3278,7 @@ msgstr "Tittel"
 #: templates/components/user/info_card.html.twig src/User.php:3050
 #: src/RuleRight.php:374
 msgid "Default group"
-msgstr ""
+msgstr "Standardgruppe"
 
 #: templates/components/messages_after_redirect_toasts.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
@@ -3817,7 +3818,7 @@ msgstr ""
 
 #: templates/impact/edit_compound_modal.html.twig
 msgid "Edit group"
-msgstr ""
+msgstr "Rediger gruppe"
 
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/pages/assets/cable.html.twig src/PlanningEventCategory.php:48
@@ -3827,7 +3828,7 @@ msgstr "Farge"
 
 #: templates/impact/ongoing_modal.html.twig
 msgid "Ongoing tickets"
-msgstr ""
+msgstr "Pågående saker"
 
 #: templates/pages/self-service/home.html.twig src/Central.php:465
 msgid "Update my password"
@@ -14127,7 +14128,7 @@ msgstr ""
 
 #: src/AuthLDAP.php:4331
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "Gjennopprett (flytt ut av papirkurven)"
 
 #: src/AuthLDAP.php:4332 src/Marketplace/View.php:817 src/Plugin.php:2957
 msgid "Enable"
@@ -19577,15 +19578,15 @@ msgstr "ELLER IKKE"
 
 #: src/Search.php:2637
 msgid "rule"
-msgstr ""
+msgstr "regel"
 
 #: src/Search.php:2642
 msgid "global rule"
-msgstr ""
+msgstr "global regel"
 
 #: src/Search.php:2647
 msgid "group"
-msgstr ""
+msgstr "gruppe"
 
 #: src/Search.php:2674 src/CronTask.php:674 src/CronTask.php:760
 msgid "Blank"
@@ -26142,11 +26143,11 @@ msgstr ""
 
 #: js/impact.js:1335
 msgid "Show ongoing tickets"
-msgstr ""
+msgstr "Vis pågående saker"
 
 #: js/impact.js:1336
 msgid "Show ongoing tickets for this item"
-msgstr ""
+msgstr "Vis pågående saker for dette elementet"
 
 #: js/impact.js:1342
 msgid "Group properties..."

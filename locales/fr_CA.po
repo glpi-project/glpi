@@ -10,6 +10,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Cédric Anne, 2026
 # Tiago Graça, 2026
+# François Robertson, 2026
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Tiago Graça, 2026\n"
+"Last-Translator: François Robertson, 2026\n"
 "Language-Team: French (Canada) (https://app.transifex.com/glpi/teams/1637/fr_CA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -89,21 +90,25 @@ msgstr "Créer une nouvelle base ou utiliser une base existante :"
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr ""
+msgstr "Vérification de l'accès en écriture sur les fichiers de configuration"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
-msgstr ""
+msgstr "Accès en écriture refusé sur les fichiers de configuration"
 
 #: templates/install/step1.html.twig src/Console/Application.php:564
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
 msgstr ""
+"Un accès temporaire en écriture est nécessaire sur les fichiers suivants : "
+"%s."
 
 #: templates/install/step1.html.twig src/Console/Application.php:565
 msgid ""
 "Write access to these files can be removed once the operation is finished."
 msgstr ""
+"L'accès en écriture sur ces fichiers pourra être supprimé une fois "
+"l'opération terminée."
 
 #: templates/install/step1.html.twig
 msgid ""
@@ -505,6 +510,8 @@ msgstr "Fermer"
 #: templates/layout/parts/user_header.html.twig src/Config.php:1979
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Cette version est INSTABLE et certains CORRECTIFS DE SÉCURITÉ pourraient ne "
+"pas être inclus."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -4940,6 +4947,7 @@ msgstr ""
 #, php-format
 msgid "It is recommended to run the \"%s\" command to see the differences."
 msgstr ""
+"Il est recommandé d'exécuter la commande \"%s\" pour voir les différences."
 
 #: install/update.php:186
 msgid "Missing security key file"
@@ -5543,6 +5551,8 @@ msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
 msgstr ""
+"Le code source de GLPI a été mis à jour. La mise à jour de la base de "
+"données de GLPI est nécessaire."
 
 #: inc/config.php:216
 msgid "Update needed"
@@ -8066,11 +8076,11 @@ msgstr "A droite"
 
 #: src/PDU_Rack.php:451 src/Features/DCBreadcrumb.php:86
 msgid "On top"
-msgstr ""
+msgstr "Au dessus"
 
 #: src/PDU_Rack.php:455 src/Features/DCBreadcrumb.php:89
 msgid "On bottom"
-msgstr ""
+msgstr "En dessous"
 
 #: src/PDU_Rack.php:488
 msgid "The pdu will be"
@@ -9119,7 +9129,7 @@ msgstr "Type MIME"
 
 #: src/RuleDictionnaryOperatingSystemServicePackCollection.php:46
 msgid "Dictionary of service packs"
-msgstr ""
+msgstr "Dictionnaire des service packs"
 
 #: src/Location.php:128 src/RuleLocation.php:121 src/Transfer.php:3950
 msgid "Location"
@@ -14800,6 +14810,12 @@ msgid ""
 "\n"
 "In this same space, you will be able to contact an official partner to help you with your GLPI integration."
 msgstr ""
+"Vous souhaitez obtenir de l’aide pour intégrer GLPI dans votre SI, faire corriger un bug ou bénéficier de règles ou dictionnaires pré-configurés ?\n"
+"\n"
+"Nous mettons à votre disposition l’espace %s.\n"
+"GLPI-Network est un service commercial qui comprend une souscription au support niveau 3, garantissant la correction des bugs rencontrés avec un engagement de délai.\n"
+"\n"
+"Sur ce même espace, vous pourrez contacter un partenaire officiel pour vous aider dans votre intégration de GLPI."
 
 #: src/GLPINetwork.php:308
 #, php-format
@@ -16488,7 +16504,7 @@ msgstr "Gestion unitaire"
 #: src/Dropdown.php:4012
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Mes %s"
 
 #: src/Dropdown.php:4121
 #, php-format

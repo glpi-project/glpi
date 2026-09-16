@@ -13,7 +13,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
 # Trans City, 2024
 # Cédric Anne, 2026
-# INOUE Daisuke, 2026
+# Daisuke INOUE, 2026
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: INOUE Daisuke, 2026\n"
+"Last-Translator: Daisuke INOUE, 2026\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/glpi/teams/1637/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19896,7 +19896,7 @@ msgstr "デフォルトでフォローを非公開に"
 
 #: src/Config.php:1388
 msgid "Show new tickets on the home page"
-msgstr "ホーム画面に新しいチケットを表示"
+msgstr "ホームページに新しいチケットを表示"
 
 #: src/Config.php:1401
 msgid "Private tasks by default"

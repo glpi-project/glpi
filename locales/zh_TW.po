@@ -4063,7 +4063,7 @@ msgstr "东"
 
 #: templates/pages/assets/rack.html.twig
 msgid "South"
-msgstr ""
+msgstr "南"
 
 #: templates/pages/assets/rack.html.twig
 msgid "West"
@@ -4629,7 +4629,7 @@ msgstr ""
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Filename"
-msgstr ""
+msgstr "文件名"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Result"
@@ -11051,7 +11051,7 @@ msgstr "已依 GLPI 字典規則刪除軟體"
 msgctxt "camera"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
+msgstr[0] "分辨率"
 
 #: src/Item_DeviceCamera_ImageResolution.php:157
 msgid "Is Video"
@@ -11728,7 +11728,7 @@ msgstr "%1$s - 在資料庫存取時發生錯誤: %2$s - 錯誤是 %3$s"
 
 #: src/ComputerVirtualMachine.php:59
 msgid "Virtualization"
-msgstr ""
+msgstr "虚拟化"
 
 #: src/ComputerVirtualMachine.php:193
 msgid "List of hosts"
@@ -15012,7 +15012,7 @@ msgstr ""
 #: src/Inventory/Asset/NetworkEquipment.php:169
 #: src/Inventory/Asset/Unmanaged.php:117
 msgid "internal"
-msgstr ""
+msgstr "内部"
 
 #: src/Inventory/Asset/Bios.php:60
 #, php-format
@@ -15049,11 +15049,11 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:64
 msgid "Developer"
-msgstr ""
+msgstr "开发者"
 
 #: src/Inventory/Asset/Cartridge.php:65
 msgid "Photoconductor"
-msgstr ""
+msgstr "感光鼓"
 
 #: src/Inventory/Asset/Cartridge.php:72
 msgid "Black"
@@ -15061,7 +15061,7 @@ msgstr "黑"
 
 #: src/Inventory/Asset/Cartridge.php:73
 msgid "Cyan"
-msgstr ""
+msgstr "青色"
 
 #: src/Inventory/Asset/Cartridge.php:74
 msgid "Light cyan"
@@ -15069,7 +15069,7 @@ msgstr ""
 
 #: src/Inventory/Asset/Cartridge.php:75
 msgid "Magenta"
-msgstr ""
+msgstr "洋红色"
 
 #: src/Inventory/Asset/Cartridge.php:76
 msgid "Light magenta"
@@ -15081,7 +15081,7 @@ msgstr "黄"
 
 #: src/Inventory/Asset/Cartridge.php:78 src/Inventory/Asset/Cartridge.php:80
 msgid "Grey"
-msgstr ""
+msgstr "灰色"
 
 #: src/Inventory/Asset/Cartridge.php:79 src/Inventory/Asset/Cartridge.php:81
 msgid "Dark grey"
@@ -15101,7 +15101,7 @@ msgstr "照片"
 
 #: src/Inventory/Asset/Cartridge.php:150
 msgid "Matte"
-msgstr ""
+msgstr "哑光"
 
 #: src/Inventory/Asset/Cartridge.php:190
 msgid "Many information grouped"
@@ -15109,7 +15109,7 @@ msgstr "众多信息已被组合"
 
 #: src/Inventory/Asset/Cartridge.php:193
 msgid "Staples"
-msgstr ""
+msgstr "订书钉"
 
 #: src/Inventory/Conf.php:199 src/Inventory/Conf.php:260
 #, php-format
@@ -15498,7 +15498,7 @@ msgstr "12月"
 
 #: src/Features/PlanningEvent.php:854
 msgid "Exceptions"
-msgstr ""
+msgstr "例外"
 
 #: src/Features/PlanningEvent.php:886
 #, php-format
@@ -18360,7 +18360,7 @@ msgstr[0] "電池種類"
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] ""
+msgstr[0] "格式"
 
 #: src/Contract_Item.php:88
 msgid "Link Contract/Item"
@@ -18508,7 +18508,7 @@ msgstr ""
 msgctxt "image"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
+msgstr[0] "分辨率"
 
 #: src/MassiveAction.php:256
 msgid "No action available"
@@ -18651,7 +18651,7 @@ msgstr "已安装"
 
 #: src/Marketplace/View.php:112
 msgid "Discover"
-msgstr ""
+msgstr "发现"
 
 #: src/Marketplace/View.php:155
 msgid "Maybe you could setup a proxy"
@@ -18860,7 +18860,7 @@ msgstr ""
 
 #: src/Marketplace/View.php:1084
 msgid "Later"
-msgstr ""
+msgstr "延迟"
 
 #: src/CommonDBRelation.php:1463
 msgid "Remove all at once"
@@ -18896,7 +18896,7 @@ msgstr ""
 
 #: src/NetworkPort.php:854
 msgid "Hub "
-msgstr ""
+msgstr "集线器"
 
 #: src/NetworkPort.php:855
 msgid "Other equipments"
@@ -18955,11 +18955,11 @@ msgstr "測試"
 
 #: src/NetworkPort.php:1109
 msgid "Half"
-msgstr ""
+msgstr "半双工"
 
 #: src/NetworkPort.php:1112
 msgid "Full"
-msgstr ""
+msgstr "全部"
 
 #: src/NetworkPort.php:1138
 #, php-format
@@ -19024,7 +19024,7 @@ msgstr ""
 
 #: src/NetworkPort.php:1779
 msgid "Duplex"
-msgstr ""
+msgstr "双工"
 
 #: src/NetworkPort.php:1823
 msgid "Last connection"
@@ -19054,7 +19054,7 @@ msgstr ""
 
 #: src/Notification_NotificationTemplate.php:424
 msgid "Browser"
-msgstr ""
+msgstr "浏览器"
 
 #: src/NetworkInterface.php:44
 msgid "Network interface"
@@ -20666,7 +20666,7 @@ msgstr[0] "已註冊 IDs (由PCI-SIG發行)"
 
 #: src/Telemetry.php:40
 msgid "Telemetry"
-msgstr ""
+msgstr "遥测技术"
 
 #: src/Telemetry.php:274
 msgid "Send telemetry information"
@@ -20985,7 +20985,7 @@ msgstr "到 %s"
 
 #: src/CommonITILObject.php:6773
 msgid "Planification"
-msgstr ""
+msgstr "规划"
 
 #: src/CommonITILObject.php:6908 src/CommonITILObject.php:6909
 msgctxt "button"
@@ -21010,7 +21010,7 @@ msgstr ""
 #: src/CommonITILObject.php:6929
 msgctxt "button"
 msgid "Solution"
-msgstr ""
+msgstr "方案"
 
 #: src/CommonITILObject.php:6939
 msgctxt "button"
@@ -21110,7 +21110,7 @@ msgstr[0] ""
 #: src/Toolbox.php:984 js/common.js:634
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: src/Toolbox.php:985 js/common.js:635
 msgctxt "size"
@@ -21518,7 +21518,7 @@ msgstr ""
 
 #: src/SavedSearch.php:335
 msgid "Count"
-msgstr ""
+msgstr "计数"
 
 #: src/SavedSearch.php:345
 msgid "Default"
@@ -21526,7 +21526,7 @@ msgstr ""
 
 #: src/SavedSearch.php:361
 msgid "Counter"
-msgstr ""
+msgstr "计数器"
 
 #: src/SavedSearch.php:369
 msgid "Last execution date"
@@ -22358,7 +22358,7 @@ msgstr ""
 
 #: src/Impact.php:1131
 msgid "Fullscreen"
-msgstr ""
+msgstr "全屏"
 
 #: src/Impact.php:1804
 msgid "Impact analysis configuration"
@@ -22649,7 +22649,7 @@ msgstr ""
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
+msgstr[0] "关系"
 
 #: src/Appliance_Item_Relation.php:129
 msgid "An appliance item is required"
@@ -22803,7 +22803,7 @@ msgstr ""
 
 #: src/Console/System/CheckRequirementsCommand.php:67
 msgid "Requirement"
-msgstr ""
+msgstr "需求"
 
 #: src/Console/System/CheckRequirementsCommand.php:69
 msgid "Messages"
@@ -22820,7 +22820,7 @@ msgstr "错误"
 #: src/Console/System/CheckRequirementsCommand.php:82
 #: src/Console/System/CheckRequirementsCommand.php:84
 msgid "INFO"
-msgstr ""
+msgstr "INFO"
 
 #: src/Console/Assets/CleanSoftwareCommand.php:87
 msgid "Option --max must be an integer."
@@ -24387,7 +24387,7 @@ msgstr ""
 
 #: src/Console/Database/UpdateCommand.php:164
 msgid "Current"
-msgstr ""
+msgstr "当前"
 
 #: src/Console/Database/UpdateCommand.php:165
 #: src/Console/Database/AbstractConfigureCommand.php:104
@@ -25135,7 +25135,7 @@ msgstr "總結"
 
 #: src/ContentTemplates/TemplateDocumentation.php:132
 msgid "Variable"
-msgstr ""
+msgstr "变量"
 
 #: src/ContentTemplates/TemplateDocumentation.php:134
 msgid "Usage"
@@ -25143,7 +25143,7 @@ msgstr "使用"
 
 #: src/ContentTemplates/TemplateDocumentation.php:135
 msgid "References"
-msgstr ""
+msgstr "参考"
 
 #: src/NetworkPortMigration.php:51
 msgid "Network port migration"
@@ -25502,7 +25502,7 @@ msgstr "錯誤 / 清除"
 
 #: src/Plugin.php:2551
 msgid "Directory"
-msgstr ""
+msgstr "目录"
 
 #: src/Plugin.php:2589
 msgid "Authors"
@@ -25702,7 +25702,7 @@ msgstr ""
 
 #: js/impact.js:2494
 msgid "Requests"
-msgstr ""
+msgstr "请求"
 
 #: js/impact.js:2495
 msgid "Incidents"
@@ -25718,7 +25718,7 @@ msgstr ""
 
 #: js/glpi_dialog.js:376
 msgid "Success"
-msgstr ""
+msgstr "成功"
 
 #: js/common.js:1179
 msgid "just now"
@@ -25912,7 +25912,7 @@ msgstr ""
 
 #: js/modules/SearchTokenizer/SearchInput.js:651
 msgid "Exclude"
-msgstr ""
+msgstr "排除"
 
 #: js/modules/Search/Table.js:53
 msgid "Submit current search before saving it"

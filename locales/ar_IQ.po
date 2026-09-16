@@ -17991,7 +17991,7 @@ msgstr "تسجيل الدخول للمعلمة (المعلمات) أو كلمة 
 
 #: src/Api/API.php:299
 msgid "parameter(s) login, password are missing"
-msgstr ""
+msgstr "بيانات تسجيل الدخول وكلمة المرور مفقودة"
 
 #: src/Api/API.php:305
 msgid "parameter user_token is missing"
@@ -19537,7 +19537,7 @@ msgstr "إضافة المستندات إلى إشعارات التذاكر"
 
 #: src/NotificationMailingSetting.php:234
 msgid "Add documents into notifications sent to anonymous users"
-msgstr ""
+msgstr "إرفاق المستندات بالإشعارات المرسلة إلى المستخدمين المجهولين"
 
 #: src/NotificationMailingSetting.php:250
 msgid "Way of sending emails"
@@ -21329,7 +21329,7 @@ msgstr ""
 
 #: src/Config.php:197
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "عنوان URL غير صالح لتسجيل الخروج من نظام تسجيل الدخول الموحد (SSO)."
 
 #: src/Config.php:304
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:80

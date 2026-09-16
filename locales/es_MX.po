@@ -13,7 +13,6 @@
 # Carlos Estrada <cestradah@gmail.com>, 2021
 # alberto cruz <alberto.cruz.77@gmail.com>, 2022
 # Jesus Fernandez <jesus.fernandez@dgsa.unam.mx>, 2022
-# Luis Vicente Gómez Ontiveros <lvonti51@gmail.com>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
 # Edwin Elias Alvarez <sistemas@cyalimentos.com>, 2026
@@ -635,7 +634,7 @@ msgstr "Ver todos"
 #: templates/layout/parts/context_links.html.twig
 #: src/Item_SoftwareVersion.php:1627 src/Item_SoftwareLicense.php:1021
 msgid "Summary"
-msgstr "Seguimiento"
+msgstr "Resumen"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Global Kanban"
@@ -975,7 +974,7 @@ msgstr "Cerrar"
 
 #: templates/components/form/networkname.html.twig
 msgid "Dissociate"
-msgstr "Desasociar"
+msgstr "Desvincular"
 
 #: templates/components/form/networkname.html.twig
 msgid ""
@@ -4500,7 +4499,7 @@ msgstr "Solicitud de certificado (CSR)"
 #: src/Contract_Item.php:343 src/Contract_Supplier.php:185
 msgctxt "phone"
 msgid "Number"
-msgstr "Contrato"
+msgstr "Número"
 
 #: templates/pages/management/contract.html.twig ajax/resaperiod.php:53
 #: ajax/resaperiod.php:59 ajax/resaperiod.php:83 front/report.infocom.php:78
@@ -12183,7 +12182,7 @@ msgstr "Imposible utilizar CAS como origen de conexión externa"
 
 #: src/Auth.php:1701
 msgid "Email attribute for x509 authentication"
-msgstr "Atributo correo electróninco para autenticación x509"
+msgstr "Atributo correo electrónico para autenticación x509"
 
 #: src/Auth.php:1705 src/Auth.php:1709 src/Auth.php:1713
 #, php-format
@@ -13948,7 +13947,7 @@ msgstr "%s %d creado exitosamente"
 #: src/CommonITILRecurrent.php:624
 #, php-format
 msgid "%s creation failed (check mandatory fields)"
-msgstr "Fallo en la creación de %s (verificá los campos obligatorios)"
+msgstr "Fallo en la creación de %s (verifica los campos obligatorios)"
 
 #: src/CommonITILRecurrent.php:630
 #, php-format
@@ -18753,7 +18752,7 @@ msgstr "Mis dispositivos"
 
 #: src/Item_Ticket.php:781 src/NetworkPort.php:1588
 msgid "Delete permanently"
-msgstr "Borrar permanentemente"
+msgstr "Eliminar permanentemente"
 
 #: src/Item_Ticket.php:964 src/CommonDBTM.php:1518
 msgid "Item successfully added"
@@ -18954,7 +18953,7 @@ msgstr "Puede ser requerido para algunos proveedores de correo electrónico."
 #: src/NotificationMailingSetting.php:463
 msgid "If not set, main administrator email will be used."
 msgstr ""
-"Si no se establece, se usará el dirección de correo del administrador "
+"Si no se establece, se usará la dirección de correo del administrador "
 "principal."
 
 #: src/NotificationMailingSetting.php:476
@@ -19774,7 +19773,7 @@ msgstr ""
 #: src/Marketplace/View.php:768
 #, php-format
 msgid "A new version (%s) is available, update?"
-msgstr "Una nueva versión de (%s) disponible, ¿Deseas actualizar?"
+msgstr "Una nueva versión (%s) esta disponible, ¿Deseas actualizar?"
 
 #: src/Marketplace/View.php:781
 #, php-format
@@ -21183,7 +21182,7 @@ msgstr "Número máximo de tareas (ejecución por comando)"
 #: src/Config.php:2141
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr ""
-"Registros en archivos (SQL, correo eléctrónico, acciones automáticas...)"
+"Registros en archivos (SQL, correo electrónico, acciones automáticas...)"
 
 #: src/Config.php:2149 src/Config.php:2153
 msgid "Maintenance mode"
@@ -21362,7 +21361,7 @@ msgstr "La contraseña necesita: mayúsculas"
 
 #: src/Config.php:3589
 msgid "Password need symbol"
-msgstr "La clave necesita: símbolos"
+msgstr "La contraseña necesita: símbolos"
 
 #: src/Config.php:3605
 msgid "Password expiration policy"
@@ -23230,11 +23229,11 @@ msgstr "Hora de finalización del período de ejecución"
 #, php-format
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
-msgstr[0] "Borrado de archivo de sesión %1$s creado hace más de %2$s segundos"
+msgstr[0] "Borrado de archivo de sesión %1$d creado hace más de %2$s segundos"
 msgstr[1] ""
-"Borrado de archivos de sesión %1$s creados hace más de %2$s segundos"
+"Borrado de archivos de sesión %1$d creados hace más de %2$s segundos"
 msgstr[2] ""
-"Borrado de archivos de sesión %1$s creados hace más de %2$s segundos"
+"Borrado de archivos de sesión %1$d creados hace más de %2$s segundos"
 
 #: src/CronTask.php:1835
 #, php-format
@@ -23265,19 +23264,19 @@ msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
 msgstr[0] "Borrado de archivo gráfico %1$d creado hace más de %2$s segundos"
 msgstr[1] ""
-"Borrado de archivos gráficos %1$s creados hace más de %2$s segundos"
+"Borrado de archivos gráficos %1$d creados hace más de %2$s segundos"
 msgstr[2] ""
-"Borrado de archivos gráficos %1$s creados hace más de %2$s segundos"
+"Borrado de archivos gráficos %1$d creados hace más de %2$s segundos"
 
 #: src/CronTask.php:1966
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
-msgstr[0] "Borrado de archivo temporal %1$s creado hace más de %2$s segundos"
+msgstr[0] "Borrado de archivo temporal %1$d creado hace más de %2$s segundos"
 msgstr[1] ""
-"Borrado de archivos temporales %1$s creados hace más de %2$s segundos"
+"Borrado de archivos temporales %1$d creados hace más de %2$s segundos"
 msgstr[2] ""
-"Borrado de archivos temporales %1$s creados hace más de %2$s segundos"
+"Borrado de archivos temporales %1$d creados hace más de %2$s segundos"
 
 #: src/CronTask.php:2078
 msgid "Check for new updates"
@@ -24517,7 +24516,7 @@ msgstr ""
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:160
 msgid "Any previous appliance created in core will be lost."
-msgstr "Cualquier áplicación previa creada en el núcleo se perderá"
+msgstr "Cualquier aplicación previa creada en el núcleo se perderá"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:161
 #: src/Console/Migration/RacksPluginToCoreCommand.php:216
