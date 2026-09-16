@@ -134,9 +134,19 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         // Unregister from direct connect types
         $this->unregisterFromTypeConfig('directconnect_types', $classname);
 
-        // Delete related items
+        // Delete related items, whether the class was acting as the host (asset) or as
+        // the connected peripheral of the relation.
         $relation = new Asset_PeripheralAsset();
-        $relation->deleteByCriteria(['itemtype_asset' => $classname], force: true, history: false);
+        $relation->deleteByCriteria(
+            [
+                'OR' => [
+                    'itemtype_asset'      => $classname,
+                    'itemtype_peripheral' => $classname,
+                ],
+            ],
+            force: true,
+            history: false
+        );
 
         // Clean history related items
         $this->deleteRelationLogs($classname, Asset_PeripheralAsset::class);

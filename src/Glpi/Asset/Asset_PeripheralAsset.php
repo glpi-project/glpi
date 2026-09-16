@@ -279,7 +279,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $specificities['itemtypes'] = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_1']['itemtypes']       = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
-        $specificities['select_items_options_2']['itemtypes']       = $CFG_GLPI['directconnect_types'];
+        $specificities['select_items_options_2']['itemtypes']       = self::getGlobalDirectConnectTypes();
         $specificities['select_items_options_2']['onlyglobal']      = true;
         $specificities['only_remove_all_at_once']                   = true;
 
@@ -899,6 +899,24 @@ TWIG, $twig_params);
         }
 
         return false;
+    }
+
+    /**
+     * Returns the subset of `directconnect_types` that support "global management"
+     * (i.e. have an `is_global` field), meaning a single item of that type can be
+     * connected to several hosts at once.
+     *
+     * @return class-string<CommonDBTM>[]
+     */
+    private static function getGlobalDirectConnectTypes(): array
+    {
+        global $CFG_GLPI;
+
+        return array_values(array_filter(
+            $CFG_GLPI['directconnect_types'],
+            static fn(string $itemtype): bool => is_a($itemtype, CommonDBTM::class, true)
+                && getItemForItemtype($itemtype)->isField('is_global')
+        ));
     }
 
     /**
