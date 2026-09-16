@@ -1432,7 +1432,7 @@ msgstr "Ocultar menú"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Expand menu"
-msgstr ""
+msgstr "Expandir menú"
 
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
@@ -6757,7 +6757,7 @@ msgstr "Se admite la notación CIDR y valores separados por comas."
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Date range"
-msgstr ""
+msgstr "Rango de fechas"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Dashboard/Grid.php:1022
@@ -6896,7 +6896,7 @@ msgstr "Salida de la carga útil (payload)"
 
 #: templates/pages/setup/webhook/webhook.html.twig src/Webhook.php:210
 msgid "API version"
-msgstr ""
+msgstr "Versión de la API"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid ""
@@ -6904,6 +6904,9 @@ msgid ""
 "keep working as long as the webhook stays on the version they were built "
 "for."
 msgstr ""
+"La carga útil (payload) se genera utilizando esta versión de la API. Las "
+"integraciones existentes seguirán funcionando mientras el webhook se "
+"mantenga en la versión para la que fueron creadas."
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Number of retries"
@@ -19742,9 +19745,9 @@ msgstr[2] "Versiones"
 #: src/PlugType.php:40 src/Lock.php:500
 msgid "Plug type"
 msgid_plural "Plug types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tipo de conector"
+msgstr[1] "Tipos de conector"
+msgstr[2] "Tipos de conector"
 
 #: src/OLA.php:205
 msgid "The internal time is recalculated when assigning the OLA"
@@ -27929,7 +27932,7 @@ msgstr[2] "Categorías de instancias"
 
 #: src/Ajax.php:412
 msgid "Select a tab"
-msgstr ""
+msgstr "Seleccionar una pestaña"
 
 #: src/CommonItilObject_Item.php:518
 msgid "Knowledge base entries"
@@ -31125,7 +31128,7 @@ msgstr[2] "Webhooks"
 #: src/Webhook.php:550
 #, php-format
 msgid "%s (deprecated)"
-msgstr ""
+msgstr "%s (obsoleto)"
 
 #: src/Webhook.php:890
 msgid "Payload editor"
@@ -33789,7 +33792,7 @@ msgstr "El nombre del conector es obligatorio"
 
 #: src/Plug.php:116
 msgid "The Support type field cannot be empty."
-msgstr ""
+msgstr "El campo Tipo de soporte no puede estar vacío."
 
 #: src/Plug.php:228
 msgid "Add a new plug"
@@ -37425,7 +37428,7 @@ msgstr "No se pudo cargar la imagen"
 
 #: js/modules/KnowbaseEditor.js:316
 msgid "Text formatting"
-msgstr ""
+msgstr "Formato de texto"
 
 #: js/modules/KnowbaseEditor.js:337
 msgid "Bold"

@@ -6,9 +6,9 @@
 # Translators:
 # 5b63a00e0726b96d7ef35c99d5553cd0_b787b5f <8bb2d0f7e8927228f17fba8639d787be_31711>, 2026
 # DOMBRE Julien <moyo@indepnet.net>, 2026
-# Francisco Bolivar, 2026
 # Cédric Anne, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
+# Francisco Bolivar, 2026
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-14 14:54+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2026\n"
+"Last-Translator: Francisco Bolivar, 2026\n"
 "Language-Team: Spanish (Venezuela) (https://app.transifex.com/glpi/teams/1637/es_VE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1419,7 +1419,7 @@ msgstr "Ocultar menú"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Expand menu"
-msgstr ""
+msgstr "Expandir menú"
 
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
@@ -5015,7 +5015,7 @@ msgstr "Agregar nuevos dispositivos"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 msgid "Illustrations"
-msgstr ""
+msgstr "Ilustraciones"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 msgid "No illustration"
@@ -5883,7 +5883,7 @@ msgstr "Crea un artículo en %s"
 #: templates/pages/tools/kb/_article_row.html.twig
 #, php-format
 msgid "Create a child article under %s"
-msgstr ""
+msgstr "Crear un artículo hijo bajo %s"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Translation mode enabled, currently editing"
@@ -5970,7 +5970,7 @@ msgstr "Programado"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Sub-articles"
-msgstr ""
+msgstr "Subartículos"
 
 #: templates/pages/tools/kb/article.html.twig
 #: src/CommonITILValidation.php:1303
@@ -6028,7 +6028,7 @@ msgstr "recursivo"
 
 #: templates/pages/tools/kb/aside_search_results.html.twig
 msgid "The next results could not be loaded."
-msgstr ""
+msgstr "No se pudieron cargar los siguientes resultados."
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
@@ -6060,7 +6060,7 @@ msgstr "Aún no hay comentarios."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Cancel commenting on selection"
-msgstr ""
+msgstr "Cancelar comentarios sobre la selección"
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add a comment..."
@@ -6130,7 +6130,7 @@ msgstr "Favoritos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Favorite articles"
-msgstr ""
+msgstr "Artículos favoritos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
@@ -6169,7 +6169,7 @@ msgstr "Desvincular elemento"
 
 #: templates/pages/tools/kb/modal/move.html.twig
 msgid "New parent"
-msgstr ""
+msgstr "Nuevo padre"
 
 #: templates/pages/tools/kb/modal/move.html.twig src/Rule.php:650
 #: src/KnowbaseItem.php:1827 src/Group.php:816
@@ -6744,7 +6744,7 @@ msgstr "Se admiten la notación CIDR y los valores separados por comas."
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Date range"
-msgstr ""
+msgstr "Rango de fechas"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Dashboard/Grid.php:1022
@@ -6883,7 +6883,7 @@ msgstr "Salida de carga útil"
 
 #: templates/pages/setup/webhook/webhook.html.twig src/Webhook.php:210
 msgid "API version"
-msgstr ""
+msgstr "Versión de la API"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid ""
@@ -6891,6 +6891,9 @@ msgid ""
 "keep working as long as the webhook stays on the version they were built "
 "for."
 msgstr ""
+"La carga útil se construye utilizando esta versión de la API. Las "
+"integraciones existentes siguen funcionando siempre que el webhook "
+"permanezca en la versión para la que fueron creadas."
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Number of retries"
@@ -19171,6 +19174,8 @@ msgstr "Un artículo no puede ser su propio padre."
 #: src/KnowbaseItem_KnowbaseItem.php:93
 msgid "The root article of the knowledge base cannot have a parent."
 msgstr ""
+"El artículo raíz de la base de conocimientos no puede tener un elemento "
+"principal."
 
 #: src/KnowbaseItem_KnowbaseItem.php:103
 msgid "This link would create a cycle in the knowledge base tree."
@@ -19722,9 +19727,9 @@ msgstr[2] "Versiones del nucleo"
 #: src/PlugType.php:40 src/Lock.php:500
 msgid "Plug type"
 msgid_plural "Plug types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tipo de enchufe"
+msgstr[1] "Tipos de enchufe"
+msgstr[2] "Tipos de enchufe"
 
 #: src/OLA.php:205
 msgid "The internal time is recalculated when assigning the OLA"
@@ -19902,6 +19907,11 @@ msgid ""
 "the number of submitted items, or ask your administrator to increase this "
 "limit."
 msgstr ""
+"El formulario enviado contiene más campos de los permitidos por la directiva"
+" de configuración de PHP \"%1$s\" (valor actual: %2$s). Se ha descartado "
+"parte de los datos enviados; por tanto, no es posible procesar la solicitud."
+" Por favor, reduzca el número de elementos enviados o solicite a su "
+"administrador que aumente este límite."
 
 #: src/Glpi/Error/InputTruncationReason.php:125
 #, php-format
@@ -19911,6 +19921,11 @@ msgid ""
 "dropped, therefore the request cannot be processed. Please submit less data "
 "at once, or ask your administrator to increase this limit."
 msgstr ""
+"Los datos enviados superan el tamaño máximo permitido por la directiva de "
+"configuración de PHP \"%1$s\" (valor actual: %2$s). Los datos enviados han "
+"sido descartados; por tanto, la solicitud no puede procesarse. Por favor, "
+"envíe menos datos de una sola vez o solicite a su administrador que aumente "
+"este límite."
 
 #: src/Glpi/Error/InputTruncationReason.php:126
 #, php-format
@@ -19920,6 +19935,11 @@ msgid ""
 "has been dropped, therefore the request cannot be processed. Please upload "
 "fewer files at once, or ask your administrator to increase this limit."
 msgstr ""
+"El número de archivos subidos supera el máximo permitido por la directiva de"
+" configuración de PHP \"%1$s\" (valor actual: %2$s). Se han descartado "
+"algunos de los archivos subidos; por lo tanto, no es posible procesar la "
+"solicitud. Por favor, suba menos archivos a la vez o solicite a su "
+"administrador que aumente este límite."
 
 #: src/Glpi/Form/ServiceCatalog/SortStrategy/ReverseAlphabeticalSort.php:51
 msgid "Reverse alphabetical"
@@ -19962,6 +19982,9 @@ msgid ""
 "Form \"%s\" has a UUID (\"%s\") already used by another form in the "
 "Formcreator data. A new UUID has been generated to avoid merging them."
 msgstr ""
+"El formulario \"%s\" tiene un UUID (\"%s\") que ya utiliza otro formulario "
+"en los datos de Formcreator. Se ha generado un nuevo UUID para evitar "
+"fusionarlos."
 
 #: src/Glpi/Form/Migration/FormMigration.php:732
 msgid "Importing sections..."
@@ -20076,6 +20099,8 @@ msgid ""
 "Formcreator migration: cannot convert legacy tag \"%s\" tag of question "
 "\"%s\"."
 msgstr ""
+"Migración de Formcreator: no se puede convertir la etiqueta heredada \"%s\" "
+"de la pregunta \"%s\"."
 
 #: src/Glpi/Form/Migration/TagConversionTrait.php:187
 #, php-format
@@ -20083,6 +20108,8 @@ msgid ""
 "Formcreator migration: cannot convert the property \"%s\" tag of question "
 "\"%s\" because it's not an Item question."
 msgstr ""
+"Migración de Formcreator: no se puede convertir la etiqueta de la propiedad "
+"\"%s\" de la pregunta \"%s\" porque no es una pregunta de tipo \"Item\"."
 
 #: src/Glpi/Form/Migration/TagConversionTrait.php:201
 #, php-format
@@ -20090,11 +20117,14 @@ msgid ""
 "Formcreator migration: cannot convert the property \"%s\" tag of question "
 "\"%s\" because the Itemtype of the question is not a valid CommonDBTM."
 msgstr ""
+"Migración de Formcreator: no se puede convertir la propiedad de la etiqueta "
+"\"%s\" de la pregunta \"%s\" porque el tipo de elemento (Itemtype) de la "
+"pregunta no es un CommonDBTM válido."
 
 #: src/Glpi/Form/Migration/TagConversionTrait.php:219
 #, php-format
 msgid "Formcreator migration: unknown property \"%s\" for %s"
-msgstr ""
+msgstr "Migración de Formcreator: propiedad desconocida «%s» para %s"
 
 #: src/Glpi/Form/Migration/TagConversionTrait.php:243
 #, php-format
@@ -20102,6 +20132,8 @@ msgid ""
 "Formcreator migration: cannot convert the property \"%s\" tag of question "
 "\"%s\""
 msgstr ""
+"Migración de Formcreator: no se puede convertir la propiedad etiqueta \"%s\""
+" de la pregunta \"%s\""
 
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:147
 #, php-format
@@ -20157,11 +20189,11 @@ msgstr "Formulario completo (todas las preguntas y respuestas)"
 #: src/Glpi/Form/Tag/ItemPropertyTagProvider.php:94
 #, php-format
 msgid "Answer: %1$s › %2$s"
-msgstr ""
+msgstr "Respuesta: %1$s › %2$s"
 
 #: src/Glpi/Form/Tag/ItemPropertyTagProvider.php:220
 msgid "Email addresses"
-msgstr ""
+msgstr "Direcciones de correo electrónico"
 
 #: src/Glpi/Form/Tag/FormTagProvider.php:91
 #, php-format
@@ -21036,7 +21068,7 @@ msgstr "Introduzca una opción"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:498
 msgid "Copy UUID"
-msgstr ""
+msgstr "Copiar UUID"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:104
 msgid "Browse help articles"
@@ -26101,7 +26133,7 @@ msgstr "Habilitar el uso de zonas horarias."
 #: src/Glpi/System/Requirement/DbTimezones.php:68
 #, php-format
 msgid "Timezones seems not loaded, see %1$s"
-msgstr ""
+msgstr "Parece que las zonas horarias no se han cargado; consulte %1$s"
 
 #: src/Glpi/System/Requirement/DbTimezones.php:73
 msgid "Timezones seems loaded in database."
@@ -27361,7 +27393,7 @@ msgstr "Número de computadoras por antigüedad"
 
 #: src/Glpi/Dashboard/Grid.php:1682
 msgid "Number of opened and solved tickets by group"
-msgstr ""
+msgstr "Número de casos abiertos y resueltos por grupo"
 
 #: src/Glpi/Dashboard/Grid.php:1697
 msgid "Editable markdown card"
@@ -27883,7 +27915,7 @@ msgstr[2] "Categorías de instancias de base de datos"
 
 #: src/Ajax.php:412
 msgid "Select a tab"
-msgstr ""
+msgstr "Selecciona una pestaña"
 
 #: src/CommonItilObject_Item.php:518
 msgid "Knowledge base entries"
@@ -29705,35 +29737,35 @@ msgstr "Motivo pendiente eliminado"
 
 #: src/NotificationTargetCommonITILObject.php:142
 msgid "Pending reason auto resolve"
-msgstr ""
+msgstr "Resolución automática por motivo pendiente"
 
 #: src/NotificationTargetCommonITILObject.php:143
 msgid "Deletion of a user in requesters"
-msgstr ""
+msgstr "Eliminación de un usuario en solicitantes"
 
 #: src/NotificationTargetCommonITILObject.php:144
 msgid "Deletion of a group in requesters"
-msgstr ""
+msgstr "Eliminación de un grupo en solicitantes"
 
 #: src/NotificationTargetCommonITILObject.php:145
 msgid "Deletion of a user in observers"
-msgstr ""
+msgstr "Eliminación de un usuario en observadores"
 
 #: src/NotificationTargetCommonITILObject.php:146
 msgid "Deletion of a group in observers"
-msgstr ""
+msgstr "Supresión de un grupo en observadores"
 
 #: src/NotificationTargetCommonITILObject.php:147
 msgid "Deletion of a user in assignees"
-msgstr ""
+msgstr "Eliminar un usuario de la lista de asignados"
 
 #: src/NotificationTargetCommonITILObject.php:148
 msgid "Deletion of a group in assignees"
-msgstr ""
+msgstr "Eliminación de un grupo en los asignados"
 
 #: src/NotificationTargetCommonITILObject.php:149
 msgid "Deletion of a supplier in assignees"
-msgstr ""
+msgstr "Eliminación de un proveedor en los asignados"
 
 #: src/NotificationTargetCommonITILObject.php:1056
 msgid "Mentioned user"
@@ -29745,27 +29777,27 @@ msgstr "Técnico anteriormente responsable del caso"
 
 #: src/NotificationTargetCommonITILObject.php:1071
 msgid "Former requester"
-msgstr ""
+msgstr "Solicitante anterior"
 
 #: src/NotificationTargetCommonITILObject.php:1075
 msgid "Former requester group"
-msgstr ""
+msgstr "Grupo anterior de solicitantes"
 
 #: src/NotificationTargetCommonITILObject.php:1079
 msgid "Former observer"
-msgstr ""
+msgstr "Observador anterior"
 
 #: src/NotificationTargetCommonITILObject.php:1083
 msgid "Former observer group"
-msgstr ""
+msgstr "Grupo anterior de observadores"
 
 #: src/NotificationTargetCommonITILObject.php:1087
 msgid "Former group in charge of the ticket"
-msgstr ""
+msgstr "Antiguo grupo a cargo de la gestión de las entradas"
 
 #: src/NotificationTargetCommonITILObject.php:1091
 msgid "Former supplier in charge of the ticket"
-msgstr ""
+msgstr "Proveedor anterior a cargo del caso"
 
 #: src/NotificationTargetCommonITILObject.php:1106
 #, php-format
@@ -30262,7 +30294,7 @@ msgstr "Número máximo de casos eliminados por entidad (0 = ilimitado)"
 
 #: src/Ticket.php:5058
 msgid "Generation of tickets satisfaction surveys"
-msgstr ""
+msgstr "Generación de encuestas de satisfacción de casos"
 
 #: src/Ticket.php:5315
 msgid "See my ticket"
@@ -30900,7 +30932,7 @@ msgstr "No se encontró ningún cambio."
 
 #: src/Change.php:1646
 msgid "Generation of changes satisfaction surveys"
-msgstr ""
+msgstr "Generación de encuestas de satisfacción sobre cambios"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:43
 msgid "Dictionary of phone types"
@@ -31080,7 +31112,7 @@ msgstr[2] "Webhooks"
 #: src/Webhook.php:550
 #, php-format
 msgid "%s (deprecated)"
-msgstr ""
+msgstr "%s (obsoleto)"
 
 #: src/Webhook.php:890
 msgid "Payload editor"
@@ -33377,7 +33409,7 @@ msgstr "Base de conocimiento"
 
 #: src/KnowbaseItem.php:661
 msgid "The root article of the knowledge base cannot be deleted."
-msgstr ""
+msgstr "No se puede eliminar el artículo raíz de la base de conocimientos."
 
 #: src/KnowbaseItem.php:1744
 msgid "Permissions"
@@ -33393,7 +33425,7 @@ msgstr "Agregar a las preguntas frecuentes"
 
 #: src/KnowbaseItem.php:1833
 msgid "Move article"
-msgstr ""
+msgstr "Mover artículo"
 
 #: src/KnowbaseItem.php:1840 js/modules/Knowbase/AsideController.js:1017
 #: js/modules/Knowbase/ArticleController.js:684
@@ -33567,6 +33599,8 @@ msgstr "No se pudo conectar con el servidor %d"
 #, php-format
 msgid "Error during message import (%s). Check in \"%s\" for more details"
 msgstr ""
+"Error durante la importación de mensajes (%s). Consulte \"%s\" para obtener "
+"más detalles"
 
 #. TRANS: %s is a directory
 #: src/MailCollector.php:1034
@@ -33586,6 +33620,8 @@ msgstr "El archivo adjunto no es válido"
 #, php-format
 msgid "Error during mails collect (%s). Check in \"%s\" for more details"
 msgstr ""
+"Error durante la recopilación de correos (%s). Consulte \"%s\" para obtener "
+"más detalles"
 
 #: src/MailCollector.php:2010
 msgid "Retrieve email (Mails receivers)"
@@ -33748,7 +33784,7 @@ msgstr "Se requiere el nombre del enchufe"
 
 #: src/Plug.php:116
 msgid "The Support type field cannot be empty."
-msgstr ""
+msgstr "El campo Tipo de soporte no puede estar vacío."
 
 #: src/Plug.php:228
 msgid "Add a new plug"
@@ -35677,7 +35713,7 @@ msgstr "Parte inferior"
 
 #: src/Item_SoftwareVersion.php:145
 msgid "This software version is already installed on this item."
-msgstr ""
+msgstr "Esta versión de software ya está instalada en este artículo."
 
 #: src/Item_SoftwareVersion.php:1071 src/Item_SoftwareVersion.php:1175
 msgid "All categories"
@@ -37391,7 +37427,7 @@ msgstr "Error al cargar la imagen"
 
 #: js/modules/KnowbaseEditor.js:316
 msgid "Text formatting"
-msgstr ""
+msgstr "Formato de texto"
 
 #: js/modules/KnowbaseEditor.js:337
 msgid "Bold"
@@ -37598,7 +37634,7 @@ msgstr "%d documentos vinculados correctamente"
 #: js/modules/Knowbase/DomTextIndex.js:143
 #: js/modules/TipTap/CommentHighlightExtension.js:56
 msgid "View comment"
-msgstr ""
+msgstr "Ver comentario"
 
 #: js/modules/Knowbase/SharePopoverController.js:127
 msgid "The current link will stop working. Continue?"
