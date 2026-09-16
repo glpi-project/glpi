@@ -3098,6 +3098,21 @@ class SearchTest extends DbTestCase
         $this->assertDoesNotMatchRegularExpression('/ORDER BY .* (ASC|DESC) LIMIT/', $sql);
     }
 
+    public function testDefaultSortKeepsNoOrderByForSoftware()
+    {
+        // Regression test for glpi-project/glpi#25379
+        // Software is a high-volume inventoried type whose default search must also
+        // keep the no-ORDER-BY optimization, even though it is not in asset_types.
+        $data = $this->doSearch('Software', [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+        ]);
+
+        $sql = $this->cleanSQL($data['sql']['search']);
+        $this->assertDoesNotMatchRegularExpression('/ORDER BY .* (ASC|DESC) LIMIT/', $sql);
+    }
+
 
     public function testGroupParamAfterMeta()
     {
