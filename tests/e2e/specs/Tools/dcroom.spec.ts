@@ -105,8 +105,7 @@ test.describe('DC Room', () => {
         const dialog = page.getByRole('dialog');
         await expect(dialog).toHaveAttribute('data-cy-shown', 'true');
 
-        //TODO the heading here should not be level 3
-        await expect(dialog.getByRole('heading', { level: 3 }))
+        await expect(dialog.getByRole('heading', { level: 1 }))
             .toContainText('New item - Rack')
         ;
         await dialog.getByRole('button', { name: 'Close' }).click();

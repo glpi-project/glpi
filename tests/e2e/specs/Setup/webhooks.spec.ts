@@ -116,9 +116,9 @@ test.describe('Webhooks', () => {
         const copy_button = secret.locator('+ * + *');
 
         await expect(secret).toHaveAttribute('type', 'password');
-        await disclose_button.dispatchEvent('mousedown');
+        await disclose_button.click();
         await expect(secret).toHaveAttribute('type', 'text');
-        await disclose_button.dispatchEvent('mouseup');
+        await disclose_button.click();
         await expect(secret).toHaveAttribute('type', 'password');
 
         await copy_button.click();

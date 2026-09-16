@@ -43,7 +43,7 @@ test.describe("Debug Mode", () => {
 
         /* eslint-disable playwright/no-raw-locators */
         await expect(page.locator('#debug-toolbar-applet')).not.toBeAttached();
-        await page.locator('header a.user-menu-dropdown-toggle').click();
+        await page.locator('header button.user-menu-dropdown-toggle').click();
         await expect(page.locator('.dropdown-item[title="Change mode"]'))
             .not.toBeAttached()
         ;
@@ -56,7 +56,7 @@ test.describe("Debug Mode", () => {
 
         /* eslint-disable playwright/no-raw-locators */
         await expect(page.locator('#debug-toolbar-applet')).not.toBeAttached();
-        await page.locator('header a.user-menu-dropdown-toggle').click();
+        await page.locator('header button.user-menu-dropdown-toggle').click();
         // `.first()`: the user menu is rendered twice, only one being shown
         // depending on the screen size.
         const change_mode = page

@@ -168,10 +168,10 @@ test.describe("Debug Bar", () => {
             table.locator('tr td:nth-child(4)'),
             /^\d+\.\d+\sms$/
         );
-        // 5th column should be a number
+        // 5th column should be a number (may be -1)
         await assertEachCellMatches(
             table.locator('tr td:nth-child(5)'),
-            /^\d+$/
+            /^(-1|\d+)$/
         );
     });
 

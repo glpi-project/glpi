@@ -74,7 +74,7 @@ test.describe('Import forms', () => {
 
     const doOpenImporter = async (page: Page): Promise<void> => {
         await page.goto('/front/form/form.php');
-        await page.getByRole('button', { name: "Import forms" }).click();
+        await page.getByRole('link', { name: "Import forms" }).click();
     };
 
     const getRows = (page: Page): Locator => {
