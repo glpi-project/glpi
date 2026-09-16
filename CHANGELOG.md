@@ -917,7 +917,28 @@ If you have anything pinned to specific v2 versions, please try to pin to the la
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.27] unreleased
+## [10.0.28] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.27] 2026-09-16
 
 ### Added
 
