@@ -210,6 +210,11 @@ export class KnowbaseItemPage extends GlpiPage
         return this.aside.getByRole('button', { name: 'Show articles list' });
     }
 
+    public getAsideResizer(): Locator
+    {
+        return this.aside.getByRole('separator', { name: 'Resize articles list' });
+    }
+
     public async doCollapseAside(): Promise<void>
     {
         await this.getAsideCollapseButton().click();

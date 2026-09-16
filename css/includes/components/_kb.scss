@@ -1283,7 +1283,11 @@ body.in_modal .kb-editor-reserved {
 }
 
 [data-main-page-aside="knowbaseitem"] {
-    max-width: 300px;
+    // Resizable from the edge handle, up to half of the row; the article column takes the rest.
+    // max-width repeats the width so the collapse transition has a value to animate from.
+    flex: 0 0 auto;
+    width: clamp(300px, var(--kb-aside-width, 300px), 50%);
+    max-width: clamp(300px, var(--kb-aside-width, 300px), 50%);
     background-color: var(--tblr-bg-surface);
 
     .node,
@@ -1520,6 +1524,15 @@ body.in_modal .kb-editor-reserved {
         transition: max-width 0.35s ease-in-out;
     }
 
+    // The width must follow the pointer, not glide behind it.
+    &[data-glpi-kb-aside-resizing] {
+        transition: none;
+    }
+
+    .kb-aside-resizer {
+        display: none;
+    }
+
     // Layout in CSS, not `.d-flex`: its `!important` would beat the collapsed `display: none`.
     [data-glpi-kb-aside-body] {
         display: flex;
@@ -1572,10 +1585,36 @@ body.in_modal .kb-editor-reserved {
             inset: 0;
         }
 
+        // Drag handle straddling the inline-end edge; a 2px line shows on hover, focus and drag.
+        .kb-aside-resizer {
+            display: block;
+            position: absolute;
+            inset-block: 0;
+            inset-inline-end: -3px;
+            width: 6px;
+            z-index: 1;
+            cursor: col-resize;
+            touch-action: none;
+
+            &:hover,
+            &:focus-visible {
+                outline: none;
+                background: linear-gradient(var(--tblr-primary), var(--tblr-primary)) center / 2px 100% no-repeat;
+            }
+        }
+
+        &[data-glpi-kb-aside-resizing] .kb-aside-resizer {
+            background: linear-gradient(var(--tblr-primary), var(--tblr-primary)) center / 2px 100% no-repeat;
+        }
+
         // Collapse via max-width + overflow:hidden (zeroes the flex min so the column shrinks to the rail).
         &[data-glpi-kb-aside-collapsed] {
             max-width: 2.75rem;
             overflow: hidden;
+
+            .kb-aside-resizer {
+                display: none;
+            }
 
             [data-glpi-kb-aside-body] {
                 display: none;

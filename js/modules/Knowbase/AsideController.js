@@ -100,6 +100,16 @@ export class GlpiKnowbaseAsideController
      */
     static #STORAGE_KEY = 'glpi-kb-aside-collapsed';
 
+    /**
+     * localStorage key persisting the desktop aside width (px).
+     * @type {string}
+     */
+    static #WIDTH_STORAGE_KEY = 'glpi-kb-aside-width';
+
+    /** Aside width bounds and keyboard step (px); the max is 50% of the row, as in CSS. */
+    static #MIN_WIDTH = 300;
+    static #WIDTH_STEP = 16;
+
     /** Dwell delay (ms) before a hovered/focused row prefetches its actions menu. @type {number} */
     static #PREFETCH_DELAY_MS = 150;
 
@@ -126,6 +136,7 @@ export class GlpiKnowbaseAsideController
         this.#initCreateArticle();
         this.#initActions();
         this.#initToggle();
+        this.#initResize();
     }
 
     #initCategoryToggle()
@@ -297,6 +308,99 @@ export class GlpiKnowbaseAsideController
     {
         try {
             window.localStorage.setItem(GlpiKnowbaseAsideController.#STORAGE_KEY, collapsed ? '1' : '0');
+        } catch { /* storage unavailable */ }
+    }
+
+    #initResize()
+    {
+        const handle = this.#aside.querySelector('[data-glpi-kb-aside-resizer]');
+        if (!handle) {
+            return;
+        }
+        const min = GlpiKnowbaseAsideController.#MIN_WIDTH;
+        const step = GlpiKnowbaseAsideController.#WIDTH_STEP;
+        const clamp = (w) => Math.round(Math.min(Math.max(w, min), Math.max(min, this.#aside.parentElement.clientWidth / 2)));
+        const is_rtl = () => getComputedStyle(this.#aside).direction === 'rtl';
+
+        // Requested width; CSS clamps what is rendered, the ARIA values mirror that.
+        let width = this.#readWidth();
+        const syncAria = () => {
+            handle.setAttribute('aria-valuenow', String(clamp(width)));
+            handle.setAttribute('aria-valuemax', String(clamp(Infinity)));
+        };
+        const setWidth = (w) => {
+            width = clamp(w);
+            this.#aside.style.setProperty('--kb-aside-width', `${width}px`);
+            syncAria();
+        };
+        syncAria();
+        window.addEventListener('resize', syncAria);
+
+        handle.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0) {
+                return;
+            }
+            e.preventDefault(); // no text selection while dragging
+            handle.setPointerCapture(e.pointerId);
+            this.#aside.setAttribute('data-glpi-kb-aside-resizing', '');
+        });
+        handle.addEventListener('pointermove', (e) => {
+            if (!handle.hasPointerCapture(e.pointerId)) {
+                return;
+            }
+            const rect = this.#aside.getBoundingClientRect();
+            setWidth(is_rtl() ? rect.right - e.clientX : e.clientX - rect.left);
+        });
+        // Fires on release and on any capture loss, so the drag always ends cleanly.
+        handle.addEventListener('lostpointercapture', () => {
+            this.#aside.removeAttribute('data-glpi-kb-aside-resizing');
+            this.#storeWidth(width);
+        });
+
+        handle.addEventListener('keydown', (e) => {
+            const grow = is_rtl() ? -step : step;
+            const next = {
+                ArrowLeft: clamp(width) - grow,
+                ArrowRight: clamp(width) + grow,
+                Home: min,
+                End: Infinity,
+            }[e.key];
+            if (next === undefined) {
+                return;
+            }
+            e.preventDefault();
+            setWidth(next);
+            this.#storeWidth(width);
+        });
+
+        handle.addEventListener('dblclick', () => {
+            width = min;
+            this.#aside.style.removeProperty('--kb-aside-width');
+            syncAria();
+            this.#storeWidth(null);
+        });
+    }
+
+    /** @returns {number} */
+    #readWidth()
+    {
+        try {
+            const width = parseInt(window.localStorage.getItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY) ?? '', 10);
+            return Number.isFinite(width) ? width : GlpiKnowbaseAsideController.#MIN_WIDTH;
+        } catch {
+            return GlpiKnowbaseAsideController.#MIN_WIDTH;
+        }
+    }
+
+    /** @param {number|null} width null forgets the stored width */
+    #storeWidth(width)
+    {
+        try {
+            if (width === null) {
+                window.localStorage.removeItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY);
+            } else {
+                window.localStorage.setItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY, String(width));
+            }
         } catch { /* storage unavailable */ }
     }
 
