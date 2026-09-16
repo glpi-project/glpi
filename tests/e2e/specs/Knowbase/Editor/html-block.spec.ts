@@ -155,19 +155,27 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
 
     test.describe('Slash command /HTML Block dialog', () => {
 
-        test('HTML Block is hidden from the menu while composing a brand-new article', async ({ page, profile }) => {
+        test('HTML Block is usable while composing a brand-new article', async ({ page, profile }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
 
             await page.goto('/front/knowbaseitem.form.php');
 
             // The add page has no edit toggle, helpers still find the editor.
-            const menu = await kb.slashMenu.open();
-            await expect(menu.getByRole('button', { name: 'HTML Block' })).toBeHidden();
-            // Ensures the menu is populated.
-            await expect(menu.getByRole('button', { name: 'Table' })).toBeVisible();
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('HTML Block');
 
-            await kb.slashMenu.close();
+            const dialog = kb.htmlBlockDialog;
+            await expect(dialog).toBeVisible();
+
+            // The article has no id yet, so the preview exercises the id-less sanitize route.
+            await dialog.getByLabel('HTML source').fill('<p onclick="alert(1)">Hi</p><script>alert(1)</script>');
+            await expect(dialog.getByRole('region', { name: 'Preview' })).toContainText('Hi');
+
+            await dialog.getByRole('button', { name: 'Save' }).click();
+            await expect(dialog).toBeHidden();
+
+            await expect(kb.htmlBlock).toHaveText('Hi');
         });
 
         test('Insert an HTML block via the slash command', async ({ page, profile, api }) => {

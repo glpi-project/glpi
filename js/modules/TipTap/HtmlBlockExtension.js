@@ -151,26 +151,31 @@ export const HtmlBlock = Node.create({
         return {
             /**
              * Open the HTML block dialog. Save updates the block at `getPos()` when given, else inserts a new block at the selection.
-             * Unavailable without a saved article: the sanitize endpoint needs its id.
              */
             openHtmlBlockDialog: (getPos = null) => ({ editor, dispatch }) => {
                 const { itemId } = this.options;
-                if (!(itemId > 0) || !editor.isEditable) {
+                if (!editor.isEditable) {
+                    return false;
+                }
+                // `getPos()` returns undefined once the node view is detached; `nodeAt()` throws on it, and returns null outside a node start.
+                const pos = getPos ? getPos() : undefined;
+                const node = pos === undefined ? null : editor.state.doc.nodeAt(pos);
+                if (getPos && node === null) {
                     return false;
                 }
                 if (dispatch) {
                     showHtmlBlockDialog({
                         itemId,
-                        initialHtml: getPos ? editor.state.doc.nodeAt(getPos()).attrs.html : '',
+                        initialHtml: node ? node.attrs.html : '',
                         onSave: (sanitizedHtml) => {
                             if (!getPos) {
                                 editor.chain().focus().insertContent({ type: this.name, attrs: { html: sanitizedHtml } }).run();
                                 return;
                             }
-                            // `getPos()` returns undefined once the node view is detached.
-                            const pos = getPos();
-                            if (pos !== undefined) {
-                                editor.view.dispatch(editor.state.tr.setNodeMarkup(pos, undefined, { html: sanitizedHtml }));
+                            // Re-read: the block may have moved between opening the dialog and saving.
+                            const save_pos = getPos();
+                            if (save_pos !== undefined) {
+                                editor.view.dispatch(editor.state.tr.setNodeMarkup(save_pos, undefined, { html: sanitizedHtml }));
                             }
                         },
                         onClose: () => editor.commands.focus(),

@@ -191,6 +191,11 @@ final class KnowbaseItemController extends AbstractController
     }
 
     #[Route(
+        "/Knowbase/KnowbaseItem/SanitizeHtmlBlock",
+        name: "knowbaseitem_sanitize_html_block_new",
+        methods: ["POST"]
+    )]
+    #[Route(
         "/Knowbase/KnowbaseItem/{knowbaseitems_id}/SanitizeHtmlBlock",
         name: "knowbaseitem_sanitize_html_block",
         methods: ["POST"],
@@ -203,11 +208,15 @@ final class KnowbaseItemController extends AbstractController
         $id = $request->attributes->getInt('knowbaseitems_id');
 
         $kbitem = new KnowbaseItem();
-        if (!$kbitem->getFromDB($id)) {
-            throw new NotFoundHttpException();
-        }
+        if ($id > 0) {
+            if (!$kbitem->getFromDB($id)) {
+                throw new NotFoundHttpException();
+            }
 
-        if (!$kbitem->can($id, UPDATE)) {
+            if (!$kbitem->can($id, UPDATE)) {
+                throw new AccessDeniedHttpException();
+            }
+        } elseif (!$kbitem->can(-1, CREATE)) {
             throw new AccessDeniedHttpException();
         }
 

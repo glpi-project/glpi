@@ -96,6 +96,12 @@ final class SaveTranslationController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        // Sanitize HTML content to prevent XSS, same as `KnowbaseItemController::updateAnswer()`
+        // does for the default-language answer. `is_html`: this is a store, not a render, so
+        // skip the plain-text guess that would wrap a non-editor client's plain answer in `<p>`
+        // and escape any tag `isRichTextHtmlContent()` does not know.
+        $answer = RichText::getSafeHtml($answer, false, true);
+
         // Make sure title is not empty if specified
         if ($name !== null) {
             $name = strip_tags(trim($name));

@@ -300,7 +300,6 @@ const SLASH_COMMANDS = [
     {
         title: __('HTML Block'),
         icon: 'ti ti-code-dots',
-        isAvailable: (editor) => editor.can().openHtmlBlockDialog(),
         command: (editor, range) => {
             editor.chain().focus().deleteRange(range).run();
             editor.commands.openHtmlBlockDialog();
@@ -372,12 +371,9 @@ const SlashCommands = Extension.create({
                     }
                     return true;
                 },
-                items: ({ editor, query }) => {
+                items: ({ query }) => {
                     const lowerQuery = query.toLowerCase();
-                    return SLASH_COMMANDS.filter((item) =>
-                        (!item.isAvailable || item.isAvailable(editor))
-                        && item.title.toLowerCase().includes(lowerQuery)
-                    );
+                    return SLASH_COMMANDS.filter((item) => item.title.toLowerCase().includes(lowerQuery));
                 },
                 render: () => {
                     const { computePosition, autoUpdate, offset, flip, shift } = FloatingUI;

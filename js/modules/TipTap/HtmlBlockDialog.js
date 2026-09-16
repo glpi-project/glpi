@@ -41,7 +41,7 @@ const DEBOUNCE_MS = 400;
  * matches what gets stored. Editor-agnostic: takes callbacks, not an editor.
  *
  * @param {object} options
- * @param {number} options.itemId - Saved KB article id.
+ * @param {number|null} options.itemId - Saved KB article id, null while the article is being created.
  * @param {string} options.initialHtml - Existing source, or '' for a new block.
  * @param {(sanitizedHtml: string) => void} options.onSave
  * @param {() => void} options.onClose
@@ -150,7 +150,14 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose }) {
         }
         try {
             // No toast: the failure is reported inline below, right where the user is looking.
-            const response = await post(`Knowbase/KnowbaseItem/${itemId}/SanitizeHtmlBlock`, { html: raw }, [], false);
+            const response = await post(
+                itemId > 0
+                    ? `Knowbase/KnowbaseItem/${itemId}/SanitizeHtmlBlock`
+                    : 'Knowbase/KnowbaseItem/SanitizeHtmlBlock',
+                { html: raw },
+                [],
+                false
+            );
             const data = await response.json();
             // Source changed during the request: a newer one owns the state.
             if (sourceInput.value !== raw) {

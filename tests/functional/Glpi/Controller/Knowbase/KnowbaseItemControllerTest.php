@@ -81,15 +81,19 @@ class KnowbaseItemControllerTest extends DbTestCase
         return (new KnowbaseItemController())->updateAnswer($request);
     }
 
-    private function sanitizeHtmlBlock(int $id, array $body): JsonResponse
+    private function sanitizeHtmlBlock(?int $id, array $body): JsonResponse
     {
         $request = Request::create(
-            '/Knowbase/KnowbaseItem/' . $id . '/SanitizeHtmlBlock',
+            $id === null
+                ? '/Knowbase/KnowbaseItem/SanitizeHtmlBlock'
+                : '/Knowbase/KnowbaseItem/' . $id . '/SanitizeHtmlBlock',
             'POST',
             server: ['CONTENT_TYPE' => 'application/json'],
             content: json_encode($body),
         );
-        $request->attributes->set('knowbaseitems_id', $id);
+        if ($id !== null) {
+            $request->attributes->set('knowbaseitems_id', $id);
+        }
 
         return (new KnowbaseItemController())->sanitizeHtmlBlock($request);
     }
@@ -255,5 +259,35 @@ class KnowbaseItemControllerTest extends DbTestCase
 
         $this->expectException(NotFoundHttpException::class);
         $this->sanitizeHtmlBlock(999999, ['html' => '<p>Hi</p>']);
+    }
+
+    /**
+     * The article has no id yet while it is being created. The id only drives the
+     * rights check, the sanitizing itself never needs it.
+     */
+    public function testSanitizeHtmlBlockWorksWhileArticleIsBeingCreated(): void
+    {
+        $this->login();
+
+        $response = $this->sanitizeHtmlBlock(null, [
+            'html' => '<p onclick="alert(1)">Hi</p><script>alert(1)</script>',
+        ]);
+
+        $payload = json_decode($response->getContent(), true);
+        $this->assertTrue($payload['success']);
+        $this->assertStringContainsString('<p>Hi</p>', $payload['html']);
+        $this->assertStringNotContainsString('<script', $payload['html']);
+        $this->assertStringNotContainsString('onclick', $payload['html']);
+    }
+
+    public function testSanitizeHtmlBlockDeniedWithoutCreateRightWhileArticleIsBeingCreated(): void
+    {
+        $this->login();
+
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->sanitizeHtmlBlock(null, ['html' => '<p>Hi</p>']);
     }
 }
