@@ -82,7 +82,7 @@ final class QuestionDropdownValuesController extends AbstractController
             $key   = sprintf('%s-%s', AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION, $uuid);
             $label = FormTranslation::translate($question, $key) ?? $option;
 
-            if ($search_text !== '' && stripos($label, $search_text) === false) {
+            if ($search_text !== '' && stripos($label, (string) $search_text) === false) {
                 continue;
             }
 
