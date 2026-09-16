@@ -183,6 +183,22 @@ class EntityTest extends DbTestCase
         $this->assertEquals($input, $entity->prepareInputForUpdate($input));
     }
 
+    public function testPrepareInputForUpdateSanitizesEmptyDefaultSatisfactionRate(): void
+    {
+        $this->login();
+
+        $entity = new Entity();
+        $input = [
+            'id' => 1,
+            'inquest_default_rate' => '',
+            'inquest_default_rate_change' => '',
+        ];
+
+        $result = $entity->prepareInputForUpdate($input);
+        $this->assertSame(0, $result['inquest_default_rate']);
+        $this->assertSame(0, $result['inquest_default_rate_change']);
+    }
+
     /**
      * Test that entity creation generates sequential IDs.
      */
