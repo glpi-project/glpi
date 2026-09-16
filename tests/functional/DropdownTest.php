@@ -2668,7 +2668,7 @@ HTML;
             '_idor_token' => Session::getNewIDORToken(Ticket::class, $base_post),
         ], false);
         $this->assertNotEmpty($results['results']);
-        $user_result = array_filter($results['results'], static fn ($r) => $r['id'] === 'User_' . $user->getID());
+        $user_result = array_filter($results['results'], static fn($r) => $r['id'] === 'User_' . $user->getID());
         $this->assertNotEmpty($user_result);
         $this->assertSame(1, (int) reset($user_result)['use_notification']);
 
@@ -2677,7 +2677,7 @@ HTML;
             '_idor_token' => Session::getNewIDORToken(Ticket::class, $base_post),
         ], false);
         $this->assertNotEmpty($results['results']);
-        $user_result = array_filter($results['results'], static fn ($r) => $r['id'] === 'User_' . $user->getID());
+        $user_result = array_filter($results['results'], static fn($r) => $r['id'] === 'User_' . $user->getID());
         $this->assertNotEmpty($user_result);
         $this->assertSame(0, (int) reset($user_result)['use_notification']);
     }
