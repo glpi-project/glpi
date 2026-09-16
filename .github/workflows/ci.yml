@@ -362,6 +362,22 @@ jobs:
         run:  |
           docker compose exec -T app bin/console config:set url_base http://localhost:8090 --env=e2e_testing
           docker compose exec -T app npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      # These tests change global data, thus they can't run beside the tests
+      # above. They can however be sharded like any other test, as each shard
+      # uses its own containers and its own database.
+      # The blob report name must be set explicitly, otherwise it would be the
+      # same as the one produced by the run above and the reports would
+      # overwrite each other once merged.
+      # TODO: remove `--pass-with-no-tests` once the first isolated spec is added.
+      - name: Run isolated Playwright tests
+        if: ${{ !cancelled() }}
+        run: |
+          docker compose exec -T \
+            -e PLAYWRIGHT_BLOB_OUTPUT_NAME=report-isolated-${{ matrix.shardIndex }}.zip \
+            app npx playwright test \
+            -c playwright.isolated.config.ts \
+            --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} \
+            --pass-with-no-tests
       - name: Check for PHP errors
         if: ${{ !cancelled() }}
         run: |
@@ -378,6 +394,15 @@ jobs:
         with:
           name: blob-report-${{ matrix.shardIndex }}
           path: blob-report/
+          retention-days: 1
+      # The artifact name matches the `blob-report-*` pattern used by the
+      # `playwright-merge-reports` job, thus it is merged with the other ones.
+      - name: Upload isolated blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: blob-report-isolated-${{ matrix.shardIndex }}
+          path: blob-report-isolated/
           retention-days: 1
 
   playwright-merge-reports:
