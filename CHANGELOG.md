@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [11.0.9] unreleased
+## [11.0.9] 2026-09-16
 
 ### Added
 - System requirements now check that the security key files (`glpicrypt.key`, `oauth.pem` and `oauth.pub`) can be read, or created when missing.
