@@ -66,14 +66,6 @@ const normalizeHtml = (html) => {
     return div.innerHTML;
 };
 
-const rememberHtml = (html) => {
-    copiedHtml.add(normalizeHtml(html));
-    // A `Set` iterates in insertion order. ponytail: plain cap, make it an LRU if a real workflow ever overflows it.
-    while (copiedHtml.size > COPIED_HTML_LIMIT) {
-        copiedHtml.delete(copiedHtml.values().next().value);
-    }
-};
-
 export const HtmlBlock = Node.create({
     name: 'kbHtmlBlock',
     group: 'block',
@@ -129,9 +121,13 @@ export const HtmlBlock = Node.create({
         const rememberCopiedBlocks = (view) => {
             view.state.selection.content().content.descendants((node) => {
                 if (node.type === type) {
-                    rememberHtml(node.attrs.html);
+                    copiedHtml.add(normalizeHtml(node.attrs.html));
                 }
             });
+            // A `Set` iterates in insertion order. ponytail: plain cap, make it an LRU if a real workflow ever overflows it.
+            while (copiedHtml.size > COPIED_HTML_LIMIT) {
+                copiedHtml.delete(copiedHtml.values().next().value);
+            }
             return false;
         };
 
@@ -151,6 +147,40 @@ export const HtmlBlock = Node.create({
         ];
     },
 
+    addCommands() {
+        return {
+            /**
+             * Open the HTML block dialog. Save updates the block at `getPos()` when given, else inserts a new block at the selection.
+             * Unavailable without a saved article: the sanitize endpoint needs its id.
+             */
+            openHtmlBlockDialog: (getPos = null) => ({ editor, dispatch }) => {
+                const { itemId } = this.options;
+                if (!(itemId > 0) || !editor.isEditable) {
+                    return false;
+                }
+                if (dispatch) {
+                    showHtmlBlockDialog({
+                        itemId,
+                        initialHtml: getPos ? editor.state.doc.nodeAt(getPos()).attrs.html : '',
+                        onSave: (sanitizedHtml) => {
+                            if (!getPos) {
+                                editor.chain().focus().insertContent({ type: this.name, attrs: { html: sanitizedHtml } }).run();
+                                return;
+                            }
+                            // `getPos()` returns undefined once the node view is detached.
+                            const pos = getPos();
+                            if (pos !== undefined) {
+                                editor.view.dispatch(editor.state.tr.setNodeMarkup(pos, undefined, { html: sanitizedHtml }));
+                            }
+                        },
+                        onClose: () => editor.commands.focus(),
+                    });
+                }
+                return true;
+            },
+        };
+    },
+
     renderHTML({ node }) {
         // A DOM node lets the children be arbitrary sanitized markup. No ARIA here: the sanitizer strips `aria-*`, the node view carries it instead.
         // Inert document: `getHTML()` runs this on every transaction, and a live document would refetch every `<img>` in the block per keystroke.
@@ -162,9 +192,6 @@ export const HtmlBlock = Node.create({
 
     addNodeView() {
         return ({ node, editor, getPos }) => {
-            // Kept current by `update()` so Edit shows the latest source.
-            let currentNode = node;
-
             const wrapper = document.createElement('div');
             wrapper.className = 'kb-html-block';
             wrapper.contentEditable = 'false';
@@ -173,7 +200,7 @@ export const HtmlBlock = Node.create({
 
             const content = document.createElement('div');
             content.className = 'kb-html-block-content';
-            content.innerHTML = currentNode.attrs.html || '';
+            content.innerHTML = node.attrs.html || '';
             wrapper.appendChild(content);
 
             const editBtn = document.createElement('button');
@@ -181,26 +208,7 @@ export const HtmlBlock = Node.create({
             editBtn.className = 'kb-html-block-edit';
             editBtn.setAttribute('aria-label', __('Edit HTML block'));
             editBtn.innerHTML = '<i class="ti ti-pencil" aria-hidden="true"></i>';
-            editBtn.addEventListener('click', () => {
-                if (!editor.isEditable) {
-                    return;
-                }
-                showHtmlBlockDialog({
-                    itemId: this.options.itemId,
-                    initialHtml: currentNode.attrs.html,
-                    onSave: (sanitizedHtml) => {
-                        // `getPos()` returns undefined once the node view is detached.
-                        const pos = typeof getPos === 'function' ? getPos() : undefined;
-                        if (pos === undefined) {
-                            return;
-                        }
-                        editor.view.dispatch(
-                            editor.state.tr.setNodeMarkup(pos, undefined, { html: sanitizedHtml })
-                        );
-                    },
-                    onClose: () => editor.chain().focus().run(),
-                });
-            });
+            editBtn.addEventListener('click', () => editor.commands.openHtmlBlockDialog(getPos));
             wrapper.appendChild(editBtn);
 
             return {
@@ -209,7 +217,6 @@ export const HtmlBlock = Node.create({
                     if (updatedNode.type.name !== 'kbHtmlBlock') {
                         return false;
                     }
-                    currentNode = updatedNode;
                     content.innerHTML = updatedNode.attrs.html || '';
                     return true;
                 },

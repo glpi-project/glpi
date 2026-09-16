@@ -126,7 +126,7 @@ class KnowbaseEditor {
         this.#bubbleMenuElement = this.#createBubbleMenu();
 
         // Get SlashCommands extension
-        const slashCommandsExt = SlashCommands.configure({ itemId: this.#options.item_id });
+        const slashCommandsExt = SlashCommands;
 
         const extensions = [
             TiptapStarterKit.configure({

@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global _ */
+
 import { post } from '/js/modules/Ajax.js';
 
 const DEBOUNCE_MS = 400;
@@ -42,13 +44,13 @@ const DEBOUNCE_MS = 400;
  * @param {number} options.itemId - Saved KB article id.
  * @param {string} options.initialHtml - Existing source, or '' for a new block.
  * @param {(sanitizedHtml: string) => void} options.onSave
- * @param {() => void} [options.onClose]
+ * @param {() => void} options.onClose
  */
-export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () => {} }) {
+export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose }) {
     const uid = Math.random().toString(36).slice(2, 9);
 
     const overlay = document.createElement('div');
-    overlay.className = 'image-dialog-overlay html-block-dialog-overlay';
+    overlay.className = 'image-dialog-overlay';
 
     const dialog = document.createElement('div');
     dialog.className = 'image-dialog html-block-dialog';
@@ -124,25 +126,26 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
 
     // Save uses this sanitized value, never the raw source.
     let lastSanitizedHtml = null;
-    let debounceTimer = null;
 
-    const showError = (message) => {
-        errorMsg.textContent = message;
-        errorMsg.setAttribute('role', 'alert');
-        errorMsg.style.display = '';
-    };
-    const hideError = () => {
-        errorMsg.removeAttribute('role');
-        errorMsg.style.display = 'none';
+    // `null` html clears the preview and disables Save.
+    const setResult = (html, error = null) => {
+        lastSanitizedHtml = html;
+        saveBtn.disabled = !html;
+        preview.innerHTML = html ?? '';
+        errorMsg.textContent = error ?? '';
+        if (error === null) {
+            errorMsg.removeAttribute('role');
+            errorMsg.style.display = 'none';
+        } else {
+            errorMsg.setAttribute('role', 'alert');
+            errorMsg.style.display = '';
+        }
     };
 
     const updatePreview = async () => {
         const raw = sourceInput.value;
         if (raw.trim() === '') {
-            lastSanitizedHtml = null;
-            saveBtn.disabled = true;
-            preview.innerHTML = '';
-            hideError();
+            setResult(null);
             return;
         }
         try {
@@ -155,36 +158,25 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
             }
             // Reached when every tag is dropped, e.g. a lone `<script>`. A non-2xx never gets here: `post()` throws.
             if (data.html.trim() === '') {
-                lastSanitizedHtml = null;
-                saveBtn.disabled = true;
-                preview.innerHTML = '';
-                showError(__('Nothing safe to insert from this HTML.'));
+                setResult(null, __('Nothing safe to insert from this HTML.'));
                 return;
             }
-            hideError();
-            lastSanitizedHtml = data.html;
-            saveBtn.disabled = false;
-            preview.innerHTML = data.html;
+            setResult(data.html);
         } catch {
             if (sourceInput.value !== raw) {
                 return;
             }
-            lastSanitizedHtml = null;
-            saveBtn.disabled = true;
             // Drop the previous preview: it no longer matches the source.
-            preview.innerHTML = '';
-            showError(__('The preview could not be generated. Please try again.'));
+            setResult(null, __('The preview could not be generated. Please try again.'));
         }
     };
 
+    const debouncedUpdatePreview = _.debounce(updatePreview, DEBOUNCE_MS);
     sourceInput.addEventListener('input', () => {
         // Previous preview is stale until the new request returns.
         lastSanitizedHtml = null;
         saveBtn.disabled = true;
-        if (debounceTimer) {
-            clearTimeout(debounceTimer);
-        }
-        debounceTimer = setTimeout(updatePreview, DEBOUNCE_MS);
+        debouncedUpdatePreview();
     });
 
     if (initialHtml) {
@@ -192,9 +184,7 @@ export function showHtmlBlockDialog({ itemId, initialHtml, onSave, onClose = () 
     }
 
     const close = () => {
-        if (debounceTimer) {
-            clearTimeout(debounceTimer);
-        }
+        debouncedUpdatePreview.cancel();
         document.removeEventListener('keydown', handleKeydown);
         overlay.remove();
         onClose();

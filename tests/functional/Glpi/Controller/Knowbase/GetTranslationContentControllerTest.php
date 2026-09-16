@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Controller\Knowbase;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Controller\Knowbase\GetTranslationContentController;
+use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItemTranslation;
 use Symfony\Component\HttpFoundation\Request;

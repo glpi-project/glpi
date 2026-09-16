@@ -30,10 +30,34 @@
  * ---------------------------------------------------------------------
  */
 
+import { Page } from "@playwright/test";
 import { expect, test } from "../../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../../pages/KnowbaseItemPage";
+import { Api } from "../../../utils/Api";
 import { Profiles } from "../../../utils/Profiles";
+import { ProfileSwitcher } from "../../../utils/ProfileSwitcher";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
+
+/** Create an article, empty it in edit mode and open the HTML block dialog from the slash menu. */
+async function openNewHtmlBlockDialog(page: Page, profile: ProfileSwitcher, api: Api, name: string) {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name,
+        entities_id: getWorkerEntityId(),
+        answer: '<p>Content</p>',
+    });
+
+    await kb.goto(id);
+    await kb.editor.enterEditMode();
+    await kb.editor.clearContent();
+
+    await kb.slashMenu.open();
+    await kb.slashMenu.selectByClick('HTML Block');
+
+    return { kb, dialog: kb.htmlBlockDialog };
+}
 
 test.describe('Knowledge Base Editor - HTML Block', () => {
 
@@ -106,23 +130,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
 
         test('A block copied right after insertion survives being pasted back', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'HTML block copy round-trip',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('HTML Block');
-
-            const dialog = kb.htmlBlockDialog;
+            const { kb, dialog } = await openNewHtmlBlockDialog(page, profile, api, 'HTML block copy round-trip');
             // `@` is numerically encoded by the sanitizer but not by the browser, so the node attribute and its clipboard form differ until the block has made a round trip through the DOM.
             await dialog.getByLabel('HTML source').fill('<p>Mail: bob@corp.tld</p>');
             await expect(dialog.getByRole('button', { name: 'Save' })).toBeEnabled();
@@ -163,23 +171,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
 
         test('Insert an HTML block via the slash command', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'Insert HTML block via dialog',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('HTML Block');
-
-            const dialog = kb.htmlBlockDialog;
+            const { kb, dialog } = await openNewHtmlBlockDialog(page, profile, api, 'Insert HTML block via dialog');
             await expect(dialog).toBeVisible();
 
             await dialog.getByLabel('HTML source').fill('<p onclick="alert(1)">Hi</p><script>alert(1)</script>');
@@ -201,23 +193,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
 
         test('Save is disabled whenever the source is empty', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'HTML block save gating',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('HTML Block');
-
-            const dialog = kb.htmlBlockDialog;
+            const { dialog } = await openNewHtmlBlockDialog(page, profile, api, 'HTML block save gating');
             const source = dialog.getByLabel('HTML source');
             const saveBtn = dialog.getByRole('button', { name: 'Save' });
 
@@ -236,23 +212,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
 
         test('Tab stays inside the dialog while Save is disabled', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'HTML block focus trap',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('HTML Block');
-
-            const dialog = kb.htmlBlockDialog;
+            const { dialog } = await openNewHtmlBlockDialog(page, profile, api, 'HTML block focus trap');
             const cancelBtn = dialog.getByRole('button', { name: 'Cancel' });
             const closeBtn = dialog.getByRole('button', { name: 'Close' });
             await expect(dialog.getByRole('button', { name: 'Save' })).toBeDisabled();
@@ -267,23 +227,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
 
         test('Source with nothing left after sanitizing cannot be saved', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'HTML block fully stripped source',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('HTML Block');
-
-            const dialog = kb.htmlBlockDialog;
+            const { dialog } = await openNewHtmlBlockDialog(page, profile, api, 'HTML block fully stripped source');
             await dialog.getByLabel('HTML source').fill('<script>alert(1)</script>');
 
             // `<script>` is dropped with its contents, so nothing remains to insert.
@@ -293,23 +237,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
 
         test('Source using tags outside the rich-text guess is rendered, not escaped', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'HTML block uncommon tags',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('HTML Block');
-
-            const dialog = kb.htmlBlockDialog;
+            const { kb, dialog } = await openNewHtmlBlockDialog(page, profile, api, 'HTML block uncommon tags');
             // None of these tags is in `isRichTextHtmlContent()`'s list, but the sanitizer allows them all.
             await dialog.getByLabel('HTML source').fill('<figure><figcaption>Schema</figcaption></figure>');
 
@@ -327,23 +255,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
 
         test('Save stays disabled when the sanitize request fails', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'HTML block preview failure',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('HTML Block');
-
-            const dialog = kb.htmlBlockDialog;
+            const { dialog } = await openNewHtmlBlockDialog(page, profile, api, 'HTML block preview failure');
             const source = dialog.getByLabel('HTML source');
 
             await page.route('**/Knowbase/KnowbaseItem/*/SanitizeHtmlBlock', (route) =>
@@ -361,23 +273,7 @@ test.describe('Knowledge Base Editor - HTML Block', () => {
         });
 
         test('Save never stores a preview older than the current source', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'HTML block stale preview',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('HTML Block');
-
-            const dialog = kb.htmlBlockDialog;
+            const { kb, dialog } = await openNewHtmlBlockDialog(page, profile, api, 'HTML block stale preview');
             const source = dialog.getByLabel('HTML source');
             const saveBtn = dialog.getByRole('button', { name: 'Save' });
 
