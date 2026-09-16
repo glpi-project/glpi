@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -453,6 +454,17 @@ class ProfileTest extends DbTestCase
         );
         $inactive_asset_definition->getFromDB($inactive_asset_definition->getID());
 
+        // Also create an inactive dropdown definition to ensure it is cleaned up as well.
+        $inactive_dropdown_definition = $this->initDropdownDefinition(
+            profiles: [$profile_id => READ]
+        );
+        $this->updateItem(
+            DropdownDefinition::class,
+            $inactive_dropdown_definition->getID(),
+            ['is_active' => false]
+        );
+        $inactive_dropdown_definition->getFromDB($inactive_dropdown_definition->getID());
+
         $this->assertArrayHasKey(
             $profile_id,
             $this->callPrivateMethod($asset_definition, 'getDecodedProfilesField')
@@ -464,6 +476,10 @@ class ProfileTest extends DbTestCase
         $this->assertArrayHasKey(
             $profile_id,
             $this->callPrivateMethod($inactive_asset_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayHasKey(
+            $profile_id,
+            $this->callPrivateMethod($inactive_dropdown_definition, 'getDecodedProfilesField')
         );
 
         $this->deleteItem(\Profile::class, $profile_id);
@@ -471,6 +487,7 @@ class ProfileTest extends DbTestCase
         $asset_definition->getFromDB($asset_definition->getID());
         $dropdown_definition->getFromDB($dropdown_definition->getID());
         $inactive_asset_definition->getFromDB($inactive_asset_definition->getID());
+        $inactive_dropdown_definition->getFromDB($inactive_dropdown_definition->getID());
 
         $this->assertArrayNotHasKey(
             $profile_id,
@@ -483,6 +500,10 @@ class ProfileTest extends DbTestCase
         $this->assertArrayNotHasKey(
             $profile_id,
             $this->callPrivateMethod($inactive_asset_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayNotHasKey(
+            $profile_id,
+            $this->callPrivateMethod($inactive_dropdown_definition, 'getDecodedProfilesField')
         );
     }
 
