@@ -105,7 +105,7 @@ test.describe('Calendar', () => {
             glpi_page.getDropdownByLabel('Add a close time', tabpanel),
             holiday_name
         );
-        await tabpanel.getByRole('button', { name: 'Add' }).click();
+        await tabpanel.getByRole('button', { name: 'Add', exact: true }).click();
 
         const rows = page.getByRole('tabpanel').getByRole('row');
         await expect(rows).toHaveCount(2);

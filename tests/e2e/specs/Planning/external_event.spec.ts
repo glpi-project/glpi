@@ -45,7 +45,7 @@ test.describe('External event', () => {
         );
 
         // eslint-disable-next-line playwright/no-raw-locators
-        await page.locator('#planning_container .fc-slats td:not(.fc-axis)')
+        await page.locator('#planning_container .fc-daygrid-day-frame')
             .first()
             .click()
         ;

@@ -119,7 +119,7 @@ test.describe('Form access policy', () => {
         await page.goto(direct_access_url);
 
         // Check if the form title is displayed
-        await expect(form.getHeading('Form title')).toContainText(
+        await expect(page.getByTestId('form-title')).toContainText(
             form_name
         );
     });
@@ -188,8 +188,7 @@ test.describe('Form access policy', () => {
         await anonymousPage.goto(direct_access_url);
 
         // Check if the form title is displayed
-        const anonymous_form = new FormPage(anonymousPage);
-        await expect(anonymous_form.getHeading('Form title')).toContainText(
+        await expect(anonymousPage.getByTestId('form-title')).toContainText(
             form_name
         );
     });
@@ -235,7 +234,7 @@ test.describe('Form access policy', () => {
         const anonymous_form = new FormPage(anonymousPage);
 
         // Check if the form title is displayed
-        await expect(anonymous_form.getHeading('Form title')).toContainText(
+        await expect(anonymousPage.getByTestId('form-title')).toContainText(
             form_name
         );
 
@@ -274,7 +273,7 @@ test.describe('Form access policy', () => {
         // Change profile and go to the form
         await profile.set(Profiles.SelfService);
         await page.goto(direct_access_url);
-        await expect(form.getHeading('Form title')).toBeAttached();
+        await expect(page.getByTestId('form-title')).toBeAttached();
         await form.getTextbox('Question 1').fill('My answer');
         await form.getButton('Submit').click();
         await expect(form.getAlert('Item successfully created'))

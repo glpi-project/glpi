@@ -93,7 +93,7 @@ test.describe('Reservations', () => {
         );
 
         // eslint-disable-next-line playwright/no-raw-locators
-        await page.locator('.fc-week .fc-day').first().click();
+        await page.locator('.fc-daygrid-day').first().click();
 
         const add_dialog = page.getByRole('dialog', {
             name: 'Add reservation',
@@ -106,7 +106,7 @@ test.describe('Reservations', () => {
         await add_dialog.getByRole('button', { name: 'Add' }).click();
 
         // eslint-disable-next-line playwright/no-raw-locators
-        await page.locator('.fc-day-grid-event').first().click();
+        await page.locator('.fc-event').first().click();
 
         const edit_dialog = page.getByRole('dialog', {
             name: 'Edit reservation',
@@ -163,14 +163,14 @@ test.describe('Reservations', () => {
 
         /* eslint-disable playwright/no-raw-locators */
         const toolbar = page.locator('.fc-header-toolbar');
-        const current_period = page.locator('.fc-header-toolbar .fc-center');
-        const events = page.locator('.fc-day-grid-event');
+        const current_period = page.locator('.fc-header-toolbar .fc-toolbar-title');
+        const events = page.locator('.fc-event');
 
         const doGotoOctober2024 = async (): Promise<void> => {
-            await page.getByRole('button', { name: 'month' }).click();
+            await page.getByRole('button', { name: 'month', description: 'month view' }).click();
             await expect(current_period).toContainText('November 2024');
             // Change month to ensure the back URL computes correctly
-            await toolbar.getByLabel('prev').click();
+            await toolbar.getByRole('button', { name: 'Previous month' }).click();
             await expect(current_period).toContainText('October 2024');
         };
 
@@ -182,7 +182,7 @@ test.describe('Reservations', () => {
         };
 
         const doAddReservation = async (): Promise<void> => {
-            await page.locator('.fc-day-grid .fc-day:not(.fc-other-month)')
+            await page.locator('.fc-daygrid-day:not(.fc-day-other)')
                 .first()
                 .click()
             ;
