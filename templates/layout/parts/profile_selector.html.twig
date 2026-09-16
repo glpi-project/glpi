@@ -316,6 +316,10 @@
             }
 
             container.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) {
+                    // Only handle the primary (left) button; ignore right/middle clicks.
+                    return;
+                }
                 const btn = e.target.closest('button[type="submit"]');
                 if (!btn || !btn.getAttribute('form')) {
                     return;
