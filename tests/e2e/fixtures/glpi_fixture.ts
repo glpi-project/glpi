@@ -44,6 +44,7 @@ import { Api } from '../utils/Api';
 import { EntitySwitcher } from '../utils/EntitySwitcher';
 import { FormImporter } from '../utils/FormImporter';
 import { DebugModeSwitcher } from '../utils/DebugModeSwitcher';
+import { GeneralConfig } from '../utils/GeneralConfig';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -55,6 +56,7 @@ export const test = baseTest.extend<{
     formImporter: FormImporter,
     api: Api,
     debug: DebugModeSwitcher,
+    general_config: GeneralConfig,
     retryTimeout: void,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
@@ -167,6 +169,13 @@ export const test = baseTest.extend<{
     // Service used to switch debug mode on/off.
     debug: [async ({ request, csrf }, use) => {
         await use(new DebugModeSwitcher(request, csrf));
+    }, { scope: 'test' }],
+
+    // Service used to update GLPI's general configuration.
+    // This configuration is global to the whole application, thus only the
+    // isolated tests (`*.spec.isolated.ts`) may use it.
+    general_config: [async ({ request }, use) => {
+        await use(new GeneralConfig(request));
     }, { scope: 'test' }],
 
     // Store the state of the current session.

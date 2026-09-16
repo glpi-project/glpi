@@ -368,7 +368,6 @@ jobs:
       # The blob report name must be set explicitly, otherwise it would be the
       # same as the one produced by the run above and the reports would
       # overwrite each other once merged.
-      # TODO: remove `--pass-with-no-tests` once the first isolated spec is added.
       - name: Run isolated Playwright tests
         if: ${{ !cancelled() }}
         run: |
@@ -376,8 +375,7 @@ jobs:
             -e PLAYWRIGHT_BLOB_OUTPUT_NAME=report-isolated-${{ matrix.shardIndex }}.zip \
             app npx playwright test \
             -c playwright.isolated.config.ts \
-            --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} \
-            --pass-with-no-tests
+            --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
       - name: Check for PHP errors
         if: ${{ !cancelled() }}
         run: |
