@@ -158,4 +158,26 @@ class Item_DiskTest extends DbTestCase
         $this->assertTrue($obj->getFromDB($id)); //it's always in DB but with is_deleted = 1
         $this->assertSame(1, $obj->fields['is_deleted']);
     }
+
+    public function testShowForItemEncodesCustomAssetItemtype()
+    {
+        $definition = $this->initAssetDefinition(capacities: [new Capacity(name: HasVolumesCapacity::class)]);
+        $classname  = $definition->getAssetClassName();
+
+        $this->login();
+
+        $asset = $this->createItem(
+            $classname,
+            $this->getMinimalCreationInput($classname)
+        );
+
+        ob_start();
+        $this->assertTrue(Item_Disk::showForItem($asset));
+        $output = ob_get_clean();
+
+        // The custom asset class name holds backslashes, they must be URL-encoded
+        // in the "Add a volume" link so the query string is not broken.
+        $this->assertStringContainsString('itemtype=' . rawurlencode($classname), $output);
+        $this->assertStringNotContainsString('itemtype=' . $classname, $output);
+    }
 }
