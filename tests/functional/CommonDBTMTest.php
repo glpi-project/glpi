@@ -1441,6 +1441,79 @@ class CommonDBTMTest extends DbTestCase
         $this->assertSame(__FUNCTION__ . '02-locked', $computer->fields['name']);
     }
 
+    public function testCheckUnicityIgnoresLockedFieldsOnReactivation()
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $field_unicity = new FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => 'Computer',
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => $entities_id,
+            ])
+        );
+
+        $computer = new Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id1 = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $computers_id2 = $computer->add([
+                'name' => __FUNCTION__ . '02',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        // manual rename (no is_dynamic) locks the name field on computer 2
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '02-locked',
+            ])
+        );
+        $lockedfield = new Lockedfield();
+        $this->assertSame(['name'], $lockedfield->getLockedNames('Computer', $computers_id2));
+
+        // computer 2 goes non-dynamic (e.g. inventory agent removed), the lock stays
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'is_dynamic' => 0,
+            ])
+        );
+        $this->assertTrue($computer->getFromDB($computers_id2));
+        $this->assertSame(0, (int) $computer->fields['is_dynamic']);
+
+        // reactivation: an inventory update turns is_dynamic back on and reports
+        // computer 1's name; the locked name field must still be discarded, not checked
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '01',
+                'is_dynamic' => 1,
+            ])
+        );
+        $this->hasNoSessionMessages([ERROR]);
+
+        $this->assertTrue($computer->getFromDB($computers_id2));
+        $this->assertSame(__FUNCTION__ . '02-locked', $computer->fields['name']);
+    }
+
     public function testSkipCheckUnicityWithTemplate()
     {
         $this->login();

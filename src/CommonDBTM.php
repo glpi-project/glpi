@@ -4519,11 +4519,16 @@ class CommonDBTM extends CommonGLPI
      */
     private function getLockedFieldsForUnicityCheck(): array
     {
+        // Prospective dynamic state: what cleanLockeds() will see once is_dynamic is applied.
+        $is_dynamic = isset($this->input['is_dynamic'])
+            ? (bool) $this->input['is_dynamic']
+            : $this->isDynamic();
+
         if (
             ($this->input['_skip_locks'] ?? false) === true
             || (isset($this->input['_transfer']) && !($this->input['_lock_updated_fields'] ?? false))
-            || !$this->isDynamic()
-            || !(isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true)
+            || !$this->maybeDynamic()
+            || !$is_dynamic
         ) {
             return [];
         }
@@ -4572,9 +4577,14 @@ class CommonDBTM extends CommonGLPI
 
         //Get all checks for this itemtype and this entity
         if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+            $locked_fields = $add ? [] : $this->getLockedFieldsForUnicityCheck();
+
             // Get input entities if set / else get object one
             if ($this instanceof User) {
                 $entities_id = 0; // Exception: user does not belong to an entity
+            } elseif (in_array('entities_id', $locked_fields, true)) {
+                // Locked entity: stays where it actually is, not where the input tries to move it.
+                $entities_id = $this->fields['entities_id'];
             } elseif (isset($this->input['entities_id'])) {
                 $entities_id = $this->input['entities_id'];
             } elseif (isset($this->fields['entities_id'])) {
@@ -4587,18 +4597,18 @@ class CommonDBTM extends CommonGLPI
 
             $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
 
-            $locked_fields = $add ? [] : $this->getLockedFieldsForUnicityCheck();
-
             foreach ($all_fields as $key => $fields) {
                 //If there's fields to check
                 if (!empty($fields) && !empty($fields['fields'])) {
                     $where    = [];
                     $continue = true;
+                    $effective_values = [];
                     foreach (explode(',', $fields['fields']) as $field) {
                         // Locked field: check against the value that will actually remain stored.
                         $value = (isset($this->input[$field]) && in_array($field, $locked_fields, true))
                             ? ($this->fields[$field] ?? $this->input[$field])
                             : ($this->input[$field] ?? null);
+                        $effective_values[$field] = $value;
 
                         if (
                             isset($this->input[$field]) //Field is set
@@ -4649,7 +4659,7 @@ class CommonDBTM extends CommonGLPI
                                 || $p['add_event_on_duplicate']
                             ) {
                                 foreach (explode(',', $fields['fields']) as $field) {
-                                    $message[$field] = $this->input[$field];
+                                    $message[$field] = $effective_values[$field];
                                 }
 
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
