@@ -446,4 +446,116 @@ class AuthTest extends DbTestCase
             "Event log must contain the resolved login name '{$username}', not an empty string"
         );
     }
+
+    /**
+     * x509 detection must trust SSL_CLIENT_S_DN only when SSL_CLIENT_VERIFY is
+     * exactly 'SUCCESS', not merely present. A TLS-terminating server can
+     * legitimately report several other values for a presented-but-unverifiable
+     * certificate — nginx's 'FAILED:<reason>' and Apache mod_ssl's 'GENEROUS'
+     * (under `SSLVerifyClient optional_no_ca`) — both must be rejected the same
+     * way as an absent variable.
+     */
+    public function testCheckAlternateAuthSystemsIgnoresUnverifiedX509(): void
+    {
+        global $CFG_GLPI;
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['x509_email_field'] = 'Email';
+
+        // Attacker-controlled subject DN, as a web server would export it.
+        $_SERVER['SSL_CLIENT_S_DN'] = 'CN=Forged/Email=attacker@example.com/';
+
+        try {
+            unset($_COOKIE[session_name() . '_rememberme']);
+
+            // No verification performed at all: forged DN must not select X509.
+            unset($_SERVER['SSL_CLIENT_VERIFY']);
+            $this->assertFalse(Auth::checkAlternateAuthSystems());
+
+            // nginx-style rejection (ssl_verify_client optional, invalid cert).
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'FAILED:self signed certificate';
+            $this->assertFalse(Auth::checkAlternateAuthSystems());
+
+            // Apache mod_ssl's actual value for optional_no_ca with an
+            // unverifiable certificate — not a boolean failure, still not SUCCESS.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'GENEROUS';
+            $this->assertFalse(Auth::checkAlternateAuthSystems());
+
+            // Genuinely verified client certificate: X509 is selected.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'SUCCESS';
+            $this->assertSame(Auth::X509, Auth::checkAlternateAuthSystems());
+        } finally {
+            $CFG_GLPI = $cfg_backup;
+            unset($_SERVER['SSL_CLIENT_S_DN'], $_SERVER['SSL_CLIENT_VERIFY']);
+        }
+    }
+
+    /**
+     * End-to-end proof: Auth::login() must reject a forged SSL_CLIENT_S_DN
+     * unless SSL_CLIENT_VERIFY is exactly 'SUCCESS' — covering both nginx's
+     * 'FAILED:<reason>' and Apache mod_ssl's 'GENEROUS' (observed for
+     * `SSLVerifyClient optional_no_ca` with an unverifiable certificate).
+     */
+    public function testX509LoginRequiresVerifiedClientCertificate(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $email = 'x509_' . mt_rand() . '@example.com';
+        $this->createItem(
+            User::class,
+            [
+                'name'         => $email,
+                '_profiles_id' => 1,
+                'authtype'     => Auth::X509,
+            ]
+        );
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['x509_email_field'] = 'Email';
+        $CFG_GLPI['x509_ou_restrict'] = '';
+        $CFG_GLPI['x509_o_restrict']  = '';
+        $CFG_GLPI['x509_cn_restrict'] = '';
+
+        // Attacker forges the subject DN of a legitimate user.
+        $_SERVER['SSL_CLIENT_S_DN'] = "CN=Forged/OU=Dept/O=Comp/Email={$email}/";
+
+        try {
+            // Bypass attempt: forged DN without a verified certificate is rejected.
+            unset($_SERVER['SSL_CLIENT_VERIFY']);
+            $this->assertFalse(
+                (new Auth())->login('', '', false),
+                'A forged SSL_CLIENT_S_DN must not authenticate without a verified client certificate'
+            );
+
+            // nginx-style failed verification is rejected too.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'FAILED:self signed certificate';
+            $this->assertFalse(
+                (new Auth())->login('', '', false),
+                'A failed client certificate verification must not authenticate'
+            );
+
+            // Apache mod_ssl's GENEROUS (optional_no_ca, unverifiable cert) is
+            // rejected too — this is the value a real mTLS PoC against Apache
+            // actually produces, not FAILED.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'GENEROUS';
+            $this->assertFalse(
+                (new Auth())->login('', '', false),
+                'An unverifiable client certificate (GENEROUS) must not authenticate'
+            );
+
+            // Only a genuinely verified client certificate authenticates.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'SUCCESS';
+            $auth = new Auth();
+            $this->assertTrue(
+                $auth->login('', '', false),
+                'A verified client certificate must authenticate the matching user'
+            );
+            $this->assertSame($email, $auth->user->fields['name']);
+        } finally {
+            $CFG_GLPI = $cfg_backup;
+            unset($_SERVER['SSL_CLIENT_S_DN'], $_SERVER['SSL_CLIENT_VERIFY']);
+        }
+    }
 }

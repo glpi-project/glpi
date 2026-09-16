@@ -495,7 +495,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         $OneWriteIsEnough = (!$forceCheckBoth
                            && ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
-                               || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
+                               && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
 
         $view1 = false;
         $view2 = false;

@@ -4908,6 +4908,22 @@ HTML;
             // manage file upload without tinymce editor
             $display .= "<span class='b'>" . __s('Drag and drop your file here, or') . '</span><br>';
         }
+
+        if ($p['onlyimages']) {
+            $accept = sprintf(
+                ' accept="%s"',
+                implode(
+                    ',',
+                    array_map(
+                        fn($ext) => '.' . $ext,
+                        Document::ALLOWED_IMAGE_EXTENSIONS
+                    )
+                )
+            );
+        } else {
+            $accept = ''; // no accept attribute when all types are allowed
+        }
+
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
@@ -4916,7 +4932,7 @@ HTML;
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
+                      . $accept . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
@@ -4928,7 +4944,7 @@ HTML;
             ? "$('#" . jsescape($p['dropZone']) . "')"
             : "false";
         $acceptFileTypes = $p['onlyimages']
-            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
+            ? "/(\.|\/)(" . implode('|', Document::ALLOWED_IMAGE_EXTENSIONS) . ")$/i"
             : DocumentType::getUploadableFilePattern();
         $messages = json_encode([
             'acceptFileTypes' => __('Filetype not allowed'),

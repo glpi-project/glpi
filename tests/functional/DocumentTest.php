@@ -138,14 +138,9 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(4, $prepare);
         $this->assertSame('A_name.pdf', $prepare['filename']);
         $this->assertSame('A_name.pdf', $prepare['name']);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(4, $prepare);
+        $this->assertCount(3, $prepare);
 
         $this->login();
         $uid = getItemByTypeName('User', TU_USER, true);
@@ -154,13 +149,8 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(5, $prepare);
         $this->assertSame($uid, $prepare['users_id']);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(5, $prepare);
+        $this->assertCount(4, $prepare);
 
         $item = new \Computer();
         $cid = $item->add([
@@ -188,23 +178,29 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('items_id', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
         $this->assertSame($uid, $prepare['users_id']);
         $this->assertSame('Computer', $prepare['itemtype']);
         $this->assertSame($cid, $prepare['items_id']);
         $this->assertSame('A_name.pdf', $prepare['name']);
-        $this->assertCount(7, $prepare);
+        $this->assertCount(6, $prepare);
     }
 
     public function testPrepareInputForAddIgnoreBlacklistedFields(): void
     {
         $_ignored = 'should_be_ignored';
-        $input = ['name' => 'legit name', 'filepath' => $_ignored, 'sha1sum' =>  $_ignored];
+        $input = [
+            'name'              => 'legit name',
+            'filepath'          => $_ignored,
+            'sha1sum'           => $_ignored,
+            'current_filename'  => $_ignored,
+            'current_filepath'  => $_ignored,
+        ];
         $prepare = (new \Document())->prepareInputForAdd($input);
 
         $this->assertArrayNotHasKey('filepath', $prepare);
         $this->assertArrayNotHasKey('sha1sum', $prepare);
+        $this->assertArrayNotHasKey('current_filename', $prepare);
+        $this->assertArrayNotHasKey('current_filepath', $prepare);
     }
 
     /**
@@ -470,12 +466,16 @@ class DocumentTest extends DbTestCase
     {
         return [
             [__FILE__, false],
-            [__DIR__ . "/../../public/pics/add_dropdown.png", true],
-            [__DIR__ . "/../../public/pics/corners.gif", true],
-            [__DIR__ . "/../../public/pics/PICS-AUTHORS.txt", false],
-            [__DIR__ . "/../notanimage.jpg", false],
-            [__DIR__ . "/../notafile.jpg", false],
-            [__DIR__ . "/../", false],
+            [__DIR__ . '/../../tests/fixtures/images/blank.bmp', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.jpg', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.JPEG', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.webp', true],
+            [__DIR__ . '/../../tests/fixtures/images/empty.gif', true],
+            [__DIR__ . '/../../tests/fixtures/images/empty.png', true],
+            [__DIR__ . "/../../tests/fixtures/images/fake_gif.php", false],
+            [__DIR__ . "/../../tests/fixtures/images/notanimage.php", false],
+            [__DIR__ . '/../../tests/fixtures/images/readme.txt', false],
+            [__DIR__ . '/../../tests/fixtures/images/this/file/does/no/exists.png', false],
         ];
     }
 

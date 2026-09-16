@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Features\Clonable;
@@ -5184,7 +5185,7 @@ HTML;
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
                             $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
                         }
-                        $link = "<a href='" . $link_item . "'>" . $link . "</a>";
+                        $link = "<a href='" . htmlescape($link_item) . "'>" . htmlescape($link) . "</a>";
                     }
 
                     $group_names = [];
@@ -5558,9 +5559,11 @@ HTML;
      */
     public static function showPasswordForgetChangeForm($token)
     {
+        $user = User::getUserByForgottenPasswordToken($token);
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
-            'token'    => $token,
-            'token_ok' => User::getUserByForgottenPasswordToken($token) !== null,
+            'token'         => $token,
+            'token_ok'      => $user !== null,
+            'requires_totp' => $user !== null && (new TOTPManager())->is2FAEnabled($user->fields['id']),
         ]);
     }
 
@@ -5658,6 +5661,26 @@ HTML;
             );
         }
 
+        $totp = new TOTPManager();
+        if ($totp->is2FAEnabled($user->fields['id'])) {
+            try {
+                $totp->checkMFARateLimit($user->fields['id']);
+            } catch (AuthenticationFailedException $e) {
+                throw new ForgetPasswordException(implode(' ', $e->getAuthenticationErrors()), $e->getCode(), $e);
+            }
+
+            $totp_code = $input['totp_code'] ?? '';
+            $backup_code = $input['backup_code'] ?? '';
+            $totp_ok = $totp_code !== '' && $totp->verifyCodeForUser($totp_code, $user->fields['id']);
+            $backup_ok = !$totp_ok && $backup_code !== '' && $totp->verifyBackupCodeForUser($backup_code, $user->fields['id']);
+
+            if (!$totp_ok && !$backup_ok) {
+                throw new ForgetPasswordException(__('Invalid or missing authentication code.'));
+            }
+
+            $totp->clearMFAFailures($user->fields['id']);
+        }
+
         $input['id'] = $user->fields['id'];
 
         // Check new password validity, throws exception on failure
@@ -5670,8 +5693,15 @@ HTML;
             throw $expection;
         }
 
+        $update_input = [
+            'id'                    => $input['id'],
+            'password'              => $input['password'],
+            'password2'             => $input['password2'] ?? $input['password'],
+            'password_forget_token' => $input['password_forget_token'],
+        ];
+
         // Try to set new password
-        if (!$user->update($input)) {
+        if (!$user->update($update_input)) {
             return false;
         }
 

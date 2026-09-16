@@ -2669,7 +2669,7 @@ class Toolbox
             return false;
         }
 
-        $filename     = uniqid($uniq_prefix);
+        $filename     = uniqid(preg_replace('/[^\w]+/', '_', $uniq_prefix));
         $ext          = pathinfo($src, PATHINFO_EXTENSION);
         $subdirectory = substr($filename, -2); // subdirectory based on last 2 hex digit
 

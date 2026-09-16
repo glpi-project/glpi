@@ -489,4 +489,75 @@ class CommonDBRelationTest extends DbTestCase
         ]);
     }
 
+    public function testCannotCreateRelationWithoutUpdateRightOnReminder(): void
+    {
+        // Arrange: a reminder of another user, visible in all the entities.
+        $this->login('glpi', 'glpi');
+        $reminder = new \Reminder();
+        $reminder_id = $reminder->add([
+            'name'     => 'Public reminder',
+            'text'     => 'Public reminder',
+            'users_id' => \Session::getLoginUserID(),
+        ]);
+        $this->assertGreaterThan(0, $reminder_id);
+        $this->assertGreaterThan(0, (new \Entity_Reminder())->add([
+            'reminders_id' => $reminder_id,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]));
+
+        // Arrange: a user that can read this reminder, but that cannot update it.
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile']['reminder_public'] = READ | \Reminder::PERSONAL;
+        $this->assertTrue($reminder->getFromDB($reminder_id));
+        $this->assertTrue($reminder->canViewItem());
+        $this->assertFalse($reminder->canUpdateItem());
+
+        $input = [
+            'reminders_id' => $reminder_id,
+            'users_id'     => getItemByTypeName(User::class, 'tech', true),
+        ];
+
+        // Act: compute creation rights
+        $can_create = (new \Reminder_User())->can(-1, CREATE, $input);
+
+        // Assert: should be refused
+        $this->assertFalse($can_create);
+    }
+
+    public function testCanCreateRelationWithUpdateRightOnReminder(): void
+    {
+        // Arrange: a reminder of another user, visible in all the entities.
+        $this->login('glpi', 'glpi');
+        $reminder = new \Reminder();
+        $reminder_id = $reminder->add([
+            'name'     => 'Public reminder',
+            'text'     => 'Public reminder',
+            'users_id' => \Session::getLoginUserID(),
+        ]);
+        $this->assertGreaterThan(0, $reminder_id);
+        $this->assertGreaterThan(0, (new \Entity_Reminder())->add([
+            'reminders_id' => $reminder_id,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]));
+
+        // Arrange: a user that can read and update this reminder
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile']['reminder_public'] = READ | UPDATE | \Reminder::PERSONAL;
+        $this->assertTrue($reminder->getFromDB($reminder_id));
+        $this->assertTrue($reminder->canViewItem());
+        $this->assertTrue($reminder->canUpdateItem());
+
+        $input = [
+            'reminders_id' => $reminder_id,
+            'users_id'     => getItemByTypeName(User::class, 'tech', true),
+        ];
+
+        // Act: compute creation rights
+        $can_create = (new \Reminder_User())->can(-1, CREATE, $input);
+
+        // Assert: should be allowed
+        $this->assertTrue($can_create);
+    }
 }
