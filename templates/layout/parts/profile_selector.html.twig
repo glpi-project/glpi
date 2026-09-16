@@ -284,12 +284,8 @@
             searchTree();
         });
 
-        // Fancytree redraws the row on focus, detaching the clicked button before
-        // "click" fires and silently cancelling its form submission. Intercepting
-        // "mousedown" instead lets us submit before that redraw happens; the "click"
-        // listener just swallows the click that follows (or handles keyboard
-        // activation). "submitted" prevents rapid clicks from reusing the same
-        // single-use CSRF token across several requests.
+        // Fancytree's focus redraw detaches the button before "click" fires,
+        // so we block focus on mousedown and submit on mouseup instead.
         (function() {
             const container = document.getElementById('tree_entity{{ rand }}');
             let pendingButton = null;
@@ -315,6 +311,8 @@
                 form.requestSubmit();
             }
 
+            let handledViaMouseup = false;
+
             container.addEventListener('mousedown', function(e) {
                 if (e.button !== 0) {
                     // Only handle the primary (left) button; ignore right/middle clicks.
@@ -327,20 +325,33 @@
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 pendingButton = btn;
-                submitEntityForm(btn);
+            }, true);
+
+            // Commit only if the pointer is released back over the pressed
+            // button, so dragging away still cancels the click as usual.
+            document.addEventListener('mouseup', function(e) {
+                if (!pendingButton) {
+                    return;
+                }
+                const btn = pendingButton;
+                pendingButton = null;
+                const target = document.elementFromPoint(e.clientX, e.clientY);
+                if (target && target.closest('button[type="submit"]') === btn) {
+                    handledViaMouseup = true;
+                    submitEntityForm(btn);
+                }
             }, true);
 
             container.addEventListener('click', function(e) {
-                if (pendingButton) {
+                if (handledViaMouseup) {
                     // Click that followed a mousedown we already handled: swallow it.
                     e.preventDefault();
                     e.stopImmediatePropagation();
-                    pendingButton = null;
+                    handledViaMouseup = false;
                     return;
                 }
-                // Keyboard activation (Enter/Space on a focused button) fires "click"
-                // directly, without a preceding mousedown, so it isn't affected by the
-                // focus-triggered redraw race and can be handled here directly.
+                // Keyboard activation (Enter/Space) fires "click" with no
+                // preceding mousedown, so it's unaffected and handled here.
                 const btn = e.target.closest('button[type="submit"]');
                 if (!btn || !btn.getAttribute('form')) {
                     return;
