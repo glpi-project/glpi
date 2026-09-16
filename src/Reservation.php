@@ -192,16 +192,25 @@ class Reservation extends CommonDBChild
                 false,
                 ERROR
             );
+            return;
         }
 
         $dates_to_add = [];
         $dates_to_add[$input['resa']["begin"]] = $input['resa']["end"];
         if (!empty($input['periodicity']['type'])) {
-            $dates_to_add += self::computePeriodicities(
+            $periodicities = self::computePeriodicities(
                 $input['resa']["begin"],
                 $input['resa']["end"],
                 $input['periodicity']
             );
+            if ($periodicities === [] && !empty($input['periodicity']['end'])) {
+                Session::addMessageAfterRedirect(
+                    __s('Only the first reservation has been created: no repetition matches the repetition settings'),
+                    false,
+                    WARNING
+                );
+            }
+            $dates_to_add += $periodicities;
         }
         ksort($dates_to_add);
 
@@ -868,6 +877,27 @@ HTML;
             'canedit'           => $canedit,
         ]);
         return true;
+    }
+
+    /**
+     * Default repetition end date, late enough for computePeriodicities() to return at least one occurrence.
+     *
+     * @param string $begin Planning start
+     * @param string $type  Periodicity type (day, week or month)
+     *
+     * @return string Y-m-d date, empty for an unknown type
+     */
+    public static function getDefaultPeriodicityEnd(string $begin, string $type): string
+    {
+        $modifier = match ($type) {
+            'day'   => '+1 day',
+            'week'  => '+1 week',
+            // "Same day of week" subtype lands up to one week after the +1 month
+            'month' => '+1 month +1 week',
+            default => null,
+        };
+
+        return $modifier !== null ? date('Y-m-d', strtotime($begin . ' ' . $modifier)) : '';
     }
 
     /**
