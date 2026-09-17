@@ -2639,17 +2639,17 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         case 'locations_id':
                             // Import the location in the entity assigned to the user by the LDAP
                             // rules, so an existing location in that entity is reused instead of
-                            // creating a duplicate in the root entity. Fall back to the root entity
-                            // (recursive) when no single entity can be determined.
-                            $location_entity    = $this->getLdapImportLocationEntity();
-                            $location_recursive = $location_entity === 0 ? 1 : 0;
+                            // creating a duplicate in the root entity. It is created as recursive so
+                            // it stays usable in the sub-entities of that entity, as it was when
+                            // created in the root entity.
+                            $location_entity = $this->getLdapImportLocationEntity();
 
                             // use import to build the location tree
                             $this->fields[$k] = Dropdown::import(
                                 'Location',
                                 ['completename' => $val,
                                     'entities_id'  => $location_entity,
-                                    'is_recursive' => $location_recursive,
+                                    'is_recursive' => 1,
                                 ]
                             );
                             break;
