@@ -3083,7 +3083,7 @@ HTML;
             'item' => $this,
             'params' => $options,
             'show_sync_field' => $extauth && $this->fields['auths_id'] && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id']),
-            'identity_readonly' => $this->getIdentityReadonly(),
+            'identity_readonly_fields' => $this->getIdentityReadonlyFields(),
             'use_timezones' => $DB->use_timezones,
             'timezones' => $DB->use_timezones ? $DB->getTimezones() : [],
             'higher_rights' => $higherrights,
@@ -3105,7 +3105,7 @@ HTML;
      *
      * @return array<string, bool>
      */
-    private function getIdentityReadonly(): array
+    private function getIdentityReadonlyFields(): array
     {
         $readonly = [
             'realname'  => false,
@@ -3182,7 +3182,7 @@ HTML;
             'is_administrator' => Config::canUpdate(),
             'item' => $this,
             'is_preference_form' => true,
-            'identity_readonly' => $this->getIdentityReadonly(),
+            'identity_readonly_fields' => $this->getIdentityReadonlyFields(),
             'use_timezones' => $DB->use_timezones,
             'timezones' => $DB->use_timezones ? $DB->getTimezones() : [],
             'entities' => $this->getEntities(),

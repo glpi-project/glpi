@@ -92,15 +92,15 @@
                             {% endif %}
 
                             {{ fields.textField('realname', item.fields['realname'], __('Surname'), {
-                                readonly: identity_readonly.realname,
+                                readonly: identity_readonly_fields.realname,
                                 additional_attributes: is_preference_form ? {autocomplete: 'family-name'} : {},
                             }) }}
                             {{ fields.textField('firstname', item.fields['firstname'], __('First name'), {
-                                readonly: identity_readonly.firstname,
+                                readonly: identity_readonly_fields.firstname,
                                 additional_attributes: is_preference_form ? {autocomplete: 'given-name'} : {},
                             }) }}
                             {{ fields.textField('middlename', item.fields['middlename'], __('Middle name / Patronymic'), {
-                                readonly: identity_readonly.middlename,
+                                readonly: identity_readonly_fields.middlename,
                                 additional_attributes: is_preference_form ? {autocomplete: 'additional-name'} : {},
                             }) }}
 
