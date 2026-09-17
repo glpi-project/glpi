@@ -633,6 +633,24 @@ class DisplayPreference extends CommonDBTM
             'GROUPBY' => 'itemtype',
         ]);
 
+        // Sort by display name rather than by itemtype
+        $sorted_preferences = iterator_to_array($iterator);
+        $collator = collator_create($_SESSION['glpilanguage']);
+        if ($collator) {
+            $collator->setStrength(Collator::PRIMARY);
+        }
+        usort($sorted_preferences, function ($a, $b) use ($collator) {
+            $name_a = is_a($a['itemtype'], CommonGLPI::class, true) ? $a['itemtype']::getTypeName(1) : $a['itemtype'];
+            $name_b = is_a($b['itemtype'], CommonGLPI::class, true) ? $b['itemtype']::getTypeName(1) : $b['itemtype'];
+            // Alternatively use strcasecmp if collator fails
+            // strcasecmp is ASCII based and will sort special characters like é, Ã, etc. at the end of the list
+            if ($collator === null) {
+                return strcasecmp($name_a, $name_b);
+            }
+            $result = collator_compare($collator, $name_a, $name_b);
+            return $result === false ? 0 : $result;
+        });
+
         $specific_actions = [];
         if ($users_id > 0) {
             $specific_actions[ self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_for_user'] = _x('button', 'Delete permanently');
@@ -651,7 +669,7 @@ class DisplayPreference extends CommonDBTM
         TemplateRenderer::getInstance()->display('components/search/displaypreference_list.html.twig', [
             'massiveactionparams' => $massiveactionparams,
             'users_id' => $users_id,
-            'preferences' => $iterator,
+            'preferences' => $sorted_preferences,
             'rand' => $rand,
         ]);
     }
