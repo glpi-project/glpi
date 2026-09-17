@@ -199,9 +199,14 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return $tab;
     }
 
+    private static function getManagedDomainRecordTypes(): array
+    {
+        return $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? [];
+    }
+
     public static function canCreate(): bool
     {
-        if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+        if (count(self::getManagedDomainRecordTypes())) {
             return true;
         }
         return parent::canCreate();
@@ -212,7 +217,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         if (!self::canUpdateAssignableItem()) {
             return false;
         }
-        if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+        if (count(self::getManagedDomainRecordTypes())) {
             return true;
         }
         return parent::canUpdate();
@@ -220,7 +225,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public static function canDelete(): bool
     {
-        if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+        if (count(self::getManagedDomainRecordTypes())) {
             return true;
         }
         return parent::canDelete();
@@ -228,7 +233,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public static function canPurge(): bool
     {
-        if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
+        if (count(self::getManagedDomainRecordTypes())) {
             return true;
         }
         return parent::canPurge();
@@ -236,7 +241,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public function canCreateItem(): bool
     {
-        return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']) > 0;
+        return count(self::getManagedDomainRecordTypes()) > 0;
     }
 
     public function canUpdateItem(): bool
@@ -246,8 +251,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         }
         return parent::canUpdateItem()
          && (
-             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
+             self::getManagedDomainRecordTypes() === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true)
          );
     }
 
@@ -255,8 +260,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     {
         return parent::canDeleteItem()
          && (
-             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
+             self::getManagedDomainRecordTypes() === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true)
          );
     }
 
@@ -264,8 +269,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     {
         return parent::canPurgeItem()
          && (
-             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
+             self::getManagedDomainRecordTypes() === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true)
          );
     }
 
@@ -324,8 +329,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         }
 
         if (!Session::isCron() && (isset($input['domainrecordtypes_id']) || isset($this->fields['domainrecordtypes_id']))) {
-            if ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] !== [-1]) {
-                if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true))) {
+            if (self::getManagedDomainRecordTypes() !== [-1]) {
+                if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true))) {
                     //no right to use selected type
                     Session::addMessageAfterRedirect(
                         __s('You are not allowed to use this type of records'),
@@ -334,7 +339,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                     );
                     return false;
                 }
-                if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true))) {
+                if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true))) {
                     //no right to change existing type
                     Session::addMessageAfterRedirect(
                         __s('You are not allowed to edit this type of records'),
@@ -419,7 +424,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
             return false;
         }
         $canedit = $domain->can($instID, UPDATE)
-                 || count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
+                 || count(self::getManagedDomainRecordTypes());
         $rand    = mt_rand();
 
         $iterator = $DB->request([
