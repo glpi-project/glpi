@@ -54,20 +54,30 @@ export class PlanningPage extends GlpiPage
         }
     }
 
-    public async fillNewEventForm(input: {name: string, description: string, start_time: string, period: string}): Promise<void>
+    public async fillNewEventForm(input: {name: string, description: string, start_time: string, end_time: string}): Promise<void>
     {
         const dialog = this.page.getByRole('dialog', { name: 'Add an event' });
         await expect(dialog).toBeVisible();
         await dialog.getByRole('textbox', { name: 'Title' }).fill(input.name);
         await this.getRichTextByLabel('Description', dialog).fill(input.description);
+
+        // Clicking on a day creates an "All day" event, switch to a time slot to be able to set hours
+        await expect(dialog.getByRole('radio', { name: 'All day' })).toBeChecked();
+        await expect(dialog.getByRole('textbox', { name: 'Start time' })).toBeHidden();
+        await dialog.getByText('Time slot').click();
+
+        const start_time_input = dialog.getByRole('textbox', { name: 'Start time' });
+        await start_time_input.fill(input.start_time);
+        await start_time_input.press('Tab');
+        const end_time_input = dialog.getByRole('textbox', { name: 'End time' });
+        await end_time_input.fill(input.end_time);
+        await end_time_input.press('Tab');
+
         // eslint-disable-next-line playwright/no-raw-locators
-        const start_date_input = dialog.locator('label', { hasText: 'Start date' }).locator('+ div input:not(.flatpickr-input)');
-        const date = (await start_date_input.inputValue()).split(' ')[0];
-        await start_date_input.fill(`${date} ${input.start_time}`);
-        await this.page.getByRole('button', { name: 'Save' }).click();
+        await expect(dialog.locator('input[name="plan[begin]"]')).toHaveValue(new RegExp(` ${input.start_time}:00$`));
         // eslint-disable-next-line playwright/no-raw-locators
-        const period_select = dialog.locator('label', { hasText: 'Period' }).locator('+ div .select2').getByRole('combobox');
-        await this.doSetDropdownValue(period_select, input.period);
+        await expect(dialog.locator('input[name="plan[end]"]')).toHaveValue(new RegExp(` ${input.end_time}:00$`));
+
         await dialog.getByRole('button', { name: 'Add', exact: true }).click();
         await expect(dialog).toBeHidden();
     }

@@ -1,0 +1,245 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+
+{#
+ # Dates block used by planning event forms.
+ # Let the user choose between an "All day" event (dates only) and a "Time slot" event (dates + hours).
+ # Submitted values are `plan[begin]` and `plan[end]`, computed from the visible fields.
+ #
+ # Rendered by Planning::showEventDatesForm().
+ # Expected variables: params (itemtype, items_id, rand_user), begin, end, rand
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% set rand = rand|default(random()) %}
+{% set time_step = config('time_step') %}
+
+{% if begin is empty %}
+    {% set step_seconds = time_step * 60 %}
+    {% set begin = ((("now"|date('U') / step_seconds)|round(0, 'ceil')) * step_seconds)|date('Y-m-d H:i:s') %}
+{% endif %}
+{% if end is empty or end|date('U') <= begin|date('U') %}
+    {% set end = begin|date_modify('+1 hour')|date('Y-m-d H:i:s') %}
+{% endif %}
+
+{% set is_all_day = begin|date('H:i:s') == '00:00:00' and end|date('H:i:s') == '00:00:00' %}
+{% if is_all_day %}
+    {# End of an "all day" event is stored as midnight of the following day #}
+    {% set end_date = end|date_modify('-1 day')|date('Y-m-d') %}
+    {% set begin_time = config('planning_begin')|date('H:i') %}
+    {% set end_time = config('planning_begin')|date_modify('+1 hour')|date('H:i') %}
+{% else %}
+    {% set end_date = end|date('Y-m-d') %}
+    {% set begin_time = begin|date('H:i') %}
+    {% set end_time = end|date('H:i') %}
+{% endif %}
+
+{% macro timeInput(id, name, value, label) %}
+    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ id }}">
+        <input type="text" class="form-control" id="{{ id }}_input" name="{{ name }}" value="{{ value }}" aria-label="{{ label }}" data-input>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
+            <i class="ti ti-clock" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __('Enter or select a time') }}</span>
+        </button>
+    </div>
+{% endmacro %}
+
+<div class="planning-event-dates" id="plan_dates_{{ rand }}">
+    <input type="hidden" name="plan[begin]" value="{{ begin }}">
+    <input type="hidden" name="plan[end]" value="{{ end }}">
+
+    <div class="btn-group w-100 planning-event-mode mb-2" role="group" aria-label="{{ __('Event duration type') }}">
+        <input type="radio" class="btn-check" name="_plan_mode" value="allday" id="plan_mode_allday_{{ rand }}"
+               autocomplete="off" {{ is_all_day ? 'checked' : '' }}>
+        <label class="btn btn-outline-secondary" for="plan_mode_allday_{{ rand }}">
+            <i class="ti ti-calendar-event me-1" aria-hidden="true"></i>{{ __('All day') }}
+        </label>
+        <input type="radio" class="btn-check" name="_plan_mode" value="timeslot" id="plan_mode_timeslot_{{ rand }}"
+               autocomplete="off" {{ is_all_day ? '' : 'checked' }}>
+        <label class="btn btn-outline-secondary" for="plan_mode_timeslot_{{ rand }}">
+            <i class="ti ti-clock me-1" aria-hidden="true"></i>{{ __('Time slot') }}
+        </label>
+    </div>
+
+    <div class="planning-event-dates-group card mb-2">
+        <div class="planning-event-dates-row">
+            <label class="form-label" for="plan_begin_date_{{ rand }}_input">{{ __('Start date') }}</label>
+            {{ inputs.date('_plan_begin_date', begin|date('Y-m-d'), {
+                id: 'plan_begin_date_' ~ rand,
+                field_label: __('Start date'),
+            }) }}
+        </div>
+        <div class="planning-event-dates-row planning-event-time-row {{ is_all_day ? 'd-none' : '' }}">
+            <label class="form-label" for="plan_begin_time_{{ rand }}_input">{{ __('Start time') }}</label>
+            {{ _self.timeInput('plan_begin_time_' ~ rand, '_plan_begin_time', begin_time, __('Start time')) }}
+        </div>
+    </div>
+
+    <div class="planning-event-dates-group card mb-2">
+        <div class="planning-event-dates-row">
+            <label class="form-label" for="plan_end_date_{{ rand }}_input">{{ __('End date') }}</label>
+            {{ inputs.date('_plan_end_date', end_date, {
+                id: 'plan_end_date_' ~ rand,
+                field_label: __('End date'),
+            }) }}
+        </div>
+        <div class="planning-event-dates-row planning-event-time-row {{ is_all_day ? 'd-none' : '' }}">
+            <label class="form-label" for="plan_end_time_{{ rand }}_input">{{ __('End time') }}</label>
+            {{ _self.timeInput('plan_end_time_' ~ rand, '_plan_end_time', end_time, __('End time')) }}
+        </div>
+    </div>
+
+    {% if params.rand_user is defined %}
+        <span id="user_available{{ params.rand_user }}"></span>
+    {% endif %}
+</div>
+
+{% if params.itemtype is defined and call('PlanningRecall::isAvailable') %}
+    {{ fields.dropdownField('PlanningRecall', 'planningrecalls_id', 0, _x('Planning', 'Reminder'), {
+        itemtype: params.itemtype,
+        items_id: params.items_id|default(0),
+        rand: rand,
+        field_class: 'col-12',
+    }) }}
+{% endif %}
+
+<script>
+    $(function() {
+        const root      = document.getElementById('plan_dates_{{ rand }}');
+        const time_step = {{ time_step|default(5) }};
+        const DAY       = 24 * 60 * 60 * 1000;
+
+        const locale = getFlatPickerLocale("{{ get_current_locale()['language']|e('js') }}", "{{ get_current_locale()['region']|e('js') }}");
+        ['plan_begin_time_{{ rand }}', 'plan_end_time_{{ rand }}'].forEach((id) => {
+            $(`#${id}`).flatpickr({
+                wrap: true,
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: 'H:i',
+                time_24hr: true,
+                minuteIncrement: time_step,
+                allowInput: true,
+                locale: locale,
+                onClose(dates, currentdatestring, picker) {
+                    // take manually typed value into account
+                    picker.setDate(picker.input.value, true);
+                },
+            });
+        });
+
+        const begin_date = document.getElementById('plan_begin_date_{{ rand }}')._flatpickr;
+        const end_date   = document.getElementById('plan_end_date_{{ rand }}')._flatpickr;
+        const begin_time = document.getElementById('plan_begin_time_{{ rand }}')._flatpickr;
+        const end_time   = document.getElementById('plan_end_time_{{ rand }}')._flatpickr;
+        const begin_input = root.querySelector('input[name="plan[begin]"]');
+        const end_input   = root.querySelector('input[name="plan[end]"]');
+
+        const isAllDay = () => root.querySelector('input[name="_plan_mode"]:checked').value === 'allday';
+
+        const combine = (date_picker, time_picker) => {
+            const result = new Date(date_picker.selectedDates[0] ?? new Date());
+            result.setHours(0, 0, 0, 0);
+            const time = time_picker.selectedDates[0];
+            if (!isAllDay() && time) {
+                result.setHours(time.getHours(), time.getMinutes(), 0, 0);
+            }
+            return result;
+        };
+
+        const addDays = (date, days) => {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        };
+
+        const setEnd = (end) => {
+            end_date.setDate(end, false);
+            end_time.setDate(end, false);
+        };
+
+        let duration = combine(end_date, end_time) - combine(begin_date, begin_time);
+
+        /**
+         * Recompute submitted values.
+         * @param {boolean} keep_duration Move the end along with the beginning
+         */
+        const sync = (keep_duration = false) => {
+            const all_day = isAllDay();
+            const begin   = combine(begin_date, begin_time);
+            let end       = combine(end_date, end_time);
+
+            if (keep_duration) {
+                end = all_day
+                    ? addDays(begin, Math.max(0, Math.round(duration / DAY)))
+                    : new Date(begin.getTime() + Math.max(duration, time_step * 60 * 1000));
+                setEnd(end);
+            } else if (all_day ? end < begin : end <= begin) {
+                end = all_day ? new Date(begin) : new Date(begin.getTime() + time_step * 60 * 1000);
+                setEnd(end);
+            }
+            duration = end - begin;
+            end_date.set('minDate', begin_date.selectedDates[0] ?? null);
+
+            begin_input.value = begin_date.formatDate(begin, 'Y-m-d H:i:S');
+            end_input.value   = begin_date.formatDate(all_day ? addDays(end, 1) : end, 'Y-m-d H:i:S');
+            $(begin_input).trigger('change');
+        };
+
+        begin_date.config.onChange.push(() => sync(true));
+        begin_time.config.onChange.push(() => sync(true));
+        end_date.config.onChange.push(() => sync());
+        end_time.config.onChange.push(() => sync());
+
+        $(root).on('change', 'input[name="_plan_mode"]', () => {
+            $(root).find('.planning-event-time-row').toggleClass('d-none', isAllDay());
+            sync();
+        });
+
+        // Allow other scripts (e.g. event templates) to force a duration, in seconds
+        $(root).on('planning:set_duration', (e, seconds) => {
+            duration = parseInt(seconds) * 1000;
+            if (duration % DAY !== 0) {
+                $(root).find('input[name="_plan_mode"][value="timeslot"]').prop('checked', true);
+                $(root).find('.planning-event-time-row').removeClass('d-none');
+            } else if (isAllDay()) {
+                // displayed end date of an "all day" event is its last day, not the following day
+                duration -= DAY;
+            }
+            sync(true);
+        });
+
+        sync();
+    });
+</script>

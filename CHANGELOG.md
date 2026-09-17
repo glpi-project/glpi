@@ -37,6 +37,7 @@ The present file will list all changes made to the project; according to the
 - Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents). The root article is an exception: it is readable by anyone who can read the knowledge base, and it never grants access to its descendants.
 - Using `==` and `!=` RSQL operators with boolean fields are coerced to `=istruthy=` and `=isnottruthy=`. There should be no noticeable change in behavior with any existing queries, but this was done to fix behavior with a field added with HLAPI v3.
 - Custom asset schemas renamed `state` to `status` to align with the built-in asset schemas in High-Level API v3. The name remains unchanged in v2.
+- Planning dates of external events and reminders are now defined using start and end dates, with a choice between an "All day" event and a "Time slot" event, instead of a start date and a duration.
 
 ### Deprecated
 
@@ -53,6 +54,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\DBAL\QueryElementInterface`, implemented by every SQL building block that may carry bound values (`QueryExpression`, `QueryIdentifier`, `QueryValue`, `AbstractQuery`). It exposes `getValue()` for the SQL fragment and `getParams()` for the values to bind for its `?` placeholders; both must always be used together.
 - `Glpi\DBAL\QueryIdentifier`, to designate a database identifier (table or field name) that has to be quoted, instead of relying on a bare string.
 - `Glpi\DBAL\QueryValue`, to designate a scalar value used in a statement. It renders as a `?` placeholder and carries the value to bind for it, instead of the value being inlined into the SQL. Not to be confused with `QueryParam`, which renders as `?` but binds nothing.
+- `Planning::showEventDatesForm()`
 
 #### Changes
 - `QueryFunction` methods now accept any `QueryElementInterface` where they used to accept only a `string` or a `QueryExpression`
