@@ -40,6 +40,7 @@ use Dropdown;
 use Entity;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -1569,6 +1570,28 @@ HTML;
                 'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndEntity",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
+
+            foreach (
+                [
+                    'open'  => __("Number of opened tickets by category and type"),
+                    'close' => __("Number of closed tickets by category and type"),
+                ] as $case => $label
+            ) {
+                $cards["ticket_by_category_and_type_$case"] = [
+                    'widgettype' => ['hBars', 'stackedHBars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndType",
+                    'args'       => [
+                        'case' => $case,
+                    ],
+                    'filters'    => array_values(array_diff(
+                        Filter::getAppliableFilters(Ticket::getTable()),
+                        [TicketStatusFilter::getId()]
+                    )),
+                ];
+            }
 
             $cards["ticket_times"] = [
                 'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
