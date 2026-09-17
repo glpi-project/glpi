@@ -1423,7 +1423,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         'glpi_problems.users_id_recipient'   => Session::getLoginUserID(),
                         [
                             'AND' => [
-                                'glpi_problems_users.problems_id'  => 'glpi_problems.id',
+                                'glpi_problems_users.problems_id'  => new QueryIdentifier('glpi_problems.id'),
                                 'glpi_problems_users.users_id'    => Session::getLoginUserID(),
                             ],
                         ],

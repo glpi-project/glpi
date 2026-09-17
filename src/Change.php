@@ -880,7 +880,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         'glpi_changes.users_id_recipient'   => Session::getLoginUserID(),
                         [
                             'AND' => [
-                                'glpi_changes_users.changes_id'  => 'glpi_changes.id',
+                                'glpi_changes_users.changes_id'  => new QueryIdentifier('glpi_changes.id'),
                                 'glpi_changes_users.users_id'    => Session::getLoginUserID(),
                             ],
                         ],
