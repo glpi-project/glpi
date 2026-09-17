@@ -81,6 +81,13 @@ test('Can search for entities', async ({ page, profile }) => {
     // Only one entity should be shown
     await expect(entity_05).toBeVisible();
     await expect(entity_04).toBeHidden(); // Does not match the search
+
+    // Clicking the search result's row should switch to that entity
+    // Regression test: Fancytree used to redraw the row on focus, detaching
+    // the clicked button before its form submission could go through.
+    await expect(glpi_page.active_entity).not.toContainText("entity 05");
+    await glpi_page.doSwitchToEntityWithoutRecursion("E2E worker entity 05");
+    await expect(glpi_page.active_entity).toContainText("entity 05");
 });
 
 test('Can fold/unfold tree', async ({ page, profile }) => {
