@@ -119,6 +119,40 @@ class ReminderTest extends DbTestCase
         );
     }
 
+    public function testChildGroupInheritsParentGroupVisibilityInListCriteria(): void
+    {
+        global $DB;
+
+        $this->login();
+        $parent_group = $this->createItem("Group", ['name' => 'Reminder parent group']);
+        $child_group = $this->createItem("Group", [
+            'name' => 'Reminder child group',
+            'groups_id' => $parent_group->getID(),
+        ]);
+
+        $tech_user = getItemByTypeName("User", "tech", true);
+        $this->createItem("Group_User", ['users_id' => $tech_user, 'groups_id' => $child_group->getID()]);
+
+        $reminder = $this->createItem("Reminder", [
+            'name'     => 'Reminder visible to parent group',
+            'text'     => 'Reminder visible to parent group',
+            'users_id' => \Session::getLoginUserID(),
+        ]);
+        $this->createItem("Group_Reminder", [
+            'reminders_id'          => $reminder->getID(),
+            'groups_id'             => $parent_group->getID(),
+            'no_entity_restriction' => 1,
+        ]);
+
+        $this->login('tech', 'tech');
+        $criteria = array_merge(\Reminder::getVisibilityCriteria(), [
+            'SELECT' => 'name',
+            'FROM'   => \Reminder::getTable(),
+        ]);
+        $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
+        $this->assertContains('Reminder visible to parent group', $names);
+    }
+
     public function testGetListCriteriaIsValid(): void
     {
         global $DB;
