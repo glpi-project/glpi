@@ -4447,7 +4447,6 @@ final class SQLProvider implements SearchProviderInterface
             $HAVING = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
 
             // if criteria (with meta flag) need additional join/from SQL
-            $data['meta_toview'] = [];
             self::constructAdditionalSqlForMetacriteria($data['search']['criteria'], $SELECT, $FROM, $already_link_tables, $data);
         }
 
@@ -5028,8 +5027,12 @@ final class SQLProvider implements SearchProviderInterface
         &$SELECT = "",
         &$FROM = "",
         &$already_link_tables = [],
-        &$data = []
+        &$data = [],
+        bool $is_recursive_call = false
     ) {
+        if (!$is_recursive_call) {
+            $data['meta_toview'] = [];
+        }
         foreach ($criteria as $criterion) {
             // manage sub criteria
             if (isset($criterion['criteria'])) {
@@ -5038,7 +5041,8 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT,
                     $FROM,
                     $already_link_tables,
-                    $data
+                    $data,
+                    true
                 );
                 continue;
             }
