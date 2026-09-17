@@ -787,7 +787,12 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $version = $this->fields["version"];
         $start   = null;
-        $this->computeNetworkRange($start);
+        $end     = null;
+        // A masked equality must compare against the network address itself. Excluding the network
+        // and broadcast addresses is a display concern that shifts the start by one, which would
+        // make this criterion compare a masked value (always the network address) against
+        // network + 1 and never match.
+        $this->computeNetworkRange($start, $end, false);
 
         $result = [];
         for ($i = ($version == 4 ? 3 : 0); $i < 4; ++$i) {

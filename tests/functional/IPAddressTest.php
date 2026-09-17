@@ -292,6 +292,56 @@ class IPAddressTest extends DbTestCase
         }
     }
 
+    public function testLinkIPAddressFromAddressableNetwork()
+    {
+        global $DB;
+        $this->login();
+
+        // An addressable network must still link the addresses it contains. The matching criterion
+        // compares a masked address (always the network address) so it has to compare against the
+        // network address, not the first usable address (network + 1).
+        $ipNetwork = new \IPNetwork();
+        $ipnetwork_id = $ipNetwork->add([
+            'name'         => 'addressable-network',
+            'network'      => '10.50.60.0 / 255.255.255.0',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'addressable'  => 1,
+        ]);
+        $this->assertGreaterThan(0, (int) $ipnetwork_id);
+        $this->assertTrue($ipNetwork->getFromDB($ipnetwork_id));
+
+        $networkName = new \NetworkName();
+        $networkname_id = $networkName->add([
+            'name'          => 'addressable-name',
+            '_ipaddresses'  => [-1 => '10.50.60.10'],
+            'entities_id'   => 0,
+            'items_id'      => 0,
+            'itemtype'      => '',
+            'fqdns_id'      => 0,
+            'comment'       => '',
+            'ipnetworks_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, (int) $networkname_id);
+
+        $ipaddress_id = getItemByTypeName('IPAddress', '10.50.60.10', true);
+        $this->assertGreaterThan(0, (int) $ipaddress_id);
+
+        // Re-run the linking as the network create/update hooks do.
+        \IPAddress_IPNetwork::linkIPAddressFromIPNetwork($ipNetwork);
+
+        $linked = iterator_to_array($DB->request([
+            'SELECT' => 'ipaddresses_id',
+            'FROM'   => 'glpi_ipaddresses_ipnetworks',
+            'WHERE'  => ['ipnetworks_id' => $ipnetwork_id],
+        ]));
+        $this->assertContains(
+            (int) $ipaddress_id,
+            array_map(static fn($row) => (int) $row['ipaddresses_id'], $linked),
+            'Addressable network did not link its contained address'
+        );
+    }
+
     public function testShowForItemWithOrphanNetworkName()
     {
         $this->login();
