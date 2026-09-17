@@ -912,10 +912,19 @@ class Group extends CommonTreeDropdown
             return $groups_id;
         }
 
-        return array_unique(array_merge(
-            $groups_id,
-            getAncestorsOf(self::getTable(), $groups_id)
-        ));
+        // getAncestorsOf() only caches lookups for a single ID; memoize here to
+        // avoid a fresh, uncached query on every call (e.g. once per item in a list).
+        static $cache = [];
+        sort($groups_id);
+        $ckey = implode(',', $groups_id);
+        if (!isset($cache[$ckey])) {
+            $cache[$ckey] = array_unique(array_merge(
+                $groups_id,
+                getAncestorsOf(self::getTable(), $groups_id)
+            ));
+        }
+
+        return $cache[$ckey];
     }
 
     public static function getAnonymizedName(?int $entities_id = null): ?string
