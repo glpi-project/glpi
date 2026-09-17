@@ -753,6 +753,116 @@ class NetworkCardTest extends AbstractInventoryAsset
         //TODO: check for created values in database
     }
 
+    public function testPhysicalAndVirtualNetworkCardsFallback()
+    {
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CONTROLLERS>
+      <CAPTION>NetXtreme BCM5720 Gigabit Ethernet PCIe</CAPTION>
+      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <NAME>NetXtreme BCM5720 Gigabit Ethernet PCIe</NAME>
+      <PCISUBSYSTEMID>1028:05e5</PCISUBSYSTEMID>
+      <PRODUCTID>165f</PRODUCTID>
+      <TYPE>Broadcom NetXtreme Gigabit Ethernet</TYPE>
+      <VENDORID>14e4</VENDORID>
+    </CONTROLLERS>
+    <NETWORKS>
+      <DESCRIPTION>Ethernet</DESCRIPTION>
+      <MACADDR>20:47:47:90:78:42</MACADDR>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
+      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
+      <MTU>1500</MTU>
+      <PCIID>14E4:165F:05E5:1028</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <NETWORKS>
+      <DESCRIPTION>Ethernet 2</DESCRIPTION>
+      <MACADDR>20:47:47:90:78:44</MACADDR>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
+      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
+      <MTU>1500</MTU>
+      <PCIID>14E4:165F:05E5:1028</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <NETWORKS>
+      <DESCRIPTION>LoadBalance</DESCRIPTION>
+      <IPADDRESS>192.168.10.250</IPADDRESS>
+      <IPGATEWAY>192.168.10.254</IPGATEWAY>
+      <IPMASK>255.255.255.0</IPMASK>
+      <IPSUBNET>192.168.10.0</IPSUBNET>
+      <MACADDR>20:47:47:90:78:42</MACADDR>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
+      <MODEL>Microsoft Network Adapter Multiplexor Driver</MODEL>
+      <MTU>1500</MTU>
+      <SPEED>2000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>1</VIRTUALDEV>
+    </NETWORKS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpi-server.local-2023-11-22</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $converter = new Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $asset = new NetworkCard($computer, $json->content->networks);
+        $asset->setExtraData((array) $json->content);
+        $conf = new Conf();
+        $this->login();
+        $conf->saveConf(['component_networkcardvirtual' => 1]);
+        $this->logOut();
+        $asset->checkConf($conf);
+        $result = $asset->prepare();
+
+        $this->assertIsArray($result);
+        $this->assertCount(2, $result); // 2 physical network cards should be identified
+
+        // First component check
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[0]->designation);
+        $this->assertEquals('20:47:47:90:78:42', $result[0]->mac);
+
+        // Second component check
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[1]->designation);
+        $this->assertEquals('20:47:47:90:78:44', $result[1]->mac);
+
+        // The virtual LoadBalance adapter should be filtered out from the physical components
+        // but remain in ports.
+        $ports = $asset->getNetworkPorts();
+        $this->assertIsArray($ports);
+        $this->assertCount(3, $ports);
+        $this->assertArrayHasKey('Ethernet-20:47:47:90:78:42', $ports);
+        $this->assertArrayHasKey('Ethernet 2-20:47:47:90:78:44', $ports);
+        $this->assertArrayHasKey('LoadBalance-20:47:47:90:78:42', $ports);
+
+        // Check MAC Address mapping
+        $this->assertEquals('20:47:47:90:78:42', $ports['Ethernet-20:47:47:90:78:42']->mac);
+        $this->assertEquals('20:47:47:90:78:44', $ports['Ethernet 2-20:47:47:90:78:44']->mac);
+        $this->assertEquals('20:47:47:90:78:42', $ports['LoadBalance-20:47:47:90:78:42']->mac);
+
+        // Check Speed mapping
+        $this->assertEquals(1000, $ports['Ethernet-20:47:47:90:78:42']->speed);
+        $this->assertEquals(1000, $ports['Ethernet 2-20:47:47:90:78:44']->speed);
+        $this->assertEquals(2000, $ports['LoadBalance-20:47:47:90:78:42']->speed);
+
+        // Check MTU mapping
+        $this->assertEquals(1500, $ports['Ethernet-20:47:47:90:78:42']->mtu);
+        $this->assertEquals(1500, $ports['Ethernet 2-20:47:47:90:78:44']->mtu);
+        $this->assertEquals(1500, $ports['LoadBalance-20:47:47:90:78:42']->mtu);
+    }
+
     public function testInventoryUpdate()
     {
         $computer = new \Computer();
@@ -1193,5 +1303,94 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $this->assertSame(9000, $networkport->fields['ifmtu']);
         $this->assertSame(300000000, $networkport->fields['ifspeed']);
+    }
+
+    public function testInventoryUpdateModernAgent()
+    {
+        $computer = new \Computer();
+        $item_net = new \Item_DeviceNetworkCard();
+        $device_net = new \DeviceNetworkCard();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CONTROLLERS>
+      <CAPTION>NetXtreme BCM5720 Gigabit Ethernet PCIe</CAPTION>
+      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <NAME>NetXtreme BCM5720 Gigabit Ethernet PCIe</NAME>
+      <PCISUBSYSTEMID>1028:05e5</PCISUBSYSTEMID>
+      <PRODUCTID>165f</PRODUCTID>
+      <TYPE>Broadcom NetXtreme Gigabit Ethernet</TYPE>
+      <VENDORID>14e4</VENDORID>
+    </CONTROLLERS>
+    <NETWORKS>
+      <DESCRIPTION>Ethernet</DESCRIPTION>
+      <MACADDR>00:11:22:33:44:55</MACADDR>
+      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
+      <PCIID>14E4:165F:05E5:1028</PCIID>
+      <PNPDEVICEID>PCI\\VEN_14E4&amp;DEV_165F&amp;SUBSYS_05E51028&amp;REV_00\\000000112233445500</PNPDEVICEID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <NETWORKS>
+      <DESCRIPTION>Ethernet 2</DESCRIPTION>
+      <MACADDR>00:11:22:33:44:66</MACADDR>
+      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
+      <PCIID>14E4:165F:05E5:1028</PCIID>
+      <PNPDEVICEID>PCI\\VEN_14E4&amp;DEV_165F&amp;SUBSYS_05E51028&amp;REV_00\\000000112233446601</PNPDEVICEID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <NETWORKS>
+      <DESCRIPTION>LoadBalance</DESCRIPTION>
+      <IPADDRESS>10.0.0.1</IPADDRESS>
+      <IPGATEWAY>10.0.0.254</IPGATEWAY>
+      <IPMASK>255.255.255.0</IPMASK>
+      <IPSUBNET>10.0.0.0</IPSUBNET>
+      <MACADDR>00:11:22:33:44:55</MACADDR>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
+      <MODEL>Microsoft Network Adapter Multiplexor Driver</MODEL>
+      <PNPDEVICEID>COMPOSITEBUS\MS_IMPLAT_MP\{12345678-1234-5678-1234-123456789012}</PNPDEVICEID>
+      <SPEED>2000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>1</VIRTUALDEV>
+    </NETWORKS>
+    <HARDWARE>
+      <NAME>Server01</NAME>
+      <UUID>4C4C4544-0000-0000-0000-000000000000</UUID>
+    </HARDWARE>
+    <VERSIONCLIENT>GLPI-Agent_v1.7</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-server01</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computers_id = $computer->getFromDBByCrit(['name' => 'Server01']);
+        $this->assertTrue($computers_id);
+        $computers_id = $computer->fields['id'];
+
+        // LoadBalance is discarded as a component because it shares a MAC address with Ethernet,
+        // failing the MAC unicity check. (Virtual network components are enabled by default
+        // via 'component_networkcardvirtual', but the unicity check still applies).
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->assertCount(2, $cards);
+
+        // Check if the designations were populated correctly based on model and controller matching
+        $device_cards = [];
+        foreach ($cards as $card) {
+            $device_net->getFromDB($card['devicenetworkcards_id']);
+            $device_cards[] = $device_net->fields['designation'];
+        }
+
+        $this->assertContains('NetXtreme BCM5720 Gigabit Ethernet PCIe', $device_cards);
     }
 }
