@@ -85,14 +85,10 @@ test('Can create a new translation', async ({ page, profile, api }) => {
     // Enter translation mode
     const translations_link = page.getByTestId('translations-count');
     await expect(translations_link).toContainText('0');
-    await translations_link.click();
-
-    const alert = page.getByTestId('translation-mode-alert');
-    await expect(alert).toBeVisible();
+    await kb.doEnterTranslationMode();
 
     // Select French language
-    const language_select = page.getByTestId('translation-language-select');
-    await language_select.selectOption('fr_FR');
+    await kb.doSelectTranslationLanguage('fr_FR');
 
     // Type translated title
     const subject = page.getByTestId('subject');
@@ -191,9 +187,10 @@ test('Can delete a translation', async ({ page, profile, api }) => {
     // Click delete
     await delete_btn.click();
 
-    // Confirm deletion
+    // Confirm deletion. Bootstrap ignores a `hide()` requested while the modal
+    // is still fading in, so wait for it to be shown before dismissing it.
     const modal = page.getByRole('dialog');
-    await expect(modal).toBeVisible();
+    await expect(modal).toHaveAttribute('data-cy-shown', 'true');
     await modal.getByRole('button', { name: 'Delete' }).click();
     await expect(kb.getAlert('Translation deleted successfully ')).toBeVisible();
 
@@ -215,13 +212,10 @@ test('Translation preserves formatting after page reload', async ({ page, profil
     await kb.goto(id);
 
     // Enter translation mode
-    const translations_link = page.getByTestId('translations-count');
-    await translations_link.click();
-    await expect(page.getByTestId('translation-mode-alert')).toBeVisible();
+    await kb.doEnterTranslationMode();
 
     // Select French language
-    const language_select = page.getByTestId('translation-language-select');
-    await language_select.selectOption('fr_FR');
+    await kb.doSelectTranslationLanguage('fr_FR');
 
     // Type translated title
     const subject = page.getByTestId('subject');

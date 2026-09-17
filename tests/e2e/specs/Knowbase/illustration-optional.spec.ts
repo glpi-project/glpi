@@ -32,6 +32,7 @@
 
 import { randomUUID } from 'crypto';
 import { expect, test } from '../../fixtures/glpi_fixture';
+import { IllustrationPickerPage } from '../../pages/IllustrationPickerPage';
 import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
@@ -39,6 +40,7 @@ import { getWorkerEntityId } from '../../utils/WorkerEntities';
 test('Selecting "No illustration" clears the value and shows the placeholder', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
+    const picker_page = new IllustrationPickerPage(page);
 
     const id = await api.createItem('KnowbaseItem', {
         name: 'KB optional icon clear test',
@@ -50,12 +52,11 @@ test('Selecting "No illustration" clears the value and shows the placeholder', a
     await kb.goto(id);
     await kb.editor.enterEditMode();
 
-    await page.getByRole('button', { name: 'Select an illustration' }).click();
-    const modal = page.getByTestId('illustration-picker-modal');
-    await expect(modal).toBeVisible();
-
-    await modal.getByRole('button', { name: 'No illustration' }).click();
-    await expect(modal).toBeHidden();
+    // Going through the page object matters here: Bootstrap ignores a `hide()`
+    // requested while the modal is still fading in, so the picker helpers wait
+    // for `data-cy-shown` instead of mere visibility.
+    await picker_page.doOpenIllustrationPicker();
+    await picker_page.doSelectIllustration('No illustration');
 
     const picker = page.getByTestId('illustration-picker');
     await expect(page.getByTestId('illustration-input')).toHaveValue('');
@@ -94,6 +95,7 @@ test('Article without illustration hides the container in view mode and reveals 
 test('Cancelling edit after clearing illustration restores the original value', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
+    const picker_page = new IllustrationPickerPage(page);
 
     const id = await api.createItem('KnowbaseItem', {
         name: 'KB optional icon cancel revert test',
@@ -105,11 +107,8 @@ test('Cancelling edit after clearing illustration restores the original value', 
     await kb.goto(id);
     await kb.editor.enterEditMode();
 
-    await page.getByRole('button', { name: 'Select an illustration' }).click();
-    const modal = page.getByTestId('illustration-picker-modal');
-    await expect(modal).toBeVisible();
-    await modal.getByRole('button', { name: 'No illustration' }).click();
-    await expect(modal).toBeHidden();
+    await picker_page.doOpenIllustrationPicker();
+    await picker_page.doSelectIllustration('No illustration');
     await expect(page.getByTestId('illustration-input')).toHaveValue('');
 
     await kb.editor.cancel();
@@ -123,6 +122,7 @@ test('Cancelling edit after clearing illustration restores the original value', 
 test('History panel shows "Illustration removed by" when illustration is cleared', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
+    const picker_page = new IllustrationPickerPage(page);
 
     const id = await api.createItem('KnowbaseItem', {
         name: 'KB optional icon history test',
@@ -134,11 +134,8 @@ test('History panel shows "Illustration removed by" when illustration is cleared
     await kb.goto(id);
     await kb.editor.enterEditMode();
 
-    await page.getByRole('button', { name: 'Select an illustration' }).click();
-    const modal = page.getByTestId('illustration-picker-modal');
-    await expect(modal).toBeVisible();
-    await modal.getByRole('button', { name: 'No illustration' }).click();
-    await expect(modal).toBeHidden();
+    await picker_page.doOpenIllustrationPicker();
+    await picker_page.doSelectIllustration('No illustration');
 
     await kb.editor.save();
 
