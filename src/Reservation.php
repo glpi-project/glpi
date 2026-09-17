@@ -892,7 +892,7 @@ HTML;
         $modifier = match ($type) {
             'day'   => '+1 day',
             'week'  => '+1 week',
-            // "Same day of week" subtype lands up to one week after the +1 month
+            // Subtype is unknown here; "same day of week" can land up to 7 days after +1 month
             'month' => '+1 month +1 week',
             default => null,
         };
