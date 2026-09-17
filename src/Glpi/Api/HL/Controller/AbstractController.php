@@ -207,12 +207,12 @@ abstract class AbstractController
      */
     protected function restrictSearch(Request $request, string $scope): void
     {
-        $existing = $request->hasParameter(Search::MANDATORY_FILTER_PARAM)
+        $existing_scope = $request->hasParameter(Search::MANDATORY_FILTER_PARAM)
             ? (string) $request->getParameter(Search::MANDATORY_FILTER_PARAM)
             : '';
         $request->setParameter(
             Search::MANDATORY_FILTER_PARAM,
-            $existing !== '' ? $existing . ';' . $scope : $scope
+            $existing_scope !== '' ? $existing_scope . ';' . $scope : $scope
         );
     }
 
