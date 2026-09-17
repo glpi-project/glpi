@@ -96,14 +96,15 @@ final class CheckStartupErrorsListener implements EventSubscriberInterface
     private function mapErrorLevelToUserLevel(int $level): int
     {
         return match ($level) {
-            E_WARNING => E_USER_WARNING,
-            E_CORE_WARNING => E_USER_WARNING,
-            E_COMPILE_WARNING => E_USER_WARNING,
-            E_USER_WARNING => E_USER_WARNING,
-            E_NOTICE  => E_USER_NOTICE,
-            E_DEPRECATED => E_USER_DEPRECATED,
-            E_USER_DEPRECATED => E_USER_DEPRECATED,
-            default => E_USER_WARNING, // should not happen, other error are blocking the script execution
+            E_WARNING           => E_USER_WARNING,
+            E_CORE_WARNING      => E_USER_WARNING,
+            E_COMPILE_WARNING   => E_USER_WARNING,
+            E_USER_WARNING      => E_USER_WARNING,
+            E_NOTICE            => E_USER_NOTICE,
+            E_USER_NOTICE       => E_USER_NOTICE,
+            E_DEPRECATED        => E_USER_DEPRECATED,
+            E_USER_DEPRECATED   => E_USER_DEPRECATED,
+            default             => E_USER_WARNING, // should not happen, other error are blocking the script execution
         };
     }
 }
