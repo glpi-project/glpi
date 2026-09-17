@@ -937,7 +937,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      *
      * @return void
      **/
-    public function computeNetworkRange(&$start, &$end = null, string|bool $excludeBroadcastAndNetwork = '')
+    public function computeNetworkRange(&$start, &$end = null, $excludeBroadcastAndNetwork = '')
     {
 
         if (!is_bool($excludeBroadcastAndNetwork)) {
