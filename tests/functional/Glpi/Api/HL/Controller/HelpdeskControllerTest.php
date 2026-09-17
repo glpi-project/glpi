@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,32 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Api\HL\Doc;
+namespace tests\units\Glpi\Api\HL\Controller;
 
-use Attribute;
+use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 
-#[Attribute(Attribute::TARGET_METHOD)]
-class UpdateRoute extends Route
+class HelpdeskControllerTest extends HLAPITestCase
 {
-    public function __construct(string $schema_name, ?string $description = null)
+    public function testGetMyServiceCatalogInfo(): void
     {
-        parent::__construct(
-            description: $description ?? 'Update an existing ' . $schema_name,
-            parameters: [
-                new Parameter(
-                    name: '_',
-                    schema: new SchemaReference($schema_name),
-                    location: Parameter::LOCATION_BODY,
-                ),
-                new ParameterReference('If-Modified-Since'),
-                new ParameterReference('If-Unmodified-Since'),
-            ],
-            responses: [
-                new Response(
-                    schema: new SchemaReference($schema_name),
-                    description: 'The updated ' . $schema_name
-                ),
-            ]
-        );
+        $this->login();
+        $this->api->call(new Request('GET', '/Helpdesk/TilesInfo/My'), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('How can we help you?', $content['helpdesk_home_title']);
+                    $this->assertTrue($content['helpdesk_home_search_enabled']);
+                    $this->assertGreaterThanOrEqual(2, count(array_filter($content['tiles'], static fn($t) => $t['_tile_type'] === 'FormTile')));
+                    $this->assertGreaterThanOrEqual(4, count(array_filter($content['tiles'], static fn($t) => $t['_tile_type'] === 'GLPIPageTile')));
+                });
+        });
     }
 }

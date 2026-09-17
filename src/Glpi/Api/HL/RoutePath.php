@@ -194,6 +194,9 @@ final class RoutePath
     {
         $path = $this->getRoutePath();
         foreach ($params as $key => $value) {
+            if ($value === null) {
+                continue;
+            }
             // Ignore arrays/objects
             if (!is_array($value) && !is_object($value)) {
                 $path = str_replace('{' . $key . '}', $value, $path);
