@@ -45,6 +45,12 @@ class KnowbaseItem_Favorite extends CommonDBRelation
     public static bool $logs_for_item_1 = false;
     public static bool $logs_for_item_2 = false;
 
+    public static function canCreate(): bool
+    {
+        // A favorite is stored per user: an anonymous public FAQ reader has nowhere to store it.
+        return Session::getLoginUserID() !== false && parent::canCreate();
+    }
+
     public static function isFavoriteForCurrentUser(int $knowbaseitems_id): bool
     {
         $user_id = Session::getLoginUserID();

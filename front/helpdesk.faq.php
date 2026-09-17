@@ -35,11 +35,27 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+
 global $CFG_GLPI;
 
 // Redirect management
 if (isset($_GET["redirect"])) {
     Toolbox::manageRedirect($_GET["redirect"]);
+}
+
+// Checked before any output so the error page can be rendered (same codes as the central knowledge base).
+$kb = new KnowbaseItem();
+if (isset($_GET["id"])) {
+    $id = (int) $_GET["id"];
+    if (!$kb->getFromDB($id)) {
+        throw new NotFoundHttpException();
+    }
+    if (!$kb->can($id, READ)) {
+        throw new AccessDeniedHttpException();
+    }
 }
 
 if (Session::getLoginUserID()) {
@@ -54,10 +70,12 @@ if (Session::getLoginUserID()) {
 }
 
 if (isset($_GET["id"])) {
-    $kb = new KnowbaseItem();
-    if ($kb->getFromDB($_GET["id"])) {
-        $kb->showFull();
-    }
+    // Same two-column layout as the central knowledge base (see CommonGLPI::display()).
+    echo TemplateRenderer::getInstance()->render('pages/tools/kb/faq_article.html.twig', [
+        'aside'   => $kb->getAsideContent(),
+        'slug'    => Toolbox::slugify(KnowbaseItem::class),
+        'article' => $kb->showFull(['display' => false]),
+    ]);
 } else {
     // Manage forcetab : non standard system (file name <> class name)
     if (isset($_GET['forcetab'])) {
