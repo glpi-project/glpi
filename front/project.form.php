@@ -121,7 +121,10 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(Budget::getTypeName(1), in_modal: true);
-    $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
+    if (!empty($_GET["id"])) {
+        $project->getFromDB($_GET["id"]);
+    }
+    $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"] ?? null]);
     Html::popFooter();
 } else {
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
