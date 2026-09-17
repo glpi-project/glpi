@@ -41,6 +41,7 @@ use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\Search;
 use Glpi\Api\HL\StreamedResponseWrapper;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -191,6 +192,28 @@ abstract class AbstractController
             throw new RuntimeException('Invalid session');
         }
         return $user_id;
+    }
+
+    /**
+     * Restrict a search to a mandatory RSQL scope that the end user cannot widen.
+     *
+     * Used by sub-resource routes to limit the results to the parent item (e.g. the volumes of a
+     * given asset). The scope is enforced in {@see Search::addRSQLCriteria()}, where it is parsed
+     * on its own and ANDed as its own group, so a user `filter` cannot escape it through operator
+     * precedence, and being ANDed it can only ever narrow the results. Several calls accumulate.
+     *
+     * @param Request $request The request whose parameters are passed to the search.
+     * @param string $scope A RSQL expression, e.g. `rack.id==5` or `itemtype==User;items_id==2`.
+     */
+    protected function restrictSearch(Request $request, string $scope): void
+    {
+        $existing = $request->hasParameter(Search::MANDATORY_FILTER_PARAM)
+            ? (string) $request->getParameter(Search::MANDATORY_FILTER_PARAM)
+            : '';
+        $request->setParameter(
+            Search::MANDATORY_FILTER_PARAM,
+            $existing !== '' ? $existing . ';' . $scope : $scope
+        );
     }
 
     /**

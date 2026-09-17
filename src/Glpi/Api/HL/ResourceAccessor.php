@@ -411,11 +411,12 @@ final class ResourceAccessor
         if (($itemtype !== null) && !$itemtype::canView()) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
-        // Shortcut implementation using the search functionality with an injected RSQL filter and returning the first result.
+        // Shortcut implementation using the search functionality with a mandatory RSQL scope and returning the first result.
         // This shouldn't have much if any unneeded overhead as the filter would be mapped to a SQL condition.
-        $filters = $request_params['filter'] ?? '';
-        $filters .= ';' . $field . '==' . $request_attrs[$field];
-        $request_params['filter'] = $filters;
+        // The scope is passed as a mandatory filter (not appended to the user filter) so it cannot be escaped.
+        $scope = $field . '==' . $request_attrs[$field];
+        $existing_scope = $request_params[Search::MANDATORY_FILTER_PARAM] ?? '';
+        $request_params[Search::MANDATORY_FILTER_PARAM] = $existing_scope !== '' ? $existing_scope . ';' . $scope : $scope;
         $request_params['limit'] = 1;
         unset($request_params['start']);
         try {

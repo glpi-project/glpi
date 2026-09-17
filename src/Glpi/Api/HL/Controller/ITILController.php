@@ -59,6 +59,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -1679,15 +1680,27 @@ EOT,
         return $fields;
     }
 
-    private function getTimelineItemFilters(CommonITILObject $item, Request $request, string $subitem_type): string
+    private function getTimelineItemScope(CommonITILObject $item, Request $request, string $subitem_type): string
     {
-        $request_filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters = $request_filters;
-        $required_fields = $this->getRequiredTimelineItemFields($item, $request, $subitem_type);
-        foreach ($required_fields as $name => $value) {
-            $filters .= ";{$name}=={$value}";
+        $scope = [];
+        foreach ($this->getRequiredTimelineItemFields($item, $request, $subitem_type) as $name => $value) {
+            $scope[] = "{$name}=={$value}";
         }
-        return $filters;
+        return implode(';', $scope);
+    }
+
+    /**
+     * A single timeline item is requested when the scope (set by the `/Timeline/<type>/<id>` routes)
+     * or a user filter targets a specific id. In that case an empty result must be a 404.
+     */
+    private function isSingleTimelineItemRequest(Request $request): bool
+    {
+        foreach (['filter', Search::MANDATORY_FILTER_PARAM] as $param) {
+            if ($request->hasParameter($param) && str_contains((string) $request->getParameter($param), 'id==')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function getKnownSubitemSchema(CommonITILObject $item, string $subitem_type, string $api_version): array
@@ -1728,9 +1741,17 @@ EOT,
             }
         }
 
+        $user_filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $request_scope = $request->hasParameter(Search::MANDATORY_FILTER_PARAM)
+            ? $request->getParameter(Search::MANDATORY_FILTER_PARAM)
+            : '';
+
         $results = [];
         foreach ($subitem_types as $subitem_type) {
-            $filters = $this->getTimelineItemFilters($item, $request, $subitem_type);
+            $scope = $this->getTimelineItemScope($item, $request, $subitem_type);
+            if ($request_scope !== '') {
+                $scope = $scope === '' ? $request_scope : $scope . ';' . $request_scope;
+            }
             $schema = $this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request));
 
             /** @var class-string<CommonDBTM> $schema_itemtype */
@@ -1739,11 +1760,14 @@ EOT,
                 continue;
             }
             if (array_key_exists('is_private', $schema['properties']) && !Session::haveRight($schema_itemtype::$rightname, $schema_itemtype::SEEPRIVATE)) {
-                $filters .= ';is_private==0';
+                $scope = $scope === '' ? 'is_private==0' : $scope . ';is_private==0';
             }
 
+            // The scope (parent item, is_private, ...) is passed as a mandatory filter so a user
+            // `filter` cannot escape it through operator precedence.
             $subitem_results = ResourceAccessor::searchBySchema($schema, [
-                'filter' => $filters,
+                'filter' => $user_filter,
+                Search::MANDATORY_FILTER_PARAM => $scope,
                 'limit' => 1000,
             ]);
             $decoded_results = json_decode($subitem_results->getBody(), true);
@@ -1754,7 +1778,7 @@ EOT,
                 ];
             }
         }
-        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        $single_result = $this->isSingleTimelineItemRequest($request);
         if ($single_result && count($results) > 0) {
             $results = $results[0]['item'];
         } elseif ($single_result && count($results) === 0) {
@@ -1794,7 +1818,7 @@ EOT,
         $friendly_subitem_type = $request->getAttribute('subitem_type');
 
         $timeline = $this->getITILTimelineItems($item, $request, [$friendly_subitem_type]);
-        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        $single_result = $this->isSingleTimelineItemRequest($request);
         if ($single_result && $timeline === null) {
             return self::getNotFoundErrorResponse();
         }
@@ -1815,7 +1839,7 @@ EOT,
         $item = $request->getParameter('_item');
 
         $timeline = $this->getITILTimelineItems($item, $request, ['Task']);
-        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        $single_result = $this->isSingleTimelineItemRequest($request);
         if ($single_result && $timeline === null) {
             return self::getNotFoundErrorResponse();
         }
@@ -1838,7 +1862,7 @@ EOT,
         $item = $request->getParameter('_item');
 
         $timeline = $this->getITILTimelineItems($item, $request, ['Validation']);
-        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        $single_result = $this->isSingleTimelineItemRequest($request);
         if ($single_result && $timeline === null) {
             return self::getNotFoundErrorResponse();
         }
@@ -1882,10 +1906,8 @@ EOT,
     )]
     public function getTimelineItem(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';id==' . $request->getAttribute('subitem_id');
-        // Reuse existing logic from the getTimelineItems route
-        $request->setParameter('filter', $filters);
+        // Reuse existing logic from the getTimelineItems route, restricting to the requested item.
+        $this->restrictSearch($request, 'id==' . $request->getAttribute('subitem_id'));
         return $this->getTimelineItems($request);
     }
 
@@ -1899,10 +1921,8 @@ EOT,
     )]
     public function getTimelineTask(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';id==' . $request->getAttribute('subitem_id');
-        // Reuse existing logic from the getTimelineItems route
-        $request->setParameter('filter', $filters);
+        // Reuse existing logic from the getTimelineItems route, restricting to the requested item.
+        $this->restrictSearch($request, 'id==' . $request->getAttribute('subitem_id'));
         $request->setAttribute('subitem_type', 'Task');
         return $this->getTimelineItems($request);
     }
@@ -1918,10 +1938,8 @@ EOT,
     )]
     public function getTimelineValidation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';id==' . $request->getAttribute('subitem_id');
-        // Reuse existing logic from the getTimelineItems route
-        $request->setParameter('filter', $filters);
+        // Reuse existing logic from the getTimelineItems route, restricting to the requested item.
+        $this->restrictSearch($request, 'id==' . $request->getAttribute('subitem_id'));
         $request->setAttribute('subitem_type', 'Validation');
         return $this->getTimelineItems($request);
     }
@@ -2498,16 +2516,13 @@ EOT,
     {
         $itemtype = $request->getAttribute('itemtype');
         $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
-        $parameters = $request->getParameters();
         $parent_prop = match ($itemtype) {
             'Ticket' => 'ticket',
             'Change' => 'change',
             'Problem' => 'problem',
             default => throw new RuntimeException(\sprintf('Unexpected type `%s`.', $itemtype)),
         };
-        $filters = $parameters['filter'] ?? '';
-        $filters .= $parent_prop . '.id==' . $request->getAttribute('id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, $parent_prop . '.id==' . $request->getAttribute('id'));
         return ResourceAccessor::searchBySchema($schema, $request->getParameters());
     }
 
@@ -2613,9 +2628,7 @@ EOT,
     )]
     public function searchKBArticleItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id'));
         return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -2631,9 +2644,7 @@ EOT,
     )]
     public function getKBArticleItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id'));
         return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -2741,8 +2752,7 @@ EOT,
     {
         $itemtype = $request->getAttribute('itemtype');
         $schema = $this->getKnownSchema('PendingReason_Item', $this->getAPIVersion($request));
-        $filters = 'itemtype==' . $itemtype;
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $itemtype);
         return ResourceAccessor::getOneBySchema($schema, ['items_id' => $request->getAttribute('id')], $request->getParameters(), 'items_id');
     }
 }

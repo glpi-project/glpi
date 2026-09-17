@@ -1471,7 +1471,7 @@ EOT,
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters(), 'username');
     }
 
-    private function getUsedOrManagedItems(int $users_id, bool $is_managed, array $request_params, string $api_version): Response
+    private function getUsedOrManagedItems(Request $request, int $users_id, bool $is_managed): Response
     {
         global $CFG_GLPI;
 
@@ -1483,16 +1483,11 @@ EOT,
                 }
                 return (new $t())->isField($is_managed ? 'users_id_tech' : 'users_id');
             }),
-            api_version: $api_version
+            api_version: $this->getAPIVersion($request)
         );
-        $rsql_filter = $request_params['filter'] ?? '';
-        if (!empty($rsql_filter)) {
-            $rsql_filter = "($rsql_filter);";
-        }
         $user_field = $is_managed ? 'user_tech.id' : 'user.id';
-        $rsql_filter .= "$user_field==$users_id";
-        $request_params['filter'] = $rsql_filter;
-        return ResourceAccessor::searchBySchema($schema, $request_params);
+        $this->restrictSearch($request, "$user_field==$users_id");
+        return ResourceAccessor::searchBySchema($schema, $request->getParameters());
     }
 
     #[Route(path: '/User/Me/UsedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class], scopes: ['user'])]
@@ -1502,7 +1497,7 @@ EOT,
     )]
     public function getMyUsedItems(Request $request): Response
     {
-        return $this->getUsedOrManagedItems($this->getMyUserID(), false, $request->getParameters(), $this->getAPIVersion($request));
+        return $this->getUsedOrManagedItems($request, $this->getMyUserID(), false);
     }
 
     #[Route(path: '/User/{id}/UsedItem', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1512,7 +1507,7 @@ EOT,
     )]
     public function getUserUsedItemsByID(Request $request): Response
     {
-        return $this->getUsedOrManagedItems($request->getAttribute('id'), false, $request->getParameters(), $this->getAPIVersion($request));
+        return $this->getUsedOrManagedItems($request, $request->getAttribute('id'), false);
     }
 
     #[Route(path: '/User/username/{username}/UsedItem', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1523,7 +1518,7 @@ EOT,
     public function getUserUsedItemsByUsername(Request $request): Response
     {
         $users_id = ResourceAccessor::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), 'username', $request->getAttribute('username'));
-        return $this->getUsedOrManagedItems($users_id, false, $request->getParameters(), $this->getAPIVersion($request));
+        return $this->getUsedOrManagedItems($request, $users_id, false);
     }
 
     #[Route(path: '/User/Me/ManagedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class], scopes: ['user'])]
@@ -1533,7 +1528,7 @@ EOT,
     )]
     public function getMyManagedItems(Request $request): Response
     {
-        return $this->getUsedOrManagedItems($this->getMyUserID(), true, $request->getParameters(), $this->getAPIVersion($request));
+        return $this->getUsedOrManagedItems($request, $this->getMyUserID(), true);
     }
 
     #[Route(path: '/User/{id}/ManagedItem', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1543,7 +1538,7 @@ EOT,
     )]
     public function getUserManagedItemsByID(Request $request): Response
     {
-        return $this->getUsedOrManagedItems($request->getAttribute('id'), true, $request->getParameters(), $this->getAPIVersion($request));
+        return $this->getUsedOrManagedItems($request, $request->getAttribute('id'), true);
     }
 
     #[Route(path: '/User/username/{username}/ManagedItem', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1554,7 +1549,7 @@ EOT,
     public function getUserManagedItemsByUsername(Request $request): Response
     {
         $users_id = ResourceAccessor::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), 'username', $request->getAttribute('username'));
-        return $this->getUsedOrManagedItems($users_id, true, $request->getParameters(), $this->getAPIVersion($request));
+        return $this->getUsedOrManagedItems($request, $users_id, true);
     }
 
     #[Route(path: '/Group', methods: ['POST'])]
@@ -1823,9 +1818,7 @@ EOT,
     )]
     public function searchCertificateItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==User;items_id==' . $request->getAttribute('users_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==User;items_id==' . $request->getAttribute('users_id'));
         return ResourceAccessor::searchBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1840,9 +1833,7 @@ EOT,
     )]
     public function getCertificateItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==User;items_id==' . $request->getAttribute('users_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==User;items_id==' . $request->getAttribute('users_id'));
         return ResourceAccessor::getOneBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -1908,9 +1899,7 @@ EOT,
     )]
     public function searchKBArticleItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==Entity;items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==Entity;items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1925,9 +1914,7 @@ EOT,
     )]
     public function getKBArticleItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==Entity;items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==Entity;items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
