@@ -14,6 +14,15 @@ publish_in_progress_comment = false
 persistent_comment_notification = false
 
 issues_user_guidelines = """\
+Read as much of the repository as you need in order to understand this pull \
+request: callers, callees, subclasses, templates and tests that depend on the \
+modified code are all legitimate context, and you are expected to follow them.
+Report only what this pull request causes. A finding qualifies when the change \
+introduces it, breaks it, or makes an existing weakness reachable where it was \
+not before, and it must name the changed line responsible. A problem that is \
+identical before and after the change does not qualify, however real it is: \
+sharing a file or a repository with the change is not a connection to it.
+If the pull request changes no logic, expect to report nothing.
 Do not report anything the project tooling already enforces: PHP CS Fixer, \
 PHPStan, Psalm, Rector, ESLint, Stylelint. The .phpstan-baseline*.php files \
 record known pre-existing violations that are deliberately accepted; never \

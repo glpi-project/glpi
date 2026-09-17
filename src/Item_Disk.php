@@ -220,7 +220,7 @@ class Item_Disk extends CommonDBChild
             $canedit
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
-            $link = self::getFormURL() . '?itemtype=' . $item::class . '&items_id=' . $ID . '&withtemplate=' . (int) $withtemplate;
+            $link = self::getFormURL() . '?itemtype=' . rawurlencode($item::class) . '&items_id=' . $ID . '&withtemplate=' . (int) $withtemplate;
 
             TemplateRenderer::getInstance()->display(
                 'components/tab/addlink_block.html.twig',

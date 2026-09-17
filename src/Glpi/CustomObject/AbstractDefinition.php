@@ -614,6 +614,23 @@ abstract class AbstractDefinition extends CommonDBTM
     }
 
     /**
+     * Remove given profile from the `profiles` field.
+     *
+     * @param int $profile_id
+     * @return void
+     */
+    public function removeProfileFromField(int $profile_id): void
+    {
+        $profiles = $this->getDecodedProfilesField();
+        if (!array_key_exists($profile_id, $profiles)) {
+            return;
+        }
+
+        unset($profiles[$profile_id]);
+        $this->update(['id' => $this->getID(), 'profiles' => $profiles]);
+    }
+
+    /**
      * Remove given rights from `profiles` field.
      *
      * @param int[] $rights_to_remove
