@@ -386,7 +386,7 @@ jobs:
           retention-days: 1
 
   playwright-merge-reports:
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && (github.repository == 'glpi-project/glpi' || (github.event_name != 'schedule' && (github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'))) }}
     needs: [playwright]
     permissions:
       contents: "read"
