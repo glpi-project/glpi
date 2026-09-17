@@ -51,8 +51,7 @@ test.describe('Reminders', () => {
         await expect(tabpanel.locator('input[name="end_view_date"]')).toBeAttached();
         // eslint-disable-next-line playwright/no-raw-locators
         await expect(tabpanel.locator('input[name="plan[begin]"]')).not.toBeAttached();
-        // eslint-disable-next-line playwright/no-raw-locators
-        await expect(tabpanel.locator('select[name="plan[_duration]"]')).not.toBeAttached();
+        await expect(tabpanel.getByRole('radio', { name: 'Time slot' })).not.toBeAttached();
 
         const description = await glpi_page.getRichTextByLabel(
             'Description',
@@ -64,6 +63,24 @@ test.describe('Reminders', () => {
         // eslint-disable-next-line playwright/no-raw-locators
         await expect(tabpanel.locator('input[name="plan[begin]"]')).toBeAttached();
         // eslint-disable-next-line playwright/no-raw-locators
-        await expect(tabpanel.locator('select[name="plan[_duration]"]')).toBeVisible();
+        await expect(tabpanel.locator('input[name="plan[end]"]')).toBeAttached();
+
+        // Default planning is a time slot, hours must be displayed
+        await expect(tabpanel.getByRole('radio', { name: 'Time slot' })).toBeChecked();
+        await expect(tabpanel.getByRole('textbox', { name: 'Start time' })).toBeVisible();
+        await expect(tabpanel.getByRole('textbox', { name: 'End time' })).toBeVisible();
+
+        // Hours are hidden for an "All day" event, which starts and ends at midnight
+        await tabpanel.getByText('All day').click();
+        await expect(tabpanel.getByRole('textbox', { name: 'Start time' })).toBeHidden();
+        await expect(tabpanel.getByRole('textbox', { name: 'End time' })).toBeHidden();
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(tabpanel.locator('input[name="plan[begin]"]')).toHaveValue(/ 00:00:00$/);
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(tabpanel.locator('input[name="plan[end]"]')).toHaveValue(/ 00:00:00$/);
+
+        // Planning is saved with the note
+        await tabpanel.getByRole('button', { name: 'Add', exact: true }).click();
+        await expect(page.getByRole('tabpanel').getByText(/^\s*From .* 00:00 to .* 00:00/)).toBeVisible();
     });
 });

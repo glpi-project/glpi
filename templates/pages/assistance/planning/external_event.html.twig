@@ -85,7 +85,7 @@
 
                     // set planification fields
                     if (data.duration > 0) {
-                        $("#dropdown_plan__duration_{{ rand_plan }}").trigger("setValue", data.duration);
+                        $("#plan_dates_{{ rand_plan }}").trigger("planning:set_duration", data.duration);
                     }
                     $("#dropdown__planningrecall_before_time_{{ rand_plan }}")
                         .trigger("setValue", data.before_time);
@@ -172,7 +172,7 @@
     {{ _self.null_field(params) }}
 
     {% set calendar_field %}
-        {% do call('Planning::showAddEventClassicForm', [{
+        {% do call('Planning::showEventDatesForm', [{
             items_id: item.getID(),
             itemtype: get_class(item),
             begin: item.fields['begin'],

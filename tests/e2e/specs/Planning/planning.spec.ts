@@ -58,7 +58,7 @@ test.describe('Planning View', () => {
             name: 'Test event from month view',
             description: 'Test description',
             start_time: '10:00',
-            period: '1h30',
+            end_time: '11:30',
         });
     });
 });
