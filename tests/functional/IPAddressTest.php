@@ -300,8 +300,8 @@ class IPAddressTest extends DbTestCase
         // An addressable network must still link the addresses it contains. The matching criterion
         // compares a masked address (always the network address) so it has to compare against the
         // network address, not the first usable address (network + 1).
-        $ipNetwork = new \IPNetwork();
-        $ipnetwork_id = $ipNetwork->add([
+        $ip_network = new \IPNetwork();
+        $ipnetwork_id = $ip_network->add([
             'name'         => 'addressable-network',
             'network'      => '10.50.60.0 / 255.255.255.0',
             'entities_id'  => 0,
@@ -309,10 +309,10 @@ class IPAddressTest extends DbTestCase
             'addressable'  => 1,
         ]);
         $this->assertGreaterThan(0, (int) $ipnetwork_id);
-        $this->assertTrue($ipNetwork->getFromDB($ipnetwork_id));
+        $this->assertTrue($ip_network->getFromDB($ipnetwork_id));
 
-        $networkName = new \NetworkName();
-        $networkname_id = $networkName->add([
+        $network_name = new \NetworkName();
+        $networkname_id = $network_name->add([
             'name'          => 'addressable-name',
             '_ipaddresses'  => [-1 => '10.50.60.10'],
             'entities_id'   => 0,
@@ -328,7 +328,7 @@ class IPAddressTest extends DbTestCase
         $this->assertGreaterThan(0, (int) $ipaddress_id);
 
         // Re-run the linking as the network create/update hooks do.
-        \IPAddress_IPNetwork::linkIPAddressFromIPNetwork($ipNetwork);
+        \IPAddress_IPNetwork::linkIPAddressFromIPNetwork($ip_network);
 
         $linked = iterator_to_array($DB->request([
             'SELECT' => 'ipaddresses_id',

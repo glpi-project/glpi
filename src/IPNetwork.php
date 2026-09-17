@@ -930,15 +930,14 @@ class IPNetwork extends CommonImplicitTreeDropdown
      *
      * @param IPAddress|array|null $start
      * @param IPAddress|array|null $end                         (default NULL)
-     * @param string $excludeBroadcastAndNetwork Don't provide extremties addresses
-     *                                     ($this->fields['addressable'] by default)
+     * @param string|bool $excludeBroadcastAndNetwork Don't provide extremties addresses.
+     *                                     An empty string derives it from $this->fields['addressable'];
+     *                                     a boolean forces it.
      *                                     (default '')
      *
      * @return void
-     *
-     * @TODO Deprecate the `$excludeBroadcastAndNetwork`, it is never used.
      **/
-    public function computeNetworkRange(&$start, &$end = null, $excludeBroadcastAndNetwork = '')
+    public function computeNetworkRange(&$start, &$end = null, string|bool $excludeBroadcastAndNetwork = '')
     {
 
         if (!is_bool($excludeBroadcastAndNetwork)) {
