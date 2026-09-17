@@ -5300,19 +5300,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\.\\=" between 0\\|0\\.0\\|array\\{\\}\\|string\\|false and non\\-falsy\\-string results in an error\\.$#',
-	'identifier' => 'assignOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getEmailDataForUser\\(\\) should return array\\<array\\{id\\: int, email\\: string, is_default\\: int, _links\\: array\\{self\\: array\\{href\\: non\\-empty\\-string\\}\\}\\}\\> but returns list\\<array\\{id\\: int, email\\: string, is_default\\: int, _links\\: array\\{self\\: array\\{href\\: string\\}\\}\\}\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getUsedOrManagedItems\\(\\) expects int, int\\|null given\\.$#',
+	'message' => '#^Parameter \\#2 \\$users_id of method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getUsedOrManagedItems\\(\\) expects int, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',

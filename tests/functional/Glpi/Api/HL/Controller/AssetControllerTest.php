@@ -39,6 +39,7 @@ use Computer;
 use DatabaseInstance;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Api\HL\Search;
 use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
@@ -276,8 +277,8 @@ class AssetControllerTest extends HLAPITestCase
         // A caller must not be able to pre-seed the reserved mandatory-scope parameter through the
         // request to weaken the scope enforced by the route. It is stripped from external input at
         // ingress, so rack B's item still cannot leak into rack A's listing.
-        $previous = $_REQUEST[\Glpi\Api\HL\Search::MANDATORY_FILTER_PARAM] ?? null;
-        $_REQUEST[\Glpi\Api\HL\Search::MANDATORY_FILTER_PARAM] = 'position=ge=0,position=ge=0';
+        $previous = $_REQUEST[Search::MANDATORY_FILTER_PARAM] ?? null;
+        $_REQUEST[Search::MANDATORY_FILTER_PARAM] = 'position=ge=0,position=ge=0';
         try {
             $request = new Request('GET', '/Assets/Rack/' . $rack_a . '/Item');
             $this->api->call($request, function ($call) use ($comp_a, $comp_b) {
@@ -291,9 +292,9 @@ class AssetControllerTest extends HLAPITestCase
             });
         } finally {
             if ($previous === null) {
-                unset($_REQUEST[\Glpi\Api\HL\Search::MANDATORY_FILTER_PARAM]);
+                unset($_REQUEST[Search::MANDATORY_FILTER_PARAM]);
             } else {
-                $_REQUEST[\Glpi\Api\HL\Search::MANDATORY_FILTER_PARAM] = $previous;
+                $_REQUEST[Search::MANDATORY_FILTER_PARAM] = $previous;
             }
         }
     }
