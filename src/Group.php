@@ -898,6 +898,26 @@ class Group extends CommonTreeDropdown
         return parent::getRawCompleteName();
     }
 
+    /**
+     * Add the ancestors (parent groups) of the given groups to the list.
+     * Used so that visibility granted to a group also applies to members of its sub-groups.
+     *
+     * @param int[] $groups_id
+     *
+     * @return int[]
+     */
+    public static function getGroupsAncestorsIds(array $groups_id): array
+    {
+        if ($groups_id === []) {
+            return $groups_id;
+        }
+
+        return array_unique(array_merge(
+            $groups_id,
+            getAncestorsOf(self::getTable(), $groups_id)
+        ));
+    }
+
     public static function getAnonymizedName(?int $entities_id = null): ?string
     {
         switch (Entity::getAnonymizeConfig($entities_id)) {
