@@ -59,9 +59,9 @@ trait AssignableItem
             return false;
         }
 
-        $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID']
+        $is_assigned = $this->fields['users_id_tech'] === Session::getLoginUserID()
             || count(array_intersect($this->fields['groups_id_tech'] ?? [], $_SESSION['glpigroups'] ?? [])) > 0;
-        $is_owned = $this->fields['users_id'] === $_SESSION['glpiID']
+        $is_owned = $this->fields['users_id'] === Session::getLoginUserID()
             || count(array_intersect($this->fields['groups_id'] ?? [], $_SESSION['glpigroups'] ?? [])) > 0;
 
         if (!Session::haveRight(static::$rightname, READ)) {
@@ -86,9 +86,9 @@ trait AssignableItem
             return false;
         }
 
-        $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID']
+        $is_assigned = $this->fields['users_id_tech'] === Session::getLoginUserID()
             || count(array_intersect($this->fields['groups_id_tech'] ?? [], $_SESSION['glpigroups'] ?? [])) > 0;
-        $is_owned = $this->fields['users_id'] === $_SESSION['glpiID']
+        $is_owned = $this->fields['users_id'] === Session::getLoginUserID()
             || count(array_intersect($this->fields['groups_id'] ?? [], $_SESSION['glpigroups'] ?? [])) > 0;
 
         if (!Session::haveRight(static::$rightname, UPDATE)) {
