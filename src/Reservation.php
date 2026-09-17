@@ -205,7 +205,7 @@ class Reservation extends CommonDBChild
             );
             if ($periodicities === [] && !empty($input['periodicity']['end'])) {
                 Session::addMessageAfterRedirect(
-                    __s('Only the first reservation has been created: no repetition matches the repetition settings'),
+                    __s('No repetition matches the repetition settings'),
                     false,
                     WARNING
                 );

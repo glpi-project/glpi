@@ -181,7 +181,7 @@ class ReservationTest extends DbTestCase
 
         $this->hasSessionMessages(
             WARNING,
-            ['Only the first reservation has been created: no repetition matches the repetition settings']
+            ['No repetition matches the repetition settings']
         );
 
         // The reservation itself is still created.
