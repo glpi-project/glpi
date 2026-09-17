@@ -79,9 +79,9 @@ final class MultipleChoiceFromValuesConditionHandler implements
     }
 
     #[Override]
-    public function convertConditionValue(string $value): array
+    public function convertConditionValue(string $value): ?array
     {
-        $value = array_search($value, $this->values, true) ?: 0;
-        return [$value];
+        $index = array_search($value, $this->values, true);
+        return $index === false ? null : [$index];
     }
 }

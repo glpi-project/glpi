@@ -3291,6 +3291,7 @@ final class FormMigrationTest extends DbTestCase
         $DB->insert('glpi_plugin_formcreator_questions', [
             'name' => 'Target question with unsupported value operator',
             'fieldtype' => 'checkboxes',
+            'values' => json_encode(['Test']),
             'plugin_formcreator_sections_id' => $sectionId,
         ]);
         $targetQuestionId = $DB->insertId();
@@ -3345,6 +3346,73 @@ final class FormMigrationTest extends DbTestCase
         $warnings = array_column($warnings, "message");
         $this->assertContains(
             'A visibility condition used in "Question" "Source question with unsupported value operator" (Form "Form with unsupported value operator") with value operator "Is greater than" is not supported by the question type. It will be ignored.',
+            $warnings,
+        );
+    }
+
+    public function testFormMigrationConditionWithValueNotMatchingAnyOption(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: a condition whose legacy value no longer matches any
+        // option of the referenced radio question (renamed/stale option).
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => 'Form with a condition value not matching any option',
+        ]);
+        $formId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $formId,
+        ]);
+        $sectionId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Target question with condition value not matching any option',
+            'fieldtype' => 'text',
+            'plugin_formcreator_sections_id' => $sectionId,
+            'show_rule' => 2, // Visible if condition is met
+        ]);
+        $targetQuestionId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Source radio question',
+            'fieldtype' => 'radios',
+            'values' => json_encode(['Option 1', 'Option 2']),
+            'plugin_formcreator_sections_id' => $sectionId,
+        ]);
+        $sourceQuestionId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_conditions', [
+            'itemtype' => 'PluginFormcreatorQuestion',
+            'items_id' => $targetQuestionId,
+            'plugin_formcreator_questions_id' => $sourceQuestionId,
+            'show_condition' => 1, // Equals condition
+            'show_value' => 'Stale option', // Does not match any option above
+            'show_logic' => 1, // AND logic
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+        $this->assertTrue($result->isFullyProcessed());
+
+        // Assert: the condition was dropped instead of being bound to a phantom option
+        $targetQuestion = getItemByTypeName(
+            Question::class,
+            'Target question with condition value not matching any option'
+        );
+        $this->assertNotFalse($targetQuestion);
+        $this->assertCount(0, $targetQuestion->getConfiguredConditionsData());
+
+        $warnings = array_column(array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Warning
+        ), "message");
+        $this->assertContains(
+            'A visibility condition used in "Question" "Target question with condition value not matching any option" (Form "Form with a condition value not matching any option") references a value that no longer matches any option. It will be ignored.',
             $warnings,
         );
     }

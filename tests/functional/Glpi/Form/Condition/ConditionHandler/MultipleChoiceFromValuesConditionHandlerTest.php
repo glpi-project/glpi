@@ -328,4 +328,15 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'question_extra_data' => $extra_data,
         ];
     }
+
+    public function testConvertConditionValue(): void
+    {
+        $handler = new MultipleChoiceFromValuesConditionHandler(['Option A', 'Option B']);
+
+        $this->assertSame([0], $handler->convertConditionValue('Option A'));
+        $this->assertSame([1], $handler->convertConditionValue('Option B'));
+
+        // Stale/renamed legacy value: must not fall back to an index.
+        $this->assertNull($handler->convertConditionValue('Deleted option'));
+    }
 }

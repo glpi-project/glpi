@@ -102,8 +102,9 @@ final class SingleChoiceFromValuesConditionHandler implements
     }
 
     #[Override]
-    public function convertConditionValue(string $value): int
+    public function convertConditionValue(string $value): ?int
     {
-        return array_search($value, $this->values, true) ?: 0;
+        $index = array_search($value, $this->values, true);
+        return $index === false ? null : (int) $index;
     }
 }

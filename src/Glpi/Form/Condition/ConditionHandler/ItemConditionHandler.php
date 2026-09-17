@@ -94,7 +94,7 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
     }
 
     #[Override]
-    public function convertConditionValue(string $value): array|int
+    public function convertConditionValue(string $value): ?array
     {
         $nameFields = [];
         $item = getItemForItemtype($this->itemtype);
@@ -130,6 +130,6 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
             throw $fallback;
         }
 
-        return 0;
+        return null;
     }
 }
