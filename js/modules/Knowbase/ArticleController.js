@@ -549,18 +549,10 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
-        const has_other_favorites = favorites_section.querySelector('li:not([data-glpi-kb-favorite-current])') !== null;
-
         if (is_favorited) {
             current_entry.setAttribute('data-glpi-kb-favorite-current', 'active');
-            favorites_section.removeAttribute('data-glpi-kb-aside-favorites-hidden');
-            header.removeAttribute('data-glpi-kb-aside-header-no-border');
         } else {
             current_entry.setAttribute('data-glpi-kb-favorite-current', 'pending');
-            if (!has_other_favorites) {
-                favorites_section.setAttribute('data-glpi-kb-aside-favorites-hidden', '');
-                header.setAttribute('data-glpi-kb-aside-header-no-border', '');
-            }
         }
     }
 

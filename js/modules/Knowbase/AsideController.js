@@ -1045,11 +1045,6 @@ export class GlpiKnowbaseAsideController
         for (const entry of this.#aside.querySelectorAll(`[data-glpi-kb-article-id="${CSS.escape(id)}"]`)) {
             entry.remove();
         }
-
-        const favorites = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
-        if (favorites) {
-            this.#refreshFavoritesVisibility(favorites);
-        }
     }
 
     /**
@@ -1075,7 +1070,6 @@ export class GlpiKnowbaseAsideController
         const current = favorites.querySelector('[data-glpi-kb-favorite-current]');
         if (current && parseInt(current.dataset.glpiKbArticleId) === id) {
             current.setAttribute('data-glpi-kb-favorite-current', is_favorited ? 'active' : 'pending');
-            this.#refreshFavoritesVisibility(favorites);
             return;
         }
 
@@ -1110,8 +1104,6 @@ export class GlpiKnowbaseAsideController
                 }
             }
         }
-
-        this.#refreshFavoritesVisibility(favorites);
     }
 
     /**
@@ -1165,31 +1157,6 @@ export class GlpiKnowbaseAsideController
         if (menu) {
             // Drop any inline positioning Popper may have applied while open.
             menu.removeAttribute('style');
-        }
-    }
-
-    /**
-     * Show or hide the favorites section (and matching header border) depending
-     * on whether it still holds any visible entry.
-     *
-     * `ArticleController.#updateFavoritesAside()` applies the same rule from the
-     * article side.
-     *
-     * @param {HTMLElement} favorites_el
-     */
-    #refreshFavoritesVisibility(favorites_el)
-    {
-        const header = this.#aside.querySelector('[data-glpi-kb-aside-header]');
-        const has_visible = favorites_el.querySelector(
-            '[data-glpi-kb-article-id]:not([data-glpi-kb-favorite-current="pending"])'
-        ) !== null;
-
-        if (has_visible) {
-            favorites_el.removeAttribute('data-glpi-kb-aside-favorites-hidden');
-            header?.removeAttribute('data-glpi-kb-aside-header-no-border');
-        } else {
-            favorites_el.setAttribute('data-glpi-kb-aside-favorites-hidden', '');
-            header?.setAttribute('data-glpi-kb-aside-header-no-border', '');
         }
     }
 }
