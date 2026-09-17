@@ -141,3 +141,18 @@ test('The FAQ aside offers no way to restructure the knowledge base', async ({ p
         await expect(kb.getAsideArticleAction(child_id, action)).toHaveCount(0);
     }
 });
+
+test('The FAQ answers 404 for a missing article and 403 for one outside the FAQ', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const { parent_id } = await createFaqBranch(api, false);
+
+    await profile.set(Profiles.SelfService);
+
+    for (const id of ['0', 'abc', '999999999']) {
+        const response = await page.goto(`/front/helpdesk.faq.php?id=${id}`);
+        expect(response?.status()).toBe(404);
+    }
+
+    const response = await page.goto(`/front/helpdesk.faq.php?id=${parent_id}`);
+    expect(response?.status()).toBe(403);
+});
