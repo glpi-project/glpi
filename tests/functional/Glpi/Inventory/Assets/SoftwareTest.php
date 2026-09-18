@@ -957,6 +957,108 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
     }
 
+    public function testDuplicatedSoftPrefersActiveOverDeleted()
+    {
+        $this->login();
+
+        $computer = new \Computer();
+        $soft     = new \Software();
+        $version  = new SoftwareVersion();
+
+        $computers_id = $computer->add([
+            'name'        => 'pc-dup-active',
+            'serial'      => 'dupactive01',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computers_id);
+
+        // First inventory: let GLPI create the software (and its manufacturer)
+        // exactly as production does, so it is guaranteed to be matched again by
+        // the inventory lookup later. This is the legitimate "active" entry and,
+        // being created first, it gets the lower id.
+        $xml_first = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <NAME>Duplicate Test Software</NAME>
+      <PUBLISHER>Duplicate Test Corp</PUBLISHER>
+      <VERSION>1.0.0</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc-dup-active</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>dupactive01</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc-dup-active</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_first, true);
+
+        $softs = $soft->find(['name' => 'Duplicate Test Software']);
+        $this->assertCount(1, $softs, 'the first inventory must create exactly one software');
+        $active = array_pop($softs);
+        $active_softwares_id = (int) $active['id'];
+
+        // Duplicate created SECOND (higher id) with the very same identifying
+        // fields, then trashed (soft-deleted, not purged). Copying the fields
+        // from the inventory-created row guarantees it is a true competing match
+        // for the inventory lookup.
+        $deleted_softwares_id = $soft->add([
+            'name'             => $active['name'],
+            'manufacturers_id' => $active['manufacturers_id'],
+            'entities_id'      => $active['entities_id'],
+            'is_recursive'     => $active['is_recursive'],
+        ]);
+        $this->assertGreaterThan($active_softwares_id, $deleted_softwares_id);
+        $this->assertTrue((bool) $soft->delete(['id' => $deleted_softwares_id]));
+        $this->assertTrue($soft->getFromDB($deleted_softwares_id));
+        $this->assertEquals(1, $soft->fields['is_deleted']);
+
+        // Second inventory brings a NEW version. It must attach to the active
+        // software, not to the trashed duplicate.
+        $xml_second = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <NAME>Duplicate Test Software</NAME>
+      <PUBLISHER>Duplicate Test Corp</PUBLISHER>
+      <VERSION>2.0.0</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc-dup-active</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>dupactive01</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc-dup-active</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_second, true);
+
+        $on_active = $version->find([
+            'name'         => '2.0.0',
+            'softwares_id' => $active_softwares_id,
+        ]);
+        $this->assertCount(
+            1,
+            $on_active,
+            'the new version/installation must attach to the active software, not the deleted duplicate'
+        );
+
+        $on_deleted = $version->find([
+            'name'         => '2.0.0',
+            'softwares_id' => $deleted_softwares_id,
+        ]);
+        $this->assertCount(0, $on_deleted, 'the trashed duplicate must not receive the new version/installation');
+    }
+
     public function testSameSoft()
     {
         global $DB;

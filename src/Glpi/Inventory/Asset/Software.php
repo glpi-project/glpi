@@ -629,6 +629,9 @@ class Software extends InventoryAsset
                 'name'               => new QueryParam(),
                 'manufacturers_id'   => new QueryParam(),
             ],
+            // Prefer an active software over a trashed duplicate, deterministically (lowest id wins).
+            'ORDER'  => ['is_deleted ASC', 'id ASC'],
+            'LIMIT'  => 1,
         ];
 
         $it = new DBmysqlIterator(null);
@@ -664,7 +667,7 @@ class Software extends InventoryAsset
             );
             $results = $stmt->get_result();
 
-            while ($row = $results->fetch_object()) {
+            if ($row = $results->fetch_object()) {
                 $this->softwares[$key] = $row->id;
             }
         }
