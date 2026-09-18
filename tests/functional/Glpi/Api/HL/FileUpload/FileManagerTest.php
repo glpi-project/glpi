@@ -56,4 +56,15 @@ class FileManagerTest extends DbTestCase
         $this->assertStringContainsString('alt="test image"', $processedHtml);
         $this->assertStringNotContainsString('data:image/png;base64', $processedHtml);
     }
+
+    public function testDeletePictureWithEmptyReference(): void
+    {
+        $this->assertFalse(FileManager::deletePicture(''));
+    }
+
+    public function testDeletePictureAlreadyMissingFromDisk(): void
+    {
+        // Nothing to delete, but the caller's intent (no picture left) is satisfied so this isn't a failure
+        $this->assertTrue(FileManager::deletePicture('ab/' . __FUNCTION__ . '.png'));
+    }
 }

@@ -35,7 +35,6 @@
 namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\FileUpload\HashedUploadedFile;
-use Glpi\Application\Environment;
 use Glpi\Http\Request;
 use GuzzleHttp\Psr7\Utils;
 use Riverline\MultiPartParser\Converters\PSR7;
@@ -131,34 +130,28 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
             if (is_array($file_info['name'])) {
                 // Multiple files for this field
                 foreach ($file_info['name'] as $index => $name) {
-                    if ($file_info['error'][$index] === UPLOAD_ERR_OK) {
-                        $detected_mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file_info['tmp_name'][$index]) ?: $file_info['type'][$index];
-
-                        $uploaded_files[$field_name][] = new HashedUploadedFile(
-                            streamOrFile: $file_info['tmp_name'][$index],
-                            size: $file_info['size'][$index],
-                            errorStatus: $file_info['error'][$index],
-                            clientFilename: basename($name),
-                            clientMediaType: $detected_mime,
-                            hash_algo: 'sha1',
-                            hash: sha1_file($file_info['tmp_name'][$index])
-                        );
+                    $file = $this->createUploadedFile(
+                        (string) $name,
+                        (string) $file_info['tmp_name'][$index],
+                        (string) $file_info['type'][$index],
+                        (int) $file_info['size'][$index],
+                        (int) $file_info['error'][$index]
+                    );
+                    if ($file !== null) {
+                        $uploaded_files[$field_name][] = $file;
                     }
                 }
             } else {
                 // Single file for this field
-                if ($file_info['error'] === UPLOAD_ERR_OK) {
-                    $detected_mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file_info['tmp_name']) ?: $file_info['type'];
-
-                    $uploaded_files[$field_name][] = new HashedUploadedFile(
-                        streamOrFile: $file_info['tmp_name'],
-                        size: $file_info['size'],
-                        errorStatus: $file_info['error'],
-                        clientFilename: basename($file_info['name']),
-                        clientMediaType: $detected_mime,
-                        hash_algo: 'sha1',
-                        hash: sha1_file($file_info['tmp_name'])
-                    );
+                $file = $this->createUploadedFile(
+                    (string) $file_info['name'],
+                    (string) $file_info['tmp_name'],
+                    (string) $file_info['type'],
+                    (int) $file_info['size'],
+                    (int) $file_info['error']
+                );
+                if ($file !== null) {
+                    $uploaded_files[$field_name][] = $file;
                 }
             }
         }
@@ -166,8 +159,63 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
         return $uploaded_files;
     }
 
+    /**
+     * Build the uploaded file for a single $_FILES entry.
+     *
+     * Files whose transfer failed are still returned so that the error is reported to the client instead of the
+     * request being handled as if no file had been sent at all.
+     *
+     * @param string $name The client file name
+     * @param string $tmp_name The temporary file path. Empty when the transfer failed.
+     * @param string $client_mime The client-declared media type. Only used if the content cannot be inspected.
+     * @param int $size The file size in bytes
+     * @param int $error One of the UPLOAD_ERR_* constants
+     * @return HashedUploadedFile|null Null if there is nothing to handle for this entry.
+     */
+    private function createUploadedFile(string $name, string $tmp_name, string $client_mime, int $size, int $error): ?HashedUploadedFile
+    {
+        if ($error === UPLOAD_ERR_NO_FILE) {
+            // The field was submitted without any file. There is nothing to upload and nothing to report.
+            return null;
+        }
+        if ($error !== UPLOAD_ERR_OK) {
+            // No content was received, so the media type and hash cannot be computed.
+            return new HashedUploadedFile(
+                streamOrFile: '',
+                size: $size,
+                errorStatus: $error,
+                clientFilename: basename($name),
+                clientMediaType: $client_mime,
+                hash_algo: 'sha1',
+                hash: ''
+            );
+        }
+
+        $detected_mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $tmp_name) ?: $client_mime;
+
+        return new HashedUploadedFile(
+            streamOrFile: $tmp_name,
+            size: $size,
+            errorStatus: $error,
+            clientFilename: basename($name),
+            clientMediaType: $detected_mime,
+            hash_algo: 'sha1',
+            hash: sha1_file($tmp_name)
+        );
+    }
+
     private function hasPHPParsedMultipartData(Request $request): bool
     {
-        return $request->getMethod() === 'POST' && Environment::get() !== Environment::TESTING;
+        // PHP parses the multipart body of POST requests itself, consuming the raw body in the process.
+        // The parts can then only be read back from the $_POST and $_FILES superglobals.
+        if ($request->getMethod() !== 'POST') {
+            return false;
+        }
+        if ($_FILES !== []) {
+            return true;
+        }
+        // Nothing landed in $_FILES. Only consider the body as already parsed if it is effectively unreadable,
+        // so that a request carrying a real body is still parsed by this middleware.
+        return $request->getBody()->getSize() === 0;
     }
 }
