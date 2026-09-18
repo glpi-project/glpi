@@ -81,9 +81,8 @@ final class KnowbaseItemProvider implements LeafProviderInterface
             $knowbase_item->getFromResultSet($raw_knowbase_item);
             $knowbase_item->post_getFromDB();
 
-            // The root article is the FAQ home page, not content to offer in
-            // the service catalog. `show_in_service_catalog` cannot exclude it:
-            // the home page search ignores that column, see above.
+            // The root article is the FAQ home page, not content to offer. The
+            // home page search ignores `show_in_service_catalog`, so skip it here.
             if (KnowbaseItem::isRootId($knowbase_item->getID())) {
                 continue;
             }
