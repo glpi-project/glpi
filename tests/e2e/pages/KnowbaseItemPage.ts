@@ -223,7 +223,8 @@ export class KnowbaseItemPage extends GlpiPage
         await this.getAsideExpandButton().click();
     }
 
-    public async doResizeAsideWithKeyboard(...keys: string[]): Promise<void>
+    /** Focuses the resize handle and presses the given keys on it, modifiers included. */
+    public async doPressOnAsideResizer(...keys: string[]): Promise<void>
     {
         await this.aside_resizer.focus();
         for (const key of keys) {

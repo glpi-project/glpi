@@ -374,7 +374,25 @@ export class GlpiKnowbaseAsideController
             this.#storeWidth(width);
         });
 
+        // Keyboard steps must not glide behind the keys. Released one frame after the batched write.
+        let settle = 0;
+        const suspend_transition = () => {
+            this.#aside.setAttribute('data-glpi-kb-aside-resizing', '');
+            cancelAnimationFrame(settle);
+            settle = requestAnimationFrame(() => {
+                settle = requestAnimationFrame(() => {
+                    if (!drag) {
+                        this.#aside.removeAttribute('data-glpi-kb-aside-resizing');
+                    }
+                });
+            });
+        };
+
         handle.addEventListener('keydown', (e) => {
+            // A modified arrow belongs to the browser: alt + arrow moves in the history.
+            if (e.altKey || e.ctrlKey || e.metaKey) {
+                return;
+            }
             const grow = getComputedStyle(this.#aside).direction === 'rtl' ? -step : step;
             const next = {
                 ArrowLeft: clamp(width) - grow,
@@ -386,11 +404,13 @@ export class GlpiKnowbaseAsideController
                 return;
             }
             e.preventDefault();
+            suspend_transition();
             set_width(next);
             this.#storeWidth(width);
         });
 
         handle.addEventListener('dblclick', () => {
+            suspend_transition();
             set_width(min);
             this.#storeWidth(width);
         });

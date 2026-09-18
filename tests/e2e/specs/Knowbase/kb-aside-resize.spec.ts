@@ -58,14 +58,14 @@ test('Resizes the KB aside from its edge handle, width persists', async ({ page 
     await expect(handle).toHaveAttribute('aria-valuemax', max);
 
     // Keyboard: two steps of 16px
-    await kb.doResizeAsideWithKeyboard('ArrowRight', 'ArrowRight');
+    await kb.doPressOnAsideResizer('ArrowRight', 'ArrowRight');
     await expect(handle).toHaveAttribute('aria-valuenow', '332');
     await expect.poll(aside_width).toBe(332);
 
     // End clamps to the maximum
-    await kb.doResizeAsideWithKeyboard('End');
+    await kb.doPressOnAsideResizer('End');
     await expect(handle).toHaveAttribute('aria-valuenow', max);
-    await expect.poll(aside_width).toBe(Number(max)); // wait for the width transition before measuring the handle
+    await expect.poll(aside_width).toBe(Number(max));
 
     // Pointer drag to 500px from the aside's left edge
     await kb.doDragAsideToWidth(500);
@@ -83,6 +83,28 @@ test('Resizes the KB aside from its edge handle, width persists', async ({ page 
     await expect.poll(aside_width).toBe(300);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect.poll(aside_width).toBe(300);
+});
+
+test('Keyboard steps resize at once, without the collapse animation', async () => {
+    const aside_width = async () => Math.round((await kb.aside.boundingBox())!.width);
+
+    await kb.doPressOnAsideResizer('ArrowRight', 'ArrowRight');
+    await expect(kb.aside_resizer).toHaveAttribute('aria-valuenow', '332');
+    // Well below the 0.35s collapse transition: the width must not glide behind the keys.
+    await expect.poll(aside_width, { timeout: 200 }).toBe(332);
+
+    await kb.doPressOnAsideResizer('ArrowLeft');
+    await expect(kb.aside_resizer).toHaveAttribute('aria-valuenow', '316');
+    await expect.poll(aside_width, { timeout: 200 }).toBe(316);
+});
+
+test('Resize handle keeps the browser keyboard shortcuts', async () => {
+    await kb.doPressOnAsideResizer('ArrowRight');
+    await expect(kb.aside_resizer).toHaveAttribute('aria-valuenow', '316');
+
+    // alt/ctrl/meta + arrow belong to the browser, for example alt + left goes back.
+    await kb.doPressOnAsideResizer('Alt+ArrowLeft', 'Alt+ArrowRight', 'Control+ArrowLeft', 'Meta+ArrowRight', 'Control+End');
+    await expect(kb.aside_resizer).toHaveAttribute('aria-valuenow', '316');
 });
 
 test('Resize handle is hidden when the aside is collapsed', async () => {
