@@ -43,6 +43,7 @@ use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Features\CloneMapper;
 use Html;
 use LogicException;
 use MassiveAction;
@@ -69,6 +70,31 @@ final class Asset_PeripheralAsset extends CommonDBRelation
     public static function getIcon()
     {
         return 'ti ti-sitemap';
+    }
+
+    /**
+     * @param array<string, mixed> $override_input
+     */
+    #[Override]
+    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true)
+    {
+        // Glpi\Features\Clonable::cloneRelations() derives a single override field from
+        // getItemField($itemtype), assuming the cloned class always plays the same role
+        // (host or peripheral) in every relation. This does not hold for a custom asset
+        // that has the "Connections" capacity, which can play either role depending on the
+        // specific relation row. Re-derive, from the clone mapping, which side of *this*
+        // row is actually the item being cloned, and override that side instead - dropping
+        // any override that was meant for the other side.
+        $clone_mapper = CloneMapper::getInstance();
+        foreach (['itemtype_asset' => 'items_id_asset', 'itemtype_peripheral' => 'items_id_peripheral'] as $itemtype_field => $items_id_field) {
+            if ($clone_mapper->hasItemId($this->fields[$itemtype_field], $this->fields[$items_id_field])) {
+                $override_input[$items_id_field] = $clone_mapper->getItemId($this->fields[$itemtype_field], $this->fields[$items_id_field]);
+            } else {
+                unset($override_input[$items_id_field]);
+            }
+        }
+
+        return parent::clone($override_input, $history, $clone_as_template, $clean_mapper);
     }
 
     /**
@@ -206,7 +232,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             // Get peripheral fields
             if ($peripheral = getItemForItemtype($this->fields['itemtype_peripheral'])) {
                 if ($peripheral->getFromDB($this->fields['items_id_peripheral'])) {
-                    if (!$peripheral->fields['is_global']) {
+                    if (!$peripheral->isField('is_global') || !$peripheral->fields['is_global']) {
                         $updates = [];
                         if (Entity::getUsedConfig('is_location_autoclean', $peripheral->getEntityID()) && $peripheral->isField('locations_id')) {
                             $updates['locations_id'] = 0;
@@ -279,7 +305,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $specificities['itemtypes'] = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_1']['itemtypes']       = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
-        $specificities['select_items_options_2']['itemtypes']       = $CFG_GLPI['directconnect_types'];
+        $specificities['select_items_options_2']['itemtypes']       = self::getGlobalDirectConnectTypes();
         $specificities['select_items_options_2']['onlyglobal']      = true;
         $specificities['only_remove_all_at_once']                   = true;
 
@@ -452,8 +478,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $canedit = $peripheral->canEdit($ID);
         $rand    = mt_rand();
 
-        // Is global connection ?
-        $global  = $peripheral->fields['is_global'];
+        // Is global connection ? Itemtypes without an `is_global` field (e.g. custom
+        // assets) have no "global management" concept, so they are never global.
+        $global  = $peripheral->isField('is_global') && $peripheral->fields['is_global'];
 
         $linked_assets = [];
         $used          = [];
@@ -687,17 +714,18 @@ TWIG, $twig_params);
         // can exists for Template
         /** @var CommonDBTM $item */
         if ($item->can($item->getID(), READ)) {
-            $nb = 0;
+            // A custom asset can be registered both as a host (peripheralhost_types) and as a peripheral (directconnect_types) at the same time
+            $is_peripheral = in_array($item::class, $CFG_GLPI['directconnect_types'], true);
+            $is_host       = self::canViewPeripherals($item);
+            $canview       = $is_peripheral || $is_host;
 
-            if (in_array($item::class, $CFG_GLPI['directconnect_types'], true)) {
-                $canview = true;
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countLinkedAssets($item);
+            $nb = 0;
+            if ($canview && $_SESSION['glpishow_count_on_tabs']) {
+                if ($is_peripheral) {
+                    $nb += self::countLinkedAssets($item);
                 }
-            } else {
-                $canview = self::canViewPeripherals($item);
-                if ($canview && $_SESSION['glpishow_count_on_tabs']) {
-                    $nb = self::countPeripherals($item);
+                if ($is_host) {
+                    $nb += self::countPeripherals($item);
                 }
             }
 
@@ -720,15 +748,18 @@ TWIG, $twig_params);
             return false;
         }
 
+        $displayed = false;
+
         if (in_array($item::class, $CFG_GLPI['directconnect_types'], true)) {
             self::showForPeripheral($item, $withtemplate);
-            return true;
-        } elseif (self::canViewPeripherals($item)) {
+            $displayed = true;
+        }
+        if (self::canViewPeripherals($item)) {
             self::showForAsset($item, $withtemplate);
-            return true;
+            $displayed = true;
         }
 
-        return false;
+        return $displayed;
     }
 
     /**
@@ -897,6 +928,24 @@ TWIG, $twig_params);
     }
 
     /**
+     * Returns the subset of `directconnect_types` that support "global management"
+     * (i.e. have an `is_global` field), meaning a single item of that type can be
+     * connected to several hosts at once.
+     *
+     * @return class-string<CommonDBTM>[]
+     */
+    private static function getGlobalDirectConnectTypes(): array
+    {
+        global $CFG_GLPI;
+
+        return array_values(array_filter(
+            $CFG_GLPI['directconnect_types'],
+            static fn(string $itemtype): bool => is_a($itemtype, CommonDBTM::class, true)
+                && getItemForItemtype($itemtype)->isField('is_global')
+        ));
+    }
+
+    /**
      * Returns itemtypes of assets that can have peripherals.
      *
      * @return class-string<CommonDBTM>[]
@@ -1011,6 +1060,20 @@ TWIG, $twig_params);
 
         $peripheral = getItemForItemtype($itemtype);
 
+        $where = [
+            self::getTable() . '.is_deleted' => 0,
+        ];
+        if ($peripheral->isField('is_global')) {
+            // Itemtypes without an `is_global` field (e.g. custom assets) have no "global management"
+            $where['OR'] = [
+                $peripheral::getTable() . '.is_global' => 0,
+                [
+                    self::getTable() . '.itemtype_asset' => $asset::class,
+                    self::getTable() . '.items_id_asset' => $asset->getID(),
+                ],
+            ];
+        }
+
         return $DB->request([
             'SELECT' => self::getTypeItemsQueryParams_Select($peripheral),
             'FROM'   => $peripheral::getTable(),
@@ -1027,16 +1090,7 @@ TWIG, $twig_params);
                     ],
                 ],
             ],
-            'WHERE' => [
-                self::getTable() . '.is_deleted' => 0,
-                'OR' => [
-                    $peripheral::getTable() . '.is_global' => 0,
-                    [
-                        self::getTable() . '.itemtype_asset' => $asset::class,
-                        self::getTable() . '.items_id_asset' => $asset->getID(),
-                    ],
-                ],
-            ] + getEntitiesRestrictCriteria($peripheral::getTable()),
+            'WHERE' => $where + getEntitiesRestrictCriteria($peripheral::getTable()),
             'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
         ]);
     }
