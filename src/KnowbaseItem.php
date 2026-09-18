@@ -163,11 +163,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $CFG_GLPI;
 
-        // The root article is the entry point of the knowledge base and the
-        // home page of the helpdesk FAQ: everyone allowed to read the
-        // knowledge base or the FAQ can view it, it has no visibility rules of
-        // its own. It is admitted by its id, never by `is_faq`, which stays 0,
-        // see `getVisibilityCriteriaFAQ()` and `prepareInputForUpdate()`.
+        // The root article is the knowledge base entry point and the FAQ home
+        // page. It is admitted by its id, never by `is_faq`, which stays 0.
         if ($this->isRoot()) {
             if (Session::getLoginUserID() === false) {
                 return (bool) $CFG_GLPI['use_public_faq'];
@@ -917,17 +914,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $where[self::getTable() . '.is_faq'] = 1;
         }
 
-        // The root article is the FAQ home page. It is admitted by its id
-        // here, never by `is_faq`, which stays 0. `getVisibilityCriteriaKB()`
-        // also carries a root arm, but that one sits inside `$where`, ANDed
-        // with `is_faq = 1` above, so it can never match; this arm is the one
-        // that actually admits the root in the FAQ. It is added here, outside
-        // the criteria the inheritance seed is built from, so the root never
-        // lends its visibility to its children, see
-        // `getInheritedVisibilityCondition()`.
-        //
-        // The arm mirrors `canViewItem()`'s root branch. Anonymous readers are
-        // already gated on `use_public_faq` by `getVisibilityCriteria()`.
+        // The root arm stays outside `$where`, which seeds the inheritance term:
+        // the root must not lend its visibility to every article below it.
         $root_id = self::getConfiguredRootId();
         $can_read_root = Session::getLoginUserID() === false
             || Session::haveRightsOr(self::$rightname, [READ, self::READFAQ, self::KNOWBASEADMIN]);
@@ -1176,9 +1164,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // The root article is the entry point of the knowledge base, not a
         // piece of content to publish. Its `is_faq` stays 0: the FAQ admits it
-        // by its id instead, see `getVisibilityCriteriaFAQ()`. Listing it in
-        // the service catalog would offer it to readers that are not allowed
-        // to open it, see `canViewItem()`.
+        // by its id, and the service catalog must not list it at all.
         if ($this->isRoot()) {
             unset($input['is_faq'], $input['show_in_service_catalog']);
         }
@@ -1644,26 +1630,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
-     * The nearest readable descendants of this article: for each direct
-     * child, the child itself when it is readable, otherwise the nearest
-     * readable articles found by descending into its own children.
-     *
-     * This widens WHERE a descendant surfaces, never WHETHER it is visible:
-     * a candidate still has to pass `can($id, READ)` to be collected. The
-     * visible-article set from `getListRequest([], 'browse')` (see
-     * `Glpi\Knowbase\Aside\Builder::loadHierarchy()`, the model for this) is
-     * used only to decide WHICH candidates are worth that `can()` call:
-     * `getListRequest()` honours inherited visibility, which `can()` does
-     * not, so an article outside the set is certainly unreadable and is
-     * skipped straight to the next hop, no query spent on it.
-     *
-     * Walked level by level (one query per level, batching every article
-     * still to resolve at that level) so a deep chain of unreadable
-     * intermediates costs one extra query per level, not one per article.
-     * `can()` (about six queries) now runs only on articles the cheap
-     * set-membership test already let through, instead of on every article
-     * walked.
-     * A visited set keeps a diamond in the DAG from being walked twice.
+     * The nearest readable descendants: each readable direct child, or the
+     * readable articles below it when it is not readable itself.
      *
      * @return list<array{
      *      'id': int,
@@ -1676,9 +1644,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
-        // Articles the session may see, inherited visibility included. Used
-        // only to skip candidates that are certainly unreadable; the ones it
-        // lets through still go through `can()` below.
+        // Skips the candidates that are certainly unreadable, to spare them the
+        // `can()` call below. It costs about six queries; this set costs one.
         $visible_criteria = self::getListRequest([], 'browse');
         $visible_criteria['SELECT'] = self::getTableField('id');
         $visible = [];
@@ -1721,14 +1688,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
-     * Direct children (by link) of every article in `$parent_ids`, in a
-     * single query.
-     *
-     * No validity window here: that filter belongs on the readable-article
-     * results (`getChildArticlesInfo()` applies it via `getListRequest()`),
-     * not on these intermediate hops. Applying it here would wrongly block
-     * descent through an out-of-window intermediate and hide its in-window
-     * readable descendants.
+     * Direct children (by link) of every article in `$parent_ids`, in one query.
+     * No validity window: it belongs on the results, not on these hops.
      *
      * @param int[] $parent_ids
      *
@@ -2184,8 +2145,7 @@ TWIG, $twig_params);
                             'glpi_entities_knowbaseitems.is_recursive' => 1,
                         ];
 
-                        // The root article has no visibility row of its own,
-                        // see `getVisibilityCriteriaFAQ()`.
+                        // The root article has no visibility row of its own.
                         $root_id = self::getConfiguredRootId();
                         if ($root_id > 0) {
                             $criteria['WHERE'][] = [
@@ -2208,8 +2168,7 @@ TWIG, $twig_params);
                 'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
             ];
 
-            // The root article is the FAQ home page, admitted by its id
-            // because its `is_faq` stays 0.
+            // The root article is admitted by its id, because `is_faq` stays 0.
             $root_id = self::getConfiguredRootId();
             if ($root_id > 0) {
                 $faq_where[] = [self::getTableField('id') => $root_id];
