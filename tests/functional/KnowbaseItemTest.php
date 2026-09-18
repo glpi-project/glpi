@@ -3416,10 +3416,15 @@ HTML,
         $root = new KnowbaseItem();
         $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
 
-        // The root article is the entry point of the knowledge base, not a FAQ
-        // article: it must not show up in the FAQ nor in the service catalog.
-        $this->assertFalse($root->canViewItem());
-        $this->assertNotContains(KnowbaseItem::getRootId(), $this->getVisibleArticleIds());
+        // The root article is the FAQ home page, admitted by its id. It is not
+        // a FAQ article: `is_faq` stays 0, and it never reaches the service
+        // catalog, see `prepareInputForUpdate()`.
+        $this->assertEquals(0, $root->fields['is_faq']);
+        $this->assertEquals(0, $root->fields['show_in_service_catalog']);
+
+        // Admitted by id all the same, in the rights check and in the query.
+        $this->assertTrue($root->canViewItem());
+        $this->assertContains(KnowbaseItem::getRootId(), $this->getVisibleArticleIds());
     }
 
     public function testRootArticleDoesNotMakeItsChildrenVisible(): void
@@ -3921,6 +3926,44 @@ HTML,
         try {
             $this->assertNotContains($not_faq->getID(), $this->getBrowseListRequestIds());
         } finally {
+            $CFG_GLPI['use_public_faq'] = false;
+        }
+    }
+
+    /**
+     * A logged-in FAQ reader gets the root article in a browse list request,
+     * so the helpdesk aside can show the tree from its real root.
+     */
+    public function testRootArticleIsListedForLoggedInFaqReaders(): void
+    {
+        $this->login('post-only', 'postonly');
+
+        $this->assertContains(KnowbaseItem::getRootId(), $this->getBrowseListRequestIds());
+    }
+
+    /**
+     * An anonymous reader on a public FAQ gets the root article, in single and
+     * in multi entity mode. Anonymous requests skip the visibility criteria,
+     * so this exercises a different path than the logged-in case.
+     */
+    public function testRootArticleIsListedForAnonymousFaqReaders(): void
+    {
+        global $CFG_GLPI;
+
+        $root_id = KnowbaseItem::getRootId();
+        $multi_entities_mode = $_SESSION['glpi_multientitiesmode'] ?? 1;
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = true;
+
+        try {
+            $_SESSION['glpi_multientitiesmode'] = 1;
+            $this->assertContains($root_id, $this->getBrowseListRequestIds());
+
+            $_SESSION['glpi_multientitiesmode'] = 0;
+            $this->assertContains($root_id, $this->getBrowseListRequestIds());
+        } finally {
+            $_SESSION['glpi_multientitiesmode'] = $multi_entities_mode;
             $CFG_GLPI['use_public_faq'] = false;
         }
     }
