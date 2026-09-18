@@ -156,3 +156,15 @@ test('The FAQ answers 404 for a missing article and 403 for one outside the FAQ'
     const response = await page.goto(`/front/helpdesk.faq.php?id=${parent_id}`);
     expect(response?.status()).toBe(403);
 });
+
+test('The FAQ lands on the Home article', async ({ page, profile }) => {
+    await profile.set(Profiles.SelfService);
+
+    const kb = new KnowbaseItemPage(page);
+    await kb.gotoFaqHome();
+
+    await expect(page).toHaveURL(/\/front\/helpdesk\.faq\.php\?id=\d+/);
+    await expect(kb.subject).toHaveText('Home');
+
+    await kb.waitForAsideReady();
+});
