@@ -115,11 +115,17 @@ export class BubbleMenuHelper {
         await expect(this.getButton(command)).toBeHidden();
     }
 
-    async setLink(url: string): Promise<void> {
-        this.page.once('dialog', async dialog => {
-            await dialog.accept(url);
-        });
+    async setLink(url: string, open_in_new_tab = false): Promise<void> {
         await this.clickButton('Link');
+
+        const dialog = this.page.getByRole('dialog', { name: 'Insert/Edit link' });
+        await expect(dialog).toBeVisible();
+
+        await dialog.getByLabel('URL', { exact: true }).fill(url);
+        await dialog.getByLabel('Open in new tab').setChecked(open_in_new_tab);
+
+        await dialog.getByRole('button', { name: 'Save' }).click();
+        await expect(dialog).toBeHidden();
     }
 
     async removeLink(): Promise<void> {
