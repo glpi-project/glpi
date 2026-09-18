@@ -100,6 +100,15 @@ export class GlpiKnowbaseAsideController
      */
     static #STORAGE_KEY = 'glpi-kb-aside-collapsed';
 
+    /**
+     * localStorage key persisting the desktop aside width (px), applied before paint by aside.html.twig.
+     * @type {string}
+     */
+    static #WIDTH_STORAGE_KEY = 'glpi-kb-aside-width';
+
+    /** Keyboard resize step (px). */
+    static #WIDTH_STEP = 16;
+
     /** Dwell delay (ms) before a hovered/focused row prefetches its actions menu. @type {number} */
     static #PREFETCH_DELAY_MS = 150;
 
@@ -126,6 +135,7 @@ export class GlpiKnowbaseAsideController
         this.#initCreateArticle();
         this.#initActions();
         this.#initToggle();
+        this.#initResize();
     }
 
     #initCategoryToggle()
@@ -297,6 +307,119 @@ export class GlpiKnowbaseAsideController
     {
         try {
             window.localStorage.setItem(GlpiKnowbaseAsideController.#STORAGE_KEY, collapsed ? '1' : '0');
+        } catch { /* storage unavailable */ }
+    }
+
+    #initResize()
+    {
+        const handle = this.#aside.querySelector('[data-glpi-kb-aside-resizer]');
+        if (!handle) {
+            return;
+        }
+        // Bounds mirror the CSS: min from the handle markup, max is half of the row.
+        const min = Number(handle.getAttribute('aria-valuemin'));
+        const step = GlpiKnowbaseAsideController.#WIDTH_STEP;
+        const max_width = () => Math.max(min, this.#aside.parentElement.clientWidth / 2);
+        const clamp = (w, max = max_width()) => Math.round(Math.min(Math.max(w, min), max));
+
+        // Last set width; re-clamped on read since the row may have shrunk since (CSS clamps the render).
+        // The pre-paint script in aside.html.twig already applied the stored value.
+        let width = parseInt(this.#aside.style.getPropertyValue('--kb-aside-width'), 10) || min;
+        const sync_aria = (max = max_width()) => {
+            handle.setAttribute('aria-valuenow', String(clamp(width, max)));
+            handle.setAttribute('aria-valuemax', String(clamp(Infinity, max)));
+        };
+        // Pass max when known, to avoid reading layout right after the width write.
+        // `width` updates synchronously (callers store it right away); the DOM write
+        // is batched into one animation frame however many pointer moves arrive.
+        let frame = 0;
+        let frame_max;
+        const set_width = (w, max = max_width()) => {
+            width = clamp(w, max);
+            frame_max = max;
+            frame ||= requestAnimationFrame(() => {
+                frame = 0;
+                this.#aside.style.setProperty('--kb-aside-width', `${width}px`);
+                sync_aria(frame_max);
+            });
+        };
+        sync_aria();
+        window.addEventListener('resize', () => sync_aria());
+
+        // Layout values fixed for the whole drag, read once so moves only write.
+        let drag = null;
+        handle.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0) {
+                return;
+            }
+            e.preventDefault(); // no text selection while dragging
+            handle.setPointerCapture(e.pointerId);
+            this.#aside.setAttribute('data-glpi-kb-aside-resizing', '');
+            const rect = this.#aside.getBoundingClientRect();
+            const rtl = getComputedStyle(this.#aside).direction === 'rtl';
+            drag = { pointer_id: e.pointerId, edge: rtl ? rect.right : rect.left, sign: rtl ? -1 : 1, max: max_width() };
+        });
+        handle.addEventListener('pointermove', (e) => {
+            if (drag?.pointer_id === e.pointerId) {
+                set_width((e.clientX - drag.edge) * drag.sign, drag.max);
+            }
+        });
+        // Fires on release and on any capture loss, so the drag always ends cleanly.
+        handle.addEventListener('lostpointercapture', (e) => {
+            if (drag?.pointer_id !== e.pointerId) {
+                return;
+            }
+            drag = null;
+            this.#aside.removeAttribute('data-glpi-kb-aside-resizing');
+            this.#storeWidth(width);
+        });
+
+        // Keyboard steps must not glide behind the keys. Released one frame after the batched write.
+        let settle = 0;
+        const suspend_transition = () => {
+            this.#aside.setAttribute('data-glpi-kb-aside-resizing', '');
+            cancelAnimationFrame(settle);
+            settle = requestAnimationFrame(() => {
+                settle = requestAnimationFrame(() => {
+                    if (!drag) {
+                        this.#aside.removeAttribute('data-glpi-kb-aside-resizing');
+                    }
+                });
+            });
+        };
+
+        handle.addEventListener('keydown', (e) => {
+            // A modified arrow belongs to the browser: alt + arrow moves in the history.
+            if (e.altKey || e.ctrlKey || e.metaKey) {
+                return;
+            }
+            const grow = getComputedStyle(this.#aside).direction === 'rtl' ? -step : step;
+            const next = {
+                ArrowLeft: clamp(width) - grow,
+                ArrowRight: clamp(width) + grow,
+                Home: min,
+                End: Infinity,
+            }[e.key];
+            if (next === undefined) {
+                return;
+            }
+            e.preventDefault();
+            suspend_transition();
+            set_width(next);
+            this.#storeWidth(width);
+        });
+
+        handle.addEventListener('dblclick', () => {
+            suspend_transition();
+            set_width(min);
+            this.#storeWidth(width);
+        });
+    }
+
+    #storeWidth(width)
+    {
+        try {
+            window.localStorage.setItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY, String(width));
         } catch { /* storage unavailable */ }
     }
 

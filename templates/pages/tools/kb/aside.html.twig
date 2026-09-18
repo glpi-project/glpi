@@ -39,17 +39,37 @@
     {{ actions_menu.render_actions_menu_placeholder() }}
 {% endif %}
 
-{# Apply the persisted collapsed state before first paint to avoid a flash of the open aside. #}
+{# Apply the persisted collapsed state and width before first paint to avoid a flash of the open aside. #}
 <script>
     (() => {
         try {
             const aside = document.currentScript.closest('[data-main-page-aside="knowbaseitem"]');
-            if (aside && localStorage.getItem('glpi-kb-aside-collapsed') === '1') {
+            if (!aside) {
+                return;
+            }
+            if (localStorage.getItem('glpi-kb-aside-collapsed') === '1') {
                 aside.setAttribute('data-glpi-kb-aside-collapsed', '');
+            }
+            const width = parseInt(localStorage.getItem('glpi-kb-aside-width'), 10);
+            if (width > 0) {
+                aside.style.setProperty('--kb-aside-width', `${width}px`);
             }
         } catch (e) { /* localStorage unavailable */ }
     })();
 </script>
+
+{# Desktop drag handle, see GlpiKnowbaseAsideController#initResize(). #}
+<div
+    class="kb-aside-resizer"
+    data-glpi-kb-aside-resizer
+    role="separator"
+    tabindex="0"
+    aria-orientation="vertical"
+    aria-controls="kb-aside-body"
+    aria-label="{{ __('Resize articles list') }}"
+    aria-valuemin="300"{# keep in sync with $kb-aside-min-width in _kb.scss #}
+    title="{{ __('Drag to resize, double-click to reset') }}"
+></div>
 
 <div class="kb-aside-rail align-items-center pt-2" data-glpi-kb-aside-rail>
     <button

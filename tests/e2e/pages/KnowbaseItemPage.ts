@@ -47,9 +47,12 @@ export class KnowbaseItemPage extends GlpiPage
     private _tableEditorHelper: TableEditorHelper | null = null;
     private _readModeCommentBubbleHelper: ReadModeCommentBubbleHelper | null = null;
 
+    public readonly aside_resizer: Locator;
+
     public constructor(page: Page)
     {
         super(page);
+        this.aside_resizer = this.aside.getByRole('separator', { name: 'Resize articles list' });
     }
 
     public get editor(): TipTapEditorHelper
@@ -218,6 +221,32 @@ export class KnowbaseItemPage extends GlpiPage
     public async doExpandAside(): Promise<void>
     {
         await this.getAsideExpandButton().click();
+    }
+
+    /** Focuses the resize handle and presses the given keys on it, modifiers included. */
+    public async doPressOnAsideResizer(...keys: string[]): Promise<void>
+    {
+        await this.aside_resizer.focus();
+        for (const key of keys) {
+            await this.page.keyboard.press(key);
+        }
+    }
+
+    /** Drags the resize handle so the aside is `width` px wide, measured from its left edge. */
+    public async doDragAsideToWidth(width: number): Promise<void>
+    {
+        const aside_box = (await this.aside.boundingBox())!;
+        const handle_box = (await this.aside_resizer.boundingBox())!;
+        const y = handle_box.y + 100;
+        await this.page.mouse.move(handle_box.x + handle_box.width / 2, y);
+        await this.page.mouse.down();
+        await this.page.mouse.move(aside_box.x + width, y, { steps: 5 });
+        await this.page.mouse.up();
+    }
+
+    public async doResetAsideWidth(): Promise<void>
+    {
+        await this.aside_resizer.dblclick();
     }
 
     public getAsideTreeArticleRow(id: number): Locator
