@@ -2815,6 +2815,66 @@ class UserTest extends DbTestCase
         $this->assertEmpty($user2->fields['_groups'] ?? []);
     }
 
+    public static function ldapFieldValueProvider(): iterable
+    {
+        // Template with static text, attribute empty -> only static text remains,
+        // must be discarded so no incomplete location is created (issue #25427).
+        yield 'template attr empty' => [
+            'map'      => 'Site - %{physicalDeliveryOfficeName}',
+            'res'      => [0 => ['physicalDeliveryOfficeName' => ['count' => 0]]],
+            'expected' => '',
+        ];
+
+        // Template with static text, attribute absent -> same as empty.
+        yield 'template attr absent' => [
+            'map'      => 'Site - %{physicalDeliveryOfficeName}',
+            'res'      => [0 => []],
+            'expected' => '',
+        ];
+
+        // Template with static text, attribute present -> substituted value kept.
+        yield 'template attr present' => [
+            'map'      => 'Site - %{physicalDeliveryOfficeName}',
+            'res'      => [0 => ['physicalDeliveryOfficeName' => ['Office 01', 'count' => 1]]],
+            'expected' => 'Site - Office 01',
+        ];
+
+        // Bare placeholder, empty -> empty value.
+        yield 'bare placeholder empty' => [
+            'map'      => '%{physicalDeliveryOfficeName}',
+            'res'      => [0 => ['physicalDeliveryOfficeName' => ['count' => 0]]],
+            'expected' => '',
+        ];
+
+        // Multiple placeholders, one resolved -> partial value kept.
+        yield 'multi placeholder partial' => [
+            'map'      => '%{l} > %{ou}',
+            'res'      => [0 => ['l' => ['HQ', 'count' => 1], 'ou' => ['count' => 0]]],
+            'expected' => 'HQ > ',
+        ];
+
+        // Multiple placeholders, none resolved -> discarded.
+        yield 'multi placeholder all empty' => [
+            'map'      => '%{l} > %{ou}',
+            'res'      => [0 => []],
+            'expected' => '',
+        ];
+
+        // Plain field name (no placeholder) -> raw LDAP value returned.
+        yield 'plain field name' => [
+            'map'      => 'l',
+            'res'      => [0 => ['l' => ['Paris', 'count' => 1]]],
+            'expected' => 'Paris',
+        ];
+    }
+
+    #[DataProvider('ldapFieldValueProvider')]
+    public function testGetLdapFieldValue(string $map, array $res, string $expected): void
+    {
+        $result = $this->callPrivateMethod(new User(), 'getLdapFieldValue', $map, $res);
+        $this->assertSame($expected, $result);
+    }
+
     public function testIsValidUserForEntity(): void
     {
         $this->login();
