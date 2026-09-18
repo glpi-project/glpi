@@ -356,6 +356,39 @@ class RuleCriteria extends CommonDBChild
         $pattern_raw = $pattern;
         $pattern = trim($pattern);
 
+        // Multi-valued field (e.g. every "To" recipient, or every profile a user has):
+        // evaluate the condition against each candidate individually and combine with
+        // the right quantifier, instead of matching against a single flattened value.
+        $per_value_conditions = [
+            Rule::PATTERN_IS,
+            Rule::PATTERN_IS_NOT,
+            Rule::PATTERN_CONTAIN,
+            Rule::PATTERN_NOT_CONTAIN,
+            Rule::PATTERN_BEGIN,
+            Rule::PATTERN_END,
+            Rule::REGEX_MATCH,
+            Rule::REGEX_NOT_MATCH,
+        ];
+        if (is_array($field) && in_array($condition, $per_value_conditions, true)) {
+            $is_negative_condition = in_array(
+                $condition,
+                [Rule::PATTERN_IS_NOT, Rule::PATTERN_NOT_CONTAIN, Rule::REGEX_NOT_MATCH],
+                true
+            );
+            foreach ($field as $value) {
+                $matches = self::match($criterion, $value, $criterias_results, $regex_result);
+                if ($is_negative_condition && !$matches) {
+                    // One candidate fails the negative predicate -> overall false.
+                    return false;
+                }
+                if (!$is_negative_condition && $matches) {
+                    return true;
+                }
+            }
+            // Positive predicate: no candidate matched. Negative predicate: none failed it.
+            return $is_negative_condition;
+        }
+
         switch ($condition) {
             case Rule::PATTERN_EXISTS:
                 return (!empty($field));
@@ -364,21 +397,12 @@ class RuleCriteria extends CommonDBChild
                 return (empty($field));
 
             case Rule::PATTERN_IS:
-                if (is_array($field)) {
-                    // Special case (used only by UNIQUE_PROFILE, for now)
-                    // $pattern is an ID
-                    if (in_array($pattern, $field)) {
-                        $criterias_results[$criteria] = $pattern_raw;
-                        return true;
-                    }
-                } else {
-                    //Perform comparison with fields in lower case
-                    $field                        = Toolbox::strtolower($field);
-                    $pattern                      = Toolbox::strtolower($pattern);
-                    if ($field == $pattern) {
-                        $criterias_results[$criteria] = $pattern_raw;
-                        return true;
-                    }
+                //Perform comparison with fields in lower case
+                $field                        = Toolbox::strtolower($field);
+                $pattern                      = Toolbox::strtolower($pattern);
+                if ($field == $pattern) {
+                    $criterias_results[$criteria] = $pattern_raw;
+                    return true;
                 }
                 return false;
 
