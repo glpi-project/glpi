@@ -180,13 +180,18 @@
                 <div class="d-flex align-items-center" data-testid="last-update">
                     <i class="ti ti-clock me-1 fs-3" aria-hidden="true"></i>
                     <span>
-                        <span>{{ __("Updated:") }}</span>
-                        <time
-                            title="{{ last_update_date }}"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                        >{{ last_update_relative_date }}</time>
-                        <span>{{ __("by") }}</span>
+                        {# The date may be unknown, the database allows null values here #}
+                        {% if last_update_date is not null %}
+                            <span>{{ __("Updated:") }}</span>
+                            <time
+                                title="{{ last_update_date }}"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                            >{{ last_update_relative_date }}</time>
+                            <span>{{ __("by") }}</span>
+                        {% else %}
+                            <span>{{ __("Updated by") }}</span>
+                        {% endif %}
                     </span>
                     <address class="mb-0">
                         {% if last_update_author_link is not null and last_update_can_view_author %}
