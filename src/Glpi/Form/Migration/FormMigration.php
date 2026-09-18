@@ -203,6 +203,40 @@ class FormMigration extends AbstractPluginMigration
     }
 
     /**
+     * Add a warning message about a condition that could not be migrated,
+     * resolving the target item and its form for context.
+     *
+     * @param array{itemtype: class-string<CommonDBTM>, items_id: int} $target_item
+     * @param string $message Message template with 3 sprintf placeholders:
+     *                        item type name, item name, form name.
+     */
+    private function addUnresolvedConditionWarning(
+        array $target_item,
+        string $message,
+        mixed ...$extra_args,
+    ): void {
+        /** @var Form|Question|Comment|Section|FormDestination $item */
+        $item = getItemForItemtype($target_item['itemtype']);
+        if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
+            $form = $item instanceof Form ? $item : $item->getForm();
+        } else {
+            $item = null;
+            $form = null;
+        }
+
+        $this->result->addMessage(
+            MessageType::Warning,
+            sprintf(
+                $message,
+                $item->getTypeName(1) ?? $target_item['itemtype'],
+                $item->getName() ?? $target_item['items_id'],
+                $form->getName() ?? NOT_AVAILABLE,
+                ...$extra_args,
+            )
+        );
+    }
+
+    /**
      * Build the condition entry array for a single raw condition, resolving the
      * conditioning item (Question or Comment). Returns null if the condition
      * must be skipped.
@@ -278,24 +312,10 @@ class FormMigration extends AbstractPluginMigration
             ));
 
             if ($condition_handler === false) {
-                /** @var Form|Question|Comment|Section|FormDestination $item */
-                $item = getItemForItemtype($target_item['itemtype']);
-                if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
-                    $form = $item instanceof Form ? $item : $item->getForm();
-                } else {
-                    $item = null;
-                    $form = null;
-                }
-
-                $this->result->addMessage(
-                    MessageType::Warning,
-                    sprintf(
-                        __('A visibility condition used in "%s" "%s" (Form "%s") with value operator "%s" is not supported by the question type. It will be ignored.'),
-                        $item->getTypeName(1) ?? $target_item['itemtype'],
-                        $item->getName() ?? $target_item['items_id'],
-                        $form->getName() ?? NOT_AVAILABLE,
-                        $value_operator->getLabel()
-                    )
+                $this->addUnresolvedConditionWarning(
+                    $target_item,
+                    __('A visibility condition used in "%1$s" "%2$s" (Form "%3$s") with value operator "%4$s" is not supported by the question type. It will be ignored.'),
+                    $value_operator->getLabel()
                 );
                 return null;
             }
@@ -306,6 +326,16 @@ class FormMigration extends AbstractPluginMigration
                 } catch (FallbackToAnotherOperatorException $e) {
                     $value_operator = $e->getOperator();
                     $value = $e->getValue();
+                }
+
+                // Legacy value has no matching option: drop the condition
+                // instead of silently binding it to a non-existent one.
+                if ($value === null) {
+                    $this->addUnresolvedConditionWarning(
+                        $target_item,
+                        __('A visibility condition used in "%1$s" "%2$s" (Form "%3$s") references a value that no longer matches any option. It will be ignored.')
+                    );
+                    return null;
                 }
             }
         }

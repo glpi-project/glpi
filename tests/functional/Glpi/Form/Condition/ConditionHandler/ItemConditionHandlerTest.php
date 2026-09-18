@@ -115,4 +115,18 @@ final class ItemConditionHandlerTest extends AbstractConditionHandlerTest
             ];
         }
     }
+
+    public function testConvertConditionValue(): void
+    {
+        $computer = $this->createItem('Computer', ['name' => __FUNCTION__, 'entities_id' => 0]);
+
+        $handler = new ItemConditionHandler(Computer::class);
+        $this->assertSame(
+            ['itemtype' => Computer::class, 'items_id' => $computer->getID()],
+            $handler->convertConditionValue(__FUNCTION__),
+        );
+
+        // Legacy value that no longer matches any item by name.
+        $this->assertNull($handler->convertConditionValue('Deleted computer'));
+    }
 }
