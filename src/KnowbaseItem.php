@@ -917,6 +917,21 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $where[self::getTable() . '.is_faq'] = 1;
         }
 
+        // The root article is the FAQ home page. It is admitted by its id, as
+        // `getVisibilityCriteriaKB()` does, because its `is_faq` stays 0. The
+        // arm is added here, outside the criteria the inheritance seed is
+        // built from, so the root never lends its visibility to its children,
+        // see `getInheritedVisibilityCondition()`.
+        $root_id = self::getConfiguredRootId();
+        if ($root_id > 0) {
+            return [
+                'OR' => [
+                    [self::getTableField('id') => $root_id],
+                    $where,
+                ],
+            ];
+        }
+
         return $where;
     }
 
@@ -2102,20 +2117,43 @@ TWIG, $twig_params);
                 } else {
                     // Anonymous access
                     if (Session::isMultiEntitiesMode()) {
-                        $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = 0;
-                        $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
+                        $anonymous_entity_where = [
+                            'glpi_entities_knowbaseitems.entities_id'  => 0,
+                            'glpi_entities_knowbaseitems.is_recursive' => 1,
+                        ];
+
+                        // The root article has no visibility row of its own,
+                        // see `getVisibilityCriteriaFAQ()`.
+                        $root_id = self::getConfiguredRootId();
+                        if ($root_id > 0) {
+                            $criteria['WHERE'][] = [
+                                'OR' => [
+                                    [self::getTableField('id') => $root_id],
+                                    $anonymous_entity_where,
+                                ],
+                            ];
+                        } else {
+                            $criteria['WHERE'][] = $anonymous_entity_where;
+                        }
                     }
                 }
                 break;
         }
 
         if ($params['faq']) { // helpdesk
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    'glpi_knowbaseitems.is_faq' => 1,
-                    'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
-                ],
+            $faq_where = [
+                'glpi_knowbaseitems.is_faq' => 1,
+                'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
             ];
+
+            // The root article is the FAQ home page, admitted by its id
+            // because its `is_faq` stays 0.
+            $root_id = self::getConfiguredRootId();
+            if ($root_id > 0) {
+                $faq_where[] = [self::getTableField('id') => $root_id];
+            }
+
+            $criteria['WHERE'][] = ['OR' => $faq_where];
         }
 
         if ($params['knowbaseitems_id_parent'] !== self::SEEALL) {
