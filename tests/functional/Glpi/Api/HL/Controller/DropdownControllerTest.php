@@ -438,4 +438,176 @@ EOT;
                 });
         });
     }
+
+    /**
+     * Sending an empty value removes the file of properties accepting a single file. Properties accepting
+     * multiple files have their own removal property, so an empty value must simply be ignored rather than
+     * treated as a removal of the whole (serialized) field.
+     */
+    public function testUpdateAssetModelWithEmptyPicturesUpload(): void
+    {
+        $this->login();
+
+        [$location, $picture] = $this->createMonitorModelWithPicture('monitor_model_empty_pictures_upload');
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="pictures_upload"
+
+
+-----boundary--
+EOT;
+
+        $request = new Request('PATCH', $location, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', $location), function ($call) use ($picture) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($picture) {
+                    $this->assertEquals([$picture], $content['pictures']);
+                });
+        });
+    }
+
+    /**
+     * Create a monitor model owning a single picture and return its API location and picture reference.
+     * @return array{0: string, 1: string}
+     */
+    private function createMonitorModelWithPicture(string $name): array
+    {
+        $picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+$name
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="pictures_upload"; filename="bar.png"
+Content-Type: image/png
+
+$picture_content
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Dropdowns/MonitorModel', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $location = null;
+        $this->api->call($request, function ($call) use (&$location) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$location) {
+                    $location = $content['href'];
+                });
+        });
+
+        $picture = null;
+        $this->api->call(new Request('GET', $location), function ($call) use (&$picture) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$picture) {
+                    $this->assertCount(1, $content['pictures']);
+                    $picture = $content['pictures'][0];
+                });
+        });
+
+        return [$location, $picture];
+    }
+
+    /**
+     * An item must not be able to delete a picture that belongs to another item.
+     */
+    public function testUpdateAssetModelRemovingAnotherItemPicture(): void
+    {
+        $this->login();
+
+        [, $victim_picture] = $this->createMonitorModelWithPicture('monitor_model_picture_victim');
+        [$attacker_location] = $this->createMonitorModelWithPicture('monitor_model_picture_attacker');
+
+        // The API exposes picture URLs, so resolve the path the file is actually stored at
+        $this->assertStringContainsString('_pictures%2F', $victim_picture);
+        $victim_path = urldecode(GLPI_PICTURE_DIR . '/' . substr($victim_picture, strpos($victim_picture, '_pictures%2F') + strlen('_pictures%2F')));
+        $this->assertFileExists($victim_path);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="pictures_remove[]"
+
+$victim_picture
+-----boundary--
+EOT;
+
+        $request = new Request('PATCH', $attacker_location, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        // The other item's picture must be untouched, both in the DB and on disk
+        $this->assertFileExists($victim_path);
+        $this->api->call(new Request('GET', $attacker_location), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['pictures']);
+                });
+        });
+    }
+
+    /**
+     * A picture reference escaping the picture directory must never lead to a file being deleted.
+     */
+    public function testUpdateAssetModelRemovingPictureOutsideOfPictureDir(): void
+    {
+        $this->login();
+
+        [$location] = $this->createMonitorModelWithPicture('monitor_model_picture_traversal');
+
+        $sentinel_path = GLPI_TMP_DIR . '/' . __FUNCTION__ . '.txt';
+        file_put_contents($sentinel_path, 'sentinel');
+        // GLPI_TMP_DIR is a sibling of GLPI_PICTURE_DIR
+        $traversal_reference = '../' . basename(GLPI_TMP_DIR) . '/' . __FUNCTION__ . '.txt';
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="pictures_remove[]"
+
+$traversal_reference
+-----boundary--
+EOT;
+
+        $request = new Request('PATCH', $location, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->assertFileExists($sentinel_path);
+        unlink($sentinel_path);
+
+        $this->api->call(new Request('GET', $location), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['pictures']);
+                });
+        });
+    }
 }

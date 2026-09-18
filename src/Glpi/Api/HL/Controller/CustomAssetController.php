@@ -314,7 +314,7 @@ final class CustomAssetController extends AbstractController
                     'pictures_remove' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'x-version-introduced' => '2.4.0',
-                        'items' => ['type' => Doc\Schema::TYPE_STRING, 'x-input-field' => '_blank_pictures', 'writeOnly' => true],
+                        'items' => ['type' => Doc\Schema::TYPE_STRING, 'writeOnly' => true],
                     ],
                     'picture_front' => [
                         'type' => Doc\Schema::TYPE_STRING,

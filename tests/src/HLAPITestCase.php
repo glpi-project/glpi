@@ -298,20 +298,31 @@ final class HLAPIHelper
      */
     public function call(Request $request, callable $fn, bool $auto_auth_header = true): self
     {
+        // Simulate the URI the web server would have set for this call, and restore it afterwards so one call
+        // cannot leak its URI into the next one.
+        $previous_request_uri = $_SERVER['REQUEST_URI'] ?? null;
         $_SERVER['REQUEST_URI'] = '/api.php/' . $this->api_version . $request->getUri();
-        if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
-            $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
+        try {
+            if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
+                $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
+            }
+            $request = $request->withHeader('GLPI-API-Version', $this->api_version);
+            $response = $this->router->handleRequest($request);
+            if ($response instanceof StreamedResponseWrapper) {
+                $symfony_response = $response->getSymfonyResponse();
+                ob_start();
+                $symfony_response->sendContent();
+                $content = ob_get_clean();
+                $response = new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+            }
+            $fn(new HLAPICallAsserter($this->test, $this->router, $response));
+        } finally {
+            if ($previous_request_uri === null) {
+                unset($_SERVER['REQUEST_URI']);
+            } else {
+                $_SERVER['REQUEST_URI'] = $previous_request_uri;
+            }
         }
-        $request = $request->withHeader('GLPI-API-Version', $this->api_version);
-        $response = $this->router->handleRequest($request);
-        if ($response instanceof StreamedResponseWrapper) {
-            $symfony_response = $response->getSymfonyResponse();
-            ob_start();
-            $symfony_response->sendContent();
-            $content = ob_get_clean();
-            $response = new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
-        }
-        $fn(new HLAPICallAsserter($this->test, $this->router, $response));
         return $this;
     }
 

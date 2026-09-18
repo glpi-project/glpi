@@ -143,16 +143,41 @@ final class ResourceAccessor
     }
 
     /**
+     * Resolve the file upload declaration of a top-level schema property.
+     *
+     * {@link Doc\Schema::flattenProperties()} replaces array types by their `items` definition, which makes it
+     * impossible to tell an array of files apart from a single file. Anything dealing with file uploads must
+     * therefore read the raw (non-flattened) schema properties through this method.
+     *
+     * @param array<string, mixed> $prop The raw schema property definition
+     * @return array{options: array<string, mixed>, definition: array<string, mixed>, is_array: bool}|null
+     *      Null if the property doesn't accept file uploads. Otherwise, the file upload options, the definition
+     *      carrying them (the `items` definition for arrays) and whether the property accepts multiple files.
+     */
+    private static function getFileUploadSpecification(array $prop): ?array
+    {
+        $is_array = ($prop['type'] ?? null) === Doc\Schema::TYPE_ARRAY;
+        $definition = $is_array ? ($prop['items'] ?? []) : $prop;
+        if (!isset($definition['x-file-upload-options'])) {
+            return null;
+        }
+        return [
+            'options' => $definition['x-file-upload-options'],
+            'definition' => $definition,
+            'is_array' => $is_array,
+        ];
+    }
+
+    /**
      * Map the request parameters to the format required for the GLPI add/update methods.
      * Only top-level properties are mapped.
      * Nested properties which would represent relations are not supported.
      * Creating/updating relations should be done using the appropriate endpoints.
      * @param array $schema
      * @param array $request_params
-     * @param CommonDBTM|null $existing_item The existing item for update operations.
      * @return array
      */
-    public static function getInputParamsBySchema(array $schema, array $request_params, ?CommonDBTM $existing_item = null): array
+    public static function getInputParamsBySchema(array $schema, array $request_params): array
     {
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
@@ -279,39 +304,54 @@ final class ResourceAccessor
             }
         }
 
-        foreach ($flattened_properties as $key => $prop) {
-            $file_upload_options = null;
-            if (isset($prop['x-file-upload-options'])) {
-                $file_upload_options = $prop['x-file-upload-options'];
-            } elseif (($prop['type'] ?? null) === Doc\Schema::TYPE_ARRAY && isset($prop['items']['x-file-upload-options'])) {
-                $file_upload_options = $prop['items']['x-file-upload-options'];
+        // File uploads must be read from the raw schema properties. See self::getFileUploadSpecification().
+        foreach ($schema['properties'] as $key => $prop) {
+            $file_upload_spec = self::getFileUploadSpecification($prop);
+            if ($file_upload_spec === null || !isset($uploaded_files[$key])) {
+                continue;
             }
+            $file_upload_options = $file_upload_spec['options'];
 
-            if ($file_upload_options !== null && isset($uploaded_files[$key])) {
-                foreach ($uploaded_files[$key] as $file) {
-                    // Validate file upload options
+            foreach ($uploaded_files[$key] as $file) {
+                // Validate file upload options
 
-                    if ($file->getSize() > $max_file_size_bytes) {
-                        $errors[$key][] = [
+                $upload_error = $file->getError();
+                if ($upload_error !== UPLOAD_ERR_OK) {
+                    // The transfer itself failed, so there is nothing left to validate for this file.
+                    $errors[$key][] = match ($upload_error) {
+                        UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => [
                             'error' => 'file_size_exceeded',
                             'message' => "The uploaded file exceeds the maximum allowed size of {$CFG_GLPI['document_max_size']} MB.",
                             'max_file_size_bytes' => $max_file_size_bytes,
-                        ];
-                    }
+                        ],
+                        default => [
+                            'error' => 'file_upload_failed',
+                            'message' => 'The file could not be uploaded.',
+                        ],
+                    };
+                    continue;
+                }
 
-                    $file_mime = $file->getClientMediaType();
-                    $file_extension = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+                if ($file->getSize() > $max_file_size_bytes) {
+                    $errors[$key][] = [
+                        'error' => 'file_size_exceeded',
+                        'message' => "The uploaded file exceeds the maximum allowed size of {$CFG_GLPI['document_max_size']} MB.",
+                        'max_file_size_bytes' => $max_file_size_bytes,
+                    ];
+                }
 
-                    if (
-                        isset($file_upload_options['allowed_specifiers'])
-                        && !in_array(strtolower($file_mime), $file_upload_options['allowed_specifiers'], true)
-                        && !in_array(strtolower($file_extension), $file_upload_options['allowed_specifiers'], true)
-                    ) {
-                        $errors[$key][] = [
-                            'error' => 'invalid_file_type',
-                            'message' => 'This file type is not allowed for upload as a picture.',
-                        ];
-                    }
+                $file_mime = $file->getClientMediaType();
+                $file_extension = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+
+                if (
+                    isset($file_upload_options['allowed_specifiers'])
+                    && !in_array(strtolower($file_mime), $file_upload_options['allowed_specifiers'], true)
+                    && !in_array(strtolower($file_extension), $file_upload_options['allowed_specifiers'], true)
+                ) {
+                    $errors[$key][] = [
+                        'error' => 'invalid_file_type',
+                        'message' => 'This file type is not allowed for upload as a picture.',
+                    ];
                 }
             }
         }
@@ -368,25 +408,26 @@ final class ResourceAccessor
     {
         $new_input = [];
 
-        $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
-        $joins = Doc\Schema::getJoins($schema['properties']);
-        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins) {
-            $base_k = strstr($k, '.', true) ?: $k;
-            return !isset($joins[$base_k]);
-        }, ARRAY_FILTER_USE_BOTH);
-
-        foreach ($writable_props as $prop_name => $prop) {
+        // Handle single-file removals.
+        // Properties accepting multiple files are excluded here as they are removed selectively through their
+        // own "<field>_remove" property instead of by sending an empty value.
+        // The raw schema properties are used as flattening them would hide that distinction. See self::getFileUploadSpecification().
+        foreach ($schema['properties'] as $prop_name => $prop) {
+            $file_upload_spec = self::getFileUploadSpecification($prop);
+            if ($file_upload_spec === null || $file_upload_spec['is_array']) {
+                continue;
+            }
             $internal_name = self::resolveInternalFieldNameForProperty($prop_name, $prop);
 
-            // Handle single-file removals
             if (
-                ($prop['format'] ?? null) === Doc\Schema::FORMAT_STRING_BINARY
-                && ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name) === ''
-                && !empty($item?->fields[$internal_name])
+                ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name) === ''
+                && !empty($item->fields[$internal_name])
             ) {
-                $upload_as = $prop['x-file-upload-options']['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
+                $upload_as = $file_upload_spec['options']['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
 
                 if ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
+                    // The path handed over is the one stored on the item, never anything coming from the request,
+                    // as FileManager::deletePicture() expects an already trusted path.
                     if (FileManager::deletePicture($item->fields[$internal_name])) {
                         $new_input[$internal_name] = null;
                     } else {
@@ -405,27 +446,24 @@ final class ResourceAccessor
                 $field = substr($field, 0, -2);
             }
             $file_prop = $schema['properties'][$field] ?? null;
+            $file_upload_spec = $file_prop !== null ? self::getFileUploadSpecification($file_prop) : null;
+            if ($file_upload_spec === null) {
+                continue;
+            }
+            $is_array_of_files = $file_upload_spec['is_array'];
+            $input_name = $file_upload_spec['definition']['x-input-field'] ?? $field;
+            $upload_as = $file_upload_spec['options']['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
+
             /** @var HashedUploadedFile $file */
             foreach ($files as $file) {
-                $is_array_of_files = $file_prop !== null
-                    && $file_prop['type'] === Doc\Schema::TYPE_ARRAY
-                    && isset($file_prop['items']['x-file-upload-options']);
-                $file_upload_options = $is_array_of_files ? $file_prop['items']['x-file-upload-options'] : $file_prop['x-file-upload-options'] ?? null;
-
-                if ($file_prop === null || $file_upload_options === null) {
-                    continue;
-                }
-                $input_name = ($is_array_of_files ? ($file_prop['items']['x-input-field'] ?? $field) : ($file_prop['x-input-field']) ?? $field);
-                $upload_as = $file_upload_options['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
-
-                if ($upload_as === 'file') {
+                if ($upload_as === FileManager::UPLOAD_AS_FILE) {
                     $result = FileManager::uploadFile($file);
                     if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
                     } else {
                         $new_input = array_merge($new_input, $result);
                     }
-                } elseif ($upload_as === 'document') {
+                } elseif ($upload_as === FileManager::UPLOAD_AS_DOCUMENT) {
                     $mime = $file->getClientMediaType();
                     $ext = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
                     if (!FileManager::isDocumentUploadAllowed($mime, $ext)) {
@@ -448,7 +486,7 @@ final class ResourceAccessor
                             $new_input[$input_name] = $document_id;
                         }
                     }
-                } elseif ($upload_as === 'picture') {
+                } elseif ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
                     $result = FileManager::uploadAsPicture($file);
                     if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
@@ -581,7 +619,7 @@ final class ResourceAccessor
             }
         }
 
-        $input = self::getInputParamsBySchema($schema, $request_params, $item);
+        $input = self::getInputParamsBySchema($schema, $request_params);
         $input['id'] = $items_id;
 
         $DB->beginTransaction();
