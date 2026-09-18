@@ -41,16 +41,8 @@ use KnowbaseItem_KnowbaseItem;
  * Builds the aside article tree from the set of articles the current user
  * may see.
  *
- * The hierarchy is NOT a naive `knowbaseitems_id_parent` walk: an article
- * visible to the user may have its direct parent invisible to them (e.g. a
- * closed-by-default migrated category). Such an article must still surface
- * somewhere in the tree, so it is attached to its NEAREST VISIBLE ANCESTOR,
- * walking up past every invisible intermediate. Only an article with no
- * visible ancestor at all is promoted to the root level. An article with
- * several nearest visible ancestors (tied at the same distance) appears
- * under each of them. When every article is visible, the nearest visible
- * ancestor of an article is simply its direct parent, so the tree is
- * unchanged from a plain `knowbaseitems_id_parent` walk.
+ * An article whose direct parent is invisible attaches to its nearest visible
+ * ancestor, or becomes a root if it has none. Ties each get a copy.
  */
 final class Builder
 {
@@ -165,9 +157,7 @@ final class Builder
             return;
         }
 
-        // 2) The full parent graph, visible or not: walking past an invisible
-        // intermediate to find a visible ancestor needs every link, not only
-        // the ones between two visible articles.
+        // 2) The full parent graph: the walk needs the invisible links too.
         $raw_parents_of = [];
         foreach ($DB->request(['FROM' => KnowbaseItem_KnowbaseItem::getTable()]) as $link) {
             $child  = (int) $link['knowbaseitems_id'];
@@ -175,8 +165,7 @@ final class Builder
             $raw_parents_of[$child][] = $parent;
         }
 
-        // 3) Attach each visible article to its nearest visible ancestor(s).
-        // None found at all makes it a root (promote-to-root).
+        // 3) Attach each article to its nearest visible ancestor, or make it a root.
         $memo = [];
         $in_progress = [];
         foreach (array_keys($this->data) as $id) {
@@ -193,18 +182,12 @@ final class Builder
     }
 
     /**
-     * The nearest visible ancestor(s) of `$id`, walking past invisible
-     * intermediates. "Nearest" means fewest hops up; several ancestors tied
-     * at that distance are all returned.
-     *
-     * This is a property of `$id`'s position in the raw parent graph alone,
-     * not of who is asking, so it is memoized: a diamond in the DAG is
-     * resolved once no matter how many descendants share it.
+     * The visible ancestors of `$id` with the fewest hops up, ties included.
+     * Memoized: a diamond in the graph resolves once.
      *
      * @param array<int, int[]> $raw_parents_of child_id => every parent id, visible or not
      * @param array<int, array{distance: ?int, ancestors: array<int, true>}> $memo Memoized results, keyed by id
-     * @param array<int, true> $in_progress Visited guard for the current walk (cycles are
-     *                                       forbidden by writes; guard defensively)
+     * @param array<int, true> $in_progress Cycle guard for the current walk
      *
      * @return array{distance: ?int, ancestors: array<int, true>}
      */
