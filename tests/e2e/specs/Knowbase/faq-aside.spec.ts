@@ -156,3 +156,46 @@ test('The FAQ answers 404 for a missing article and 403 for one outside the FAQ'
     const response = await page.goto(`/front/helpdesk.faq.php?id=${parent_id}`);
     expect(response?.status()).toBe(403);
 });
+
+test('The FAQ lands on the Home article', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SelfService);
+
+    const kb = new KnowbaseItemPage(page);
+    await kb.gotoFaqHome();
+
+    await expect(page).toHaveURL(/\/front\/helpdesk\.faq\.php\?id=\d+/);
+    await expect(kb.subject).toHaveText('Home');
+
+    await kb.waitForAsideReady();
+
+    // The Home article's own id, read back from the redirect: it is the
+    // parent the child below is attached to.
+    const root_id = Number(new URL(page.url()).searchParams.get('id'));
+
+    await profile.set(Profiles.SuperAdmin);
+    const unique = randomUUID().slice(0, 8);
+    const child_name = `E2E FAQ Root Child ${unique}`;
+    const entities_id = getWorkerEntityId();
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id,
+        is_faq: 1,
+        _parents: [root_id],
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: child_id,
+        entities_id,
+        is_recursive: 1,
+    });
+
+    // Back on the FAQ home, the aside nests the new article under "Home".
+    await profile.set(Profiles.SelfService);
+    await kb.gotoFaqHome();
+    await kb.waitForAsideReady();
+
+    await kb.getAsideCategoryArticle('Home', child_name).click();
+
+    await expect(page).toHaveURL(new RegExp(`id=${child_id}\\b`));
+    await expect(kb.subject).toHaveText(child_name);
+});

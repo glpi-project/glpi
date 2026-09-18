@@ -41,12 +41,8 @@ use KnowbaseItem_KnowbaseItem;
  * Builds the aside article tree from the set of articles the current user
  * may see.
  *
- * The hierarchy is NOT a naive `knowbaseitems_id_parent` walk: an article
- * visible to the user may have all of its parents invisible to them (e.g. a
- * closed-by-default migrated category). Such an article must still surface
- * somewhere in the tree, so it is "promoted" to the root level whenever none
- * of its parents are themselves visible. An article with several visible
- * parents appears under each of them.
+ * An article whose direct parent is invisible attaches to its nearest visible
+ * ancestor, or becomes a root if it has none. Ties each get a copy.
  */
 final class Builder
 {
@@ -59,13 +55,13 @@ final class Builder
     /** @var array<int, array<string, mixed>> Visible articles, id => row */
     private array $data = [];
 
-    /** @var array<int, int[]> parent_id => visible child ids */
+    /** @var array<int, int[]> ancestor_id => visible article ids attached to it */
     private array $children_of = [];
 
-    /** @var array<int, int[]> child_id => visible parent ids */
+    /** @var array<int, int[]> child_id => nearest visible ancestor ids */
     private array $parents_of = [];
 
-    /** @var array<int, true> Visible articles with no visible parent */
+    /** @var array<int, true> Visible articles with no visible ancestor at all */
     private array $roots = [];
 
     /**
@@ -161,25 +157,81 @@ final class Builder
             return;
         }
 
-        // 2) Visible parent-> [visible children] adjacency, and the reverse.
-        $has_visible_parent = [];
+        // 2) The full parent graph: the walk needs the invisible links too.
+        $raw_parents_of = [];
         foreach ($DB->request(['FROM' => KnowbaseItem_KnowbaseItem::getTable()]) as $link) {
             $child  = (int) $link['knowbaseitems_id'];
             $parent = (int) $link['knowbaseitems_id_parent'];
-            if (!isset($this->data[$child], $this->data[$parent])) {
-                continue; // one of the ends is not visible to the current user
-            }
-            $this->children_of[$parent][] = $child;
-            $this->parents_of[$child][] = $parent;
-            $has_visible_parent[$child] = true;
+            $raw_parents_of[$child][] = $parent;
         }
 
-        // 3) Roots = visible articles with no visible parent (promote-to-root).
+        // 3) Attach each article to its nearest visible ancestor, or make it a root.
+        $memo = [];
+        $in_progress = [];
         foreach (array_keys($this->data) as $id) {
-            if (!isset($has_visible_parent[$id])) {
+            $ancestors = $this->findNearestVisibleAncestors($id, $raw_parents_of, $memo, $in_progress)['ancestors'];
+            if ($ancestors === []) {
                 $this->roots[$id] = true;
+                continue;
+            }
+            foreach (array_keys($ancestors) as $ancestor_id) {
+                $this->children_of[$ancestor_id][] = $id;
+                $this->parents_of[$id][] = $ancestor_id;
             }
         }
+    }
+
+    /**
+     * The visible ancestors of `$id` with the fewest hops up, ties included.
+     * Memoized: a diamond in the graph resolves once.
+     *
+     * @param array<int, int[]> $raw_parents_of child_id => every parent id, visible or not
+     * @param array<int, array{distance: ?int, ancestors: array<int, true>}> $memo Memoized results, keyed by id
+     * @param array<int, true> $in_progress Cycle guard for the current walk
+     *
+     * @return array{distance: ?int, ancestors: array<int, true>}
+     */
+    private function findNearestVisibleAncestors(
+        int $id,
+        array $raw_parents_of,
+        array &$memo,
+        array &$in_progress,
+    ): array {
+        if (isset($memo[$id])) {
+            return $memo[$id];
+        }
+        if (isset($in_progress[$id])) {
+            return ['distance' => null, 'ancestors' => []]; // cycle: no ancestor through this path
+        }
+        $in_progress[$id] = true;
+
+        $best_distance = null;
+        $best_ancestors = [];
+        foreach ($raw_parents_of[$id] ?? [] as $parent_id) {
+            if (isset($this->data[$parent_id])) {
+                $distance = 1;
+                $ancestors = [$parent_id => true];
+            } else {
+                $parent_result = $this->findNearestVisibleAncestors($parent_id, $raw_parents_of, $memo, $in_progress);
+                if ($parent_result['distance'] === null) {
+                    continue; // this branch leads to no visible article
+                }
+                $distance = 1 + $parent_result['distance'];
+                $ancestors = $parent_result['ancestors'];
+            }
+
+            if ($best_distance === null || $distance < $best_distance) {
+                $best_distance = $distance;
+                $best_ancestors = $ancestors;
+            } elseif ($distance === $best_distance) {
+                $best_ancestors += $ancestors;
+            }
+        }
+
+        unset($in_progress[$id]);
+        $memo[$id] = ['distance' => $best_distance, 'ancestors' => $best_ancestors];
+
+        return $memo[$id];
     }
 
     /**

@@ -152,6 +152,17 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * The helpdesk FAQ entry point, which lands on the root article.
+     */
+    public async gotoFaqHome(): Promise<void>
+    {
+        await this.page.goto(
+            '/front/helpdesk.faq.php',
+            { waitUntil: 'domcontentloaded' }
+        );
+    }
+
+    /**
      * The article header's dots menu trigger, scoped to avoid other "More
      * actions" menus (aside rows, comments); `.first()` picks the header's.
      */

@@ -58,6 +58,16 @@ if (isset($_GET["id"])) {
     }
 }
 
+// The FAQ opens on the root article, as `front/knowbaseitem.php` does. Without
+// one, control falls to the legacy view that roadmap#492 replaces with a 404.
+if (!isset($_GET["id"]) && KnowbaseItem::hasRoot()) {
+    $root_id = KnowbaseItem::getRootId();
+    $root    = new KnowbaseItem();
+    if ($root->getFromDB($root_id) && $root->can($root_id, READ)) {
+        Html::redirect(KnowbaseItem::getFormURLWithID($root_id));
+    }
+}
+
 if (Session::getLoginUserID()) {
     Html::helpHeader(__('FAQ'), 'faq');
 } else {
