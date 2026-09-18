@@ -35,6 +35,7 @@
 namespace Glpi\Api\HL\FileUpload;
 
 use Document;
+use DocumentType;
 use DOMDocument;
 use DOMElement;
 use Safe\Exceptions\FilesystemException;
@@ -88,7 +89,7 @@ final class FileManager
             $specifiers = [];
             $it = $DB->request([
                 'SELECT' => ['ext', 'mime'],
-                'FROM' => 'glpi_documenttypes',
+                'FROM' => DocumentType::getTable(),
                 'WHERE' => [
                     'is_uploadable' => 1,
                 ],
@@ -224,13 +225,19 @@ final class FileManager
      * The path should already be validated and protected against directory traversal.
      * This function only normalizes the picture path and then attempts to delete it.
      * @param string $picture_path
-     * @return bool
+     * @return bool True if the picture is no longer present on disk, including when it was already missing.
+     *      False if the path could not be normalized or the deletion failed.
      */
     public static function deletePicture(string $picture_path): bool
     {
         $path = self::normalizePictureClientValue($picture_path);
         if ($path === null) {
             return false;
+        }
+        if (!file_exists(GLPI_PICTURE_DIR . '/' . $path)) {
+            // The DB value points to a file that isn't on disk anymore. There is nothing to delete and the caller's
+            // intent (having no picture left) is already satisfied, so this isn't reported as a failure.
+            return true;
         }
         return Toolbox::deletePicture($path);
     }

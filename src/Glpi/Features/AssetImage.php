@@ -158,6 +158,9 @@ trait AssetImage
         $to_remove = array_map(static fn($p) => FileManager::normalizeClientFileValue($p, FileManager::UPLOAD_AS_PICTURE), $to_remove);
 
         // Remove any pictures that are in the remove list and delete the pictures only if it was in the existing pictures list.
+        // The client value is only ever used as the needle here: what gets deleted is the matching entry of the item's
+        // own picture list. FileManager::deletePicture() expects an already trusted path, so it must never be handed
+        // $remove directly, which would let a client point it at any file on disk.
         foreach ($to_remove as $remove) {
             $index = array_search($remove, $all_pictures, true);
             if ($index !== false) {
