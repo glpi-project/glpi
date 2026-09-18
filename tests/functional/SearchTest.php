@@ -280,7 +280,6 @@ class SearchTest extends DbTestCase
         $opts = SearchOption::getOptionsForItemtype('Software');
         foreach ($opts as $id => $opt) {
             if (is_array($opt) && ($opt['field'] ?? null) === 'name') {
-                fwrite(STDERR, "Software name field id = $id\n");
                 break;
             }
         }
