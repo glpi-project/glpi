@@ -53,6 +53,11 @@ test.describe('External event', () => {
         // eslint-disable-next-line playwright/no-raw-locators
         await expect(page.locator('.modal.show')).toBeVisible();
 
+        // Wait for the modal fade animation to be over, colors are altered while it is running
+        await page.waitForFunction(() =>
+            document.getAnimations().filter(a => a.playState === 'running').length === 0
+        );
+
         const modal_a11y = await new AxeBuilder({ page })
             .include('.modal.show')
             // Known issues inherited from 3rd party libraries, taken from the

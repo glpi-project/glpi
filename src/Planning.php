@@ -1413,6 +1413,39 @@ TWIG, $twig_params);
     }
 
     /**
+     * Display the dates fields of a planning event, with a choice between
+     * an "All day" event (dates only) and a "Time slot" event (dates and hours).
+     * Submitted values are `plan[begin]` and `plan[end]`.
+     *
+     * @param array<string, mixed> $params Array of parameters which should contain:
+     *   - itemtype (string): itemtype of the event
+     *   - items_id (integer): id of the event
+     *   - begin (string): start date of the event. If missing, it will be computed from the current time
+     *   - end (string): end date of the event. If missing, it will be computed from begin+1hour
+     *   - rand_user (integer): a random number for planning user availability
+     *   - rand (integer): specific rand if needed (default is generated one)
+     *
+     * @return void
+     * @used-by templates/pages/assistance/planning/external_event.html.twig
+     */
+    public static function showEventDatesForm(array $params = []): void
+    {
+        // Dates may come from a request, ignore them if they cannot be parsed
+        $dates = [];
+        foreach (['begin', 'end'] as $key) {
+            $timestamp   = is_string($params[$key] ?? null) ? strtotime($params[$key]) : false;
+            $dates[$key] = $timestamp !== false ? date('Y-m-d H:i:s', $timestamp) : '';
+        }
+
+        TemplateRenderer::getInstance()->display('pages/assistance/planning/event_dates.html.twig', [
+            'params' => $params,
+            'begin'  => $dates['begin'],
+            'end'    => $dates['end'],
+            'rand'   => $params['rand'] ?? mt_rand(),
+        ]);
+    }
+
+    /**
      * @param array $data
      * @return void
      * @used-by templates/pages/assistance/planning/add_classic_event.html.twig
