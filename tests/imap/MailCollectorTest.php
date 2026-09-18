@@ -634,7 +634,7 @@ class MailCollectorTest extends DbTestCase
                 'expected_items_id' => null,
                 'accepted'          => false,
             ],
-                        // Subject fallback - single GLPI tag, foreign `[Ticket#...]` (no space) ignored
+            // Subject fallback - single GLPI tag, foreign `[Ticket#...]` (no space) ignored
             [
                 'headers'           => [
                     'subject' => "Re: [GLPI #{$padded_ticket_id}] [Ticket#2026072803024161] Foo",
