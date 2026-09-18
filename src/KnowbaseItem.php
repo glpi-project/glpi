@@ -956,13 +956,21 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $where[self::getTable() . '.is_faq'] = 1;
         }
 
-        // The root article is the FAQ home page. It is admitted by its id, as
-        // `getVisibilityCriteriaKB()` does, because its `is_faq` stays 0. The
-        // arm is added here, outside the criteria the inheritance seed is
-        // built from, so the root never lends its visibility to its children,
-        // see `getInheritedVisibilityCondition()`.
+        // The root article is the FAQ home page. It is admitted by its id
+        // here, never by `is_faq`, which stays 0. `getVisibilityCriteriaKB()`
+        // also carries a root arm, but that one sits inside `$where`, ANDed
+        // with `is_faq = 1` above, so it can never match; this arm is the one
+        // that actually admits the root in the FAQ. It is added here, outside
+        // the criteria the inheritance seed is built from, so the root never
+        // lends its visibility to its children, see
+        // `getInheritedVisibilityCondition()`.
+        //
+        // The arm mirrors `canViewItem()`'s root branch. Anonymous readers are
+        // already gated on `use_public_faq` by `getVisibilityCriteria()`.
         $root_id = self::getConfiguredRootId();
-        if ($root_id > 0) {
+        $can_read_root = Session::getLoginUserID() === false
+            || Session::haveRightsOr(self::$rightname, [READ, self::READFAQ, self::KNOWBASEADMIN]);
+        if ($root_id > 0 && $can_read_root) {
             return [
                 'OR' => [
                     [self::getTableField('id') => $root_id],
