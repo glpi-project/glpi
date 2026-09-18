@@ -714,8 +714,8 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             $items    = [];
 
             foreach ($iterator as $license) {
-                $softname = $license['softname'] ?? __('Not linked to any software');
-                $name     = $softname . ' - ' . $license['name'] . ' - ' . $license['serial'];
+                $license['softname'] ??= __('Not linked to any software');
+                $name = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
                 //TRANS: %1$s the license name, %2$s is the expiration date
                 $messages[] = sprintf(
                     __('License %1$s expired on %2$s'),

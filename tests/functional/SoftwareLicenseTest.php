@@ -226,8 +226,8 @@ class SoftwareLicenseTest extends DbTestCase
             ])
         );
 
-        $CFG_GLPI['use_notifications']  = true;
-        $CFG_GLPI['notifications_ajax'] = 1;
+        $CFG_GLPI['use_notifications']            = 1;
+        $CFG_GLPI['notifications_' . \Notification_NotificationTemplate::MODE_MAIL] = 1;
 
         $this->assertEquals(1, \SoftwareLicense::cronSoftware());
 
@@ -236,6 +236,15 @@ class SoftwareLicenseTest extends DbTestCase
             'itemtype' => 'SoftwareLicense',
             'items_id' => $license_id,
         ]));
+
+        // The queued notification must not show a blank software name for an unlinked license
+        $queued = (new \QueuedNotification())->find([
+            'event'    => 'alert',
+            'itemtype' => 'SoftwareLicense',
+        ]);
+        $this->assertCount(1, $queued);
+        $notification = reset($queued);
+        $this->assertStringContainsString(__('Not linked to any software'), $notification['body_html']);
     }
 
     public function testPrepareInputForUpdate()
