@@ -61,6 +61,8 @@ if (isset($_GET["id"])) {
 // Entering the FAQ without any article means opening its root article, the
 // same entry point the central knowledge base uses, see
 // `front/knowbaseitem.php`.
+// Without a root article, control falls through to the legacy list view.
+// roadmap#492 removes that fallback and must throw NotFoundHttpException here.
 if (!isset($_GET["id"]) && KnowbaseItem::hasRoot()) {
     $root_id = KnowbaseItem::getRootId();
     $root    = new KnowbaseItem();

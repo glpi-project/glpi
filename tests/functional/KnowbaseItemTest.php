@@ -3071,10 +3071,10 @@ HTML,
         $this->assertEquals(0, $root->fields['show_in_service_catalog']);
 
         // The root article is the entry point of the knowledge base, not a piece
-        // of content. FAQ readers are not even allowed to open it, see
-        // `testRootArticleIsNotPartOfTheFaq()`, so publishing it would list it
-        // for users that can only get an error out of it, down to anonymous ones
-        // on a public FAQ.
+        // of content. FAQ readers open it as the FAQ home page, see
+        // `testRootArticleIsVisibleInTheFaqButIsNotAFaqArticle()`, but it is
+        // admitted by its id and stays out of the FAQ and of the service
+        // catalog: publishing it would advertise an empty article as content.
         $this->assertTrue($root->update([
             'id'                      => $root_id,
             'is_faq'                  => 1,
@@ -3407,7 +3407,7 @@ HTML,
         );
     }
 
-    public function testRootArticleIsNotPartOfTheFaq(): void
+    public function testRootArticleIsVisibleInTheFaqButIsNotAFaqArticle(): void
     {
         // A self-service user, allowed to read the FAQ but not the knowledge base.
         $this->login('post-only', 'postonly');
