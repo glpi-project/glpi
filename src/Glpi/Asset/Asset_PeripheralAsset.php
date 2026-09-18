@@ -72,6 +72,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return 'ti ti-sitemap';
     }
 
+    /**
+     * @param array<string, mixed> $override_input
+     */
     #[Override]
     public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true)
     {
