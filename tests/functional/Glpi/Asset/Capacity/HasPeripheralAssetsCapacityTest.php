@@ -391,6 +391,52 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
         );
     }
 
+    public function testCloneAssetConnectedAsPeripheral(): void
+    {
+        // A custom asset with the capacity can also be connected as the *peripheral* of a
+        // native host (e.g. a Computer). Cloning it must preserve that connection, pointing
+        // it to the clone instead of silently dropping it: getItemField() alone cannot tell,
+        // for this specific relation row, whether the class being cloned is playing the host
+        // or the peripheral role, since it can be registered as both.
+        $definition = $this->initAssetDefinition(
+            capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
+        );
+        $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
+
+        /** @var Asset $asset */
+        $asset = $this->createItem(
+            $class,
+            [
+                'name'        => 'Test peripheral asset',
+                'entities_id' => $entity,
+            ]
+        );
+
+        $computer_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        $this->createItem(
+            Asset_PeripheralAsset::class,
+            [
+                'itemtype_asset'      => Computer::class,
+                'items_id_asset'      => $computer_id,
+                'itemtype_peripheral' => $class,
+                'items_id_peripheral' => $asset->getID(),
+            ]
+        );
+
+        $this->assertGreaterThan(0, $clone_id = $asset->clone());
+        $this->assertCount(
+            1,
+            getAllDataFromTable(Asset_PeripheralAsset::getTable(), [
+                'itemtype_asset'      => Computer::class,
+                'items_id_asset'      => $computer_id,
+                'itemtype_peripheral' => $class,
+                'items_id_peripheral' => $clone_id,
+            ])
+        );
+    }
+
     public function testIsUsed(): void
     {
         global $CFG_GLPI;

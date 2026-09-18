@@ -43,6 +43,7 @@ use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Features\CloneMapper;
 use Html;
 use LogicException;
 use MassiveAction;
@@ -69,6 +70,28 @@ final class Asset_PeripheralAsset extends CommonDBRelation
     public static function getIcon()
     {
         return 'ti ti-sitemap';
+    }
+
+    #[Override]
+    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true)
+    {
+        // Glpi\Features\Clonable::cloneRelations() derives a single override field from
+        // getItemField($itemtype), assuming the cloned class always plays the same role
+        // (host or peripheral) in every relation. This does not hold for a custom asset
+        // that has the "Connections" capacity, which can play either role depending on the
+        // specific relation row. Re-derive, from the clone mapping, which side of *this*
+        // row is actually the item being cloned, and override that side instead - dropping
+        // any override that was meant for the other side.
+        $clone_mapper = CloneMapper::getInstance();
+        foreach (['itemtype_asset' => 'items_id_asset', 'itemtype_peripheral' => 'items_id_peripheral'] as $itemtype_field => $items_id_field) {
+            if ($clone_mapper->hasItemId($this->fields[$itemtype_field], $this->fields[$items_id_field])) {
+                $override_input[$items_id_field] = $clone_mapper->getItemId($this->fields[$itemtype_field], $this->fields[$items_id_field]);
+            } else {
+                unset($override_input[$items_id_field]);
+            }
+        }
+
+        return parent::clone($override_input, $history, $clone_as_template, $clean_mapper);
     }
 
     /**
