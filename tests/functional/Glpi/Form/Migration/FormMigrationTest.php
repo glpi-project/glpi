@@ -3362,33 +3362,33 @@ final class FormMigrationTest extends DbTestCase
         $DB->insert('glpi_plugin_formcreator_forms', [
             'name' => 'Form with a condition value not matching any option',
         ]);
-        $formId = $DB->insertId();
+        $form_id = $DB->insertId();
 
         $DB->insert('glpi_plugin_formcreator_sections', [
-            'plugin_formcreator_forms_id' => $formId,
+            'plugin_formcreator_forms_id' => $form_id,
         ]);
-        $sectionId = $DB->insertId();
+        $section_id = $DB->insertId();
 
         $DB->insert('glpi_plugin_formcreator_questions', [
             'name' => 'Target question with condition value not matching any option',
             'fieldtype' => 'text',
-            'plugin_formcreator_sections_id' => $sectionId,
+            'plugin_formcreator_sections_id' => $section_id,
             'show_rule' => 2, // Visible if condition is met
         ]);
-        $targetQuestionId = $DB->insertId();
+        $target_question_id = $DB->insertId();
 
         $DB->insert('glpi_plugin_formcreator_questions', [
             'name' => 'Source radio question',
             'fieldtype' => 'radios',
             'values' => json_encode(['Option 1', 'Option 2']),
-            'plugin_formcreator_sections_id' => $sectionId,
+            'plugin_formcreator_sections_id' => $section_id,
         ]);
-        $sourceQuestionId = $DB->insertId();
+        $source_question_id = $DB->insertId();
 
         $DB->insert('glpi_plugin_formcreator_conditions', [
             'itemtype' => 'PluginFormcreatorQuestion',
-            'items_id' => $targetQuestionId,
-            'plugin_formcreator_questions_id' => $sourceQuestionId,
+            'items_id' => $target_question_id,
+            'plugin_formcreator_questions_id' => $source_question_id,
             'show_condition' => 1, // Equals condition
             'show_value' => 'Stale option', // Does not match any option above
             'show_logic' => 1, // AND logic
@@ -3400,12 +3400,12 @@ final class FormMigrationTest extends DbTestCase
         $this->assertTrue($result->isFullyProcessed());
 
         // Assert: the condition was dropped instead of being bound to a phantom option
-        $targetQuestion = getItemByTypeName(
+        $target_question = getItemByTypeName(
             Question::class,
             'Target question with condition value not matching any option'
         );
-        $this->assertNotFalse($targetQuestion);
-        $this->assertCount(0, $targetQuestion->getConfiguredConditionsData());
+        $this->assertNotFalse($target_question);
+        $this->assertCount(0, $target_question->getConfiguredConditionsData());
 
         $warnings = array_column(array_filter(
             $result->getMessages(),
