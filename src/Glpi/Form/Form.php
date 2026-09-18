@@ -417,11 +417,7 @@ final class Form extends CommonDBTM implements
             );
 
             // Do not keep half updated data
-            try {
-                $DB->rollback();
-            } catch (Throwable $rollback_e) {
-                // Catch rollback failures so the original exception is propagated
-            }
+            $DB->rollback();
 
             // Propagate exception to ensure the server return an error code
             throw $e;
@@ -459,17 +455,283 @@ final class Form extends CommonDBTM implements
     #[Override]
     public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
-        global $CFG_GLPI;
+        switch ($ma->getAction()) {
+            case 'export':
+                global $CFG_GLPI;
 
-        $ids = array_values($ma->getItems()[Form::class]);
-        $export_url = $CFG_GLPI['url_base'];
-        $export_url .= "/Form/Export?" . http_build_query(['ids' => $ids]);
+                $ids = array_values($ma->getItems()[Form::class]);
+                $export_url = $CFG_GLPI['url_base'];
+                $export_url .= "/Form/Export?" . http_build_query(['ids' => $ids]);
 
-        $label = __s("Click here to download the exported forms...");
-        echo "<a href=\"" . \htmlescape($export_url) . "\">$label</a>";
-        echo Html::scriptBlock("window.location.href = '" . \jsescape($export_url) . "';");
+                $label = __s("Click here to download the exported forms...");
+                echo "<a href=\"" . \htmlescape($export_url) . "\">$label</a>";
+                echo Html::scriptBlock("window.location.href = '" . \jsescape($export_url) . "';");
+                return true;
 
-        return true;
+            case 'access_controls':
+                $ids = array_values($ma->getItems()[Form::class] ?? []);
+                if ($ids === []) {
+                    return false;
+                }
+
+                $source_form = new self();
+                if (!$source_form->getFromDB($ids[0])) {
+                    return false;
+                }
+
+                $manager = FormAccessControlManager::getInstance();
+                $manager->createMissingAccessControlsForForm($source_form);
+
+                $is_single_form = count($ids) === 1;
+                $template_data = [
+                    'forms_count'    => count($ids),
+                    'is_single_form' => $is_single_form,
+                ];
+
+                if ($is_single_form) {
+                    // For one form, display the complete current access-control
+                    // configuration and save it like the regular form tab.
+                    $template_data['access_controls'] = $manager->sortAccessControls(
+                        $source_form->getAccessControls()
+                    );
+                } else {
+                    // For several forms, only add/remove allow-list entries.
+                    // Do not preload permissions from the first selected form.
+                    $allow_list_control = null;
+                    foreach ($source_form->getAccessControls() as $control) {
+                        if ($control->fields['strategy'] === AllowList::class) {
+                            $allow_list_control = $control;
+                            break;
+                        }
+                    }
+
+                    if ($allow_list_control === null) {
+                        return false;
+                    }
+
+                    $allow_list_control->fields['config'] = json_encode([
+                        'user_ids'    => [],
+                        'group_ids'   => [],
+                        'profile_ids' => [],
+                    ]);
+                    $template_data['access_control'] = $allow_list_control;
+                }
+
+                TemplateRenderer::getInstance()->display(
+                    'pages/admin/form/massive_action_access_control.html.twig',
+                    $template_data
+                );
+
+                echo Html::submit(
+                    $is_single_form ? _x('button', 'Save changes') : _x('button', 'Apply'),
+                    [
+                        'name'  => 'massiveaction',
+                        'id'    => 'access-control-submit',
+                        'icon'  => 'ti ti-device-floppy',
+                        'class' => 'btn btn-sm btn-primary mt-3',
+                        'style' => $is_single_form ? '' : 'display: none',
+                    ]
+                );
+                return true;
+        }
+
+        return false;
+    }
+
+    #[Override]
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ): void {
+        if ($ma->getAction() !== 'access_controls' || !$item instanceof self) {
+            return;
+        }
+
+        $input = $ma->getInput();
+        $is_single_form = count($ids) === 1;
+        $operation = $is_single_form
+            ? 'replace'
+            : ($input['access_control_operation'] ?? '');
+
+        if (!in_array($operation, ['replace', 'add', 'remove'], true)) {
+            foreach ($ids as $id) {
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
+            }
+            $ma->addMessage(__s('Invalid access control operation.'));
+            return;
+        }
+
+        $submitted_controls = $input['_access_control'] ?? [];
+        if (!is_array($submitted_controls) || $submitted_controls === []) {
+            foreach ($ids as $id) {
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
+            }
+            $ma->addMessage(__s('No access control configuration was submitted.'));
+            return;
+        }
+
+        $manager = FormAccessControlManager::getInstance();
+
+        if ($operation === 'replace') {
+            $id = (int) array_values($ids)[0];
+            $target_form = new self();
+            if (!$target_form->can($id, UPDATE)) {
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_NORIGHT);
+                return;
+            }
+
+            try {
+                $manager->createMissingAccessControlsForForm($target_form);
+
+                $target_controls = [];
+                foreach ($target_form->getAccessControls() as $target_control) {
+                    $target_controls[$target_control->fields['strategy']] = $target_control;
+                }
+
+                foreach ($submitted_controls as $source_control_id => $control_input) {
+                    $source_control = new FormAccessControl();
+                    if (!$source_control->getFromDB((int) $source_control_id)) {
+                        throw new RuntimeException('Source access control not found');
+                    }
+
+                    $strategy_class = $source_control->fields['strategy'];
+                    if (!isset($target_controls[$strategy_class])) {
+                        throw new RuntimeException("Target access control not found: $strategy_class");
+                    }
+
+                    $target_control = $target_controls[$strategy_class];
+                    $new_config = $source_control->createConfigFromUserInput($control_input);
+
+                    // Preserve the form-specific direct-access token.
+                    if ($strategy_class === DirectAccess::class) {
+                        $new_data = json_decode(json_encode($new_config), true);
+                        $target_config = $target_control->getConfig();
+                        $target_data = json_decode(json_encode($target_config), true);
+
+                        if (isset($target_data['token'])) {
+                            $new_data['token'] = $target_data['token'];
+                            $config_class = $target_config::class;
+                            $new_config = $config_class::jsonDeserialize($new_data);
+                        }
+                    }
+
+                    $success = $target_control->update([
+                        'id'        => $target_control->getID(),
+                        'is_active' => (int) ($control_input['is_active'] ?? 0),
+                        '_config'   => $new_config,
+                    ], true);
+
+                    if (!$success) {
+                        throw new RuntimeException('Failed to update access control');
+                    }
+                }
+
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_OK);
+            } catch (Throwable $e) {
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
+                $ma->addMessage($e->getMessage());
+            }
+
+            return;
+        }
+
+        $source_control_id = (int) array_key_first($submitted_controls);
+        $control_input = $submitted_controls[$source_control_id];
+
+        $source_control = new FormAccessControl();
+        if (
+            !$source_control->getFromDB($source_control_id)
+            || $source_control->fields['strategy'] !== AllowList::class
+        ) {
+            foreach ($ids as $id) {
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
+            }
+            $ma->addMessage(__s('Invalid access control configuration.'));
+            return;
+        }
+
+        $selected_entries = $source_control->createConfigFromUserInput($control_input);
+        $selected_entries_data = json_decode(json_encode($selected_entries), true);
+        $has_entries = false;
+        foreach (['user_ids', 'group_ids', 'profile_ids'] as $field) {
+            if (!empty($selected_entries_data[$field])) {
+                $has_entries = true;
+                break;
+            }
+        }
+
+        if (!$has_entries) {
+            foreach ($ids as $id) {
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
+            }
+            $ma->addMessage(__s('No users, groups or profiles were selected.'));
+            return;
+        }
+
+        foreach ($ids as $id) {
+            $target_form = new self();
+            if (!$target_form->can($id, UPDATE)) {
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_NORIGHT);
+                continue;
+            }
+
+            try {
+                $manager->createMissingAccessControlsForForm($target_form);
+
+                $target_control = null;
+                foreach ($target_form->getAccessControls() as $control) {
+                    if ($control->fields['strategy'] === AllowList::class) {
+                        $target_control = $control;
+                        break;
+                    }
+                }
+
+                if ($target_control === null) {
+                    throw new RuntimeException('Allow-list access control not found');
+                }
+
+                $target_config = $target_control->getConfig();
+                $target_data = json_decode(json_encode($target_config), true);
+
+                foreach (['user_ids', 'group_ids', 'profile_ids'] as $field) {
+                    $current_values = $target_data[$field] ?? [];
+                    $selected_values = $selected_entries_data[$field] ?? [];
+
+                    if ($operation === 'add') {
+                        $target_data[$field] = array_values(array_unique([
+                            ...$current_values,
+                            ...$selected_values,
+                        ], SORT_REGULAR));
+                    } else {
+                        $target_data[$field] = array_values(array_filter(
+                            $current_values,
+                            fn($value) => !in_array($value, $selected_values),
+                        ));
+                    }
+                }
+
+                $config_class = $target_config::class;
+                $merged_config = $config_class::jsonDeserialize($target_data);
+
+                $success = $target_control->update([
+                    'id'        => $target_control->getID(),
+                    'is_active' => $operation === 'add'
+                        ? 1
+                        : (int) $target_control->fields['is_active'],
+                    '_config'   => $merged_config,
+                ], true);
+
+                if (!$success) {
+                    throw new RuntimeException('Failed to update access control entries');
+                }
+
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_OK);
+            } catch (Throwable $e) {
+                $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
+                $ma->addMessage($e->getMessage());
+            }
+        }
     }
 
     #[Override]
