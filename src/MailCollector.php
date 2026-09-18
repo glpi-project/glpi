@@ -2308,7 +2308,7 @@ class MailCollector extends CommonDBTM
     private function getNotificationSubjectTags(): array
     {
         if ($this->notification_subject_tags === null) {
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
 
             $tags = ['GLPI'];
