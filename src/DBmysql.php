@@ -1941,7 +1941,7 @@ class DBmysql
             $iterator = $this->request([
                 'SELECT' => [
                     'tz.name',
-                    new QueryExpression('CONVERT_TZ(' . self::quoteValue('2000-01-01 00:00:00') . ', ' . self::quoteValue('GMT') . ', tz.name)', 'value'),
+                    new QueryExpression('CONVERT_TZ(' . self::quoteValue('2000-01-01 00:00:00') . ', ' . self::quoteValue('GMT') . ', tz.name) AS ' . self::quoteName('value')),
                 ],
                 'FROM' => new QueryExpression(
                     '(SELECT ' . implode(' UNION ALL SELECT ', array_map(fn($tz) => self::quoteValue($tz) . ' AS name', $timezones)) . ') AS tz'
