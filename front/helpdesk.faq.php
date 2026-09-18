@@ -58,6 +58,17 @@ if (isset($_GET["id"])) {
     }
 }
 
+// Entering the FAQ without any article means opening its root article, the
+// same entry point the central knowledge base uses, see
+// `front/knowbaseitem.php`.
+if (!isset($_GET["id"]) && KnowbaseItem::hasRoot()) {
+    $root_id = KnowbaseItem::getRootId();
+    $root    = new KnowbaseItem();
+    if ($root->getFromDB($root_id) && $root->can($root_id, READ)) {
+        Html::redirect(KnowbaseItem::getFormURLWithID($root_id));
+    }
+}
+
 if (Session::getLoginUserID()) {
     Html::helpHeader(__('FAQ'), 'faq');
 } else {
