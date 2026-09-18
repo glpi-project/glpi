@@ -774,6 +774,11 @@ EOT;
             ob_end_clean();
         }
 
+        // Clear state in case multiple requests are handled in the same process. Also helps reset the `isHLAPI` check.
+        $this->original_request = null;
+        $this->final_request = null;
+        $this->last_invoked_route = null;
+        $this->current_client = null;
         return $response;
     }
 
