@@ -51,7 +51,13 @@ $obj_fkey = $obj->getForeignKeyField();
 
 if (isset($_POST["add"])) {
     if (isset($_POST['my_items']) && !empty($_POST['my_items'])) {
-        [$_POST['itemtype'], $_POST['items_id']] = explode('_', $_POST['my_items']);
+        // Fix #24162: Use strrpos to split on the last underscore, since itemtype class names
+        // can contain underscores (e.g. Item_DeviceSimcard). The previous explode('_', ...)
+        // approach broke for multi-underscore class names by splitting into 3+ elements,
+        // causing the wrong values for itemtype and items_id and triggering a RuntimeException.
+        $last_underscore = strrpos($_POST['my_items'], '_');
+        $_POST['itemtype'] = substr($_POST['my_items'], 0, $last_underscore);
+        $_POST['items_id'] = substr($_POST['my_items'], $last_underscore + 1);
     }
 
     if (isset($_POST['add_items_id'])) {
