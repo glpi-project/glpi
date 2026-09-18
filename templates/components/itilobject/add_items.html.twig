@@ -67,8 +67,10 @@
               if (my_items_dropdown.length > 0) {
                  const val = my_items_dropdown.val();
                  if (val && val.includes('_')) {
-                    itemtype = val.split('_')[0];
-                    items_id = val.split('_')[1];
+                    // Fix #24162: Split on last underscore to handle multi-underscore itemtype names
+                    const lastUnderscore = val.lastIndexOf('_');
+                    itemtype = val.substring(0, lastUnderscore);
+                    items_id = val.substring(lastUnderscore + 1);
                  }
               }
               if (itemtype === undefined && items_id === undefined) {
