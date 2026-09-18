@@ -217,7 +217,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
         }
 
         /** @var ?QuestionTypeItemExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
         if ($config === null) {
             return null;
         }
@@ -722,7 +722,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
         }
 
         /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
         if ($config === null) {
             return 0;
         }
@@ -743,7 +743,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
         }
 
         /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
         if ($config === null) {
             return 0;
         }
@@ -764,7 +764,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
         }
 
         /** @var ?QuestionTypeItemExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
         if ($config === null) {
             return false;
         }
