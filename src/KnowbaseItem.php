@@ -1684,6 +1684,27 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
+     * The nearest readable descendants of this article: for each direct
+     * child, the child itself when it is readable, otherwise the nearest
+     * readable articles found by descending into its own children.
+     *
+     * This widens WHERE a descendant surfaces, never WHETHER it is visible:
+     * a candidate still has to pass `can($id, READ)` to be collected. The
+     * visible-article set from `getListRequest([], 'browse')` (see
+     * `Glpi\Knowbase\Aside\Builder::loadHierarchy()`, the model for this) is
+     * used only to decide WHICH candidates are worth that `can()` call:
+     * `getListRequest()` and `can()` agree on visibility, so an article
+     * outside the set is certainly unreadable and is
+     * skipped straight to the next hop, no query spent on it.
+     *
+     * Walked level by level (one query per level, batching every article
+     * still to resolve at that level) so a deep chain of unreadable
+     * intermediates costs one extra query per level, not one per article.
+     * `can()` (about six queries) now runs only on articles the cheap
+     * set-membership test already let through, instead of on every article
+     * walked.
+     * A visited set keeps a diamond in the DAG from being walked twice.
+     *
      * @return list<array{
      *      'id': int,
      *      'name': string,
@@ -1692,6 +1713,68 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * }>
      */
     private function getChildArticlesInfo(): array
+    {
+        global $DB;
+
+        // Articles the session may see, inherited visibility included. Used
+        // only to skip candidates that are certainly unreadable; the ones it
+        // lets through still go through `can()` below.
+        $visible_criteria = self::getListRequest([], 'browse');
+        $visible_criteria['SELECT'] = self::getTableField('id');
+        $visible = [];
+        foreach ($DB->request($visible_criteria) as $row) {
+            $visible[(int) $row['id']] = true;
+        }
+
+        $children = [];
+        $visited  = [$this->fields['id'] => true];
+        $frontier = [$this->fields['id']];
+        $child    = new self();
+
+        while ($frontier !== []) {
+            $next_frontier = [];
+            foreach ($this->getDirectChildIds($frontier) as $child_id) {
+                if (isset($visited[$child_id])) {
+                    continue; // already resolved through another branch
+                }
+                $visited[$child_id] = true;
+
+                if (isset($visible[$child_id]) && $child->can($child_id, READ)) {
+                    $children[] = [
+                        'id'           => $child_id,
+                        'name'         => $child->getName(),
+                        'illustration' => $child->fields['illustration'] ?? '',
+                        'link_url'     => self::getFormURLWithID($child_id),
+                    ];
+                    continue; // readable: stop this branch here
+                }
+
+                // Not readable: look for readable articles among its own children.
+                $next_frontier[] = $child_id;
+            }
+            $frontier = $next_frontier;
+        }
+
+        usort($children, static fn(array $a, array $b): int => strnatcasecmp($a['name'], $b['name']));
+
+        return $children;
+    }
+
+    /**
+     * Direct children (by link) of every article in `$parent_ids`, in a
+     * single query.
+     *
+     * No validity window here: that filter belongs on the readable-article
+     * results (`getChildArticlesInfo()` applies it via `getListRequest()`),
+     * not on these intermediate hops. Applying it here would wrongly block
+     * descent through an out-of-window intermediate and hide its in-window
+     * readable descendants.
+     *
+     * @param int[] $parent_ids
+     *
+     * @return int[]
+     */
+    private function getDirectChildIds(array $parent_ids): array
     {
         global $DB;
 
@@ -1707,44 +1790,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             ],
             'WHERE'      => [
-                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $this->fields['id'],
+                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $parent_ids,
             ],
-            'ORDER'      => [self::getTableField('name') . ' ASC'],
         ];
 
-        // can() ignores the validity window, so apply it here exactly as getListRequest() does.
-        if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    [self::getTableField('begin_date') => null],
-                    [self::getTableField('begin_date') => ['<', QueryFunction::now()]],
-                ],
-            ];
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    [self::getTableField('end_date') => null],
-                    [self::getTableField('end_date') => ['>', QueryFunction::now()]],
-                ],
-            ];
+        $ids = [];
+        foreach ($DB->request($criteria) as $row) {
+            $ids[] = (int) $row['id'];
         }
 
-        $children = [];
-        $child = new self();
-        $rows = $DB->request($criteria);
-        foreach ($rows as $row) {
-            $child_id = (int) $row['id'];
-            if (!$child->can($child_id, READ)) {
-                continue;
-            }
-            $children[] = [
-                'id'           => $child_id,
-                'name'         => $child->getName(),
-                'illustration' => $child->fields['illustration'] ?? '',
-                'link_url'     => self::getFormURLWithID($child_id),
-            ];
-        }
-
-        return $children;
+        return $ids;
     }
 
     /** @return array<EditorAction|EditorActionSeparator> */
