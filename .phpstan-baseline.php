@@ -17510,12 +17510,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'OR\' might not exist on non\\-empty\\-array\\{0\\?\\: 0, OR\\?\\: array\\{\'glpi_reminders\\.users_id\'\\: int\\<min, \\-1\\>\\|int\\<1, max\\>\\|non\\-falsy\\-string, \'glpi_reminders_users\\.users_id\'\\: int\\<min, \\-1\\>\\|int\\<1, max\\>\\|non\\-falsy\\-string, 0\\?\\: array\\{\'glpi_groups_reminders\\.groups_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\|array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}, 1\\?\\: array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\|array\\{0\\: array\\{\'glpi_groups_reminders\\.groups_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}, 1\\?\\: array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\|array\\{array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
