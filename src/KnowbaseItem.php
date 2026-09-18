@@ -161,13 +161,22 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canViewItem(): bool
     {
-        // The root article is the entry point of the knowledge base: everyone
-        // allowed to read the knowledge base, administrators included, can view
-        // it, it has no visibility rules of its own. FAQ-only readers are not
-        // concerned: the root article is not part of the FAQ, see
-        // `getVisibilityCriteriaFAQ()` and `prepareInputForUpdate()`.
+        global $CFG_GLPI;
+
+        // The root article is the entry point of the knowledge base and the
+        // home page of the helpdesk FAQ: everyone allowed to read the
+        // knowledge base or the FAQ can view it, it has no visibility rules of
+        // its own. It is admitted by its id, never by `is_faq`, which stays 0,
+        // see `getVisibilityCriteriaFAQ()` and `prepareInputForUpdate()`.
         if ($this->isRoot()) {
-            return Session::haveRightsOr(self::$rightname, [READ, self::KNOWBASEADMIN]);
+            if (Session::getLoginUserID() === false) {
+                return (bool) $CFG_GLPI['use_public_faq'];
+            }
+
+            return Session::haveRightsOr(
+                self::$rightname,
+                [READ, self::READFAQ, self::KNOWBASEADMIN]
+            );
         }
 
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
@@ -1143,9 +1152,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         // The root article is the entry point of the knowledge base, not a
-        // piece of content to publish. Listing it in the FAQ or in the service
-        // catalog would offer it to readers that are not allowed to open it,
-        // down to anonymous users on a public FAQ, see `canViewItem()`.
+        // piece of content to publish. Its `is_faq` stays 0: the FAQ admits it
+        // by its id instead, see `getVisibilityCriteriaFAQ()`. Listing it in
+        // the service catalog would offer it to readers that are not allowed
+        // to open it, see `canViewItem()`.
         if ($this->isRoot()) {
             unset($input['is_faq'], $input['show_in_service_catalog']);
         }
