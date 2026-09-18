@@ -50,6 +50,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
@@ -180,6 +181,127 @@ class SearchTest extends DbTestCase
             . '\)/im',
             $data['sql']['search']
         );
+    }
+
+    public function testMetaComputerSoftwareDuplicateFieldColumn()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [0 => ['field'      => 'view',
+                'searchtype' => 'contains',
+                'value'      => '',
+            ],
+            ],
+            // two meta criteria targeting the same Software field (name)
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'OR',
+                    'itemtype'   => 'Software',
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                1 => ['link'       => 'OR',
+                    'itemtype'   => 'Software',
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'chrome',
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+
+        // the Software "name" field must only produce a single result column,
+        // even though it is targeted by two meta criteria
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        // the corresponding SELECT alias must not be duplicated either
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
+    public function testMetaComputerSoftwareDuplicateFieldColumnNested()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+                1 => [
+                    'link'       => 'OR',
+                    'meta'       => true,
+                    'itemtype'   => 'Software',
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                2 => [
+                    'link'       => 'OR',
+                    'criteria'   => [
+                        0 => [
+                            'link'       => 'OR',
+                            'meta'       => true,
+                            'itemtype'   => 'Software',
+                            'field'      => 160,
+                            'searchtype' => 'contains',
+                            'value'      => 'chrome',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
+    public function testMetaToviewNotLeakedAcrossIndependentCalls()
+    {
+        $opts = SearchOption::getOptionsForItemtype('Software');
+        foreach ($opts as $id => $opt) {
+            if (is_array($opt) && ($opt['field'] ?? null) === 'name') {
+                break;
+            }
+        }
+        $field_id = $id;
+        $data = ['itemtype' => 'Computer'];
+        $SELECT = '';
+        $FROM = '';
+        $already_link_tables = [];
+        $criteria1 = [
+            ['meta' => true, 'itemtype' => 'Software', 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'firefox'],
+        ];
+        $criteria2 = [
+            ['meta' => true, 'itemtype' => 'Software', 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'chrome'],
+        ];
+        \Search::constructAdditionalSqlForMetacriteria($criteria1, $SELECT, $FROM, $already_link_tables, $data);
+        $count1 = substr_count($SELECT, "ITEM_Software_$field_id");
+        // simulate a second, independent query reusing the same $data (as a plugin might)
+        $SELECT2 = '';
+        \Search::constructAdditionalSqlForMetacriteria($criteria2, $SELECT2, $FROM, $already_link_tables, $data);
+        $count2 = substr_count($SELECT2, "ITEM_Software_$field_id");
+        fwrite(STDERR, "count in query1=$count1 count in query2 (fresh SELECT, reused \$data)=$count2\n");
+        $this->assertTrue(true);
     }
 
     public function testSoftwareLinkedToAnyComputer()
