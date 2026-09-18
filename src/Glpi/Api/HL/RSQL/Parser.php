@@ -262,8 +262,16 @@ final class Parser
         // We are building a SQL string instead of criteria array because it isn't worth the complexity or overhead.
         // Everything done here should be standard SQL. If there is a platform difference, it should be handled in the callables for each operator.
         // SQL already will process logical separators (AND, OR) in the correct order, so we don't need to worry about that.
-        $sql_where_string = '';
-        $sql_having_string = '';
+        //
+        // The whole expression is built as a single string (with its logical separators and groups)
+        // rather than split between WHERE and HAVING per comparison. A computed property can only be
+        // compared in a HAVING clause, and an expression cannot be split across WHERE and HAVING while
+        // keeping the operator precedence and grouping intact (a top-level OR between a regular and a
+        // computed comparison has no equivalent once split). So the expression stays in WHERE, which
+        // keeps index usage, unless it references at least one computed property, in which case the
+        // whole expression goes to HAVING.
+        $sql_string = '';
+        $uses_computation = false;
 
         $position = 0;
         $token_count = count($tokens);
@@ -327,33 +335,32 @@ final class Parser
                     }
                     $criteria_array = $buffer['operator']($buffer['field'], $value);
                     if (isset($flat_props[$buffer['property']]['computation'])) {
-                        $sql_having_string .= $it->analyseCrit($criteria_array);
-                    } else {
-                        $sql_where_string .= $it->analyseCrit($criteria_array);
+                        $uses_computation = true;
                     }
+                    $sql_string .= $it->analyseCrit($criteria_array);
                 }
                 $buffer = [];
-            } elseif ($sql_where_string !== '' && ($type === Lexer::T_AND || $type === Lexer::T_OR)) {
-                $sql_where_string .= $type === Lexer::T_AND ? ' AND ' : ' OR ';
+            } elseif ($sql_string !== '' && ($type === Lexer::T_AND || $type === Lexer::T_OR)) {
+                $sql_string .= $type === Lexer::T_AND ? ' AND ' : ' OR ';
             } elseif ($type === Lexer::T_GROUP_OPEN) {
-                $sql_where_string .= '(';
+                $sql_string .= '(';
             } elseif ($type === Lexer::T_GROUP_CLOSE) {
-                $sql_where_string .= ')';
+                $sql_string .= ')';
             }
             $position++;
         }
 
         // Remove any trailing ANDs and ORs (may be multiple in a row)
-        $sql_where_string = preg_replace('/(\sAND\s|\sOR\s)*$/', '', $sql_where_string);
+        $sql_string = preg_replace('/(\sAND\s|\sOR\s)*$/', '', $sql_string);
 
         // If the string is empty, return a criteria array that will return all results
-        if ($sql_where_string === '') {
-            $sql_where_string = '1';
-        }
-        if ($sql_having_string === '') {
-            $sql_having_string = '1';
+        if ($sql_string === '') {
+            $sql_string = '1';
         }
 
-        return new Result(new QueryExpression($sql_where_string), new QueryExpression($sql_having_string), $invalid_filters);
+        $where_string = $uses_computation ? '1' : $sql_string;
+        $having_string = $uses_computation ? $sql_string : '1';
+
+        return new Result(new QueryExpression($where_string), new QueryExpression($having_string), $invalid_filters);
     }
 }

@@ -95,6 +95,37 @@ class CustomAssetControllerTest extends HLAPITestCase
         });
     }
 
+    public static function computedFieldFilterProvider(): array
+    {
+        return [
+            // Two computed comparisons joined by OR.
+            ['custom_fields.teststring=="Test String A",custom_fields.teststring=="Test String B"', 2],
+            // Two computed comparisons joined by AND.
+            ['custom_fields.teststring=like=*String*;custom_fields.teststring!="Test String B"', 1],
+            // A single computed comparison wrapped in a group.
+            ['(custom_fields.teststring=="Test String A")', 1],
+            // A regular field OR a computed field (cannot be expressed by splitting WHERE/HAVING).
+            ['name=="TestB",custom_fields.teststring=="Test String A"', 2],
+            // A regular field AND a computed field.
+            ['name=="TestA";custom_fields.teststring=="Test String A"', 1],
+        ];
+    }
+
+    #[DataProvider('computedFieldFilterProvider')]
+    public function testComputedFieldFilters(string $filter, int $expected_count): void
+    {
+        $this->login();
+        $request = new Request('GET', '/Assets/Custom/Test01');
+        $request->setParameter('filter', $filter);
+        $this->api->call($request, function ($call) use ($expected_count) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($expected_count) {
+                    $this->assertCount($expected_count, $content);
+                });
+        });
+    }
+
     public function testCRUD(): void
     {
         $this->api->autoTestCRUD('/Assets/Custom/Test01', [
