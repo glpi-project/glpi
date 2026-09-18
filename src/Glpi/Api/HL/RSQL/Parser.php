@@ -43,7 +43,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 use function Safe\preg_match;
-use function Safe\preg_replace;
 
 /**
  * Parses tokens from the RSQL lexer into a SQL criteria array to be used by the {@link \DBmysqlIterator} class.
@@ -87,6 +86,22 @@ final class Parser
         return $items;
     }
 
+    /**
+     * Build a criterion for a column name or a computed SQL expression.
+     *
+     * @param string|QueryExpression $field
+     * @param mixed $value
+     * @return array<string, mixed>
+     */
+    private function getFieldCriterion(string|QueryExpression $field, mixed $value): array
+    {
+        if ($field instanceof QueryExpression) {
+            return ['RAW' => [$field->getValue() => $value]];
+        }
+
+        return [$this->db::quoteName($field) => $value];
+    }
+
     public function getOperators(): array
     {
         static $operators = null;
@@ -98,7 +113,7 @@ final class Parser
                     'description' => 'equivalent to',
                     'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => $b],
+                        $this->getFieldCriterion($a, $b),
                     ],
                 ],
                 [
@@ -106,7 +121,7 @@ final class Parser
                     'description' => 'not equivalent to',
                     'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => ['<>', $b]],
+                        $this->getFieldCriterion($a, ['<>', $b]),
                     ],
                 ],
                 [
@@ -114,7 +129,7 @@ final class Parser
                     'description' => 'in',
                     'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)],
+                        $this->getFieldCriterion($a, $this->rsqlGroupToArray($b)),
                     ],
                 ],
                 [
@@ -122,7 +137,7 @@ final class Parser
                     'description' => 'not in',
                     'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
-                        ['NOT' => [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)]],
+                        ['NOT' => $this->getFieldCriterion($a, $this->rsqlGroupToArray($b))],
                     ],
                 ],
                 [
@@ -130,7 +145,7 @@ final class Parser
                     'description' => 'less than',
                     'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => ['<', $b]],
+                        $this->getFieldCriterion($a, ['<', $b]),
                     ],
                 ],
                 [
@@ -138,7 +153,7 @@ final class Parser
                     'description' => 'less than or equal to',
                     'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => ['<=', $b]],
+                        $this->getFieldCriterion($a, ['<=', $b]),
                     ],
                 ],
                 [
@@ -146,7 +161,7 @@ final class Parser
                     'description' => 'greater than',
                     'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => ['>', $b]],
+                        $this->getFieldCriterion($a, ['>', $b]),
                     ],
                 ],
                 [
@@ -154,7 +169,7 @@ final class Parser
                     'description' => 'greater than or equal to',
                     'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => ['>=', $b]],
+                        $this->getFieldCriterion($a, ['>=', $b]),
                     ],
                 ],
                 [
@@ -164,9 +179,7 @@ final class Parser
                     'sql_where_callable' => function ($a, $b) {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
-                            [
-                                $this->db::quoteName($a) => ['LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')],
-                            ],
+                            $this->getFieldCriterion($a, ['LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')]),
                         ];
                     },
                 ],
@@ -177,7 +190,7 @@ final class Parser
                     'sql_where_callable' => function ($a, $b) {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
-                            [$this->db::quoteName($a) => ['LIKE', $b]],
+                            $this->getFieldCriterion($a, ['LIKE', $b]),
                         ];
                     },
                 ],
@@ -186,7 +199,7 @@ final class Parser
                     'description' => 'is null',
                     'value_expected' => false,
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => null],
+                        $this->getFieldCriterion($a, null),
                     ],
                 ],
                 [
@@ -194,7 +207,7 @@ final class Parser
                     'description' => 'is not null',
                     'value_expected' => false,
                     'sql_where_callable' => fn($a, $b) => [
-                        ['NOT' => [$this->db::quoteName($a) => null]],
+                        ['NOT' => $this->getFieldCriterion($a, null)],
                     ],
                 ],
                 [
@@ -205,8 +218,8 @@ final class Parser
                     'sql_where_callable' => fn($a, $b) => [
                         [
                             'OR' => [
-                                [$this->db::quoteName($a) => ''],
-                                [$this->db::quoteName($a) => null],
+                                $this->getFieldCriterion($a, ''),
+                                $this->getFieldCriterion($a, null),
                             ],
                         ],
                     ],
@@ -218,8 +231,8 @@ final class Parser
                     'sql_where_callable' => fn($a, $b) => [
                         [
                             'AND' => [
-                                [$this->db::quoteName($a) => ['<>', '']],
-                                'NOT' => [$this->db::quoteName($a) => null],
+                                $this->getFieldCriterion($a, ['<>', '']),
+                                'NOT' => $this->getFieldCriterion($a, null),
                             ],
                         ],
                     ],
@@ -231,7 +244,7 @@ final class Parser
                     'sql_where_callable' => function ($a, $b) {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
-                            [$this->db::quoteName($a) => ['NOT LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')]],
+                            $this->getFieldCriterion($a, ['NOT LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')]),
                         ];
                     },
                 ],
@@ -242,7 +255,7 @@ final class Parser
                     'sql_where_callable' => function ($a, $b) {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
-                            [$this->db::quoteName($a) => ['NOT LIKE', $b]],
+                            $this->getFieldCriterion($a, ['NOT LIKE', $b]),
                         ];
                     },
                 ],
@@ -259,11 +272,24 @@ final class Parser
     public function parse(array $tokens): Result
     {
         $it = new DBmysqlIterator($this->db);
-        // We are building a SQL string instead of criteria array because it isn't worth the complexity or overhead.
-        // Everything done here should be standard SQL. If there is a platform difference, it should be handled in the callables for each operator.
-        // SQL already will process logical separators (AND, OR) in the correct order, so we don't need to worry about that.
-        $sql_where_string = '';
-        $sql_having_string = '';
+        // Build one SQL expression so logical separators and groups keep their RSQL semantics.
+        // Computed properties use their source expression and can therefore stay in WHERE.
+        // Each stack entry represents one group and keeps a separator pending until another
+        // valid expression is available. Invalid filters and empty groups are skipped cleanly.
+        /** @var list<array{sql: string, operator: string|null}> $expression_stack */
+        $expression_stack = [
+            ['sql' => '', 'operator' => null],
+        ];
+        $append_expression = static function (array &$context, string $expression): void {
+            if ($expression === '') {
+                return;
+            }
+            if ($context['sql'] !== '' && $context['operator'] !== null) {
+                $context['sql'] .= $context['operator'];
+            }
+            $context['sql'] .= $expression;
+            $context['operator'] = null;
+        };
 
         $position = 0;
         $token_count = count($tokens);
@@ -274,7 +300,10 @@ final class Parser
         $flat_props = $this->search->getContext()->getFlattenedProperties();
         $invalid_filters = [];
 
-        $buffer = [];
+        $property = null;
+        $field = null;
+        $operator = null;
+        $value_expected = false;
         while ($position < $token_count) {
             [$type, $value] = $tokens[$position];
             if ($type === Lexer::T_PROPERTY) {
@@ -282,78 +311,82 @@ final class Parser
                 if (!isset($flat_props[$value])) {
                     // Not valid. Just fill the buffer and continue to the next token. This will be handled once the value token is reached.
                     $invalid_filters[$value] = Error::UNKNOWN_PROPERTY;
-                    $buffer = [
-                        'property' => null,
-                        'field' => null,
-                    ];
+                    $property = null;
+                    $field = null;
                 } elseif (isset($flat_props[$value]['x-mapped-from'])) {
                     // Mapped properties cannot be used in RSQL currently since they are calculated after the query is executed
                     $invalid_filters[$value] = Error::MAPPED_PROPERTY;
-                    $buffer = [
-                        'property' => null,
-                        'field' => null,
-                    ];
+                    $property = null;
+                    $field = null;
                 } else {
-                    $buffer = [
-                        'property' => $value,
-                        'field' => $this->search->getSQLFieldForProperty($value),
-                    ];
+                    $field = $this->search->getSQLFieldForProperty($value);
+                    if (isset($flat_props[$value]['computation'])) {
+                        $computation = $flat_props[$value]['computation'];
+                        $field = $computation instanceof QueryExpression
+                            ? $computation
+                            : new QueryExpression($computation);
+                    }
+                    $property = $value;
                 }
             } elseif ($type === Lexer::T_OPERATOR) {
                 if (!isset($operators[$value])) {
-                    if ($buffer['property'] !== null) {
-                        $invalid_filters[$buffer['property']] = Error::UNKNOWN_OPERATOR;
+                    if ($property !== null) {
+                        $invalid_filters[$property] = Error::UNKNOWN_OPERATOR;
                     }
-                    $buffer['operator'] = null;
+                    $operator = null;
                 } else {
-                    $buffer['operator'] = $operators[$value]['sql_where_callable'];
-                    $buffer['value_expected'] = $operators[$value]['value_expected'];
+                    $operator = $operators[$value]['sql_where_callable'];
+                    $value_expected = $operators[$value]['value_expected'];
                 }
             } elseif ($type === Lexer::T_VALUE || $type === Lexer::T_UNSPECIFIED_VALUE) {
-                if ($buffer['property'] !== null && $buffer['operator'] !== null && $buffer['field'] !== null) {
-                    if ($buffer['value_expected'] && $type === Lexer::T_UNSPECIFIED_VALUE) {
-                        throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $buffer['property']));
+                if ($property !== null && $operator !== null && $field !== null) {
+                    if ($value_expected && $type === Lexer::T_UNSPECIFIED_VALUE) {
+                        throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $property));
                     }
                     // Unquote value if it is quoted
                     if (preg_match('/^".*"$/', $value) || preg_match("/^'.*'$/", $value)) {
                         $value = substr($value, 1, -1);
                     }
-                    if (isset($flat_props[$buffer['property']])) {
-                        $value = match ($flat_props[$buffer['property']]['type']) {
+                    if (isset($flat_props[$property])) {
+                        $value = match ($flat_props[$property]['type']) {
                             // Boolean values are stored as 0 or 1 in the database, but the user may try using "true" or "false" in the RSQL query
                             Doc\Schema::TYPE_BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
                             default => $value,
                         };
                     }
-                    $criteria_array = $buffer['operator']($buffer['field'], $value);
-                    if (isset($flat_props[$buffer['property']]['computation'])) {
-                        $sql_having_string .= $it->analyseCrit($criteria_array);
-                    } else {
-                        $sql_where_string .= $it->analyseCrit($criteria_array);
-                    }
+                    $criteria_array = $operator($field, $value);
+                    $current_index = array_key_last($expression_stack);
+                    assert($current_index !== null);
+                    $append_expression($expression_stack[$current_index], $it->analyseCrit($criteria_array));
                 }
-                $buffer = [];
-            } elseif ($sql_where_string !== '' && ($type === Lexer::T_AND || $type === Lexer::T_OR)) {
-                $sql_where_string .= $type === Lexer::T_AND ? ' AND ' : ' OR ';
+                $property = null;
+                $field = null;
+                $operator = null;
+                $value_expected = false;
+            } elseif ($type === Lexer::T_AND || $type === Lexer::T_OR) {
+                $current_index = array_key_last($expression_stack);
+                assert($current_index !== null);
+                $expression_stack[$current_index]['operator'] = $type === Lexer::T_AND ? ' AND ' : ' OR ';
             } elseif ($type === Lexer::T_GROUP_OPEN) {
-                $sql_where_string .= '(';
+                $expression_stack[] = ['sql' => '', 'operator' => null];
             } elseif ($type === Lexer::T_GROUP_CLOSE) {
-                $sql_where_string .= ')';
+                $group = array_pop($expression_stack);
+                assert($group !== null);
+                if ($group['sql'] !== '') {
+                    $current_index = array_key_last($expression_stack);
+                    assert($current_index !== null);
+                    $append_expression($expression_stack[$current_index], '(' . $group['sql'] . ')');
+                }
             }
             $position++;
         }
 
-        // Remove any trailing ANDs and ORs (may be multiple in a row)
-        $sql_where_string = preg_replace('/(\sAND\s|\sOR\s)*$/', '', $sql_where_string);
-
         // If the string is empty, return a criteria array that will return all results
-        if ($sql_where_string === '') {
-            $sql_where_string = '1';
-        }
-        if ($sql_having_string === '') {
-            $sql_having_string = '1';
+        $sql_string = $expression_stack[0]['sql'];
+        if ($sql_string === '') {
+            $sql_string = '1';
         }
 
-        return new Result(new QueryExpression($sql_where_string), new QueryExpression($sql_having_string), $invalid_filters);
+        return new Result(new QueryExpression($sql_string), new QueryExpression('1'), $invalid_filters);
     }
 }
