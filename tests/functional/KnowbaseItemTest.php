@@ -1210,9 +1210,8 @@ HTML,
     }
 
     /**
-     * Home -> mid (not in the FAQ) -> grandchild (in the FAQ). A helpdesk
-     * reader cannot open mid, so `getChildArticlesInfo()` must skip past it
-     * and surface the grandchild instead of coming back empty.
+     * Home -> mid (not in the FAQ) -> grandchild (in the FAQ). The walk must
+     * skip the unreadable mid and surface the grandchild.
      */
     public function testSubArticlesTabFindsFaqGrandchildPastANonFaqParent(): void
     {
@@ -1256,9 +1255,8 @@ HTML,
     }
 
     /**
-     * Same shape as above, but the grandchild has no FAQ visibility of its
-     * own either: skipping past an unreadable article must never widen
-     * visibility, so neither article is listed.
+     * Same shape as above, but the grandchild is unreadable too: skipping an
+     * unreadable article must never widen visibility, so neither is listed.
      */
     public function testSubArticlesTabDoesNotWidenVisibilityPastAnUnreadableParent(): void
     {
@@ -1294,9 +1292,8 @@ HTML,
     }
 
     /**
-     * A central, knowledge-base-admin session can already open every direct
-     * child, so the walk must stop there: it lists the direct child, never a
-     * grandchild, exactly like before this behaviour existed.
+     * A central session can already open every direct child, so the walk
+     * stops there: it lists the child, never the grandchild, as before.
      */
     public function testSubArticlesTabListsOnlyTheDirectChildForACentralSession(): void
     {
@@ -1353,9 +1350,8 @@ HTML,
     }
 
     /**
-     * Root -> mid1 (unreadable) -> mid2 (unreadable) -> leaf (readable).
-     * Two consecutive unreadable intermediates must not stop the walk: the
-     * readable article two hops down must still surface.
+     * Root -> mid1 (unreadable) -> mid2 (unreadable) -> leaf (readable). Two
+     * consecutive unreadable intermediates must not stop the walk to the leaf.
      */
     public function testSubArticlesTabFindsReadableArticleTwoUnreadableLevelsDown(): void
     {
@@ -1408,9 +1404,8 @@ HTML,
     }
 
     /**
-     * The knowledge base is a DAG: a readable article reachable through two
-     * different unreadable parents under the same ancestor must surface
-     * exactly once, not once per branch that leads to it.
+     * The knowledge base is a DAG: an article reachable through two
+     * unreadable parents must surface exactly once, not once per branch.
      */
     public function testSubArticlesTabListsADiamondArticleOnlyOnce(): void
     {
@@ -1463,11 +1458,8 @@ HTML,
     }
 
     /**
-     * `can()` ignores the validity window (see the comment on
-     * `testSubArticlesTabHidesChildrenOutsideTheirValidityWindow()`), so an
-     * out-of-window intermediate that is otherwise readable must still be
-     * excluded, and the walk must descend past it to find the readable
-     * article below.
+     * `can()` ignores the validity window, see
+     * `testSubArticlesTabHidesChildrenOutsideTheirValidityWindow()`.
      */
     public function testSubArticlesTabHidesOutOfWindowIntermediateButFindsArticleBelowIt(): void
     {
@@ -3377,11 +3369,8 @@ HTML,
         $this->assertEquals(0, $root->fields['is_faq']);
         $this->assertEquals(0, $root->fields['show_in_service_catalog']);
 
-        // The root article is the entry point of the knowledge base, not a piece
-        // of content. FAQ readers open it as the FAQ home page, see
-        // `testRootArticleIsVisibleInTheFaqButIsNotAFaqArticle()`, but it is
-        // admitted by its id and stays out of the FAQ and of the service
-        // catalog: publishing it would advertise an empty article as content.
+        // The root article is the KB entry point, not content. It is admitted
+        // to the FAQ by its id but never becomes a listed FAQ or catalog entry.
         $this->assertTrue($root->update([
             'id'                      => $root_id,
             'is_faq'                  => 1,
@@ -3723,9 +3712,8 @@ HTML,
         $root = new KnowbaseItem();
         $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
 
-        // The root article is the FAQ home page, admitted by its id. It is not
-        // a FAQ article: `is_faq` stays 0, and it never reaches the service
-        // catalog, see `prepareInputForUpdate()`.
+        // The root article is the FAQ home page, admitted by its id. `is_faq`
+        // stays 0, so it is never a FAQ article nor a service catalog entry.
         $this->assertEquals(0, $root->fields['is_faq']);
         $this->assertEquals(0, $root->fields['show_in_service_catalog']);
 
@@ -4185,13 +4173,8 @@ HTML,
     }
 
     /**
-     * A child of the root article must not become visible in the FAQ because
-     * its parent is. The root is admitted to the FAQ by its id, and that
-     * admission must not extend to the articles below it.
-     *
-     * The inheritance seed itself is guarded by
-     * `testRootArticleDoesNotMakeItsChildrenVisible()`, which asserts through
-     * a central session where no `is_faq` filter can mask a leak.
+     * A child must not inherit the root's FAQ visibility: admission by id
+     * does not cascade to the articles below it.
      */
     public function testRootVisibilityDoesNotCascadeToItsChildren(): void
     {
@@ -4212,8 +4195,7 @@ HTML,
             'is_recursive'     => 1,
         ]);
 
-        // A new article is attached to the root article by default, so this
-        // article is a child of the root.
+        // `$not_faq` has no `_parents`, so it attaches to the root by default.
         $parents = array_map('intval', array_column(
             getAllDataFromTable(
                 KnowbaseItem_KnowbaseItem::getTable(),
@@ -4249,9 +4231,8 @@ HTML,
     }
 
     /**
-     * An anonymous reader on a public FAQ gets the root article, in single and
-     * in multi entity mode. Anonymous requests skip the visibility criteria,
-     * so this exercises a different path than the logged-in case.
+     * An anonymous reader on a public FAQ gets the root article, in single
+     * and multi entity mode: anonymous requests skip the visibility criteria.
      */
     public function testRootArticleIsListedForAnonymousFaqReaders(): void
     {

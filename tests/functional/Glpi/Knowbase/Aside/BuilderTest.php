@@ -178,12 +178,8 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * An article whose direct parent is invisible to the current user must
-     * still be reachable: it is attached to its nearest VISIBLE ancestor,
-     * walking up past the invisible one, instead of being silently dropped
-     * from the tree. Here the next ancestor up is the root article itself,
-     * which is (almost) always visible, so the child nests under it rather
-     * than being promoted to the root level.
+     * An article with an invisible parent attaches to its nearest visible
+     * ancestor instead of being dropped. Here, that ancestor is the root.
      */
     public function testArticleWithInvisibleParentIsAttachedToNearestVisibleAncestor(): void
     {
@@ -218,8 +214,8 @@ final class BuilderTest extends DbTestCase
 
         $tree = (new Builder())->buildTree();
 
-        // The tree still has a single root, the installation's root article:
-        // the child is not promoted next to it.
+        // The tree still has a single root: the child nests under it,
+        // instead of being promoted next to it.
         $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
 
         $top_level = $this->getTopLevelArticles($tree);
@@ -414,12 +410,8 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * A helpdesk reader gets the hierarchy of the articles published to the
-     * FAQ. The root article is always visible, FAQ readers included (it is
-     * admitted by its id, see `getVisibilityCriteriaFAQ()`), so a published
-     * parent created without an explicit parent — which attaches it to the
-     * root — nests directly under it, and keeps its own published children
-     * under it in turn.
+     * The root article is always visible to FAQ readers, admitted by its
+     * id, so a published parent nests directly under it, children included.
      */
     public function testFaqReaderGetsFaqArticlesNestedUnderTheirFaqParent(): void
     {
@@ -455,13 +447,11 @@ final class BuilderTest extends DbTestCase
         $this->login('post-only', 'postonly');
         $this->assertFalse(Session::haveRight(KnowbaseItem::$rightname, READ));
 
-        // Build the tree as if the reader opened the child article: that
-        // unfolds the branch leading to it, so the nesting is visible. A
-        // folded node reports `has_children` but loads them lazily.
+        // Passing the child id unfolds its branch, so the nesting is visible.
         $tree = (new Builder($child->getID()))->buildTree();
 
-        // The root article is the tree's only top-level entry; the FAQ
-        // parent nests under it instead of being promoted next to it.
+        // The root is the tree's only top-level entry: the FAQ parent nests
+        // under it instead of being promoted next to it.
         $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
 
         $top_level = $this->getTopLevelArticles($tree);
@@ -474,11 +464,8 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * A nested article is folded by default, unlike a root: `buildArticle()`
-     * does not recurse into a folded node's children, so the aside can fetch
-     * them lazily when the reader unfolds it. The FAQ parent nested under
-     * Home in the test above must report `hasChildren()` even though
-     * `getChildren()` is empty and `children_loaded` is false.
+     * A nested article folds by default, unlike the root, so its children
+     * load lazily: `hasChildren()` is true before they are ever loaded.
      */
     public function testNestedFaqParentReportsItsChildrenWithoutLoadingThem(): void
     {
@@ -513,8 +500,8 @@ final class BuilderTest extends DbTestCase
 
         $this->login('post-only', 'postonly');
 
-        // No current id this time: nothing unfolds the branch, so the parent
-        // renders folded, exactly as it would on a plain visit to Home.
+        // No current id, so nothing unfolds the branch: the parent renders
+        // folded, as on a plain visit to Home.
         $tree = (new Builder())->buildTree();
 
         $top_level = $this->getTopLevelArticles($tree);
