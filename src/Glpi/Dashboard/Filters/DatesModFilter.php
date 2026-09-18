@@ -108,7 +108,9 @@ class DatesModFilter extends AbstractFilter
                 // don't trigger when only the first date is selected
                 var nb_dates = selectedDates.length;
                 if (nb_dates == 0 || nb_dates == 2) {
-                    GLPI.Dashboard.getActiveDashboard().saveFilter('dates_mod', selectedDates);
+                    // format as Y-m-d: raw Date objects fail to parse server-side
+                    var dates_str = selectedDates.map((d) => instance.formatDate(d, "Y-m-d"));
+                    GLPI.Dashboard.getActiveDashboard().saveFilter('dates_mod', dates_str);
                     $(instance.input).closest("fieldset").addClass("filled");
                 }
             };
