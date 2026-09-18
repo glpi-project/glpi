@@ -205,6 +205,39 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertEquals(0, \SoftwareLicense::computeValidityIndicator($lic_id, 1));
     }
 
+    public function testCronSoftwareAlertsLicenseWithoutSoftware()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $license_id = $this->createItem(\SoftwareLicense::class, [
+            'name'        => 'license_without_software_' . $this->getUniqueString(),
+            'entities_id' => 0,
+            'expire'      => date('Y-m-d', time() - MONTH_TIMESTAMP),
+        ])->getID();
+
+        $entity = new \Entity();
+        $this->assertTrue(
+            $entity->update([
+                'id'                               => 0,
+                'use_licenses_alert'                => true,
+                'send_licenses_alert_before_delay'  => true,
+            ])
+        );
+
+        $CFG_GLPI['use_notifications']  = true;
+        $CFG_GLPI['notifications_ajax'] = 1;
+
+        $this->assertEquals(1, \SoftwareLicense::cronSoftware());
+
+        $alert = new \Alert();
+        $this->assertTrue($alert->getFromDBByCrit([
+            'itemtype' => 'SoftwareLicense',
+            'items_id' => $license_id,
+        ]));
+    }
+
     public function testPrepareInputForUpdate()
     {
         $this->login();
