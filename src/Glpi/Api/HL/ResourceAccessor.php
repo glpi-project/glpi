@@ -514,6 +514,23 @@ final class ResourceAccessor
     }
 
     /**
+     * Delete the files of the documents created during a create/update that has since been rolled back.
+     *
+     * The rollback takes care of the DB records, but the files written to disk are outside the transaction and have
+     * to be removed explicitly or they are left orphaned. Ideally we should almost never get here as the HLAPI
+     * should catch potential input issues before the item is added/updated.
+     *
+     * @param Document[] $created_documents
+     * @return void
+     */
+    private static function cleanRolledBackDocuments(array $created_documents): void
+    {
+        foreach ($created_documents as $doc) {
+            $doc->cleanFile();
+        }
+    }
+
+    /**
      * Filter the schema properties based on the read restrictions.
      * @param array<string, mixed> $schema The schema
      * @param bool $is_graphql_mode Whether the schema is being used in GraphQL mode. If false, the x-graphql-only properties are filtered out.
@@ -630,11 +647,7 @@ final class ResourceAccessor
 
         if ($result === false) {
             $DB->rollBack();
-            foreach ($created_documents as $doc) {
-                // The actual DB records are handled by the rollback, but the actual files still need cleaned manually.
-                // Ideally, we should almost never get here as the HLAPI should catch potential input issues before the item update is attempted.
-                $doc->cleanFile();
-            }
+            self::cleanRolledBackDocuments($created_documents);
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_UPDATE);
         }
 
@@ -642,6 +655,7 @@ final class ResourceAccessor
             self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
         } catch (Throwable $e) {
             $DB->rollBack();
+            self::cleanRolledBackDocuments($created_documents);
             $message = (new APIException())->getUserMessage();
             $detail = null;
             if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
@@ -711,6 +725,7 @@ final class ResourceAccessor
                 }
             } catch (Throwable $e) {
                 $DB->rollBack();
+                self::cleanRolledBackDocuments($created_documents);
                 $message = (new APIException())->getUserMessage();
                 $detail = null;
                 if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
@@ -720,11 +735,7 @@ final class ResourceAccessor
             }
         } else {
             $DB->rollBack();
-            foreach ($created_documents as $doc) {
-                // The actual DB records are handled by the rollback, but the actual files still need cleaned manually.
-                // Ideally, we should almost never get here as the HLAPI should catch potential input issues before the item creation is attempted.
-                $doc->cleanFile();
-            }
+            self::cleanRolledBackDocuments($created_documents);
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_CREATE);
         }
         $DB->commit();
