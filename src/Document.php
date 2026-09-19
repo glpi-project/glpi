@@ -178,6 +178,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     /**
      * Delete the file linked to this document from filesystem if no other document is using it
+     *
+     * Identical content is stored only once on disk, so several documents may share the same file. The current
+     * document is excluded from the count explicitly rather than relying on it being present in the table, so that
+     * this is safe both during a purge (the row is still there) and after a rolled back creation (the row is gone).
      * @return void
      */
     public function cleanFile(): void
@@ -188,8 +192,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 && !is_dir(GLPI_DOC_DIR . "/" . $this->fields["filepath"])
                 && (countElementsInTable(
                     static::getTable(),
-                    ['sha1sum' => $this->fields["sha1sum"] ]
-                ) <= 1)
+                    [
+                        'sha1sum' => $this->fields["sha1sum"],
+                        'NOT' => ['id' => $this->getID()],
+                    ]
+                ) === 0)
             ) {
                 try {
                     unlink(GLPI_DOC_DIR . "/" . $this->fields["filepath"]);
