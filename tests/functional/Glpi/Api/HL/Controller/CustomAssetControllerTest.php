@@ -284,10 +284,6 @@ EOT;
                 ->jsonContent(function ($content) use ($pictures) {
                     $this->assertCount(1, $content['pictures']);
                     $this->assertEquals($pictures[1], array_values($content['pictures'])[0]);
-//                    $this->assertEquals([$pictures[1]], $content['pictures'], var_export([
-//                        $pictures[1],
-//                        $content['pictures']
-//                    ], true));
                 });
         });
 

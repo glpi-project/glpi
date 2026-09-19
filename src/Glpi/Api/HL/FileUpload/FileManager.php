@@ -45,6 +45,7 @@ use function Safe\base64_decode;
 use function Safe\finfo_open;
 use function Safe\fopen;
 use function Safe\fwrite;
+use function Safe\mb_convert_encoding;
 use function Safe\mkdir;
 use function Safe\preg_match;
 use function Safe\rewind;
@@ -104,6 +105,9 @@ final class FileManager
         return $specifiers;
     }
 
+    /**
+     * @return string[] An array of mime types that are allowed to be uploaded as pictures.
+     */
     public static function getUploadablePictureSpecifiers(): array
     {
         return array_keys(self::$image_mime_to_extension_map);
@@ -324,7 +328,12 @@ final class FileManager
             }
         }
 
-        return str_replace('<?xml encoding="utf-8" ?>', '', mb_convert_encoding($dom->saveHTML(), 'UTF-8', 'HTML-ENTITIES'));
+        $html = $dom->saveHTML();
+        if ($html === false) {
+            return false;
+        }
+        /** @phpstan-ignore-next-line */
+        return str_replace('<?xml encoding="utf-8" ?>', '', mb_convert_encoding($html, 'UTF-8', 'HTML-ENTITIES'));
     }
 
     /**
