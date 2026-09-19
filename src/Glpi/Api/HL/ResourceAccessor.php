@@ -36,8 +36,14 @@ namespace Glpi\Api\HL;
 
 use CommonDBTM;
 use CommonGLPI;
+use CommonITILObject;
+use Document;
+use Document_Item;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
+use Glpi\Api\HL\FileUpload\FileUploadException;
+use Glpi\Api\HL\FileUpload\HashedUploadedFile;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Http\JSONResponse;
@@ -52,6 +58,7 @@ use function Safe\preg_match;
 
 /**
  * Class contaning methods for accessing GLPI resources (items) from the HL API via schemas.
+ * @todo v3 Separate methods related to input handling into a new class that can be instantiated for each create/update request. This would allow for better handling of uploaded files and other request-specific data.
  */
 final class ResourceAccessor
 {
@@ -115,6 +122,53 @@ final class ResourceAccessor
     }
 
     /**
+     * @param string $prop_name
+     * @param array<string, mixed> $prop
+     * @return string
+     */
+    private static function resolveInternalFieldNameForProperty(string $prop_name, array $prop): string
+    {
+        // Field resolution priority: x-field -> x-join.fkey -> property name
+        if (isset($prop['x-input-field'])) {
+            $internal_name = $prop['x-input-field'];
+        } elseif (isset($prop['x-field'])) {
+            $internal_name = $prop['x-field'];
+        } elseif (isset($prop['x-join']['fkey'])) {
+            $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
+        } else {
+            $internal_name = $prop_name;
+        }
+
+        return $internal_name;
+    }
+
+    /**
+     * Resolve the file upload declaration of a top-level schema property.
+     *
+     * {@link Doc\Schema::flattenProperties()} replaces array types by their `items` definition, which makes it
+     * impossible to tell an array of files apart from a single file. Anything dealing with file uploads must
+     * therefore read the raw (non-flattened) schema properties through this method.
+     *
+     * @param array<string, mixed> $prop The raw schema property definition
+     * @return array{options: array<string, mixed>, definition: array<string, mixed>, is_array: bool}|null
+     *      Null if the property doesn't accept file uploads. Otherwise, the file upload options, the definition
+     *      carrying them (the `items` definition for arrays) and whether the property accepts multiple files.
+     */
+    private static function getFileUploadSpecification(array $prop): ?array
+    {
+        $is_array = ($prop['type'] ?? null) === Doc\Schema::TYPE_ARRAY;
+        $definition = $is_array ? ($prop['items'] ?? []) : $prop;
+        if (!isset($definition['x-file-upload-options'])) {
+            return null;
+        }
+        return [
+            'options' => $definition['x-file-upload-options'],
+            'definition' => $definition,
+            'is_array' => $is_array,
+        ];
+    }
+
+    /**
      * Map the request parameters to the format required for the GLPI add/update methods.
      * Only top-level properties are mapped.
      * Nested properties which would represent relations are not supported.
@@ -147,16 +201,12 @@ final class ResourceAccessor
                 }
             }
 
-            // Field resolution priority: x-field -> x-join.fkey -> property name
-            if (isset($prop['x-input-field'])) {
-                $internal_name = $prop['x-input-field'];
-            } elseif (isset($prop['x-field'])) {
-                $internal_name = $prop['x-field'];
-            } elseif (isset($prop['x-join']['fkey'])) {
-                $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
-            } else {
-                $internal_name = $prop_name;
+            if (isset($prop['x-file-upload-options'])) {
+                // File uploads and removals are handled elsewhere. Skipping for file uploads here also prevents user's from specifying existing documents/files which is not desired at this point or validated for permissions.
+                continue;
             }
+
+            $internal_name = self::resolveInternalFieldNameForProperty($prop_name, $prop);
 
             if (array_key_exists('format', $prop) && $prop['format'] === Doc\Schema::FORMAT_STRING_DATE_TIME) {
                 // convert RFC 3339 to YYYY-MM-DD HH:MM:SS
@@ -178,6 +228,7 @@ final class ResourceAccessor
                 $params[$internal_name] = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
             }
         }
+
         return $params;
     }
 
@@ -189,8 +240,12 @@ final class ResourceAccessor
      */
     private static function validateInputParamsBySchema(array $schema, array $input, bool $is_create_input): array
     {
+        global $CFG_GLPI;
+
+        $max_file_size_bytes = $CFG_GLPI['document_max_size'] * 1024 * 1024;
         $errors = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+        $uploaded_files = Router::getInstance()->getFinalRequest()?->getUploadedFiles() ?? [];
 
         if ($is_create_input) {
             // Check required properties
@@ -256,7 +311,231 @@ final class ResourceAccessor
                 ];
             }
         }
+
+        // File uploads must be read from the raw schema properties. See self::getFileUploadSpecification().
+        foreach ($schema['properties'] as $key => $prop) {
+            $file_upload_spec = self::getFileUploadSpecification($prop);
+            if ($file_upload_spec === null || !isset($uploaded_files[$key])) {
+                continue;
+            }
+            $file_upload_options = $file_upload_spec['options'];
+
+            foreach ($uploaded_files[$key] as $file) {
+                // Validate file upload options
+
+                $upload_error = $file->getError();
+                if ($upload_error !== UPLOAD_ERR_OK) {
+                    // The transfer itself failed, so there is nothing left to validate for this file.
+                    $errors[$key][] = match ($upload_error) {
+                        UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => [
+                            'error' => 'file_size_exceeded',
+                            'message' => "The uploaded file exceeds the maximum allowed size of {$CFG_GLPI['document_max_size']} MB.",
+                            'max_file_size_bytes' => $max_file_size_bytes,
+                        ],
+                        default => [
+                            'error' => 'file_upload_failed',
+                            'message' => 'The file could not be uploaded.',
+                        ],
+                    };
+                    continue;
+                }
+
+                if ($file->getSize() > $max_file_size_bytes) {
+                    $errors[$key][] = [
+                        'error' => 'file_size_exceeded',
+                        'message' => "The uploaded file exceeds the maximum allowed size of {$CFG_GLPI['document_max_size']} MB.",
+                        'max_file_size_bytes' => $max_file_size_bytes,
+                    ];
+                }
+
+                $file_mime = $file->getClientMediaType();
+                $file_extension = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+
+                if (
+                    isset($file_upload_options['allowed_specifiers'])
+                    && !in_array(strtolower($file_mime), $file_upload_options['allowed_specifiers'], true)
+                    && !in_array(strtolower($file_extension), $file_upload_options['allowed_specifiers'], true)
+                ) {
+                    $errors[$key][] = [
+                        'error' => 'invalid_file_type',
+                        'message' => 'This file type is not allowed for upload as a picture.',
+                    ];
+                }
+            }
+        }
+
         return $errors;
+    }
+
+    /**
+     * Handle rich text inputs that may contain inline images.
+     * This is intended to be called after the input array is mapped from the request params, after the permission checks, but before the item is initially added/updated in the DB.
+     * By handling inline images before the item is added/updated, we can ensure the large base64 data is not stored in the DB which could cause errors if it causes the field to be too large for the column.
+     *
+     * This separation is also to prevent abuse of the inline image handling, which could be used to upload files without proper permission checks.
+     * Separate logic to clean up files after a failed create/update should be implemented to prevent orphaned files.
+     * There is already an automatic action that can clean orphaned documents but it is not enabled by default and should not be relied upon for normal operation.
+     *
+     * @param array<string, mixed> $schema The schema
+     * @param array<string, mixed> $input The input parameters
+     * @param Document[] $created_documents An array to store the created documents. Useful for implementing cleanup logic if needed.
+     * @return array<string, mixed> The modified input parameters with inline images handled
+     */
+    private static function handleRichTextInputs(array $schema, array $input, array &$created_documents): array
+    {
+        $entities_id = $input['entities_id'] ?? Session::getActiveEntity();
+        $is_recursive = (bool) ($input['is_recursive'] ?? false);
+
+        $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+        foreach ($flattened_properties as $prop_name => $prop) {
+            if (isset($prop['format']) && $prop['format'] === Doc\Schema::FORMAT_STRING_HTML) {
+                if (isset($prop['x-supports-inline-images'])) {
+                    $field_name = self::resolveInternalFieldNameForProperty($prop_name, $prop);
+                    // Need to extract base64 data uris from img tags and upload them as documents, replacing the src with the document URL
+                    $html = $input[$field_name] ?? null;
+                    if ($html !== null && ($html = FileManager::handleInlineImagesInHTML($html, $entities_id, $is_recursive, $created_documents)) !== false) {
+                        $input[$field_name] = $html;
+                    }
+                }
+            }
+        }
+        return $input;
+    }
+
+    /**
+     * Handles any actions that should happen after the creation or update of an item is successful.
+     *
+     * @param CommonDBTM $item The item that was created or updated
+     * @param array<string, mixed> $schema The schema of the item
+     * @param array<string, mixed> $request_params The request parameters used for the creation or update
+     * @param array<string, mixed> $input The input parameters that were used for the creation or update.
+     * May also include some internal-only fields that were added during the input parameter mapping process that are required for post-action handling.
+     * @return void
+     */
+    private static function handlePostCreateOrUpdate(CommonDBTM $item, array $schema, array $request_params, array $input): void
+    {
+        $new_input = [];
+
+        // Handle single-file removals.
+        // Properties accepting multiple files are excluded here as they are removed selectively through their
+        // own "<field>_remove" property instead of by sending an empty value.
+        // The raw schema properties are used as flattening them would hide that distinction. See self::getFileUploadSpecification().
+        foreach ($schema['properties'] as $prop_name => $prop) {
+            $file_upload_spec = self::getFileUploadSpecification($prop);
+            if ($file_upload_spec === null || $file_upload_spec['is_array']) {
+                continue;
+            }
+            $internal_name = self::resolveInternalFieldNameForProperty($prop_name, $prop);
+
+            if (
+                ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name) === ''
+                && !empty($item->fields[$internal_name])
+            ) {
+                $upload_as = $file_upload_spec['options']['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
+
+                if ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
+                    // The path handed over is the one stored on the item, never anything coming from the request,
+                    // as FileManager::deletePicture() expects an already trusted path.
+                    if (FileManager::deletePicture($item->fields[$internal_name])) {
+                        $new_input[$internal_name] = null;
+                    } else {
+                        throw new FileUploadException($prop_name, 'File removal failed', 0, null, null, 'file_removal_failed');
+                    }
+                }
+            }
+        }
+
+        //TODO v3 Refactor ResourceAccessor to accept the Request itself instead of indivudual params for parameters and attributes.
+        // This way we can have access to uploaded files as well
+        $uploaded_files = Router::getInstance()->getFinalRequest()?->getUploadedFiles() ?? [];
+
+        foreach ($uploaded_files as $field => $files) {
+            if (str_ends_with($field, '[]')) {
+                $field = substr($field, 0, -2);
+            }
+            $file_prop = $schema['properties'][$field] ?? null;
+            $file_upload_spec = $file_prop !== null ? self::getFileUploadSpecification($file_prop) : null;
+            if ($file_upload_spec === null) {
+                continue;
+            }
+            $is_array_of_files = $file_upload_spec['is_array'];
+            $input_name = $file_upload_spec['definition']['x-input-field'] ?? $field;
+            $upload_as = $file_upload_spec['options']['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
+
+            /** @var HashedUploadedFile $file */
+            foreach ($files as $file) {
+                if ($upload_as === FileManager::UPLOAD_AS_FILE) {
+                    $result = FileManager::uploadFile($file);
+                    if (is_int($result)) {
+                        throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
+                    } else {
+                        $new_input = array_merge($new_input, $result);
+                    }
+                } elseif ($upload_as === FileManager::UPLOAD_AS_DOCUMENT) {
+                    $mime = $file->getClientMediaType();
+                    $ext = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+                    if (!FileManager::isDocumentUploadAllowed($mime, $ext)) {
+                        throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
+                    }
+                    $result = FileManager::uploadAsDocument($file, $item->getEntityID() > 0 ? $item->getEntityID() : 0, $item->isRecursive());
+                    if ($result === null) {
+                        throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
+                    } elseif (is_int($result)) {
+                        throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
+                    } else {
+                        $document_id = $result->getID();
+                        if ($is_array_of_files) {
+                            if (!is_array($new_input[$input_name] ?? null)) {
+                                // Should never happen but needed for PHPStan to be happy
+                                $new_input[$input_name] = [];
+                            }
+                            $new_input[$input_name][] = $document_id;
+                        } else {
+                            $new_input[$input_name] = $document_id;
+                        }
+                    }
+                } elseif ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
+                    $result = FileManager::uploadAsPicture($file);
+                    if (is_int($result)) {
+                        throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
+                    } else {
+                        if ($is_array_of_files) {
+                            if (!is_array($new_input[$input_name] ?? null)) {
+                                // Should never happen but needed for PHPStan to be happy
+                                $new_input[$input_name] = [];
+                            }
+                            $new_input[$input_name][] = $result['filepath'];
+                        } else {
+                            $new_input[$input_name] = $result['filepath'];
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($new_input !== []) {
+            $new_input['id'] = $item->getID();
+            if (!$item->update($new_input)) {
+                throw new RuntimeException('Failed to handle post-create/update actions');
+            }
+        }
+    }
+
+    /**
+     * Delete the files of the documents created during a create/update that has since been rolled back.
+     *
+     * The rollback takes care of the DB records, but the files written to disk are outside the transaction and have
+     * to be removed explicitly or they are left orphaned. Ideally we should almost never get here as the HLAPI
+     * should catch potential input issues before the item is added/updated.
+     *
+     * @param Document[] $created_documents
+     * @return void
+     */
+    private static function cleanRolledBackDocuments(array $created_documents): void
+    {
+        foreach ($created_documents as $doc) {
+            $doc->cleanFile();
+        }
     }
 
     /**
@@ -328,6 +607,8 @@ final class ResourceAccessor
      */
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
+        global $DB;
+
         $schema = self::applyFieldReadRestrictions($schema);
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
         // Ignore entity updates. This needs to be done through the Transfer process
@@ -342,16 +623,14 @@ final class ResourceAccessor
                 400
             );
         }
-        $input = self::getInputParamsBySchema($schema, $request_params);
-        $input['id'] = $items_id;
-
         $item = self::getItemFromSchema($schema);
-        if (!$item->can($items_id, UPDATE, $input)) {
-            return AbstractController::getAccessDeniedErrorResponse();
-        }
-
         if (!$item->getFromDB($items_id)) {
             return AbstractController::getNotFoundErrorResponse();
+        }
+
+        // Update permission checks do not use the $input parameter so we can check before even converting the input parameters
+        if (!$item->can($items_id, UPDATE)) {
+            return AbstractController::getAccessDeniedErrorResponse();
         }
 
         $final_request = Router::getInstance()->getFinalRequest();
@@ -365,11 +644,35 @@ final class ResourceAccessor
             }
         }
 
+        $input = self::getInputParamsBySchema($schema, $request_params);
+        $input['id'] = $items_id;
+
+        $DB->beginTransaction();
+        /** @var Document[] $created_documents */
+        $created_documents = [];
+        $input = self::handleRichTextInputs($schema, $input, $created_documents);
         $result = $item->update($input);
 
         if ($result === false) {
+            $DB->rollBack();
+            self::cleanRolledBackDocuments($created_documents);
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_UPDATE);
         }
+
+        try {
+            self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
+        } catch (Throwable $e) {
+            $DB->rollBack();
+            self::cleanRolledBackDocuments($created_documents);
+            $message = (new APIException())->getUserMessage();
+            $detail = null;
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                $detail = $e->getMessage();
+            }
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
+        }
+        $DB->commit();
+
         // We should return the updated item but we NEVER return the GLPI item fields directly. Need to use special API methods.
         return self::getOneBySchema($schema, $request_attrs + ['id' => $items_id], $request_params);
     }
@@ -389,6 +692,8 @@ final class ResourceAccessor
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
+        global $DB;
+
         $schema = self::applyFieldReadRestrictions($schema);
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
             $request_params['entity'] = $_SESSION['glpiactive_entity'];
@@ -400,19 +705,53 @@ final class ResourceAccessor
                 400
             );
         }
-        $input = self::getInputParamsBySchema($schema, $request_params);
 
+        $input = self::getInputParamsBySchema($schema, $request_params);
         $item = self::getItemFromSchema($schema);
+        // Check permissions now that we have the main input parameters. Inline images in HTML content are handled later but should not affect permissions.
         if (!$item->can($item->getID(), CREATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
+
+        $DB->beginTransaction();
+        /** @var Document[] $created_documents */
+        $created_documents = [];
+        $input = self::handleRichTextInputs($schema, $input, $created_documents);
         $items_id = $item->add($input);
+
+        if ($items_id) {
+            try {
+                self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
+                foreach ($created_documents as $doc) {
+                    $doc_item = new Document_Item();
+                    $doc_item->add([
+                        'documents_id' => $doc->getID(),
+                        'items_id' => $items_id,
+                        'itemtype' => $item::class,
+                        'timeline_position' => CommonITILObject::NO_TIMELINE,
+                    ]);
+                }
+            } catch (Throwable $e) {
+                $DB->rollBack();
+                self::cleanRolledBackDocuments($created_documents);
+                $message = (new APIException())->getUserMessage();
+                $detail = null;
+                if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                    $detail = $e->getMessage();
+                }
+                return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
+            }
+        } else {
+            $DB->rollBack();
+            self::cleanRolledBackDocuments($created_documents);
+            return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_CREATE);
+        }
+        $DB->commit();
+
         [$controller, $method] = $get_route;
 
         $id_field = $extra_get_route_params['id'] ?? 'id';
-        if ($items_id !== false) {
-            $request_params[$id_field] = $items_id;
-        }
+        $request_params[$id_field] = $items_id;
         if (array_key_exists('mapped', $extra_get_route_params)) {
             foreach ($extra_get_route_params['mapped'] as $key => $value) {
                 $request_params[$key] = $value;

@@ -192,4 +192,105 @@ class CustomAssetControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    /**
+     * Resolve the path a picture is stored at from the URL the API exposes for it.
+     */
+    private function getPicturePathFromUrl(string $picture_url): string
+    {
+        // Toolbox::getPictureUrl() urlencodes the reference, so the URL carries "_pictures%2F"
+        $this->assertStringContainsString('_pictures%2F', $picture_url);
+        $reference = substr($picture_url, strpos($picture_url, '_pictures%2F') + strlen('_pictures%2F'));
+        return GLPI_PICTURE_DIR . '/' . urldecode($reference);
+    }
+
+    /**
+     * Selective picture removal must work for custom asset models too.
+     * The values of "pictures_remove" have to reach AssetImage::managePicturesHLAPI() under that exact input
+     * name: mapping them to anything else makes the removal a silent no-op answered with a 200.
+     */
+    public function testRemovePictureFromCustomAssetModel(): void
+    {
+        $first_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
+        $second_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+
+        $this->login();
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+custom_asset_model_with_pictures
+-----boundary
+Content-Disposition: form-data; name="pictures_upload"; filename="bar.png"
+Content-Type: image/png
+
+$first_picture_content
+-----boundary
+Content-Disposition: form-data; name="pictures_upload"; filename="foo.png"
+Content-Type: image/png
+
+$second_picture_content
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Assets/Custom/Test01Model', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$new_location) {
+                    $new_location = $content['href'];
+                });
+        });
+
+        $pictures = [];
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$pictures) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$pictures) {
+                    $this->assertCount(2, $content['pictures']);
+                    $pictures = $content['pictures'];
+                });
+        });
+
+        $removed_path = $this->getPicturePathFromUrl($pictures[0]);
+        $kept_path = $this->getPicturePathFromUrl($pictures[1]);
+        $this->assertFileExists($removed_path);
+        $this->assertFileExists($kept_path);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="pictures_remove[]"
+
+{$pictures[0]}
+-----boundary--
+EOT;
+
+        $request = new Request('PATCH', $new_location, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', $new_location), function ($call) use ($pictures) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($pictures) {
+                    $this->assertCount(1, $content['pictures']);
+                    $this->assertEquals($pictures[1], array_values($content['pictures'])[0]);
+                });
+        });
+
+        // The removed picture must be gone from disk as well, and only that one
+        $this->assertFileDoesNotExist($removed_path);
+        $this->assertFileExists($kept_path);
+
+        unlink($kept_path);
+    }
 }
