@@ -61,6 +61,39 @@
    {{ call('Glpi\\Search\\Input\\QueryBuilder::displaySearchoptionValue', [params]) }}
 </div>
 
+{% if history_search_available %}
+   {% set scope_name = fieldname ~ prefix ~ "[" ~ num ~ "][scope]" %}
+   {% set scope_enabled = searchtype in ['contains', 'notcontains'] %}
+   <div class="col-auto history-search-scope {{ scope_enabled ? '' : 'd-none' }}" id="history-scope-{{ rand }}">
+      {{ fields.dropdownArrayField(scope_name, scope_enabled ? scope : 'current', {
+         current: __('Current value'),
+         history: __('History'),
+         current_and_history: __('Current value and history'),
+      }, __('Search in'), {
+         rand: rand,
+         full_width: true,
+         input_class: 'col-12',
+         no_label: true,
+         mb: 'mb-0',
+         disabled: not scope_enabled,
+      }) }}
+   </div>
+   <script>
+      $(function() {
+         const operator = document.getElementById({{ call('Html::cleanId', ['dropdown_' ~ searchtype_name ~ rand])|json_encode|raw }});
+         const container = $('#history-scope-{{ rand }}');
+         $(operator).on('change', function() {
+            const enabled = ['contains', 'notcontains'].includes(this.value);
+            container.toggleClass('d-none', !enabled);
+            container.find('select').prop('disabled', !enabled);
+            if (!enabled) {
+               container.find('select').val('current').trigger('change');
+            }
+         });
+      });
+   </script>
+{% endif %}
+
 {% if actions|length > 0 %}
     {% do call('Ajax::updateItemOnSelectEvent', [
        ("dropdown_" ~ searchtype_name ~ rand),

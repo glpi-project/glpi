@@ -52,6 +52,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
+use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Group;
@@ -61,6 +62,7 @@ use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Session;
+use Symfony\Component\DomCrawler\Crawler;
 use TaskCategory;
 use Ticket;
 use User;
@@ -7992,6 +7994,168 @@ class SearchTest extends DbTestCase
             count($data['sql']['search']->getParams()),
             'placeholder/param count mismatch: ' . $query
         );
+    }
+
+    public static function historySearchProvider(): iterable
+    {
+        yield 'current default' => [null, 'contains', 'old', ['current']];
+        yield 'explicit current' => ['current', 'contains', 'old', ['current']];
+        yield 'old name' => ['history', 'contains', 'old', ['renamed']];
+        yield 'intermediate name' => ['history', 'contains', 'middle', ['renamed']];
+        yield 'new value in history' => ['history', 'contains', 'final', ['renamed']];
+        yield 'current and history' => ['current_and_history', 'contains', 'old', ['renamed', 'current']];
+        yield 'duplicate log matches' => ['history', 'contains', 'history-search-', ['renamed']];
+        yield 'no history match' => ['history', 'contains', 'missing', []];
+        yield 'negate history set' => ['history', 'notcontains', 'old', ['current', 'control', 'untouched']];
+        yield 'negate combined set' => ['current_and_history', 'notcontains', 'old', ['control', 'untouched']];
+        yield 'literal quote' => ['history', 'contains', "old' OR 1=1 --", []];
+        yield 'AND NOT history' => ['history', 'contains', 'old', ['current', 'control', 'untouched'], 'AND NOT'];
+        yield 'double negation' => ['history', 'notcontains', 'old', ['renamed'], 'AND NOT'];
+        yield 'exact old name' => ['history', 'contains', '^history-search-old$', ['renamed']];
+    }
+
+    #[DataProvider('historySearchProvider')]
+    public function testHistorySearch(?string $scope, string $operator, string $value, array $expected, string $link = 'AND'): void
+    {
+        $this->login();
+        $entity = $this->getTestRootEntity(true);
+        $prefix = 'history-search-';
+        $items = [];
+        foreach (['renamed' => 'old', 'current' => 'old', 'control' => 'control', 'untouched' => 'untouched'] as $key => $name) {
+            $items[$key] = $this->createItem(Computer::class, [
+                'name' => $prefix . $name,
+                'entities_id' => $entity,
+            ]);
+        }
+        $renamed = $items['renamed'];
+        foreach (['middle', 'final'] as $name) {
+            $this->assertTrue($renamed->update(['id' => $renamed->getID(), 'name' => $prefix . $name]));
+        }
+        // Matching text in another field, another item type, or an action must not match Name.
+        $control = $items['control'];
+        $this->assertTrue($control->update(['id' => $control->getID(), 'comment' => $prefix . 'old']));
+        \Log::history($control->getID(), \Monitor::class, [1, $prefix . 'old', $prefix . 'new']);
+        \Log::history($control->getID(), Computer::class, [1, $prefix . 'old', $prefix . 'new'], '', \Log::HISTORY_ADD_DEVICE);
+
+        $criterion = ['field' => 1, 'searchtype' => $operator, 'value' => $value, 'link' => $link];
+        if ($scope !== null) {
+            $criterion['scope'] = $scope;
+        }
+
+        $data = $this->doSearch(Computer::class, [
+            'criteria' => [
+                ['field' => 1, 'searchtype' => 'contains', 'value' => $prefix],
+                ['link' => 'AND', 'criteria' => [
+                    $criterion,
+                ]],
+            ],
+        ]);
+        $expected_ids = array_map(static fn($key) => $items[$key]->getID(), $expected);
+        $actual_ids = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertEqualsCanonicalizing($expected_ids, $actual_ids);
+        $this->assertSame(count($expected_ids), $data['data']['totalcount']);
+    }
+
+    public function testHistorySearchPermissionsAndUnsupportedFields(): void
+    {
+        $this->login();
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'history-permission-old',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertTrue($computer->update(['id' => $computer->getID(), 'name' => 'history-permission-new']));
+        $criterion = ['field' => 1, 'searchtype' => 'contains', 'value' => 'history-permission-old', 'scope' => 'history'];
+        $this->assertSame(1, $this->doSearch(Computer::class, ['criteria' => [$criterion]])['data']['totalcount']);
+
+        foreach ([2, 19, 80] as $field) {
+            $this->assertFalse(SearchOption::canSearchHistory(Computer::class, $field));
+            $data = $this->doSearch(Computer::class, ['criteria' => [array_replace($criterion, ['field' => $field])]]);
+            $this->assertSame(0, $data['data']['totalcount']);
+        }
+        $this->assertFalse(SearchOption::canSearchHistory(Computer::class, 'all'));
+        foreach ([['scope' => 'invalid'], ['searchtype' => 'equals']] as $invalid) {
+            $data = $this->doSearch(Computer::class, ['criteria' => [array_replace($criterion, $invalid)]]);
+            $this->assertSame(0, $data['data']['totalcount']);
+        }
+
+        $rights = $_SESSION['glpiactiveprofile']['logs'];
+        try {
+            $_SESSION['glpiactiveprofile']['logs'] = 0;
+            $this->assertFalse(SearchOption::canSearchHistory(Computer::class, 1));
+            foreach (['history', 'current_and_history'] as $scope) {
+                $data = $this->doSearch(Computer::class, ['criteria' => [array_replace($criterion, ['scope' => $scope])]]);
+                $this->assertSame(0, $data['data']['totalcount']);
+            }
+        } finally {
+            $_SESSION['glpiactiveprofile']['logs'] = $rights;
+        }
+    }
+
+    public function testHistorySearchOtherFieldsAndEntities(): void
+    {
+        $this->login();
+        $root = $this->getTestRootEntity(true);
+        $child = $this->createItem(Entity::class, ['name' => 'history-search-child', 'entities_id' => $root]);
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'history-search-fields',
+            'serial' => 'history-old-serial',
+            'comment' => 'history-old-comment',
+            'entities_id' => $child->getID(),
+        ]);
+        $this->assertTrue($computer->update([
+            'id' => $computer->getID(),
+            'serial' => 'history-new-serial',
+            'comment' => 'history-new-comment',
+        ]));
+        foreach ([5 => 'serial', 16 => 'comment'] as $field => $name) {
+            $this->assertTrue(SearchOption::canSearchHistory(Computer::class, $field));
+            $criteria = [['field' => $field, 'searchtype' => 'contains', 'value' => 'history-old-' . $name, 'scope' => 'history']];
+            $this->setEntity($root, true);
+            $this->assertSame(1, $this->doSearch(Computer::class, ['criteria' => $criteria])['data']['totalcount']);
+            $this->setEntity($root, false);
+            $this->assertSame(0, $this->doSearch(Computer::class, ['criteria' => $criteria])['data']['totalcount']);
+        }
+        $this->setEntity($root, true);
+        $this->assertTrue($computer->delete(['id' => $computer->getID()]));
+        $this->assertSame(0, $this->doSearch(Computer::class, ['criteria' => $criteria])['data']['totalcount']);
+        $this->assertSame(1, $this->doSearch(Computer::class, ['criteria' => $criteria, 'is_deleted' => 1])['data']['totalcount']);
+    }
+
+    public function testHistorySearchInput(): void
+    {
+        $this->login();
+        foreach ([
+            [[], true, true],
+            [['from_meta' => 'false', 'disable_history_search' => 'false'], true, true],
+            [['from_meta' => 'true'], false, false],
+            [['disable_history_search' => 'true'], false, false],
+            [['field' => 2], false, false],
+            [['searchtype' => 'equals'], true, false],
+        ] as [$override, $visible, $enabled]) {
+            ob_start();
+            try {
+                QueryBuilder::displaySearchoption($override + [
+                    'itemtype' => Computer::class,
+                    'field' => 1,
+                    'num' => 0,
+                    'p' => ['prefix_crit' => '[1][criteria]'],
+                    'searchtype' => 'contains',
+                    'value' => '',
+                    'scope' => 'history',
+                ]);
+            } finally {
+                $html = ob_get_clean();
+            }
+            $crawler = new Crawler($html);
+            $select = $crawler->filter('select[name="criteria[1][criteria][0][scope]"]');
+            $this->assertCount($visible ? 1 : 0, $select);
+            if ($visible) {
+                $this->assertSame(!$enabled, $select->attr('disabled') !== null);
+                $this->assertSame($enabled ? 'history' : 'current', $select->filter('option[selected]')->attr('value'));
+                $operator_id = $crawler->filter('select[name="criteria[1][criteria][0][searchtype]"]')->attr('id');
+                $this->assertStringContainsString('document.getElementById("' . $operator_id . '")', $html);
+            }
+        }
     }
 
     /**
