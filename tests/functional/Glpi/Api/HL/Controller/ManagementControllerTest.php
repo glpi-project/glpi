@@ -480,7 +480,6 @@ EOT;
         ], $this->getDocumentMultipartBody(__FUNCTION__, $entities_id, $file_content));
 
         $this->api->call($request, function ($call) {
-            /** @var \Glpi\Tests\HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         }, false);
 
@@ -505,7 +504,6 @@ EOT;
             'Content-Type' => 'multipart/form-data; boundary=---boundary',
         ], $this->getDocumentMultipartBody(__FUNCTION__, $entities_id, $original_content));
         $this->api->call($request, function ($call) use (&$documents_id) {
-            /** @var \Glpi\Tests\HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use (&$documents_id) {
@@ -520,7 +518,6 @@ EOT;
             'Content-Type' => 'multipart/form-data; boundary=---boundary',
         ], $this->getDocumentMultipartBody(__FUNCTION__ . '_updated', $entities_id, $replacement_content));
         $this->api->call($request, function ($call) {
-            /** @var \Glpi\Tests\HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         }, false);
 
@@ -550,7 +547,6 @@ EOT;
         ], $this->getDocumentMultipartBody(__FUNCTION__, $forbidden_entities_id, $file_content));
 
         $this->api->call($request, function ($call) {
-            /** @var \Glpi\Tests\HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         }, false);
 

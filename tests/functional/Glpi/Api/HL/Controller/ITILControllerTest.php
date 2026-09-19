@@ -278,7 +278,7 @@ class ITILControllerTest extends HLAPITestCase
         $task = new \TicketTask();
         $solution = new \ITILSolution();
         $validation = new TicketValidation();
-        $document = new \Document();
+        $document = new Document();
         $document_item = new Document_Item();
 
         // Create a followup
