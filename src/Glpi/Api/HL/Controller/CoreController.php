@@ -51,6 +51,7 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\OAuth\Server;
+use Glpi\ShareToken;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
 use Glpi\UI\ThemeManager;
@@ -295,6 +296,33 @@ EOT,
                             ],
                         ],
                     ],
+                ],
+            ],
+            'ShareToken' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-version-introduced' => '3.0.0',
+                'x-itemtype' => ShareToken::class,
+                'x-graphql-noquery' => true,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'token' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-encrypted' => true,
+                        'readOnly' => true,
+                        'maxLength' => 255,
+                    ],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: 'username', full_schema: 'User'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+                    'date_expiration' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ],
         ];
