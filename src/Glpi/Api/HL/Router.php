@@ -77,6 +77,7 @@ use Glpi\Api\HL\Middleware\ResponseMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Middleware\RSQLRequestMiddleware;
 use Glpi\Api\HL\Middleware\SecurityResponseMiddleware;
+use Glpi\Application\Environment;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -775,10 +776,12 @@ EOT;
         }
 
         // Clear state in case multiple requests are handled in the same process. Also helps reset the `isHLAPI` check.
-        $this->original_request = null;
-        $this->final_request = null;
-        $this->last_invoked_route = null;
-        $this->current_client = null;
+        if (Environment::get() !== Environment::TESTING) {
+            $this->original_request = null;
+            $this->final_request = null;
+            $this->last_invoked_route = null;
+            $this->current_client = null;
+        }
         return $response;
     }
 
