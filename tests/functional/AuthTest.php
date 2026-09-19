@@ -436,6 +436,99 @@ class AuthTest extends DbTestCase
     }
 
     /**
+     * Sets up a SSO server variable based external authentication for the given login name,
+     * and returns the backup of $CFG_GLPI that the caller has to restore.
+     *
+     * @param string $username Login name that the SSO server will report
+     * @param bool   $auto_add Value to set for the `is_users_auto_add` configuration entry
+     *
+     * @return array Backup of $CFG_GLPI
+     */
+    private function setUpSsoAuth(string $username, bool $auto_add): array
+    {
+        global $CFG_GLPI, $DB;
+
+        $ssovariable_row = $DB->request([
+            'FROM'  => 'glpi_ssovariables',
+            'WHERE' => ['name' => 'HTTP_AUTH_USER'],
+        ])->current();
+        $this->assertNotEmpty($ssovariable_row);
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['ssovariables_id'] = $ssovariable_row['id'];
+        $CFG_GLPI['existing_auth_server_field_clean_domain'] = 0;
+        $CFG_GLPI['is_users_auto_add'] = $auto_add ? 1 : 0;
+
+        $_SERVER['HTTP_AUTH_USER'] = $username;
+
+        return $cfg_backup;
+    }
+
+    /**
+     * `validateLogin()` only validates the credentials: an externally authenticated user that is
+     * not known by GLPI yet has no `id` once it returns. Creating the user is the job of
+     * `applyValidatedLogin()`, which callers that do not use `login()` (OAuth, CalDAV) must call.
+     */
+    public function testApplyValidatedLoginAddsUnknownExternalUser(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $username = 'sso_autoadd_' . mt_rand();
+        $this->assertFalse(User::getIdByName($username));
+
+        $cfg_backup = $this->setUpSsoAuth($username, true);
+
+        $auth = new Auth();
+        $validated = $auth->validateLogin('', '', false);
+        // The credentials are valid, but nothing has been written to the database yet.
+        $user_id_after_validation = $auth->user->fields['id'] ?? null;
+
+        $applied = $auth->applyValidatedLogin();
+
+        $CFG_GLPI = $cfg_backup;
+        unset($_SERVER['HTTP_AUTH_USER']);
+
+        $this->assertTrue($validated, implode(' ', $auth->getErrors()));
+        $this->assertNull($user_id_after_validation, 'validateLogin() must not create the user');
+
+        $this->assertTrue($applied, implode(' ', $auth->getErrors()));
+        $this->assertGreaterThan(0, $auth->user->fields['id'] ?? 0);
+
+        $user = new User();
+        $this->assertTrue($user->getFromDB($auth->user->fields['id']));
+        $this->assertSame($username, $user->fields['name']);
+        $this->assertEquals(Auth::EXTERNAL, $user->fields['authtype']);
+    }
+
+    /**
+     * When the auto add feature is disabled, an unknown externally authenticated user must be
+     * rejected rather than left half-authenticated without a database row.
+     */
+    public function testApplyValidatedLoginFailsForUnknownUserWhenAutoAddIsDisabled(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $username = 'sso_noautoadd_' . mt_rand();
+        $cfg_backup = $this->setUpSsoAuth($username, false);
+
+        $auth = new Auth();
+        $validated = $auth->validateLogin('', '', false);
+        $applied = $auth->applyValidatedLogin();
+
+        $CFG_GLPI = $cfg_backup;
+        unset($_SERVER['HTTP_AUTH_USER']);
+
+        $this->assertTrue($validated);
+        $this->assertFalse($applied);
+        $this->assertContains(__('User not authorized to connect in GLPI'), $auth->getErrors());
+        $this->assertFalse(User::getIdByName($username));
+    }
+
+    /**
      * x509 detection must trust SSL_CLIENT_S_DN only when SSL_CLIENT_VERIFY is
      * exactly 'SUCCESS', not merely present. A TLS-terminating server can
      * legitimately report several other values for a presented-but-unverifiable
