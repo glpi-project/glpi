@@ -155,7 +155,7 @@ trait AssetImage
             array_merge($existing_pictures, $input['pictures'] ?? [])
         );
         $to_remove = is_string($input['pictures_remove'] ?? []) ? [$input['pictures_remove']] : ($input['pictures_remove'] ?? []);
-        $to_remove = array_map(static fn($p) => FileManager::normalizeClientFileValue($p, FileManager::UPLOAD_AS_PICTURE), $to_remove);
+        $to_remove = array_map(static fn($p) => FileManager::normalizePictureClientValue($p), $to_remove);
 
         // Remove any pictures that are in the remove list and delete the pictures only if it was in the existing pictures list.
         // The client value is only ever used as the needle here: what gets deleted is the matching entry of the item's
