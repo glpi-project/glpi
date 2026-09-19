@@ -150,12 +150,30 @@ trait AssetImage
     {
         // single images like picture_front, picture_rear, and picture are already uploaded or delete by the API as needed.
         // Nothing needs done here except for the 'pictures' field which can have multiple images and isn't handle (yet) by the HLAPI.
-        $existing_pictures = is_string($this->fields['pictures'] ?? []) ? importArrayFromDB($this->fields['pictures']) : ($this->fields['pictures'] ?? []);
-        $all_pictures = array_unique(
-            array_merge($existing_pictures, $input['pictures'] ?? [])
-        );
+        if (!$this->isField('pictures')) {
+            // The itemtype has no 'pictures' column at all, so there is nothing to merge into.
+            return $input;
+        }
+
+        $added = $input['pictures'] ?? [];
         $to_remove = is_string($input['pictures_remove'] ?? []) ? [$input['pictures_remove']] : ($input['pictures_remove'] ?? []);
-        $to_remove = array_map(static fn($p) => FileManager::normalizePictureClientValue($p), $to_remove);
+        $to_remove = array_filter(
+            array_map(static fn($p) => FileManager::normalizePictureClientValue((string) $p), $to_remove),
+            static fn(?string $p) => $p !== null
+        );
+
+        if ($added === [] && $to_remove === []) {
+            // This request doesn't add or remove any picture. Leave the stored value alone instead of reading it
+            // back and writing it out again, which would reformat it and log a change on every single update.
+            unset($input['pictures']);
+            return $input;
+        }
+
+        $existing_pictures = [];
+        if (!$this->isNewItem()) {
+            $existing_pictures = is_string($this->fields['pictures'] ?? []) ? importArrayFromDB($this->fields['pictures']) : ($this->fields['pictures'] ?? []);
+        }
+        $all_pictures = array_unique(array_merge($existing_pictures, $added));
 
         // Remove any pictures that are in the remove list and delete the pictures only if it was in the existing pictures list.
         // The client value is only ever used as the needle here: what gets deleted is the matching entry of the item's
