@@ -327,22 +327,21 @@ final class FileManager
         return str_replace('<?xml encoding="utf-8" ?>', '', mb_convert_encoding($dom->saveHTML(), 'UTF-8', 'HTML-ENTITIES'));
     }
 
-    public static function normalizeClientFileValue(string $value, string $upload_as): ?string
-    {
-        return match ($upload_as) {
-            self::UPLOAD_AS_PICTURE => self::normalizePictureClientValue($value),
-            self::UPLOAD_AS_DOCUMENT,
-            self::UPLOAD_AS_FILE => $value,
-            default => null,
-        };
-    }
-
     /**
+     * Reduce a picture value coming from a client to the form stored in the database.
+     *
+     * Clients may send back the URL they were given rather than the stored path, so anything up to and including
+     * the `_pictures/` marker is dropped.
+     *
+     * This only normalizes the value, it does not validate it: the result is still fully attacker-controlled and
+     * must never be used as a path to act on. Use it as a needle to look up one of the item's own picture paths,
+     * and hand that trusted value to {@link self::deletePicture()}.
+     *
      * @param string $value
-     * @return string|null
+     * @return string|null Null if the value is empty.
      * @phpstan-return ($value is '' ? null : string)
      */
-    private static function normalizePictureClientValue(string $value): ?string
+    public static function normalizePictureClientValue(string $value): ?string
     {
         if ($value === '') {
             return null;
