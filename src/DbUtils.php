@@ -1172,10 +1172,10 @@ final class DbUtils
         } elseif ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
             $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
-            foreach ($ids_needed_to_fetch as $id) {
+            foreach ($ids_needed_to_fetch as $key => $id) {
                 if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;
-                    unset($ids_needed_to_fetch[$id]);
+                    unset($ids_needed_to_fetch[$key]);
                 }
             }
             // If we got everything from the cache, we can return the results now
