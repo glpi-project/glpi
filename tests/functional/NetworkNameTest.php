@@ -67,6 +67,42 @@ class NetworkNameTest extends DbTestCase
         $this->assertStringContainsString('name="peers_id"', $html);
     }
 
+    public function testAssociateMassiveActionRejectsNonexistentNetworkPort(): void
+    {
+        $this->login();
+
+        $network_name = $this->createItem(\NetworkName::class, [
+            'name' => 'network-name-with-forged-association',
+            'entities_id' => 0,
+            'items_id' => 0,
+            'itemtype' => '',
+        ]);
+        $network_name_id = $network_name->getID();
+
+        $massive_action = new \MassiveAction(
+            [
+                'action' => 'affect',
+                'action_name' => 'Associate',
+                'items' => [\NetworkName::class => [$network_name_id => $network_name_id]],
+                'processor' => \CommonDBConnexity::class,
+                'peertype' => \NetworkPort::class,
+                'peers_id' => 999999999,
+            ],
+            [],
+            'process'
+        );
+
+        \CommonDBConnexity::processMassiveActionsForOneItemtype(
+            $massive_action,
+            $network_name,
+            [$network_name_id]
+        );
+
+        $this->assertTrue($network_name->getFromDB($network_name_id));
+        $this->assertSame('', $network_name->fields['itemtype']);
+        $this->assertSame(0, $network_name->fields['items_id']);
+    }
+
     public function testAddSimpleNetworkName()
     {
         $this->login();
