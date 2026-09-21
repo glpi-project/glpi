@@ -1514,6 +1514,66 @@ class CommonDBTMTest extends DbTestCase
         $this->assertSame(__FUNCTION__ . '02-locked', $computer->fields['name']);
     }
 
+    public function testCheckUnicityChecksIncomingValueOnManualEditMissingIsDynamic()
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $field_unicity = new FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => 'Computer',
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => $entities_id,
+            ])
+        );
+
+        $computer = new Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id1 = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $computers_id2 = $computer->add([
+                'name' => __FUNCTION__ . '02',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        // manual rename (no is_dynamic) locks the name field on computer 2
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '02-locked',
+            ])
+        );
+        $lockedfield = new Lockedfield();
+        $this->assertSame(['name'], $lockedfield->getLockedNames('Computer', $computers_id2));
+
+        // another manual edit, still no is_dynamic: cleanLockeds() won't strip the
+        // locked name field, so the duplicate value actually gets persisted and
+        // must be reported
+        $this->assertFalse(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '01',
+            ])
+        );
+        $this->hasSessionMessageThatContains(__FUNCTION__ . '01', ERROR);
+    }
+
     public function testSkipCheckUnicityWithTemplate()
     {
         $this->login();

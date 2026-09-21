@@ -4519,16 +4519,12 @@ class CommonDBTM extends CommonGLPI
      */
     private function getLockedFieldsForUnicityCheck(): array
     {
-        // Prospective dynamic state: what cleanLockeds() will see once is_dynamic is applied.
-        $is_dynamic = isset($this->input['is_dynamic'])
-            ? (bool) $this->input['is_dynamic']
-            : $this->isDynamic();
-
         if (
             ($this->input['_skip_locks'] ?? false) === true
             || (isset($this->input['_transfer']) && !($this->input['_lock_updated_fields'] ?? false))
             || !$this->maybeDynamic()
-            || !$is_dynamic
+            || !$this->isDynamic()
+            || !(in_array('is_dynamic', $this->updates, true) || ($this->input['is_dynamic'] ?? false))
         ) {
             return [];
         }
