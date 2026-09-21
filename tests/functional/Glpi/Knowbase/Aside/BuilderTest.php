@@ -299,6 +299,32 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
+     * Corrupt data can leave articles in a cycle that reaches no root.
+     */
+    public function testArticlesInACycleWithNoPathToTheRootStayInTheTree(): void
+    {
+        $this->login();
+
+        $first  = $this->makeArticle('zz cycle first ' . __FUNCTION__);
+        $second = $this->makeArticle('zz cycle second ' . __FUNCTION__, $first->getID());
+
+        // isAncestor() refuses this on write: only corrupt data gets here.
+        /** @var \DBmysql $DB */
+        global $DB;
+        $DB->delete(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id' => $first->getID(),
+        ]);
+        $DB->insert(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id'        => $first->getID(),
+            'knowbaseitems_id_parent' => $second->getID(),
+        ]);
+
+        $titles = $this->getAllTitles((new Builder())->buildUnfoldedTree());
+        $this->assertContains('zz cycle first ' . __FUNCTION__, $titles);
+        $this->assertContains('zz cycle second ' . __FUNCTION__, $titles);
+    }
+
+    /**
      * An article with two visible parents must appear under each of them.
      */
     public function testArticleWithMultipleVisibleParentsAppearsUnderEach(): void
@@ -341,6 +367,24 @@ final class BuilderTest extends DbTestCase
         }
 
         $this->fail('The root article is missing from the tree');
+    }
+
+    /**
+     * @return string[] Every article title of the tree, at any depth.
+     */
+    private function getAllTitles(Tree $tree): array
+    {
+        $titles = [];
+        $stack  = $tree->getArticles();
+        while ($stack !== []) {
+            $article = array_pop($stack);
+            $titles[] = $article->title;
+            foreach ($article->getChildren() as $child) {
+                $stack[] = $child;
+            }
+        }
+
+        return $titles;
     }
 
     public function testArticlesAreFoldedByDefaultExceptTheRoot(): void

@@ -60,7 +60,11 @@ if (isset($_GET["id"])) {
 
 // The FAQ opens on the root article, as `front/knowbaseitem.php` does.
 // Without one, control falls to the legacy view that roadmap#492 replaces with a 404.
-if ($_GET === [] && KnowbaseItem::hasRoot()) {
+// `redirect` can outlive manageRedirect(), `forcetab` is consumed below.
+$asked_for_a_page = $_GET;
+unset($asked_for_a_page['redirect'], $asked_for_a_page['forcetab']);
+
+if ($asked_for_a_page === [] && KnowbaseItem::hasRoot()) {
     $root_id = KnowbaseItem::getRootId();
     $root    = new KnowbaseItem();
     if ($root->getFromDB($root_id) && $root->can($root_id, READ)) {

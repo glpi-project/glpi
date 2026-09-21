@@ -169,8 +169,8 @@ final class Builder
         $memo = [];
         $in_progress = [];
         foreach (array_keys($this->data) as $id) {
-            $cycle_cut = false;
-            $ancestors = $this->findNearestVisibleAncestors($id, $raw_parents_of, $memo, $in_progress, $cycle_cut)['ancestors'];
+            $ancestors = $this->findNearestVisibleAncestors($id, $raw_parents_of, $memo, $in_progress)['ancestors'];
+            unset($ancestors[$id]); // a cycle can make an article its own ancestor
             if ($ancestors === []) {
                 $this->roots[$id] = true;
                 continue;
@@ -180,6 +180,37 @@ final class Builder
                 $this->parents_of[$id][] = $ancestor_id;
             }
         }
+
+        // 4) A cycle reaches no root: promote what the walk left out.
+        $reached = [];
+        foreach (array_keys($this->roots) as $id) {
+            $this->markReachable($id, $reached);
+        }
+        foreach (array_keys($this->data) as $id) {
+            if (isset($reached[$id])) {
+                continue;
+            }
+            $this->roots[$id] = true;
+            $this->markReachable($id, $reached);
+        }
+    }
+
+    /**
+     * @param array<int, true> $reached
+     */
+    private function markReachable(int $id, array &$reached): void
+    {
+        $stack = [$id];
+        while ($stack !== []) {
+            $current = array_pop($stack);
+            if (isset($reached[$current])) {
+                continue;
+            }
+            $reached[$current] = true;
+            foreach ($this->children_of[$current] ?? [] as $child_id) {
+                $stack[] = $child_id;
+            }
+        }
     }
 
     /**
@@ -187,28 +218,26 @@ final class Builder
      * Memoized: a diamond in the graph resolves once.
      *
      * @param array<int, int[]> $raw_parents_of child_id => every parent id, visible or not
-     * @param array<int, array{distance: ?int, ancestors: array<int, true>}> $memo Memoized results, keyed by id
+     * @param array<int, array{distance: ?int, ancestors: array<int, true>, cycle_cut: bool}> $memo Memoized results, keyed by id
      * @param array<int, true> $in_progress Cycle guard for the current walk
-     * @param bool $cycle_cut Set as soon as the walk cuts a cycle
      *
-     * @return array{distance: ?int, ancestors: array<int, true>}
+     * @return array{distance: ?int, ancestors: array<int, true>, cycle_cut: bool}
      */
     private function findNearestVisibleAncestors(
         int $id,
         array $raw_parents_of,
         array &$memo,
         array &$in_progress,
-        bool &$cycle_cut,
     ): array {
         if (isset($memo[$id])) {
             return $memo[$id];
         }
         if (isset($in_progress[$id])) {
-            $cycle_cut = true;
-            return ['distance' => null, 'ancestors' => []]; // cycle: no ancestor through this path
+            return ['distance' => null, 'ancestors' => [], 'cycle_cut' => true]; // cycle: no ancestor through this path
         }
         $in_progress[$id] = true;
 
+        $cycle_cut = false;
         $best_distance = null;
         $best_ancestors = [];
         foreach ($raw_parents_of[$id] ?? [] as $parent_id) {
@@ -216,7 +245,8 @@ final class Builder
                 $distance = 1;
                 $ancestors = [$parent_id => true];
             } else {
-                $parent_result = $this->findNearestVisibleAncestors($parent_id, $raw_parents_of, $memo, $in_progress, $cycle_cut);
+                $parent_result = $this->findNearestVisibleAncestors($parent_id, $raw_parents_of, $memo, $in_progress);
+                $cycle_cut = $cycle_cut || $parent_result['cycle_cut'];
                 if ($parent_result['distance'] === null) {
                     continue; // this branch leads to no visible article
                 }
@@ -233,7 +263,7 @@ final class Builder
         }
 
         unset($in_progress[$id]);
-        $result = ['distance' => $best_distance, 'ancestors' => $best_ancestors];
+        $result = ['distance' => $best_distance, 'ancestors' => $best_ancestors, 'cycle_cut' => $cycle_cut];
         if (!$cycle_cut) {
             $memo[$id] = $result; // a cut cycle may hide a path: not final
         }
