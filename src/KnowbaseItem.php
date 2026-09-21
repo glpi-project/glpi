@@ -863,8 +863,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         // Handle logged in users
-        // Show FAQ for helpdesk user, knowledge base for central users
-        $criteria['WHERE'] = Session::getCurrentInterface() === "helpdesk" || !Session::haveRight(self::$rightname, READ)
+        // Keyed on the right, like `canViewItem()`.
+        $criteria['WHERE'] = !Session::haveRight(self::$rightname, READ)
             ? self::getVisibilityCriteriaFAQ()
             : self::getVisibilityCriteriaKB();
         return $criteria;
@@ -1722,7 +1722,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $frontier = $next_frontier;
         }
 
-        usort($children, static fn(array $a, array $b): int => strnatcasecmp($a['name'], $b['name']));
+        $collator = collator_create($_SESSION['glpilanguage'] ?? 'en_GB');
+        if ($collator) {
+            $collator->setStrength(Collator::PRIMARY);
+        }
+        usort($children, static function (array $a, array $b) use ($collator): int {
+            if ($collator === null) {
+                return strnatcasecmp($a['name'], $b['name']);
+            }
+            return (int) collator_compare($collator, $a['name'], $b['name']);
+        });
 
         return $children;
     }

@@ -44,6 +44,9 @@ use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_User;
+use Profile;
+use Profile_User;
+use ProfileRight;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
@@ -1317,6 +1320,114 @@ HTML,
         $ids = array_column($children, 'id');
         $this->assertContains($mid->getID(), $ids);
         $this->assertNotContains($grandchild->getID(), $ids);
+    }
+
+    /**
+     * `getVisibilityCriteria()` keys on the knowledge base READ right, never on
+     * the interface. `canViewItem()` admits a non-FAQ article to any READ
+     * holder, so a helpdesk profile carrying that right (a profile converted
+     * from the central interface keeps it, and the helpdesk form never shows
+     * it) must find its articles in the list and in the sub-articles tab.
+     */
+    public function testHelpdeskProfileWithReadRightSeesItsNonFaqArticles(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $profile = $this->createItem(Profile::class, [
+            'name'      => __FUNCTION__ . '_profile',
+            'interface' => 'helpdesk',
+        ]);
+        ProfileRight::updateProfileRights($profile->getID(), ['knowbase' => READ]);
+
+        $user = $this->createItem(User::class, ['name' => __FUNCTION__ . '_user']);
+        $this->createItem(Profile_User::class, [
+            'users_id'     => $user->getID(),
+            'profiles_id'  => $profile->getID(),
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_article',
+            'answer'   => __FUNCTION__ . '_article',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'users_id'         => $user->getID(),
+        ]);
+
+        $this->login(__FUNCTION__ . '_user');
+        Session::changeProfile($profile->getID());
+        $this->assertSame('helpdesk', Session::getCurrentInterface());
+        $this->assertTrue(Session::haveRight(KnowbaseItem::$rightname, READ));
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->can($article->getID(), READ), 'canViewItem admits it');
+        $this->assertContains($article->getID(), $this->getBrowseListRequestIds(), 'the list must agree with can()');
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $ids = array_column($this->callPrivateMethod($root, 'getChildArticlesInfo'), 'id');
+        $this->assertContains($article->getID(), $ids);
+    }
+
+    /**
+     * Guards the other side of the rule above: widening the criteria for a READ
+     * holder must not reach a reader who only holds READFAQ.
+     */
+    public function testFaqOnlyReaderStillCannotSeeANonFaqArticle(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_article',
+            'answer'   => __FUNCTION__ . '_article',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(Session::haveRight(KnowbaseItem::$rightname, READ));
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $item = new KnowbaseItem();
+        $this->assertFalse($item->can($article->getID(), READ));
+        $this->assertNotContains($article->getID(), $this->getBrowseListRequestIds());
+    }
+
+    /**
+     * Children sort through the session collation, not byte-wise: a byte
+     * comparison puts every accented name after "Z".
+     */
+    public function testSubArticlesTabSortsAccentedNamesUnderTheirLetter(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . '_parent',
+            'answer' => __FUNCTION__ . '_parent',
+        ]);
+        foreach (['Zebre', 'Éditeur', 'Alpha'] as $name) {
+            $this->createItem(KnowbaseItem::class, [
+                'name'     => $name,
+                'answer'   => $name,
+                '_parents' => [$parent->getID()],
+            ]);
+        }
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($parent->getID()));
+        $names = array_column($this->callPrivateMethod($item, 'getChildArticlesInfo'), 'name');
+
+        $this->assertSame(['Alpha', 'Éditeur', 'Zebre'], $names);
     }
 
     /**
