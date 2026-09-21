@@ -395,6 +395,29 @@ HTML,
         $this->assertContains(-1, $result);
     }
 
+    public function testGetChildrenArticlesReturnsMinusOneWhenNothingIsVisible(): void
+    {
+        // The method is used to build an `IN` clause, thus it must never return
+        // an empty array.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Hidden ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$parent->getID()],
+        ]);
+
+        $this->login('tech', 'tech');
+        $this->assertEquals([-1], KnowbaseItem::getChildrenArticles($parent->getID()));
+    }
+
     public function testGetChildrenArticles(): void
     {
         $this->login();
@@ -1041,10 +1064,8 @@ HTML,
         $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
     }
 
-    public function testSubArticlesTabHidesChildrenTheUserCannotOpen(): void
+    public function testSubArticlesTabShowChildren(): void
     {
-        // The parent is readable through its own grant. The child has none, so it is
-        // reachable only through inherited visibility, and its own page would refuse access.
         $glpi_user = getItemByTypeName("User", "glpi", true);
         $this->login();
         $entity = $this->getTestRootEntity(only_id: true);
@@ -1073,17 +1094,17 @@ HTML,
         // A session without KB admin rights, unrelated to both articles.
         $this->login('post-only', 'postonly');
 
-        $readable = new KnowbaseItem();
-        $this->assertTrue($readable->can($parent->getID(), READ));
-        $unreadable = new KnowbaseItem();
-        $this->assertFalse($unreadable->can($child->getID(), READ));
+        $direct = new KnowbaseItem();
+        $this->assertTrue($direct->can($parent->getID(), READ));
+        $inherited = new KnowbaseItem();
+        $this->assertTrue($inherited->can($child->getID(), READ));
 
         $item = new KnowbaseItem();
         $item->getFromDB($parent->getID());
         $html = (string) $item->showFull(['display' => false]);
 
-        $this->assertStringNotContainsString($child->fields['name'], $html);
-        $this->assertStringNotContainsString('id="kb-children-tab"', $html);
+        $this->assertStringContainsString($child->fields['name'], $html);
+        $this->assertStringContainsString('id="kb-children-tab"', $html);
     }
 
     public function testSubArticlesTabHidesChildrenOutsideTheirValidityWindow(): void
@@ -2503,6 +2524,221 @@ HTML,
         $this->assertNotContains($child_id, $visible_ids, 'child hidden once ancestor grant removed');
     }
 
+    public function testChildArticleIsViewableThroughItsVisibleParent(): void
+    {
+        // Arrange: create three articles (parent, child and grandchild) and give
+        // visiblity to the "tech" user of the parent article.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$parent->getID()],
+        ]);
+        $grandchild = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Grandchild ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$child->getID()],
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'users_id'         => $tech_user,
+        ]);
+
+        // Act and assert: the parent, child and grandchild articles should be
+        // visible for "tech"
+        $this->login('tech', 'tech');
+
+        // Make sure "tech" does not have administrator rights as it would make
+        // the test meaningless (he would be able to access any articles).
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $parent_obj = new KnowbaseItem();
+        $this->assertTrue($parent_obj->getFromDB($parent->getID()));
+        $this->assertTrue($parent_obj->canViewItem());
+        $this->assertFalse($parent_obj->canUpdateItem());
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child->getID()));
+        $this->assertTrue($child_obj->canViewItem());
+        $this->assertFalse($child_obj->canUpdateItem());
+
+        $grandchild_obj = new KnowbaseItem();
+        $this->assertTrue($grandchild_obj->getFromDB($grandchild->getID()));
+        $this->assertTrue($grandchild_obj->canViewItem());
+        $this->assertFalse($grandchild_obj->canUpdateItem());
+    }
+
+    public function testChildArticleIsEditableThroughItsEditableParent(): void
+    {
+        // Arrange: create three articles (parent, child and grandchild) and give
+        // visiblity to the "tech" user of the parent article.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$parent->getID()],
+        ]);
+        $grandchild = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Grandchild ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$child->getID()],
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'users_id'         => $tech_user,
+        ]);
+
+        // Act and assert: the parent, child and grandchild articles should be
+        // visible and editable for "tech"
+        $this->login('tech', 'tech');
+
+        // Make sure "tech" does not have administrator rights as it would make
+        // the test meaningless (he would be able to access any articles).
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $parent_obj = new KnowbaseItem();
+        $this->assertTrue($parent_obj->getFromDB($parent->getID()));
+        $this->assertTrue($parent_obj->canViewItem());
+        $this->assertTrue($parent_obj->canUpdateItem());
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child->getID()));
+        $this->assertTrue($child_obj->canViewItem());
+        $this->assertTrue($child_obj->canUpdateItem());
+
+        $grandchild_obj = new KnowbaseItem();
+        $this->assertTrue($grandchild_obj->getFromDB($grandchild->getID()));
+        $this->assertTrue($grandchild_obj->canViewItem());
+        $this->assertTrue($grandchild_obj->canUpdateItem());
+    }
+
+    public function testChildArticleIsViewableThroughOneOfItsParents(): void
+    {
+        // Arrange: create a child with two parents, and give visibility to the
+        // "tech" user of the second parent only.
+        // The hidden parent is created and linked first, thus it is checked
+        // first: the check must continue with the next parent.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+
+        $hidden_parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Hidden parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $visible_parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Visible parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$hidden_parent->getID(), $visible_parent->getID()],
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $visible_parent->getID(),
+            'users_id'         => $tech_user,
+        ]);
+
+        // Act and assert: the child is visible for "tech" through its visible
+        // parent, the other parent stays hidden.
+        $this->login('tech', 'tech');
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child->getID()));
+        $this->assertSame(
+            [$hidden_parent->getID(), $visible_parent->getID()],
+            array_map('intval', $child_obj->fields['_parents'])
+        );
+        $this->assertTrue($child_obj->canViewItem());
+
+        $hidden_parent_obj = new KnowbaseItem();
+        $this->assertTrue($hidden_parent_obj->getFromDB($hidden_parent->getID()));
+        $this->assertFalse($hidden_parent_obj->canViewItem());
+    }
+
+    public function testVisibilityCheckStopsOnACycleInTheParentLinks(): void
+    {
+        global $DB;
+
+        // Arrange: create two articles without any visibility rule, each one
+        // being the parent of the other.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $first = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'First ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $second = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Second ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$first->getID()],
+        ]);
+
+        // The cycle is refused by `KnowbaseItem_KnowbaseItem`, thus the link is
+        // inserted directly, like corrupted data would be.
+        $DB->insert(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id'        => $first->getID(),
+            'knowbaseitems_id_parent' => $second->getID(),
+        ]);
+
+        // Act and assert: the check ends (no infinite loop), and none of the
+        // articles is visible.
+        $this->login('tech', 'tech');
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        foreach ([$first, $second] as $article) {
+            $article_obj = new KnowbaseItem();
+            $this->assertTrue($article_obj->getFromDB($article->getID()));
+            $this->assertFalse($article_obj->canViewItem());
+        }
+    }
+
     /** @return int[] ids returned by a visibility-filtered browse list */
     private function listBrowseIds(): array
     {
@@ -3255,6 +3491,128 @@ HTML,
         $visible = $this->getVisibleArticleIds();
         $this->assertContains($root_id, $visible);
         $this->assertNotContains($child_of_root->getID(), $visible);
+    }
+
+    public function testVisibilityRulesSetOnTheRootArticleDoNotCascadeToDeeperArticles(): void
+    {
+        // Arrange: create an article below the root article, and a child below
+        // it, and give visibility to the "tech" user of the root article.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$root_id],
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$article->getID()],
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $root_id,
+            'users_id'         => $tech_user,
+        ]);
+
+        // Act and assert: "tech" can view the root article, but not the articles
+        // below it.
+        $this->login('tech', 'tech');
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $this->assertTrue($root->canViewItem());
+
+        foreach ([$article, $child] as $hidden) {
+            $hidden_obj = new KnowbaseItem();
+            $this->assertTrue($hidden_obj->getFromDB($hidden->getID()));
+            $this->assertFalse($hidden_obj->canViewItem());
+        }
+    }
+
+    public function testListsAndRightsChecksAgreeOnInheritedVisibility(): void
+    {
+        // Arrange: create a tree with all the inheritance cases, and give
+        // visibility to the "tech" user of the root article and of the "Shared"
+        // article:
+        //
+        //   root
+        //   ├── Shared
+        //   │   └── Child of shared
+        //   │       └── Grandchild of shared
+        //   ├── Hidden
+        //   │   ├── Child of hidden and shared (also below "Shared")
+        //   │   └── Child of hidden
+        //   └── Child of root
+        //
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $suffix = __FUNCTION__;
+        $create = fn(string $name, array $parents): int => $this->createItem(KnowbaseItem::class, [
+            'name'     => $name . ' ' . $suffix,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => $parents,
+        ])->getID();
+
+        $shared              = $create('Shared', [$root_id]);
+        $child_of_shared     = $create('Child of shared', [$shared]);
+        $grandchild          = $create('Grandchild of shared', [$child_of_shared]);
+        $hidden              = $create('Hidden', [$root_id]);
+        $child_of_both       = $create('Child of hidden and shared', [$hidden, $shared]);
+        $child_of_hidden     = $create('Child of hidden', [$hidden]);
+        $child_of_root       = $create('Child of root', [$root_id]);
+
+        foreach ([$root_id, $shared] as $article_id) {
+            $this->createItem(KnowbaseItem_User::class, [
+                'knowbaseitems_id' => $article_id,
+                'users_id'         => $tech_user,
+            ]);
+        }
+
+        // Act: get the articles visible for "tech" in the lists (SQL) and through
+        // the rights checks (PHP).
+        $this->login('tech', 'tech');
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $articles = [
+            $root_id,
+            $shared,
+            $child_of_shared,
+            $grandchild,
+            $hidden,
+            $child_of_both,
+            $child_of_hidden,
+            $child_of_root,
+        ];
+        $visible_in_lists = array_values(
+            array_intersect($articles, $this->getVisibleArticleIds())
+        );
+        $visible_in_rights_checks = array_values(array_filter(
+            $articles,
+            static fn(int $id): bool => (new KnowbaseItem())->can($id, READ)
+        ));
+
+        // Assert: both give the same articles, the expected ones.
+        $expected = [$root_id, $shared, $child_of_shared, $grandchild, $child_of_both];
+        $this->assertSame($expected, $visible_in_lists);
+        $this->assertSame($expected, $visible_in_rights_checks);
     }
 
     /**
