@@ -1044,6 +1044,14 @@ class SoftwareTest extends AbstractInventoryAsset
             'the new version/installation must attach to the active software, not the deleted duplicate'
         );
 
+        // The installation row (Item_SoftwareVersion) is what drives the asset
+        // sheet, so verify it too points at the active software's version, not
+        // only that the version record exists.
+        $installs = (new \Item_SoftwareVersion())->find([
+            'softwareversions_id' => (int) current($on_active)['id'],
+        ]);
+        $this->assertCount(1, $installs, 'the installation must be linked to the active software version');
+
         $on_deleted = $version->find([
             'name'         => '2.0.0',
             'softwares_id' => $deleted_softwares_id,
