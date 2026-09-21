@@ -4756,6 +4756,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (
                         empty($ORDER) // No sort clause is defined
                         && $data['search']['start'] == 0 // First page of results
+                        && !$data['search']['export_all'] // Full export needs every row
                     ) {
                         $tmpquery .= " LIMIT " . (int) $data['search']['list_limit'];
                     }
