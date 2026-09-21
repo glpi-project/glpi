@@ -252,9 +252,11 @@ class KnowbaseControllerTest extends HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->assertCount(2, $content);
-                    $this->assertEquals('_knowbaseitem_favorite_test', $content[0]['name']);
-                    $this->assertEquals('_knowbaseitem_notfavorite_test', $content[1]['name']);
+                    // The root article is readable by FAQ readers, so it is listed too.
+                    $names = array_column($content, 'name');
+                    $this->assertCount(3, $content);
+                    $this->assertContains('_knowbaseitem_favorite_test', $names);
+                    $this->assertContains('_knowbaseitem_notfavorite_test', $names);
                 });
         });
 
@@ -274,8 +276,10 @@ class KnowbaseControllerTest extends HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content);
-                    $this->assertEquals('_knowbaseitem_notfavorite_test', $content[0]['name']);
+                    // The root article is readable and is not a favorite, so it matches too.
+                    $names = array_column($content, 'name');
+                    $this->assertCount(2, $content);
+                    $this->assertContains('_knowbaseitem_notfavorite_test', $names);
                 });
         });
     }

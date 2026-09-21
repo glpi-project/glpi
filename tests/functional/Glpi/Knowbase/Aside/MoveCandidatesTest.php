@@ -200,9 +200,12 @@ final class MoveCandidatesTest extends DbTestCase
             'users_id'         => Session::getLoginUserID(),
         ]);
 
-        // Visible and promoted to root, yet still a real descendant: that is the contrast.
-        $roots = array_map(static fn($article) => $article->id, (new Builder())->buildTree()->getArticles());
-        $this->assertContains($visible_grandchild->getID(), $roots);
+        // Visible under the root article, its nearest visible ancestor, yet still a descendant of `moved`: that is the contrast.
+        $shown_under_root = array_map(
+            static fn(Article $article) => $article->id,
+            (new Builder())->buildChildren(KnowbaseItem::getRootId())
+        );
+        $this->assertContains($visible_grandchild->getID(), $shown_under_root);
 
         $candidates = (new MoveCandidates($moved->getID()))->build();
 
