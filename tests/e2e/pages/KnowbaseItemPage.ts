@@ -365,7 +365,6 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public getAsideArticleActionsMenuButton(id: number, action: string): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- no accessible role while the dropdown is closed
         return this.getAsideArticleActionsMenu(id).locator(`button[data-glpi-kb-action="${action}"]`);
     }
 
