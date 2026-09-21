@@ -295,13 +295,12 @@ class SearchTest extends DbTestCase
             ['meta' => true, 'itemtype' => 'Software', 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'chrome'],
         ];
         \Search::constructAdditionalSqlForMetacriteria($criteria1, $SELECT, $FROM, $already_link_tables, $data);
-        $count1 = substr_count($SELECT, "ITEM_Software_$field_id");
-        // simulate a second, independent query reusing the same $data (as a plugin might)
+        $this->assertSame(1, substr_count($SELECT, "ITEM_Software_$field_id"));
+        // second, independent call reusing the same $data (as a plugin might): must not leak nor drop columns
         $SELECT2 = '';
         \Search::constructAdditionalSqlForMetacriteria($criteria2, $SELECT2, $FROM, $already_link_tables, $data);
-        $count2 = substr_count($SELECT2, "ITEM_Software_$field_id");
-        fwrite(STDERR, "count in query1=$count1 count in query2 (fresh SELECT, reused \$data)=$count2\n");
-        $this->assertTrue(true);
+        $this->assertSame(1, substr_count($SELECT2, "ITEM_Software_$field_id"));
+    }
     }
 
     public function testSoftwareLinkedToAnyComputer()
