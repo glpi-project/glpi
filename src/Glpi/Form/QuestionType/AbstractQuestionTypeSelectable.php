@@ -238,8 +238,8 @@ TWIG;
             return [];
         }
 
-        $options = json_decode($rawData['values']);
-        if (empty($options)) {
+        $options = $this->convertExtraData($rawData)[QuestionTypeSelectableExtraDataConfig::OPTIONS] ?? [];
+        if (!is_array($options) || $options === []) {
             return [];
         }
 
@@ -263,7 +263,7 @@ TWIG;
         foreach ($default_values as $value) {
             $index = array_search($value, $options);
             if ($index !== false) {
-                $indexes[] = (int) $index + 1;
+                $indexes[] = (int) $index;
             }
         }
 
