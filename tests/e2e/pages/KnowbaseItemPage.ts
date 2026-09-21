@@ -358,28 +358,6 @@ export class KnowbaseItemPage extends GlpiPage
         return this.getAsideArticleActionsMenu(id).locator(`button[data-glpi-kb-action="${action}"]`);
     }
 
-    /**
-     * Simulates a fast pointer sweep: mouseout the previous row before
-     * mouseover on the next (Locator.hover() can't express that ordering).
-     */
-    public async sweepPointerAcrossAsideTreeRows(ids: number[]): Promise<void>
-    {
-        for (let i = 0; i < ids.length; i++) {
-            if (i > 0) {
-                await this.dispatchAsideTreeRowMouseEvent(ids[i - 1], 'mouseout');
-            }
-            await this.dispatchAsideTreeRowMouseEvent(ids[i], 'mouseover');
-        }
-    }
-
-    private async dispatchAsideTreeRowMouseEvent(id: number, type: string): Promise<void>
-    {
-        await this.getAsideTreeArticleRow(id).evaluate(
-            (element, event_type) => element.dispatchEvent(new MouseEvent(event_type, { bubbles: true })),
-            type,
-        );
-    }
-
     public async doToggleAsideFavorite(id: number): Promise<void>
     {
         const response_promise = this.page.waitForResponse(
