@@ -475,6 +475,48 @@ test('Create/update a ticket using a template with readonly fields', async ({ pr
     await expect(page.locator('input[name="urgency"]')).toHaveValue('4');
 });
 
+test('Mandatory technician field shows an error instead of silently failing', async ({ profile, page, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const rand = randomUUID();
+
+    const template_id = await api.createItem('TicketTemplate', {
+        name: `test mandatory technician ${rand}`,
+        entities_id: getWorkerEntityId(),
+    });
+    // num: 5 => '_users_id_assign' (see ITILTemplate::getAllowedFields())
+    await api.createItem('TicketTemplateMandatoryField', {
+        tickettemplates_id: template_id,
+        num: 5,
+    });
+
+    await api.updateItem('Entity', getWorkerEntityId(), {
+        tickettemplates_id: template_id,
+    });
+
+    const ticket = new TicketPage(page);
+    await ticket.gotoCreationPage();
+
+    // Remove auto-assigned technician
+    const assign_dropdown = ticket.getDropdownByLabel('Assigned to *');
+    await assign_dropdown.locator('.select2-selection__choice__remove').click();
+
+    await ticket.getButton('Add').click();
+
+    const error_alert = ticket.getAlert('Mandatory fields are not filled');
+    await expect(error_alert).toBeVisible();
+    await expect(page).toHaveURL(/\/front\/ticket\.form\.php$/);
+    await error_alert.getByRole('button', { name: 'Close' }).click();
+
+    
+    const add_response = page.waitForResponse(
+        (resp) => resp.url().includes('/front/ticket.form.php') && resp.request().method() === 'POST'
+    );
+    await ticket.getButton('Add').click();
+    await add_response;
+
+    await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
+});
+
 test('Priority recalculates when urgency or impact changes', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const ticket_id = await api.createItem('Ticket', {
