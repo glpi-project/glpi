@@ -4523,8 +4523,8 @@ class CommonDBTM extends CommonGLPI
             ($this->input['_skip_locks'] ?? false) === true
             || (isset($this->input['_transfer']) && !($this->input['_lock_updated_fields'] ?? false))
             || !$this->maybeDynamic()
-            || !$this->isDynamic()
-            || !(in_array('is_dynamic', $this->updates, true) || ($this->input['is_dynamic'] ?? false))
+            || !isset($this->input['is_dynamic'])
+            || !$this->input['is_dynamic']
         ) {
             return [];
         }
