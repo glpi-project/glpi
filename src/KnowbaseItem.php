@@ -789,7 +789,41 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return true;
         }
 
-        return parent::haveVisibilityAccess();
+        $visited = [$this->getID() => true];
+        return $this->haveDirectOrInheritedVisibilityAccess($visited);
+    }
+
+    /**
+     * @param array<int, true> $visited ids of the articles already checked: an
+     *                                  ancestor can be reached by several paths,
+     *                                  and corrupted links can contain a cycle
+     */
+    private function haveDirectOrInheritedVisibilityAccess(array &$visited): bool
+    {
+        if (parent::haveVisibilityAccess()) {
+            return true;
+        }
+
+        // The article is also visible if one of its parents is visible (except
+        // the root article, which is always visible so we don't take it into
+        // account here).
+        foreach ($this->fields['_parents'] ?? [] as $parent_id) {
+            $parent_id = (int) $parent_id;
+            if (isset($visited[$parent_id]) || self::isRootId($parent_id)) {
+                continue;
+            }
+            $visited[$parent_id] = true;
+
+            $parent = new self();
+            if (
+                $parent->getFromDB($parent_id)
+                && $parent->haveDirectOrInheritedVisibilityAccess($visited)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1622,7 +1656,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
-        // getListRequest()'s visibility cannot filter this query: inherited visibility matches every child of a readable parent.
         $criteria = [
             'SELECT'     => self::getTableField('id'),
             'FROM'       => self::getTable(),
