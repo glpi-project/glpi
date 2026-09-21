@@ -41,6 +41,7 @@ use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
 use Glpi\Form\Migration\FallbackToAnotherOperatorException;
+use Glpi\Form\Migration\UnresolvedConditionValueException;
 use Override;
 
 use function Safe\json_decode;
@@ -94,7 +95,7 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
     }
 
     #[Override]
-    public function convertConditionValue(string $value): ?array
+    public function convertConditionValue(string $value): array|int
     {
         $nameFields = [];
         $item = getItemForItemtype($this->itemtype);
@@ -130,6 +131,6 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
             throw $fallback;
         }
 
-        return null;
+        throw new UnresolvedConditionValueException();
     }
 }

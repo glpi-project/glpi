@@ -326,11 +326,9 @@ class FormMigration extends AbstractPluginMigration
                 } catch (FallbackToAnotherOperatorException $e) {
                     $value_operator = $e->getOperator();
                     $value = $e->getValue();
-                }
-
-                // Legacy value has no matching option: drop the condition
-                // instead of silently binding it to a non-existent one.
-                if ($value === null) {
+                } catch (UnresolvedConditionValueException) {
+                    // Legacy value has no matching option: drop the condition
+                    // instead of silently binding it to a non-existent one.
                     $this->addUnresolvedConditionWarning(
                         $target_item,
                         __('A visibility condition used in "%1$s" "%2$s" (Form "%3$s") references a value that no longer matches any option. It will be ignored.')
