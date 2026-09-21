@@ -35,6 +35,7 @@
 namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Migration\UnresolvedConditionValueException;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
@@ -327,5 +328,17 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
         ];
+    }
+
+    public function testConvertConditionValue(): void
+    {
+        $handler = new MultipleChoiceFromValuesConditionHandler(['Option A', 'Option B']);
+
+        $this->assertSame([0], $handler->convertConditionValue('Option A'));
+        $this->assertSame([1], $handler->convertConditionValue('Option B'));
+
+        // Stale/renamed legacy value: must not fall back to an index.
+        $this->expectException(UnresolvedConditionValueException::class);
+        $handler->convertConditionValue('Deleted option');
     }
 }
