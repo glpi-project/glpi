@@ -360,12 +360,13 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * A button inside an aside tree article row's (lazy) actions menu,
-     * addressed by its data-glpi-kb-action (e.g. 'TOGGLE_FAVORITE').
+     * A button inside an aside tree article row's (lazy) actions menu, hidden
+     * until the dropdown opens.
      */
-    public getAsideArticleActionsMenuButton(id: number, action: string): Locator
+    public getAsideArticleActionsMenuButton(id: number, name: string): Locator
     {
-        return this.getAsideArticleActionsMenu(id).locator(`button[data-glpi-kb-action="${action}"]`);
+        return this.getAsideArticleActionsMenu(id)
+            .getByRole('button', { name, includeHidden: true });
     }
 
     public async doToggleAsideFavorite(id: number): Promise<void>
