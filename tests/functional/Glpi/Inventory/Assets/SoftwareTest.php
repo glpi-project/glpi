@@ -961,16 +961,8 @@ class SoftwareTest extends AbstractInventoryAsset
     {
         $this->login();
 
-        $computer = new \Computer();
-        $soft     = new \Software();
-        $version  = new SoftwareVersion();
-
-        $computers_id = $computer->add([
-            'name'        => 'pc-dup-active',
-            'serial'      => 'dupactive01',
-            'entities_id' => 0,
-        ]);
-        $this->assertGreaterThan(0, $computers_id);
+        $soft    = new \Software();
+        $version = new SoftwareVersion();
 
         // First inventory: let GLPI create the software (and its manufacturer)
         // exactly as production does, so it is guaranteed to be matched again by
