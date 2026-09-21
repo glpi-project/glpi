@@ -42,7 +42,7 @@ final class TranslationRevisionEvent extends RevisionEvent
     public function __construct(
         int $id,
         int $index,
-        string $date,
+        ?string $date,
         int $author_id,
         private string $language,
     ) {

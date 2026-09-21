@@ -39,7 +39,7 @@ use Override;
 final class CreationEvent implements HistoryEventInterface
 {
     public function __construct(
-        private string $date,
+        private ?string $date,
         private int $author,
     ) {}
 
@@ -56,7 +56,7 @@ final class CreationEvent implements HistoryEventInterface
     }
 
     #[Override]
-    public function getDate(): string
+    public function getDate(): ?string
     {
         return $this->date;
     }

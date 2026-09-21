@@ -56,6 +56,11 @@ if ($DB->tableExists($cat_table)) {
             'entities_id'   => $cat['entities_id'],
             'is_recursive'  => $cat['is_recursive'],
             'is_faq'        => 0,
+            // Note: these dates may be empty as the database allow null values here.
+            // They should NOT be fixed, null is still accepted in the current schema.
+            // Replacing it with the current date would be a mistake.
+            // It is the responsibility of the code using these values to handle
+            // null correctly since it is a value accepted by the DB.
             'date_creation' => $cat['date_creation'],
             'date_mod'      => $cat['date_mod'],
         ]);
