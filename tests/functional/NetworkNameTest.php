@@ -36,10 +36,37 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 /* Test for inc/networkport.class.php */
 
 class NetworkNameTest extends DbTestCase
 {
+    public function testAssociateMassiveActionTargetsNetworkPort(): void
+    {
+        $this->login();
+
+        $massive_action = new \MassiveAction(
+            [
+                'action' => 'affect',
+                'action_name' => 'Associate',
+                'items' => [\NetworkName::class => [1 => 'on']],
+            ],
+            [],
+            'process'
+        );
+
+        ob_start();
+        $result = \CommonDBConnexity::showMassiveActionsSubForm($massive_action);
+        $html = ob_get_clean();
+
+        $this->assertTrue($result);
+        $this->assertStringNotContainsString('Unable to reaffect given elements!', $html);
+        $this->assertStringContainsString('name="peertype" value="NetworkPort"', $html);
+        $this->assertStringContainsString('name="peers_id"', $html);
+    }
+
     public function testAddSimpleNetworkName()
     {
         $this->login();
