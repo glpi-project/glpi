@@ -676,15 +676,13 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
                     'glpi_softwares.name AS softname',
                 ],
                 'FROM'   => 'glpi_softwarelicenses',
-                'INNER JOIN'   => [
+                'LEFT JOIN'    => [
                     'glpi_softwares'  => [
                         'ON'  => [
                             'glpi_softwarelicenses' => 'softwares_id',
                             'glpi_softwares'        => 'id',
                         ],
                     ],
-                ],
-                'LEFT JOIN'    => [
                     'glpi_alerts'  => [
                         'ON'  => [
                             'glpi_softwarelicenses' => 'id',
@@ -705,9 +703,9 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
                             expression2: QueryFunction::curdate()
                         )
                     ) . ' < ' . $before,
-                    'glpi_softwares.is_template'  => 0,
-                    'glpi_softwares.is_deleted'   => 0,
-                    'glpi_softwares.entities_id'  => $entity,
+                    'glpi_softwarelicenses.is_template'  => 0,
+                    'glpi_softwarelicenses.is_deleted'   => 0,
+                    'glpi_softwarelicenses.entities_id'  => $entity,
                 ],
             ];
             $iterator = $DB->request($criteria);
@@ -716,7 +714,8 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             $items    = [];
 
             foreach ($iterator as $license) {
-                $name     = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
+                $license['softname'] ??= __('Not linked to any software');
+                $name = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
                 //TRANS: %1$s the license name, %2$s is the expiration date
                 $messages[] = sprintf(
                     __('License %1$s expired on %2$s'),
