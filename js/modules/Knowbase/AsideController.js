@@ -878,10 +878,10 @@ export class GlpiKnowbaseAsideController
 
         const lineOf = (e) => e.target.closest('.article[data-glpi-kb-article-id]');
 
-        // Prefetch after a short dwell so a fast sweep across many rows fires no request per row merely passed over (see #PREFETCH_DELAY_MS).
         const schedulePrepare = (e) => {
             const line = lineOf(e);
             if (line && this.#aside.contains(line)) {
+                this.#ensureActionsMenu(line);
                 this.#schedulePrefetch(line);
             }
         };
@@ -927,7 +927,6 @@ export class GlpiKnowbaseAsideController
         this.#cancelPrefetch(line);
         const timer = window.setTimeout(() => {
             this.#prefetch_timers.delete(line);
-            this.#ensureActionsMenu(line);
             // Quiet: nothing here is a request the reader is waiting on.
             this.#populateMenus(parseInt(line.dataset.glpiKbArticleId), { quiet: true });
         }, GlpiKnowbaseAsideController.#PREFETCH_DELAY_MS);

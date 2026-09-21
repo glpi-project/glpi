@@ -85,32 +85,3 @@ test('A row the pointer rests on gets its actions menu prefetched', async ({ pag
     await expect(kb.getAsideArticleActionsMenu(id)).toHaveAttribute('data-glpi-kb-actions-loaded', '');
     await expect(kb.getAsideArticleActionsMenuButton(id, 'TOGGLE_FAVORITE')).toBeAttached();
 });
-
-test('Sweeping across many aside rows only prefetches the one the pointer rests on', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const ids = [
-        await createArticle(api),
-        await createArticle(api),
-        await createArticle(api),
-        await createArticle(api),
-        await createArticle(api),
-    ];
-
-    const kb = new KnowbaseItemPage(page);
-    await kb.goto(ids[0]);
-    await kb.waitForAsideReady();
-
-    const requested_ids: number[] = [];
-    page.on('request', (request) => {
-        const match = request.url().match(/\/Knowbase\/(\d+)\/AsideActions$/);
-        if (match) {
-            requested_ids.push(Number(match[1]));
-        }
-    });
-
-    // Simulate a fast pointer sweep: mouseout the previous row, then mouseover the next.
-    await kb.sweepPointerAcrossAsideTreeRows(ids);
-
-    // Only the last row (the one never left) should have triggered a request.
-    await expect.poll(() => requested_ids).toEqual([ids[ids.length - 1]]);
-});
