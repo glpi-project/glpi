@@ -191,7 +191,9 @@ class Session
                     $_SESSION["glpiauthtype"]     = Auth::CAS;
                     $_SESSION["glpiextauth"]      = 0;
                 } else {
-                    $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
+                    // The method that actually opened the session, which is not necessarily the one
+                    // configured on the user record: x509, CAS and SSO logins never write it there.
+                    $_SESSION["glpiauthtype"]     = $auth->getAuthType();
                 }
                 $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                 $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
@@ -1103,6 +1105,18 @@ class Session
             return $_SESSION["glpicronuserrunning"] ?? $_SESSION['glpiinventoryuserrunning'];
         }
         return $_SESSION["glpiID"] ?? false;
+    }
+
+    /**
+     * Get the authentication method that opened the current session.
+     *
+     * This is the method the user actually went through, which may differ from the `authtype` stored on their record.
+     *
+     * @return int One of the Auth type constants
+     */
+    public static function getAuthType(): int
+    {
+        return (int) ($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED);
     }
 
     public static function getCurrentUser(): ?User

@@ -39,6 +39,7 @@ use Glpi\Security\ReAuth\InPlaceReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\ReAuth\ReAuthStrategyEnum;
 use Glpi\Security\ReAuth\ReAuthStrategyInterface;
+use Glpi\Security\ReAuth\SessionAuthType;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -135,6 +136,33 @@ trait ReAuthTrait
         );
         $_GET  = [];
         $_POST = [];
+    }
+
+    /**
+     * Pretend the current session was opened through the given authentication method.
+     *
+     * This is what {@see \Session::init()} records at login time. Strategies do not read it
+     * directly: {@see SessionAuthType} may answer from the user record
+     * instead, for a resumed session or an external transport.
+     *
+     * @param int $auth_type One of the Auth type constants
+     */
+    private function setSessionAuthType(int $auth_type): void
+    {
+        $_SESSION['glpiauthtype'] = $auth_type;
+    }
+
+    /**
+     * Strategy the manager resolves for the current session.
+     *
+     * Goes through the private resolution so the selection itself is exercised; the public
+     * getters cannot tell two strategies sharing a prompt template apart.
+     */
+    private function getSelectedStrategy(): ReAuthStrategyInterface
+    {
+        $get_strategy = new \ReflectionMethod(ReAuthManager::class, 'getStrategy');
+
+        return $get_strategy->invoke($this->getReAuthManager());
     }
 
     private function setReauthenticated(bool $reauthenticated): void

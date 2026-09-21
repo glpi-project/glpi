@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Auth;
 use AuthLDAP;
 use Glpi\Security\ReAuth\LdapReAuthStrategy;
 use Glpi\Tests\DbTestCase;
@@ -89,15 +90,33 @@ class LdapReAuthStrategyTest extends DbTestCase
         return (int) $import['id'];
     }
 
-    /** Available for a user authenticated through an LDAP directory. */
+    /** Available for a session opened against an LDAP directory. */
     #[RequiresPhpExtension('ldap')]
     public function testIsAvailableForLdapUser(): void
     {
         // --- arrange ---
         $users_id = $this->importLdapUser('brazil6');
+        $this->setSessionAuthType(Auth::LDAP);
 
         // --- act + assert ---
         $this->assertTrue((new LdapReAuthStrategy())->isAvailable($users_id));
+    }
+
+    /**
+     * Not available when the session was opened locally, even for a user attached to a directory.
+     *
+     * The user is then left with the confirmation, not with a password prompt: importing an
+     * account from a directory blanks its local hash, so there is no credential left to challenge.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testIsAvailableIsFalseForLocalSessionAuthType(): void
+    {
+        // --- arrange ---
+        $users_id = $this->importLdapUser('brazil6');
+        $this->setSessionAuthType(Auth::DB_GLPI);
+
+        // --- act + assert ---
+        $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
     }
 
     /** Not available for a local DB_GLPI account (that's the password strategy's job). */
@@ -105,9 +124,25 @@ class LdapReAuthStrategyTest extends DbTestCase
     {
         // --- arrange ---
         $users_id = getItemByTypeName(User::class, TU_USER, true);
+        $this->setSessionAuthType(Auth::DB_GLPI);
 
         // --- act + assert ---
         $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
+    }
+
+    /**
+     * A "remember me" session falls back to the credential stored on the account, so an imported
+     * LDAP user is still asked to bind.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testIsAvailableForRememberMeSessionOfAnLdapUser(): void
+    {
+        // --- arrange ---
+        $users_id = $this->importLdapUser('brazil6');
+        $this->setSessionAuthType(Auth::COOKIE);
+
+        // --- act + assert ---
+        $this->assertTrue((new LdapReAuthStrategy())->isAvailable($users_id));
     }
 
     /** Not available when the given user ID does not exist. */
@@ -116,6 +151,7 @@ class LdapReAuthStrategyTest extends DbTestCase
         // --- arrange : ensure the user id does not exist in DB ---
         $non_existing_user_id = 999999;
         assert(!(new User())->getFromDB($non_existing_user_id), 'Fixture: user 999999 must not exist');
+        $this->setSessionAuthType(Auth::LDAP);
 
         // --- act + assert ---
         $this->assertFalse((new LdapReAuthStrategy())->isAvailable($non_existing_user_id));
@@ -130,6 +166,30 @@ class LdapReAuthStrategyTest extends DbTestCase
         // --- arrange : import a real LDAP user then detach it from any directory ---
         $users_id = $this->importLdapUser('brazil6');
         $DB->update('glpi_users', ['auths_id' => 0], ['id' => $users_id]);
+        $this->setSessionAuthType(Auth::LDAP);
+
+        // --- act + assert ---
+        $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
+    }
+
+    /**
+     * Not available when the directory it points to has no host: verify() could never bind, and
+     * as it outranks the confirmation fallback it would lock the user out of every sensitive
+     * action, including the page that would fix the directory configuration.
+     */
+    public function testIsAvailableIsFalseWhenDirectoryHasNoHost(): void
+    {
+        global $DB;
+
+        // --- arrange : point the user at a directory that cannot be contacted at all ---
+        $users_id = getItemByTypeName(User::class, TU_USER, true);
+        $hostless = $this->createItem(AuthLDAP::class, [
+            'name'   => $this->getUniqueString(),
+            'host'   => '',
+            'basedn' => 'dc=glpi,dc=org',
+        ]);
+        $DB->update('glpi_users', ['auths_id' => $hostless->getID()], ['id' => $users_id]);
+        $this->setSessionAuthType(Auth::LDAP);
 
         // --- act + assert ---
         $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
