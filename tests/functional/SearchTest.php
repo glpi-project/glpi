@@ -301,7 +301,6 @@ class SearchTest extends DbTestCase
         \Search::constructAdditionalSqlForMetacriteria($criteria2, $SELECT2, $FROM, $already_link_tables, $data);
         $this->assertSame(1, substr_count($SELECT2, "ITEM_Software_$field_id"));
     }
-    }
 
     public function testSoftwareLinkedToAnyComputer()
     {
