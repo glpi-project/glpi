@@ -186,6 +186,12 @@ final class GenerateKnowbaseItemsCommand extends AbstractCommand
             '20'
         );
         $this->addOption(
+            'faq-sections',
+            null,
+            InputOption::VALUE_NONE,
+            'Flag the container and the section articles as FAQ too, so the tree nests in the FAQ'
+        );
+        $this->addOption(
             'visibility',
             null,
             InputOption::VALUE_REQUIRED,
@@ -258,6 +264,7 @@ final class GenerateKnowbaseItemsCommand extends AbstractCommand
         $depth      = (int) $this->input->getOption('depth');
         $branching  = (int) $this->input->getOption('branching');
         $faq_ratio  = (int) $this->input->getOption('faq-ratio');
+        $faq_sections = (bool) $this->input->getOption('faq-sections');
         $seed       = (int) $this->input->getOption('seed');
         $visibility = (string) $this->input->getOption('visibility');
 
@@ -330,7 +337,7 @@ final class GenerateKnowbaseItemsCommand extends AbstractCommand
                 $container_name,
                 KnowbaseItem::getRootId(),
                 is_section: true,
-                is_faq: false
+                is_faq: $faq_sections
             );
             $progress_bar->advance();
             if ($visibility !== self::VISIBILITY_NONE) {
@@ -351,7 +358,7 @@ final class GenerateKnowbaseItemsCommand extends AbstractCommand
                             $this->buildSectionName($level, $section_seq),
                             $parent_id,
                             is_section: true,
-                            is_faq: false
+                            is_faq: $faq_sections
                         );
                         if ($visibility === self::VISIBILITY_ALL) {
                             $this->insertEntityVisibility($section_id);

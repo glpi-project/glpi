@@ -169,7 +169,8 @@ final class Builder
         $memo = [];
         $in_progress = [];
         foreach (array_keys($this->data) as $id) {
-            $ancestors = $this->findNearestVisibleAncestors($id, $raw_parents_of, $memo, $in_progress)['ancestors'];
+            $cycle_cut = false;
+            $ancestors = $this->findNearestVisibleAncestors($id, $raw_parents_of, $memo, $in_progress, $cycle_cut)['ancestors'];
             if ($ancestors === []) {
                 $this->roots[$id] = true;
                 continue;
@@ -188,6 +189,7 @@ final class Builder
      * @param array<int, int[]> $raw_parents_of child_id => every parent id, visible or not
      * @param array<int, array{distance: ?int, ancestors: array<int, true>}> $memo Memoized results, keyed by id
      * @param array<int, true> $in_progress Cycle guard for the current walk
+     * @param bool $cycle_cut Set as soon as the walk cuts a cycle
      *
      * @return array{distance: ?int, ancestors: array<int, true>}
      */
@@ -196,11 +198,13 @@ final class Builder
         array $raw_parents_of,
         array &$memo,
         array &$in_progress,
+        bool &$cycle_cut,
     ): array {
         if (isset($memo[$id])) {
             return $memo[$id];
         }
         if (isset($in_progress[$id])) {
+            $cycle_cut = true;
             return ['distance' => null, 'ancestors' => []]; // cycle: no ancestor through this path
         }
         $in_progress[$id] = true;
@@ -212,7 +216,7 @@ final class Builder
                 $distance = 1;
                 $ancestors = [$parent_id => true];
             } else {
-                $parent_result = $this->findNearestVisibleAncestors($parent_id, $raw_parents_of, $memo, $in_progress);
+                $parent_result = $this->findNearestVisibleAncestors($parent_id, $raw_parents_of, $memo, $in_progress, $cycle_cut);
                 if ($parent_result['distance'] === null) {
                     continue; // this branch leads to no visible article
                 }
@@ -229,9 +233,12 @@ final class Builder
         }
 
         unset($in_progress[$id]);
-        $memo[$id] = ['distance' => $best_distance, 'ancestors' => $best_ancestors];
+        $result = ['distance' => $best_distance, 'ancestors' => $best_ancestors];
+        if (!$cycle_cut) {
+            $memo[$id] = $result; // a cut cycle may hide a path: not final
+        }
 
-        return $memo[$id];
+        return $result;
     }
 
     /**

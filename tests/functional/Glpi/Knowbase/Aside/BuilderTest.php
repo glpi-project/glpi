@@ -40,6 +40,7 @@ use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\Aside\Tree;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_User;
 use Session;
 
@@ -225,6 +226,76 @@ final class BuilderTest extends DbTestCase
             $top_level,
             'child attached under the root, past its invisible parent',
         );
+    }
+
+    /**
+     * Graph, A and B invisible: A under Home and B, B under A, leaf 1 under A,
+     * leaf 2 under B. The walk goes in name order, so leaf 1 cuts the cycle at
+     * B. That cut result must not be memoized, or leaf 2 reads it and is
+     * promoted to a root.
+     */
+    public function testArticleBelowACycleOfInvisibleParentsStaysUnderTheRoot(): void
+    {
+        // Author the cycle as another user: the author bypass would show it.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $cycle_a = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'zz cycle A ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [KnowbaseItem::getRootId()],
+        ]);
+        $cycle_b = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'zz cycle B ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$cycle_a->getID()],
+        ]);
+
+        // isAncestor() refuses this on write: only corrupt data gets here.
+        /** @var \DBmysql $DB */
+        global $DB;
+        $DB->insert(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id'        => $cycle_a->getID(),
+            'knowbaseitems_id_parent' => $cycle_b->getID(),
+        ]);
+
+        $leaf1 = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'zz leaf 1 ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$cycle_a->getID()],
+        ]);
+        $leaf2 = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'zz leaf 2 ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$cycle_b->getID()],
+        ]);
+
+        // Restricted user: the leaves are visible, the cycle is not.
+        $this->login('normal', 'normal');
+        foreach ([$leaf1, $leaf2] as $leaf) {
+            (new KnowbaseItem_User())->add([
+                'knowbaseitems_id' => $leaf->getID(),
+                'users_id'         => Session::getLoginUserID(),
+            ]);
+        }
+        foreach ([$cycle_a, $cycle_b] as $item) {
+            $obj = new KnowbaseItem();
+            $this->assertTrue($obj->getFromDB($item->getID()));
+            $this->assertFalse($obj->canViewItem(), 'cycle node must NOT be viewable for this test');
+        }
+
+        $tree = (new Builder())->buildTree();
+
+        // One root only: both leaves nest under it.
+        $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
+
+        $top_level = $this->getTopLevelArticles($tree);
+        $this->assertArrayHasKey('zz leaf 1 ' . __FUNCTION__, $top_level);
+        $this->assertArrayHasKey('zz leaf 2 ' . __FUNCTION__, $top_level, 'leaf 2 promoted to a root');
     }
 
     /**
