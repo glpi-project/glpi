@@ -1169,21 +1169,23 @@ final class SQLProvider implements SearchProviderInterface
         $is_fkey_composite_on_self = getTableNameForForeignKeyField($opt["linkfield"]) === $table
             && $opt["linkfield"] !== getForeignKeyFieldForTable($table);
         $orig_table = SearchEngine::getOrigTableName($itemtype);
+
+        $complexjoin = '';
+        if (isset($opt['joinparams'])) {
+            $complexjoin = Search::computeComplexJoinID($opt['joinparams']);
+        }
+
         if (
             ($table !== 'asset_types')
-            && ($is_fkey_composite_on_self || $table !== $orig_table)
+            && ($is_fkey_composite_on_self || $table !== $orig_table || !empty($complexjoin))
             && ($opt["linkfield"] !== getForeignKeyFieldForTable($table))
         ) {
             $addtable = "_" . $opt["linkfield"];
             $table   .= $addtable;
         }
 
-        if (isset($opt['joinparams'])) {
-            $complexjoin = Search::computeComplexJoinID($opt['joinparams']);
-
-            if (!empty($complexjoin)) {
-                $table .= "_" . $complexjoin;
-            }
+        if (!empty($complexjoin)) {
+            $table .= "_" . $complexjoin;
         }
 
         $addmeta = "";
@@ -4161,19 +4163,21 @@ final class SQLProvider implements SearchProviderInterface
             $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
                 && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
             $orig_table = SearchEngine::getOrigTableName($itemtype);
+
+            $complexjoin = '';
+            if (isset($searchopt[$ID]['joinparams'])) {
+                $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+            }
+
             if (
-                ($is_fkey_composite_on_self || $table != $orig_table)
+                ($is_fkey_composite_on_self || $table != $orig_table || !empty($complexjoin))
                 && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))
             ) {
                 $addtable .= "_" . $searchopt[$ID]["linkfield"];
             }
 
-            if (isset($searchopt[$ID]['joinparams'])) {
-                $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-
-                if (!empty($complexjoin)) {
-                    $addtable .= "_" . $complexjoin;
-                }
+            if (!empty($complexjoin)) {
+                $addtable .= "_" . $complexjoin;
             }
 
             if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
