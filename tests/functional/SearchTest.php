@@ -261,7 +261,7 @@ class SearchTest extends DbTestCase
             ],
         ];
 
-        $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch(Computer::class, $search_params);
 
         $cols = array_filter(
             $data['data']['cols'],
