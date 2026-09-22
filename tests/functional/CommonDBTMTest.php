@@ -1382,14 +1382,14 @@ class CommonDBTMTest extends DbTestCase
     {
         $this->login();
 
-        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $field_unicity = new FieldUnicity();
         $this->assertGreaterThan(
             0,
             $field_unicity->add([
                 'name' => 'name uniqueness',
-                'itemtype' => 'Computer',
+                'itemtype' => Computer::class,
                 '_fields' => ['name'],
                 'is_active' => 1,
                 'action_refuse' => 1,
@@ -1424,7 +1424,7 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
         $lockedfield = new Lockedfield();
-        $this->assertSame(['name'], $lockedfield->getLockedNames('Computer', $computers_id2));
+        $this->assertSame(['name'], $lockedfield->getLockedNames(Computer::class, $computers_id2));
 
         // a later inventory reporting computer 1's name for computer 2 must not be
         // flagged as a duplicate: the locked name field is discarded, never persisted
@@ -1445,14 +1445,14 @@ class CommonDBTMTest extends DbTestCase
     {
         $this->login();
 
-        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $field_unicity = new FieldUnicity();
         $this->assertGreaterThan(
             0,
             $field_unicity->add([
                 'name' => 'name uniqueness',
-                'itemtype' => 'Computer',
+                'itemtype' => Computer::class,
                 '_fields' => ['name'],
                 'is_active' => 1,
                 'action_refuse' => 1,
@@ -1487,7 +1487,7 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
         $lockedfield = new Lockedfield();
-        $this->assertSame(['name'], $lockedfield->getLockedNames('Computer', $computers_id2));
+        $this->assertSame(['name'], $lockedfield->getLockedNames(Computer::class, $computers_id2));
 
         // computer 2 goes non-dynamic (e.g. inventory agent removed), the lock stays
         $this->assertTrue(
@@ -1518,14 +1518,14 @@ class CommonDBTMTest extends DbTestCase
     {
         $this->login();
 
-        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $field_unicity = new FieldUnicity();
         $this->assertGreaterThan(
             0,
             $field_unicity->add([
                 'name' => 'name uniqueness',
-                'itemtype' => 'Computer',
+                'itemtype' => Computer::class,
                 '_fields' => ['name'],
                 'is_active' => 1,
                 'action_refuse' => 1,
@@ -1560,7 +1560,7 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
         $lockedfield = new Lockedfield();
-        $this->assertSame(['name'], $lockedfield->getLockedNames('Computer', $computers_id2));
+        $this->assertSame(['name'], $lockedfield->getLockedNames(Computer::class, $computers_id2));
 
         // another manual edit, still no is_dynamic: cleanLockeds() won't strip the
         // locked name field, so the duplicate value actually gets persisted and
