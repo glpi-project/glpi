@@ -1115,8 +1115,12 @@ class Provider
             && is_array($params['apply_filters'][DatesFilter::getId()])
             && count($params['apply_filters'][DatesFilter::getId()]) == 2
         ) {
-            $begin = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][0]));
-            $end   = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][1]));
+            $filter_begin = \strtotime($params['apply_filters'][DatesFilter::getId()][0]);
+            $filter_end   = \strtotime($params['apply_filters'][DatesFilter::getId()][1]);
+            if ($filter_begin !== false && $filter_end !== false) {
+                $begin = date("Y-m-d", $filter_begin);
+                $end   = date("Y-m-d", $filter_end);
+            }
             unset($params['apply_filters'][DatesFilter::getId()]);
         }
 
