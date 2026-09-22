@@ -299,7 +299,7 @@ final class DbUtils
         $real_class_file = realpath($class_file);
 
         $allowed_dirs = array_merge(
-            [$root_dir, GLPI_MARKETPLACE_DIR, GLPI_PLUGIN_DOC_DIR],
+            [$root_dir, GLPI_PLUGIN_DOC_DIR],
             $plugins_dirs
         );
 
@@ -307,7 +307,7 @@ final class DbUtils
             if (!is_dir($allowed_dir)) {
                 continue;
             }
-            if (str_starts_with($real_class_file, realpath($allowed_dir))) {
+            if (str_starts_with($real_class_file, realpath($allowed_dir) . '/')) {
                 return true;
             }
         }
