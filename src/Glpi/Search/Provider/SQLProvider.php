@@ -5028,9 +5028,12 @@ final class SQLProvider implements SearchProviderInterface
         &$SELECT = "",
         &$FROM = "",
         &$already_link_tables = [],
-        &$data = []
+        &$data = [],
+        bool $is_recursive_call = false
     ) {
-        $data['meta_toview'] = [];
+        if (!$is_recursive_call) {
+            $data['meta_toview'] = [];
+        }
         foreach ($criteria as $criterion) {
             // manage sub criteria
             if (isset($criterion['criteria'])) {
@@ -5039,7 +5042,8 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT,
                     $FROM,
                     $already_link_tables,
-                    $data
+                    $data,
+                    true
                 );
                 continue;
             }
@@ -5057,6 +5061,15 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $m_itemtype = $criterion['itemtype'];
+
+            // If a column for this itemtype's field is already loaded, we go directly to the next iteration.
+            if (
+                isset($data["meta_toview"][$m_itemtype])
+                && in_array($criterion['field'], $data["meta_toview"][$m_itemtype])
+            ) {
+                continue;
+            }
+
             $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
