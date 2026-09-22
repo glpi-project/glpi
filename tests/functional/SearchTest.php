@@ -56,15 +56,15 @@ use Group;
 use Group_Item;
 use Group_User;
 use Location;
+use Peripheral;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Problem;
 use Psr\Log\LogLevel;
 use Session;
+use Software;
 use TaskCategory;
 use Ticket;
 use User;
-use Software;
-use Peripheral;
-use Problem;
 
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
@@ -2600,7 +2600,7 @@ class SearchTest extends DbTestCase
         // reduce the right of tech profile
         // to have only the right of display their own problems (created, assign)
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Problem' => (\Problem::READMY + READNOTE + UPDATENOTE),
+            'Problem' => (Problem::READMY + READNOTE + UPDATENOTE),
         ]);
 
         // add a group for tech user
@@ -2619,7 +2619,7 @@ class SearchTest extends DbTestCase
         );
 
         // create a problem and assign group with tech user
-        $problem = new \Problem();
+        $problem = new Problem();
         $this->assertGreaterThan(
             0,
             $problem->add([
@@ -3097,7 +3097,7 @@ class SearchTest extends DbTestCase
             Computer::getTable(),
             \Monitor::getTable(),
             \NetworkEquipment::getTable(),
-            \Peripheral::getTable(),
+            Peripheral::getTable(),
             \Phone::getTable(),
             \Printer::getTable(),
         ];
