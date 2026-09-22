@@ -47,6 +47,8 @@ if (isset($_POST['action'])) {
 
     switch ($_POST['action']) {
         case 'move_item':
+            $item_rack->check($item_rack->getID(), UPDATE);
+
             $answer['status'] = $item_rack->update([
                 'id'       => (int) $_POST['id'],
                 'position' => (int) $_POST['position'],
