@@ -8444,12 +8444,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\+" between int\\|string\\|false and 1 results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Group\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 1,
