@@ -4513,6 +4513,26 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
+     * Locked field names that cleanLockeds() will strip from this update.
+     *
+     * @return string[]
+     */
+    private function getLockedFieldsForUnicityCheck(): array
+    {
+        if (
+            ($this->input['_skip_locks'] ?? false) === true
+            || (isset($this->input['_transfer']) && !($this->input['_lock_updated_fields'] ?? false))
+            || !$this->maybeDynamic()
+            || !isset($this->input['is_dynamic'])
+            || !$this->input['is_dynamic']
+        ) {
+            return [];
+        }
+
+        return (new Lockedfield())->getLockedNames(static::class, $this->fields['id']);
+    }
+
+    /**
      * Check field unicity before insert or update
      *
      * @param bool $add     true for insert, false for update (false by default)
@@ -4553,9 +4573,14 @@ class CommonDBTM extends CommonGLPI
 
         //Get all checks for this itemtype and this entity
         if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+            $locked_fields = $add ? [] : $this->getLockedFieldsForUnicityCheck();
+
             // Get input entities if set / else get object one
             if ($this instanceof User) {
                 $entities_id = 0; // Exception: user does not belong to an entity
+            } elseif (in_array('entities_id', $locked_fields, true)) {
+                // Locked entity: stays where it actually is, not where the input tries to move it.
+                $entities_id = $this->fields['entities_id'];
             } elseif (isset($this->input['entities_id'])) {
                 $entities_id = $this->input['entities_id'];
             } elseif (isset($this->fields['entities_id'])) {
@@ -4567,28 +4592,36 @@ class CommonDBTM extends CommonGLPI
             }
 
             $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
+
             foreach ($all_fields as $key => $fields) {
                 //If there's fields to check
                 if (!empty($fields) && !empty($fields['fields'])) {
                     $where    = [];
                     $continue = true;
+                    $effective_values = [];
                     foreach (explode(',', $fields['fields']) as $field) {
+                        // Locked field: check against the value that will actually remain stored.
+                        $value = (isset($this->input[$field]) && in_array($field, $locked_fields, true))
+                            ? ($this->fields[$field] ?? $this->input[$field])
+                            : ($this->input[$field] ?? null);
+                        $effective_values[$field] = $value;
+
                         if (
                             isset($this->input[$field]) //Field is set
                             //Standard field not null
                             && (((getTableNameForForeignKeyField($field) == '')
-                            && ($this->input[$field] != ''))
+                            && ($value != ''))
                             //Foreign key and value is not 0
                             || ((getTableNameForForeignKeyField($field) != '')
-                              && ($this->input[$field] > 0)))
+                              && ($value > 0)))
                             && !Fieldblacklist::isFieldBlacklisted(
                                 get_class($this),
                                 $entities_id,
                                 $field,
-                                $this->input[$field]
+                                $value
                             )
                         ) {
-                            $where[static::getTable() . '.' . $field] = $this->input[$field];
+                            $where[static::getTable() . '.' . $field] = $value;
                         } else {
                             $continue = false;
                         }
@@ -4622,7 +4655,7 @@ class CommonDBTM extends CommonGLPI
                                 || $p['add_event_on_duplicate']
                             ) {
                                 foreach (explode(',', $fields['fields']) as $field) {
-                                    $message[$field] = $this->input[$field];
+                                    $message[$field] = $effective_values[$field];
                                 }
 
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
