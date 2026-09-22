@@ -168,8 +168,7 @@ test('The FAQ lands on the Home article', async ({ page, profile, api }) => {
 
     await kb.waitForAsideReady();
 
-    // The Home article's own id, read back from the redirect: it is the
-    // parent the child below is attached to.
+    // The Home article's id, read back from the redirect.
     const root_id = Number(new URL(page.url()).searchParams.get('id'));
 
     await profile.set(Profiles.SuperAdmin);

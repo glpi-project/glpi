@@ -161,19 +161,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canViewItem(): bool
     {
-        global $CFG_GLPI;
-
-        // The root article is the knowledge base entry point and the FAQ home
-        // page. It is admitted by its id, never by `is_faq`, which stays 0.
+        // The root article is admitted by its id: its `is_faq` stays 0.
         if ($this->isRoot()) {
-            if (Session::getLoginUserID() === false) {
-                return (bool) $CFG_GLPI['use_public_faq'];
-            }
-
-            return Session::haveRightsOr(
-                self::$rightname,
-                [READ, self::READFAQ, self::KNOWBASEADMIN]
-            );
+            return self::canReadRoot();
         }
 
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
@@ -302,6 +292,31 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         global $CFG_GLPI;
 
         return (int) ($CFG_GLPI['root_knowbaseitems_id'] ?? 0);
+    }
+
+    /**
+     * The root article has no visibility rules of its own.
+     */
+    private static function canReadRoot(): bool
+    {
+        return self::canView() || Session::haveRight(self::$rightname, self::KNOWBASEADMIN);
+    }
+
+    /**
+     * `$where`, widened to admit the root article outside the inheritance seed.
+     *
+     * @param array<mixed> $where
+     *
+     * @return array<mixed>
+     */
+    private static function withRootArm(array $where): array
+    {
+        $root_id = self::getConfiguredRootId();
+        if ($root_id <= 0) {
+            return $where;
+        }
+
+        return ['OR' => [[self::getTableField('id') => $root_id], $where]];
     }
 
     public static function getSearchURL($full = true)
@@ -953,21 +968,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $where[self::getTable() . '.is_faq'] = 1;
         }
 
-        // The root arm stays outside `$where`, which seeds the inheritance term:
-        // the root must not lend its visibility to every article below it.
-        $root_id = self::getConfiguredRootId();
-        $can_read_root = Session::getLoginUserID() === false
-            || Session::haveRightsOr(self::$rightname, [READ, self::READFAQ, self::KNOWBASEADMIN]);
-        if ($root_id > 0 && $can_read_root) {
-            return [
-                'OR' => [
-                    [self::getTableField('id') => $root_id],
-                    $where,
-                ],
-            ];
-        }
-
-        return $where;
+        return self::canReadRoot() ? self::withRootArm($where) : $where;
     }
 
     /**
@@ -1201,9 +1202,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["name"] = __('New item');
         }
 
-        // The root article is the entry point of the knowledge base, not a
-        // piece of content to publish. Its `is_faq` stays 0: the FAQ admits it
-        // by its id, and the service catalog must not list it at all.
+        // The root article is the entry point, not content to publish.
         if ($this->isRoot()) {
             unset($input['is_faq'], $input['show_in_service_catalog']);
         }
@@ -1670,8 +1669,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
-     * The nearest readable descendants: each readable direct child, or the
-     * readable articles below it when it is not readable itself.
+     * The nearest readable descendants: a readable child, or what is readable below it.
      *
      * @return list<array{
      *      'id': int,
@@ -1684,8 +1682,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
-        // Skips the candidates that are certainly unreadable, to spare them the
-        // `can()` call below. It costs about six queries; this set costs one.
+        // One query, instead of a `can()` call per candidate.
         $visible_criteria = self::getListRequest([], 'browse');
         $visible_criteria['SELECT'] = self::getTableField('id');
         $visible = [];
@@ -1716,7 +1713,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     continue; // readable: stop this branch here
                 }
 
-                // Not readable: look for readable articles among its own children.
+                // Not readable: descend.
                 $next_frontier[] = $child_id;
             }
             $frontier = $next_frontier;
@@ -1726,19 +1723,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if ($collator) {
             $collator->setStrength(Collator::PRIMARY);
         }
-        usort($children, static function (array $a, array $b) use ($collator): int {
-            if ($collator === null) {
-                return strnatcasecmp($a['name'], $b['name']);
-            }
-            return (int) collator_compare($collator, $a['name'], $b['name']);
-        });
+        usort($children, static fn(array $a, array $b): int => $collator
+            ? (int) collator_compare($collator, $a['name'], $b['name'])
+            : strnatcasecmp($a['name'], $b['name']));
 
         return $children;
     }
 
     /**
-     * Direct children (by link) of every article in `$parent_ids`, in one query.
-     * No validity window: it belongs on the results, not on these hops.
+     * Direct children of every article in `$parent_ids`, in one query.
      *
      * @param int[] $parent_ids
      *
@@ -2195,17 +2188,7 @@ TWIG, $twig_params);
                         ];
 
                         // The root article has no visibility row of its own.
-                        $root_id = self::getConfiguredRootId();
-                        if ($root_id > 0) {
-                            $criteria['WHERE'][] = [
-                                'OR' => [
-                                    [self::getTableField('id') => $root_id],
-                                    $anonymous_entity_where,
-                                ],
-                            ];
-                        } else {
-                            $criteria['WHERE'][] = $anonymous_entity_where;
-                        }
+                        $criteria['WHERE'][] = self::withRootArm($anonymous_entity_where);
                     }
                 }
                 break;
@@ -2217,13 +2200,8 @@ TWIG, $twig_params);
                 'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
             ];
 
-            // The root article is admitted by its id, because `is_faq` stays 0.
-            $root_id = self::getConfiguredRootId();
-            if ($root_id > 0) {
-                $faq_where[] = [self::getTableField('id') => $root_id];
-            }
-
-            $criteria['WHERE'][] = ['OR' => $faq_where];
+            // Admitted by its id: `is_faq` stays 0.
+            $criteria['WHERE'][] = self::withRootArm(['OR' => $faq_where]);
         }
 
         if ($params['knowbaseitems_id_parent'] !== self::SEEALL) {

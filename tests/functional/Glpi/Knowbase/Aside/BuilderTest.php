@@ -179,8 +179,7 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * An article with an invisible parent attaches to its nearest visible
-     * ancestor instead of being dropped. Here, that ancestor is the root.
+     * An article with an invisible parent attaches to its nearest visible ancestor.
      */
     public function testArticleWithInvisibleParentIsAttachedToNearestVisibleAncestor(): void
     {
@@ -215,8 +214,7 @@ final class BuilderTest extends DbTestCase
 
         $tree = (new Builder())->buildTree();
 
-        // The tree still has a single root: the child nests under it,
-        // instead of being promoted next to it.
+        // Single root: the child nests under it, not next to it.
         $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
 
         $top_level = $this->getTopLevelArticles($tree);
@@ -229,10 +227,8 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * Graph, A and B invisible: A under Home and B, B under A, leaf 1 under A,
-     * leaf 2 under B. The walk goes in name order, so leaf 1 cuts the cycle at
-     * B. That cut result must not be memoized, or leaf 2 reads it and is
-     * promoted to a root.
+     * A and B invisible and in a cycle: an article below them still nests
+     * under the root instead of being promoted next to it.
      */
     public function testArticleBelowACycleOfInvisibleParentsStaysUnderTheRoot(): void
     {
@@ -525,8 +521,7 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * The root article is always visible to FAQ readers, admitted by its
-     * id, so a published parent nests directly under it, children included.
+     * The root is admitted by its id, so a published parent nests under it.
      */
     public function testFaqReaderGetsFaqArticlesNestedUnderTheirFaqParent(): void
     {
@@ -565,8 +560,7 @@ final class BuilderTest extends DbTestCase
         // Passing the child id unfolds its branch, so the nesting is visible.
         $tree = (new Builder($child->getID()))->buildTree();
 
-        // The root is the tree's only top-level entry: the FAQ parent nests
-        // under it instead of being promoted next to it.
+        // The root is the only top-level entry: the FAQ parent nests under it.
         $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
 
         $top_level = $this->getTopLevelArticles($tree);
@@ -579,8 +573,8 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * A nested article folds by default, unlike the root, so its children
-     * load lazily: `hasChildren()` is true before they are ever loaded.
+     * A nested article folds by default, so `hasChildren()` is true before
+     * its children load.
      */
     public function testNestedFaqParentReportsItsChildrenWithoutLoadingThem(): void
     {
@@ -615,8 +609,7 @@ final class BuilderTest extends DbTestCase
 
         $this->login('post-only', 'postonly');
 
-        // No current id, so nothing unfolds the branch: the parent renders
-        // folded, as on a plain visit to Home.
+        // No current id: the parent renders folded.
         $tree = (new Builder())->buildTree();
 
         $top_level = $this->getTopLevelArticles($tree);

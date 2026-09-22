@@ -1213,8 +1213,7 @@ HTML,
     }
 
     /**
-     * Home -> mid (not in the FAQ) -> grandchild (in the FAQ). The walk must
-     * skip the unreadable mid and surface the grandchild.
+     * Home -> mid (not in the FAQ) -> grandchild (in the FAQ): the walk skips mid.
      */
     public function testSubArticlesTabFindsFaqGrandchildPastANonFaqParent(): void
     {
@@ -1258,8 +1257,7 @@ HTML,
     }
 
     /**
-     * Same shape as above, but the grandchild is unreadable too: skipping an
-     * unreadable article must never widen visibility, so neither is listed.
+     * Same shape, grandchild unreadable too: skipping must not widen visibility.
      */
     public function testSubArticlesTabDoesNotWidenVisibilityPastAnUnreadableParent(): void
     {
@@ -1295,8 +1293,7 @@ HTML,
     }
 
     /**
-     * A central session can already open every direct child, so the walk
-     * stops there: it lists the child, never the grandchild, as before.
+     * A central session opens every direct child, so the walk stops there.
      */
     public function testSubArticlesTabListsOnlyTheDirectChildForACentralSession(): void
     {
@@ -1323,11 +1320,8 @@ HTML,
     }
 
     /**
-     * `getVisibilityCriteria()` keys on the knowledge base READ right, never on
-     * the interface. `canViewItem()` admits a non-FAQ article to any READ
-     * holder, so a helpdesk profile carrying that right (a profile converted
-     * from the central interface keeps it, and the helpdesk form never shows
-     * it) must find its articles in the list and in the sub-articles tab.
+     * `getVisibilityCriteria()` keys on the READ right, never on the interface:
+     * a helpdesk profile holding READ must still find its articles.
      */
     public function testHelpdeskProfileWithReadRightSeesItsNonFaqArticles(): void
     {
@@ -1376,8 +1370,7 @@ HTML,
     }
 
     /**
-     * Guards the other side of the rule above: widening the criteria for a READ
-     * holder must not reach a reader who only holds READFAQ.
+     * The other side: widening for a READ holder must not reach a READFAQ reader.
      */
     public function testFaqOnlyReaderStillCannotSeeANonFaqArticle(): void
     {
@@ -1404,8 +1397,7 @@ HTML,
     }
 
     /**
-     * Children sort through the session collation, not byte-wise: a byte
-     * comparison puts every accented name after "Z".
+     * Children sort through the session collation, not byte-wise.
      */
     public function testSubArticlesTabSortsAccentedNamesUnderTheirLetter(): void
     {
@@ -1431,8 +1423,7 @@ HTML,
     }
 
     /**
-     * The knowledge base is a DAG: an article with several parents must
-     * appear under each of them.
+     * The knowledge base is a DAG: an article appears under each of its parents.
      */
     public function testSubArticlesTabListsAnArticleUnderEachOfItsParents(): void
     {
@@ -1461,8 +1452,7 @@ HTML,
     }
 
     /**
-     * Root -> mid1 (unreadable) -> mid2 (unreadable) -> leaf (readable). Two
-     * consecutive unreadable intermediates must not stop the walk to the leaf.
+     * Root -> mid1 -> mid2 (both unreadable) -> leaf: the walk reaches the leaf.
      */
     public function testSubArticlesTabFindsReadableArticleTwoUnreadableLevelsDown(): void
     {
@@ -1515,8 +1505,8 @@ HTML,
     }
 
     /**
-     * The knowledge base is a DAG: an article reachable through two
-     * unreadable parents must surface exactly once, not once per branch.
+     * The knowledge base is a DAG: an article under two unreadable parents
+     * surfaces once, not once per branch.
      */
     public function testSubArticlesTabListsADiamondArticleOnlyOnce(): void
     {
@@ -3480,8 +3470,7 @@ HTML,
         $this->assertEquals(0, $root->fields['is_faq']);
         $this->assertEquals(0, $root->fields['show_in_service_catalog']);
 
-        // The root article is the KB entry point, not content. It is admitted
-        // to the FAQ by its id but never becomes a listed FAQ or catalog entry.
+        // Admitted to the FAQ by its id, never as a listed FAQ or catalog entry.
         $this->assertTrue($root->update([
             'id'                      => $root_id,
             'is_faq'                  => 1,
@@ -3823,8 +3812,7 @@ HTML,
         $root = new KnowbaseItem();
         $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
 
-        // The root article is the FAQ home page, admitted by its id. `is_faq`
-        // stays 0, so it is never a FAQ article nor a service catalog entry.
+        // The root is the FAQ home page: `is_faq` stays 0.
         $this->assertEquals(0, $root->fields['is_faq']);
         $this->assertEquals(0, $root->fields['show_in_service_catalog']);
 
@@ -4236,8 +4224,8 @@ HTML,
     }
 
     /**
-     * The root article is the FAQ home page: a FAQ reader opens it, and so
-     * does an anonymous reader when the public FAQ is enabled.
+     * A FAQ reader opens the root, and so does an anonymous reader when the
+     * public FAQ is enabled.
      */
     public function testRootArticleIsReadableByFaqReaders(): void
     {
@@ -4284,8 +4272,8 @@ HTML,
     }
 
     /**
-     * A child must not inherit the root's FAQ visibility: admission by id
-     * does not cascade to the articles below it.
+     * A child must not inherit the root's visibility: admission by id does
+     * not cascade.
      */
     public function testRootVisibilityDoesNotCascadeToItsChildren(): void
     {
@@ -4331,8 +4319,7 @@ HTML,
     }
 
     /**
-     * A logged-in FAQ reader gets the root article in a browse list request,
-     * so the helpdesk aside can show the tree from its real root.
+     * A logged-in FAQ reader gets the root in a browse list request.
      */
     public function testRootArticleIsListedForLoggedInFaqReaders(): void
     {
@@ -4342,8 +4329,7 @@ HTML,
     }
 
     /**
-     * An anonymous reader on a public FAQ gets the root article, in single
-     * and multi entity mode: anonymous requests skip the visibility criteria.
+     * An anonymous reader on a public FAQ gets the root, single and multi entity.
      */
     public function testRootArticleIsListedForAnonymousFaqReaders(): void
     {

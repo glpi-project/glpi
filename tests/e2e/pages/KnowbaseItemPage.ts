@@ -360,8 +360,7 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * A button inside an aside tree article row's (lazy) actions menu, hidden
-     * until the dropdown opens.
+     * A button in an aside row's lazy actions menu, hidden until the dropdown opens.
      */
     public getAsideArticleActionsMenuButton(id: number, name: string): Locator
     {

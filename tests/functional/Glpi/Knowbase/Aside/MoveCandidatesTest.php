@@ -200,7 +200,7 @@ final class MoveCandidatesTest extends DbTestCase
             'users_id'         => Session::getLoginUserID(),
         ]);
 
-        // Visible under the root article, its nearest visible ancestor, yet still a descendant of `moved`: that is the contrast.
+        // Visible under the root, its nearest visible ancestor, yet a descendant of `moved`.
         $shown_under_root = array_map(
             static fn(Article $article) => $article->id,
             (new Builder())->buildChildren(KnowbaseItem::getRootId())
