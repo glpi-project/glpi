@@ -37,6 +37,7 @@ namespace tests\units;
 use Auth;
 use AuthLDAP;
 use AuthMail;
+use Config;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
@@ -79,6 +80,24 @@ class AuthTest extends DbTestCase
             'local'     => 'GLPI internal database',
         ];
         $this->assertSame($expected, $methods);
+    }
+
+    public function testGetMenuContentRequiresConfigReadRight()
+    {
+        $this->login('tech', 'tech');
+        $this->removeRightFromProfile('Technician', Config::$rightname, READ | UPDATE);
+        \Session::reloadCurrentProfile();
+        $this->assertFalse(Auth::getMenuContent());
+
+        // Update right alone must not expose the menu, as the target page only checks READ
+        $this->addRightToProfile('Technician', Config::$rightname, UPDATE);
+        \Session::reloadCurrentProfile();
+        $this->assertFalse(Auth::getMenuContent());
+
+        $this->removeRightFromProfile('Technician', Config::$rightname, UPDATE);
+        $this->addRightToProfile('Technician', Config::$rightname, READ);
+        \Session::reloadCurrentProfile();
+        $this->assertIsArray(Auth::getMenuContent());
     }
 
     /**

@@ -131,7 +131,7 @@ class Auth extends CommonGLPI
     public static function getMenuContent()
     {
         $menu = [];
-        if (Config::canUpdate()) {
+        if (Config::canView()) {
             $menu = [
                 'title'   => __('Authentication'),
                 'page'    => '/front/setup.auth.php',
