@@ -44,11 +44,11 @@ use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_User;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
 use ProfileRight;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
-use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
@@ -2255,7 +2255,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \Profile::class,
+                    '_type' => Profile::class,
                     'profiles_id' => getItemByTypeName("Profile", "Technician", true),
                 ],
             ],
@@ -2269,7 +2269,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \Profile::class,
+                    '_type' => Profile::class,
                     'profiles_id' => getItemByTypeName("Profile", "Hotliner", true),
                 ],
             ],
@@ -2764,7 +2764,7 @@ HTML,
             'items_id'     => $ticket->getID(),
         ]);
 
-        $profile = $this->createItem(\Profile::class, [
+        $profile = $this->createItem(Profile::class, [
             'name'      => __FUNCTION__,
             'interface' => 'central',
             'knowbase'  => KnowbaseItem::PUBLISHFAQ | CREATE,
