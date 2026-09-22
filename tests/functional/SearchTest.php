@@ -284,7 +284,7 @@ class SearchTest extends DbTestCase
             }
         }
         $field_id = $id;
-        $data = ['itemtype' => 'Computer'];
+        $data = ['itemtype' => Computer::class];
         $SELECT = '';
         $FROM = '';
         $already_link_tables = [];
