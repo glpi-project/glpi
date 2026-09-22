@@ -263,7 +263,7 @@ final class FileManager
         @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $images = iterator_to_array($dom->getElementsByTagName('img'));
 
-        if ($images->length === 0) {
+        if ($images === []) {
             // Return input as-is if there are no images to process to avoid unnecessarily changing a plaintext value into HTML
             return $html_content;
         }
