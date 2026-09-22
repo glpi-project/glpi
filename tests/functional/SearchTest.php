@@ -240,7 +240,7 @@ class SearchTest extends DbTestCase
                 1 => [
                     'link'       => 'OR',
                     'meta'       => true,
-                    'itemtype'   => 'Software',
+                    'itemtype'   => Software::class,
                     'field'      => 160,
                     'searchtype' => 'contains',
                     'value'      => 'firefox',
