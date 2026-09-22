@@ -277,7 +277,7 @@ class SearchTest extends DbTestCase
 
     public function testMetaToviewNotLeakedAcrossIndependentCalls()
     {
-        $opts = SearchOption::getOptionsForItemtype('Software');
+        $opts = SearchOption::getOptionsForItemtype(Software::class);
         foreach ($opts as $id => $opt) {
             if (is_array($opt) && ($opt['field'] ?? null) === 'name') {
                 break;
