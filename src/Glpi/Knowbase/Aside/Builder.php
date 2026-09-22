@@ -189,8 +189,40 @@ final class Builder
             if (isset($reached[$id])) {
                 continue;
             }
-            $this->roots[$id] = true;
-            self::walk([$id], $this->children_of, $reached);
+            $entry = $this->climbToCycle($id, $reached);
+            $this->roots[$entry] = true;
+            self::walk([$entry], $this->children_of, $reached);
+        }
+    }
+
+    /**
+     * The cycle node that holds `$id`, climbing the unreached parents.
+     *
+     * `$this->data` is ordered by name, so the promotion pass can meet an
+     * article hanging below a cycle before it meets the cycle itself.
+     * Promoting that article renders it twice: once as a root, once below the
+     * cycle node that lists it as a child. Promote the cycle instead.
+     *
+     * @param array<int, true> $reached
+     */
+    private function climbToCycle(int $id, array $reached): int
+    {
+        $entry   = $id;
+        $visited = [$id => true];
+
+        while (true) {
+            $parent = null;
+            foreach ($this->parents_of[$entry] ?? [] as $candidate) {
+                if (!isset($reached[$candidate])) {
+                    $parent = $candidate;
+                    break;
+                }
+            }
+            if ($parent === null || isset($visited[$parent])) {
+                return $entry;
+            }
+            $visited[$parent] = true;
+            $entry = $parent;
         }
     }
 

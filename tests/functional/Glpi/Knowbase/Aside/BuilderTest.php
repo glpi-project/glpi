@@ -321,6 +321,50 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
+     * An article attached to a cycle renders once, whatever the name order.
+     */
+    public function testArticleAttachedToACycleIsNotRenderedTwice(): void
+    {
+        $this->login();
+
+        // Names put the attached article before the cycle nodes.
+        $attached = $this->makeArticle('zz cycle attached ' . __FUNCTION__);
+        $node_m   = $this->makeArticle('zz cycle node m ' . __FUNCTION__);
+        $node_n   = $this->makeArticle('zz cycle node n ' . __FUNCTION__);
+
+        // isAncestor() refuses this on write: only corrupt data gets here.
+        /** @var \DBmysql $DB */
+        global $DB;
+        foreach ([$attached, $node_m, $node_n] as $item) {
+            $DB->delete(KnowbaseItem_KnowbaseItem::getTable(), [
+                'knowbaseitems_id' => $item->getID(),
+            ]);
+        }
+        foreach (
+            [
+                [$node_m->getID(), $node_n->getID()],
+                [$node_n->getID(), $node_m->getID()],
+                [$attached->getID(), $node_n->getID()],
+            ] as [$child_id, $parent_id]
+        ) {
+            $DB->insert(KnowbaseItem_KnowbaseItem::getTable(), [
+                'knowbaseitems_id'        => $child_id,
+                'knowbaseitems_id_parent' => $parent_id,
+            ]);
+        }
+
+        $titles = $this->getAllTitles((new Builder())->buildUnfoldedTree());
+
+        $this->assertSame(
+            1,
+            count(array_keys($titles, 'zz cycle attached ' . __FUNCTION__, true)),
+            'the article below the cycle renders once'
+        );
+        $this->assertContains('zz cycle node m ' . __FUNCTION__, $titles);
+        $this->assertContains('zz cycle node n ' . __FUNCTION__, $titles);
+    }
+
+    /**
      * An article with two visible parents must appear under each of them.
      */
     public function testArticleWithMultipleVisibleParentsAppearsUnderEach(): void
