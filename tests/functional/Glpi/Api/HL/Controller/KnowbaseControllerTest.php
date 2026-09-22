@@ -279,4 +279,63 @@ class KnowbaseControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testSetAndUpdateParentArticles(): void
+    {
+        $this->loginWeb();
+        $parent_article_id = $this->createItem(KnowbaseItem::class, [
+            'name' => '_knowbaseitem_parent_test',
+            'answer' => 'Parent test content',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_faq' => 1,
+        ])->getID();
+
+        $test_article = $this->createItem(KnowbaseItem::class, [
+            'name' => '_knowbaseitem_child_test2',
+            'answer' => 'Child test content',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_faq' => 1,
+        ])->getID();
+
+        $this->login();
+
+        // Create new article and set "parents" property to the parent article
+        $request = new Request('POST', '/Knowledgebase/Article');
+        $request->setParameter('name', '_knowbaseitem_child_test');
+        $request->setParameter('answer', 'Child test content');
+        $request->setParameter('parents', [$parent_article_id]);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        // Get the newly created article and check that the "parents" property is set correctly
+        $new_article_id = getItemByTypeName(KnowbaseItem::class, '_knowbaseitem_child_test', true);
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $new_article_id), function ($call) use ($parent_article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($parent_article_id) {
+                    $this->assertArrayHasKey('parents', $content);
+                    $this->assertCount(1, $content['parents']);
+                    $this->assertEquals($parent_article_id, $content['parents'][0]['id']);
+                });
+        });
+
+        // Update the test article to set the "parents" property to the parent article
+        $request = new Request('PATCH', '/Knowledgebase/Article/' . $test_article);
+        $request->setParameter('parents', [$parent_article_id]);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        // Get the test article and check that the "parents" property is set correctly
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $test_article), function ($call) use ($parent_article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($parent_article_id) {
+                    $this->assertArrayHasKey('parents', $content);
+                    $this->assertCount(1, $content['parents']);
+                    $this->assertEquals($parent_article_id, $content['parents'][0]['id']);
+                });
+        });
+    }
 }
