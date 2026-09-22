@@ -1267,6 +1267,23 @@ HTML,
         }
     }
 
+    public function testAddItemFromMessageCatchesInsertFailure(): void
+    {
+        $collector = new \MailCollector();
+
+        $item = new class extends \CommonDBTM {
+            public function add(array $input, $options = [], $history = true)
+            {
+                throw new \RuntimeException('Simulated DB insert failure');
+            }
+        };
+
+        $result = $this->callPrivateMethod($collector, 'addItemFromMessage', $item, []);
+
+        $this->assertFalse($result);
+        $this->hasPhpLogRecordThatContains('Simulated DB insert failure', LogLevel::ERROR);
+    }
+
     public static function mailServerProtocolsProvider()
     {
         return [

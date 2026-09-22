@@ -383,11 +383,6 @@ class NetworkPort extends InventoryAsset
             return;
         }
 
-        // Try to detect phone + computer on this port
-        if (isset($this->connection_ports['Phone']) && count($found_macs) == 2) {
-            trigger_error('Phone/Computer MAC linked', E_USER_WARNING);
-            return;
-        }
         if (count($found_macs) > 1) { // MultipleMac
             //do not manage MAC addresses if we found one NetworkEquipment
             if (isset($this->connection_ports['NetworkEquipment'])) {

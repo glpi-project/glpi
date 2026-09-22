@@ -38,6 +38,7 @@ use CommonITILActor;
 use CommonITILObject;
 use Computer;
 use Glpi\Tests\DbTestCase;
+use Item_Problem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Problem_User;
@@ -672,5 +673,58 @@ class ProblemTest extends DbTestCase
         ], ['name']);
 
         $this->assertSame(255, mb_strlen($problem->fields['name']));
+    }
+
+    public function testGetListForItemRestrictWithoutReadAll(): void
+    {
+        global $DB;
+
+        $this->login();
+        $users_id = Session::getLoginUserID();
+        $other_users_id = getItemByTypeName(User::class, 'normal', true);
+        $entities_id = $this->getTestRootEntity(true);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+
+        $cases = [
+            'requester' => ['_users_id_requester' => $users_id, 'users_id_recipient' => $other_users_id],
+            'observer'  => ['_users_id_observer' => $users_id, 'users_id_recipient' => $other_users_id],
+            'assigned'  => ['_users_id_assign' => $users_id, 'users_id_recipient' => $other_users_id],
+            'recipient' => ['users_id_recipient' => $users_id],
+            'other'     => ['_users_id_observer' => $other_users_id, 'users_id_recipient' => $other_users_id],
+        ];
+        $ids = [];
+        foreach ($cases as $case => $input) {
+            $item = $this->createItem(Problem::class, $input + [
+                'name'              => __FUNCTION__ . ' ' . $case,
+                'content'           => __FUNCTION__,
+                'entities_id'       => $entities_id,
+                '_skip_auto_assign' => true,
+            ], ['content']);
+            $this->createItem(Item_Problem::class, [
+                'problems_id' => $item->getID(),
+                'itemtype'    => Computer::class,
+                'items_id'    => $computer->getID(),
+            ]);
+            $ids[$case] = $item->getID();
+        }
+
+        $get_listed_ids = static function () use ($DB, $computer): array {
+            $criteria = Problem::getCommonCriteria();
+            $criteria['WHERE'] = Problem::getListForItemRestrict($computer) + getEntitiesRestrictCriteria(Problem::getTable());
+            return array_column(iterator_to_array($DB->request($criteria), false), 'id');
+        };
+
+        $_SESSION['glpiactiveprofile'][Problem::$rightname] = Problem::READMY;
+        $this->assertEqualsCanonicalizing(
+            [$ids['requester'], $ids['observer'], $ids['assigned'], $ids['recipient']],
+            $get_listed_ids()
+        );
+
+        $_SESSION['glpiactiveprofile'][Problem::$rightname] = Problem::READMY | Problem::READALL;
+        $this->assertEqualsCanonicalizing(array_values($ids), $get_listed_ids());
     }
 }

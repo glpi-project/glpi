@@ -1169,21 +1169,20 @@ final class SQLProvider implements SearchProviderInterface
         $is_fkey_composite_on_self = getTableNameForForeignKeyField($opt["linkfield"]) === $table
             && $opt["linkfield"] !== getForeignKeyFieldForTable($table);
         $orig_table = SearchEngine::getOrigTableName($itemtype);
+        $complexjoin = isset($opt['joinparams']) ? Search::computeComplexJoinID($opt['joinparams']) : '';
         if (
-            ($table !== 'asset_types')
-            && ($is_fkey_composite_on_self || $table !== $orig_table)
+            (
+                (($table !== 'asset_types') && ($is_fkey_composite_on_self || $table !== $orig_table))
+                || !empty($complexjoin)
+            )
             && ($opt["linkfield"] !== getForeignKeyFieldForTable($table))
         ) {
             $addtable = "_" . $opt["linkfield"];
             $table   .= $addtable;
         }
 
-        if (isset($opt['joinparams'])) {
-            $complexjoin = Search::computeComplexJoinID($opt['joinparams']);
-
-            if (!empty($complexjoin)) {
-                $table .= "_" . $complexjoin;
-            }
+        if (!empty($complexjoin)) {
+            $table .= "_" . $complexjoin;
         }
 
         $addmeta = "";
@@ -4161,19 +4160,18 @@ final class SQLProvider implements SearchProviderInterface
             $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
                 && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
             $orig_table = SearchEngine::getOrigTableName($itemtype);
+            $complexjoin = isset($searchopt[$ID]['joinparams'])
+                ? self::computeComplexJoinID($searchopt[$ID]['joinparams'])
+                : '';
             if (
-                ($is_fkey_composite_on_self || $table != $orig_table)
+                (($is_fkey_composite_on_self || $table != $orig_table) || !empty($complexjoin))
                 && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))
             ) {
                 $addtable .= "_" . $searchopt[$ID]["linkfield"];
             }
 
-            if (isset($searchopt[$ID]['joinparams'])) {
-                $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-
-                if (!empty($complexjoin)) {
-                    $addtable .= "_" . $complexjoin;
-                }
+            if (!empty($complexjoin)) {
+                $addtable .= "_" . $complexjoin;
             }
 
             if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
@@ -4758,6 +4756,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (
                         empty($ORDER) // No sort clause is defined
                         && $data['search']['start'] == 0 // First page of results
+                        && !$data['search']['export_all'] // Full export needs every row
                     ) {
                         $tmpquery .= " LIMIT " . (int) $data['search']['list_limit'];
                     }
@@ -5029,9 +5028,12 @@ final class SQLProvider implements SearchProviderInterface
         &$SELECT = "",
         &$FROM = "",
         &$already_link_tables = [],
-        &$data = []
+        &$data = [],
+        bool $is_recursive_call = false
     ) {
-        $data['meta_toview'] = [];
+        if (!$is_recursive_call) {
+            $data['meta_toview'] = [];
+        }
         foreach ($criteria as $criterion) {
             // manage sub criteria
             if (isset($criterion['criteria'])) {
@@ -5040,7 +5042,8 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT,
                     $FROM,
                     $already_link_tables,
-                    $data
+                    $data,
+                    true
                 );
                 continue;
             }
@@ -5058,6 +5061,15 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $m_itemtype = $criterion['itemtype'];
+
+            // If a column for this itemtype's field is already loaded, we go directly to the next iteration.
+            if (
+                isset($data["meta_toview"][$m_itemtype])
+                && in_array($criterion['field'], $data["meta_toview"][$m_itemtype])
+            ) {
+                continue;
+            }
+
             $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 

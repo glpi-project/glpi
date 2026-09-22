@@ -39,6 +39,7 @@ use Computer;
 use DatabaseInstance;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Api\HL\Search;
 use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
@@ -213,6 +214,89 @@ class AssetControllerTest extends HLAPITestCase
     public function testCreateUpdateDeleteItem(string $schema, array $fields)
     {
         $this->api->autoTestCRUD('/Assets/' . $schema, $fields);
+    }
+
+    public function testRackItemListingScopeIsEnforcedRegardlessOfFilter()
+    {
+        $this->loginWeb();
+        $root = $this->getTestRootEntity(true);
+
+        $rack_a = (new \Rack())->add(['name' => __FUNCTION__ . '_a', 'entities_id' => $root, 'number_units' => 10]);
+        $rack_b = (new \Rack())->add(['name' => __FUNCTION__ . '_b', 'entities_id' => $root, 'number_units' => 10]);
+        $this->assertGreaterThan(0, $rack_a);
+        $this->assertGreaterThan(0, $rack_b);
+
+        $comp_a = (new Computer())->add(['name' => __FUNCTION__ . '_ca', 'entities_id' => $root]);
+        $comp_b = (new Computer())->add(['name' => __FUNCTION__ . '_cb', 'entities_id' => $root]);
+        $this->assertGreaterThan(0, $comp_a);
+        $this->assertGreaterThan(0, $comp_b);
+
+        $this->assertGreaterThan(0, (new \Item_Rack())->add([
+            'racks_id' => $rack_a, 'itemtype' => 'Computer', 'items_id' => $comp_a, 'position' => 1,
+        ]));
+        $this->assertGreaterThan(0, (new \Item_Rack())->add([
+            'racks_id' => $rack_b, 'itemtype' => 'Computer', 'items_id' => $comp_b, 'position' => 2,
+        ]));
+
+        $this->login();
+
+        // The endpoint lists items of rack A only. A filter that ORs a broadly true
+        // clause must not let rack B's item leak into the response: the mandatory rack
+        // scope has to hold whatever the filter is.
+        $request = new Request('GET', '/Assets/Rack/' . $rack_a . '/Item');
+        $request->setParameter('filter', 'position=ge=0,position=ge=0');
+        $this->api->call($request, function ($call) use ($comp_a, $comp_b) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($comp_a, $comp_b) {
+                    $items_id = array_column($content, 'items_id');
+                    $this->assertContains($comp_a, $items_id);
+                    $this->assertNotContains($comp_b, $items_id);
+                });
+        });
+    }
+
+    public function testRackItemListingScopeCannotBeSeededByCaller()
+    {
+        $this->loginWeb();
+        $root = $this->getTestRootEntity(true);
+
+        $rack_a = (new \Rack())->add(['name' => __FUNCTION__ . '_a', 'entities_id' => $root, 'number_units' => 10]);
+        $rack_b = (new \Rack())->add(['name' => __FUNCTION__ . '_b', 'entities_id' => $root, 'number_units' => 10]);
+        $comp_a = (new Computer())->add(['name' => __FUNCTION__ . '_ca', 'entities_id' => $root]);
+        $comp_b = (new Computer())->add(['name' => __FUNCTION__ . '_cb', 'entities_id' => $root]);
+        $this->assertGreaterThan(0, (new \Item_Rack())->add([
+            'racks_id' => $rack_a, 'itemtype' => 'Computer', 'items_id' => $comp_a, 'position' => 1,
+        ]));
+        $this->assertGreaterThan(0, (new \Item_Rack())->add([
+            'racks_id' => $rack_b, 'itemtype' => 'Computer', 'items_id' => $comp_b, 'position' => 2,
+        ]));
+
+        $this->login();
+
+        // A caller must not be able to pre-seed the reserved mandatory-scope parameter through the
+        // request to weaken the scope enforced by the route. It is stripped from external input at
+        // ingress, so rack B's item still cannot leak into rack A's listing.
+        $previous = $_REQUEST[Search::MANDATORY_FILTER_PARAM] ?? null;
+        $_REQUEST[Search::MANDATORY_FILTER_PARAM] = 'position=ge=0,position=ge=0';
+        try {
+            $request = new Request('GET', '/Assets/Rack/' . $rack_a . '/Item');
+            $this->api->call($request, function ($call) use ($comp_a, $comp_b) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($comp_a, $comp_b) {
+                        $items_id = array_column($content, 'items_id');
+                        $this->assertContains($comp_a, $items_id);
+                        $this->assertNotContains($comp_b, $items_id);
+                    });
+            });
+        } finally {
+            if ($previous === null) {
+                unset($_REQUEST[Search::MANDATORY_FILTER_PARAM]);
+            } else {
+                $_REQUEST[Search::MANDATORY_FILTER_PARAM] = $previous;
+            }
+        }
     }
 
     public function testCRUDRackItem()

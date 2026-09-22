@@ -9,6 +9,7 @@
 # ltkhanh <ltkhanh@bigdolphin.com.vn>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # Cédric Anne, 2026
+# A Long, 2026
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2026\n"
+"Last-Translator: A Long, 2026\n"
 "Language-Team: Vietnamese (Viet Nam) (https://app.transifex.com/glpi/teams/1637/vi_VN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +29,7 @@ msgstr ""
 #: templates/install/step6.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:237
 msgid "Collect data"
-msgstr ""
+msgstr "Thu thập dữ liệu"
 
 #: templates/install/step6.html.twig templates/install/step3.html.twig
 #: templates/install/step1.html.twig templates/install/step7.html.twig
@@ -42,7 +43,7 @@ msgstr "Tiếp tục"
 
 #: templates/install/step3.html.twig
 msgid "Test of the connection at the database"
-msgstr "Kiểm tra kết nối tới cơ sở dữ liệu này"
+msgstr "Kiểm tra kết nối đến cơ sở dữ liệu"
 
 #: templates/install/step3.html.twig
 msgid "Can't connect to the database"
@@ -70,11 +71,11 @@ msgstr "Kết nối đến CSDL thành công"
 
 #: templates/install/step3.html.twig
 msgid "Database engine is not supported."
-msgstr ""
+msgstr "Hệ quản trị cơ sở dữ liệu không được hỗ trợ"
 
 #: templates/install/step3.html.twig
 msgid "Database configuration is not supported."
-msgstr ""
+msgstr "Cấu hình cơ sở dữ liệu không được hỗ trợ"
 
 #: templates/install/step3.html.twig
 msgid "Please select a database:"
@@ -90,7 +91,7 @@ msgstr ""
 
 #: templates/install/step3.html.twig
 msgid "Please select a database to update:"
-msgstr ""
+msgstr "Vui lòng chọn cơ sở dữ liệu để cập nhật."
 
 #: templates/install/install.install_required.html.twig install/update.php:99
 #: install/update.php:119 install/install.php:67 install/install.php:89
@@ -114,18 +115,18 @@ msgstr ""
 #: templates/install/post_update_step.html.twig
 #: src/Glpi/Console/Database/UpdateCommand.php:286
 msgid "The database schema is not consistent with the current GLPI version."
-msgstr ""
+msgstr "Lược đồ cơ sở dữ liệu không tương thích với phiên bản GLPI hiện tại."
 
 #: templates/install/post_update_step.html.twig
 #: src/Glpi/Console/Database/UpdateCommand.php:288
 #, php-format
 msgid "It is recommended to run the \"%s\" command to see the differences."
-msgstr ""
+msgstr "Khuyến nghị chạy lệnh \"%s\" để xem các khác biệt."
 
 #: templates/install/post_update_step.html.twig
 #: templates/install/step7.html.twig
 msgid "One last thing before starting"
-msgstr ""
+msgstr "Một điều cuối cùng trước khi bắt đầu"
 
 #: templates/install/post_update_step.html.twig
 #: templates/install/step8.html.twig
@@ -134,27 +135,28 @@ msgstr "Dùng GLPI"
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr ""
+msgstr "Kiểm tra quyền ghi vào các tệp cấu hình"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
-msgstr ""
+msgstr "Quyền ghi bị từ chối đối với các tệp cấu hình."
 
 #: templates/install/step1.html.twig src/Glpi/Console/Application.php:477
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
-msgstr ""
+msgstr "Cần có quyền ghi tạm thời vào các tệp sau: %s."
 
 #: templates/install/step1.html.twig src/Glpi/Console/Application.php:478
 msgid ""
 "Write access to these files can be removed once the operation is finished."
-msgstr ""
+msgstr "Quyền ghi vào các tệp này có thể bị xóa sau khi thao tác hoàn tất."
 
 #: templates/install/step1.html.twig
 msgid ""
 "Checking of the compatibility of your environment with the execution of GLPI"
 msgstr ""
-"Kiểm tra tính tương thích của môi trường của bạn với sự thực thi của GLPI"
+"Kiểm tra tính tương thích của môi trường với yêu cầu chạy GLPIKiểm tra tính "
+"tương thích của môi trường với yêu cầu chạy GLPI"
 
 #: templates/install/step1.html.twig
 #: templates/install/update.need_update.html.twig install/update.php:87
@@ -214,7 +216,8 @@ msgstr "post-only/postonly cho tài khoản chỉ gửi"
 #: templates/install/step8.html.twig
 msgid "You can delete or modify these accounts as well as the initial data."
 msgstr ""
-"Bạn có thể xóa hoặc sửa đổi các tài khoản cũng như các dữ liệu ban đầu."
+"Bạn có thể xóa hoặc chỉnh sửa các tài khoản này cũng như dữ liệu khởi "
+"tạo.Bạn có thể xóa hoặc sửa đổi các tài khoản cũng như các dữ liệu ban đầu."
 
 #: templates/install/step2.html.twig
 msgid "Database connection setup"
@@ -223,7 +226,7 @@ msgstr "Thiết lập kết nối cơ sở dữ liệu"
 #: templates/install/step2.html.twig
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "SQL server (MariaDB or MySQL)"
-msgstr ""
+msgstr "Máy chủ SQL (MariaDB hoặc MySQL)"
 
 #: templates/install/step2.html.twig
 #: templates/pages/setup/general/dbreplica_setup.html.twig
@@ -245,7 +248,7 @@ msgstr "OK"
 
 #: templates/install/update.need_update.html.twig
 msgid "Update needed"
-msgstr ""
+msgstr "Cần cập nhật"
 
 #: templates/install/update.need_update.html.twig
 #: src/Glpi/Console/Application.php:305
@@ -281,7 +284,7 @@ msgstr "Các kết quả"
 #: templates/install/blocks/requirements_table.html.twig
 #: src/Glpi/Console/System/CheckRequirementsCommand.php:94
 msgid "Required"
-msgstr ""
+msgstr "Yêu cầu"
 
 #: templates/install/blocks/requirements_table.html.twig src/Entity.php:694
 #: src/Webhook.php:812 src/Glpi/Event.php:215
@@ -294,7 +297,7 @@ msgstr "Bảo mật"
 #: templates/install/blocks/requirements_table.html.twig
 #: src/Glpi/Console/System/CheckRequirementsCommand.php:98
 msgid "Suggested"
-msgstr ""
+msgstr "Đề xuất"
 
 #: templates/install/step0.html.twig
 msgid "Choose 'Install' for a completely new installation of GLPI."
@@ -304,7 +307,8 @@ msgstr "Chọn \"Cài đặt\" để cài đặt mới hoàn toàn GLPI."
 msgid ""
 "Select 'Upgrade' to update your version of GLPI from an earlier version"
 msgstr ""
-"Chọn \"Nâng cấp\" để nâng cấp phiên bản GLPI của bạn từ một phiên bản trước"
+"Chọn 'Nâng cấp' để cập nhật GLPI từ phiên bản cũ hơnChọn \"Nâng cấp\" để "
+"nâng cấp phiên bản GLPI của bạn từ một phiên bản trước"
 
 #: templates/install/step0.html.twig
 msgid "Installation or update of GLPI"
@@ -319,7 +323,7 @@ msgstr "Cài đặt"
 
 #: templates/updatepassword.html.twig front/updatepassword.php:94
 msgid "Password update"
-msgstr ""
+msgstr "Cập nhật mật khẩu"
 
 #: templates/central/lists/table.html.twig
 #: templates/layout/parts/context_links.html.twig
@@ -541,7 +545,7 @@ msgstr "Tên"
 #: src/RuleImportAsset.php:172 src/Domain.php:170 src/ConsumableItem.php:303
 msgid "Comment"
 msgid_plural "Comments"
-msgstr[0] ""
+msgstr[0] "Bình luận"
 
 #: templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig
@@ -553,15 +557,15 @@ msgstr[0] ""
 #: src/CommonDropdown.php:202 src/User.php:3847 src/User.php:6671
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
+msgstr[0] "Hình ảnh"
 
 #: templates/dropdown_form.html.twig
 msgid "Rack pictures"
-msgstr ""
+msgstr "Hình ảnh tủ rack"
 
 #: templates/dropdown_form.html.twig
 msgid "Other pictures"
-msgstr ""
+msgstr "Hình ảnh khác"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "User menu"
@@ -569,15 +573,15 @@ msgstr ""
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
-msgstr ""
+msgstr "Đổi loại"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "Chế độ gỡ lỗi đã được bật"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "Chế độ gỡ lỗi đã tắt"
 
 #: templates/layout/parts/user_header.html.twig src/DocumentType.php:181
 #: src/DocumentType.php:182
@@ -586,7 +590,7 @@ msgstr "Trợ giúp"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "About"
-msgstr ""
+msgstr "Giới thiệu"
 
 #: templates/layout/parts/user_header.html.twig src/Html.php:1340
 msgid "My settings"
@@ -623,6 +627,8 @@ msgstr "Đóng"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Phiên bản này KHÔNG ỔN ĐỊNH và một số BẢN VÁ BẢO MẬT có thể chưa được bao "
+"gồm."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -643,7 +649,7 @@ msgstr ""
 #: templates/layout/parts/page_header.html.twig
 #: src/Glpi/Console/Application.php:294
 msgid "You are bypassing a needed update"
-msgstr ""
+msgstr "Bạn đang bỏ qua một bản cập nhật cần thiết."
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/breadcrumbs.html.twig
@@ -658,19 +664,19 @@ msgstr ""
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
-msgstr ""
+msgstr "Bên trái"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:436
 msgid "On right"
-msgstr ""
+msgstr "Bên phải"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:440
 msgid "On top"
-msgstr ""
+msgstr "Phía trên"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:444
 msgid "On bottom"
-msgstr ""
+msgstr "Phía dưới"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig
 #, php-format
@@ -680,11 +686,11 @@ msgstr ""
 #: templates/layout/parts/impersonate_banner.html.twig
 #, php-format
 msgid "You are impersonating %s."
-msgstr ""
+msgstr "Bạn đang đăng nhập với vai trò %s."
 
 #: templates/layout/parts/impersonate_banner.html.twig
 msgid "Stop impersonating"
-msgstr ""
+msgstr "Thoát chế độ giả lập người dùng"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
@@ -700,24 +706,24 @@ msgstr ""
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
-msgstr ""
+msgstr "Thu gọn menu"
 
 #: templates/layout/parts/saved_searches.html.twig src/SavedSearch.php:74
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] ""
+msgstr[0] "Tìm kiếm đã lưu"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "Quản lý tất cả các tìm kiếm đã lưu"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
-msgstr ""
+msgstr "Ghim bảng này cho trang hiện tại"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Close the panel"
-msgstr ""
+msgstr "Đóng bảng điều khiển"
 
 #: templates/layout/parts/saved_searches.html.twig src/Log.php:1124
 #: src/Log.php:1147 src/Log.php:1200 src/Log.php:1214 src/Auth.php:165
@@ -729,19 +735,19 @@ msgstr "Khác"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Filter list"
-msgstr ""
+msgstr "Lọc"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Ctrl+Alt+G"
-msgstr ""
+msgstr "Ctrl+Alt+G"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Option+Command+G"
-msgstr ""
+msgstr "Option+Command+G"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Find menu"
-msgstr ""
+msgstr "Tìm kiếm"
 
 #: templates/layout/parts/context_links.html.twig front/setup.templates.php:47
 msgid "Manage templates..."
@@ -764,11 +770,11 @@ msgstr "Tổng"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Global Kanban"
-msgstr ""
+msgstr "Kanban tổng thể"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Transfer list"
-msgstr ""
+msgstr "Chuyển danh sách"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/setup/authentication.html.twig
@@ -799,11 +805,11 @@ msgstr ""
 #: templates/pages/tools/search_knowbaseitem.html.twig
 #: src/Glpi/Features/TreeBrowse.php:180
 msgid "Search…"
-msgstr ""
+msgstr "Tìm kiếm…"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "Bạn chưa lưu bất kỳ tìm kiếm nào."
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "Default search"
@@ -811,11 +817,11 @@ msgstr "Tìm mặc định"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "mark as default"
-msgstr ""
+msgstr "Đánh dấu mặc định"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "private"
-msgstr ""
+msgstr "Riêng tư"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Read-only mode"
@@ -857,7 +863,7 @@ msgstr ""
 #: templates/layout/parts/menu.html.twig src/Html.php:6331 src/Central.php:83
 #: src/Glpi/Helpdesk/HomePageTabs.php:108 src/Config.php:702
 msgid "Dashboard"
-msgstr ""
+msgstr "Bảng điều khiển"
 
 #: templates/layout/parts/page_footer.html.twig
 #: templates/maintenance.html.twig
@@ -879,20 +885,20 @@ msgstr "Chọn đối tượng mong muốn"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Ctrl + Alt + E"
-msgstr ""
+msgstr "Ctrl + Alt + E"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "⌥ (option) + ⌘ (command) + E"
-msgstr ""
+msgstr "⌥ (Option) + ⌘ (Command) + E"
 
 #: templates/layout/parts/profile_selector.html.twig
 #: js/src/vue/FuzzySearch/Modal.vue:9
 msgid "Tip: You can call this modal with %s keys combination"
-msgstr ""
+msgstr "Mẹo: Bạn có thể gọi cửa sổ modal này bằng tổ hợp phím %s."
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Search entity"
-msgstr ""
+msgstr "Tìm đơn vị"
 
 #: templates/layout/parts/profile_selector.html.twig
 #: templates/components/search/controls.html.twig
@@ -907,7 +913,7 @@ msgstr "Tìm"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Clear search"
-msgstr ""
+msgstr "Xóa tìm kiếm"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Select all"
@@ -919,7 +925,7 @@ msgstr ""
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "No entity found"
-msgstr ""
+msgstr "Không tìm thấy đơn vị"
 
 #: templates/password_form.html.twig
 msgid "Your password has expired. You must change it to be able to login."
@@ -966,7 +972,7 @@ msgstr "Chính sách an ninh cho mật khẩu"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
-msgstr ""
+msgstr "Lưu mật khẩu mới"
 
 #: templates/password_form.html.twig
 msgid ""
@@ -1019,12 +1025,12 @@ msgstr ""
 #: templates/components/pager.html.twig
 #, php-format
 msgid "Showing %s to %s of %s rows"
-msgstr ""
+msgstr "Hiển thị từ %s đến %s trên tổng số %s dòng"
 
 #: templates/components/pager.html.twig
 #, php-format
 msgid "%s-%s/%s"
-msgstr ""
+msgstr "%s-%s/%s"
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -1400,7 +1406,7 @@ msgstr ""
 #: templates/components/form/item_disk.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Item link"
-msgstr ""
+msgstr "Liên kết mục"
 
 #: templates/components/form/item_disk.html.twig src/Lock.php:431
 #: src/Item_Disk.php:291 src/Item_Disk.php:342 src/Item_Disk.php:480
@@ -1409,7 +1415,7 @@ msgstr "Phân vùng"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Mount Point"
-msgstr ""
+msgstr "Điểm gắn kết"
 
 #: templates/components/form/item_disk.html.twig src/Item_Disk.php:294
 #: src/Item_Disk.php:361 src/Item_Disk.php:415 src/Database.php:169
@@ -1424,19 +1430,19 @@ msgstr "Kích cỡ tự do"
 #: templates/components/form/item_disk.html.twig src/Item_Disk.php:250
 #: src/Item_Disk.php:526
 msgid "Encryption tool"
-msgstr ""
+msgstr "Công cụ mã hóa"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Tool"
-msgstr ""
+msgstr "Công cụ mã hóa"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Algorithm"
-msgstr ""
+msgstr "Thuật toán mã hóa"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Type"
-msgstr ""
+msgstr "Kiểu mã hóa"
 
 #: templates/components/form/modals_macros.html.twig
 #: templates/pages/tools/find_available_reservation.html.twig
@@ -1450,7 +1456,7 @@ msgstr "Hủy"
 #: templates/components/form/modals_macros.html.twig
 msgctxt "button"
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: templates/components/form/modals_macros.html.twig
 #: templates/components/form/viewsubitem.html.twig
@@ -1525,11 +1531,11 @@ msgstr[0] "Các ngày"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Field will not be updated from inventory"
-msgstr ""
+msgstr "Trường này sẽ không được cập nhật từ dữ liệu kiểm kê"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Last inventory value was:"
-msgstr ""
+msgstr "Giá trị kiểm kê gần nhất là:"
 
 #: templates/components/form/item_itilobject_group.html.twig
 msgid "Show child groups objects"
@@ -1687,12 +1693,12 @@ msgstr[0] "Các biểu mẫu"
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/itemvirtualmachine.html.twig
 msgid "Automatic Inventory"
-msgstr ""
+msgstr "Kiểm kê tự động"
 
 #: templates/components/form/header_content.html.twig src/CommonGLPI.php:1179
 #, php-format
 msgid "Item has been deleted on %s"
-msgstr ""
+msgstr "Mục đã bị xóa vào %s"
 
 #: templates/components/form/header_content.html.twig
 #: src/NotificationTargetTicket.php:675 src/CommonGLPI.php:1180
@@ -1704,11 +1710,12 @@ msgstr "Đã xóa"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "Thay đổi chế độ hiển thị trong các đơn vị con."
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
 msgstr ""
+"Không thể thay đổi thuộc tính này. Thuộc tính được kế thừa từ đơn vị cha."
 
 #: templates/components/form/header_content.html.twig
 msgid "You are not allowed to change the visibility flag for child entities."
@@ -1815,57 +1822,57 @@ msgstr "Loa"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:122
 msgid "Inventory information"
-msgstr ""
+msgstr "Thông tin kiểm kê"
 
 #. TRANS: parameter is the name of the asset
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:139
 #, php-format
 msgid "Download \"%1$s\" inventory file"
-msgstr ""
+msgstr "Tải xuống tệp kiểm kê \"%1$s\""
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:160
 msgid "Inventory file missing"
-msgstr ""
+msgstr "Thiếu tệp kiểm kê"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Glpi/Features/Inventoriable.php:202 src/Agent.php:148 src/Agent.php:345
 msgid "Useragent"
-msgstr ""
+msgstr "User-Agent"
 
 #: templates/components/form/inventory_info.html.twig src/RuleAsset.php:140
 #: src/RuleLocation.php:92 src/Glpi/Features/Inventoriable.php:207
 #: src/RuleImportEntity.php:90 src/RuleImportAsset.php:166
 msgid "Inventory tag"
-msgstr ""
+msgstr "Thẻ kiểm kê"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:181
 #: src/Agent.php:338
 msgid "Public contact address"
-msgstr ""
+msgstr "Địa chỉ liên hệ công khai"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:122
 #: src/Agent.php:317
 msgid "Last contact"
-msgstr ""
+msgstr "Liên hệ gần nhất"
 
 #: templates/components/form/inventory_info.html.twig src/RuleAsset.php:154
 msgid "Last inventory update"
-msgstr ""
+msgstr "Lần cập nhật kiểm kê gần nhất"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:214
 msgid "Agent status"
-msgstr ""
+msgstr "Trạng thái Agent"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:215
 msgid "Ask agent about its current status"
-msgstr ""
+msgstr "Yêu cầu Agent báo cáo trạng thái hiện tại"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/stencil/parts/port/status.html.twig
@@ -1876,27 +1883,27 @@ msgstr ""
 #: src/Glpi/Features/Inventoriable.php:217 src/NetworkPort.php:990
 #: src/NetworkPort.php:1213 src/Agent.php:753 src/Agent.php:774
 msgid "Unknown"
-msgstr ""
+msgstr "Không xác định"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:218
 msgid "Request inventory"
-msgstr ""
+msgstr "Yêu cầu kiểm kê"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:219
 msgid "Request agent to proceed an new inventory"
-msgstr ""
+msgstr "Yêu cầu Agent thực hiện một lần kiểm kê mới"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:169
 msgid "Agent information is not available."
-msgstr ""
+msgstr "Thông tin Agent không khả dụng."
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:209
 msgid "Last inventory"
-msgstr ""
+msgstr "Lần kiểm kê gần nhất"
 
 #: templates/components/form/item_device.html.twig
 msgid "No associated item"
@@ -1918,7 +1925,7 @@ msgstr "Không mục được kết hợp"
 #: src/DefaultFilter.php:103 src/DefaultFilter.php:120
 #: src/RuleImportEntity.php:114
 msgid "Itemtype"
-msgstr ""
+msgstr "Loại đối tượng"
 
 #: templates/components/form/item_device.html.twig front/devices.php:40
 #: src/Lock.php:866 src/Lock.php:1340 src/Item_Devices.php:329
@@ -2039,7 +2046,7 @@ msgstr "Số hàng tồn kho"
 #: src/CommonItilObject_Item.php:520 src/PDU.php:204 src/CommonDBTM.php:3529
 #: src/CommonITILValidation.php:1380 src/Plugin.php:2771
 msgid "Status"
-msgstr ""
+msgstr "Trạng thái"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
@@ -2049,13 +2056,13 @@ msgstr ""
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
 #: src/CommonDropdown.php:501
 msgid "Front picture"
-msgstr ""
+msgstr "Ảnh mặt trước"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:476 src/CommonDropdown.php:194
 #: src/CommonDropdown.php:514
 msgid "Rear picture"
-msgstr ""
+msgstr "Ảnh mặt sau"
 
 #: templates/components/form/pictures.html.twig
 msgid "Asset URL"
@@ -2118,12 +2125,12 @@ msgstr[0] "Các hành động"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "SNMP version"
-msgstr ""
+msgstr "Phiên bản SNMP"
 
 #: templates/components/form/snmpcredential.html.twig
 #: src/SNMPCredential.php:88 src/SNMPCredential.php:104
 msgid "Community"
-msgstr ""
+msgstr "Community"
 
 #: templates/components/form/snmpcredential.html.twig src/Item_Process.php:172
 #: src/User.php:150 src/Group_User.php:649
@@ -2133,7 +2140,7 @@ msgstr[0] "Các người dùng"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "Giao thức mã hóa dùng cho xác thực"
 
 #: templates/components/form/snmpcredential.html.twig
 #: templates/pages/setup/general/systeminfo_form.html.twig
@@ -2149,7 +2156,7 @@ msgstr "Mật khẩu"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for data"
-msgstr ""
+msgstr "Giao thức mã hóa dữ liệu"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Support hours"
@@ -2157,15 +2164,15 @@ msgstr "Các giờ hỗ trợ"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On week"
-msgstr ""
+msgstr "Theo tuần"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On Saturday"
-msgstr ""
+msgstr "Vào Thứ Bảy"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Saturday"
-msgstr ""
+msgstr "Sử dụng Thứ Bảy"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Sundays and holidays"
@@ -2173,7 +2180,7 @@ msgstr "Chủ nhật và các ngày lễ"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Sunday"
-msgstr ""
+msgstr "Sử dụng Chủ Nhật"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/form/link_existing_or_new.html.twig
@@ -2257,7 +2264,7 @@ msgstr "Phục hồi"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Giữ lại các thiết bị khi xóa mục này"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig
@@ -2265,13 +2272,13 @@ msgstr ""
 #: src/MassiveAction.php:698 src/Profile.php:1010 src/CommonDBTM.php:5414
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Đưa vào thùng rác"
 
 #: templates/components/form/reservation.html.twig
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetReservation.php:181
 msgid "Notes"
-msgstr "Các ghi chú"
+msgstr "Ghi chú"
 
 #: templates/components/form/reservation.html.twig
 #: templates/components/itilobject/timeline/simple_form.html.twig
@@ -2554,7 +2561,7 @@ msgstr "Kích hoạt các thông tin tài chính và hành chính"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
-msgstr ""
+msgstr "Vòng đời tài sản"
 
 #: templates/components/infocom.html.twig
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:1586
@@ -2590,7 +2597,7 @@ msgstr "Ngày kiểm kê vật lý cuối cùng"
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:1639
 #: src/Infocom.php:1717 src/Infocom.php:1802
 msgid "Decommission date"
-msgstr ""
+msgstr "Ngày ngừng sử dụng"
 
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Infocom.php:122
@@ -2720,7 +2727,7 @@ msgstr ""
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/SLATTOField.php:48
 msgid "TTO"
-msgstr ""
+msgstr "TTO"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/NotificationTargetTicket.php:587 src/RuleTicket.php:245
@@ -2732,12 +2739,12 @@ msgstr ""
 #: src/Glpi/Dashboard/FakeProvider.php:541
 #: src/Glpi/ContentTemplates/Parameters/TicketParameters.php:80
 msgid "Time to own"
-msgstr ""
+msgstr "Thời gian sở hữu"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/SLATTRField.php:51
 msgid "TTR"
-msgstr ""
+msgstr "TTR"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: templates/components/itilobject/fields_panel.html.twig
@@ -2752,26 +2759,26 @@ msgstr ""
 #: src/CommonITILObject.php:4487 src/CommonITILObject.php:5711
 #: src/CommonITILObject.php:6720 src/CommonITILObject.php:7153
 msgid "Time to resolve"
-msgstr ""
+msgstr "Thời gian giải quyết"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/OLATTOField.php:48
 msgid "Internal TTO"
-msgstr ""
+msgstr "TTO nội bộ"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/RuleTicket.php:383
 msgid "Internal Time to own"
-msgstr ""
+msgstr "Thời gian tiếp nhận nội bộ"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/OLATTRField.php:48
 msgid "Internal TTR"
-msgstr ""
+msgstr "TTR nội bộ"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal Time to resolve"
-msgstr ""
+msgstr "Thời gian giải quyết nội bộ"
 
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
@@ -2991,7 +2998,7 @@ msgstr[0] "Các mức leo thang"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Also delete date?"
-msgstr ""
+msgstr "Đồng thời xóa ngày?"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Assign a SLA"
@@ -3097,7 +3104,7 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/Category.php:51
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:107
 msgid "Actors"
-msgstr ""
+msgstr "Các bên liên quan"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "Entity notes"
@@ -3224,11 +3231,11 @@ msgstr[0] ""
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic follow-up"
-msgstr ""
+msgstr "Theo dõi tự động"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic resolution"
-msgstr ""
+msgstr "Giải quyết tự động"
 
 #: templates/components/itilobject/timeline/document/post_figure_content.html.twig
 #: templates/components/itilobject/timeline/document/document_list_item.html.twig
@@ -3251,7 +3258,7 @@ msgstr ""
 
 #: templates/components/itilobject/timeline/document/document_list_item.html.twig
 msgid "File extension"
-msgstr ""
+msgstr "Phần mở rộng tệp"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: templates/components/itilobject/timeline/simple_form.html.twig
@@ -3372,7 +3379,7 @@ msgstr "Bộ lọc dòng thời gian"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 msgid "View TODO list"
-msgstr ""
+msgstr "Xem danh sách việc cần làm"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Upload from"
@@ -3447,7 +3454,7 @@ msgstr "Tên"
 #: templates/components/itilobject/timeline/new_form.html.twig
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s sẽ được thêm vào đơn vị %2$s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #: src/Problem.php:730 src/Change.php:729 src/Ticket.php:3391
@@ -3466,22 +3473,22 @@ msgstr "Hoàn thành"
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
 msgid "Next automatic follow-up scheduled on %s"
-msgstr ""
+msgstr "Lần theo dõi tự động tiếp theo được lên lịch vào %s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
 msgid "Automatic resolution scheduled on %s"
-msgstr ""
+msgstr "Tự động giải quyết được lên lịch vào %s"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Approve"
-msgstr ""
+msgstr "Phê duyệt"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Refuse"
-msgstr ""
+msgstr "Từ chối"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/ValidationStep.php:39
@@ -3526,13 +3533,13 @@ msgstr "Người xác nhận"
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #, php-format
 msgid "Merged from Ticket %1$s"
-msgstr ""
+msgstr "Được gộp từ Phiếu hỗ trợ %1$s"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr ""
+msgstr "Đã chuyển thành Phiếu hỗ trợ %1$s"
 
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 #: src/RuleCommonITILObject.php:1058 src/TaskTemplate.php:62
@@ -3562,11 +3569,11 @@ msgstr "Lưu và thêm vào kho kiến thức"
 
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 msgid "Confirm the deletion of planning?"
-msgstr ""
+msgstr "Xác nhận xóa kế hoạch?"
 
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 msgid "Unplan"
-msgstr ""
+msgstr "Hủy lập kế hoạch"
 
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 msgid "Plan this task"
@@ -3575,16 +3582,16 @@ msgstr "Lập kế hoạch nhiệm vụ này"
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
 msgid "Set the status to pending"
-msgstr ""
+msgstr "Đặt trạng thái thành Chờ xử lý"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 #, php-format
 msgid "%s was already promoted"
-msgstr ""
+msgstr "%s đã được chuyển đổi trước đó"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "Promote to Ticket"
-msgstr ""
+msgstr "Chuyển thành Phiếu hỗ trợ"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
@@ -3605,7 +3612,7 @@ msgstr ""
 #: templates/components/itilobject/timeline/todo-list-summary.html.twig
 #, php-format
 msgid "Total duration: %s"
-msgstr ""
+msgstr "Tổng thời lượng: %s"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: src/ITILFollowupTemplate.php:64 src/ITILFollowupTemplate.php:104
@@ -3638,7 +3645,7 @@ msgstr "Từ chối"
 #: templates/components/itilobject/timeline/form_solution.html.twig
 #, php-format
 msgid "%1$s on %2$s by %3$s"
-msgstr ""
+msgstr "%1$s vào %2$s bởi %3$s"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 msgid ""
@@ -3654,7 +3661,7 @@ msgstr[0] "Các biểu mẫu giải pháp"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 msgid "Link to knowledge base entry #%id"
-msgstr ""
+msgstr "Liên kết đến bài viết cơ sở tri thức #%id"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
@@ -3664,17 +3671,17 @@ msgstr ""
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s by %2$s"
-msgstr ""
+msgstr "Được tạo: %1$s bởi %2$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s"
-msgstr ""
+msgstr "Được tạo: %1$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Last update: %1$s by %2$s"
-msgstr ""
+msgstr "Cập nhật lần cuối: %1$s bởi %2$s"
 
 #: templates/components/itilobject/validationstep.html.twig
 msgid "Minimum approval required (%)"
@@ -3726,7 +3733,7 @@ msgstr "Được gán cho"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Edit notification settings"
-msgstr ""
+msgstr "Chỉnh sửa cài đặt thông báo"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: src/Glpi/Csv/PlanningCsv.php:71 src/Planning.php:885
@@ -3789,11 +3796,11 @@ msgstr "Lưu"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Direct email"
-msgstr ""
+msgstr "Email trực tiếp"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Number of tickets already assigned"
-msgstr ""
+msgstr "Số phiếu đã được phân công"
 
 #: templates/components/itilobject/actors/field.html.twig src/User.php:3733
 msgid "Number of tickets as requester"
@@ -3811,11 +3818,11 @@ msgstr "Hiện tất cả các mục"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
-msgstr ""
+msgstr "Vui lòng chọn mục cần thêm"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "View other actions"
-msgstr ""
+msgstr "Xem các thao tác khác"
 
 #: templates/components/itilobject/footer.html.twig
 #, php-format
@@ -3829,7 +3836,7 @@ msgstr ""
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Toggle panels width"
-msgstr ""
+msgstr "Chuyển đổi độ rộng bảng"
 
 #: templates/components/itilobject/footer.html.twig
 msgid ""
@@ -4055,15 +4062,15 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Show as map"
-msgstr ""
+msgstr "Hiển thị dạng bản đồ"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle browse"
-msgstr ""
+msgstr "Chuyển đổi chế độ duyệt"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
-msgstr ""
+msgstr "Hiển thị thùng rác"
 
 #: templates/components/search/controls.html.twig
 msgid "Show unpublished"
@@ -4114,7 +4121,7 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig src/Dropdown.php:2805
 msgid "Copy names to clipboard"
-msgstr ""
+msgstr "Sao chép tên vào bộ nhớ tạm"
 
 #: templates/components/search/table.html.twig src/Html.php:2114
 #: src/Html.php:2115
@@ -4175,7 +4182,7 @@ msgstr ""
 #: src/Item_DeviceSimcard.php:199 src/NetworkName.php:901
 #: src/Glpi/Features/AssignableItem.php:232
 msgid "View all"
-msgstr ""
+msgstr "Xem tất cả"
 
 #: templates/components/search/displaypreference_list.html.twig
 #: templates/components/checkbox_matrix.html.twig
@@ -4300,11 +4307,11 @@ msgstr "Cập nhật"
 #: templates/components/datatable.html.twig src/Item_SoftwareVersion.php:1115
 #: src/Glpi/Search/CriteriaFilter.php:56
 msgid "Filter"
-msgstr ""
+msgstr "Bộ lọc"
 
 #: templates/components/logs.html.twig
 msgid "No historical matching your filters"
-msgstr ""
+msgstr "Không có lịch sử phù hợp với bộ lọc"
 
 #: templates/components/logs.html.twig
 #: templates/components/datatable.html.twig
@@ -4326,7 +4333,7 @@ msgstr "Tên"
 #: templates/components/user/info_card.html.twig
 #: templates/pages/admin/user/user.html.twig src/RuleRight.php:326
 msgid "Default group"
-msgstr ""
+msgstr "Nhóm mặc định"
 
 #: templates/components/user/create_user.html.twig
 msgid "Create user"
@@ -4459,7 +4466,7 @@ msgstr "Chọn/không chọn tất cả"
 
 #: templates/components/assets/link_existing_or_new_item_device.html.twig
 msgid "No unaffected device!"
-msgstr ""
+msgstr "Không có thiết bị nào không bị ảnh hưởng!"
 
 #: templates/components/assets/link_existing_or_new_item_device.html.twig
 msgid "Choose an existing device"
@@ -4473,21 +4480,21 @@ msgstr "Thêm các thiết bị mới"
 #: templates/pages/assets/rack.html.twig src/PDU_Rack.php:289
 #: src/Item_Rack.php:679
 msgid "Background color"
-msgstr ""
+msgstr "Màu nền"
 
 #: templates/components/dashboard/widget_form.html.twig
 #: templates/pages/management/domainrecord.html.twig
 #: src/DomainRecordType.php:388 src/DomainRecord.php:134
 msgid "Data"
-msgstr ""
+msgstr "Dữ liệu"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Widget"
-msgstr ""
+msgstr "Tiện ích"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use gradient palette"
-msgstr ""
+msgstr "Sử dụng bảng màu chuyển sắc"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "generate a palette from the background color"
@@ -4499,7 +4506,7 @@ msgstr ""
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Display value labels on points/bars"
-msgstr ""
+msgstr "Hiển thị nhãn giá trị trên điểm/cột"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Show labels on chart"
@@ -4511,7 +4518,7 @@ msgstr ""
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Limit number of data"
-msgstr ""
+msgstr "Giới hạn số lượng dữ liệu"
 
 #. TRANS: select action 'update' (before doing it)
 #: templates/components/dashboard/widget_form.html.twig
@@ -4651,15 +4658,15 @@ msgstr "Mốc"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "Team"
-msgstr ""
+msgstr "Nhóm"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "No team members"
-msgstr ""
+msgstr "Không có thành viên trong nhóm"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "Open full form"
-msgstr ""
+msgstr "Mở biểu mẫu đầy đủ"
 
 #: templates/forgotpassword.html.twig templates/pages/login.html.twig
 #: src/NotificationTargetUser.php:48
@@ -4668,19 +4675,19 @@ msgstr "Quên mật khẩu?"
 
 #: templates/forgotpassword.html.twig
 msgid "Forget it,"
-msgstr ""
+msgstr "Bỏ qua,"
 
 #: templates/forgotpassword.html.twig
 msgid "send me back"
-msgstr ""
+msgstr "đưa tôi quay lại"
 
 #: templates/forgotpassword.html.twig
 msgid "to the login screen."
-msgstr ""
+msgstr "màn hình đăng nhập."
 
 #: templates/maintenance.html.twig
 msgid "Temporarily down for maintenance"
-msgstr ""
+msgstr "Tạm ngừng để bảo trì"
 
 #: templates/maintenance.html.twig
 msgid ""
@@ -4690,7 +4697,7 @@ msgstr ""
 
 #: templates/maintenance.html.twig templates/pages/form_renderer.html.twig
 msgid "Take me home"
-msgstr ""
+msgstr "Quay về trang chủ"
 
 #: templates/stencil/parts/port/status.html.twig
 #: src/NetworkPortConnectionLog.php:108 src/NetworkPort.php:1196
@@ -4797,7 +4804,7 @@ msgstr "Có thể liên kết đến một ticket"
 #: templates/generic_show_form.html.twig src/Cable.php:388 src/Cable.php:403
 #: src/Datacenter.php:163 src/Glpi/Asset/AssetDefinition.php:729
 msgid "Data center position"
-msgstr ""
+msgstr "Vị trí trong trung tâm dữ liệu"
 
 #: templates/generic_show_form.html.twig src/Cluster.php:67
 msgid "Cluster"
@@ -4806,7 +4813,7 @@ msgstr[0] ""
 
 #: templates/generic_show_form.html.twig src/Domain.php:154
 msgid "Registration date"
-msgstr ""
+msgstr "Ngày đăng ký"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -4953,7 +4960,7 @@ msgstr "Ngày hết hạn"
 
 #: templates/generic_show_form.html.twig
 msgid "Empty for infinite"
-msgstr ""
+msgstr "Để trống nếu không giới hạn"
 
 #: templates/generic_show_form.html.twig src/CartridgeItem.php:229
 #: src/NotificationTargetCartridgeItem.php:95
@@ -4979,7 +4986,7 @@ msgstr "Tài liệu tham khảo"
 #: src/Certificate.php:271 src/PDU.php:214 src/CommonDBTM.php:3575
 #: src/Domain.php:146 src/ConsumableItem.php:262
 msgid "Technician in charge"
-msgstr ""
+msgstr "Kỹ thuật viên phụ trách"
 
 #: templates/generic_show_form.html.twig src/RuleSoftwareCategory.php:67
 #: src/Software.php:408 src/RuleDictionnarySoftware.php:70
@@ -5002,7 +5009,7 @@ msgstr "Người công bố"
 #: src/RuleImportEntity.php:235 src/Computer.php:622 src/Certificate.php:290
 #: src/PDU.php:232 src/Domain.php:192 src/ConsumableItem.php:272
 msgid "Group in charge"
-msgstr ""
+msgstr "Nhóm phụ trách"
 
 #: templates/generic_show_form.html.twig src/NotificationTargetTicket.php:670
 #: src/Peripheral.php:238 src/NetworkEquipment.php:315 src/Monitor.php:257
@@ -5069,7 +5076,7 @@ msgstr "Tên người dùng thay thế"
 
 #: templates/generic_show_form.html.twig src/Unmanaged.php:200
 msgid "Sysdescr"
-msgstr ""
+msgstr "Mô tả hệ thống"
 
 #: templates/generic_show_form.html.twig src/RuleDictionnaryPrinter.php:89
 msgid "Management type"
@@ -5171,11 +5178,11 @@ msgstr "Hoạt động"
 #: templates/generic_show_form.html.twig src/DatabaseInstance.php:291
 #: src/Computer.php:516
 msgid "Last boot date"
-msgstr ""
+msgstr "Ngày khởi động gần nhất"
 
 #: templates/impact/edit_compound_modal.html.twig
 msgid "Edit group"
-msgstr ""
+msgstr "Chỉnh sửa nhóm"
 
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/pages/assets/cable.html.twig src/PlanningEventCategory.php:48
@@ -5190,7 +5197,7 @@ msgstr ""
 #: templates/impact/ongoing_modal.html.twig
 #: src/Glpi/Helpdesk/HomePageTabs.php:77
 msgid "Ongoing tickets"
-msgstr ""
+msgstr "Phiếu đang xử lý"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Please enter the code from your authenticator app"
@@ -5450,7 +5457,7 @@ msgstr "Theo phần cứng"
 
 #: templates/pages/tools/report/network_criteria.html.twig
 msgid "By network socket"
-msgstr ""
+msgstr "Theo cổng mạng"
 
 #: templates/pages/tools/reminder_planning.html.twig
 #: src/CommonITILTask.php:1652 src/Glpi/Features/PlanningEvent.php:731
@@ -5792,7 +5799,7 @@ msgstr[0] "Các mục tiêu"
 #: templates/pages/tools/project_task.html.twig
 #: templates/pages/tools/project.html.twig
 msgid "Automatically calculate"
-msgstr ""
+msgstr "Tự động tính toán"
 
 #: templates/pages/tools/project_task.html.twig
 msgid ""
@@ -5916,7 +5923,7 @@ msgstr "Thời gian các vé"
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Details"
-msgstr ""
+msgstr "Chi tiết"
 
 #: templates/pages/tools/project.html.twig
 #: templates/pages/setup/notification/queued_notification.html.twig
@@ -6029,11 +6036,11 @@ msgstr "IP"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:159
 msgid "Approved device"
-msgstr ""
+msgstr "Thiết bị đã phê duyệt"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:151
 msgid "Network hub"
-msgstr ""
+msgstr "Bộ chia mạng"
 
 #: templates/pages/assets/monitor.html.twig
 #: templates/pages/assets/phone.html.twig
@@ -6053,12 +6060,12 @@ msgstr[0] "Các cổng"
 #: templates/pages/assets/consumableitem.html.twig
 msgctxt "quantity"
 msgid "Stock target"
-msgstr ""
+msgstr "Mục tiêu tồn kho"
 
 #: templates/pages/assets/cable.html.twig
 #, php-format
 msgid "Endpoint %s"
-msgstr ""
+msgstr "Điểm cuối %s"
 
 #: templates/pages/assets/cable.html.twig
 #: templates/pages/admin/transfer.html.twig
@@ -6146,7 +6153,7 @@ msgstr ""
 #: templates/pages/assets/socket.html.twig src/Glpi/Socket.php:384
 #: src/Glpi/Socket.php:443 src/Glpi/Socket.php:753 src/Glpi/Socket.php:876
 msgid "Wiring side"
-msgstr ""
+msgstr "Mặt đi dây"
 
 #: templates/pages/assets/phone.html.twig src/Phone.php:335
 msgctxt "quantity"
@@ -6179,15 +6186,15 @@ msgstr[0] ""
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/Item_OperatingSystem.php:348 src/Item_OperatingSystem.php:444
 msgid "Product ID"
-msgstr ""
+msgstr "Mã sản phẩm"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Company"
-msgstr ""
+msgstr "Công ty"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Owner"
-msgstr ""
+msgstr "Chủ sở hữu"
 
 #: templates/pages/assets/operatingsystem.html.twig src/Lock.php:597
 #: src/Item_SoftwareVersion.php:477 src/Item_SoftwareVersion.php:1107
@@ -6198,7 +6205,7 @@ msgstr "Ngày cài đặt"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Host ID"
-msgstr ""
+msgstr "Mã máy chủ"
 
 #: templates/pages/assets/customfield.html.twig
 #: templates/pages/admin/customobjects/main.html.twig
@@ -6254,62 +6261,62 @@ msgstr "Bộ đếm hiện tại của các trang"
 
 #: templates/pages/assets/rack.html.twig ajax/dcroom_size.php:62
 msgid "No room found or selected"
-msgstr ""
+msgstr "Không tìm thấy hoặc chưa chọn phòng"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Position in room"
-msgstr ""
+msgstr "Vị trí trong phòng"
 
 #: templates/pages/assets/rack.html.twig
 msgid "North"
-msgstr ""
+msgstr "Bắc"
 
 #: templates/pages/assets/rack.html.twig
 msgid "East"
-msgstr ""
+msgstr "Đông"
 
 #: templates/pages/assets/rack.html.twig
 msgid "South"
-msgstr ""
+msgstr "Nam"
 
 #: templates/pages/assets/rack.html.twig
 msgid "West"
-msgstr ""
+msgstr "Tây"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Door orientation in room"
-msgstr ""
+msgstr "Hướng cửa trong phòng"
 
 #: templates/pages/assets/rack.html.twig src/Rack.php:236
 msgid "Number of units"
-msgstr ""
+msgstr "Số lượng đơn vị"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Width"
-msgstr ""
+msgstr "Chiều rộng"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Height"
-msgstr ""
+msgstr "Chiều cao"
 
 #: templates/pages/assets/rack.html.twig src/CommonDCModelDropdown.php:88
 #: src/CommonDCModelDropdown.php:163 src/Glpi/Asset/AssetModel.php:211
 #: src/Glpi/Asset/AssetModel.php:279
 msgid "Depth"
-msgstr ""
+msgstr "Chiều sâu"
 
 #: templates/pages/assets/rack.html.twig src/Rack.php:244
 #: src/CommonDCModelDropdown.php:115 src/Glpi/Asset/AssetModel.php:297
 msgid "Max. power (in watts)"
-msgstr ""
+msgstr "Công suất tối đa (W)"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Measured power (in watts)"
-msgstr ""
+msgstr "Công suất đo được (W)"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Max. weight"
-msgstr ""
+msgstr "Khối lượng tối đa"
 
 #: templates/pages/assets/networkport/form.html.twig
 msgid "Add several ports"
@@ -6409,31 +6416,31 @@ msgstr[0] "Các ngày"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:118
 msgid "Log connections"
-msgstr ""
+msgstr "Ghi nhật ký kết nối"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:124
 msgid "Filter access"
-msgstr ""
+msgstr "Lọc quyền truy cập"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "Leave these parameters empty to disable API access restriction"
-msgstr ""
+msgstr "Để trống các tham số này để tắt giới hạn truy cập API"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "IPv4 address range start"
-msgstr ""
+msgstr "Địa chỉ bắt đầu của dải IPv4"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "IPv4 address range end"
-msgstr ""
+msgstr "Địa chỉ kết thúc của dải IPv4"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:147
 msgid "IPv6 address"
-msgstr ""
+msgstr "Địa chỉ IPv6"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:155
 msgid "Application token"
-msgstr ""
+msgstr "Mã thông báo ứng dụng"
 
 #: templates/pages/setup/externallink_itemtype.html.twig
 msgid "Add an item type"
@@ -6559,7 +6566,7 @@ msgstr ""
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "URL of the API"
-msgstr ""
+msgstr "URL của API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Legacy API"
@@ -7009,7 +7016,7 @@ msgstr ""
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Unknown"
-msgstr ""
+msgstr "Không xác định"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
@@ -7450,11 +7457,11 @@ msgstr ""
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Auto Login"
-msgstr ""
+msgstr "Đăng nhập tự động"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Time to allow \"Remember Me\""
-msgstr ""
+msgstr "Thời gian cho phép \"Ghi nhớ đăng nhập\""
 
 #: templates/pages/setup/general/general_setup.html.twig
 #: templates/pages/setup/notification/ajax_setting.html.twig
@@ -7476,11 +7483,11 @@ msgstr "Ngưng"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default state of checkbox"
-msgstr ""
+msgstr "Trạng thái mặc định của hộp kiểm"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Display source dropdown on login page"
-msgstr ""
+msgstr "Hiển thị danh sách nguồn trên trang đăng nhập"
 
 #: templates/pages/setup/general/api_apiclients_section.html.twig
 msgid "API clients (Legacy API)"
@@ -7695,7 +7702,7 @@ msgstr ""
 #: front/marketplace.php:52 src/Glpi/Marketplace/Controller.php:118
 #: src/Glpi/Marketplace/View.php:79
 msgid "Marketplace"
-msgstr ""
+msgstr "Marketplace"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Ask before replacing"
@@ -7980,7 +7987,7 @@ msgstr[0] ""
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1143
 msgid "Administrator email address"
-msgstr ""
+msgstr "Địa chỉ email quản trị viên"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1187
@@ -7990,7 +7997,7 @@ msgstr "Tên người quản trị"
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: src/Entity.php:1161
 msgid "Email sender address"
-msgstr ""
+msgstr "Địa chỉ email người gửi"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Address to use in from for sent emails."
@@ -8003,7 +8010,7 @@ msgstr ""
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1203
 msgid "Email sender name"
-msgstr ""
+msgstr "Tên người gửi email"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Name to use in from for sent emails."
@@ -8016,7 +8023,7 @@ msgstr ""
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1152
 msgid "Reply-To address"
-msgstr ""
+msgstr "Địa chỉ Reply-To"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Optionnal reply to address."
@@ -8027,7 +8034,7 @@ msgstr ""
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1195
 #: src/QueuedNotification.php:313
 msgid "Reply-To name"
-msgstr ""
+msgstr "Tên Reply-To"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Optionnal reply to name."
@@ -8040,7 +8047,7 @@ msgstr ""
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1170
 msgid "No-Reply address"
-msgstr ""
+msgstr "Địa chỉ No-Reply"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Optionnal No-Reply address."
@@ -8053,7 +8060,7 @@ msgstr ""
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1212
 msgid "No-Reply name"
-msgstr ""
+msgstr "Tên No-Reply"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Optionnal No-Reply name."
@@ -8547,11 +8554,11 @@ msgstr ""
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "Notifications configuration"
-msgstr ""
+msgstr "Cấu hình thông báo"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "You must enable at least one notification mode."
-msgstr ""
+msgstr "Bạn phải bật ít nhất một phương thức thông báo."
 
 #: templates/pages/setup/setup_notifications.html.twig
 #: src/QueuedNotification.php:389 src/NotificationTemplate.php:78
@@ -8709,7 +8716,7 @@ msgstr "Các xác thực ngoài"
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
-msgstr ""
+msgstr "Tiện ích mở rộng LDAP của PHP chưa được cài đặt."
 
 #: templates/pages/setup/authentication.html.twig
 msgid "Others authentication methods"
@@ -9058,7 +9065,7 @@ msgstr ""
 
 #: templates/pages/helpdesk/index.html.twig src/Central.php:545
 msgid "Update my password"
-msgstr ""
+msgstr "Cập nhật mật khẩu"
 
 #: templates/pages/assistance/stats/form.html.twig
 msgid "Show graphics"
@@ -9075,7 +9082,7 @@ msgstr "Các bộ lọc chuyển đổi"
 #: templates/pages/assistance/planning/filters.html.twig
 #: src/Glpi/Dashboard/Grid.php:886
 msgid "Filters"
-msgstr ""
+msgstr "Các bộ lọc"
 
 #: templates/pages/assistance/planning/filters.html.twig
 msgid "Plannings"
@@ -9194,25 +9201,25 @@ msgstr ""
 
 #: templates/pages/management/certificate.html.twig src/Certificate.php:169
 msgid "Self-signed"
-msgstr ""
+msgstr "Tự ký"
 
 #: templates/pages/management/certificate.html.twig
 #: src/Certificate_Item.php:401 src/Certificate.php:246
 msgid "DNS name"
-msgstr ""
+msgstr "Tên DNS"
 
 #: templates/pages/management/certificate.html.twig
 #: src/Certificate_Item.php:402 src/Certificate.php:162
 msgid "DNS suffix"
-msgstr ""
+msgstr "Hậu tố DNS"
 
 #: templates/pages/management/certificate.html.twig src/Certificate.php:186
 msgid "Command used"
-msgstr ""
+msgstr "Lệnh được sử dụng"
 
 #: templates/pages/management/certificate.html.twig src/Certificate.php:194
 msgid "Certificate request (CSR)"
-msgstr ""
+msgstr "Yêu cầu chứng chỉ (CSR)"
 
 #: templates/pages/management/dcroom.html.twig src/DCRoom.php:220
 msgid "Number of columns"
@@ -9243,7 +9250,7 @@ msgstr "Số"
 
 #: templates/pages/management/contract.html.twig
 msgid "Next renewal date"
-msgstr ""
+msgstr "Ngày gia hạn tiếp theo"
 
 #: templates/pages/management/contract.html.twig src/Contract_Item.php:373
 #: src/Contract_Supplier.php:213 src/Contract_User.php:220
@@ -9252,7 +9259,7 @@ msgstr "Chu kỳ hợp đồng ban đầu"
 
 #: templates/pages/management/contract.html.twig
 msgid "Start date of notice period"
-msgstr ""
+msgstr "Ngày bắt đầu thời hạn thông báo"
 
 #: templates/pages/management/contract.html.twig src/Entity.php:1950
 #: src/Contract.php:338 src/Contract.php:583 src/Contract.php:1601
@@ -9374,7 +9381,7 @@ msgstr "Số"
 #: templates/pages/management/softwarelicense.html.twig
 #: src/SoftwareLicense.php:404
 msgid "Allow Over-Quota"
-msgstr ""
+msgstr "Cho phép vượt hạn ngạch"
 
 #: templates/pages/management/softwarelicense.html.twig src/Contract.php:654
 #: src/SoftwareLicense.php:380 src/SoftwareLicense.php:686
@@ -9510,11 +9517,11 @@ msgstr "Chi phí vật liệu"
 
 #: templates/pages/management/line.html.twig src/Line.php:231
 msgid "Caller number"
-msgstr ""
+msgstr "Số điện thoại người gọi"
 
 #: templates/pages/management/line.html.twig src/Line.php:239
 msgid "Caller name"
-msgstr ""
+msgstr "Tên người gọi"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #: src/NotificationTarget.php:1876 src/Item_Rack.php:408
@@ -10152,7 +10159,7 @@ msgstr "Phục hồi"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Put in trashbin"
-msgstr ""
+msgstr "Đưa vào thùng rác"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Save and preview"
@@ -10321,11 +10328,11 @@ msgstr ""
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Templates configuration"
-msgstr ""
+msgstr "Cấu hình mẫu"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Tickets configuration"
-msgstr ""
+msgstr "Cấu hình phiếu hỗ trợ"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2167
 #: src/Entity.php:2744 src/LevelAgreement.php:389 src/SLM.php:170
@@ -10351,15 +10358,16 @@ msgstr "Dựa trên danh mục này sau đó dựa trên mục này"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr ""
+msgstr "Tự động phân công phiếu hỗ trợ, thay đổi và sự cố"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Mark followup added by a supplier though an email collector as private"
 msgstr ""
+"Đánh dấu theo dõi được nhà cung cấp thêm qua bộ thu thập email là riêng tư"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2533
 msgid "Replace the agent and group name with a generic name"
-msgstr ""
+msgstr "Thay tên kỹ thuật viên và nhóm bằng tên chung."
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Replace the agent and group name with a customisable nickname"
@@ -10367,32 +10375,32 @@ msgstr ""
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2535
 msgid "Replace the agent's name with a generic name"
-msgstr ""
+msgstr "Thay tên kỹ thuật viên bằng tên chung."
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2536
 msgid "Replace the agent's name with a customisable nickname"
-msgstr ""
+msgstr "Thay tên kỹ thuật viên bằng biệt danh có thể tùy chỉnh."
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2537
 msgid "Replace the group's name with a generic name"
-msgstr ""
+msgstr "Thay tên nhóm bằng tên chung"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Anonymize support agents"
-msgstr ""
+msgstr "Ẩn danh kỹ thuật viên hỗ trợ"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Display initials for users without pictures"
-msgstr ""
+msgstr "Hiển thị chữ cái đầu cho người dùng không có ảnh"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:1481
 msgid "Default contract"
-msgstr ""
+msgstr "Hợp đồng mặc định"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:1487
 #: src/Entity.php:2760
 msgid "Contract in ticket entity"
-msgstr ""
+msgstr "Hợp đồng trong đơn vị của phiếu hỗ trợ"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Automatic closing configuration"
@@ -10400,11 +10408,11 @@ msgstr "Cấu hình tự động đóng"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Close ticket action is disabled."
-msgstr ""
+msgstr "Chức năng đóng phiếu hỗ trợ đã bị vô hiệu hóa."
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Purge ticket action is disabled."
-msgstr ""
+msgstr "Chức năng xóa vĩnh viễn phiếu hỗ trợ đã bị vô hiệu hóa."
 
 #: templates/pages/admin/entity/assistance.html.twig
 #: src/NotificationTargetTicket.php:680 src/Entity.php:1402
@@ -10418,7 +10426,7 @@ msgstr ""
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:1421
 msgid "Automatic purge of closed tickets after"
-msgstr ""
+msgstr "Tự động xóa các phiếu đã đóng sau"
 
 #: templates/pages/admin/entity/assistance.html.twig
 #, php-format
@@ -10444,7 +10452,7 @@ msgstr ""
 
 #: templates/pages/admin/entity/address.html.twig src/Location.php:127
 msgid "Location on map"
-msgstr ""
+msgstr "Vị trí trên bản đồ"
 
 #: templates/pages/admin/entity/address.html.twig
 msgctxt "location"
@@ -10463,7 +10471,7 @@ msgstr "Độ cao"
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Enable CSS customization"
-msgstr ""
+msgstr "Bật tùy chỉnh CSS"
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
@@ -10532,15 +10540,15 @@ msgstr "Gửi báo động giấy phép trước khi"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1366
 msgid "Alarms on expired certificates"
-msgstr ""
+msgstr "Cảnh báo chứng chỉ hết hạn"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Send certificates alarms before"
-msgstr ""
+msgstr "Gửi cảnh báo chứng chỉ trước"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Reminders frequency for alarms on certificates"
-msgstr ""
+msgstr "Tần suất nhắc nhở đối với cảnh báo chứng chỉ"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1316
 #: src/ReservationItem.php:705
@@ -10557,15 +10565,15 @@ msgstr ""
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Alarms on domains expiries"
-msgstr ""
+msgstr "Cảnh báo tên miền sắp hết hạn"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Domains closes expiries"
-msgstr ""
+msgstr "Tên miền sắp hết hạn"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Domains expired"
-msgstr ""
+msgstr "Tên miền đã hết hạn"
 
 #: templates/pages/admin/entity/survey_config.html.twig
 msgid "Create survey after"
@@ -10653,11 +10661,11 @@ msgstr "Không chuyển tự động"
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "Model for automatic entity transfer on inventories"
-msgstr ""
+msgstr "Mẫu chuyển đơn vị tự động khi kiểm kê"
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "Agent base URL"
-msgstr ""
+msgstr "URL cơ sở của Agent"
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "Automatically update of the elements related to the computers"
@@ -10723,8 +10731,9 @@ msgstr "Domain mail đại diện đối tượng"
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "Values used in the interface to search users from a LDAP directory"
 msgstr ""
-"Các giá trị sử dụng trong giao diện để tìm các người dùng tử một thư mục "
-"LDAP"
+"Các giá trị được sử dụng trong giao diện để tìm kiếm người dùng từ thư mục "
+"LDAPCác giá trị sử dụng trong giao diện để tìm các người dùng tử một thư mục"
+" LDAP"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "LDAP filter associated to the entity (if necessary)"
@@ -10738,7 +10747,7 @@ msgstr[0] ""
 #: templates/pages/admin/inventory/agent.html.twig src/ObjectLock.php:407
 #: src/Agent.php:128
 msgid "Locked"
-msgstr ""
+msgstr "Đã khóa"
 
 #: templates/pages/admin/inventory/agent.html.twig src/PCIVendor.php:64
 #: src/PCIVendor.php:86 src/USBVendor.php:65 src/USBVendor.php:87
@@ -10753,23 +10762,23 @@ msgstr "Thẻ"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Agent configuration"
-msgstr ""
+msgstr "Cấu hình Agent"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery threads"
-msgstr ""
+msgstr "Số luồng khám phá mạng"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery timeout"
-msgstr ""
+msgstr "Thời gian chờ khám phá mạng"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network inventory threads"
-msgstr ""
+msgstr "Số luồng kiểm kê mạng"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network inventory timeout"
-msgstr ""
+msgstr "Thời gian chờ kiểm kê mạng"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Profile.php:2101
 #: src/Config.php:1032
@@ -10778,7 +10787,7 @@ msgstr "Cài đặt tổng thể"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Supported tasks"
-msgstr ""
+msgstr "Các tác vụ được hỗ trợ"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "When reported by GLPI agent via native inventory"
@@ -10786,33 +10795,33 @@ msgstr ""
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:189
 msgid "Wake on LAN"
-msgstr ""
+msgstr "Wake-on-LAN"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:197
 msgid "Computer inventory"
-msgstr ""
+msgstr "Kiểm kê máy tính"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:205
 msgid "ESX remote inventory"
-msgstr ""
+msgstr "Kiểm kê từ xa ESX"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Glpi/Agent/Communication/AbstractRequest.php:207 src/Agent.php:213
 msgid "Network inventory (SNMP)"
-msgstr ""
+msgstr "Kiểm kê mạng (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Glpi/Agent/Communication/AbstractRequest.php:209 src/Agent.php:221
 msgid "Network discovery (SNMP)"
-msgstr ""
+msgstr "Khám phá mạng (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:229
 msgid "Package Deployment"
-msgstr ""
+msgstr "Triển khai gói phần mềm"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:245
 msgid "Remote inventory"
-msgstr ""
+msgstr "Kiểm kê từ xa"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 #: templates/pages/admin/inventory/conf/index.html.twig
@@ -10821,28 +10830,28 @@ msgstr ""
 #: src/Glpi/Inventory/Inventory.php:609 src/Glpi/Inventory/Inventory.php:1146
 #: src/Profile.php:981 src/Profile.php:2646
 msgid "Inventory"
-msgstr ""
+msgstr "Kiểm kê"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Import process is complete."
-msgstr ""
+msgstr "Quá trình nhập dữ liệu đã hoàn tất."
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Filename"
-msgstr ""
+msgstr "Tên tệp"
 
 #: templates/pages/admin/inventory/upload_result.html.twig src/Rule.php:2230
 msgid "Result"
-msgstr ""
+msgstr "Kết quả"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 #: src/RuleImportAsset.php:247
 msgid "Import denied (no log)"
-msgstr ""
+msgstr "Từ chối nhập (không có nhật ký)"
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid "Import inventory files"
-msgstr ""
+msgstr "Nhập các tệp kiểm kê"
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 #, php-format
@@ -10860,7 +10869,7 @@ msgstr ""
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgctxt "button"
 msgid "Upload"
-msgstr ""
+msgstr "Tải lên"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Target entity"
@@ -11051,11 +11060,11 @@ msgstr "Biểu mẫu vé mặc địn h"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "Default change template"
-msgstr ""
+msgstr "Mẫu thay đổi mặc định"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "Default problem template"
-msgstr ""
+msgstr "Mẫu sự cố mặc định"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "ITIL object"
@@ -11781,7 +11790,7 @@ msgstr ""
 #: templates/pages/admin/rules/index.html.twig
 #: src/RuleImportAssetCollection.php:82
 msgid "Rules for import and link equipments"
-msgstr ""
+msgstr "Quy tắc nhập và liên kết thiết bị"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid ""
@@ -11801,7 +11810,7 @@ msgstr ""
 #: templates/pages/admin/rules/index.html.twig src/RuleAsset.php:48
 #: src/RuleAssetCollection.php:45 src/Profile.php:1062
 msgid "Business rules for assets"
-msgstr ""
+msgstr "Quy tắc nghiệp vụ cho tài sản"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Alter asset fields based on their data"
@@ -11993,7 +12002,7 @@ msgstr "Bộ lọc tìm kiếm cho các người dùng"
 #: src/AuthLDAP.php:956
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Điện thoại"
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 msgid "View updated users"
@@ -12022,7 +12031,7 @@ msgstr "Đăng nhập dữ liệu"
 
 #: templates/pages/login.html.twig
 msgid "Remember me"
-msgstr "Ghi nhớ tôi."
+msgstr "Hãy ghi nhớ tôi."
 
 #: templates/pages/login.html.twig
 msgid "Sign in"
@@ -12042,7 +12051,7 @@ msgstr "FAQ"
 
 #: install/update.php:75
 msgid "Missing security key file"
-msgstr ""
+msgstr "Thiếu tệp khóa bảo mật"
 
 #: install/update.php:80 src/Glpi/Console/Database/UpdateCommand.php:222
 #, php-format
@@ -12054,7 +12063,7 @@ msgstr ""
 
 #: install/update.php:85
 msgid "Ignore warning"
-msgstr ""
+msgstr "Bỏ qua cảnh báo"
 
 #: install/update.php:125
 msgid "Impossible to accomplish an update by this way!"
@@ -12092,7 +12101,7 @@ msgstr "Thực thể gốc"
 #: install/migrations/update_9.4.0_to_9.4.1.php:99
 #: install/migrations/update_9.4.2_to_9.4.3.php:59
 msgid "Fix URL of images in ITIL tasks, followups and solutions."
-msgstr ""
+msgstr "Sửa URL của hình ảnh trong các tác vụ, theo dõi và giải pháp ITIL."
 
 #: install/migrations/update_9.1.x_to_9.2.0.php:122
 #: install/migrations/update_9.1.x_to_9.2.0.php:140
@@ -12138,7 +12147,7 @@ msgstr "Khởi động cơ sở dữ liệu này"
 
 #: install/install.php:282 src/Glpi/Console/Database/InstallCommand.php:230
 msgid "Security key cannot be generated!"
-msgstr ""
+msgstr "Không thể tạo khóa bảo mật!"
 
 #: install/install.php:305
 msgid "You didn't select a database!"
@@ -12162,7 +12171,7 @@ msgstr "Không thể ghi các tập tin thiết lập cơ sở dữ liệu"
 
 #: install/install.php:444
 msgid "Please select a database."
-msgstr ""
+msgstr "Vui lòng chọn cơ sở dữ liệu."
 
 #: install/install.php:450 src/Glpi/Console/Database/UpdateCommand.php:182
 #, php-format
@@ -12180,7 +12189,7 @@ msgstr ""
 
 #: install/install.php:511
 msgid "Select your language"
-msgstr ""
+msgstr "Chọn ngôn ngữ của bạn"
 
 #: install/install.php:528
 msgid "Beginning of the installation"
@@ -12214,7 +12223,8 @@ msgstr ""
 #: ajax/dropdownTrackingDeviceType.php:68
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr ""
-"Nhập các ký tự đầu tiên (người dùng, tên mục, số sê-ri hoặc số tài sản)"
+"Nhập vài ký tự đầu (người dùng, tên thiết bị, số sê-ri hoặc mã tài sản)Nhập "
+"các ký tự đầu tiên (người dùng, tên mục, số sê-ri hoặc số tài sản)"
 
 #. TRANS: %1$s is address, %2$s is netmask
 #: ajax/dropdownShowIPNetwork.php:55
@@ -12238,17 +12248,17 @@ msgstr "Không giới hạn"
 
 #: ajax/switchdebug.php:57
 msgid "Debug mode has been enabled!"
-msgstr ""
+msgstr "Đã bật chế độ gỡ lỗi!"
 
 #: ajax/switchdebug.php:58
 msgid "Debug mode has been disabled!"
-msgstr ""
+msgstr "Đã tắt chế độ gỡ lỗi!"
 
 #: ajax/dropdownMassiveActionOs.php:47 src/ProjectTask.php:1418
 #: src/MassiveAction.php:669
 msgctxt "button"
 msgid "Clone"
-msgstr ""
+msgstr "Nhân bản"
 
 #: ajax/telemetry.php:54
 msgid ""
@@ -12259,7 +12269,7 @@ msgstr ""
 
 #: ajax/central.php:92
 msgid "Invalid widget"
-msgstr ""
+msgstr "Widget không hợp lệ"
 
 #. TRANS: %1$s is device name, %2$s is port name
 #: ajax/dropdownConnectNetworkPort.php:132
@@ -12344,11 +12354,11 @@ msgstr "%s cập nhật một mục"
 
 #: ajax/savedsearch.php:49
 msgid "Search has been saved"
-msgstr ""
+msgstr "Đã lưu tìm kiếm"
 
 #: ajax/savedsearch.php:56
 msgid "Search has not been saved"
-msgstr ""
+msgstr "Chưa lưu tìm kiếm"
 
 #: ajax/viewsubitem.php:56 src/Glpi/Controller/ErrorController.php:72
 #: src/Glpi/Controller/IndexController.php:99
@@ -12357,23 +12367,23 @@ msgstr "Truy cập bị từ chối"
 
 #: ajax/getMapPoint.php:45
 msgid "Required argument missing!"
-msgstr ""
+msgstr "Thiếu tham số bắt buộc!"
 
 #: ajax/getMapPoint.php:60
 msgid "Element seems not geolocalized or cannot be found"
-msgstr ""
+msgstr "Đối tượng chưa được định vị địa lý hoặc không thể tìm thấy"
 
 #: ajax/getMapPoint.php:71 src/Agent.php:750 src/Agent.php:771
 msgid "Not allowed"
-msgstr ""
+msgstr "Không được phép"
 
 #: ajax/getMapPoint.php:83
 msgid "Location seems not geolocalized!"
-msgstr ""
+msgstr "Vị trí chưa được định vị địa lý!"
 
 #: ajax/getMapPoint.php:84
 msgid "Consider filling latitude and longitude on this location."
-msgstr ""
+msgstr "Hãy điền vĩ độ và kinh độ cho vị trí này."
 
 #: resources/.illustrations_translations.php:3
 msgctxt "Icon"
@@ -12478,7 +12488,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:23
 msgctxt "Icon"
 msgid "Phone"
-msgstr ""
+msgstr "Điện thoại"
 
 #: resources/.illustrations_translations.php:24
 msgctxt "Icon"
@@ -12866,7 +12876,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:100
 msgctxt "Icon"
 msgid "Inventory"
-msgstr ""
+msgstr "Kiểm kê"
 
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
@@ -14477,7 +14487,7 @@ msgstr "%s thêm một diễn viên"
 #: front/ticket.form.php:297
 #, php-format
 msgid "%s Kanban"
-msgstr ""
+msgstr "Kanban %s"
 
 #. TRANS: %s is the user login
 #: front/certificate_item.form.php:60 front/link_itemtype.form.php:55
@@ -14496,13 +14506,13 @@ msgstr "%s thêm một liên kết vào một mục"
 #: front/olalevel.form.php:57
 #, php-format
 msgid "%s updates an ola level"
-msgstr ""
+msgstr "%s cập nhật một mức OLA"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:88
 #, php-format
 msgid "%s purges an ola level"
-msgstr ""
+msgstr "%s xóa một mức OLA"
 
 #. TRANS: %s is the user login
 #: front/projecttaskteam.form.php:58 front/projectteam.form.php:58
@@ -14548,19 +14558,19 @@ msgstr ""
 #: front/savedsearch_alert.form.php:60
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s thêm một cảnh báo"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:77
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s xóa một cảnh báo"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:93
 #, php-format
 msgid "%s updates an alert"
-msgstr ""
+msgstr "%s cập nhật một cảnh báo"
 
 #: front/ldap.group.import.php:42 front/ldap.php:42 front/ldap.group.php:44
 #: front/ldap.import.php:46 src/Group.php:153 src/Group.php:242
@@ -14598,15 +14608,15 @@ msgstr ""
 
 #: front/user.form.php:47 front/user.form.php:166
 msgid "Lang has been changed!"
-msgstr ""
+msgstr "Ngôn ngữ đã được thay đổi!"
 
 #: front/user.form.php:170
 msgid "Unable to impersonate user"
-msgstr ""
+msgstr "Không thể giả lập người dùng"
 
 #: front/user.form.php:179
 msgid "Unable to stop impersonating user"
-msgstr ""
+msgstr "Không thể thoát chế độ giả lập người dùng"
 
 #: front/initpassword.php:50
 msgid "Sending password initialization notification is not enabled."
@@ -14652,25 +14662,25 @@ msgstr[0] "Các thành phần được kết hợp"
 #: front/knowbaseitem_comment.form.php:78 front/knowbaseitem_item.form.php:46
 #: front/knowbaseitem_knowbaseitemcategory.form.php:45
 msgid "Mandatory fields are not filled!"
-msgstr ""
+msgstr "Chưa điền các trường bắt buộc!"
 
 #: front/knowbaseitem_comment.form.php:65
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr ""
+msgstr "%s đã thêm một bình luận vào cơ sở tri thức"
 
 #: front/knowbaseitem_comment.form.php:68
 msgid "Your comment has been added"
-msgstr ""
+msgstr "Bình luận của bạn đã được thêm"
 
 #: front/knowbaseitem_comment.form.php:90
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr ""
+msgstr "%s đã chỉnh sửa một bình luận trong cơ sở tri thức"
 
 #: front/knowbaseitem_comment.form.php:93
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "Bình luận của bạn đã được chỉnh sửa"
 
 #: front/lostpassword.php:50
 msgid "Sending password forget notification is not enabled."
@@ -14686,7 +14696,7 @@ msgstr "%s loại bỏ liên kết giữa các vé"
 #: front/socket.form.php:65
 #, php-format
 msgid "%s adds a socket"
-msgstr ""
+msgstr "%s thêm một ổ cắm"
 
 #: front/socket.form.php:77 front/networkport.form.php:86
 msgid "'To' should not be smaller than 'From'"
@@ -14695,37 +14705,37 @@ msgstr ""
 #: front/socket.form.php:103
 #, php-format
 msgid "%1$s adds several sockets"
-msgstr ""
+msgstr "%1$s thêm nhiều ổ cắm"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:117
 #, php-format
 msgid "%s purges a socket"
-msgstr ""
+msgstr "%s xóa một ổ cắm"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:131
 #, php-format
 msgid "%s updates a socket"
-msgstr ""
+msgstr "%s cập nhật một ổ cắm"
 
 #: front/config.form.php:70
 msgid "PHP OPcache reset successful"
-msgstr ""
+msgstr "Đặt lại bộ nhớ đệm PHP OPcache thành công"
 
 #: front/config.form.php:78
 msgid "GLPI cache reset successful"
-msgstr ""
+msgstr "Đặt lại bộ nhớ đệm GLPI thành công"
 
 #: front/config.form.php:86
 msgid "Translation cache reset successful"
-msgstr ""
+msgstr "Đặt lại bộ nhớ đệm bản dịch thành công"
 
 #. TRANS: %s is the user login
 #: front/item_softwarelicense.form.php:80
 #, php-format
 msgid "%s associates an item and a license"
-msgstr ""
+msgstr "%s liên kết một mục với một giấy phép"
 
 #: front/authldap.form.php:55
 #: src/Glpi/Controller/ItemType/Form/AuthMailFormController.php:69
@@ -14741,13 +14751,13 @@ msgstr "Kiểm tra thất bại"
 #: front/rule.common.php:60
 #, php-format
 msgid "%1$s has been reset."
-msgstr ""
+msgstr "Đã đặt lại %1$s."
 
 #. TRANS: first parameter is the rule type name
 #: front/rule.common.php:68
 #, php-format
 msgid "%1$s reset failed."
-msgstr ""
+msgstr "Đặt lại %1$s thất bại."
 
 #: front/rule.common.php:118
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:680
@@ -14789,7 +14799,7 @@ msgstr "%s cập nhật một nhiệm vụ"
 #: front/commonitiltask.form.php:119
 #, php-format
 msgid "%s unplans a task"
-msgstr ""
+msgstr "%s hủy lập kế hoạch cho một tác vụ"
 
 #: front/commonitiltask.form.php:135 front/ticket.form.php:127
 #: front/itilfollowup.form.php:129 front/itilsolution.form.php:117
@@ -14802,19 +14812,19 @@ msgstr ""
 #: front/item_remotemanagement.form.php:63
 #, php-format
 msgid "%s adds a remote management"
-msgstr ""
+msgstr "%s thêm một cấu hình quản lý từ xa"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:80
 #, php-format
 msgid "%s purges a remote management"
-msgstr ""
+msgstr "%s xóa một cấu hình quản lý từ xa"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:98
 #, php-format
 msgid "%s updates a remote management"
-msgstr ""
+msgstr "%s cập nhật một cấu hình quản lý từ xa"
 
 #. TRANS: %s is the user login
 #: front/commonitilobject_commonitilobject.form.php:62
@@ -14849,12 +14859,12 @@ msgstr "Tên tập tin không hợp lệ"
 
 #: front/dashboard_helpdesk.php:57
 msgid "Helpdesk Dashboard"
-msgstr ""
+msgstr "Bảng điều khiển Helpdesk"
 
 #: front/knowbaseitem_item.form.php:62
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr ""
+msgstr "%s thêm một liên kết tới cơ sở tri thức"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:54
@@ -14919,27 +14929,27 @@ msgstr "Cập nhật mật khẩu"
 
 #: front/updatepassword.php:69
 msgid "Incorrect password"
-msgstr ""
+msgstr "Mật khẩu không đúng"
 
 #: front/updatepassword.php:78
 msgid "The new password must be different from current password"
-msgstr ""
+msgstr "Mật khẩu mới phải khác mật khẩu hiện tại"
 
 #: front/updatepassword.php:80
 msgid "The two passwords do not match"
-msgstr ""
+msgstr "Hai mật khẩu không khớp"
 
 #: front/updatepassword.php:86 src/User.php:1183
 msgid "An error occurred during password update"
-msgstr ""
+msgstr "Đã xảy ra lỗi khi cập nhật mật khẩu"
 
 #: front/updatepassword.php:95
 msgid "Your password has been successfully updated."
-msgstr ""
+msgstr "Mật khẩu của bạn đã được cập nhật thành công."
 
 #: front/updatepassword.php:96
 msgid "Log in"
-msgstr ""
+msgstr "Đăng nhập"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:58
@@ -14962,12 +14972,12 @@ msgstr "%s kết nối một mục"
 #: front/lock.form.php:60
 #, php-format
 msgid "You do not have rights to restore %s item."
-msgstr ""
+msgstr "Bạn không có quyền khôi phục %s."
 
 #: front/lock.form.php:85
 #, php-format
 msgid "You do not have rights to delete %s item."
-msgstr ""
+msgstr "Bạn không có quyền xóa %s."
 
 #. TRANS: %s is the user login
 #: front/projecttask.form.php:84
@@ -15014,7 +15024,7 @@ msgstr "%s loại bỏ một mức sla"
 
 #: front/dashboard_assets.php:57
 msgid "Assets Dashboard"
-msgstr ""
+msgstr "Bảng điều khiển tài sản"
 
 #: front/plugin.form.php:64 src/Update.php:432
 #: src/Glpi/Console/Plugin/ResumeExecutionCommand.php:63
@@ -15035,12 +15045,12 @@ msgstr "%s thêm một liên kết với một nhà cung cấp"
 #: front/knowbaseitem.form.php:152
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "Bài viết cơ sở tri thức đã được khôi phục về phiên bản %s"
 
 #: front/knowbaseitem.form.php:159
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "Không thể khôi phục bài viết cơ sở tri thức về phiên bản %s"
 
 #: front/knowbaseitem.form.php:173 src/ITILCategory.php:299
 #: src/KnowbaseItem_Item.php:73 src/CommonDropdown.php:956
@@ -15060,23 +15070,23 @@ msgstr "%s cài phần mềm"
 
 #: front/item_softwareversion.form.php:68
 msgid "Please select a software!"
-msgstr ""
+msgstr "Vui lòng chọn phần mềm!"
 
 #: front/item_softwareversion.form.php:70
 msgid "Please select a version!"
-msgstr ""
+msgstr "Vui lòng chọn phiên bản!"
 
 #: front/itiltemplatefield.form.php:78
 msgid "hidden"
-msgstr ""
+msgstr "ẩn"
 
 #: front/itiltemplatefield.form.php:81
 msgid "mandatory"
-msgstr ""
+msgstr "bắt buộc"
 
 #: front/itiltemplatefield.form.php:84
 msgid "predefined"
-msgstr ""
+msgstr "định nghĩa sẵn"
 
 #: front/itiltemplatefield.form.php:87
 msgid "readonly"
@@ -15086,7 +15096,7 @@ msgstr ""
 #: front/itiltemplatefield.form.php:98
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr ""
+msgstr "%1$s thêm trường %2$s"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:58
@@ -15114,7 +15124,7 @@ msgstr "%s cập nhật một hộp mực"
 
 #: front/contenttemplates/documentation.php:48
 msgid "Template variables documentation"
-msgstr ""
+msgstr "Tài liệu biến mẫu"
 
 #. TRANS: %s is the user login
 #: front/group.form.php:116 src/Glpi/Controller/DropdownFormController.php:154
@@ -15162,31 +15172,31 @@ msgstr "%s cập nhật một chống vi rút"
 #: front/databaseinstance.form.php:60
 #, php-format
 msgid "%s adds a database instance"
-msgstr ""
+msgstr "%s thêm một phiên bản cơ sở dữ liệu"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:77
 #, php-format
 msgid "%s deletes a database instance"
-msgstr ""
+msgstr "%s xóa một phiên bản cơ sở dữ liệu"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:90
 #, php-format
 msgid "%s restores a database instance"
-msgstr ""
+msgstr "%s khôi phục một phiên bản cơ sở dữ liệu"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:104
 #, php-format
 msgid "%s purges a database instance"
-msgstr ""
+msgstr "%s xóa vĩnh viễn một phiên bản cơ sở dữ liệu"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:118
 #, php-format
 msgid "%s updates a database instance"
-msgstr ""
+msgstr "%s cập nhật một phiên bản cơ sở dữ liệu"
 
 #: front/domain.form.php:78 src/Domain.php:85
 msgid "Domain"
@@ -15201,7 +15211,7 @@ msgstr[0] ""
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "%s thêm một liên kết với danh mục"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:61
@@ -15224,14 +15234,14 @@ msgstr "%1$s cập nhật phiên bản %2$s"
 #: front/notificationmailingsetting.form.php:49
 #, php-format
 msgid "%1$s edited the emails notifications configuration"
-msgstr ""
+msgstr "%1$s đã chỉnh sửa cấu hình thông báo email"
 
 #: front/notificationmailingsetting.form.php:66
 #: front/smtp_oauth2_callback.php:72
 #, php-format
 msgctxt "oauth"
 msgid "Authorization failed with error: %s"
-msgstr ""
+msgstr "Xác thực thất bại với lỗi: %s"
 
 #: front/contract_supplier.form.php:51 src/Contract.php:77
 #: src/NotificationTargetContract.php:217
@@ -15248,17 +15258,17 @@ msgstr "Sẵn có"
 #: front/notificationajaxsetting.form.php:50
 #, php-format
 msgid "%1$s edited the browsers notifications configuration"
-msgstr ""
+msgstr "%1$s đã chỉnh sửa cấu hình thông báo trên trình duyệt"
 
 #: front/smtp_oauth2_callback.php:81
 msgctxt "oauth"
 msgid "Unable to verify authorization code"
-msgstr ""
+msgstr "Không thể xác minh mã xác thực"
 
 #: front/smtp_oauth2_callback.php:83
 msgctxt "oauth"
 msgid "Unable to get authorization code"
-msgstr ""
+msgstr "Không thể lấy mã xác thực"
 
 #: front/smtp_oauth2_callback.php:101
 msgctxt "oauth"
@@ -15278,12 +15288,12 @@ msgstr ""
 #, php-format
 msgctxt "oauth"
 msgid "Unable to fetch authorization code. Error is: %s"
-msgstr ""
+msgstr "Không thể lấy mã xác thực. Lỗi: %s"
 
 #: front/smtp_oauth2_callback.php:139
 msgctxt "oauth"
 msgid "Invalid provider configuration"
-msgstr ""
+msgstr "Cấu hình nhà cung cấp không hợp lệ"
 
 #: front/reservation.form.php:105
 #, php-format
@@ -15305,7 +15315,7 @@ msgstr "Sửa đổi hàng loạt"
 
 #: front/massiveaction.php:72
 msgid "Operation was done but no action was required"
-msgstr ""
+msgstr "Thao tác đã hoàn tất nhưng không cần thực hiện hành động nào"
 
 #: front/massiveaction.php:74 src/NotImportedEmail.php:247
 msgid "Failed operation"
@@ -15318,7 +15328,7 @@ msgstr "Hoạt động thực hiện thành công một phần"
 #: front/massiveaction.php:82
 #, php-format
 msgid "(%1$d items required no action)"
-msgstr ""
+msgstr "(%1$d mục không cần thực hiện hành động nào)"
 
 #: front/massiveaction.php:88
 #, php-format
@@ -15357,7 +15367,7 @@ msgstr "%s thêm một người dùng vào một nhóm"
 
 #: front/search.php:97
 msgid "Other searches with no item found"
-msgstr ""
+msgstr "Các tìm kiếm khác không tìm thấy mục nào"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:138
@@ -15391,17 +15401,17 @@ msgstr "%s cập nhật một máy ảo"
 #: front/itemvirtualmachine.form.php:128
 #, php-format
 msgid "%s restores a virtual machine"
-msgstr ""
+msgstr "%s khôi phục một máy ảo"
 
 #: front/knowbaseitemtranslation.form.php:59
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
-msgstr ""
+msgstr "Bản dịch bài viết cơ sở tri thức đã được khôi phục về phiên bản %s"
 
 #: front/knowbaseitemtranslation.form.php:66
 #, php-format
 msgid "Knowledge base item translation has not been reverted to revision %s"
-msgstr ""
+msgstr "Không thể khôi phục bản dịch bài viết cơ sở tri thức về phiên bản %s"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:66
@@ -15433,7 +15443,7 @@ msgstr "Danh sách các tag có sẵn"
 
 #: front/itilsolution.form.php:60
 msgid "You cannot solve this item!"
-msgstr ""
+msgstr "Bạn không thể giải quyết mục này!"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:89
@@ -15516,7 +15526,7 @@ msgstr "Các nhắc nhở tự động của SLA"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Automatic reminders of OLAs"
-msgstr ""
+msgstr "Nhắc nhở OLA tự động"
 
 #: src/NotificationTargetTicket.php:144 src/Ticket.php:4503
 #: src/Glpi/Stat/Data/Sglobal/StatDataSatisfaction.php:67
@@ -15544,7 +15554,7 @@ msgstr "Một yêu cầu phê chuẩn đã được gửi bởi %s"
 #: src/NotificationTargetTicket.php:521 src/NotificationTargetChange.php:240
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "Phản hồi cho yêu cầu phê duyệt được thực hiện bởi %s"
 
 #: src/NotificationTargetTicket.php:583 src/NotificationTargetTicket.php:586
 #: src/NotificationTargetTicket.php:591 src/RuleTicket.php:233
@@ -15559,17 +15569,17 @@ msgstr "SLA"
 #: src/RuleTicket.php:375 src/OLA.php:57 src/Ticket.php:2907
 #: src/Ticket.php:2915 src/Ticket.php:2929 src/Ticket.php:2942
 msgid "OLA"
-msgstr ""
+msgstr "OLA"
 
 #: src/NotificationTargetTicket.php:597 src/Ticket.php:2732
 #: src/Ticket.php:2915 src/Ticket.php:5583
 msgid "Internal time to own"
-msgstr ""
+msgstr "Thời gian tiếp nhận nội bộ"
 
 #: src/NotificationTargetTicket.php:602 src/RuleTicket.php:366
 #: src/Ticket.php:2701 src/Ticket.php:2929 src/Ticket.php:5599
 msgid "Internal time to resolve"
-msgstr ""
+msgstr "Thời gian giải quyết nội bộ"
 
 #: src/NotificationTargetTicket.php:607 src/NotificationTargetTicket.php:762
 #: src/Domain_Item.php:79 src/Certificate_Item.php:92
@@ -15624,7 +15634,7 @@ msgstr "Độ cao"
 #: src/Location.php:86 src/Location.php:178 src/Location.php:309
 #: src/Location.php:361
 msgid "Town"
-msgstr ""
+msgstr "Thị xã/Thành phố"
 
 #: src/NotificationTargetTicket.php:676 src/NotificationTargetProject.php:685
 #: src/Project.php:764 src/ITILCategory.php:271 src/Problem.php:614
@@ -15732,7 +15742,7 @@ msgstr "Nhóm mục"
 
 #: src/RuleCommonITILObject.php:729
 msgid "Item state"
-msgstr ""
+msgstr "Trạng thái đối tượng"
 
 #: src/RuleCommonITILObject.php:735 src/RuleCommonITILObject.php:868
 #: src/RuleCommonITILObject.php:877
@@ -15769,7 +15779,7 @@ msgstr[0] ""
 
 #: src/RuleCommonITILObject.php:825
 msgid "Creation date is a working hour in calendar"
-msgstr ""
+msgstr "Ngày tạo nằm trong giờ làm việc của lịch"
 
 #: src/RuleCommonITILObject.php:848 src/RuleCommonITILObject.php:877
 #: src/RuleCommonITILObject.php:905 src/RuleCommonITILObject.php:942
@@ -15806,7 +15816,7 @@ msgstr ""
 
 #: src/RuleCommonITILObject.php:1047
 msgid "Take into account delay"
-msgstr ""
+msgstr "Tính đến độ trễ"
 
 #: src/RuleCommonITILObject.php:1080 src/RuleAsset.php:249
 msgid "Parent business"
@@ -15814,11 +15824,11 @@ msgstr "Trụ sở kinh doanh"
 
 #: src/RuleCommonITILObject.php:1081 src/RuleAsset.php:250
 msgid "Business rules (entity parent)"
-msgstr ""
+msgstr "Quy tắc nghiệp vụ (đơn vị cha)"
 
 #: src/SlaLevel_Ticket.php:44
 msgid "SLA level for Ticket"
-msgstr ""
+msgstr "Mức SLA cho Phiếu hỗ trợ"
 
 #: src/SlaLevel_Ticket.php:146
 msgid "Automatic actions of SLA"
@@ -15845,15 +15855,15 @@ msgstr "Quản lý toàn cục"
 #: src/Peripheral.php:445
 msgctxt "quantity"
 msgid "Number of peripherals"
-msgstr ""
+msgstr "Số lượng thiết bị ngoại vi"
 
 #: src/Entity.php:233
 msgid "An entity with that name already exists at the same level."
-msgstr ""
+msgstr "Đã tồn tại một đơn vị có cùng tên ở cùng cấp."
 
 #: src/Entity.php:253
 msgid "You cannot delete an entity which contains sub-entities."
-msgstr ""
+msgstr "Bạn không thể xóa một đơn vị vẫn còn đơn vị con."
 
 #: src/Entity.php:395
 msgid "You do not have rights for this entity."
@@ -15861,7 +15871,7 @@ msgstr ""
 
 #: src/Entity.php:414
 msgid "You can't add an entity without name"
-msgstr ""
+msgstr "Bạn không thể thêm một đơn vị khi chưa đặt tên."
 
 #: src/Entity.php:571
 msgid "The uploaded file must be a valid image."
@@ -15873,7 +15883,7 @@ msgstr "Thông tin nâng cao"
 
 #: src/Entity.php:692
 msgid "UI customization"
-msgstr ""
+msgstr "Tùy chỉnh giao diện"
 
 #: src/Entity.php:695 src/Profile.php:188
 msgid "Helpdesk home"
@@ -15949,11 +15959,12 @@ msgstr "Giá trị mặc định cho các báo động về hợp đồng"
 #: src/Entity.php:1336
 msgid "Default value for alarms on financial and administrative information"
 msgstr ""
-"Giá trị mặc định cho các báo động về thông tin tài chính và hành chính"
+"Giá trị mặc định cho cảnh báo về thông tin tài chính và hành chínhGiá trị "
+"mặc định cho các báo động về thông tin tài chính và hành chính"
 
 #: src/Entity.php:1376
 msgid "Send Certificate alarms before"
-msgstr ""
+msgstr "Gửi cảnh báo chứng chỉ trước"
 
 #: src/Entity.php:1391 src/TicketTemplate.php:56 src/Profile.php:2763
 msgid "Ticket template"
@@ -16030,7 +16041,7 @@ msgstr "Ngày hết hạn bảo hành"
 
 #: src/Entity.php:1974
 msgid "Inherits configuration from the parent entity"
-msgstr ""
+msgstr "Kế thừa cấu hình từ đơn vị cha"
 
 #: src/Entity.php:2534
 msgid ""
@@ -16092,7 +16103,7 @@ msgstr "Cập nhật các thông số bàn trợ giúp"
 
 #: src/Entity.php:2971
 msgid "Value inherited from a parent entity"
-msgstr ""
+msgstr "Giá trị được kế thừa từ đơn vị cha"
 
 #: src/Entity.php:3482
 msgid "How can we help you?"
@@ -16108,91 +16119,91 @@ msgstr ""
 
 #: src/PDU_Rack.php:99
 msgid "A pdu is required"
-msgstr ""
+msgstr "Yêu cầu chọn một PDU"
 
 #: src/PDU_Rack.php:103 src/Item_Rack.php:966
 msgid "A rack is required"
-msgstr ""
+msgstr "Yêu cầu chọn một tủ rack"
 
 #: src/PDU_Rack.php:107 src/Item_Rack.php:972 src/Item_Enclosure.php:320
 msgid "A position is required"
-msgstr ""
+msgstr "Yêu cầu chỉ định vị trí"
 
 #: src/PDU_Rack.php:111
 msgid "A side is required"
-msgstr ""
+msgstr "Yêu cầu chỉ định mặt"
 
 #: src/PDU_Rack.php:144 src/Item_Rack.php:1040
 msgid "Item is out of rack bounds"
-msgstr ""
+msgstr "Mục nằm ngoài giới hạn của tủ rack"
 
 #: src/PDU_Rack.php:151 src/Item_Rack.php:1054 src/Item_Rack.php:1067
 msgid "Not enough space available to place item"
-msgstr ""
+msgstr "Không đủ không gian để đặt mục"
 
 #: src/PDU_Rack.php:253
 msgid "Side (from rear perspective)"
-msgstr ""
+msgstr "Mặt (nhìn từ phía sau)"
 
 #: src/PDU_Rack.php:315
 msgid "Side pdus"
-msgstr ""
+msgstr "PDU bên hông"
 
 #: src/PDU_Rack.php:346 src/Item_Rack.php:158
 msgid "Side"
-msgstr ""
+msgstr "Mặt"
 
 #: src/PDU_Rack.php:412
 msgid "Power units"
-msgstr ""
+msgstr "Bộ nguồn"
 
 #: src/PDU_Rack.php:427
 msgid "Racked"
-msgstr ""
+msgstr "Đã lắp vào tủ rack"
 
 #: src/PDU_Rack.php:482
 msgid "The pdu will be"
-msgstr ""
+msgstr "PDU sẽ được"
 
 #: src/PDU_Rack.php:484
 msgid "racked"
-msgstr ""
+msgstr "đặt trong tủ rack"
 
 #: src/PDU_Rack.php:485
 msgid "placed at rack side"
-msgstr ""
+msgstr "đặt ở mặt của tủ rack"
 
 #: src/PDU_Rack.php:585 src/Item_Rack.php:842
 msgid "name"
-msgstr ""
+msgstr "tên"
 
 #: src/PDU_Rack.php:590 src/Item_Rack.php:848
 msgid "serial"
-msgstr ""
+msgstr "số sê-ri"
 
 #: src/PDU_Rack.php:602 src/Item_Rack.php:860
 msgid "model"
-msgstr ""
+msgstr "mẫu"
 
 #: src/PDU_Rack.php:640 src/Item_Rack.php:882
 msgid "Edit rack relation"
-msgstr ""
+msgstr "Chỉnh sửa liên kết tủ rack"
 
 #: src/PDU_Rack.php:668 src/Item_Rack.php:147 src/Item_Rack.php:698
 msgid "Left"
-msgstr ""
+msgstr "Trái"
 
 #: src/PDU_Rack.php:669 src/Item_Rack.php:147 src/Item_Rack.php:699
 msgid "Right"
-msgstr ""
+msgstr "Phải"
 
 #: src/PDU_Rack.php:670
 msgid "Top"
-msgstr ""
+msgstr "Trên"
 
 #: src/PDU_Rack.php:671
 msgid "Bottom"
-msgstr ""
+msgstr "Dưới"
 
 #: src/CableType.php:43 src/Cable.php:172
 msgid "Cable type"
@@ -16325,35 +16336,35 @@ msgstr[0] ""
 #: src/NetworkEquipment.php:538 src/Phone.php:311 src/Printer.php:703
 #: src/Computer.php:508
 msgid "Last inventory date"
-msgstr ""
+msgstr "Ngày kiểm kê gần nhất"
 
 #: src/Item_DeviceSimcard.php:70 src/Item_DeviceSimcard.php:71
 msgid "PIN code"
-msgstr ""
+msgstr "Mã PIN"
 
 #: src/Item_DeviceSimcard.php:80 src/Item_DeviceSimcard.php:81
 msgid "PIN2 code"
-msgstr ""
+msgstr "Mã PIN2"
 
 #: src/Item_DeviceSimcard.php:90 src/Item_DeviceSimcard.php:91
 msgid "PUK code"
-msgstr ""
+msgstr "Mã PUK"
 
 #: src/Item_DeviceSimcard.php:100 src/Item_DeviceSimcard.php:101
 msgid "PUK2 code"
-msgstr ""
+msgstr "Mã PUK2"
 
 #: src/Item_DeviceSimcard.php:116
 msgid "Mobile Subscriber Identification Number"
-msgstr ""
+msgstr "Số nhận dạng thuê bao di động"
 
 #: src/Item_DeviceSimcard.php:117
 msgid "MSIN"
-msgstr ""
+msgstr "MSIN"
 
 #: src/Item_DeviceSimcard.php:121
 msgid "MSIN is the last 8 or 10 digits of IMSI"
-msgstr ""
+msgstr "MSIN là 8 hoặc 10 chữ số cuối của IMSI"
 
 #: src/Item_DeviceSimcard.php:200 src/NetworkName.php:902
 #: src/Glpi/Features/AssignableItem.php:235 src/ITILSubItemRights.php:57
@@ -16435,11 +16446,11 @@ msgstr[0] "Các tình trạng của máy ảo"
 #: src/RuleAsset.php:144 src/NotificationTargetCommonITILObject.php:2075
 #: src/NotificationTargetCommonITILObject.php:2111
 msgid "User location"
-msgstr ""
+msgstr "Vị trí người dùng"
 
 #: src/RuleAsset.php:150
 msgid "User in group"
-msgstr ""
+msgstr "Người dùng trong nhóm"
 
 #: src/RuleAsset.php:164
 msgid "User from inventory"
@@ -16447,7 +16458,7 @@ msgstr ""
 
 #: src/RuleAsset.php:197
 msgid "User based contact information"
-msgstr ""
+msgstr "Thông tin liên hệ theo người dùng"
 
 #: src/RuleAsset.php:226
 msgid "Assign user from name"
@@ -16550,7 +16561,7 @@ msgstr ""
 
 #: src/Html.php:2541
 msgid "Massive actions"
-msgstr ""
+msgstr "Thao tác hàng loạt"
 
 #: src/Html.php:2844
 msgid "Show date picker"
@@ -16661,7 +16672,7 @@ msgstr[0] "+ %d tuần"
 
 #: src/Html.php:3110
 msgid "End of the month"
-msgstr ""
+msgstr "Cuối tháng"
 
 #: src/Html.php:3114
 #, php-format
@@ -16671,7 +16682,7 @@ msgstr[0] "+ %d tháng"
 
 #: src/Html.php:3118
 msgid "End of the year"
-msgstr ""
+msgstr "Cuối năm"
 
 #: src/Html.php:3122
 #, php-format
@@ -16683,17 +16694,17 @@ msgstr[0] "+ %d năm"
 #: src/AuthMail.php:61 src/AuthMail.php:85
 #, php-format
 msgid "The %s field is mandatory"
-msgstr ""
+msgstr "Trường %s là bắt buộc"
 
 #: src/Html.php:3869
 msgid "Available variables"
-msgstr ""
+msgstr "Các biến khả dụng"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: src/Html.php:3981 src/Html.php:4202
 #, php-format
 msgid "From %1$d to %2$d of %3$d"
-msgstr ""
+msgstr "Từ %1$d đến %2$d trên tổng %3$d"
 
 #: src/Html.php:4063
 msgid "Empty array"
@@ -16714,7 +16725,7 @@ msgstr ""
 
 #: src/Html.php:5350
 msgid "File(s)"
-msgstr ""
+msgstr "Tệp"
 
 #: src/Html.php:5384
 msgid "Drag and drop your file here, or"
@@ -16730,31 +16741,31 @@ msgstr "Tập tin quá lớn"
 
 #: src/Html.php:6714
 msgid "Just now"
-msgstr ""
+msgstr "Vừa xong"
 
 #: src/Html.php:6717 js/common.js:1168
 #, javascript-format, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "%s phút trước"
 
 #: src/Html.php:6720 js/common.js:1170
 #, javascript-format, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "%s giờ trước"
 
 #: src/Html.php:6724
 msgid "Yesterday"
-msgstr ""
+msgstr "Hôm qua"
 
 #: src/Html.php:6727 js/common.js:1172
 #, javascript-format, php-format
 msgid "%s days ago"
-msgstr ""
+msgstr "%s ngày trước"
 
 #: src/Html.php:6730 js/common.js:1174
 #, javascript-format, php-format
 msgid "%s weeks ago"
-msgstr ""
+msgstr "%s tuần trước"
 
 #: src/Html.php:6733
 msgid "Last month"
@@ -16762,39 +16773,39 @@ msgstr "Tháng trước"
 
 #: src/Html.php:6740
 msgid "In a minute"
-msgstr ""
+msgstr "Trong một phút"
 
 #: src/Html.php:6743
 #, php-format
 msgid "In %s minutes"
-msgstr ""
+msgstr "Trong %s phút"
 
 #: src/Html.php:6746
 msgid "In an hour"
-msgstr ""
+msgstr "Trong một giờ"
 
 #: src/Html.php:6749
 #, php-format
 msgid "In %s hours"
-msgstr ""
+msgstr "Trong %s giờ"
 
 #: src/Html.php:6753
 msgid "Tomorrow"
-msgstr ""
+msgstr "Ngày mai"
 
 #: src/Html.php:6756
 #, php-format
 msgid "In %s days"
-msgstr ""
+msgstr "Trong %s ngày"
 
 #: src/Html.php:6759
 #, php-format
 msgid "In %s weeks"
-msgstr ""
+msgstr "Trong %s tuần"
 
 #: src/Html.php:6762
 msgid "Next month"
-msgstr ""
+msgstr "Tháng sau"
 
 #: src/Domain_Item.php:50
 msgid "Domain item"
@@ -16803,7 +16814,7 @@ msgstr[0] ""
 
 #: src/Domain_Item.php:544
 msgid "Associate a domain"
-msgstr ""
+msgstr "Liên kết một tên miền"
 
 #: src/Domain_Item.php:545
 #, php-format
@@ -16812,7 +16823,7 @@ msgstr ""
 
 #: src/Domain_Item.php:630 src/Certificate_Item.php:388
 msgid "Does not expire"
-msgstr ""
+msgstr "Không hết hạn"
 
 #: src/ProjectTaskTeam.php:74
 msgid "Task team"
@@ -16821,15 +16832,15 @@ msgstr[0] "Các nhóm nhiệm vụ"
 
 #: src/ProjectTaskTeam.php:272
 msgid "An item type is mandatory"
-msgstr ""
+msgstr "Loại đối tượng là bắt buộc"
 
 #: src/ProjectTaskTeam.php:281
 msgid "An item ID is mandatory"
-msgstr ""
+msgstr "ID đối tượng là bắt buộc"
 
 #: src/ProjectTaskTeam.php:290
 msgid "A project task is mandatory"
-msgstr ""
+msgstr "Tác vụ dự án là bắt buộc"
 
 #: src/ValidatorSubstitute.php:42
 msgid "Authorized substitute"
@@ -16898,7 +16909,7 @@ msgstr "Thêm một mục"
 
 #: src/RuleDictionnaryOperatingSystemServicePackCollection.php:43
 msgid "Dictionary of service packs"
-msgstr ""
+msgstr "Từ điển gói dịch vụ"
 
 #: src/Location.php:138 src/RuleLocation.php:119
 #: src/Glpi/Form/Destination/CommonITILField/LocationField.php:60
@@ -16945,7 +16956,7 @@ msgstr "Bắt buộc tiêu đề email"
 
 #: src/RuleTicket.php:217
 msgid "Reply-To email header"
-msgstr ""
+msgstr "Tiêu đề email Reply-To"
 
 #: src/RuleTicket.php:221 src/RuleMailCollector.php:86
 msgid "In-Reply-To email header"
@@ -16961,7 +16972,7 @@ msgstr "Vị trí người yêu cầu"
 
 #: src/RuleDictionnaryPhoneModelCollection.php:43
 msgid "Dictionary of phone models"
-msgstr ""
+msgstr "Từ điển mẫu điện thoại"
 
 #: src/PlanningRecall.php:52
 msgid "Planning reminder"
@@ -17358,7 +17369,7 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/StatusField.php:76
 #: src/SavedSearch.php:357
 msgid "Default"
-msgstr ""
+msgstr "Mặc định"
 
 #: src/AutoUpdateSystem.php:42
 msgid "Update Source"
@@ -19753,7 +19764,7 @@ msgstr ""
 
 #: src/ITILCategory.php:83 src/ITILCategory.php:307
 msgid "Code representing the ticket category"
-msgstr ""
+msgstr "Mã đại diện cho danh mục phiếu hỗ trợ"
 
 #: src/ITILCategory.php:89 src/ITILCategory.php:249
 msgid "Visible in the simplified interface"
@@ -20746,20 +20757,20 @@ msgstr "TCO"
 #: src/Report.php:1631 src/Report.php:1800
 #, php-format
 msgid "%1$s account net value"
-msgstr ""
+msgstr "Giá trị tài khoản ròng của %1$s"
 
 #: src/Report.php:1657 src/Report.php:1826
 #, php-format
 msgid "%1$s value"
-msgstr ""
+msgstr "Giá trị của %1$s"
 
 #: src/Report.php:1695 src/Report.php:1864
 msgid "Total account net value"
-msgstr ""
+msgstr "Tổng giá trị tài khoản ròng"
 
 #: src/Report.php:1711 src/Report.php:1880
 msgid "Total value"
-msgstr ""
+msgstr "Tổng giá trị"
 
 #: src/DeviceGeneric.php:43
 msgid "Generic device"
@@ -20872,7 +20883,7 @@ msgstr[0] ""
 
 #: src/DatabaseInstance.php:221 src/Database.php:438
 msgid "Is active"
-msgstr ""
+msgstr "Đang hoạt động"
 
 #: src/DatabaseInstance.php:481
 #, php-format
@@ -20929,7 +20940,7 @@ msgstr ""
 
 #: src/KnowbaseItem_Item.php:171
 msgid "Update date"
-msgstr ""
+msgstr "Ngày cập nhật"
 
 #: src/KnowbaseItem_Item.php:299 src/KnowbaseItem_KnowbaseItemCategory.php:147
 msgctxt "button"
@@ -20989,7 +21000,7 @@ msgstr "Còn lại"
 #: src/NotificationTargetCartridgeItem.php:98
 #: src/NotificationTargetConsumableItem.php:100
 msgid "Stock target"
-msgstr ""
+msgstr "Mục tiêu tồn kho"
 
 #: src/NotificationTargetCartridgeItem.php:99
 #: src/NotificationTargetConsumableItem.php:101
@@ -23109,7 +23120,7 @@ msgstr ""
 
 #: src/Ticket.php:2691
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Đã vượt thời gian tiếp nhận"
 
 #: src/Ticket.php:2712
 msgid "Internal time to resolve + Progress"
@@ -23466,23 +23477,23 @@ msgstr "Đã dùng"
 #: src/Glpi/CalDAV/Backend/Calendar.php:141
 #, php-format
 msgid "Calendar of %s"
-msgstr ""
+msgstr "Lịch của %s"
 
 #: src/Glpi/System/Status/StatusChecker.php:193
 #: src/Glpi/System/Status/StatusChecker.php:201
 msgctxt "glpi_status"
 msgid "Replication delay is too high"
-msgstr ""
+msgstr "Độ trễ sao chép quá cao"
 
 #: src/Glpi/System/Status/StatusChecker.php:218
 msgctxt "glpi_status"
 msgid "Unable to connect to the main database"
-msgstr ""
+msgstr "Không thể kết nối đến cơ sở dữ liệu chính"
 
 #: src/Glpi/System/Status/StatusChecker.php:272
 msgctxt "glpi_status"
 msgid "Unable to connect to the LDAP server"
-msgstr ""
+msgstr "Không thể kết nối tới máy chủ LDAP"
 
 #: src/Glpi/System/Status/StatusChecker.php:288
 #: src/Glpi/System/Status/StatusChecker.php:350
@@ -23490,35 +23501,35 @@ msgstr ""
 #, php-format
 msgctxt "glpi_status"
 msgid "OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d"
-msgstr ""
+msgstr "OK: %d, CẢNH BÁO: %d, SỰ CỐ: %d, TỔNG: %d"
 
 #: src/Glpi/System/Status/StatusChecker.php:340
 msgctxt "glpi_status"
 msgid "Unable to connect to the IMAP server"
-msgstr ""
+msgstr "Không thể kết nối tới máy chủ IMAP"
 
 #: src/Glpi/System/Status/StatusChecker.php:394 src/Toolbox.php:1452
 #, php-format
 msgid "URL \"%s\" is not considered safe and cannot be fetched from GLPI server."
-msgstr ""
+msgstr "URL \"%s\" không được xem là an toàn và không thể lấy từ máy chủ GLPI."
 
 #: src/Glpi/System/Status/StatusChecker.php:482
 #, php-format
 msgctxt "glpi_status"
 msgid "RUNNING: %d, STUCK: %d, TOTAL: %d"
-msgstr ""
+msgstr "ĐANG CHẠY: %d, BỊ KẸT: %d, TỔNG: %d"
 
 #: src/Glpi/System/Status/StatusChecker.php:509
 #, php-format
 msgctxt "glpi_status"
 msgid "%s variable is not a directory"
-msgstr ""
+msgstr "Biến %s không phải là một thư mục"
 
 #: src/Glpi/System/Status/StatusChecker.php:515
 #, php-format
 msgctxt "glpi_status"
 msgid "%s variable is not writable"
-msgstr ""
+msgstr "Biến %s không có quyền ghi"
 
 #: src/Glpi/System/Status/StatusChecker.php:520
 msgctxt "glpi_status"
@@ -23531,7 +23542,7 @@ msgstr ""
 
 #: src/Glpi/System/Requirement/IntegerSize.php:43
 msgid "PHP maximal integer size"
-msgstr ""
+msgstr "Kích thước số nguyên tối đa của PHP"
 
 #: src/Glpi/System/Requirement/IntegerSize.php:44
 msgid ""
@@ -23545,51 +23556,51 @@ msgstr ""
 
 #: src/Glpi/System/Requirement/IntegerSize.php:55
 msgid "OS and PHP are relying on 64 bits integers."
-msgstr ""
+msgstr "Hệ điều hành và PHP đang sử dụng số nguyên 64 bit."
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:65
 msgid "Permissions for cache files"
-msgstr ""
+msgstr "Quyền đối với các tệp bộ nhớ đệm"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:68
 msgid "Permissions for setting files"
-msgstr ""
+msgstr "Quyền đối với các tệp cấu hình"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:71
 msgid "Permissions for automatic actions files"
-msgstr ""
+msgstr "Quyền đối với các tệp tác vụ tự động"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:74
 msgid "Permissions for document files"
-msgstr ""
+msgstr "Quyền đối với các tệp tài liệu"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:77
 msgid "Permissions for graphic files"
-msgstr ""
+msgstr "Quyền đối với các tệp hình ảnh"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:80
 msgid "Permissions for lock files"
-msgstr ""
+msgstr "Quyền đối với các tệp khóa"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:83
 msgid "Permissions for marketplace directory"
-msgstr ""
+msgstr "Quyền đối với thư mục Marketplace"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:86
 msgid "Permissions for plugins document files"
-msgstr ""
+msgstr "Quyền đối với các tệp tài liệu của plugin"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:89
 msgid "Permissions for pictures files"
-msgstr ""
+msgstr "Quyền đối với các tệp hình ảnh"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:92
 msgid "Permissions for rss files"
-msgstr ""
+msgstr "Quyền đối với các tệp RSS"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:95
 msgid "Permissions for session files"
-msgstr ""
+msgstr "Quyền đối với các tệp phiên làm việc"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:98
 msgid ""
@@ -23599,22 +23610,22 @@ msgstr ""
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:101
 msgid "Permissions for temporary files"
-msgstr ""
+msgstr "Quyền đối với các tệp tạm"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:104
 msgid "Permissions for upload files"
-msgstr ""
+msgstr "Quyền đối với các tệp tải lên"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:107
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:111
 #, php-format
 msgid "Permissions for directory %s"
-msgstr ""
+msgstr "Quyền đối với thư mục %s"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:128
 #, php-format
 msgid "Write access to %s has been validated."
-msgstr ""
+msgstr "Đã xác thực quyền ghi vào %s."
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:132
 #, php-format
@@ -23846,7 +23857,7 @@ msgstr ""
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:60
 msgid "Permissions for log files"
-msgstr ""
+msgstr "Quyền đối với các tệp nhật ký"
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:72
 msgid "The log file has been created successfully."
@@ -23980,11 +23991,11 @@ msgstr "Sao chép của %s"
 
 #: src/Glpi/Dashboard/Dashboard.php:758
 msgid "Central"
-msgstr ""
+msgstr "Trung tâm"
 
 #: src/Glpi/Dashboard/Dashboard.php:1561
 msgid "Mini tickets dashboard"
-msgstr ""
+msgstr "Bảng điều khiển thu nhỏ của phiếu hỗ trợ"
 
 #: src/Glpi/Dashboard/Provider.php:304 src/Glpi/Dashboard/Grid.php:1335
 #: src/Glpi/Dashboard/FakeProvider.php:212
@@ -24189,7 +24200,7 @@ msgstr "Nhóm của tôi"
 #: src/Glpi/Search/Input/QueryBuilder.php:333 src/User.php:3940
 #: src/User.php:4534 src/DbUtils.php:1797
 msgid "Myself"
-msgstr ""
+msgstr "Bản thân tôi"
 
 #: src/Glpi/Dashboard/Filters/TicketTypeFilter.php:45
 msgid "Ticket type"
@@ -24218,7 +24229,7 @@ msgstr ""
 
 #: src/Glpi/Dashboard/Grid.php:302
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Bật/tắt toàn màn hình"
 
 #: src/Glpi/Dashboard/Grid.php:303
 msgid "Clone this dashboard"
@@ -24538,7 +24549,7 @@ msgstr ""
 
 #: src/Glpi/Controller/ErrorController.php:183
 msgid "Return to previous page"
-msgstr ""
+msgstr "Quay lại trang trước"
 
 #: src/Glpi/Controller/GenericAjaxCrudController.php:66
 msgid "Invalid id"
@@ -24601,7 +24612,7 @@ msgstr ""
 
 #: src/Glpi/Controller/IndexController.php:131
 msgid "Default (from user profile)"
-msgstr ""
+msgstr "Mặc định (theo hồ sơ người dùng)"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:151
 #: src/Glpi/Search/Provider/SQLProvider.php:6511 src/KnowbaseItem.php:1671
@@ -24610,7 +24621,7 @@ msgstr ""
 
 #: src/Glpi/Controller/InventoryController.php:173
 msgid "Configuration has been updated"
-msgstr ""
+msgstr "Cấu hình đã được cập nhật"
 
 #: src/Glpi/Asset/CustomFieldDefinition.php:61 src/Glpi/Asset/Asset.php:351
 msgid "Custom field"
@@ -26517,15 +26528,15 @@ msgstr ""
 
 #: src/Glpi/RichText/RichText.php:499
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "Tiếp theo (mũi tên phải)"
 
 #: src/Glpi/RichText/RichText.php:500
 msgid "Previous (arrow left)"
-msgstr ""
+msgstr "Trước (mũi tên trái)"
 
 #: src/Glpi/RichText/RichText.php:501
 msgid "Close (Esc)"
-msgstr ""
+msgstr "Đóng (Esc)"
 
 #: src/Glpi/RichText/RichText.php:502 src/Glpi/Marketplace/View.php:720
 #: src/Impact.php:1165
@@ -26534,7 +26545,7 @@ msgstr "Tải xuống"
 
 #: src/Glpi/RichText/RichText.php:503
 msgid "Zoom in/out"
-msgstr ""
+msgstr "Phóng to/Thu nhỏ"
 
 #: src/Glpi/Event.php:69
 msgid "Event log"
@@ -30686,7 +30697,7 @@ msgstr ""
 
 #: src/Config.php:1039 src/PurgeLogs.php:44
 msgid "Logs purge"
-msgstr ""
+msgstr "Xóa nhật ký"
 
 #: src/Config.php:1042
 msgid "Performance"
@@ -31265,7 +31276,7 @@ msgstr ""
 
 #: src/CommonITILObject.php:4508
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Đã vượt thời gian giải quyết"
 
 #: src/CommonITILObject.php:4572
 msgid "Last edit by"
@@ -31357,7 +31368,7 @@ msgstr ""
 #: src/CommonITILObject.php:7479
 msgctxt "button"
 msgid "Add a solution"
-msgstr ""
+msgstr "Thêm giải pháp"
 
 #: src/CommonITILObject.php:7480
 msgctxt "button"
@@ -33848,7 +33859,7 @@ msgstr[0] ""
 
 #: src/Agent.php:134 src/Agent.php:331
 msgid "Device id"
-msgstr ""
+msgstr "Mã thiết bị"
 
 #: src/Agent.php:511
 msgid "\"deviceid\" is mandatory!"
@@ -34018,7 +34029,7 @@ msgstr ""
 
 #: js/planning.js:284
 msgid "Clone"
-msgstr ""
+msgstr "Nhân bản"
 
 #: js/planning.js:365
 msgid "Make a choice"
@@ -34492,11 +34503,11 @@ msgstr ""
 
 #: js/src/vue/FuzzySearch/Modal.vue:10
 msgid "Go to menu"
-msgstr ""
+msgstr "Đi đến menu"
 
 #: js/src/vue/FuzzySearch/Modal.vue:11
 msgid "Start typing to find a menu"
-msgstr ""
+msgstr "Bắt đầu nhập để tìm menu"
 
 #: js/src/vue/Kanban/AddItemForm.vue:36
 msgid "One item per line"

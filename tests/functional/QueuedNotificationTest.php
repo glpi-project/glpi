@@ -225,4 +225,49 @@ class QueuedNotificationTest extends DbTestCase
         $this->assertTrue($queued_notification->getFromDB($queued_id_2));
         $this->assertTrue($queued_notification->getFromDB($queued_id_1));
     }
+
+    public function testGetPendingsOrder()
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['notifications_' . Notification_NotificationTemplate::MODE_MAIL] = 1;
+
+        $recipient = 'order-' . uniqid() . '@example.com';
+        $t1 = date('Y-m-d H:i:s', strtotime('-2 minutes'));
+        $t0 = date('Y-m-d H:i:s', strtotime('-5 minutes'));
+
+        $queued = new \QueuedNotification();
+        $make = static function (string $name, string $send_time) use ($recipient) {
+            return [
+                'itemtype'   => 'Ticket',
+                'items_id'   => 1,
+                'entities_id' => 0,
+                'sender'     => 'mailer@glpi-project.org',
+                'recipient'  => $recipient,
+                'name'       => $name,
+                'body_text'  => $name,
+                'mode'       => Notification_NotificationTemplate::MODE_MAIL,
+                'send_time'  => $send_time,
+            ];
+        };
+
+        // Two notifications share the same send_time (ids ascending by
+        // creation), a third one has an earlier send_time but a higher id.
+        $id_a = $queued->add($make('A', $t1));
+        $id_b = $queued->add($make('B', $t1));
+        $id_c = $queued->add($make('C', $t0));
+        $this->assertGreaterThan(0, $id_a);
+        $this->assertGreaterThan($id_a, $id_b);
+        $this->assertGreaterThan($id_b, $id_c);
+
+        // Earliest send_time first (C), then the two same-time ones in creation
+        // order (A before B) thanks to the id tie-breaker.
+        $pendings = \QueuedNotification::getPendings(null, 20, [Notification_NotificationTemplate::MODE_MAIL], ['recipient' => $recipient]);
+        $ids = array_map('intval', array_column($pendings[Notification_NotificationTemplate::MODE_MAIL], 'id'));
+        $this->assertSame([$id_c, $id_a, $id_b], $ids);
+
+        // The batch limit is respected and keeps the same ordering.
+        $limited = \QueuedNotification::getPendings(null, 2, [Notification_NotificationTemplate::MODE_MAIL], ['recipient' => $recipient]);
+        $this->assertSame([$id_c, $id_a], array_map('intval', array_column($limited[Notification_NotificationTemplate::MODE_MAIL], 'id')));
+    }
 }

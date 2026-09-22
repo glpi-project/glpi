@@ -826,7 +826,7 @@ msgstr "Lista de transferência"
 #: src/Auth.php:171 src/Glpi/Event.php:214 src/Profile.php:191
 #: src/Profile.php:200 src/Profile.php:2023 src/Config.php:114
 msgid "Setup"
-msgstr "Configuração"
+msgstr "Configurar"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/admin/form/import/step1_index.html.twig
@@ -8638,7 +8638,7 @@ msgstr "Escopos"
 #: templates/pages/setup/oauthclient.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Client Secret"
-msgstr "Segredo do cliente (Client Secret)"
+msgstr "Segredo do Cliente"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Authorized redirect URIs"

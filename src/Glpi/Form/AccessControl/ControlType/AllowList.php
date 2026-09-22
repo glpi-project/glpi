@@ -171,25 +171,10 @@ final class AllowList implements ControlTypeInterface
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
-        foreach ($session_info->getGroupIds() as $group_id) {
-            // Check if the user is directly part of the allowed group
-            if (in_array($group_id, $config->getGroupIds())) {
-                return true;
-            }
+        // A user member of a sub-group is also allowed if a parent group is in the allowlist
+        $user_groups = Group::getGroupsAncestorsIds($session_info->getGroupIds());
 
-            // If at least one parent group of the user is part of the allowlist
-            // then he should be able to see the form
-            $children_groups = getAncestorsOf(Group::getTable(), $group_id);
-            $membership = array_intersect(
-                $config->getGroupIds(),
-                $children_groups
-            );
-            if (count($membership) > 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return count(array_intersect($config->getGroupIds(), $user_groups)) > 0;
     }
 
     private function isUserAllowedByProfile(

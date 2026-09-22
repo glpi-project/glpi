@@ -241,12 +241,19 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public function canCreateItem(): bool
     {
-        return count(self::getManagedDomainRecordTypes()) > 0;
+        // Skip CommonDBChild checks since authorization is enforced by the parent Domain.
+        if (!CommonDBTM::canCreateItem()) {
+            return false;
+        }
+
+        return $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
+            || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true);
     }
 
     public function canUpdateItem(): bool
     {
-        if (!$this->canUpdateItemAssignableItem()) {
+        // Skip CommonDBChild checks since authorization is enforced by the parent Domain.
+        if (!CommonDBTM::canUpdateItem()) {
             return false;
         }
         return parent::canUpdateItem()

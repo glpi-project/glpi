@@ -29,7 +29,6 @@
 # Thomas Klockenkämper, 2025
 # Michael Schieferer, 2025
 # Slow Rider, 2025
-# Seidler Jean-Louis <jl.seidler@gmx.ch>, 2025
 # Cédric Anne, 2025
 # Thofl, 2025
 # Simon, 2026
@@ -41,6 +40,9 @@
 # Ta Bo, 2026
 # Viktor Schopf, 2026
 # Tom G, 2026
+# gitfiiisch, 2026
+# Patrick Steward, 2026
+# Seidler Jean-Louis <jl.seidler@gmx.ch>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -49,7 +51,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Tom G, 2026\n"
+"Last-Translator: Seidler Jean-Louis <jl.seidler@gmx.ch>, 2026\n"
 "Language-Team: German (Germany) (https://app.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -686,7 +688,7 @@ msgstr "Eine neue Version ist verfügbar: %s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "zum Hauptinhalt"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -745,7 +747,7 @@ msgstr ""
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Hauptnavigation"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -1125,11 +1127,11 @@ msgstr "Notiz einfügen"
 
 #: templates/components/notepad/form.html.twig
 msgid "Expand all"
-msgstr ""
+msgstr "alles ausklappen"
 
 #: templates/components/notepad/form.html.twig
 msgid "Collapse all"
-msgstr ""
+msgstr "alles einklappen"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
@@ -10356,7 +10358,7 @@ msgstr ""
 
 #: templates/pages/admin/form/question_type/actors_admin.html.twig
 msgid "Allowed types"
-msgstr ""
+msgstr "zugelassene Typen"
 
 #: templates/pages/admin/form/question_type/actors_admin.html.twig
 msgid "Format"
@@ -10466,7 +10468,7 @@ msgstr ""
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "No default value"
-msgstr ""
+msgstr "keine Voreinstellung"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
@@ -12913,7 +12915,7 @@ msgstr "Fahrzeug"
 #: resources/.illustrations_translations.php:40
 msgctxt "Icon"
 msgid "carbon"
-msgstr ""
+msgstr "Kohlenstoff"
 
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
@@ -13285,7 +13287,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:114
 msgctxt "Icon"
 msgid "Monitoring"
-msgstr ""
+msgstr "Überwachung"
 
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
@@ -13897,7 +13899,7 @@ msgstr "Datum"
 #: resources/.illustrations_translations.php:240
 msgctxt "Icon"
 msgid "schedule"
-msgstr ""
+msgstr "Termin"
 
 #: resources/.illustrations_translations.php:241
 msgctxt "Icon"
@@ -13912,7 +13914,7 @@ msgstr "Zeit"
 #: resources/.illustrations_translations.php:243
 msgctxt "Icon"
 msgid "event"
-msgstr ""
+msgstr "Veranstaltung"
 
 #: resources/.illustrations_translations.php:244
 msgctxt "Icon"
@@ -14052,12 +14054,12 @@ msgstr "Importieren"
 #: resources/.illustrations_translations.php:271
 msgctxt "Icon"
 msgid "package"
-msgstr ""
+msgstr "Verpackung"
 
 #: resources/.illustrations_translations.php:272
 msgctxt "Icon"
 msgid "shipping"
-msgstr ""
+msgstr "Versand"
 
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
@@ -14072,7 +14074,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
 msgid "developer"
-msgstr ""
+msgstr "Entwickler"
 
 #: resources/.illustrations_translations.php:276
 msgctxt "Icon"
@@ -14092,7 +14094,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:279
 msgctxt "Icon"
 msgid "manual"
-msgstr ""
+msgstr "Anleitung"
 
 #: resources/.illustrations_translations.php:280
 msgctxt "Icon"
@@ -14137,7 +14139,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:288
 msgctxt "Icon"
 msgid "help"
-msgstr ""
+msgstr "Hilfe"
 
 #: resources/.illustrations_translations.php:289
 msgctxt "Icon"
@@ -14262,7 +14264,7 @@ msgstr "Benutzer"
 #: resources/.illustrations_translations.php:313
 msgctxt "Icon"
 msgid "headphones"
-msgstr ""
+msgstr "Kopfhörer"
 
 #: resources/.illustrations_translations.php:314
 msgctxt "Icon"
@@ -17114,7 +17116,7 @@ msgstr "%1$d von %2$d"
 
 #: src/Html.php:4704 src/Glpi/Form/AnswersHandler/AnswersHandler.php:124
 msgid "This field is mandatory"
-msgstr ""
+msgstr "dies ist ein Pflichtfeld"
 
 #: src/Html.php:5350
 msgid "File(s)"
@@ -23763,7 +23765,7 @@ msgstr "Link"
 
 #: src/Ticket.php:2411
 msgid "Resolve"
-msgstr "Einige erforderliche Systemanforderungen fehlen"
+msgstr "Lösen"
 
 #: src/Ticket.php:2494
 msgid "Missing input: no Problem selected"
@@ -26011,7 +26013,7 @@ msgstr ""
 
 #: src/Glpi/Form/ServiceCatalog/SortStrategy/AlphabeticalSort.php:51
 msgid "Alphabetical"
-msgstr ""
+msgstr "alphabetisch"
 
 #: src/Glpi/Form/ServiceCatalog/SortStrategy/ReverseAlphabeticalSort.php:51
 msgid "Reverse alphabetical"
@@ -26709,7 +26711,7 @@ msgstr "Erster Abschnitt"
 #: src/Glpi/Form/Tag/AnswerTagProvider.php:103
 #, php-format
 msgid "Answer: %s"
-msgstr ""
+msgstr "Antwort: %s"
 
 #: src/Glpi/Form/Tag/CommentDescriptionTagProvider.php:97
 #, php-format
@@ -26729,7 +26731,7 @@ msgstr "Kommentar Titel 1%s"
 #: src/Glpi/Form/Tag/SectionTagProvider.php:97
 #, php-format
 msgid "Section: %s"
-msgstr ""
+msgstr "Anschnitt: %s"
 
 #: src/Glpi/Form/Tag/FormTagProvider.php:91
 #, php-format

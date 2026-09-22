@@ -246,6 +246,7 @@ class Reminder extends CommonDBVisible implements
                 0,
             ];
         }
+        $where['OR'] ??= [];
 
         // Groups
         if (
@@ -269,10 +270,10 @@ class Reminder extends CommonDBVisible implements
             if (count($restrict)) {
                 $or += $restrict;
             }
+            $groups_id = $_SESSION["glpigroups"] !== [] ? Group::getGroupsAncestorsIds($_SESSION["glpigroups"]) : [-1];
             $where['OR'][] = [
-                'glpi_groups_reminders.groups_id' => count($_SESSION["glpigroups"])
-                                                      ? $_SESSION["glpigroups"]
-                                                      : [-1],
+                // A user member of a sub-group must also see reminders made visible to a parent group
+                'glpi_groups_reminders.groups_id' => $groups_id,
                 'OR' => $or,
             ];
         }

@@ -38,6 +38,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dashboard\Grid;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Form\Form;
@@ -339,6 +340,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         // PROFILES and UNIQUE_PROFILE in RuleMailcollector
         Rule::cleanForItemCriteria($this, 'PROFILES');
         Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
+
+        $profile_id = $this->getID();
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $definition->removeProfileFromField($profile_id);
+        }
+        foreach (DropdownDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $definition->removeProfileFromField($profile_id);
+        }
     }
 
     public function getCloneRelations(): array

@@ -6,7 +6,7 @@
 # Translators:
 # Stefano Beschi, 2022
 # Andrea Garelli <garelli.andrea@gmail.com>, 2024
-# Vincenzo Reale <vinx.reale@gmail.com>, 2024
+# Vincenzo Reale <smart2128vr@gmail.com>, 2024
 # Pierfrancesco Passerini <p.passerini@gmail.com>, 2025
 # DevPGS, 2025
 # Marco Arrigoni <arri89@hotmail.it>, 2025
@@ -659,7 +659,7 @@ msgstr "Una nuova versione è disponibile: %s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Vai al contenuto principale"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -676,7 +676,7 @@ msgstr "Pagina principale"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Percorso di navigazione"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -710,15 +710,15 @@ msgstr "Arresta impersonificazione."
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Barra laterale"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Attiva/disattiva la navigazione"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Navigazione principale"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -2083,7 +2083,7 @@ msgstr "Stato"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Specificare un orario"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
@@ -11159,7 +11159,7 @@ msgstr "Inventario ESX remoto"
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Glpi/Agent/Communication/AbstractRequest.php:207 src/Agent.php:213
 msgid "Network inventory (SNMP)"
-msgstr "Network discovery (SNMP)"
+msgstr "Network Inventory (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Glpi/Agent/Communication/AbstractRequest.php:209 src/Agent.php:221
@@ -12053,7 +12053,7 @@ msgstr "La classe di oggetti connessi alla definizione corrente è \"%s\""
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
 msgid "This item definition is used by %d items."
-msgstr "Questa definizione è usata da %delementi."
+msgstr "Questa definizione è usata da %d elementi."
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid "All items that are using this definition will be deleted."
@@ -12126,7 +12126,7 @@ msgstr "OR"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 msgid "No rule criteria to display"
-msgstr ""
+msgstr "Nessun criterio per la regola da visualizzare"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 #: templates/pages/admin/rules/form.html.twig
@@ -12187,7 +12187,7 @@ msgid ""
 "Match data with an existing asset, create a new asset, or deny the import"
 msgstr ""
 "Confronta i dati con gli oggetti esistenti, crea un nuovo oggetto, oppure "
-"nega l'importo"
+"nega l'importazione"
 
 #: templates/pages/admin/rules/index.html.twig front/dictionnary.php:44
 #: src/Rule.php:302
@@ -12216,7 +12216,7 @@ msgstr "L'elemento è creato o aggiornato in GLPI"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "You do not have the required permissions"
-msgstr ""
+msgstr "Non disponi delle autorizzazioni necessarie"
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2160
@@ -12341,9 +12341,9 @@ msgstr "Sospendi l'esecuzione di tutti i plugin"
 #, php-format
 msgid "You have %d plugin to update"
 msgid_plural "You have %d plugins to update"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Hai %d plugin da aggiornare"
+msgstr[1] "Hai %d plugin da aggiornare"
+msgstr[2] "Hai %d plugin da aggiornare"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "filter logs"
@@ -12359,7 +12359,7 @@ msgstr "Ultime entrate da mostrare:"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Toggle auto refresh"
-msgstr "Attiva o disattiva l'auto refresh"
+msgstr "Attiva o disattiva l'aggiornamento automatico"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Collapse"
@@ -12499,7 +12499,7 @@ msgstr ""
 #: install/empty_data.php:9541 install/empty_data.php:9660
 #: install/empty_data.php:9710
 msgid "Root entity"
-msgstr "ITSM"
+msgstr "Entità radice"
 
 #: install/migrations/update_9.4.1_to_9.4.2.php:78
 #: install/migrations/update_9.4.0_to_9.4.1.php:99
@@ -12567,7 +12567,7 @@ msgstr "Errore durante la creazione del database!"
 
 #: install/install.php:328
 msgid "Impossible to use the database:"
-msgstr "Impossible usare il database:"
+msgstr "Impossibile usare il database:"
 
 #: install/install.php:347 src/Glpi/Console/Database/InstallCommand.php:323
 msgid "Initializing database tables and default data..."
@@ -12896,7 +12896,7 @@ msgstr "Oggetto perso"
 #: resources/.illustrations_translations.php:21
 msgctxt "Icon"
 msgid "Network equipment"
-msgstr "Equipaggiamento network"
+msgstr "Apparato di rete"
 
 #: resources/.illustrations_translations.php:22
 msgctxt "Icon"
@@ -13032,7 +13032,7 @@ msgstr "Grafico a torta"
 #: resources/.illustrations_translations.php:48
 msgctxt "Icon"
 msgid "Search chart"
-msgstr "Carca un grafico"
+msgstr "Cerca un grafico"
 
 #: resources/.illustrations_translations.php:49
 msgctxt "Icon"
@@ -13480,7 +13480,7 @@ msgstr "Rinomina delle stringhe"
 #: resources/.illustrations_translations.php:137
 msgctxt "Icon"
 msgid "Report an issue"
-msgstr "Segnalazione incidente"
+msgstr "Segnala un problema"
 
 #: resources/.illustrations_translations.php:138
 msgctxt "Icon"
@@ -13856,7 +13856,7 @@ msgstr "Mouse"
 #: resources/.illustrations_translations.php:213
 msgctxt "Icon"
 msgid "landline"
-msgstr "Rete fissa"
+msgstr "Telefono fisso"
 
 #: resources/.illustrations_translations.php:214
 msgctxt "Icon"
@@ -14126,7 +14126,7 @@ msgstr "CSV"
 #: resources/.illustrations_translations.php:270
 msgctxt "Icon"
 msgid "import"
-msgstr "Importare"
+msgstr "Importazione"
 
 #: resources/.illustrations_translations.php:271
 msgctxt "Icon"
@@ -14276,7 +14276,7 @@ msgstr "Cartella"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr "gestione dei progetti"
+msgstr "gestione progetti"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -14521,7 +14521,7 @@ msgstr "Giornale"
 #: resources/.illustrations_translations.php:349
 msgctxt "Icon"
 msgid "receiver"
-msgstr "Ricevente"
+msgstr "Destinatario"
 
 #: resources/.illustrations_translations.php:350
 msgctxt "Icon"
@@ -14581,7 +14581,7 @@ msgstr "Conferenza"
 #: resources/.illustrations_translations.php:361
 msgctxt "Icon"
 msgid "meeting"
-msgstr "Meeting"
+msgstr "Riunione"
 
 #: resources/.illustrations_translations.php:362
 msgctxt "Icon"
@@ -14711,7 +14711,7 @@ msgstr "Localizzazione"
 #: resources/.illustrations_translations.php:388
 msgctxt "Icon"
 msgid "internationalization"
-msgstr "Internalizzazione"
+msgstr "internazionalizzazione"
 
 #: resources/.illustrations_translations.php:389
 msgctxt "Icon"
@@ -14736,7 +14736,7 @@ msgstr "how-to"
 #: resources/.illustrations_translations.php:393
 msgctxt "Icon"
 msgid "lifecycle"
-msgstr "Ciclo vita"
+msgstr "Ciclo di vita"
 
 #: resources/.illustrations_translations.php:394
 msgctxt "Icon"
@@ -14771,7 +14771,7 @@ msgstr "Browser"
 #: resources/.illustrations_translations.php:400
 msgctxt "Icon"
 msgid "storage"
-msgstr "Magazzino"
+msgstr "Archiviazione"
 
 #: resources/.illustrations_translations.php:401
 msgctxt "Icon"
@@ -15029,16 +15029,16 @@ msgstr "La lingua è stata modificata!"
 
 #: front/user.form.php:170
 msgid "Unable to impersonate user"
-msgstr "Impossibile riconoscere l'utente"
+msgstr "Impossibile impersonare l'utente"
 
 #: front/user.form.php:179
 msgid "Unable to stop impersonating user"
-msgstr "Impossibile interrompere il riconoscimento dell'utente"
+msgstr "Impossibile interrompere l'impersonificazione dell'utente"
 
 #: front/initpassword.php:50
 msgid "Sending password initialization notification is not enabled."
 msgstr ""
-"L'nvio della notifica per l'inizializzazione della password non è abilitata"
+"L'invio della notifica per l'inizializzazione della password non è abilitata"
 
 #: front/initpassword.php:55
 msgid "Forgotten initialization"
@@ -15104,7 +15104,7 @@ msgstr "Il tuo commento è stato modificato"
 
 #: front/lostpassword.php:50
 msgid "Sending password forget notification is not enabled."
-msgstr "L'nvio della notifica per la password dimenticata non è abilitata"
+msgstr "L'invio della notifica per la password dimenticata non è abilitata"
 
 #. TRANS: %s is the user login
 #: front/ticket_ticket.form.php:62
@@ -15207,7 +15207,7 @@ msgstr "%s aggiunge una attività"
 #: front/commonitiltask.form.php:92 front/projecttask.form.php:110
 #, php-format
 msgid "%s purges a task"
-msgstr "%scancella un'attività"
+msgstr "%s cancella un'attività"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:105 front/projecttask.form.php:123
@@ -15237,7 +15237,7 @@ msgstr "%s aggiunge una gestione remota"
 #: front/item_remotemanagement.form.php:80
 #, php-format
 msgid "%s purges a remote management"
-msgstr "%selimina una gestione remota"
+msgstr "%s elimina una gestione remota"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:98
@@ -15690,12 +15690,12 @@ msgstr "%1$s ha modificato la configurazione delle notifiche del browser"
 #: front/smtp_oauth2_callback.php:81
 msgctxt "oauth"
 msgid "Unable to verify authorization code"
-msgstr "IMpossibile verificare il codice di autorizzazione"
+msgstr "Impossibile verificare il codice di autorizzazione"
 
 #: front/smtp_oauth2_callback.php:83
 msgctxt "oauth"
 msgid "Unable to get authorization code"
-msgstr "IMpossibile recuperare il codice di autorizzazione"
+msgstr "Impossibile recuperare il codice di autorizzazione"
 
 #: front/smtp_oauth2_callback.php:101
 msgctxt "oauth"
@@ -15738,15 +15738,15 @@ msgstr "%1$s ha cancellato la prenotazione per l'elemento %2$s"
 
 #: front/massiveaction.php:46
 msgid "Bulk modification error"
-msgstr "Modifica massiva errori"
+msgstr "Errore durante la modifica massiva"
 
 #: front/massiveaction.php:57
 msgid "Bulk modification"
-msgstr "Modifica generalizzata"
+msgstr "Modifica massiva"
 
 #: front/massiveaction.php:72
 msgid "Operation was done but no action was required"
-msgstr "L'operazione è stata eseguita ma non ha richiesta alcuna azione"
+msgstr "L'operazione è stata eseguita ma non era richiesta alcuna azione"
 
 #: front/massiveaction.php:74 src/NotImportedEmail.php:247
 msgid "Failed operation"
@@ -15764,7 +15764,7 @@ msgstr "(%1$d elementi non richiedono azioni)"
 #: front/massiveaction.php:88
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr "(%1$d problemi di autorizzazione, %2$d falliti)"
+msgstr "(%1$d problemi di autorizzazione, %2$d errori)"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:62
@@ -15820,7 +15820,7 @@ msgstr "%s aggiunge una macchina virtuale"
 #: front/itemvirtualmachine.form.php:98
 #, php-format
 msgid "%s purges a virtual machine"
-msgstr "%scancella una macchina virtuale"
+msgstr "%s cancella una macchina virtuale"
 
 #. TRANS: %s is the user login
 #: front/itemvirtualmachine.form.php:115
@@ -15870,7 +15870,7 @@ msgstr "%s aggiorna un commento"
 #: front/itilfollowup.form.php:114
 #, php-format
 msgid "%s purges a followup"
-msgstr "%selimina un commento"
+msgstr "%s elimina un commento"
 
 #: front/notification.tags.php:40
 msgid "List of available tags"
@@ -16110,7 +16110,7 @@ msgstr "Numero di elementi"
 #: src/NotificationTargetTicket.php:679
 msgctxt "quantity"
 msgid "Number of linked project tasks"
-msgstr ""
+msgstr "Numero di attività del progetto collegate"
 
 #: src/NotificationTargetTicket.php:694
 msgid "Solution rejection comment"
@@ -16149,9 +16149,9 @@ msgstr "E' stata data una risposta ad una richiesta di convalida"
 #: src/NotificationTargetTicket.php:871 src/NotificationTargetTicket.php:876
 msgid "Linked project task"
 msgid_plural "Linked project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Attività del progetto correlata"
+msgstr[1] "Attività del progetto correlate"
+msgstr[2] "Attività del progetto correlate"
 
 #: src/NotificationTargetTicket.php:897
 #: src/NotificationTargetCommonITILObject.php:2539
@@ -16260,11 +16260,11 @@ msgstr "Gruppo utenti"
 
 #: src/RuleCommonITILObject.php:1021
 msgid "Send an approval request to requester group manager"
-msgstr ""
+msgstr "Richiesta di approvazione al gestore del gruppo richiedenti"
 
 #: src/RuleCommonITILObject.php:1025
 msgid "Send an approval request to technician group manager"
-msgstr ""
+msgstr "Richiesta di approvazione al gestore del gruppo tecnici"
 
 #: src/RuleCommonITILObject.php:1030
 msgid "Set approval request step"
@@ -16924,7 +16924,7 @@ msgstr "%s (%s)"
 #: src/VirtualMachineState.php:41
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] "Stato della macchine virtuale"
+msgstr[0] "Stato della macchina virtuale"
 msgstr[1] "Stati della macchine virtuale"
 msgstr[2] "Stati della macchine virtuale"
 
@@ -16959,7 +16959,7 @@ msgstr "Assegna utente dal numero di registrazione"
 
 #: src/RuleAsset.php:238
 msgid "Assign user from sync field"
-msgstr "Assegna utente dal sync field"
+msgstr "Assegna utente dal campo di sincronizzazione"
 
 #: src/ProblemTemplate.php:56
 msgid "Problem template"
@@ -17212,7 +17212,7 @@ msgstr[2] "+ %d anni"
 #: src/AuthMail.php:61 src/AuthMail.php:85
 #, php-format
 msgid "The %s field is mandatory"
-msgstr "Il campo %s è obbligagtorio"
+msgstr "Il campo %s è obbligatorio"
 
 #: src/Html.php:3869
 msgid "Available variables"
@@ -17339,7 +17339,7 @@ msgstr "Associa al dominio"
 #: src/Domain_Item.php:545
 #, php-format
 msgid "%s that are already associated are not displayed"
-msgstr "%sche sono già associati e non visibili."
+msgstr "%s che sono già associati e non visibili."
 
 #: src/Domain_Item.php:630 src/Certificate_Item.php:388
 msgid "Does not expire"
@@ -17401,7 +17401,7 @@ msgstr "Elemento aggiunto con successo ma con record duplicato su"
 #: src/NotificationTargetSavedSearch_Alert.php:104 src/Glpi/Event.php:359
 #: src/Glpi/Event.php:474
 msgid "Message"
-msgstr "Evento"
+msgstr "Messaggio"
 
 #: src/NotificationTargetFieldUnicity.php:85
 msgid "Doer"
@@ -17603,11 +17603,11 @@ msgstr "Nuovo progetto"
 
 #: src/NotificationTargetProject.php:52
 msgid "Update of a project"
-msgstr "Aggiorna un progetto"
+msgstr "Aggiornamento di un progetto"
 
 #: src/NotificationTargetProject.php:53
 msgid "Deletion of a project"
-msgstr "Elimina un progetto"
+msgstr "Eliminazione di un progetto"
 
 #: src/NotificationTargetProject.php:63 src/NotificationTargetProject.php:636
 #: src/Project.php:624 src/Project.php:1140
@@ -18005,7 +18005,7 @@ msgstr "Numero di serie (S/N)"
 #: src/NetworkName.php:70
 msgid "Network name"
 msgid_plural "Network names"
-msgstr[0] "Nome delle rete"
+msgstr[0] "Nome della rete"
 msgstr[1] "Nomi delle reti"
 msgstr[2] "Nomi delle reti"
 
@@ -18062,7 +18062,7 @@ msgstr "Il file caricato supera la direttiva post_max_size del php.ini"
 
 #: src/UploadHandler.php:509
 msgid "File is too small"
-msgstr "Il file è troppo grande"
+msgstr "Il file è troppo piccolo"
 
 #: src/UploadHandler.php:512
 msgid "Maximum number of files exceeded"
@@ -18094,7 +18094,7 @@ msgstr "Impossibile ridimensionare l'immagine"
 
 #: src/UploadHandler.php:536
 msgid "Invalid file type"
-msgstr ""
+msgstr "Tipo file non valido"
 
 #: src/ContactType.php:41
 msgid "Contact type"
@@ -18179,15 +18179,15 @@ msgstr "Nuovo documento"
 
 #: src/NotificationTargetCommonITILObject.php:137
 msgid "Pending reason added"
-msgstr "Motivi di sospensione aggiunti"
+msgstr "Motivo di sospensione aggiunto"
 
 #: src/NotificationTargetCommonITILObject.php:138
 msgid "Pending reason removed"
-msgstr "Motivi di sospensione rimossi"
+msgstr "Motivo di sospensione rimosso"
 
 #: src/NotificationTargetCommonITILObject.php:139
 msgid "Pending reason auto close"
-msgstr "Motivi di sospensione chiusi autonomamente"
+msgstr "Motivo di sospensione chiuso autonomamente"
 
 #: src/NotificationTargetCommonITILObject.php:942
 msgid "Mentioned user"
@@ -18200,12 +18200,12 @@ msgstr "Precedente tecnico responsabile della chiamata"
 #: src/NotificationTargetCommonITILObject.php:965
 #, php-format
 msgid "Manager of the group in charge of the %s"
-msgstr ""
+msgstr "Gestore del gruppo responsabile di %s"
 
 #: src/NotificationTargetCommonITILObject.php:969
 #, php-format
 msgid "Group in charge of the %s except manager users"
-msgstr ""
+msgstr "Gruppo responsabile di %s, esclusi i gestori"
 
 #: src/NotificationTargetCommonITILObject.php:971
 msgid "Requester group manager"
@@ -18218,12 +18218,12 @@ msgstr "Gruppo richiedenti, esclusi i gestori"
 #: src/NotificationTargetCommonITILObject.php:976
 #, php-format
 msgid "Technician in charge of the %s"
-msgstr ""
+msgstr "Tecnico responsabile di %s"
 
 #: src/NotificationTargetCommonITILObject.php:979
 #, php-format
 msgid "Group in charge of the %s"
-msgstr ""
+msgstr "Gruppo responsabile di %s"
 
 #: src/NotificationTargetCommonITILObject.php:982
 msgid "Observer group manager"
@@ -18248,7 +18248,7 @@ msgstr "Autore dell'attività"
 
 #: src/NotificationTargetCommonITILObject.php:1007
 msgid "Followup author"
-msgstr "Risposta all'autore"
+msgstr "Autore del commento"
 
 #: src/NotificationTargetCommonITILObject.php:2041 src/Ticket.php:5620
 #: src/Glpi/ContentTemplates/Parameters/CommonITILObjectParameters.php:68
@@ -18351,7 +18351,7 @@ msgstr "Numero di problemi collegati"
 #: src/NotificationTargetCommonITILObject.php:2261
 msgctxt "quantity"
 msgid "Number of linked projects"
-msgstr ""
+msgstr "Numero di progetti collegati"
 
 #: src/NotificationTargetCommonITILObject.php:2262
 msgid "Number of sent reminders since status is pending"
@@ -18436,9 +18436,9 @@ msgstr[2] "Problemi collegati"
 #: src/NotificationTargetCommonITILObject.php:2519
 msgid "Linked project"
 msgid_plural "Linked projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Progetto collegato"
+msgstr[1] "Progetti collegati"
+msgstr[2] "Progetti collegati"
 
 #: src/NotificationTargetCommonITILObject.php:2306
 msgid "No defined category"
@@ -18557,7 +18557,7 @@ msgstr ""
 
 #: src/RuleDictionnarySoftwareCollection.php:73
 msgid "Replay dictionary rules for manufacturers"
-msgstr "Esegui nuovamente le regole del dizionatio per i prodotti"
+msgstr "Esegui nuovamente le regole del dizionatio per i produttori"
 
 #: src/RuleDictionnarySoftwareCollection.php:307
 #: src/RuleDictionnarySoftwareCollection.php:437
@@ -19045,8 +19045,7 @@ msgstr "Accesso di %1$s dall'IP %2$s"
 #, php-format
 msgid "Login for %1$s denied by authorization rules from IP %2$s"
 msgstr ""
-"Il logine per %1$s è stato negato dalle regole di autorizzazione dall'IP "
-"%2$s"
+"Il login per %1$s è stato negato dalle regole di autorizzazione dall'IP %2$s"
 
 #: src/Auth.php:1164
 #, php-format
@@ -19087,7 +19086,7 @@ msgstr "Altro"
 
 #: src/Auth.php:1285 src/Auth.php:1686
 msgid "GLPI internal database"
-msgstr "Elenco interno GLPI"
+msgstr "Database interno GLPI"
 
 #: src/Auth.php:1297 src/Auth.php:1302 src/Auth.php:1307
 #, php-format
@@ -19407,7 +19406,7 @@ msgstr[2] "Conduttori del cavo"
 #: src/CommonItilObject_Item.php:1538
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] "Tipo di elemento associati"
+msgstr[0] "Tipo di elemento associato"
 msgstr[1] "Tipi di elemento associati"
 msgstr[2] "Tipi di elemento associati"
 
@@ -19445,7 +19444,7 @@ msgstr[2] "Indirizzi IP"
 
 #: src/IPAddress.php:168
 msgid "Invalid IP address"
-msgstr "indirizzi IP non validi"
+msgstr "indirizzo IP non valido"
 
 #: src/Item_Process.php:51
 msgid "Process"
@@ -19541,7 +19540,7 @@ msgstr "Date effettive non valide. Le date non sono state aggiornate."
 
 #: src/Project.php:1335
 msgid "Create a sub project from this project"
-msgstr "Crea un figlio per questo progetto"
+msgstr "Crea un sottoprogetto"
 
 #: src/Project.php:1424 src/ProjectTask.php:1483
 msgid "Add a team member"
@@ -19980,7 +19979,7 @@ msgid ""
 "The automatic inventory will no longer handle this item, unless you unlock "
 "it."
 msgstr ""
-"L'invantario automatico non gestirà più questo oggetto sino a quando non "
+"L'inventario automatico non gestirà più questo oggetto sino a quando non "
 "sarà sbloccato"
 
 #: src/Lock.php:379 src/State.php:376
@@ -20030,7 +20029,7 @@ msgstr "Seleziona il tipo di elemento da sbloccare"
 
 #: src/Lock.php:1363
 msgid "Select fields of the item that must be unlock"
-msgstr "Seleziona i campi dell'oggetto che devono essere bloccati"
+msgstr "Seleziona i campi dell'oggetto che devono essere sbloccati"
 
 #: src/Problem_Ticket.php:49
 msgid "Link Ticket/Problem"
@@ -20105,7 +20104,7 @@ msgstr "%1$s deve essere unico!"
 
 #: src/State.php:384
 msgid "Visible"
-msgstr ""
+msgstr "Visibile"
 
 #: src/State.php:927
 #, php-format
@@ -20152,12 +20151,12 @@ msgstr "Crea un figlio per questa attività di progetto"
 #: src/ProjectTask.php:1422
 msgctxt "button"
 msgid "Affect to team"
-msgstr ""
+msgstr "Gruppo interessato"
 
 #: src/ProjectTask.php:1423
 msgctxt "button"
 msgid "Unaffect to team"
-msgstr ""
+msgstr "Gruppo non interessato"
 
 #: src/ProjectTask.php:1740
 msgid "Ongoing projects tasks"
@@ -20187,7 +20186,7 @@ msgstr[2] "Modelli di alimentatori dei dispositivi"
 #: src/TaskTemplate.php:204 src/TaskTemplate.php:235 src/TaskTemplate.php:263
 #: src/User.php:4536
 msgid "Current logged-in user"
-msgstr "Utenti attualmente collegati"
+msgstr "Utente attualmente collegato"
 
 #: src/Session.php:231 src/Session.php:239
 msgid "You don't have right to connect"
@@ -20694,7 +20693,7 @@ msgstr "Collegamento all'elemento prenotato"
 #: src/NotificationTargetInfocom.php:106
 #: src/NotificationTargetSoftwareLicense.php:109
 msgid "Device list"
-msgstr "Lista dispositivo"
+msgstr "Lista dispositivi"
 
 #: src/Webhook.php:95 src/Webhook.php:1396
 msgid "Webhook"
@@ -20728,9 +20727,9 @@ msgstr[2] "Intestazioni personalizzate"
 #: src/Webhook.php:815
 msgid "Query log"
 msgid_plural "Queries log"
-msgstr[0] "Log della queri"
-msgstr[1] "Log delle queri"
-msgstr[2] "Log delle queri"
+msgstr[0] "Log della query"
+msgstr[1] "Log delle query"
+msgstr[2] "Log delle query"
 
 #: src/Webhook.php:968
 msgid ""
@@ -20953,7 +20952,7 @@ msgstr "Ricerca (prime 50 entrate)"
 
 #: src/AuthLDAP.php:1143
 msgid "Domain name used by inventory tool"
-msgstr "Utente di dominio usato per l'inventario"
+msgstr "Nome di dominio utilizzato dallo strumento di inventario"
 
 #: src/AuthLDAP.php:1440
 msgid "No hostname provided"
@@ -20985,7 +20984,7 @@ msgstr "Il controllo di LDAP URI ha avuto successo"
 #: src/AuthLDAP.php:1496
 #, php-format
 msgid "LDAP URI was not parseable (%s:%s)"
-msgstr "LDAP URI non è statp analizzabile (%s:%s)"
+msgstr "LDAP URI non è stato analizzabile (%s:%s)"
 
 #: src/AuthLDAP.php:1529
 msgid "Authentication succeeded"
@@ -21041,7 +21040,7 @@ msgstr "Utente non trovato oppure sono stati trovati utenti multipli"
 
 #: src/AuthLDAP.php:3216
 msgid "Unable to add. The user already exist."
-msgstr "Impossibile aggiungerlo. L'utente esistente già."
+msgstr "Impossibile aggiungere l'utente. L'utente esiste già."
 
 #: src/AuthLDAP.php:3933 src/AuthLDAP.php:3947 src/AuthLDAP.php:3961
 #: src/AuthLDAP.php:3976
@@ -21581,7 +21580,7 @@ msgstr "%1$s valore"
 
 #: src/Report.php:1695 src/Report.php:1864
 msgid "Total account net value"
-msgstr "%1$s valore totale del conto"
+msgstr "Valore netto contabile totale"
 
 #: src/Report.php:1711 src/Report.php:1880
 msgid "Total value"
@@ -21886,7 +21885,7 @@ msgstr "Nuovo figlio %s"
 #: src/CommonTreeDropdown.php:660
 #, php-format
 msgid "Sons of %s"
-msgstr "Figlio di %s"
+msgstr "Figli di %s"
 
 #: src/CommonTreeDropdown.php:689
 msgctxt "button"
@@ -21987,7 +21986,7 @@ msgstr "Nome computer"
 #: src/Item_Devices.php:102
 #, php-format
 msgid "%1$s of item \"%2$s\""
-msgstr "%1$s di \"%2$s\" elementi"
+msgstr "1$s dell'elemento \"%2$s\\"
 
 #. TRANS: %s is the type of the component
 #: src/Item_Devices.php:132
@@ -22056,7 +22055,7 @@ msgstr "Devi scegliere una periferica non coinvolta od aggiungerne una nuova."
 
 #: src/Item_Devices.php:1588
 msgid "A device ID is mandatory"
-msgstr "I'ID della periferica è obbligatorio"
+msgstr "L'ID della periferica è obbligatorio"
 
 #: src/Item_Devices.php:1638
 msgid "Update of "
@@ -22144,7 +22143,7 @@ msgstr ""
 #: src/CommonDropdown.php:652
 msgid "You must replace all uses of this dropdown by another."
 msgstr ""
-"Puoi anche ripristinare tutti gli usi di questo menu a discesa da un altro."
+"Devi sostituire tutti gli utilizzi di questo menu a discesa con un altro."
 
 #: src/CommonDropdown.php:680
 msgctxt "button"
@@ -22158,7 +22157,7 @@ msgstr "Unisci ed assegna all'entità corrente"
 #: src/CommonDropdown.php:858 src/ITILTemplate.php:621 src/Ticket.php:2319
 msgctxt "button"
 msgid "Merge"
-msgstr "Consolidare"
+msgstr "Unire"
 
 #: src/Holiday.php:48 src/Calendar_Holiday.php:168
 msgid "Close time"
@@ -22215,11 +22214,11 @@ msgstr "Nuova attività di progetto"
 
 #: src/NotificationTargetProjectTask.php:51
 msgid "Update of a project task"
-msgstr "Aggiorna una attività di progetto"
+msgstr "Aggiornamento di un'attività di progetto"
 
 #: src/NotificationTargetProjectTask.php:52
 msgid "Deletion of a project task"
-msgstr "Elimina una attività di progetto"
+msgstr "Eliminazione di un'attività di progetto"
 
 #: src/NotificationTargetProjectTask.php:62
 msgid "Project task team user"
@@ -33710,7 +33709,7 @@ msgstr "Invia avvisi in caso di scadenza del certificato"
 #: src/Certificate.php:809
 #, php-format
 msgid "Certificate %1$s expired on %2$s"
-msgstr "Certificato %1$s scadenza %2$s"
+msgstr "Certificato %1$s scaduto il %2$s"
 
 #: src/Certificate.php:836
 #, php-format

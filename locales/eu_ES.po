@@ -14,6 +14,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # Naiara Maya, 2026
 # Alexander Gabilondo <alexgabi@disroot.org>, 2026
+# Lezoko Udala Informatika, 2026
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>, 2026\n"
+"Last-Translator: Lezoko Udala Informatika, 2026\n"
 "Language-Team: Basque (Spain) (https://app.transifex.com/glpi/teams/1637/eu_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -644,7 +645,7 @@ msgstr "Bertsio berri bat eskuragarri dago: %s"
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Eduki nagusira itzuli"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -1080,11 +1081,11 @@ msgstr "Oharra gehitu"
 
 #: templates/components/notepad/form.html.twig
 msgid "Expand all"
-msgstr ""
+msgstr "Denak zabaldu"
 
 #: templates/components/notepad/form.html.twig
 msgid "Collapse all"
-msgstr ""
+msgstr "Denak tolestu"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
@@ -1871,7 +1872,7 @@ msgstr "Last inventory update"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:214
 msgid "Agent status"
-msgstr ""
+msgstr "Agentearen egoera"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:215
@@ -2055,7 +2056,7 @@ msgstr "Egoera"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Denbora zehaztu"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
@@ -2110,15 +2111,15 @@ msgstr "Moduloa"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Input"
-msgstr ""
+msgstr "Sarrea"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "See input"
-msgstr ""
+msgstr "Ikusi sarrera"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "No input"
-msgstr ""
+msgstr "Sarrerarik ez"
 
 #: templates/components/form/single-action.html.twig
 #: templates/pages/assets/template_list.html.twig
@@ -2173,7 +2174,7 @@ msgstr "Laguntza orduak"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On week"
-msgstr ""
+msgstr "Astean"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On Saturday"
@@ -2189,7 +2190,7 @@ msgstr "igande eta jai egunak"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Sunday"
-msgstr ""
+msgstr "Igandea erabili"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/form/link_existing_or_new.html.twig
@@ -2497,7 +2498,7 @@ msgstr "Azken %s egunak"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Last quarter"
-msgstr ""
+msgstr "Azken lauhilabetea"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Last year"
@@ -2541,7 +2542,7 @@ msgstr "Konparatu"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select printers to compare"
-msgstr ""
+msgstr "Alderatzeko inprimagailuak aukeratu"
 
 #: templates/components/printer_graph_buttons.html.twig src/PrinterLog.php:371
 msgid "Total pages"
@@ -2549,7 +2550,7 @@ msgstr "Total pages"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Black and white pages"
-msgstr ""
+msgstr "Txuri-beltzeko orrialdeak"
 
 #: templates/components/printer_graph_buttons.html.twig src/PrinterLog.php:375
 msgid "Color pages"
@@ -2734,7 +2735,7 @@ msgstr ""
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "Update to version %s?"
-msgstr ""
+msgstr "%s bertsiora eguneratu"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/SLATTOField.php:48
@@ -3123,7 +3124,7 @@ msgstr "Actors"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "Entity notes"
-msgstr ""
+msgstr "Entitatearen oharrak"
 
 #: templates/components/itilobject/fields_panel.html.twig src/SLM.php:58
 msgid "Service level"
@@ -3964,7 +3965,7 @@ msgstr "Ezabatu"
 #: templates/components/search/query_builder/search_option_value.html.twig
 #: src/Glpi/Search/Input/QueryBuilder.php:387
 msgid "Criteria value"
-msgstr ""
+msgstr "Irizpidearen balioa"
 
 #: templates/components/search/criteria_filter.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -3977,7 +3978,7 @@ msgstr "Aurreikusketa"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "No filter found"
-msgstr ""
+msgstr "Ez da filtrorik topatu"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
@@ -4085,7 +4086,7 @@ msgstr "Ezabatu ikuspegi pertsonala"
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
-msgstr ""
+msgstr "Erakutsi gordetako bilaketak"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
@@ -34969,7 +34970,7 @@ msgstr "Igoerak arrakasta izan du"
 #: js/src/vue/CustomObject/FieldPreview/Field.vue:33
 #: js/src/vue/CustomObject/FieldPreview/FieldDisplay.vue:296
 msgid "Hide"
-msgstr ""
+msgstr "Ezkutatu"
 
 #: js/src/vue/CustomObject/FieldPreview/FieldDisplay.vue:296
 msgid "Cannot remove the last field"

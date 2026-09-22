@@ -15,10 +15,11 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # Martin Denes <marchino.cz@gmail.com>, 2026
 # Appukonrad <appukonrad@gmail.com>, 2026
-# David Stepan <stepand@tiscali.cz>, 2026
-# Filip Daubner, 2026
 # Jan Sýkora, 2026
 # Pavel Varta <pavelvarta81@gmail.com>, 2026
+# Filip Daubner, 2026
+# Jindřich Douša <jindrich@dousa.eu>, 2026
+# David Štěpán <stepand@tiscali.cz>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -27,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Pavel Varta <pavelvarta81@gmail.com>, 2026\n"
+"Last-Translator: David Štěpán <stepand@tiscali.cz>, 2026\n"
 "Language-Team: Czech (Czech Republic) (https://app.transifex.com/glpi/teams/1637/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -653,7 +654,7 @@ msgstr "Je k dispozici nová verze: %s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Jít na hlavní obsah"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -704,15 +705,15 @@ msgstr "Opustit přepnutí se do jiného uživatele"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Boční panel"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Přepnout navigaci"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Hlavní navigace"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -2084,7 +2085,7 @@ msgstr "Stav"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Zadat čas"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
@@ -4655,6 +4656,8 @@ msgid ""
 "This will reset all filters, cards, and sharing options in this dashboard "
 "with the one selected!"
 msgstr ""
+"Tímto se všechny filtry, karty a možnosti sdílení v tomto řídicím panelu "
+"resetují na vybranou možnost!"
 
 #: templates/components/dashboard/reset.html.twig
 msgid "Default dashboard to reset to"
@@ -6411,6 +6414,8 @@ msgid ""
 "The system name field corresponds to what will be used when development is "
 "involved. Examples: API calls, webhooks, etc."
 msgstr ""
+"Pole s názvem systému odpovídá tomu, co se bude používat při vývoji. "
+"Příklady: volání API, webhooky atd."
 
 #: templates/pages/assets/customfield.html.twig
 msgid ""
@@ -6815,6 +6820,8 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab"
 msgstr ""
+"Povolit přihlášení k API a získání tokenu relace s externím tokenem "
+"uživatele. Viz klíč pro vzdálený přístup na kartě Nastavení uživatele."
 
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "Information about system installation and configuration"
@@ -7021,7 +7028,7 @@ msgstr "Výchozí stav úkolů"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Planned tasks state by default"
-msgstr ""
+msgstr "Stav plánovaných úkolů ve výchozím nastavení"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
@@ -7039,11 +7046,11 @@ msgstr "Předvybrat mne jako žadatele při vytváření požadavku"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket follow-up"
-msgstr ""
+msgstr "Při přidávání doplňující zprávy v požadavku mě přidejte jako technika"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket solution"
-msgstr ""
+msgstr "Při přidávání řešení požadavku mě přidejte jako technika"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Merged"
@@ -7159,12 +7166,16 @@ msgid ""
 "Disable notifications by default on ITIL objects actor configuration, with "
 "ability to derogate to it."
 msgstr ""
+"Ve výchozím nastavení zakázat oznámení v konfiguraci aktéra objektů ITIL s "
+"možností odchýlit se od tohoto nastavení."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid ""
 "Disable all notifications on all other objects, without ability to derogate "
 "to it."
 msgstr ""
+"Zakázat všechna oznámení u všech ostatních objektů bez možnosti odchýlit se "
+"od tohoto nastavení."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/setup/setup_notifications.html.twig
@@ -7265,11 +7276,11 @@ msgstr "ID serveru:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log file:"
-msgstr ""
+msgstr "Soubor binárního logu:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log position:"
-msgstr ""
+msgstr "Pozice binárního logu:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server version:"
@@ -7285,19 +7296,19 @@ msgstr "Nedefinované"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Source binary log file:"
-msgstr ""
+msgstr "Zdrojový binární soubor protokolu:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Source binary log position:"
-msgstr ""
+msgstr "Pozice zdrojového binárního protokolu:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind source:"
-msgstr ""
+msgstr "Vteřiny pozadu za zdrojem:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "GLPI history delay:"
-msgstr ""
+msgstr "Zpoždění historie GLPI:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig src/Entity.php:2668
 #: src/Entity.php:2730 src/Entity.php:2738 src/Entity.php:2745
@@ -7321,6 +7332,8 @@ msgid ""
 "This indicates the delay between the source and the replica for GLPI history"
 " (table: glpi_logs, column: date_mod)."
 msgstr ""
+"Udává zpoždění mezi zdrojovou databází a replikou podle historie GLPI "
+"(tabulka: glpi_logs, sloupec: date_mod)."
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "IO running:"
@@ -7417,7 +7430,7 @@ msgstr "Přípona 2FA"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "This will be added in the issuer name for authenticator app."
-msgstr ""
+msgstr "Toto bude přidáno do názvu vydavatele pro ověřovací aplikaci."
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "2FA grace period (in days)"
@@ -7558,6 +7571,9 @@ msgid ""
 "\"upload_max_filesize\" and \"post_max_size\" PHP settings. The setting "
 "below is to further restrict the uploads for just GLPI."
 msgstr ""
+"Maximální velikost nahrávaných souborů je primárně určena nastavením PHP "
+"„upload_max_filesize“ a „post_max_size“. Níže uvedené nastavení umožňuje "
+"velikost nahrávaných souborů dále omezit pouze pro GLPI."
 
 #: templates/pages/setup/general/management_setup.html.twig
 msgid "Document files maximum size (Mio)"
@@ -7591,13 +7607,15 @@ msgstr "Povolit anonymní přístup k nejčastějším dotazům (FAQ)"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Allow unauthenticated uploads"
-msgstr ""
+msgstr "Povolit neověřené nahrávání"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid ""
 "Do not use this option if your GLPI is reachable from the internet. Use at "
 "your own risk."
 msgstr ""
+"Tuto možnost nepoužívejte, pokud je vaše GLPI dostupné z internetu. "
+"Používejte na vlastní nebezpečí."
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Dynamic display"
@@ -7714,7 +7732,7 @@ msgstr "Zobrazit rozbalovací nabídku zdroje na přihlašovací stránce"
 
 #: templates/pages/setup/general/api_apiclients_section.html.twig
 msgid "API clients (Legacy API)"
-msgstr ""
+msgstr "Klienti API (starší API)"
 
 #: templates/pages/setup/general/api_apiclients_section.html.twig
 msgid "Add API client"
@@ -7804,6 +7822,8 @@ msgid ""
 "To enable or disable sending telemetry, please change the \"telemetry\" "
 "automatic action."
 msgstr ""
+"Chcete-li povolit nebo zakázat odesílání telemetrie, změňte automatickou "
+"akci „telemetrie“."
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "GLPI update"
@@ -7873,6 +7893,8 @@ msgstr "Zařízení zobrazovaná v nabídce"
 msgid ""
 "%1$s services website seems to be unavailable from your network or offline!"
 msgstr ""
+"Zdá se, že webové stránky služeb%1$s nejsou dostupné z vaší sítě nebo "
+"offline!"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #: src/GLPINetwork.php:46
@@ -7893,6 +7915,8 @@ msgid ""
 "A registration key is needed to use some advanced features (like the plugin "
 "marketplace) in GLPI"
 msgstr ""
+"Registrační klíč je nutný pro použití některých pokročilých funkcí (jako je "
+"tržiště pluginů) v GLPI"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #, php-format
@@ -7936,21 +7960,23 @@ msgstr "Před nahrazením se zeptat"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Replace plugins page with marketplace"
-msgstr ""
+msgstr "Nahradit stránku s pluginy webem Marketplace"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Never replace plugins page"
-msgstr ""
+msgstr "Stránku s pluginy nikdy nenahrazovat"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Plugin page replacement"
-msgstr ""
+msgstr "Nahrazení stránky pluginu"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid ""
 "Choose whether to replace the classic plugins page with the new marketplace "
 "interface."
 msgstr ""
+"Vyberte, zda chcete klasickou stránku pluginů nahradit novým rozhraním "
+"Marketplace."
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Access GLPI Network Marketplace"
@@ -7984,6 +8010,7 @@ msgstr "Zachovat požadavky při odstranění hardwaru z inventáře"
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Show personal information in new ticket form (simplified interface)"
 msgstr ""
+"Zobrazit osobní údaje v novém formuláři ticketu (zjednodušené rozhraní)"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Allow anonymous ticket creation (receiver)"
@@ -8189,7 +8216,7 @@ msgstr "Metoda oznámení"
 #: templates/pages/setup/notification/translation_debug.html.twig
 #, php-format
 msgid "The preview is not available for the notifications related to %s."
-msgstr ""
+msgstr "Náhled není k dispozici pro oznámení související s %s."
 
 #: templates/pages/setup/notification/translation_debug.html.twig
 #: templates/pages/setup/notification/translation.html.twig
@@ -8589,6 +8616,8 @@ msgid ""
 "Notifications older than the selected value will not be displayed. Expired "
 "notifications will be deleted by the %s crontask."
 msgstr ""
+"Oznámení starší než vybraná hodnota se nebudou zobrazovat. Oznámení s "
+"vypršenou platností budou smazána úlohou %s."
 
 #: templates/pages/setup/notification/ajax_setting.html.twig
 #: templates/pages/setup/ldap/adv_info.html.twig
@@ -8636,7 +8665,7 @@ msgstr "Schválené adresy URI přesměrování"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Only applies to Authorization Code grants"
-msgstr ""
+msgstr "Platí pouze pro udělení autorizačního kódu"
 
 #: templates/pages/setup/oauthclient.html.twig
 #: templates/pages/setup/webhook/webhook_headers.html.twig
@@ -8794,6 +8823,11 @@ msgid ""
 "\"Automatically add users from an external authentication source\", in the "
 "Authentication settings in order to avoid the generation of duplicate users."
 msgstr ""
+"Pokud tuto možnost použijete a tento přijímač bude pravděpodobně přijímat "
+"požadavky od uživatelů ověřujících se přes LDAP, doporučujeme vám v "
+"nastavení ověřování aktivovat možnost „Automaticky přidávat uživatele z "
+"externího zdroje ověřování“, abyste zabránili generování duplicitních "
+"uživatelů."
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Automatically create user from email"
@@ -8832,6 +8866,8 @@ msgid ""
 "Unable to configure notifications: please configure at least one "
 "notification type using the above configuration."
 msgstr ""
+"Nelze konfigurovat oznámení: nakonfigurujte prosím alespoň jeden typ "
+"oznámení pomocí výše uvedené konfigurace."
 
 #: templates/pages/setup/crontask/statistics.html.twig
 #: front/stat.global.php:47 front/stat.graph.php:50 front/stat.php:38
@@ -9025,7 +9061,7 @@ msgstr "Poslední odpověď"
 
 #: templates/pages/setup/webhook/payload_editor.html.twig
 msgid "Use default payload"
-msgstr ""
+msgstr "Použít výchozí datovou část"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Secret"
@@ -9037,6 +9073,9 @@ msgid ""
 "validate requests are actually coming from the GLPI server and that the "
 "content was not modified between GLPI and the target."
 msgstr ""
+"Tajný klíč webhooku lze sdílet s cílovým serverem, aby mohl ověřit, zda "
+"požadavky skutečně přicházejí ze serveru GLPI a zda obsah nebyl mezi GLPI a "
+"cílem změněn."
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Expiration delay"
@@ -9044,7 +9083,7 @@ msgstr "Zpoždění platnosti"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Target authentication"
-msgstr ""
+msgstr "Cílová autentizace"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid ""
@@ -9052,6 +9091,9 @@ msgid ""
 "the target server before any data is sent from GLPI. This uses the shared "
 "secret that was generated in the above section."
 msgstr ""
+"Ověřování typu výzva-odpověď lze použít k ověření identity cílového serveru "
+"před odesláním jakýchkoli dat z GLPI. Používá se sdílený tajný klíč, který "
+"byl vygenerován v předchozí části."
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA is mandatory due to GLPI configuration"
@@ -9059,7 +9101,7 @@ msgstr "CRA je povinné kvůli konfiguraci GLPI"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use CRA Challenge?"
-msgstr ""
+msgstr "Použít CRA Challenge?"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgctxt "button"
@@ -9068,11 +9110,11 @@ msgstr "Ověřit"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA Challenge"
-msgstr ""
+msgstr "CRA Challenge"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA result"
-msgstr ""
+msgstr "CRA výsledek"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "OAuth Authentication"
@@ -9314,17 +9356,19 @@ msgstr "TLS Verze"
 #: templates/pages/oauth/authorize.html.twig
 #, php-format
 msgid "%s wants to access your GLPI account"
-msgstr ""
+msgstr "%s chce získat přístup k vašemu účtu GLPI"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid ""
 "This application will be able to access your account and perform the "
 "following actions on your behalf:"
 msgstr ""
+"Tato aplikace bude mít přístup k vašemu účtu a bude za vás provádět "
+"následující akce:"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid "No specific permissions requested"
-msgstr ""
+msgstr "Žádná konkrétní oprávnění nejsou požadována"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid "Accept"
@@ -9336,11 +9380,11 @@ msgstr "Odmítnout"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search for knowledge base entries or forms"
-msgstr ""
+msgstr "Hledání položek nebo formulářů ve znalostní bázi"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search results"
-msgstr ""
+msgstr "Výsledky vyhledávání"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Quick Access"
@@ -9419,7 +9463,7 @@ msgstr "Není k dispozici"
 #: templates/pages/assistance/planning/single_filter.html.twig
 #, php-format
 msgid "%s color"
-msgstr ""
+msgstr "%s barva"
 
 #: templates/pages/assistance/planning/single_filter.html.twig
 #: templates/pages/admin/rules/backup_header.html.twig src/Rule.php:659
@@ -9542,7 +9586,7 @@ msgstr "Počáteční doba trvání smlouvy"
 
 #: templates/pages/management/contract.html.twig
 msgid "Start date of notice period"
-msgstr ""
+msgstr "Datum zahájení výpovědní lhůty"
 
 #: templates/pages/management/contract.html.twig src/Entity.php:1950
 #: src/Contract.php:338 src/Contract.php:583 src/Contract.php:1601
@@ -9636,7 +9680,7 @@ msgstr "Datum začátku"
 
 #: templates/pages/management/softwarelicense.html.twig
 msgid "Not linked to any software"
-msgstr ""
+msgstr "Není propojeno s žádným softwarem"
 
 #: templates/pages/management/softwarelicense.html.twig src/Log.php:549
 #: src/Log.php:559 src/Log.php:1096 src/SoftwareLicense.php:1157
@@ -9754,7 +9798,7 @@ msgstr "Na seznamu vyloučených z importu"
 
 #: templates/pages/management/document.html.twig
 msgid "Use a file uploaded on server"
-msgstr ""
+msgstr "Použijte soubor nahraný na server"
 
 #: templates/pages/management/cost.html.twig
 #: src/NotificationTargetCommonITILObject.php:2133
@@ -9882,15 +9926,15 @@ msgstr "Rekurzivní"
 #: src/Glpi/Helpdesk/HelpdeskTranslation.php:55
 msgid "Helpdesk translation"
 msgid_plural "Helpdesk translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Překlad Helpdesku"
+msgstr[1] "Překladů Helpdesku"
+msgstr[2] "Překladů Helpdesku"
+msgstr[3] "Překlady Helpdesku"
 
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Add language"
-msgstr ""
+msgstr "Přidat jazyk"
 
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
@@ -9900,17 +9944,17 @@ msgstr "Přeloženo"
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Translations to do"
-msgstr ""
+msgstr "Překlady k provedení"
 
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Obsolete translations"
-msgstr ""
+msgstr "Zastaralé překlady"
 
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Select language to translate"
-msgstr ""
+msgstr "Vyberte jazyk k překladu"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "New question"
@@ -9935,7 +9979,7 @@ msgstr ""
 #: templates/pages/admin/form/form_question.html.twig
 #: src/Glpi/Form/Question.php:159
 msgid "Question name"
-msgstr ""
+msgstr "Název otázky"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Duplicate question"
@@ -9945,7 +9989,7 @@ msgstr "Duplikovat otázku"
 #: templates/pages/admin/form/form_section.html.twig
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "More actions"
-msgstr ""
+msgstr "Více akcí"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: templates/pages/admin/form/form_section.html.twig
@@ -9953,12 +9997,12 @@ msgstr ""
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 msgid "Configure visibility"
-msgstr ""
+msgstr "Nastavení viditelnosti"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 msgid "Configure validation"
-msgstr ""
+msgstr "Konfigurace ověření"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Copy uuid"
@@ -9967,21 +10011,21 @@ msgstr "Kopírovat UUID"
 #: templates/pages/admin/form/form_question.html.twig
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "Add a description"
-msgstr ""
+msgstr "Přidat popis"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: src/Glpi/Form/Question.php:168
 msgid "Question description"
-msgstr ""
+msgstr "Popis otázky"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question type"
-msgstr ""
+msgstr "Typ otázky"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: src/Glpi/Form/QuestionType/AbstractQuestionType.php:188
 msgid "Question sub type"
-msgstr ""
+msgstr "Podtyp otázky"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Form section"
@@ -10018,10 +10062,10 @@ msgstr "Popis sekce"
 #, php-format
 msgid "%d element"
 msgid_plural "%d elements"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d element"
+msgstr[1] "%d elementů"
+msgstr[2] "%d elementů"
+msgstr[3] "%d elementů"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Collapse section"
@@ -10046,34 +10090,34 @@ msgstr "Smazat sekci"
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Logic operator"
-msgstr ""
+msgstr "Logický operátor"
 
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 msgid "Select an item..."
-msgstr ""
+msgstr "Vybrat položku..."
 
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Value operator"
-msgstr ""
+msgstr "Operátor hodnoty"
 
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Delete criteria"
-msgstr ""
+msgstr "Smazat kritérium"
 
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Add another criteria"
-msgstr ""
+msgstr "Přidat jiné kritérium"
 
 #: templates/pages/admin/form/form_horizontal_block_toolbar.html.twig
 msgid "Add a slot"
-msgstr ""
+msgstr "Přidat slot"
 
 #: templates/pages/admin/form/form_horizontal_block_toolbar.html.twig
 msgid "Remove horizontal layout"
-msgstr ""
+msgstr "Odebrat vodorovné rozvržení"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Update item"
@@ -10092,7 +10136,7 @@ msgstr "Konfigurace vytváření podmínek"
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 msgid "Conditions count"
-msgstr ""
+msgstr "Počet podmínek"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Conditions"
@@ -10100,7 +10144,7 @@ msgstr "Podmínky"
 
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Conditional validation is not available for this question type."
-msgstr ""
+msgstr "Podmíněné ověření není pro tento typ otázky k dispozici."
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
@@ -10120,30 +10164,32 @@ msgstr "Odebrat slot"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Click to copy to clipboard"
-msgstr ""
+msgstr "Kliknutím zkopírujete do schránky"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Direct access URL"
-msgstr ""
+msgstr "URL pro přímý přístup"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Click to change the token"
-msgstr ""
+msgstr "Kliknutím změníte token"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Allow unauthenticated users"
-msgstr ""
+msgstr "Povolit nepřihlášené uživatele"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid ""
 "Users without accounts will be able to answer anonymously to this form. "
 "Authenticated users will not see this form."
 msgstr ""
+"Uživatelé bez účtu budou moci tento formulář vyplnit anonymně. Přihlášeným "
+"uživatelům se tento formulář nezobrazí."
 
 #: templates/pages/admin/form/access_control/allow_list.html.twig
 #, php-format
 msgid "There are %d user(s) matching these criteria."
-msgstr ""
+msgstr "Počet uživatelů odpovídajících těmto kritériím: %d."
 
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "New comment"
@@ -10173,6 +10219,7 @@ msgid ""
 "This destination is not available, the plugin \"%1$s\" is deactivated or "
 "removed."
 msgstr ""
+"Tato destinace není dostupná, plugin “%1$s“ je deaktivován nebo odstraněn."
 
 #: templates/pages/admin/form/item_has_conditions_for_deletion_modal.html.twig
 msgid "Item has conditions and cannot be deleted"
@@ -10205,23 +10252,23 @@ msgstr "Před odstraněním této části musíte odstranit související podmí
 
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 msgid "Conditional validation"
-msgstr ""
+msgstr "Podmíněná validace"
 
 #: templates/pages/admin/form/access_control.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 #: templates/pages/admin/helpdesk_home_config_edit_tile_form.html.twig
 msgid "Save changes"
-msgstr ""
+msgstr "Uložit změny"
 
 #: templates/pages/admin/form/form_translations.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
 #: src/Glpi/Form/FormTranslation.php:52
 msgid "Form translation"
 msgid_plural "Form translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Překlad formuláře"
+msgstr[1] "Překlad formulářů"
+msgstr[2] "Překlad formuláře"
+msgstr[3] "Překlad formulářů"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Destination fields accordion"
@@ -10241,32 +10288,32 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Select strategy..."
-msgstr ""
+msgstr "Vybrat strategii..."
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 #: templates/pages/admin/form/itil_config_fields/linked_itilobjects.html.twig
 msgid "Remove strategy"
-msgstr ""
+msgstr "Odstranit strategii"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Combine with another option"
-msgstr ""
+msgstr "Kombinovat s jinou možností"
 
 #: templates/pages/admin/form/import/step1_index.html.twig
 msgid "Select your file"
-msgstr ""
+msgstr "Vyberte svůj soubor"
 
 #: templates/pages/admin/form/import/step1_index.html.twig
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 #: src/Glpi/Controller/Form/Import/Step2PreviewController.php:91
 msgid "Preview import"
-msgstr ""
+msgstr "Náhled importu"
 
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 #: templates/pages/admin/form/import/step2_preview.html.twig
 #: src/Glpi/Controller/Form/Import/Step3ResolveIssuesController.php:75
 msgid "Resolve issues"
-msgstr ""
+msgstr "Řešení problémů"
 
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 msgid "Original value"
@@ -10274,17 +10321,17 @@ msgstr "Původní hodnota"
 
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 msgid "Replacement value"
-msgstr ""
+msgstr "Náhradní hodnota"
 
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 #, php-format
 msgid "Replacement value for '%s'"
-msgstr ""
+msgstr "Náhradní hodnota pro '%s'"
 
 #: templates/pages/admin/form/import/step4_execute.html.twig
 #: src/Glpi/Controller/Form/Import/Step4ExecuteController.php:73
 msgid "Import results"
-msgstr ""
+msgstr "Výsledky importu"
 
 #: templates/pages/admin/form/import/step4_execute.html.twig
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:449
@@ -10293,28 +10340,28 @@ msgstr "Importováno"
 
 #: templates/pages/admin/form/import/step4_execute.html.twig
 msgid "Not imported"
-msgstr ""
+msgstr "Neimportováno"
 
 #: templates/pages/admin/form/import/step4_execute.html.twig
 msgid "Import another file"
-msgstr ""
+msgstr "Importovat jiný soubor"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Import preview"
-msgstr ""
+msgstr "Náhled importu"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Form name"
-msgstr ""
+msgstr "Název formuláře"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Ready to be imported"
-msgstr ""
+msgstr "Připraveno k importu"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Can't be imported"
-msgstr ""
+msgstr "Nemůže být importováno"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 #: src/NetworkPortType.php:61 src/NetworkPortType.php:88
@@ -10324,11 +10371,11 @@ msgstr "Import"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Remove this form from the import list"
-msgstr ""
+msgstr "Odebrat tento formulář ze seznamu importovaných formulářů"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Remove form"
-msgstr ""
+msgstr "Smazat formulář"
 
 #: templates/pages/admin/form/move_section_modal.html.twig
 msgid "Reorganize sections"
@@ -10336,7 +10383,7 @@ msgstr "Reorganizace sekcí"
 
 #: templates/pages/admin/form/condition_handler_templates/input.html.twig
 msgid "Enter a value..."
-msgstr ""
+msgstr "Vložit hodnotu..."
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid "Child items have conditions and cannot be deleted"
@@ -10368,34 +10415,34 @@ msgstr "Kategorie problémů"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Filter ticket categories"
-msgstr ""
+msgstr "Filtrovat kategorie požadavků"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 #: templates/pages/admin/form/question_type/item/advanced_configuration.html.twig
 msgid "Subtree root"
-msgstr ""
+msgstr "Kořen podstromu"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 #: templates/pages/admin/form/question_type/item/advanced_configuration.html.twig
 msgid "Limit subtree depth"
-msgstr ""
+msgstr "Omezení hloubky podstromu"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 #: templates/pages/admin/form/question_type/item/advanced_configuration.html.twig
 msgid "Make tree root selectable"
-msgstr ""
+msgstr "Umožnit výběr kořene stromu"
 
 #: templates/pages/admin/form/question_type/base_advanced_configuration.html.twig
 msgid "Advanced configuration"
-msgstr ""
+msgstr "Pokročilé nastavení"
 
 #: templates/pages/admin/form/question_type/actors_admin.html.twig
 msgid "Select an actor..."
-msgstr ""
+msgstr "Výběr aktéra..."
 
 #: templates/pages/admin/form/question_type/actors_admin.html.twig
 msgid "Show more settings"
-msgstr ""
+msgstr "Zobrazit další nastavení"
 
 #: templates/pages/admin/form/question_type/actors_admin.html.twig
 msgid "Allowed types"
@@ -10407,11 +10454,11 @@ msgstr "Formát"
 
 #: templates/pages/admin/form/question_type/actors_admin.html.twig
 msgid "Allow multiple actors"
-msgstr ""
+msgstr "Povolit více aktérů"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Service catalog configuration"
-msgstr ""
+msgstr "Konfigurace servisního katalogu"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
@@ -10431,7 +10478,7 @@ msgstr "Připnout na začátek katalogu služeb"
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 msgid "Conditional visibility"
-msgstr ""
+msgstr "Podmíněná viditelnost"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Form details"
@@ -10447,15 +10494,15 @@ msgstr ""
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Add a description to your form..."
-msgstr ""
+msgstr "Přidejte popis do formuláře..."
 
 #: templates/pages/admin/form/form_editor.html.twig src/Glpi/Form/Form.php:475
 msgid "Form properties"
-msgstr ""
+msgstr "Vlastnosti formuláře"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Render layout"
-msgstr ""
+msgstr "Vykreslení rozvržení"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Conditional visibility for submit button"
@@ -10476,15 +10523,15 @@ msgstr "Uložit a zobrazit náhled"
 
 #: templates/pages/admin/form/form_horizontal_block.html.twig
 msgid "Horizontal blocks layout"
-msgstr ""
+msgstr "Rozložení horizontálních bloků"
 
 #: templates/pages/admin/form/form_horizontal_block.html.twig
 msgid "Horizontal blocks"
-msgstr ""
+msgstr "Horizontální bloky"
 
 #: templates/pages/admin/form/form_horizontal_block_placeholder.html.twig
 msgid "Form horizontal block placeholder"
-msgstr ""
+msgstr "Zástupný symbol horizontálního bloku formuláře"
 
 #: templates/pages/admin/form/item_has_conditions_for_new_question_type_modal.html.twig
 msgid "Question has conditions and its type cannot be changed"
@@ -10508,17 +10555,17 @@ msgstr ""
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "No default value"
-msgstr ""
+msgstr "Žádná výchozí hodnota"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Translation row for %s"
-msgstr ""
+msgstr "Překladový řádek pro %s"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "Translation name"
-msgstr ""
+msgstr "Název překladu"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/entity/notifications.html.twig
@@ -10536,12 +10583,12 @@ msgstr "Výchozí hodnota"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translation actions"
-msgstr ""
+msgstr "Akce překladu"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "Translated value"
-msgstr ""
+msgstr "Přeložená hodnota"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10552,13 +10599,13 @@ msgstr "Upravit překlad"
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Form translations: %s"
-msgstr ""
+msgstr "Překlady formulářů: %s"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #, php-format
 msgid "Default (%s)"
-msgstr ""
+msgstr "Výchozí (%s)"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Actions"
@@ -10567,12 +10614,12 @@ msgstr "Akce"
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "Form actions"
-msgstr ""
+msgstr "Akce formuláře"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "Save translation"
-msgstr ""
+msgstr "Uložit překlad"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10583,17 +10630,17 @@ msgstr "Smazat překlad"
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "The default value has changed since the last translation"
-msgstr ""
+msgstr "Výchozí hodnota se od posledního překladu změnila."
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "Translation may be obsolete"
-msgstr ""
+msgstr "Překlad může být zastaralý"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "Enter translation"
-msgstr ""
+msgstr "Zadejte překlad"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Copy default value to translation"
@@ -10601,7 +10648,7 @@ msgstr "Kopírovat výchozí hodnotu do překladu"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Remove item"
-msgstr ""
+msgstr "Odstranit položku"
 
 #: templates/pages/admin/form/form_destination.html.twig
 #: src/Glpi/Form/Destination/FormDestination.php:72
@@ -10619,27 +10666,27 @@ msgstr "Přidat %s"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "No items will be created for this form."
-msgstr ""
+msgstr "Pro tento formulář nebudou vytvořeny žádné položky."
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "Form destinations"
-msgstr ""
+msgstr "Cíle formuláře"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "Form destination name"
-msgstr ""
+msgstr "Název cíle formuláře"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete non-empty section"
-msgstr ""
+msgstr "Smazat neprázdnou sekci"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "This section contains elements"
-msgstr ""
+msgstr "Tato sekce obsahuje prvky"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete section and all its elements"
-msgstr ""
+msgstr "Smazat sekci a všechny její prvky"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Templates configuration"
@@ -10764,7 +10811,7 @@ msgstr "Služba podpory"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Show tickets properties on helpdesk"
-msgstr ""
+msgstr "Zobrazit vlastnosti požadavků v helpdesku"
 
 #: templates/pages/admin/entity/address.html.twig src/Location.php:127
 msgid "Location on map"
@@ -11109,7 +11156,7 @@ msgstr "Podporované úlohy"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "When reported by GLPI agent via native inventory"
-msgstr ""
+msgstr "Po nahlášení agentem GLPI prostřednictvím nativního inventáře"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:189
 msgid "Wake on LAN"
@@ -11195,7 +11242,7 @@ msgstr "Nahrát"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Target entity"
-msgstr ""
+msgstr "Cílová entita"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Preserve"
@@ -11220,6 +11267,8 @@ msgid ""
 "Child locations will not be transferred with the parent to avoid visibility "
 "and hierarchy issues."
 msgstr ""
+"Podřízené lokality nebudou převedeny s nadřazenou lokalitou, aby se předešlo"
+" problémům s viditelností a hierarchií."
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Empty the location"
@@ -11311,19 +11360,19 @@ msgstr "Pokud se certifikáty již nepoužívají"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "There are no tiles defined for this entity."
-msgstr ""
+msgstr "Pro tuto entitu nejsou definovány žádné dlaždice."
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "The following tiles from the parent entity will be used:"
-msgstr ""
+msgstr "Budou použity následující dlaždice z nadřazené entity:"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "Copy parent entity configuration into this entity"
-msgstr ""
+msgstr "Zkopírovat konfiguraci nadřazené entity do této entity"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "Define tiles for this entity from scratch"
-msgstr ""
+msgstr "Definovat dlaždice pro tuto entitu ze šablony"
 
 #: templates/pages/admin/profile/lifecycle.html.twig
 #: templates/pages/admin/profile/lifecycle_simple.html.twig
@@ -11502,19 +11551,19 @@ msgstr[3] "Vlastní aktiva"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Custom illustrations"
-msgstr ""
+msgstr "Vlastní ilustrace"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default illustration"
-msgstr ""
+msgstr "Výchozí ilustrace"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Custom illustration"
-msgstr ""
+msgstr "Vlastní ilustrace"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Inherited from parent entity"
-msgstr ""
+msgstr "Zděděno z nadřazené entity"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Left side"
@@ -11522,7 +11571,7 @@ msgstr "Levá strana"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Left side configuration"
-msgstr ""
+msgstr "Nastavení levé strany"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Right side"
@@ -11530,32 +11579,32 @@ msgstr "Pravá strana"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Right side configuration"
-msgstr ""
+msgstr "Nastavení pravé strany"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default illustration preview"
-msgstr ""
+msgstr "Výchozí náhled ilustrace"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Custom illustration preview and selection"
-msgstr ""
+msgstr "Náhled a výběr vlastní ilustrace"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #, php-format
 msgid "Recommended size: %s"
-msgstr ""
+msgstr "Doporučená velikost: %s"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Inherited illustration preview"
-msgstr ""
+msgstr "Náhled zděděné ilustrace"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "The following illustration from the parent entity will be used:"
-msgstr ""
+msgstr "Bude použita následující ilustrace z nadřazené entity:"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Save custom illustrations settings"
-msgstr ""
+msgstr "Uložit nastavení vlastních ilustrací"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Custom value"
@@ -11563,23 +11612,23 @@ msgstr "Vlastní hodnota"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Main title"
-msgstr ""
+msgstr "Hlavní název"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default title preview"
-msgstr ""
+msgstr "Výchozí náhled názvu"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Custom title value"
-msgstr ""
+msgstr "Hodnota vlastního názvu"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Enter a custom title..."
-msgstr ""
+msgstr "Zadejte vlastní název..."
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Inherited title preview"
-msgstr ""
+msgstr "Náhled zděděného titulu"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:602
@@ -11590,36 +11639,38 @@ msgstr "Zapnuto"
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #, php-format
 msgid "Inherited from parent entity (%1$s)"
-msgstr ""
+msgstr "Zděděno z nadřazené entity (%1$s)"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Search bar"
-msgstr ""
+msgstr "Vyhledávací panel"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Expand categories in the service catalog"
-msgstr ""
+msgstr "Rozbalit kategorie v katalogu služeb"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default sort order in the service catalog"
-msgstr ""
+msgstr "Výchozí pořadí řazení v katalogu služeb"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Save general settings"
-msgstr ""
+msgstr "Uložit obecná nastavení"
 
 #: templates/pages/admin/glpi_page_tile_config_fields.html.twig
 msgid "Target page"
-msgstr ""
+msgstr "Cílová stránka"
 
 #: templates/pages/admin/helpdesk_home_config_edit_tile_form.html.twig
 msgid "Delete tile"
-msgstr ""
+msgstr "Smazat dlaždici"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid ""
 "Substitutes are users who can approve or refuse tickets on your behalf."
 msgstr ""
+"Náhradníci jsou uživatelé, kteří mohou schvalovat nebo odmítat tikety vaším "
+"jménem."
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "Start date "
@@ -11638,14 +11689,16 @@ msgid ""
 "Delegators are users who gave you the right to approve or refuse tickets on "
 "their behalf."
 msgstr ""
+"Delegáti jsou uživatelé, kteří vám dali právo schvalovat nebo odmítat tikety"
+" jejich jménem."
 
 #: templates/pages/admin/user.substitute.html.twig src/User.php:3801
 msgid "Substitution start date"
-msgstr ""
+msgstr "Datum zahájení zastupování"
 
 #: templates/pages/admin/user.substitute.html.twig src/User.php:3809
 msgid "Substitution end date"
-msgstr ""
+msgstr "Datum ukončení zastupování"
 
 #: templates/pages/admin/group.html.twig src/Group.php:475
 msgid "Recursive membership"
@@ -11656,6 +11709,8 @@ msgid ""
 "If enabled, members of this group will also become implicit members of its "
 "children groups"
 msgstr ""
+"Pokud je povoleno, členové této skupiny se také stanou implicitními členy "
+"jejích podskupin."
 
 #: templates/pages/admin/group.html.twig
 msgid "Visible in a ticket"
@@ -11685,15 +11740,15 @@ msgstr "Pro tuto položku nejsou definovány žádné dlaždice."
 #: templates/pages/admin/helpdesk_home_config_add_tile_form.html.twig
 #: js/modules/Helpdesk/HelpdeskConfigController.js:384
 msgid "Add tile"
-msgstr ""
+msgstr "Přidat dlaždici"
 
 #: templates/pages/admin/user/user_picture_field.html.twig
 msgid "Change picture"
-msgstr ""
+msgstr "Změnit obrázek"
 
 #: templates/pages/admin/user/change_other_password.html.twig
 msgid "Send an email to the user to set their own new password."
-msgstr ""
+msgstr "Odeslat uživateli e-mail s žádostí o nastavení nového hesla."
 
 #: templates/pages/admin/user/change_other_password.html.twig
 #: src/Glpi/Console/User/AbstractUserCommand.php:65
@@ -11738,6 +11793,8 @@ msgid ""
 "If 2FA is mandatory for this user, they will be required to set it back up "
 "the next time they log in."
 msgstr ""
+"Pokud je pro tohoto uživatele povinná 2FA, bude si jí muset při příštím "
+"přihlášení znovu nastavit."
 
 #: templates/pages/admin/user/user.html.twig src/AuthLDAP.php:3934
 #: src/Glpi/Marketplace/View.php:791 src/Plugin.php:3189
@@ -11783,7 +11840,7 @@ msgstr "Použít GLPI v režimu"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Contact information"
-msgstr ""
+msgstr "Kontaktní informace"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Passwords and access keys"
@@ -11875,6 +11932,7 @@ msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now."
 msgstr ""
+"Můžete pokračovat v přidávání prvků k přenosu nebo přenos provést nyní."
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Think of making a backup before transfering items."
@@ -11886,7 +11944,7 @@ msgstr "Režim přenosu"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Clear the list of elements to be transferred"
-msgstr ""
+msgstr "Vymazat seznam prvků k přenosu"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Items to transfer"
@@ -11907,21 +11965,23 @@ msgstr "Import nových skupin"
 #: templates/pages/admin/assetdefinition/fields_display.html.twig
 #: js/src/vue/CustomObject/FieldPreview/Sidebar.vue:58
 msgid "New field"
-msgstr ""
+msgstr "Nové pole"
 
 #: templates/pages/admin/assetdefinition/capacity/is_inventoriable_capacity_configuration_form.html.twig
 msgid "Please select the type that represents the best the asset."
-msgstr ""
+msgstr "Vyberte typ, který nejlépe reprezentuje daný majetek."
 
 #: templates/pages/admin/assetdefinition/capacity/is_inventoriable_capacity_configuration_form.html.twig
 msgid ""
 "We need this information to send the inventory file in the correct inventory"
 " engine of the GLPI framework."
 msgstr ""
+"Tyto informace potřebujeme k odeslání souboru inventáře do správného "
+"inventářového enginu frameworku GLPI."
 
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 msgid "Capacity options"
-msgstr ""
+msgstr "Možnosti kapacity"
 
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 msgctxt "button"
@@ -11933,28 +11993,30 @@ msgid ""
 "You have disabled one or more capacities that are used by assets. Disabling "
 "them will result in the deletion of associated data."
 msgstr ""
+"Zakázali jste jednu nebo více kapacit, které jsou využívány aktivy. Jejich "
+"zakázání povede k odstranění souvisejících dat."
 
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 msgctxt "button"
 msgid "Yes, disable it!"
-msgstr ""
+msgstr "Ano, zakázat to!"
 
 #: templates/pages/admin/form_tile_config_fields.html.twig
 msgid "Target form"
-msgstr ""
+msgstr "Cílový formulář"
 
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #, php-format
 msgid "Helpdesk translations: %s"
-msgstr ""
+msgstr "Překlady helpdesku: %s"
 
 #: templates/pages/admin/helpdesk_home_config.html.twig
 msgid "Home tiles configuration"
-msgstr ""
+msgstr "Nastavení dlaždic domovské stránky"
 
 #: templates/pages/admin/helpdesk_home_config.html.twig
 msgid "Save tiles order"
-msgstr ""
+msgstr "Uložit pořadí dlaždic"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Add translation"
@@ -11962,15 +12024,15 @@ msgstr "Přidat překlad"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Asset name / Field"
-msgstr ""
+msgstr "Název aktiva / Pole"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "New translation"
-msgstr ""
+msgstr "Nový překlad"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "No translation has been added yet"
-msgstr ""
+msgstr "Zatím nebyl přidán žádný překlad"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 #: src/Glpi/CustomObject/AbstractDefinition.php:804
@@ -11981,35 +12043,39 @@ msgstr "Překladů"
 msgid ""
 "There is currently no profile with access to items with current definition."
 msgstr ""
+"Momentálně neexistuje žádný profil s přístupem k položkám s aktuální "
+"definicí."
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid ""
 "It can be personalized, but some words are reserved such as classes from "
 "GLPI like Computer, Monitor, etc."
 msgstr ""
+"Lze jej přizpůsobit, ale některá slova jsou rezervována, například třídy z "
+"GLPI, jako například Počítač, Monitor atd."
 
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
 msgid "Items linked to the system name \"%s\" will have the class \"%s\"."
-msgstr ""
+msgstr "Položky propojené s názvem systému “%s“ budou mít třídu “%s“."
 
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
 msgid "The class of items related to current definition is \"%s\"."
-msgstr ""
+msgstr "Třída položek souvisejících s aktuální definicí je \"%s\"."
 
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
 msgid "This item definition is used by %d items."
-msgstr ""
+msgstr "Tuto definici položky používají položky %d."
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid "All items that are using this definition will be deleted."
-msgstr ""
+msgstr "Všechny položky, které používají tuto definici, budou smazány."
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid "This item definition is not used by any items."
-msgstr ""
+msgstr "Tuto definici položky nepoužívá žádná položka."
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgctxt "button"
@@ -12074,7 +12140,7 @@ msgstr "NEBO"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 msgid "No rule criteria to display"
-msgstr ""
+msgstr "Žádná kritéria pravidla k zobrazení"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 #: templates/pages/admin/rules/form.html.twig
@@ -12121,7 +12187,7 @@ msgstr "Pravidla umístění"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Apply a location by checking common criteria"
-msgstr ""
+msgstr "Použít umístění kontrolou běžných kritérií"
 
 #: templates/pages/admin/rules/index.html.twig
 #: src/RuleImportAssetCollection.php:82
@@ -12159,7 +12225,7 @@ msgstr "Změnit pole aktiv na základě jejich dat"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "The asset is created or updated in GLPI"
-msgstr ""
+msgstr "Aktivum je vytvořeno nebo aktualizováno v GLPI."
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "You do not have the required permissions"
@@ -12186,15 +12252,16 @@ msgstr[3] "Ověření"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will stop after the first matched rule."
-msgstr ""
+msgstr "Modul se zastaví po prvním odpovídajícím pravidle."
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will run all matching rules."
-msgstr ""
+msgstr "Modul spustí všechna odpovídající pravidla."
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine passes the result of each rule to the next matching rule."
 msgstr ""
+"Modul předá výsledek každého pravidla dalšímu odpovídajícímu pravidlu."
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The rules are conditional based on a type of action."
@@ -12287,10 +12354,10 @@ msgstr "Pozastavit spouštění všech pluginů"
 #, php-format
 msgid "You have %d plugin to update"
 msgid_plural "You have %d plugins to update"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Máte %dplugin k aktualizaci"
+msgstr[1] "Máte %d pluginy k aktualizaci"
+msgstr[2] "Máte %d pluginů k aktualizaci"
+msgstr[3] "Máte %d pluginy k aktualizaci"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "filter logs"
@@ -12358,11 +12425,11 @@ msgstr "Zobrazit změněné uživatele"
 
 #: templates/pages/admin/ldap.group_criteria.html.twig
 msgid "Import new groups"
-msgstr ""
+msgstr "Importovat novou skupinu"
 
 #: templates/pages/admin/ldap.group_criteria.html.twig
 msgid "Search criteria for groups"
-msgstr ""
+msgstr "Kritéria vyhledávání pro skupiny"
 
 #: templates/pages/admin/group_user.html.twig src/Group.php:447
 #: src/Group_User.php:220 src/Group_User.php:513 src/Group_User.php:634
@@ -12563,7 +12630,7 @@ msgstr "Krok %d"
 #: ajax/dropdownValidator.php:107
 #, php-format
 msgid "%1$s (supervisor of %2$s)"
-msgstr ""
+msgstr "%1$s (vedoucí %2$s) "
 
 #: ajax/dropdownValidator.php:119
 msgid "Select a user"
@@ -12655,19 +12722,19 @@ msgstr[3] "%s řešených nebo nedávno vyřešených požadavků pro tuto polo�
 
 #: ajax/webhook.php:120
 msgid "Please select an itemtype"
-msgstr ""
+msgstr "Vyberte prosím typ položky"
 
 #: ajax/webhook.php:124
 msgid "Please select an item"
-msgstr ""
+msgstr "Vyberte prosím položku"
 
 #: ajax/webhook.php:128
 msgid "Please select an event"
-msgstr ""
+msgstr "Vyberte prosím událost"
 
 #: ajax/webhook.php:141
 msgid "Result can't be loaded :"
-msgstr ""
+msgstr "Výsledek nelze načíst :"
 
 #: ajax/actorinformation.php:131 ajax/actorinformation.php:132
 #: src/Problem.php:739 src/Change.php:742 src/Ticket.php:3399
@@ -12887,22 +12954,22 @@ msgstr "Banka"
 #: resources/.illustrations_translations.php:30
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 1"
-msgstr ""
+msgstr "Business Intelligence a Reporting 1"
 
 #: resources/.illustrations_translations.php:31
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 2"
-msgstr ""
+msgstr "Business Intelligence a Reporting 2"
 
 #: resources/.illustrations_translations.php:32
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 3"
-msgstr ""
+msgstr "Business Intelligence a Reporting 3"
 
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 4"
-msgstr ""
+msgstr "Business Intelligence a Reporting 4"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12997,7 +13064,7 @@ msgstr "Cloud"
 #: resources/.illustrations_translations.php:52
 msgctxt "Icon"
 msgid "Cloud instance"
-msgstr ""
+msgstr "Cloudová instance"
 
 #: resources/.illustrations_translations.php:53
 msgctxt "Icon"
@@ -13007,17 +13074,17 @@ msgstr "cloud-inventarizace"
 #: resources/.illustrations_translations.php:54
 msgctxt "Icon"
 msgid "Cloud Network 1"
-msgstr ""
+msgstr "Cloud síť 1"
 
 #: resources/.illustrations_translations.php:55
 msgctxt "Icon"
 msgid "Cloud Network 2"
-msgstr ""
+msgstr "Cloud síť 2"
 
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Cloud usage"
-msgstr ""
+msgstr "Využití cloudu"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
@@ -13129,7 +13196,7 @@ msgstr "pole"
 #: resources/.illustrations_translations.php:78
 msgctxt "Icon"
 msgid "Sheet file"
-msgstr ""
+msgstr "Soubor listu"
 
 #: resources/.illustrations_translations.php:79
 msgctxt "Icon"
@@ -13189,12 +13256,12 @@ msgstr "glpi-ai"
 #: resources/.illustrations_translations.php:90
 msgctxt "Icon"
 msgid "GLPI Cloud Support 1"
-msgstr ""
+msgstr "Podpora cloudu GLPI 1"
 
 #: resources/.illustrations_translations.php:91
 msgctxt "Icon"
 msgid "GLPI Cloud Support 2"
-msgstr ""
+msgstr "Podpora cloudu GLPI 2"
 
 #: resources/.illustrations_translations.php:92
 msgctxt "Icon"
@@ -13204,17 +13271,17 @@ msgstr "Skupina"
 #: resources/.illustrations_translations.php:93
 msgctxt "Icon"
 msgid "Group alternative 1"
-msgstr ""
+msgstr "Skupinová alternativa 1"
 
 #: resources/.illustrations_translations.php:94
 msgctxt "Icon"
 msgid "Group alternative 2"
-msgstr ""
+msgstr "Skupinová alternativa 2"
 
 #: resources/.illustrations_translations.php:95
 msgctxt "Icon"
 msgid "Group web"
-msgstr ""
+msgstr "Skupinový web"
 
 #: resources/.illustrations_translations.php:96
 msgctxt "Icon"
@@ -13324,27 +13391,27 @@ msgstr "více-spokojenosti"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "Network inventory"
-msgstr ""
+msgstr "Inventář sítě"
 
 #: resources/.illustrations_translations.php:118
 msgctxt "Icon"
 msgid "New user 1"
-msgstr ""
+msgstr "Nový uživatel 1"
 
 #: resources/.illustrations_translations.php:119
 msgctxt "Icon"
 msgid "New user 2"
-msgstr ""
+msgstr "Nový uživatel 2"
 
 #: resources/.illustrations_translations.php:120
 msgctxt "Icon"
 msgid "New user 3"
-msgstr ""
+msgstr "Nový uživatel 3"
 
 #: resources/.illustrations_translations.php:121
 msgctxt "Icon"
 msgid "New user 4"
-msgstr ""
+msgstr "Nový uživatel 4"
 
 #: resources/.illustrations_translations.php:122
 msgctxt "Icon"
@@ -13379,7 +13446,7 @@ msgstr "správa-objednávek"
 #: resources/.illustrations_translations.php:128
 msgctxt "Icon"
 msgid "Order supplies"
-msgstr ""
+msgstr "Objednat zásoby"
 
 #: resources/.illustrations_translations.php:129
 msgctxt "Icon"
@@ -13389,12 +13456,12 @@ msgstr "Partner"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "Export do PDF"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
 msgid "Phone inventory"
-msgstr ""
+msgstr "Inventář telefonů"
 
 #: resources/.illustrations_translations.php:132
 #: resources/.illustrations_translations.php:382
@@ -13405,12 +13472,12 @@ msgstr "prezentace"
 #: resources/.illustrations_translations.php:133
 msgctxt "Icon"
 msgid "Print a job"
-msgstr ""
+msgstr "Tisk úlohy"
 
 #: resources/.illustrations_translations.php:134
 msgctxt "Icon"
 msgid "Printer inventory"
-msgstr ""
+msgstr "Inventář tiskáren"
 
 #: resources/.illustrations_translations.php:135
 msgctxt "Icon"
@@ -13435,7 +13502,7 @@ msgstr "Žádost o službu"
 #: resources/.illustrations_translations.php:139
 msgctxt "Icon"
 msgid "Request support"
-msgstr ""
+msgstr "Žádost o podporu"
 
 #: resources/.illustrations_translations.php:140
 msgctxt "Icon"
@@ -13445,17 +13512,17 @@ msgstr "Vytvořit rezervaci"
 #: resources/.illustrations_translations.php:141
 msgctxt "Icon"
 msgid "Reset password 1"
-msgstr ""
+msgstr "Reset hesla 1"
 
 #: resources/.illustrations_translations.php:142
 msgctxt "Icon"
 msgid "Reset password 2"
-msgstr ""
+msgstr "Reset hesla 2"
 
 #: resources/.illustrations_translations.php:143
 msgctxt "Icon"
 msgid "Reset password 3"
-msgstr ""
+msgstr "Reset hesla 3"
 
 #: resources/.illustrations_translations.php:144
 msgctxt "Icon"
@@ -13480,7 +13547,7 @@ msgstr "Nastavení"
 #: resources/.illustrations_translations.php:148
 msgctxt "Icon"
 msgid "Search settings"
-msgstr ""
+msgstr "Nastavení vyhledávání"
 
 #: resources/.illustrations_translations.php:149
 msgctxt "Icon"
@@ -13490,17 +13557,17 @@ msgstr ""
 #: resources/.illustrations_translations.php:150
 msgctxt "Icon"
 msgid "Shared folder"
-msgstr ""
+msgstr "Sdílená složka"
 
 #: resources/.illustrations_translations.php:151
 msgctxt "Icon"
 msgid "Shared inbox"
-msgstr ""
+msgstr "Sdílená mailová schránka"
 
 #: resources/.illustrations_translations.php:152
 msgctxt "Icon"
 msgid "Deploy a software"
-msgstr ""
+msgstr "Nasazení softwaru"
 
 #: resources/.illustrations_translations.php:153
 msgctxt "Icon"
@@ -13516,12 +13583,12 @@ msgstr "značka"
 #: resources/.illustrations_translations.php:155
 msgctxt "Icon"
 msgid "Technical assistance 1"
-msgstr ""
+msgstr "Technická pomoc 1"
 
 #: resources/.illustrations_translations.php:156
 msgctxt "Icon"
 msgid "Technical assistance 2"
-msgstr ""
+msgstr "Technická pomoc 2"
 
 #: resources/.illustrations_translations.php:157
 msgctxt "Icon"
@@ -13551,7 +13618,7 @@ msgstr "překlad"
 #: resources/.illustrations_translations.php:162
 msgctxt "Icon"
 msgid "Tutorial"
-msgstr ""
+msgstr "Návod"
 
 #: resources/.illustrations_translations.php:163
 msgctxt "Icon"
@@ -13566,12 +13633,12 @@ msgstr "nepřečtené-zprávy"
 #: resources/.illustrations_translations.php:165
 msgctxt "Icon"
 msgid "Update 1"
-msgstr ""
+msgstr "Aktualizace 1"
 
 #: resources/.illustrations_translations.php:166
 msgctxt "Icon"
 msgid "Update 2"
-msgstr ""
+msgstr "Aktualizace 2"
 
 #: resources/.illustrations_translations.php:167
 msgctxt "Icon"
@@ -13581,7 +13648,7 @@ msgstr "uživatel-laptop"
 #: resources/.illustrations_translations.php:168
 msgctxt "Icon"
 msgid "User offboarding"
-msgstr ""
+msgstr "Odhlášení uživatele"
 
 #: resources/.illustrations_translations.php:169
 msgctxt "Icon"
@@ -13616,7 +13683,7 @@ msgstr "Svět"
 #: resources/.illustrations_translations.php:175
 msgctxt "Icon"
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: resources/.illustrations_translations.php:176
 msgctxt "Icon"
@@ -14006,7 +14073,7 @@ msgstr "chat"
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "billing"
-msgstr ""
+msgstr "účtování"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -14086,47 +14153,47 @@ msgstr "odeslání"
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "troubleshooting"
-msgstr ""
+msgstr "řešení problémů"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
 msgid "analysis"
-msgstr ""
+msgstr "analýza"
 
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
 msgid "developer"
-msgstr ""
+msgstr "vývojář"
 
 #: resources/.illustrations_translations.php:276
 msgctxt "Icon"
 msgid "api"
-msgstr ""
+msgstr "api"
 
 #: resources/.illustrations_translations.php:277
 msgctxt "Icon"
 msgid "code"
-msgstr ""
+msgstr "kód"
 
 #: resources/.illustrations_translations.php:278
 msgctxt "Icon"
 msgid "docs"
-msgstr ""
+msgstr "dokumentace"
 
 #: resources/.illustrations_translations.php:279
 msgctxt "Icon"
 msgid "manual"
-msgstr ""
+msgstr "manuál"
 
 #: resources/.illustrations_translations.php:280
 msgctxt "Icon"
 msgid "guide"
-msgstr ""
+msgstr "průvodce"
 
 #: resources/.illustrations_translations.php:281
 msgctxt "Icon"
 msgid "not found"
-msgstr ""
+msgstr "nenalezeno"
 
 #: resources/.illustrations_translations.php:282
 msgctxt "Icon"
@@ -14156,7 +14223,7 @@ msgstr "průmysl"
 #: resources/.illustrations_translations.php:287
 msgctxt "Icon"
 msgid "questions"
-msgstr ""
+msgstr "otázky"
 
 #: resources/.illustrations_translations.php:288
 msgctxt "Icon"
@@ -14221,7 +14288,7 @@ msgstr "adresář"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr ""
+msgstr "projektový management"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -14356,12 +14423,12 @@ msgstr "inventář"
 #: resources/.illustrations_translations.php:327
 msgctxt "Icon"
 msgid "items"
-msgstr ""
+msgstr "položky"
 
 #: resources/.illustrations_translations.php:328
 msgctxt "Icon"
 msgid "resources"
-msgstr ""
+msgstr "zdroje"
 
 #: resources/.illustrations_translations.php:329
 msgctxt "Icon"
@@ -14401,12 +14468,12 @@ msgstr "špendlík"
 #: resources/.illustrations_translations.php:336
 msgctxt "Icon"
 msgid "places"
-msgstr ""
+msgstr "místa"
 
 #: resources/.illustrations_translations.php:337
 msgctxt "Icon"
 msgid "arborescence"
-msgstr ""
+msgstr "stromovitost"
 
 #: resources/.illustrations_translations.php:338
 msgctxt "Icon"
@@ -14441,12 +14508,12 @@ msgstr "spokojenost-zákazníků"
 #: resources/.illustrations_translations.php:344
 msgctxt "Icon"
 msgid "devices"
-msgstr ""
+msgstr "zařízení"
 
 #: resources/.illustrations_translations.php:345
 msgctxt "Icon"
 msgid "agent"
-msgstr ""
+msgstr "agent"
 
 #: resources/.illustrations_translations.php:346
 msgctxt "Icon"
@@ -14501,12 +14568,12 @@ msgstr "nákup"
 #: resources/.illustrations_translations.php:356
 msgctxt "Icon"
 msgid "export"
-msgstr ""
+msgstr "export"
 
 #: resources/.illustrations_translations.php:357
 msgctxt "Icon"
 msgid "phone"
-msgstr ""
+msgstr "telefon"
 
 #: resources/.illustrations_translations.php:358
 msgctxt "Icon"
@@ -14671,12 +14738,12 @@ msgstr "l10n"
 #: resources/.illustrations_translations.php:391
 msgctxt "Icon"
 msgid "tutorial"
-msgstr ""
+msgstr "návod"
 
 #: resources/.illustrations_translations.php:392
 msgctxt "Icon"
 msgid "how-to"
-msgstr ""
+msgstr "jak na to"
 
 #: resources/.illustrations_translations.php:393
 msgctxt "Icon"
@@ -14746,17 +14813,17 @@ msgstr "planeta"
 #: resources/.illustrations_translations.php:406
 msgctxt "Icon"
 msgid "video"
-msgstr ""
+msgstr "video"
 
 #: resources/.illustrations_translations.php:407
 msgctxt "Icon"
 msgid "youtube"
-msgstr ""
+msgstr "youtube"
 
 #: resources/.illustrations_translations.php:408
 msgctxt "Icon"
 msgid "channel"
-msgstr ""
+msgstr "kanál"
 
 #. TRANS: %1$s is the user login, %2$s is the name of the item
 #: front/change.form.php:64 front/user.form.php:86 front/user.form.php:215
@@ -14962,11 +15029,11 @@ msgstr "Zjednodušené rozhraní"
 #: js/modules/Forms/EditorController.js:341
 #: js/modules/ProgressIndicator.js:224
 msgid "An unexpected error occurred"
-msgstr ""
+msgstr "Došlo k neočekávané chybě"
 
 #: front/form/form.form.php:51
 msgid "Untitled form"
-msgstr ""
+msgstr "Formulář bez názvu"
 
 #: front/user.form.php:47 front/user.form.php:166
 msgid "Lang has been changed!"
@@ -14982,7 +15049,7 @@ msgstr "Nedaří se opustit přepnutí se do jiného uživatele"
 
 #: front/initpassword.php:50
 msgid "Sending password initialization notification is not enabled."
-msgstr ""
+msgstr "Odesílání oznámení o inicializaci hesla není povoleno."
 
 #: front/initpassword.php:55
 msgid "Forgotten initialization"
@@ -15049,7 +15116,7 @@ msgstr "Váš komentář byl upraven"
 
 #: front/lostpassword.php:50
 msgid "Sending password forget notification is not enabled."
-msgstr ""
+msgstr "Odesílání oznámení o zapomenutém hesle není povoleno."
 
 #. TRANS: %s is the user login
 #: front/ticket_ticket.form.php:62
@@ -15065,7 +15132,7 @@ msgstr "%s přidal zásuvku"
 
 #: front/socket.form.php:77 front/networkport.form.php:86
 msgid "'To' should not be smaller than 'From'"
-msgstr ""
+msgstr "„Do“ by nemělo být menší než „Od“"
 
 #: front/socket.form.php:103
 #, php-format
@@ -15347,13 +15414,13 @@ msgstr "Nemáte oprávnění smazat položku %s."
 #: front/projecttask.form.php:84
 #, php-format
 msgid "%s restores a task"
-msgstr ""
+msgstr "%s obnovená úloha"
 
 #. TRANS: %s is the user login
 #: front/projecttask.form.php:97
 #, php-format
 msgid "%s delete a task"
-msgstr ""
+msgstr "%s smazaná úloha"
 
 #. TRANS: %s is the user login
 #: front/networkport.form.php:73 front/networkname.form.php:55
@@ -15393,12 +15460,12 @@ msgstr "Přehled majektu"
 #: front/plugin.form.php:64 src/Update.php:432
 #: src/Glpi/Console/Plugin/ResumeExecutionCommand.php:63
 msgid "Execution of all active plugins has been resumed."
-msgstr ""
+msgstr "Spouštění všech aktivních pluginů bylo obnoveno."
 
 #: front/plugin.form.php:68
 #: src/Glpi/Console/Plugin/SuspendExecutionCommand.php:63
 msgid "Execution of all active plugins has been suspended."
-msgstr ""
+msgstr "Spouštění všech aktivních pluginů bylo pozastaveno."
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:66 front/contract_supplier.form.php:69
@@ -15675,7 +15742,7 @@ msgstr "Neplatná konfigurace poskytovatele"
 #: front/reservation.form.php:105
 #, php-format
 msgid "%1$s updates the reservation for item %2$s"
-msgstr ""
+msgstr "%1$s aktualizuje rezervaci položky %2$s"
 
 #: front/reservation.form.php:124
 #, php-format
@@ -15843,18 +15910,18 @@ msgstr "%s odstranil schválení"
 #: src/ChangeValidation.php:50
 msgid "Change approval"
 msgid_plural "Change approvals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Schválení změny"
+msgstr[1] "Schválení změn"
+msgstr[2] "Schválení změn"
+msgstr[3] "Schválení změn"
 
 #: src/ITILValidationTemplate_Target.php:50
 msgid "Approval template target"
 msgid_plural "Approval template targets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Cíl šablony schválení"
+msgstr[1] "Cíle šablony schválení"
+msgstr[2] "Cílů šablony schválení"
+msgstr[3] "Cíle šablony schválení"
 
 #: src/NotificationTargetTicket.php:86
 msgid "To answer by email, write above this line"
@@ -15884,11 +15951,11 @@ msgstr "Řešení zamítnuto"
 #: src/NotificationTargetTicket.php:137 src/CommonITILObject.php:7881
 #: src/NotificationTargetChange.php:61
 msgid "Approval request answer"
-msgstr ""
+msgstr "Odpověď na žádost o schválení"
 
 #: src/NotificationTargetTicket.php:138
 msgid "Approval reminder"
-msgstr ""
+msgstr "Připomenutí schválení"
 
 #: src/NotificationTargetTicket.php:139
 msgid "Closing of the ticket"
@@ -16053,7 +16120,7 @@ msgstr "Počet položek"
 #: src/NotificationTargetTicket.php:679
 msgctxt "quantity"
 msgid "Number of linked project tasks"
-msgstr ""
+msgstr "Počet propojených projektových úkolů"
 
 #: src/NotificationTargetTicket.php:694
 msgid "Solution rejection comment"
@@ -16092,10 +16159,10 @@ msgstr "Odpověď pro žádost o schválení byla vytvořena"
 #: src/NotificationTargetTicket.php:871 src/NotificationTargetTicket.php:876
 msgid "Linked project task"
 msgid_plural "Linked project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Propojený projektový úkol"
+msgstr[1] "Propojené projektové úkoly"
+msgstr[2] "Propojených projektových úkolů"
+msgstr[3] "Propojené projektové úkoly"
 
 #: src/NotificationTargetTicket.php:897
 #: src/NotificationTargetCommonITILObject.php:2539
@@ -16115,12 +16182,16 @@ msgid ""
 "An action defines the approval step, but there is no action related to this "
 "approval step. Did you forgot to add an action?"
 msgstr ""
+"Akce definuje krok schválení, ale s tímto krokem schválení nesouvisí žádná "
+"akce. Nezapomněli jste přidat akci?"
 
 #: src/RuleCommonITILObject.php:173
 msgid ""
 "An action related to an approval exists, but there is no action assigning "
 "the approval validation step. Therefore, the default one will be used."
 msgstr ""
+"Existuje akce související se schválením, ale neexistuje žádná akce, která by"
+" přiřazovala krok ověření schválení. Proto bude použit výchozí krok."
 
 #: src/RuleCommonITILObject.php:700
 msgid "Code representing the ITIL category"
@@ -16192,7 +16263,7 @@ msgstr "Kategorie ITIL z kódu"
 
 #: src/RuleCommonITILObject.php:996
 msgid "Supervisor of the requester"
-msgstr ""
+msgstr "Vedoucí žadatele"
 
 #: src/RuleCommonITILObject.php:1005
 msgid "Group users"
@@ -16200,19 +16271,19 @@ msgstr "Skupinoví uživatelé"
 
 #: src/RuleCommonITILObject.php:1021
 msgid "Send an approval request to requester group manager"
-msgstr ""
+msgstr "Odeslat žádost o schválení správci skupiny žadatelů"
 
 #: src/RuleCommonITILObject.php:1025
 msgid "Send an approval request to technician group manager"
-msgstr ""
+msgstr "Odeslat žádost o schválení manažerovi skupiny techniků"
 
 #: src/RuleCommonITILObject.php:1030
 msgid "Set approval request step"
-msgstr ""
+msgstr "Nastavit krok žádosti o schválení"
 
 #: src/RuleCommonITILObject.php:1036
 msgid "Set approval threshold (in percentage)"
-msgstr ""
+msgstr "Nastavit prahovou hodnotu schválení (v procentech)"
 
 #: src/RuleCommonITILObject.php:1047
 msgid "Take into account delay"
@@ -16290,7 +16361,7 @@ msgstr "Přizpůsobení uživatelského rozhraní"
 
 #: src/Entity.php:695 src/Profile.php:188
 msgid "Helpdesk home"
-msgstr ""
+msgstr "Domovská stránka helpdesku"
 
 #: src/Entity.php:753
 msgid "To create a child entity, you must enable entity tree structure."
@@ -16389,12 +16460,12 @@ msgstr "Automatické přidělování požadavků"
 #: src/Entity.php:1495 src/Entity.php:1533
 #, php-format
 msgid "Satisfaction survey configuration (%s)"
-msgstr ""
+msgstr "Konfigurace průzkumu spokojenosti (%s)"
 
 #: src/Entity.php:1506 src/Entity.php:1544
 #, php-format
 msgid "Satisfaction survey trigger rate (%s)"
-msgstr ""
+msgstr "Míra spouštění průzkumu spokojenosti (%s)"
 
 #: src/Entity.php:1515 src/Entity.php:1553
 #, php-format
@@ -16404,7 +16475,7 @@ msgstr "Vytvořit průzkum spokojenosti po (%s)"
 #: src/Entity.php:1524 src/Entity.php:1562
 #, php-format
 msgid "Satisfaction survey URL (%s)"
-msgstr ""
+msgstr "URL adresa průzkumu spokojenosti (%s)"
 
 #. TRANS: %s is the user login
 #: src/Entity.php:1699
@@ -16526,11 +16597,11 @@ msgstr "Jak vám můžeme pomoci?"
 
 #: src/Entity.php:3494
 msgid "Tiles may be overriden by profile."
-msgstr ""
+msgstr "Dlaždice mohou být přepsány profilem."
 
 #: src/Entity.php:3507
 msgid "Custom main title"
-msgstr ""
+msgstr "Vlastní hlavní název"
 
 #: src/PDU_Rack.php:99
 msgid "A pdu is required"
@@ -16890,7 +16961,7 @@ msgstr "Uživatel ve skupině"
 
 #: src/RuleAsset.php:164
 msgid "User from inventory"
-msgstr ""
+msgstr "Uživatel z inventáře"
 
 #: src/RuleAsset.php:197
 msgid "User based contact information"
@@ -16898,19 +16969,19 @@ msgstr "Na uživateli založené kontaktní informace"
 
 #: src/RuleAsset.php:226
 msgid "Assign user from name"
-msgstr ""
+msgstr "Přiřadit uživatele ze jména"
 
 #: src/RuleAsset.php:230
 msgid "Assign user from email"
-msgstr ""
+msgstr "Přiřadit uživatele z e-mailu"
 
 #: src/RuleAsset.php:234
 msgid "Assign user from registration number"
-msgstr ""
+msgstr "Přiřadit uživatele z registračního čísla"
 
 #: src/RuleAsset.php:238
 msgid "Assign user from sync field"
-msgstr ""
+msgstr "Přiřadit uživatele z pole synchronizace"
 
 #: src/ProblemTemplate.php:56
 msgid "Problem template"
@@ -17016,7 +17087,7 @@ msgstr "Hromadné akce"
 
 #: src/Html.php:2844
 msgid "Show date picker"
-msgstr ""
+msgstr "Zobrazit výběr data"
 
 #: src/Html.php:3038 src/Html.php:3290 src/Html.php:6709
 #: js/flatpickr_buttons_plugin.js:48
@@ -17306,7 +17377,7 @@ msgstr "Přiřadit doménu"
 #: src/Domain_Item.php:545
 #, php-format
 msgid "%s that are already associated are not displayed"
-msgstr ""
+msgstr "%s které jsou již přidruženy, se nezobrazují"
 
 #: src/Domain_Item.php:630 src/Certificate_Item.php:388
 msgid "Does not expire"
@@ -17342,15 +17413,15 @@ msgstr[3] "Oprávnění zástupci"
 
 #: src/ValidatorSubstitute.php:163
 msgid "Cannot change the approval delegator"
-msgstr ""
+msgstr "Nelze změnit delegátora schválení"
 
 #: src/ValidatorSubstitute.php:182
 msgid "You cannot change substitutes for this user."
-msgstr ""
+msgstr "Pro tohoto uživatele nemůžete změnit náhradníky."
 
 #: src/ValidatorSubstitute.php:201
 msgid "A user cannot be their own substitute."
-msgstr ""
+msgstr "Uživatel nemůže být sám sobě náhradou."
 
 #: src/NotificationTargetFieldUnicity.php:46
 #: src/NotificationTargetFieldUnicity.php:90
@@ -17773,18 +17844,18 @@ msgstr[3] "Šablony projektových úkolů"
 #: src/WebhookCategory.php:42
 msgid "Webhook category"
 msgid_plural "Webhook categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kategorie webhooků"
+msgstr[1] "Kategorií webhooků"
+msgstr[2] "Kategorií webhooků"
+msgstr[3] "Kategorie webhooků"
 
 #: src/NotificationAjaxSetting.php:46
 msgid "Browser notifications configuration"
-msgstr ""
+msgstr "Konfigurace oznámení prohlížeče"
 
 #: src/NotificationAjaxSetting.php:51
 msgid "Enable browser notifications"
-msgstr ""
+msgstr "Povolit oznámení prohlížeče"
 
 #: src/NotificationAjaxSetting.php:72
 msgid "Send a test browser notification to you"
@@ -17899,7 +17970,7 @@ msgstr "Položka pro rozvaděč „%1$s“"
 #: src/ValidationStep.php:85 src/ValidationStep.php:119
 #, php-format
 msgid "The %s field is mandatory and must be beetween 0 and 100."
-msgstr ""
+msgstr "Toto %s pole je povinné a musí mít hodnotu mezi 0 a 100."
 
 #: src/ValidationStep.php:147
 msgid "Use as default"
@@ -17910,10 +17981,12 @@ msgid ""
 "This is the default approval step, it cannot be changed. Update another step"
 " to make it the default one."
 msgstr ""
+"Toto je výchozí krok schválení, nelze jej změnit. Aktualizujte další krok, "
+"aby se stal výchozím."
 
 #: src/ValidationStep.php:159
 msgid "Minimal required approval percent"
-msgstr ""
+msgstr "Minimální požadované procento schválení"
 
 #: src/ValidationStep.php:175
 #: src/Glpi/Form/Destination/CommonITILField/StatusField.php:76
@@ -18089,7 +18162,7 @@ msgstr "Nepodařilo se změnit rozlišení obrázku"
 
 #: src/UploadHandler.php:536
 msgid "Invalid file type"
-msgstr ""
+msgstr "Neplatný typ souboru"
 
 #: src/ContactType.php:41
 msgid "Contact type"
@@ -18198,12 +18271,12 @@ msgstr "Předchozí technik zodpovědný za tento požadavek"
 #: src/NotificationTargetCommonITILObject.php:965
 #, php-format
 msgid "Manager of the group in charge of the %s"
-msgstr ""
+msgstr "Vedoucí skupiny odpovědné za %s"
 
 #: src/NotificationTargetCommonITILObject.php:969
 #, php-format
 msgid "Group in charge of the %s except manager users"
-msgstr ""
+msgstr "Skupina odpovědná za %s s výjimkou správce uživatelů"
 
 #: src/NotificationTargetCommonITILObject.php:971
 msgid "Requester group manager"
@@ -18216,12 +18289,12 @@ msgstr "Skupina žadatele vyjma vedoucích uživatelů"
 #: src/NotificationTargetCommonITILObject.php:976
 #, php-format
 msgid "Technician in charge of the %s"
-msgstr ""
+msgstr "Technik zodpovědný za %s"
 
 #: src/NotificationTargetCommonITILObject.php:979
 #, php-format
 msgid "Group in charge of the %s"
-msgstr ""
+msgstr "Skupina odpovědná za %s"
 
 #: src/NotificationTargetCommonITILObject.php:982
 msgid "Observer group manager"
@@ -18238,7 +18311,7 @@ msgstr "O schválení žádal"
 
 #: src/NotificationTargetCommonITILObject.php:992
 msgid "Approval target substitutes"
-msgstr ""
+msgstr "Náhrady cíle schválení"
 
 #: src/NotificationTargetCommonITILObject.php:999
 msgid "Task author"
@@ -18340,29 +18413,29 @@ msgstr "Počet souvisejících požadavků"
 #: src/NotificationTargetCommonITILObject.php:2259
 msgctxt "quantity"
 msgid "Number of linked changes"
-msgstr ""
+msgstr "Počet připojených změn"
 
 #: src/NotificationTargetCommonITILObject.php:2260
 msgctxt "quantity"
 msgid "Number of linked problems"
-msgstr ""
+msgstr "Počet připojených problémů"
 
 #: src/NotificationTargetCommonITILObject.php:2261
 msgctxt "quantity"
 msgid "Number of linked projects"
-msgstr ""
+msgstr "Počet připojených projektů"
 
 #: src/NotificationTargetCommonITILObject.php:2262
 msgid "Number of sent reminders since status is pending"
-msgstr ""
+msgstr "Počet odeslaných připomenutí od doby, kdy je stav „čeká na vyřízení“"
 
 #: src/NotificationTargetCommonITILObject.php:2263
 msgid "Number of remaining reminders before automatic resolution"
-msgstr ""
+msgstr "Počet zbývajících připomenutí před automatickým vyřešením"
 
 #: src/NotificationTargetCommonITILObject.php:2264
 msgid "Total number of reminders before automatic resolution"
-msgstr ""
+msgstr "Celkový počet připomenutí před automatickým vyřešením"
 
 #: src/NotificationTargetCommonITILObject.php:2265
 msgid "Auto resolution deadline"
@@ -18374,7 +18447,7 @@ msgstr "Text upomínky"
 
 #: src/NotificationTargetCommonITILObject.php:2267
 msgid "Pending reason name"
-msgstr ""
+msgstr "Název důvodu čekání"
 
 #: src/NotificationTargetCommonITILObject.php:2286
 #: src/NotificationTargetCommonITILObject.php:2310
@@ -18438,10 +18511,10 @@ msgstr[3] "Propojené problémy"
 #: src/NotificationTargetCommonITILObject.php:2519
 msgid "Linked project"
 msgid_plural "Linked projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Připojený projekt"
+msgstr[1] "Připojené projekty"
+msgstr[2] "Připojených projektů"
+msgstr[3] "Připojené projekty"
 
 #: src/NotificationTargetCommonITILObject.php:2306
 msgid "No defined category"
@@ -18483,15 +18556,15 @@ msgstr "Pozvánka k vyplnění průzkumu"
 
 #: src/NetworkEquipmentModelStencil.php:42
 msgid "Graphical slot definition"
-msgstr ""
+msgstr "Grafická definice slotu"
 
 #: src/NetworkEquipmentModelStencil.php:54
 msgid "Set number of ports"
-msgstr ""
+msgstr "Nastavit počet portů"
 
 #: src/NetworkEquipmentModelStencil.php:55
 msgid "Define port data in image"
-msgstr ""
+msgstr "Definování dat portu v obrazu"
 
 #: src/NetworkEquipmentModelStencil.php:56
 msgid "Port Label"
@@ -18503,15 +18576,15 @@ msgstr "Číslo portu"
 
 #: src/NetworkEquipmentModelStencil.php:58
 msgid "Save port data"
-msgstr ""
+msgstr "Uložit data portu"
 
 #: src/NetworkEquipmentModelStencil.php:59
 msgid "Add a new port"
-msgstr ""
+msgstr "Přidat nový port"
 
 #: src/NetworkEquipmentModelStencil.php:60
 msgid "Remove last port"
-msgstr ""
+msgstr "Odstranit poslední port"
 
 #: src/RuleDictionnaryOperatingSystemArchitectureCollection.php:43
 msgid "Dictionary of operating system architectures"
@@ -18520,10 +18593,10 @@ msgstr "Slovník architektur operačních systémů"
 #: src/Item_Enclosure.php:50
 msgid "Enclosure item"
 msgid_plural "Enclosure items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Položka krytu"
+msgstr[1] "Položky krytu"
+msgstr[2] "Položek krytu"
+msgstr[3] "Položky krytu"
 
 #: src/Item_Enclosure.php:108
 msgid "Add new item to this enclosure..."
@@ -18560,7 +18633,7 @@ msgstr ""
 
 #: src/RuleDictionnarySoftwareCollection.php:73
 msgid "Replay dictionary rules for manufacturers"
-msgstr ""
+msgstr "Pravidla slovníku pro přehrávání pro výrobce"
 
 #: src/RuleDictionnarySoftwareCollection.php:307
 #: src/RuleDictionnarySoftwareCollection.php:437
@@ -18588,14 +18661,14 @@ msgstr "Je dynamické"
 #: src/ITILValidationTemplate.php:55
 msgid "Approval template"
 msgid_plural "Approval templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Šablona schválení"
+msgstr[1] "Šablony schválení"
+msgstr[2] "Šablon schválení"
+msgstr[3] "Šablony schválení"
 
 #: src/ITILValidationTemplate.php:62
 msgid "Invalid approval step"
-msgstr ""
+msgstr "Neplatný krok schválení"
 
 #: src/CommonDBVisible.php:183
 msgid "Add a target"
@@ -18606,6 +18679,8 @@ msgid ""
 "Caution! You are not the author of this item. Deleting targets can result in"
 " loss of access."
 msgstr ""
+"Pozor! Nejste autorem této položky. Smazání cílů může vést ke ztrátě "
+"přístupu."
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/Rack.php:76 src/Rack.php:112
@@ -18744,12 +18819,12 @@ msgstr "%1$s, uživatelem %2$s"
 #: src/Log.php:703
 #, php-format
 msgid "%1$s: %2$s (%3$s)"
-msgstr ""
+msgstr "%1$s : %2$s (%3$s)"
 
 #: src/Log.php:836
 #, php-format
 msgid "%1$s (Status %2$s -> %3$s)"
-msgstr ""
+msgstr "%1$s (Stav %2$s -> %3$s)"
 
 #: src/Log.php:880
 msgid "Update of the field"
@@ -18846,7 +18921,7 @@ msgstr "Odemknout položku"
 
 #: src/Log.php:1339
 msgid "Send a queued webhook"
-msgstr ""
+msgstr "Odeslání webhooku ve frontě"
 
 #: src/Log.php:1443 src/Stat.php:1900 src/ReservationItem.php:846
 #: src/Report.php:1911 src/RSSFeed.php:865 src/Glpi/Dashboard/Grid.php:1525
@@ -19062,6 +19137,8 @@ msgstr "Uživatel %1$s se přihlásil z IP adresy %2$s"
 #, php-format
 msgid "Login for %1$s denied by authorization rules from IP %2$s"
 msgstr ""
+"Přihlášení pro %1$s uživatele, kteří byli odepřeni autorizačními pravidly z "
+"IP adresy %2$s"
 
 #: src/Auth.php:1164
 #, php-format
@@ -19270,7 +19347,7 @@ msgstr "Celková skutečná doba trvání požadavku"
 
 #: src/Stat.php:639
 msgid "View graph"
-msgstr ""
+msgstr "Zobrazit graf"
 
 #: src/Stat.php:1664
 msgid "Number of tickets"
@@ -19665,7 +19742,7 @@ msgstr "Kontakt v týmu položky"
 
 #: src/Project.php:2427
 msgid "Ongoing projects"
-msgstr ""
+msgstr "Probíhající projekty"
 
 #: src/CommonDeviceModel.php:46
 msgid "Device model"
@@ -20023,7 +20100,7 @@ msgstr "Poslední inventarizovaná hodnota"
 
 #: src/Lock.php:350
 msgid "A locked item is a manually deleted connection, for example a monitor."
-msgstr ""
+msgstr "Uzamčená položka je ručně smazané připojení, například monitor."
 
 #: src/Lock.php:351
 msgid ""
@@ -20034,7 +20111,7 @@ msgstr ""
 
 #: src/Lock.php:379 src/State.php:376
 msgid "Asset type"
-msgstr ""
+msgstr "Typ aktiva"
 
 #: src/Lock.php:432 src/Item_Disk.php:292 src/Item_Disk.php:351
 #: src/Item_Disk.php:467
@@ -20140,7 +20217,7 @@ msgstr[3] "Stavy položek"
 
 #: src/State.php:69 src/State.php:892
 msgid "Show items with this status in assistance"
-msgstr ""
+msgstr "Zobrazit položky s tímto stavem v nápovědě"
 
 #: src/State.php:102
 msgid "Keep status"
@@ -20158,7 +20235,7 @@ msgstr "Je třeba, aby se %1$s neopakovalo!"
 
 #: src/State.php:384
 msgid "Visible"
-msgstr ""
+msgstr "Viditelné"
 
 #: src/State.php:927
 #, php-format
@@ -20207,16 +20284,16 @@ msgstr "Vytvořit dílčí úkol z tohoto projektového úkolu"
 #: src/ProjectTask.php:1422
 msgctxt "button"
 msgid "Affect to team"
-msgstr ""
+msgstr "Vliv na tým"
 
 #: src/ProjectTask.php:1423
 msgctxt "button"
 msgid "Unaffect to team"
-msgstr ""
+msgstr "Neovlivněno pro tým"
 
 #: src/ProjectTask.php:1740
 msgid "Ongoing projects tasks"
-msgstr ""
+msgstr "Úkoly probíhajících projektů"
 
 #: src/ProjectTask.php:2073
 #, php-format
@@ -20243,7 +20320,7 @@ msgstr[3] "Modely napájení zařízení"
 #: src/TaskTemplate.php:204 src/TaskTemplate.php:235 src/TaskTemplate.php:263
 #: src/User.php:4536
 msgid "Current logged-in user"
-msgstr ""
+msgstr "Aktuálně přihlášený uživatel"
 
 #: src/Session.php:231 src/Session.php:239
 msgid "You don't have right to connect"
@@ -20287,7 +20364,7 @@ msgstr "Uživatel nemá žádný profil."
 
 #: src/Session.php:2033
 msgid "User has more rights than you. You can't impersonate him."
-msgstr ""
+msgstr "Uživatel má více práv než vy. Nemůžete se za něj vydávat."
 
 #: src/Session.php:2093
 #, php-format
@@ -20509,7 +20586,7 @@ msgstr "Vytvořit z tohoto problému změnu"
 
 #: src/Change_Problem.php:258
 msgid "Create a problem from this change"
-msgstr ""
+msgstr "Vytvořit z této změny problém"
 
 #: src/NotificationTargetCronTask.php:46 src/NotificationTargetCronTask.php:94
 #: src/CronTask.php:1873
@@ -20785,7 +20862,7 @@ msgstr "Inventář"
 
 #: src/Webhook.php:813
 msgid "Payload editor"
-msgstr ""
+msgstr "Editor užitečného zatížení"
 
 #: src/Webhook.php:814
 msgid "Custom header"
@@ -20808,33 +20885,37 @@ msgid ""
 "This itemtype is not supported by the API. Maybe a plugin is "
 "missing/disabled?"
 msgstr ""
+"Tento typ položky není rozhraním API podporován. Možná chybí/je zakázán "
+"plugin?"
 
 #: src/Webhook.php:1128
 msgid "Challenge–response authentication validated"
-msgstr ""
+msgstr "Ověřování ověření výzvou a odpovědí"
 
 #: src/Webhook.php:1133
 msgid ""
 "Challenge–response authentication failed, the answer returned by target is "
 "different"
-msgstr ""
+msgstr "Ověřování typu výzva-odpověď selhalo, odpověď vrácená cílem je jiná."
 
 #: src/Webhook.php:1275
 #, php-format
 msgid "An error occurred raising \"%1$s\" webhook for item %2$s (ID %3$s)"
-msgstr ""
+msgstr "Došlo k chybě při vyvolání webhooku \"%1$s\" pro položku %2$s (ID %3$s)"
 
 #: src/Webhook.php:1358
 msgid "An event is required"
-msgstr ""
+msgstr "Je vyžadována událost"
 
 #: src/Webhook.php:1431
 msgid "Webhook target filter"
-msgstr ""
+msgstr "Cílový filtr webhooku"
 
 #: src/Webhook.php:1436
 msgid "Webhooks will only be sent for items that match the defined filter."
 msgstr ""
+"Webhooky budou odesílány pouze pro položky, které odpovídají definovanému "
+"filtru."
 
 #: src/DeviceGenericType.php:41
 msgid "Generic type"
@@ -20863,10 +20944,10 @@ msgstr[3] "Skříně"
 #: src/AuthMail.php:50 src/AuthMail.php:112 src/RuleRight.php:214
 msgid "Email server"
 msgid_plural "Email servers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "E-mailový server"
+msgstr[1] "E-mailové servery"
+msgstr[2] "E-mailových serverů"
+msgstr[3] "E-mailové servery"
 
 #: src/AuthMail.php:241
 msgid "Test connection to email server"
@@ -20903,7 +20984,7 @@ msgstr "Hlavička e-mailu identifikátor zprávy"
 
 #: src/RuleMailCollector.php:90
 msgid "References email header"
-msgstr ""
+msgstr "Záhlaví e-mailu s referencemi"
 
 #: src/RuleMailCollector.php:98
 msgid "X-Auto-Response-Suppress email header"
@@ -21003,7 +21084,7 @@ msgstr "V uživatelích a skupinách"
 
 #: src/AuthLDAP.php:764
 msgid "TCP stream"
-msgstr ""
+msgstr "TCP stream"
 
 #: src/AuthLDAP.php:770
 msgid "Base DN"
@@ -21011,15 +21092,15 @@ msgstr "Base DN"
 
 #: src/AuthLDAP.php:776
 msgid "LDAP URI"
-msgstr ""
+msgstr "LDAP URI"
 
 #: src/AuthLDAP.php:782
 msgid "Bind connection"
-msgstr ""
+msgstr "Připojit spojení"
 
 #: src/AuthLDAP.php:788
 msgid "Search (50 first entries)"
-msgstr ""
+msgstr "Hledat (50 prvních záznamů)"
 
 #: src/AuthLDAP.php:1143
 msgid "Domain name used by inventory tool"
@@ -21027,17 +21108,17 @@ msgstr "Doménové uživatelské jméno použito inventarizačním nástrojem"
 
 #: src/AuthLDAP.php:1440
 msgid "No hostname provided"
-msgstr ""
+msgstr "Nebyl zadán název hostitele"
 
 #: src/AuthLDAP.php:1447
 #, php-format
 msgid "Connection to %s on port %s succeeded"
-msgstr ""
+msgstr "Připojení %s k portu %s bylo úspěšné"
 
 #: src/AuthLDAP.php:1452
 #, php-format
 msgid "%s (ERR: %s) to %s on port %s"
-msgstr ""
+msgstr "%s (ERR: %s) %s na portu %s"
 
 #: src/AuthLDAP.php:1469
 #, php-format
@@ -21050,35 +21131,35 @@ msgstr "Base DN není nakonfigurováno."
 
 #: src/AuthLDAP.php:1491
 msgid "LDAP URI check succeeded"
-msgstr ""
+msgstr "Kontrola URI LDAP proběhla úspěšně."
 
 #: src/AuthLDAP.php:1496
 #, php-format
 msgid "LDAP URI was not parseable (%s:%s)"
-msgstr ""
+msgstr "URI LDAP nebylo možné analyzovat (%s:%s)"
 
 #: src/AuthLDAP.php:1529
 msgid "Authentication succeeded"
-msgstr ""
+msgstr "Úspěšně ověřeno"
 
 #: src/AuthLDAP.php:1534
 #, php-format
 msgid "Authentication failed: %s(%s)"
-msgstr ""
+msgstr "Ověření se nezdařilo: %s(%s)"
 
 #: src/AuthLDAP.php:1540
 msgid "Bind user / password authentication is disabled."
-msgstr ""
+msgstr "Ověřování uživatele/hesla pomocí vazby je zakázáno."
 
 #: src/AuthLDAP.php:1584
 #, php-format
 msgid "Search succeeded (%d entries found)"
-msgstr ""
+msgstr "Hledání úspěšné (nalezeno%d záznamů)"
 
 #: src/AuthLDAP.php:1589 src/AuthLDAP.php:1595 src/AuthLDAP.php:1601
 #, php-format
 msgid "Search failed: %s(%s)"
-msgstr ""
+msgstr "Hledání selhalo: %s(%s)"
 
 #: src/AuthLDAP.php:1620
 msgid ""
@@ -21122,7 +21203,7 @@ msgstr "Přesuňte do koše"
 
 #: src/AuthLDAP.php:3948
 msgid "Delete dynamic groups"
-msgstr ""
+msgstr "Smazat dynamické skupiny"
 
 #: src/AuthLDAP.php:3949
 msgid "Delete all groups"
@@ -21130,11 +21211,11 @@ msgstr "Smazat všechny skupiny"
 
 #: src/AuthLDAP.php:3962
 msgid "Delete dynamic authorizations"
-msgstr ""
+msgstr "Smazat dynamická oprávnění"
 
 #: src/AuthLDAP.php:3963
 msgid "Delete all authorizations"
-msgstr ""
+msgstr "Smazat všechna oprávnění"
 
 #: src/AuthLDAP.php:3977
 msgid "Restore (move out of trashbin)"
@@ -21213,7 +21294,7 @@ msgstr "Typ šifrování"
 
 #: src/Item_Disk.php:296
 msgid "Used percentage"
-msgstr ""
+msgstr "Použité procento"
 
 #: src/Item_Disk.php:297
 msgid "Encryption"
@@ -21769,10 +21850,10 @@ msgstr "Zásuvka Ethernet"
 #: src/Group_Item.php:49
 msgid "Group item"
 msgid_plural "Group items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Seskupená položka"
+msgstr[1] "Seskupené položky"
+msgstr[2] "Seskupených položek"
+msgstr[3] "Seskupení položek"
 
 #: src/RuleDictionnaryPrinterCollection.php:51
 #: src/RuleDictionnaryPrinter.php:49
@@ -21969,7 +22050,7 @@ msgstr "Alternativní port"
 #: src/CommonTreeDropdown.php:536
 #, php-format
 msgid "New child %s"
-msgstr ""
+msgstr "Nová podřízená položka %s"
 
 #: src/CommonTreeDropdown.php:660
 #, php-format
@@ -22025,7 +22106,7 @@ msgstr "E-mail odesílatele není platná e-mailová adresa."
 #: src/NotificationMailing.php:108
 #, php-format
 msgid "Cannot initialize mailer, error is: %s"
-msgstr ""
+msgstr "Nelze inicializovat odesílatele, chyba: %s"
 
 #: src/NotificationMailing.php:119
 msgid "This is a test email."
@@ -22299,11 +22380,11 @@ msgstr "Smlouva s výpovědní dobou pro aktuální období k"
 
 #: src/NotificationTargetContract.php:198
 msgid "Contract expiration date"
-msgstr ""
+msgstr "Datum vypršení smlouvy"
 
 #: src/NotificationTargetContract.php:199
 msgid "Contract notice date"
-msgstr ""
+msgstr "Datum upozornění smlouvy"
 
 #: src/NotificationTargetProjectTask.php:50
 msgid "New project task"
@@ -22331,7 +22412,7 @@ msgstr "Výchozí e-mail"
 
 #: src/UserEmail.php:179 src/UserEmail.php:218
 msgid "Set as default email"
-msgstr ""
+msgstr "Nastavit jako výchozí e-mail"
 
 #: src/PCIVendor.php:52
 msgid "PCI vendor"
@@ -22353,7 +22434,7 @@ msgid_plural "Notes"
 msgstr[0] "Poznámka"
 msgstr[1] "Poznámek"
 msgstr[2] "Poznámek"
-msgstr[3] "Poznámeky"
+msgstr[3] "Poznámky"
 
 #: src/NotificationTemplateTranslation.php:54
 msgid "Template translation"
@@ -22909,13 +22990,15 @@ msgstr "Zobrazení výsledků hledání"
 
 #: src/DisplayPreference.php:167
 msgid "This will reset the columns to the defaults for a new installation."
-msgstr ""
+msgstr "Tím se sloupce při nové instalaci obnoví na výchozí hodnoty."
 
 #: src/DisplayPreference.php:168
 msgid ""
 "This will only work for types from GLPI itself or enabled plugins that "
 "support this action."
 msgstr ""
+"Toto bude fungovat pouze pro typy ze samotného GLPI nebo povolených pluginů,"
+" které tuto akci podporují."
 
 #: src/DisplayPreference.php:640
 msgctxt "button"
@@ -22933,7 +23016,7 @@ msgstr "Globální pohled"
 
 #: src/DisplayPreference.php:694
 msgid "Helpdesk View"
-msgstr ""
+msgstr "Zobrazení helpdesku"
 
 #. TRANS: short for : Search result user display
 #: src/DisplayPreference.php:749
@@ -22955,7 +23038,7 @@ msgstr "Výchozí zobrazení výsledků hledání"
 
 #: src/DisplayPreference.php:845
 msgid "Search option ID"
-msgstr ""
+msgstr "ID možnosti vyhledávání"
 
 #: src/ITILFollowup.php:437
 msgid "You can't add a followup without description"
@@ -22992,7 +23075,7 @@ msgstr "Přidat novou doplňující zprávu"
 
 #: src/MailCollector.php:183
 msgid "Not imported emails"
-msgstr ""
+msgstr "Neimportované e-maily"
 
 #: src/MailCollector.php:477
 msgid "Date of last collection"
@@ -23145,25 +23228,25 @@ msgstr "Kolik dnů uchovávat odeslané e-maily"
 
 #: src/QueuedNotification.php:551
 msgid "Clean stale queued browser notifications"
-msgstr ""
+msgstr "Vyčištění zastaralých oznámení prohlížeče ve frontě"
 
 #: src/Line.php:60
 msgid "Phone line"
 msgid_plural "Phone lines"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Telefonní linka"
+msgstr[1] "Telefonní linky"
+msgstr[2] "Telefonních linek"
+msgstr[3] "Telefonní linky"
 
 #: src/Line.php:260
 msgctxt "button"
 msgid "Add a phone line"
-msgstr ""
+msgstr "Přidat telefonní linku"
 
 #: src/Line.php:261
 msgctxt "button"
 msgid "Remove a phone line"
-msgstr ""
+msgstr "Odstranění telefonní linky"
 
 #: src/NotificationTargetConsumableItem.php:46
 msgid "Consumables alarm"
@@ -23293,10 +23376,10 @@ msgstr "Maximální počet položek k e zpracování v jednom zpracování"
 #: src/TicketValidation.php:61
 msgid "Ticket approval"
 msgid_plural "Ticket approvals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Schválený požadavek"
+msgstr[1] "Schválené požadavky"
+msgstr[2] "Schválených požadavků"
+msgstr[3] "Schválené požadavky"
 
 #: src/TicketValidation.php:108
 msgid "Create for request"
@@ -23304,7 +23387,7 @@ msgstr "Vytvořit žádost"
 
 #: src/TicketValidation.php:109
 msgid "Create an approval request for a request"
-msgstr ""
+msgstr "Vytvořit žádost o schválení požadavku"
 
 #: src/TicketValidation.php:112
 msgid "Create for incident"
@@ -23312,7 +23395,7 @@ msgstr "Vytvořit pro poruchu"
 
 #: src/TicketValidation.php:113
 msgid "Create an approval request for an incident"
-msgstr ""
+msgstr "Vytvoření žádosti o schválení incidentu"
 
 #: src/TicketValidation.php:116
 msgid "Approve a request"
@@ -23445,7 +23528,7 @@ msgstr "Nenalezen žádný úkol."
 #: src/RuleProblem.php:43 src/RuleProblemCollection.php:44
 #: src/Profile.php:2391
 msgid "Business rules for problems"
-msgstr ""
+msgstr "Obchodní pravidla pro řešení problémů"
 
 #: src/USBVendor.php:53
 msgid "USB vendor"
@@ -25901,7 +25984,7 @@ msgstr ""
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:106
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:136
 msgid "Date and time"
-msgstr ""
+msgstr "Datum a čas"
 
 #: src/Glpi/Asset/CustomFieldType/TextType.php:51
 msgid "Rich text"
@@ -26001,12 +26084,12 @@ msgstr ""
 
 #: src/Glpi/Asset/Capacity/HasNotepadCapacity.php:60
 msgid "Enable a simple notepad"
-msgstr ""
+msgstr "Povolit jednoduchý poznámkový blok"
 
 #: src/Glpi/Asset/Capacity/HasNotepadCapacity.php:89
 #, php-format
 msgid "%1$s notes attached to %2$s assets"
-msgstr ""
+msgstr "%1$s poznámek připojených k aktivům %2$s"
 
 #: src/Glpi/Asset/Capacity/IsInventoriableCapacity.php:70
 msgid "The GLPI agent can report inventory data for these assets."
@@ -26402,7 +26485,7 @@ msgstr ""
 #: src/Glpi/Form/Condition/ValueOperator.php:125
 #: src/Glpi/Form/Condition/ValueOperator.php:139
 msgid "The value must not match the requested format"
-msgstr ""
+msgstr "Hodnota se nesmí zhodovat se žádaným formátem"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:126
 #, php-format
@@ -26528,7 +26611,7 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceFieldStrategy.php:48
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:66
 msgid "From template"
-msgstr ""
+msgstr "Ze šablony"
 
 #: src/Glpi/Form/Destination/CommonITILField/LocationFieldStrategy.php:54
 msgid "Specific location"
@@ -26608,7 +26691,7 @@ msgstr ""
 
 #: src/Glpi/Form/Destination/CommonITILField/LinkedITILObjectsField.php:135
 msgid "Select destination..."
-msgstr ""
+msgstr "Vybrat cíl..."
 
 #: src/Glpi/Form/Destination/CommonITILField/LinkedITILObjectsField.php:142
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:108
@@ -26616,7 +26699,7 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorField.php:140
 #: src/Glpi/Form/Destination/CommonITILField/ValidationField.php:138
 msgid "Select questions..."
-msgstr ""
+msgstr "Vybrat otázky..."
 
 #: src/Glpi/Form/Destination/CommonITILField/ValidationFieldStrategy.php:51
 msgid "No approval"
@@ -26677,19 +26760,19 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:55
 #, php-format
 msgid "Specific %s"
-msgstr ""
+msgstr "Konkrétní %s"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:56
 msgid "Answer from a specific date question"
-msgstr ""
+msgstr "Datum z konkrétní otázky"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:57
 msgid "Computed date based on form submission date"
-msgstr ""
+msgstr "Datum odvozené od data odeslání formuláře"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:58
 msgid "Computed date based on a specific date question answer"
-msgstr ""
+msgstr "Datum odvozené od odpovědi na konkrétní otázku typu „Datum“"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceFieldStrategy.php:49
 msgid "Specific request source"
@@ -26755,7 +26838,7 @@ msgstr ""
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILTaskFieldStrategy.php:46
 msgid "No Task"
-msgstr ""
+msgstr "Žádná úloha"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILTaskFieldStrategy.php:47
 msgid "Specific Task templates"
@@ -26848,7 +26931,7 @@ msgstr "Výchozí šablona"
 
 #: src/Glpi/Form/Destination/CommonITILField/TemplateFieldStrategy.php:49
 msgid "Specific template"
-msgstr ""
+msgstr "Konkrétní šablona"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsFieldStrategy.php:53
 msgid "Specific items"
@@ -26864,17 +26947,19 @@ msgstr ""
 
 #: src/Glpi/Form/AccessControl/ControlType/DirectAccess.php:56
 msgid "Allow direct access"
-msgstr ""
+msgstr "Povolit přímý přístup"
 
 #: src/Glpi/Form/AccessControl/ControlType/DirectAccess.php:89
 msgid ""
 "This form contains question types that are not allowed for unauthenticated "
 "access. These questions will be hidden from unauthenticated users."
 msgstr ""
+"Tento formulář obsahuje typy otázek, které nejsou povoleny pro nepřihlášený "
+"přístup. Tyto otázky budou před nepřihlášenými uživateli skryty."
 
 #: src/Glpi/Form/AccessControl/ControlType/AllowList.php:61
 msgid "Allow specifics users, groups or profiles"
-msgstr ""
+msgstr "Povolit konkrétní uživatele, skupiny nebo profily"
 
 #: src/Glpi/Form/AccessControl/FormAccessControlManager.php:197
 msgid "This form is not visible to anyone because it is not active."
@@ -26889,10 +26974,10 @@ msgstr ""
 #: src/Glpi/Form/AccessControl/FormAccessControl.php:63
 msgid "Access control"
 msgid_plural "Access controls"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Řízení přístupu"
+msgstr[1] "Řízení přístupu"
+msgstr[2] "Řízení přístupu"
+msgstr[3] "Řízení přístupu"
 
 #: src/Glpi/Form/RenderLayout.php:45
 msgid "Section by section"
@@ -27050,11 +27135,11 @@ msgstr ""
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:104
 msgid "Short answer"
-msgstr ""
+msgstr "Krátká odpověď"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:105
 msgid "Long answer"
-msgstr ""
+msgstr "Dlouhá odpověď"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:111
 msgid "Radio"
@@ -27081,10 +27166,10 @@ msgstr ""
 #: src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php:149
 msgid "Select device..."
 msgid_plural "Select devices..."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Vybrané zařízení..."
+msgstr[1] "Vybraná zařízení..."
+msgstr[2] "Vybraných zařízení..."
+msgstr[3] "Vybraná zařízení..."
 
 #: src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php:189
 msgid "Allow multiple devices"
@@ -27118,7 +27203,7 @@ msgstr "Aktuální čas"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:141
 msgid "Current date and time"
-msgstr ""
+msgstr "Aktuální datum a čas"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:85
 msgid "Select an itemtype"
@@ -27131,10 +27216,10 @@ msgstr ""
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:462
 msgid "GLPI Object"
 msgid_plural "GLPI Objects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "GLPI Objekt"
+msgstr[1] "GLPI Objekty"
+msgstr[2] "GLPI Objektů"
+msgstr[3] "GLPI Objekty"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:258
 msgid "Option"
@@ -27166,7 +27251,7 @@ msgstr ""
 
 #: src/Glpi/Form/QuestionType/QuestionTypeLongText.php:138
 msgid "Long text"
-msgstr ""
+msgstr "Dlouhý text"
 
 #: src/Glpi/Form/Question.php:86
 msgid "Question"
@@ -27225,7 +27310,7 @@ msgstr ""
 #: src/Glpi/Form/Tag/QuestionTagProvider.php:97
 #, php-format
 msgid "Question: %s"
-msgstr ""
+msgstr "Otázka: %s"
 
 #: src/Glpi/Form/Tag/CommentTitleTagProvider.php:97
 #, php-format
@@ -27235,12 +27320,12 @@ msgstr ""
 #: src/Glpi/Form/Tag/SectionTagProvider.php:97
 #, php-format
 msgid "Section: %s"
-msgstr ""
+msgstr "Sekce: %s"
 
 #: src/Glpi/Form/Tag/FormTagProvider.php:91
 #, php-format
 msgid "Form name: %s"
-msgstr ""
+msgstr "Název formuláře: %s"
 
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:146
 #, php-format
@@ -27592,7 +27677,7 @@ msgstr "Soubor %1$s %2$s nebyl odstraněn"
 
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:74
 msgid "GLPI page"
-msgstr ""
+msgstr "Stránka GLPI"
 
 #: src/Glpi/Helpdesk/Tile/ExternalPageTile.php:61
 msgid "External page"
@@ -27868,7 +27953,7 @@ msgstr ""
 
 #: src/Glpi/Api/API.php:312
 msgid "usage of initSession resource with user token is disabled"
-msgstr ""
+msgstr "použití prostředku initSession s tokenem uživatele je zakázáno."
 
 #: src/Glpi/Api/API.php:325
 msgid "parameter(s) login, password or user_token are missing"
@@ -27876,11 +27961,11 @@ msgstr "chybí parametry uživatelské jméno, heslo nebo token uživatele"
 
 #: src/Glpi/Api/API.php:331
 msgid "parameter(s) login, password are missing"
-msgstr ""
+msgstr "chybí parametr(y) přihlášení, heslo"
 
 #: src/Glpi/Api/API.php:337
 msgid "parameter user_token is missing"
-msgstr ""
+msgstr "chybí parametr user_token."
 
 #: src/Glpi/Api/API.php:356
 msgid "parameter user_token seems invalid"
@@ -32215,7 +32300,7 @@ msgstr "Chybná základní URL adresa!"
 
 #: src/Config.php:218
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "Neplatná adresa URL pro odhlášení pomocí SSO."
 
 #: src/Config.php:348
 msgid ""
@@ -33313,12 +33398,12 @@ msgstr "Vytištěné stránky"
 #: src/Computer.php:418
 msgctxt "button"
 msgid "Add a domain"
-msgstr ""
+msgstr "Přidat doménu"
 
 #: src/Computer.php:421
 msgctxt "button"
 msgid "Remove a domain"
-msgstr ""
+msgstr "Odebrat doménu"
 
 #: src/NotificationTargetDomain.php:45 src/NotificationTargetDomain.php:83
 msgid "Expired domains"
@@ -33530,7 +33615,7 @@ msgstr "Každý den"
 #: src/PendingReason.php:211
 #, php-format
 msgid "Every %s days"
-msgstr ""
+msgstr "Každý %s. den"
 
 #: src/PendingReason.php:212
 msgid "Every week"
@@ -33540,7 +33625,7 @@ msgstr "Každý týden"
 #: src/PendingReason.php:215
 #, php-format
 msgid "Every %s weeks"
-msgstr ""
+msgstr "Každý %s. týden"
 
 #: src/PendingReason.php:242
 msgid "Automatic resolution disabled"
@@ -33602,7 +33687,7 @@ msgstr ""
 #: src/Group_User.php:660
 msgctxt "quantity"
 msgid "Number of users"
-msgstr ""
+msgstr "Počet uživatelů"
 
 #: src/Group_User.php:844
 #, php-format
@@ -34984,7 +35069,7 @@ msgstr[3] "Položky linky"
 
 #: src/Item_Line.php:402
 msgid "Add a phone line"
-msgstr ""
+msgstr "Přidat telefonní linku"
 
 #: src/Item_Line.php:484
 msgid "A line is required"
@@ -35194,7 +35279,7 @@ msgstr "Seznam pravidel"
 
 #: src/RuleCollection.php:489
 msgid "Other rules"
-msgstr ""
+msgstr "Ostatní pravidla"
 
 #: src/RuleCollection.php:546
 msgid "Rules used for"
@@ -35241,17 +35326,17 @@ msgstr "Globální číselník"
 #: src/NotificationTargetKnowbaseItem.php:47
 #: src/NotificationTargetKnowbaseItem.php:96
 msgid "New knowledge base item"
-msgstr ""
+msgstr "Nová položka znalostní báze"
 
 #: src/NotificationTargetKnowbaseItem.php:48
 #: src/NotificationTargetKnowbaseItem.php:99
 msgid "Deleting a knowledge base item"
-msgstr ""
+msgstr "Odstranění položky znalostní báze"
 
 #: src/NotificationTargetKnowbaseItem.php:49
 #: src/NotificationTargetKnowbaseItem.php:102
 msgid "Update of a knowledge base item"
-msgstr ""
+msgstr "Aktualizace položky znalostní báze"
 
 #: src/NotificationTargetKnowbaseItem.php:70
 #: src/NotificationTargetKnowbaseItem.php:187
@@ -35924,7 +36009,7 @@ msgstr "Nastavit umístění sem"
 
 #: js/modules/Form/WebIconSelector.js:113
 msgid "Select an icon"
-msgstr ""
+msgstr "Vybrat ikonu"
 
 #: js/modules/Form/WebIconSelector.js:130
 msgctxt "icons"
@@ -36163,7 +36248,7 @@ msgstr "Chcete vrátit do podoby vybrané revize?"
 #: js/modules/Knowbase.js:62
 #, javascript-format
 msgid "Show revision %d"
-msgstr ""
+msgstr "Zobrazit revizi %d"
 
 #: js/modules/Knowbase.js:76
 msgid "Unable to load revision!"
@@ -36219,18 +36304,18 @@ msgstr ""
 #: js/modules/Forms/EditorController.js:2316
 msgid "question"
 msgid_plural "questions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "otázka"
+msgstr[1] "otázky"
+msgstr[2] "otázky"
+msgstr[3] "otázek"
 
 #: js/modules/Forms/EditorController.js:2320
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Komentář"
+msgstr[1] "Komentáře"
+msgstr[2] "Komentáře"
+msgstr[3] "Komentářů"
 
 #: js/modules/Forms/EditorController.js:2325
 #, javascript-format
