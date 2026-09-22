@@ -292,7 +292,7 @@ class SearchTest extends DbTestCase
             ['meta' => true, 'itemtype' => 'Software', 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'firefox'],
         ];
         $criteria2 = [
-            ['meta' => true, 'itemtype' => 'Software', 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'chrome'],
+            ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'chrome'],
         ];
         \Search::constructAdditionalSqlForMetacriteria($criteria1, $SELECT, $FROM, $already_link_tables, $data);
         $this->assertSame(1, substr_count($SELECT, "ITEM_Software_$field_id"));
