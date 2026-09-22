@@ -289,7 +289,7 @@ class SearchTest extends DbTestCase
         $FROM = '';
         $already_link_tables = [];
         $criteria1 = [
-            ['meta' => true, 'itemtype' => 'Software', 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'firefox'],
+            ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'firefox'],
         ];
         $criteria2 = [
             ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'chrome'],
