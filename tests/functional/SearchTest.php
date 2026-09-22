@@ -210,7 +210,7 @@ class SearchTest extends DbTestCase
             ],
         ];
 
-        $data = $this->doSearch('Computer', $search_params);
+        $data = $this->doSearch(Computer::class, $search_params);
 
         // the Software "name" field must only produce a single result column,
         // even though it is targeted by two meta criteria
