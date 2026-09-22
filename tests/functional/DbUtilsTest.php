@@ -243,6 +243,44 @@ class DbUtilsTest extends DbTestCase
         }
     }
 
+    public function testIsGlpiClassFile()
+    {
+        $instance = new \DbUtils();
+
+        // A GLPI class
+        $this->assertTrue(
+            $instance->isGlpiClassFile((new \ReflectionClass(\Computer::class))->getFileName())
+        );
+
+        // A file that does not exist
+        $this->assertFalse($instance->isGlpiClassFile(GLPI_ROOT . '/src/ThisDoesNotExist.php'));
+
+        // A plugin installed in a directory located outside of the GLPI tree
+        $plugins_dir = sys_get_temp_dir() . '/' . uniqid('glpi_plugins_', false);
+        $class_file  = $plugins_dir . '/myplugin/inc/stuff.class.php';
+        mkdir(dirname($class_file), 0o755, true);
+        file_put_contents($class_file, '<?php');
+
+        try {
+            $this->assertFalse(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [GLPI_ROOT . '/plugins'])
+            );
+            $this->assertTrue(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [GLPI_ROOT . '/plugins', $plugins_dir])
+            );
+
+            // A directory that does not exist must not make every file valid
+            $this->assertFalse(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [$plugins_dir . '/not_there'])
+            );
+        } finally {
+            unlink($class_file);
+            rmdir(dirname($class_file));
+            rmdir(dirname($class_file, 2));
+            rmdir($plugins_dir);
+        }
+    }
+
     public function testGetTableForItemtypeDoesNotConflictWithGetItemTypeForTable()
     {
         $instance = new \DbUtils();
