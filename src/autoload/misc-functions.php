@@ -72,8 +72,11 @@ function isAPI()
  */
 function isHLAPI(): bool
 {
-    $script = $_SERVER['REQUEST_URI'] ?? '';
-    return str_starts_with($script, '/api.php') && Router::getInstance()->getOriginalRequest() !== null;
+    /** @var Kernel $kernel */
+    global $kernel;
+
+    $path = $kernel->getMainRequest()->getPathInfo();
+    return str_starts_with($path, '/api.php') && Router::getInstance()->getOriginalRequest() !== null;
 }
 
 /**
