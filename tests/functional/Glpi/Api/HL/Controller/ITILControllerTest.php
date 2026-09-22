@@ -43,6 +43,7 @@ use Entity;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use ITILFollowup;
 use Problem;
 use Ticket;
 use TicketValidation;
@@ -274,7 +275,7 @@ class ITILControllerTest extends HLAPITestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]));
 
-        $fup = new \ITILFollowup();
+        $fup = new ITILFollowup();
         $task = new \TicketTask();
         $solution = new \ITILSolution();
         $validation = new TicketValidation();
@@ -838,5 +839,33 @@ EOT;
                     $this->assertStringContainsString("document.send.php?docid=", $content['content']);
                 });
         });
+    }
+
+    public function testUpdateFollowupWithInlineImage(): void
+    {
+        // Ensure updating a followup with a new inline image links the created Document with the followup
+        $this->loginWeb();
+
+        $ticket_id = getItemByTypeName(Ticket::class, '_ticket03', true);
+        $fup = $this->createItem(ITILFollowup::class, [
+            'content' => 'test',
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket_id,
+        ]);
+
+        $foo_img = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+        $foo_img_base64 = base64_encode($foo_img);
+
+        $this->login();
+        $request = new Request('PATCH', "/Assistance/Ticket/{$ticket_id}/Timeline/Followup/{$fup->getID()}", [
+            'Content-Type' => 'application/json',
+        ], json_encode([
+            'content' => 'Updated content with an image: <img src="data:image/png;base64,' . $foo_img_base64 . '" alt="foo.png" />',
+        ]));
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->assertEquals(1, countElementsInTable(Document_Item::getTable(), ['itemtype' => 'ITILFollowup', 'items_id' => $fup->getID()]));
     }
 }

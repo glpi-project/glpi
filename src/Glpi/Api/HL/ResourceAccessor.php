@@ -653,6 +653,15 @@ final class ResourceAccessor
 
         try {
             self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
+            foreach ($created_documents as $doc) {
+                $doc_item = new Document_Item();
+                $doc_item->add([
+                    'documents_id' => $doc->getID(),
+                    'items_id' => $items_id,
+                    'itemtype' => $item::class,
+                    'timeline_position' => CommonITILObject::NO_TIMELINE,
+                ]);
+            }
         } catch (Throwable $e) {
             $DB->rollBack();
             self::cleanRolledBackDocuments($created_documents);
