@@ -62,6 +62,9 @@ use Session;
 use TaskCategory;
 use Ticket;
 use User;
+use Software;
+use Peripheral;
+use Problem;
 
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
@@ -2179,7 +2182,7 @@ class SearchTest extends DbTestCase
         $this->assertTrue($DB->delete(Change::getTable(), [new QueryExpression('true')]));
 
         // Creates Changes with different requesters
-        $this->createItems('Change', [
+        $this->createItems(Change::class, [
             // Test set on requester
             [
                 'name' => 'testAddOrderByUser user 1 (R)',
@@ -2239,7 +2242,7 @@ class SearchTest extends DbTestCase
         ]);
 
         yield [
-            'itemtype' => 'Change',
+            'itemtype' => Change::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2265,7 +2268,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Change',
+            'itemtype' => Change::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2291,7 +2294,7 @@ class SearchTest extends DbTestCase
         ];
 
         // Creates Peripheral with different users
-        $this->createItems('Peripheral', [
+        $this->createItems(Peripheral::class, [
             // Test set on user
             [
                 'name' => 'testAddOrderByUser user 1 (U)',
@@ -2310,7 +2313,7 @@ class SearchTest extends DbTestCase
         ]);
 
         yield [
-            'itemtype' => 'Peripheral',
+            'itemtype' => Peripheral::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2333,7 +2336,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Peripheral',
+            'itemtype' => Peripheral::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2357,7 +2360,7 @@ class SearchTest extends DbTestCase
 
         // Creates Problems with different writers
         // Create by glpi user
-        $this->createItems('Problem', [
+        $this->createItems(Problem::class, [
             [
                 'name' => 'testAddOrderByUser by glpi',
                 'content' => '',
@@ -2366,7 +2369,7 @@ class SearchTest extends DbTestCase
 
         // Create by tech user
         $this->login('tech', 'tech');
-        $this->createItems('Problem', [
+        $this->createItems(Problem::class, [
             [
                 'name' => 'testAddOrderByUser by tech',
                 'content' => '',
@@ -2376,7 +2379,7 @@ class SearchTest extends DbTestCase
         $this->login('glpi', 'glpi');
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2398,7 +2401,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2421,7 +2424,7 @@ class SearchTest extends DbTestCase
 
         // Last edit by
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2443,7 +2446,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
