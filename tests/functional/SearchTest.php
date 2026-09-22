@@ -196,7 +196,7 @@ class SearchTest extends DbTestCase
             'metacriteria' => [
                 0 => [
                     'link'       => 'OR',
-                    'itemtype'   => 'Software',
+                    'itemtype'   => Software::class,
                     'field'      => 160,
                     'searchtype' => 'contains',
                     'value'      => 'firefox',
