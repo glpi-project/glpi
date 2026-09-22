@@ -58,6 +58,7 @@ use Glpi\Search\SearchOption;
 use Group;
 use Group_Ticket;
 use Profile_User;
+use Safe\Exceptions\DatetimeException;
 use Session;
 use Stat;
 use Ticket;
@@ -1115,11 +1116,11 @@ class Provider
             && is_array($params['apply_filters'][DatesFilter::getId()])
             && count($params['apply_filters'][DatesFilter::getId()]) == 2
         ) {
-            $filter_begin = \strtotime($params['apply_filters'][DatesFilter::getId()][0]);
-            $filter_end   = \strtotime($params['apply_filters'][DatesFilter::getId()][1]);
-            if ($filter_begin !== false && $filter_end !== false) {
-                $begin = date("Y-m-d", $filter_begin);
-                $end   = date("Y-m-d", $filter_end);
+            try {
+                $begin = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][0]));
+                $end   = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][1]));
+            } catch (DatetimeException) {
+                // keep default range if filter values are not parsable dates
             }
             unset($params['apply_filters'][DatesFilter::getId()]);
         }
