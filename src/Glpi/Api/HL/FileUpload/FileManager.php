@@ -261,7 +261,7 @@ final class FileManager
         // TODO use Dom\HTMLDocument when minimum PHP version requirement for GLPI is at least 8.4
         $dom = new DOMDocument();
         @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $images = $dom->getElementsByTagName('img');
+        $images = iterator_to_array($dom->getElementsByTagName('img'));
 
         if ($images->length === 0) {
             // Return input as-is if there are no images to process to avoid unnecessarily changing a plaintext value into HTML
@@ -293,7 +293,7 @@ final class FileManager
 
                 if ($detected_mime_type === false || strtolower($mime_type) !== strtolower($detected_mime_type) || !self::isDocumentUploadAllowed($mime_type, $extension)) {
                     // completely remove the image if the upload is not allowed
-                    $img->parentNode?->removeChild($img);
+                    $img->remove();
                     continue;
                 }
 
