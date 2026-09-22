@@ -230,8 +230,7 @@ final class BuilderTest extends DbTestCase
 
     /**
      * Graph, A and B invisible: A under Home and B, B under A, leaf 1 under A,
-     * leaf 2 under B. The walk goes in name order, so leaf 1 cuts the cycle at
-     * B. That cut result must not be memoized, or leaf 2 reads it and is
+     * leaf 2 under B. Both leaves reach Home past the cycle, so neither is
      * promoted to a root.
      */
     public function testArticleBelowACycleOfInvisibleParentsStaysUnderTheRoot(): void

@@ -157,19 +157,18 @@ final class Builder
             return;
         }
 
-        // 2) The full parent graph: the walk needs the invisible links too.
-        $raw_parents_of = [];
+        // 2) The full child graph: the walk needs the invisible links too.
+        $raw_children_of = [];
         foreach ($DB->request(['FROM' => KnowbaseItem_KnowbaseItem::getTable()]) as $link) {
             $child  = (int) $link['knowbaseitems_id'];
             $parent = (int) $link['knowbaseitems_id_parent'];
-            $raw_parents_of[$child][] = $parent;
+            $raw_children_of[$parent][] = $child;
         }
 
         // 3) Attach each article to its nearest visible ancestor, or make it a root.
-        $memo = [];
-        $in_progress = [];
+        $attached = $this->findNearestVisibleAncestors($raw_children_of);
         foreach (array_keys($this->data) as $id) {
-            $ancestors = $this->findNearestVisibleAncestors($id, $raw_parents_of, $memo, $in_progress)['ancestors'];
+            $ancestors = $attached[$id] ?? [];
             unset($ancestors[$id]); // a cycle can make an article its own ancestor
             if ($ancestors === []) {
                 $this->roots[$id] = true;
@@ -214,61 +213,51 @@ final class Builder
     }
 
     /**
-     * The visible ancestors of `$id` with the fewest hops up, ties included.
-     * Memoized: a diamond in the graph resolves once.
+     * For every visible article, the visible ancestors that reach it with the
+     * fewest hops down, ties included. Breadth-first from every visible article
+     * at once; a visible article stops the walk, a cycle is an article seen twice.
      *
-     * @param array<int, int[]> $raw_parents_of child_id => every parent id, visible or not
-     * @param array<int, array{distance: ?int, ancestors: array<int, true>, cycle_cut: bool}> $memo Memoized results, keyed by id
-     * @param array<int, true> $in_progress Cycle guard for the current walk
+     * @param array<int, int[]> $raw_children_of parent_id => every child id, visible or not
      *
-     * @return array{distance: ?int, ancestors: array<int, true>, cycle_cut: bool}
+     * @return array<int, array<int, true>> visible article id => ancestor ids
      */
-    private function findNearestVisibleAncestors(
-        int $id,
-        array $raw_parents_of,
-        array &$memo,
-        array &$in_progress,
-    ): array {
-        if (isset($memo[$id])) {
-            return $memo[$id];
+    private function findNearestVisibleAncestors(array $raw_children_of): array
+    {
+        $frontier = [];
+        foreach (array_keys($this->data) as $id) {
+            $frontier[$id] = [$id => true]; // seeds itself, to carry its id down
         }
-        if (isset($in_progress[$id])) {
-            return ['distance' => null, 'ancestors' => [], 'cycle_cut' => true]; // cycle: no ancestor through this path
-        }
-        $in_progress[$id] = true;
+        $walked = array_fill_keys(array_keys($frontier), true); // expand once: the first hop wins
 
-        $cycle_cut = false;
-        $best_distance = null;
-        $best_ancestors = [];
-        foreach ($raw_parents_of[$id] ?? [] as $parent_id) {
-            if (isset($this->data[$parent_id])) {
-                $distance = 1;
-                $ancestors = [$parent_id => true];
-            } else {
-                $parent_result = $this->findNearestVisibleAncestors($parent_id, $raw_parents_of, $memo, $in_progress);
-                $cycle_cut = $cycle_cut || $parent_result['cycle_cut'];
-                if ($parent_result['distance'] === null) {
-                    continue; // this branch leads to no visible article
+        $attached = [];
+        $attached_at = [];
+        $hops = 0;
+        while ($frontier !== []) {
+            $hops++;
+            $next = [];
+            foreach ($frontier as $id => $ancestors) {
+                foreach ($raw_children_of[$id] ?? [] as $child_id) {
+                    if (isset($this->data[$child_id])) {
+                        $attached_at[$child_id] ??= $hops;
+                        if ($attached_at[$child_id] === $hops) {
+                            $attached[$child_id] = ($attached[$child_id] ?? []) + $ancestors; // tie
+                        }
+                        continue;
+                    }
+                    if (isset($walked[$child_id])) {
+                        if (isset($next[$child_id])) {
+                            $next[$child_id] += $ancestors; // tie
+                        }
+                        continue;
+                    }
+                    $walked[$child_id] = true;
+                    $next[$child_id] = $ancestors;
                 }
-                $distance = 1 + $parent_result['distance'];
-                $ancestors = $parent_result['ancestors'];
             }
-
-            if ($best_distance === null || $distance < $best_distance) {
-                $best_distance = $distance;
-                $best_ancestors = $ancestors;
-            } elseif ($distance === $best_distance) {
-                $best_ancestors += $ancestors;
-            }
+            $frontier = $next;
         }
 
-        unset($in_progress[$id]);
-        $result = ['distance' => $best_distance, 'ancestors' => $best_ancestors, 'cycle_cut' => $cycle_cut];
-        if (!$cycle_cut) {
-            $memo[$id] = $result; // a cut cycle may hide a path: not final
-        }
-
-        return $result;
+        return $attached;
     }
 
     /**
