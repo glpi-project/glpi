@@ -46,31 +46,31 @@ if (isset($_GET["redirect"])) {
     Toolbox::manageRedirect($_GET["redirect"]);
 }
 
-// Checked before any output so the error page can be rendered (same codes as the central knowledge base).
-$kb = new KnowbaseItem();
-if (isset($_GET["id"])) {
-    $id = (int) $_GET["id"];
-    if (!$kb->getFromDB($id)) {
+// The FAQ opens on the root article, as `front/knowbaseitem.php` does.
+if (!isset($_GET["id"])) {
+    if (!KnowbaseItem::hasRoot()) {
         throw new NotFoundHttpException();
     }
-    if (!$kb->can($id, READ)) {
-        throw new AccessDeniedHttpException();
-    }
-}
-
-// The FAQ opens on the root article, as `front/knowbaseitem.php` does.
-// Without one, control falls to the legacy view that roadmap#492 replaces with a 404.
-// `redirect` can outlive manageRedirect(), `forcetab` is consumed below.
-$asked_for_a_page = $_GET;
-unset($asked_for_a_page['redirect'], $asked_for_a_page['forcetab']);
-
-if ($asked_for_a_page === [] && KnowbaseItem::hasRoot()) {
     $root_id = KnowbaseItem::getRootId();
     $root    = new KnowbaseItem();
-    if ($root->getFromDB($root_id) && $root->can($root_id, READ)) {
-        // Not getFormURLWithID(): it leaves the helpdesk in a central session.
-        Html::redirect($CFG_GLPI['root_doc'] . '/front/helpdesk.faq.php?id=' . $root_id);
+    if (!$root->getFromDB($root_id)) {
+        throw new NotFoundHttpException();
     }
+    if (!$root->can($root_id, READ)) {
+        throw new AccessDeniedHttpException();
+    }
+    // Not getFormURLWithID(): it leaves the helpdesk in a central session.
+    Html::redirect($CFG_GLPI['root_doc'] . '/front/helpdesk.faq.php?id=' . $root_id);
+}
+
+// Checked before any output so the error page can be rendered (same codes as the central knowledge base).
+$id = (int) $_GET["id"];
+$kb = new KnowbaseItem();
+if (!$kb->getFromDB($id)) {
+    throw new NotFoundHttpException();
+}
+if (!$kb->can($id, READ)) {
+    throw new AccessDeniedHttpException();
 }
 
 if (Session::getLoginUserID()) {
@@ -84,22 +84,11 @@ if (Session::getLoginUserID()) {
     ]);
 }
 
-if (isset($_GET["id"])) {
-    // Same two-column layout as the central knowledge base (see CommonGLPI::display()).
-    echo TemplateRenderer::getInstance()->render('pages/tools/kb/faq_article.html.twig', [
-        'aside'   => $kb->getAsideContent(),
-        'slug'    => Toolbox::slugify(KnowbaseItem::class),
-        'article' => $kb->showFull(['display' => false]),
-    ]);
-} else {
-    // Manage forcetab : non standard system (file name <> class name)
-    if (isset($_GET['forcetab'])) {
-        Session::setActiveTab('Knowbase', $_GET['forcetab']);
-        unset($_GET['forcetab']);
-    }
-
-    $kb = new Knowbase();
-    $kb->display($_GET);
-}
+// Same two-column layout as the central knowledge base (see CommonGLPI::display()).
+echo TemplateRenderer::getInstance()->render('pages/tools/kb/faq_article.html.twig', [
+    'aside'   => $kb->getAsideContent(),
+    'slug'    => Toolbox::slugify(KnowbaseItem::class),
+    'article' => $kb->showFull(['display' => false]),
+]);
 
 Html::helpFooter();
