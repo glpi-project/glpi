@@ -256,10 +256,17 @@ class DbUtilsTest extends DbTestCase
         $this->assertFalse($instance->isGlpiClassFile(GLPI_ROOT . '/src/ThisDoesNotExist.php'));
 
         // A plugin installed in a directory located outside of the GLPI tree
-        $plugins_dir = sys_get_temp_dir() . '/' . uniqid('glpi_plugins_', false);
+        $base        = sys_get_temp_dir() . '/' . uniqid('glpi_plugins_', false);
+        $plugins_dir = $base . '/plugins';
         $class_file  = $plugins_dir . '/myplugin/inc/stuff.class.php';
         mkdir(dirname($class_file), 0o755, true);
         file_put_contents($class_file, '<?php');
+
+        // A sibling directory that only shares its prefix with the plugins directory
+        $sibling_dir  = $base . '/plugins_bak';
+        $sibling_file = $sibling_dir . '/myplugin/inc/stuff.class.php';
+        mkdir(dirname($sibling_file), 0o755, true);
+        file_put_contents($sibling_file, '<?php');
 
         try {
             $this->assertFalse(
@@ -273,11 +280,27 @@ class DbUtilsTest extends DbTestCase
             $this->assertFalse(
                 $instance->isGlpiClassFile($class_file, GLPI_ROOT, [$plugins_dir . '/not_there'])
             );
+
+            // A path prefix is not a parent directory
+            $this->assertFalse(
+                $instance->isGlpiClassFile($sibling_file, GLPI_ROOT, [$plugins_dir])
+            );
+            $this->assertTrue(
+                $instance->isGlpiClassFile($sibling_file, GLPI_ROOT, [$sibling_dir])
+            );
+
+            // The allowed directory itself is not a class file
+            $this->assertFalse(
+                $instance->isGlpiClassFile($plugins_dir, GLPI_ROOT, [$plugins_dir])
+            );
         } finally {
-            unlink($class_file);
-            rmdir(dirname($class_file));
-            rmdir(dirname($class_file, 2));
-            rmdir($plugins_dir);
+            foreach ([$class_file, $sibling_file] as $file) {
+                unlink($file);
+                rmdir(dirname($file));
+                rmdir(dirname($file, 2));
+                rmdir(dirname($file, 3));
+            }
+            rmdir($base);
         }
     }
 
