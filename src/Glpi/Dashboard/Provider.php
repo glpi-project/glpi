@@ -1117,8 +1117,10 @@ class Provider
             && count($params['apply_filters'][DatesFilter::getId()]) == 2
         ) {
             try {
-                $begin = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][0]));
-                $end   = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][1]));
+                $filter_begin = strtotime($params['apply_filters'][DatesFilter::getId()][0]);
+                $filter_end   = strtotime($params['apply_filters'][DatesFilter::getId()][1]);
+                $begin = date("Y-m-d", $filter_begin);
+                $end   = date("Y-m-d", $filter_end);
             } catch (DatetimeException) {
                 // keep default range if filter values are not parsable dates
             }
