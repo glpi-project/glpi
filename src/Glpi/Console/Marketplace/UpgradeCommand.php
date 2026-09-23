@@ -39,11 +39,15 @@ use Glpi\Marketplace\Api\Plugins;
 use Glpi\Marketplace\Controller;
 use GLPINetwork;
 use Plugin;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\PhpExecutableFinder;
-use Symfony\Component\Process\Process;
+use Throwable;
+
+use function Safe\file_get_contents;
+use function Safe\preg_match;
+use function Safe\realpath;
 
 class UpgradeCommand extends AbstractCommand
 {
@@ -171,8 +175,7 @@ class UpgradeCommand extends AbstractCommand
             }
         }
 
-        // Each plugin is processed in its own subprocess so its loaded code doesn't accumulate in memory.
-        if ($this->upgradeActivePlugins($active_plugins, $updated_plugins, $username, $output)) {
+        if ($this->upgradeActivePlugins($active_plugins, $updated_plugins, $output)) {
             $has_errors = true;
         }
 
@@ -187,7 +190,6 @@ class UpgradeCommand extends AbstractCommand
     protected function upgradeActivePlugins(
         array $active_plugins,
         array $updated_plugins,
-        ?string $username,
         OutputInterface $output
     ): bool {
         $has_errors = false;
@@ -198,37 +200,128 @@ class UpgradeCommand extends AbstractCommand
 
         \asort($active_plugins);
 
+        Plugin::forcePluginsExecution(true); // Temporarly force the plugins execution
+
         foreach ($active_plugins as $plugin_key => $plugin_id) {
             if (!\in_array($plugin_key, $updated_plugins, true)) {
                 continue;
             }
 
-            if (!$this->upgradePlugin($plugin_key, $username, $output)) {
+            // Avoid an uncatchable "Cannot redeclare class" fatal if this plugin's vendored Composer
+            // autoloader class name collides with one already loaded by another plugin in this batch.
+            if ($this->hasConflictingAutoloader($plugin_key)) {
+                $has_errors = true;
+                $output->writeln(
+                    '<error>' . sprintf(__('Plugin "%s" was skipped due to an autoloader conflict with another plugin processed in the same batch. It will be retried on the next run.'), $plugin_key) . '</error>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
+                continue;
+            }
+
+            if (!$this->upgradePlugin($plugin_key, $plugin_id, $output)) {
                 $has_errors = true;
             }
+
+            \gc_collect_cycles();
         }
+
+        Plugin::forcePluginsExecution(false);
 
         return $has_errors;
     }
 
     /**
-     * Install and activate the given plugin in a dedicated subprocess.
+     * Install and activate a single plugin.
      */
-    protected function upgradePlugin(string $plugin_key, ?string $username, OutputInterface $output): bool
+    protected function upgradePlugin(string $plugin_key, int $plugin_id, OutputInterface $output): bool
     {
-        $php_binary = (new PhpExecutableFinder())->find();
+        $plugin = new Plugin();
 
-        $command = [$php_binary, GLPI_ROOT . '/bin/console', 'marketplace:upgrade:plugin', $plugin_key];
-        if ($username !== null) {
-            $command[] = "--username={$username}";
+        try {
+            $plugin->install($plugin_id);
+            $installed = \in_array($plugin->fields['state'], [Plugin::NOTACTIVATED, Plugin::TOBECONFIGURED]);
+        } catch (Throwable $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                sprintf('Error while installing plugin `%s`, error was: `%s`.', $plugin_key, $e->getMessage()),
+                ['exception' => $e]
+            );
+
+            $installed = false;
+        }
+        if (!$installed) {
+            $output->writeln(
+                '<error>' . sprintf(__('Plugin "%s" installation failed.'), $plugin_key) . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            $this->outputSessionBufferedMessages([WARNING, ERROR]);
+            return false;
         }
 
-        $process = new Process($command);
-        $process->setTimeout(null);
-        $process->run(static function ($type, $buffer) use ($output) {
-            $output->write($buffer);
-        });
+        try {
+            $activated = $plugin->activate($plugin_id);
+        } catch (Throwable $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                sprintf('Error while activating plugin `%s`, error was: `%s`.', $plugin_key, $e->getMessage()),
+                ['exception' => $e]
+            );
 
-        return $process->isSuccessful();
+            $activated = false;
+        }
+        if (!$activated) {
+            $output->writeln(
+                '<error>' . sprintf(__('Plugin "%s" activation failed.'), $plugin_key) . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            $this->outputSessionBufferedMessages([WARNING, ERROR]);
+            return false;
+        }
+
+        $output->writeln('<info>' . sprintf(__('Plugin "%1$s" has been updated and reactivated.'), $plugin_key) . '</info>');
+
+        return true;
+    }
+
+    /**
+     * Detects if the plugin's vendored Composer autoloader class name is already declared by a
+     * different plugin's autoloader.
+     */
+    protected function hasConflictingAutoloader(string $plugin_key): bool
+    {
+        $plugin_dir = Plugin::getPhpDir($plugin_key);
+        if ($plugin_dir === false) {
+            return false;
+        }
+
+        $autoload_real_file = $plugin_dir . '/vendor/composer/autoload_real.php';
+        if (!\is_file($autoload_real_file)) {
+            return false;
+        }
+
+        try {
+            $content = file_get_contents($autoload_real_file, false, null, 0, 4096);
+        } catch (FilesystemException) {
+            return false;
+        }
+
+        if (!preg_match('/^class\s+(ComposerAutoloaderInit\w+)/m', $content, $matches)) {
+            return false;
+        }
+        $autoloader_class = $matches[1];
+
+        if (!\class_exists($autoloader_class, false)) {
+            return false;
+        }
+
+        $declared_in = (new \ReflectionClass($autoloader_class))->getFileName();
+
+        try {
+            $real_autoload_real_file = realpath($autoload_real_file);
+        } catch (FilesystemException) {
+            return true; // Cannot confirm it's the plugin's own file, so err on the side of caution.
+        }
+
+        return $declared_in !== $real_autoload_real_file;
     }
 }
