@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\Filters\DatesFilter;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -808,6 +809,19 @@ class ProviderTest extends DbTestCase
                 $this->assertStringContainsString(\Ticket::getSearchURL(), $serie_data['url']);
             }
         }
+    }
+
+
+    public function testGetTicketsEvolutionWithUninitializedDatesFilter()
+    {
+        // The dates filter value can be a string (instead of an array) when not initialized yet,
+        // this must not raise a TypeError on count().
+        $result = Provider::getTicketsEvolution([
+            'apply_filters' => [
+                DatesFilter::getId() => '',
+            ],
+        ]);
+        $this->assertArrayHasKey('data', $result);
     }
 
 
