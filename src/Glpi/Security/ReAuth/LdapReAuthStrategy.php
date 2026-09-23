@@ -90,7 +90,12 @@ final class LdapReAuthStrategy extends InPlaceReAuthStrategy
             return false;
         }
 
-        return $user->fields['authtype'] === Auth::LDAP
+        $session_authtype = $_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED;
+        // An SSO account backed by a directory still knows its directory password
+        $is_sso_backed_by_ldap = $session_authtype === Auth::EXTERNAL
+            && $user->fields['authtype'] === Auth::LDAP;
+
+        return ($session_authtype === Auth::LDAP || $is_sso_backed_by_ldap)
             && (int) $user->fields['auths_id'] > 0;
     }
 

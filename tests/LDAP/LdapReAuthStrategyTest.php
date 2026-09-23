@@ -107,7 +107,6 @@ class LdapReAuthStrategyTest extends DbTestCase
         yield 'database' => [Auth::DB_GLPI];
         yield 'unknown' => [Auth::NOT_YET_AUTHENTIFIED];
         yield 'mail server' => [Auth::MAIL];
-        yield 'sso' => [Auth::EXTERNAL];
         yield 'cas' => [Auth::CAS];
         yield 'x509' => [Auth::X509];
         yield 'api token' => [Auth::API];
@@ -120,9 +119,32 @@ class LdapReAuthStrategyTest extends DbTestCase
     #[RequiresPhpExtension('ldap')]
     public function testIsAvailableIsFalseForNonLdapSession(int $session_authtype): void
     {
-        // --- arrange : LDAP account, session opened by another method (e.g. SSO) ---
+        // --- arrange : LDAP account, session opened by another method (e.g. x509) ---
         $users_id = $this->importLdapUser('brazil6');
         $_SESSION['glpiauthtype'] = $session_authtype;
+
+        // --- act + assert ---
+        $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
+    }
+
+    /** Available for an SSO session of an account backed by an LDAP directory. */
+    #[RequiresPhpExtension('ldap')]
+    public function testIsAvailableForSsoSessionBackedByLdap(): void
+    {
+        // --- arrange ---
+        $users_id = $this->importLdapUser('brazil6');
+        $_SESSION['glpiauthtype'] = Auth::EXTERNAL;
+
+        // --- act + assert ---
+        $this->assertTrue((new LdapReAuthStrategy())->isAvailable($users_id));
+    }
+
+    /** Not available for an SSO session of an account not backed by a directory. */
+    public function testIsAvailableIsFalseForSsoSessionOfLocalAccount(): void
+    {
+        // --- arrange : local DB_GLPI account ---
+        $users_id = getItemByTypeName(User::class, TU_USER, true);
+        $_SESSION['glpiauthtype'] = Auth::EXTERNAL;
 
         // --- act + assert ---
         $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
