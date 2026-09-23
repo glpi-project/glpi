@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Auth;
 use AuthLDAP;
 use Glpi\Security\ReAuth\LdapReAuthStrategy;
 use Glpi\Tests\DbTestCase;
@@ -95,16 +96,33 @@ class LdapReAuthStrategyTest extends DbTestCase
     {
         // --- arrange ---
         $users_id = $this->importLdapUser('brazil6');
+        $_SESSION['glpiauthtype'] = Auth::LDAP;
 
         // --- act + assert ---
         $this->assertTrue((new LdapReAuthStrategy())->isAvailable($users_id));
     }
 
-    /** Not available for a local DB_GLPI account (that's the password strategy's job). */
-    public function testIsAvailableIsFalseForDbGlpiUser(): void
+    public static function nonLdapSessionProvider(): iterable
     {
-        // --- arrange ---
-        $users_id = getItemByTypeName(User::class, TU_USER, true);
+        yield 'database' => [Auth::DB_GLPI];
+        yield 'unknown' => [Auth::NOT_YET_AUTHENTIFIED];
+        yield 'mail server' => [Auth::MAIL];
+        yield 'sso' => [Auth::EXTERNAL];
+        yield 'cas' => [Auth::CAS];
+        yield 'x509' => [Auth::X509];
+        yield 'api token' => [Auth::API];
+        yield 'remember me cookie' => [Auth::COOKIE];
+        yield 'oauth' => [Auth::OAUTH];
+    }
+
+    /** Not available when the session was not opened on the directory, even for an LDAP account. */
+    #[DataProvider('nonLdapSessionProvider')]
+    #[RequiresPhpExtension('ldap')]
+    public function testIsAvailableIsFalseForNonLdapSession(int $session_authtype): void
+    {
+        // --- arrange : LDAP account, session opened by another method (e.g. SSO) ---
+        $users_id = $this->importLdapUser('brazil6');
+        $_SESSION['glpiauthtype'] = $session_authtype;
 
         // --- act + assert ---
         $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
@@ -130,6 +148,7 @@ class LdapReAuthStrategyTest extends DbTestCase
         // --- arrange : import a real LDAP user then detach it from any directory ---
         $users_id = $this->importLdapUser('brazil6');
         $DB->update('glpi_users', ['auths_id' => 0], ['id' => $users_id]);
+        $_SESSION['glpiauthtype'] = Auth::LDAP;
 
         // --- act + assert ---
         $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
