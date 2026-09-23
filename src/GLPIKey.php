@@ -71,6 +71,8 @@ class GLPIKey
         'glpi_authldaps.rootdn_passwd',
         'glpi_mailcollectors.passwd',
         'glpi_oauthclients.secret',
+        'glpi_queuednotifications.body_text',
+        'glpi_queuednotifications.body_html',
         'glpi_sharetokens.token',
         'glpi_snmpcredentials.auth_passphrase',
         'glpi_snmpcredentials.priv_passphrase',
@@ -344,11 +346,20 @@ class GLPIKey
         foreach ($this->getFields() as $field) {
             [$table, $column] = explode('.', $field);
 
-            $iterator = $DB->request([
+            $query = [
                 'SELECT' => ['id', $column],
                 'FROM'   => $table,
-                ['NOT' => [$column => null]],
-            ]);
+                'WHERE'  => [
+                    ['NOT' => [$column => null]],
+                ],
+            ];
+
+            if ($table === 'glpi_queuednotifications' && in_array($column, ['body_text', 'body_html'], true)) {
+                // Queued notifications are encrypted only when `is_body_encrypted` is `true`.
+                $query['WHERE'][] = ['is_body_encrypted' => true];
+            }
+
+            $iterator = $DB->request($query);
 
             foreach ($iterator as $row) {
                 $value = (string) $row[$column];
