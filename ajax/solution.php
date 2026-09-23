@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\RichText\RichText;
 
@@ -67,6 +68,9 @@ if ($parents_id > 0 && !empty($parents_itemtype) && is_a($parents_itemtype, Comm
     $parent = new $parents_itemtype();
     if (!$parent->getFromDB($parents_id)) {
         throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
+    }
+    if (!$parent->can($parents_id, READ)) {
+        throw new AccessDeniedHttpException();
     }
 
     // Render template content using twig

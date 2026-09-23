@@ -2108,7 +2108,7 @@ msgstr "URL del activo"
 msgid ""
 "Scan this QRCode to be redirected to the asset page from your mobile device"
 msgstr ""
-"Escaneá este código QR para ser redirigido a la página del activo desde tu "
+"Escanea este código QR para ser redirigido a la página del activo desde tu "
 "dispositivo móvil"
 
 #: templates/components/form/item_antivirus.html.twig
@@ -5331,7 +5331,7 @@ msgstr "Use un código de su aplicación de autenticación"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Please enter a backup code"
-msgstr "Por favor, ingresá un código de respaldo"
+msgstr "Por favor, ingresa un código de respaldo"
 
 #: templates/pages/2fa/2fa_request.html.twig
 #: templates/pages/2fa/macros.html.twig
@@ -7355,7 +7355,7 @@ msgstr "La contraseña necesita: mayúsculas"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password need symbol"
-msgstr "La clave necesita: símbolos"
+msgstr "La contraseña necesita: símbolos"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password expiration policy"
@@ -7751,7 +7751,7 @@ msgstr "Número máximo de acciones automáticas (ejecutadas por CLI)"
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr ""
-"Registros en archivos (SQL, correo eléctrónico, acciones automáticas...)"
+"Registros en archivos (SQL, correo electrónico, acciones automáticas...)"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 #: src/DBConnection.php:83 src/Config.php:1051
@@ -7799,7 +7799,7 @@ msgid ""
 "To enable or disable sending telemetry, please change the \"telemetry\" "
 "automatic action."
 msgstr ""
-"Para activar o desactivar el envío de telemetría, por favor, cambiá la "
+"Para activar o desactivar el envío de telemetría, por favor, cambia la "
 "acción automática \"telemetría\"."
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
@@ -7893,7 +7893,7 @@ msgid ""
 "marketplace) in GLPI"
 msgstr ""
 "Se necesita una clave de registro para usar algunas funciones avanzadas "
-"(como el marketplace de plugins) en GLPI"
+"(como el marketplace de complementos) en GLPI"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #, php-format
@@ -7952,7 +7952,7 @@ msgid ""
 "Choose whether to replace the classic plugins page with the new marketplace "
 "interface."
 msgstr ""
-"Elegí si querés reemplazar la página clásica de complementos por la nueva "
+"Elige si quieres reemplazar la página clásica de complementos por la nueva "
 "interfaz del marketplace."
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
@@ -8122,7 +8122,7 @@ msgstr "Autenticación con certificado x509"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Email attribute for x509 authentication"
-msgstr "Atributo correo electróninco para autenticación x509"
+msgstr "Atributo correo electrónico para autenticación x509"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 #, php-format
@@ -8430,7 +8430,7 @@ msgstr "Puede ser requerido para algunos proveedores de correo electrónico."
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "If not set, main administrator email will be used."
 msgstr ""
-"Si no se establece, se usará el dirección de correo del administrador "
+"Si no se establece, se usará la dirección de correo del administrador "
 "principal."
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
@@ -9555,7 +9555,7 @@ msgstr "Imagen de fondo (plano)"
 #: src/Contract_Supplier.php:210
 msgctxt "phone"
 msgid "Number"
-msgstr "Contrato"
+msgstr "Número"
 
 #: templates/pages/management/contract.html.twig
 msgid "Next renewal date"
@@ -10198,8 +10198,8 @@ msgid ""
 "This destination is not available, the plugin \"%1$s\" is deactivated or "
 "removed."
 msgstr ""
-"Este destino no está disponible, el plugin \"%1$s\" está desactivado o ha "
-"sido eliminado."
+"Este destino no está disponible, el complemento \"%1$s\" está desactivado o "
+"ha sido eliminado."
 
 #: templates/pages/admin/form/item_has_conditions_for_deletion_modal.html.twig
 msgid "Item has conditions and cannot be deleted"
@@ -11928,7 +11928,7 @@ msgstr ""
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Think of making a backup before transfering items."
-msgstr "Considerá hacer una copia de seguridad antes de transferir elementos."
+msgstr "Considera hacer una copia de seguridad antes de transferir elementos."
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Transfer mode"
@@ -15458,12 +15458,12 @@ msgstr "Tablero de activos"
 #: front/plugin.form.php:64 src/Update.php:432
 #: src/Glpi/Console/Plugin/ResumeExecutionCommand.php:63
 msgid "Execution of all active plugins has been resumed."
-msgstr "Se reanudó la ejecución de todos los plugins activos."
+msgstr "Se reanudó la ejecución de todos los complementos activos."
 
 #: front/plugin.form.php:68
 #: src/Glpi/Console/Plugin/SuspendExecutionCommand.php:63
 msgid "Execution of all active plugins has been suspended."
-msgstr "Se suspendió la ejecución de todos los plugins activos."
+msgstr "Se suspendió la ejecución de todos los complementos activos."
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:66 front/contract_supplier.form.php:69
@@ -17443,7 +17443,7 @@ msgstr[2] "Elementos"
 #: src/Document_Item.php:351 src/Log.php:1319 src/Appliance_Item.php:157
 #: src/Item_Line.php:256
 msgid "Add an item"
-msgstr "Agregó un elemento"
+msgstr "Agregar un elemento"
 
 #: src/RuleDictionnaryOperatingSystemServicePackCollection.php:43
 msgid "Dictionary of service packs"
@@ -23689,11 +23689,11 @@ msgstr "%d columnas de claves primarias o externas utilizan enteros con signo"
 
 #: src/Central.php:593
 msgid "You have some forms from the 'Formcreator' plugin."
-msgstr "Tiene algunos formularios del plugin 'Formcreator'."
+msgstr "Tiene algunos formularios del complemento 'Formcreator'."
 
 #: src/Central.php:603
 msgid "You have some assets from the 'Generic object' plugin."
-msgstr "Tiene algunos activos del plugin 'Generic Object'."
+msgstr "Tiene algunos activos del complemento 'Generic Object'."
 
 #: src/Central.php:632
 msgid "notification"
@@ -24468,7 +24468,7 @@ msgstr[2] "Usados"
 
 #: src/Consumable.php:673 src/NetworkPort.php:1477
 msgid "Delete permanently"
-msgstr "Borrar permanentemente"
+msgstr "Eliminar permanentemente"
 
 #: src/Consumable.php:744
 msgid "Give to"
@@ -26477,7 +26477,7 @@ msgstr "Vincular a objetos de soporte"
 
 #: src/Glpi/Form/Destination/CommonITILField/LinkedITILObjectsField.php:107
 msgid "Select the link type..."
-msgstr "Seleccioná el tipo de vínculo..."
+msgstr "Selecciona el tipo de vínculo..."
 
 #: src/Glpi/Form/Destination/CommonITILField/LinkedITILObjectsField.php:117
 msgid "Select the strategy..."
@@ -26541,7 +26541,7 @@ msgstr "Elementos asociados"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceField.php:83
 msgid "Select a request source..."
-msgstr "Seleccioná un origen de solicitud..."
+msgstr "Selecciona un origen de solicitud..."
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILTaskField.php:88
 msgid "Select task templates..."
@@ -28277,7 +28277,7 @@ msgstr "Mejores notas"
 
 #: src/Glpi/Marketplace/View.php:457
 msgid "Your plugin here? Contact us."
-msgstr "¿Su plugin aquí? Contáctenos."
+msgstr "¿Su complemento aquí? Contáctenos."
 
 #: src/Glpi/Marketplace/View.php:459
 msgid "Refresh plugin list"
@@ -28334,7 +28334,7 @@ msgstr ""
 #: src/Glpi/Marketplace/View.php:725
 #, php-format
 msgid "A new version (%s) is available, update?"
-msgstr "Una nueva versión de (%s) disponible, ¿Deseas actualizar?"
+msgstr "Una nueva versión (%s) esta disponible, ¿Deseas actualizar?"
 
 #: src/Glpi/Marketplace/View.php:749
 #, php-format
@@ -29279,7 +29279,7 @@ msgstr "Ejecute el comando \"%1$s\" para obtener más detalles."
 
 #: src/Glpi/Console/Migration/GenericobjectPluginToCoreCommand.php:53
 msgid "Migrate plugin data into GLPI core tables"
-msgstr "Migrar los datos del plugin a las tablas principales de GLPI"
+msgstr "Migrar los datos del complemento a las tablas principales de GLPI"
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:69
 msgid "Migrate primary/foreign keys to unsigned integers"
@@ -29374,7 +29374,7 @@ msgstr ""
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:159
 msgid "Any previous appliance created in core will be lost."
-msgstr "Cualquier áplicación previa creada en el núcleo se perderá"
+msgstr "Cualquier aplicación previa creada en el núcleo se perderá"
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:160
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:218
@@ -33860,11 +33860,11 @@ msgstr "Hora de finalización del período de ejecución"
 #, php-format
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
-msgstr[0] "Borrado de archivo de sesión %1$s creado hace más de %2$s segundos"
+msgstr[0] "Borrado de archivo de sesión %1$d creado hace más de %2$s segundos"
 msgstr[1] ""
-"Borrado de archivos de sesión %1$s creados hace más de %2$s segundos"
+"Borrado de archivos de sesión %1$d creados hace más de %2$s segundos"
 msgstr[2] ""
-"Borrado de archivos de sesión %1$s creados hace más de %2$s segundos"
+"Borrado de archivos de sesión %1$d creados hace más de %2$s segundos"
 
 #: src/CronTask.php:1599
 #, php-format
@@ -33895,19 +33895,19 @@ msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
 msgstr[0] "Borrado de archivo gráfico %1$d creado hace más de %2$s segundos"
 msgstr[1] ""
-"Borrado de archivos gráficos %1$s creados hace más de %2$s segundos"
+"Borrado de archivos gráficos %1$d creados hace más de %2$s segundos"
 msgstr[2] ""
-"Borrado de archivos gráficos %1$s creados hace más de %2$s segundos"
+"Borrado de archivos gráficos %1$d creados hace más de %2$s segundos"
 
 #: src/CronTask.php:1738
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
-msgstr[0] "Borrado de archivo temporal %1$s creado hace más de %2$s segundos"
+msgstr[0] "Borrado de archivo temporal %1$d creado hace más de %2$s segundos"
 msgstr[1] ""
-"Borrado de archivos temporales %1$s creados hace más de %2$s segundos"
+"Borrado de archivos temporales %1$d creados hace más de %2$s segundos"
 msgstr[2] ""
-"Borrado de archivos temporales %1$s creados hace más de %2$s segundos"
+"Borrado de archivos temporales %1$d creados hace más de %2$s segundos"
 
 #: src/CronTask.php:1857
 msgid "Check for new updates"
@@ -35262,8 +35262,8 @@ msgid ""
 "Execution of all the plugins has been suspended since a database update is "
 "required."
 msgstr ""
-"La ejecución de todos los plugins se ha suspendido porque se requiere una "
-"actualización de la base de datos."
+"La ejecución de todos los complementos se ha suspendido porque se requiere "
+"una actualización de la base de datos."
 
 #: src/Plugin.php:871
 #, php-format
@@ -35301,7 +35301,7 @@ msgstr "El complemento %1$s ha sido desinstalado por %2$s."
 #, php-format
 msgid "Plugin %1$s prerequisites are not matching, it cannot be installed."
 msgstr ""
-"Los prerrequisitos del plugin %1$s no coinciden, no se puede instalar."
+"Los prerrequisitos del complemento %1$s no coinciden, no se puede instalar."
 
 #: src/Plugin.php:1257
 #, php-format

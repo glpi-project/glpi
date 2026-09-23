@@ -77,7 +77,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
 
         $config = new QuestionTypeDropdownExtraDataConfig(
             options: $options,
-            is_multiple_dropdown: $rawData['fieldtype'] === 'multiselect'
+            is_multiple_dropdown: ($rawData['fieldtype'] ?? null) === 'multiselect'
         );
         return $config->jsonSerialize();
     }

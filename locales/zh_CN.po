@@ -2746,7 +2746,7 @@ msgstr "TTR"
 #: src/CommonITILObject.php:4487 src/CommonITILObject.php:5711
 #: src/CommonITILObject.php:6720 src/CommonITILObject.php:7153
 msgid "Time to resolve"
-msgstr "预计完成"
+msgstr "预计解决时间"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/OLATTOField.php:48
@@ -3031,7 +3031,7 @@ msgstr "开启日期"
 #: src/Glpi/ContentTemplates/Parameters/CommonITILObjectParameters.php:67
 #: src/CommonITILObject.php:4518 src/CommonITILObject.php:5715
 msgid "Resolution date"
-msgstr "解决日期"
+msgstr "实际解决日期"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "Close date"
@@ -5308,7 +5308,7 @@ msgstr "1.在你的移动设备上安装一个认证器APP，例如Google Authen
 msgid ""
 "2. Scan the following QR code or enter the code shown into your "
 "authenticator app."
-msgstr "2.扫描二维码或者输入代码引入你的认证器APP应用"
+msgstr "2. 扫描下面的二维码或者输入显示的代码到你的认证器应用中。"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "QR Code"
@@ -8073,7 +8073,7 @@ msgstr "PHP邮件功能未知或在系统中没有启用。"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "The use of a SMTP is needed."
-msgstr "需要使用SMTP"
+msgstr "需要使用一个SMTP"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Way of sending emails"
@@ -19721,7 +19721,7 @@ msgstr "OLA的自动操作"
 
 #: src/ITILCategory.php:83 src/ITILCategory.php:307
 msgid "Code representing the ticket category"
-msgstr "表示工单类别的代码"
+msgstr "代表工单类别的代码"
 
 #: src/ITILCategory.php:89 src/ITILCategory.php:249
 msgid "Visible in the simplified interface"
@@ -19730,12 +19730,12 @@ msgstr "简化界面中可见"
 #: src/ITILCategory.php:95 src/ITILCategory.php:217 src/SolutionType.php:54
 #: src/SolutionType.php:89
 msgid "Visible for an incident"
-msgstr "可见事件"
+msgstr "对事件可见"
 
 #: src/ITILCategory.php:101 src/ITILCategory.php:225 src/SolutionType.php:60
 #: src/SolutionType.php:97
 msgid "Visible for a request"
-msgstr "可见请求"
+msgstr "对请求可见"
 
 #: src/ITILCategory.php:112 src/ITILCategory.php:233 src/SolutionType.php:66
 #: src/SolutionType.php:105
@@ -19745,7 +19745,7 @@ msgstr "对故障可见"
 #: src/ITILCategory.php:123 src/ITILCategory.php:241 src/SolutionType.php:72
 #: src/SolutionType.php:113
 msgid "Visible for a change"
-msgstr "变更可见"
+msgstr "对变更可见"
 
 #: src/ITILCategory.php:129 src/ITILCategory.php:182
 msgid "Template for a request"
@@ -19771,7 +19771,7 @@ msgstr[0] "ITIL 分类"
 
 #: src/ITILCategory.php:379 src/ITILCategory.php:400
 msgid "Code representing the ticket category is already used"
-msgstr "表示工单类别的代码已被使用"
+msgstr "代表工单类别的代码已被使用"
 
 #: src/GLPIKey.php:146
 #, php-format
@@ -21375,7 +21375,7 @@ msgstr "显示 %1$s"
 
 #: src/Dropdown.php:430 js/common.js:772
 msgid "Display on map"
-msgstr "地图中可见"
+msgstr "地图中显示"
 
 #: src/Dropdown.php:436
 msgid "Display on datacenter"

@@ -101,10 +101,16 @@
 
     .timeline-content {
         position: relative;
-        border-top-left-radius: 0;
         max-width: 820px;
         min-width: 100%;
         overflow-wrap: anywhere;
+
+        // Square only the corner the notch points to: top-left for left-aligned
+        // items, top-right for right-aligned (t-right) ones. Squaring top-left
+        // unconditionally left t-right bubbles with two squared top corners.
+        &:not(.t-right) {
+            border-top-left-radius: 0;
+        }
 
         @include media-breakpoint-up(sm) {
             &::before {

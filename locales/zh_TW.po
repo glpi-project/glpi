@@ -6231,11 +6231,11 @@ msgstr[0] "網路連接埠"
 
 #: templates/pages/assets/socket.html.twig
 msgid "From"
-msgstr ""
+msgstr "从"
 
 #: templates/pages/assets/socket.html.twig
 msgid "To"
-msgstr ""
+msgstr "到"
 
 #: templates/pages/assets/printer.html.twig src/Printer.php:566
 msgid "Initial page counter"
@@ -6263,7 +6263,7 @@ msgstr "东"
 
 #: templates/pages/assets/rack.html.twig
 msgid "South"
-msgstr ""
+msgstr "南"
 
 #: templates/pages/assets/rack.html.twig
 msgid "West"
@@ -9688,7 +9688,7 @@ msgstr ""
 #: templates/pages/admin/form/form_section.html.twig
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Header"
-msgstr ""
+msgstr "头部"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Add a description to this section"
@@ -10090,14 +10090,14 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
-msgstr ""
+msgstr "激活"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 #: templates/pages/admin/glpi_page_tile_config_fields.html.twig
 #: templates/pages/admin/external_page_tile_config_fields.html.twig
 #: src/Glpi/Form/Category.php:88 src/Glpi/Form/Category.php:112
 msgid "Illustration"
-msgstr ""
+msgstr "图例"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Pin to top of the service catalog"
@@ -10277,7 +10277,7 @@ msgstr ""
 #: src/Glpi/Form/Destination/FormDestination.php:72
 msgid "Destination"
 msgid_plural "Destinations"
-msgstr[0] ""
+msgstr[0] "目的地"
 
 #: templates/pages/admin/form/form_destination.html.twig
 #, php-format
@@ -10403,7 +10403,7 @@ msgstr "自動結束已解決的待辦事項於"
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:1413
 #: src/Entity.php:1432 src/Entity.php:2802
 msgid "Immediately"
-msgstr ""
+msgstr "立即"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:1421
 msgid "Automatic purge of closed tickets after"
@@ -10425,7 +10425,7 @@ msgstr "設定滿意度調查"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Helpdesk"
-msgstr ""
+msgstr "桌面支持"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Show tickets properties on helpdesk"
@@ -10814,7 +10814,7 @@ msgstr ""
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Filename"
-msgstr ""
+msgstr "文件名"
 
 #: templates/pages/admin/inventory/upload_result.html.twig src/Rule.php:2230
 msgid "Result"
@@ -11072,7 +11072,7 @@ msgstr ""
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: src/NetworkPort.php:1055
 msgid "Full"
-msgstr ""
+msgstr "全部"
 
 #: templates/pages/admin/profile/assistance.html.twig
 #: templates/pages/admin/profile/assistance_simple.html.twig
@@ -12373,7 +12373,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:6
 msgctxt "Icon"
 msgid "alert"
-msgstr ""
+msgstr "告警"
 
 #: resources/.illustrations_translations.php:7
 msgctxt "Icon"
@@ -12398,7 +12398,7 @@ msgstr "杀毒软件"
 #: resources/.illustrations_translations.php:11
 msgctxt "Icon"
 msgid "Application"
-msgstr ""
+msgstr "应用"
 
 #: resources/.illustrations_translations.php:12
 msgctxt "Icon"
@@ -12423,7 +12423,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:16
 msgctxt "Icon"
 msgid "Cartridge"
-msgstr ""
+msgstr "墨盒"
 
 #: resources/.illustrations_translations.php:17
 msgctxt "Icon"
@@ -12514,7 +12514,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
 msgid "Bookmark"
-msgstr ""
+msgstr "书签"
 
 #: resources/.illustrations_translations.php:35
 msgctxt "Icon"
@@ -12529,22 +12529,22 @@ msgstr "浏览帮助文章"
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
 msgid "Building"
-msgstr ""
+msgstr "楼宇"
 
 #: resources/.illustrations_translations.php:38
 msgctxt "Icon"
 msgid "Calendar"
-msgstr ""
+msgstr "日历"
 
 #: resources/.illustrations_translations.php:39
 msgctxt "Icon"
 msgid "Car"
-msgstr ""
+msgstr "车"
 
 #: resources/.illustrations_translations.php:40
 msgctxt "Icon"
 msgid "carbon"
-msgstr ""
+msgstr "碳"
 
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
@@ -12599,7 +12599,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:51
 msgctxt "Icon"
 msgid "Cloud"
-msgstr ""
+msgstr "云"
 
 #: resources/.illustrations_translations.php:52
 msgctxt "Icon"
@@ -12826,7 +12826,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:96
 msgctxt "Icon"
 msgid "Helpdesk"
-msgstr ""
+msgstr "桌面支持"
 
 #: resources/.illustrations_translations.php:97
 msgctxt "Icon"
@@ -17935,7 +17935,7 @@ msgstr "已依 GLPI 字典規則刪除軟體"
 msgctxt "camera"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
+msgstr[0] "分辨率"
 
 #: src/Item_DeviceCamera_ImageResolution.php:138
 msgid "Is Video"
@@ -26012,11 +26012,11 @@ msgstr ""
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:67
 msgid "Developer"
-msgstr ""
+msgstr "开发者"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:68
 msgid "Photoconductor"
-msgstr ""
+msgstr "感光鼓"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:75 src/Printer_CartridgeInfo.php:231
 msgid "Black"
@@ -26024,7 +26024,7 @@ msgstr "黑"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:76 src/Printer_CartridgeInfo.php:232
 msgid "Cyan"
-msgstr ""
+msgstr "青色"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:77
 msgid "Light cyan"
@@ -26032,7 +26032,7 @@ msgstr ""
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:78 src/Printer_CartridgeInfo.php:233
 msgid "Magenta"
-msgstr ""
+msgstr "洋红色"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:79
 msgid "Light magenta"
@@ -26045,7 +26045,7 @@ msgstr "黄"
 #: src/Glpi/Inventory/Asset/Cartridge.php:81
 #: src/Glpi/Inventory/Asset/Cartridge.php:83
 msgid "Grey"
-msgstr ""
+msgstr "灰色"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:82
 #: src/Glpi/Inventory/Asset/Cartridge.php:84
@@ -26062,7 +26062,7 @@ msgstr "照片"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:148
 msgid "Matte"
-msgstr ""
+msgstr "哑光"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:188
 msgid "Many information grouped"
@@ -26070,13 +26070,13 @@ msgstr "众多信息已被组合"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:191
 msgid "Staples"
-msgstr ""
+msgstr "订书钉"
 
 #: src/Glpi/Inventory/MainAsset/NetworkEquipment.php:117
 #: src/Glpi/Inventory/MainAsset/NetworkEquipment.php:177
 #: src/Glpi/Inventory/MainAsset/Unmanaged.php:121
 msgid "internal"
-msgstr ""
+msgstr "内部"
 
 #: src/Glpi/Inventory/Conf.php:204 src/Glpi/Inventory/Conf.php:267
 #, php-format
@@ -26403,7 +26403,7 @@ msgstr "12月"
 
 #: src/Glpi/Features/PlanningEvent.php:913
 msgid "Exceptions"
-msgstr ""
+msgstr "例外"
 
 #: src/Glpi/Features/PlanningEvent.php:945
 #, php-format
@@ -26502,7 +26502,7 @@ msgstr "等級"
 
 #: src/Glpi/Event.php:509
 msgid "Special"
-msgstr ""
+msgstr "特殊"
 
 #: src/Glpi/Event.php:510
 msgid "Items"
@@ -26918,7 +26918,7 @@ msgstr "已安装"
 
 #: src/Glpi/Marketplace/View.php:126
 msgid "Discover"
-msgstr ""
+msgstr "发现"
 
 #: src/Glpi/Marketplace/View.php:172
 #, php-format
@@ -27129,7 +27129,7 @@ msgstr ""
 
 #: src/Glpi/Marketplace/View.php:1077
 msgid "Later"
-msgstr ""
+msgstr "延迟"
 
 #: src/Glpi/Dropdown/DropdownDefinition.php:50
 msgid "Dropdown definition"
@@ -27384,7 +27384,7 @@ msgstr ""
 
 #: src/Glpi/Console/System/CheckRequirementsCommand.php:72
 msgid "Requirement"
-msgstr ""
+msgstr "需求"
 
 #: src/Glpi/Console/System/CheckRequirementsCommand.php:74
 msgid "Messages"
@@ -27401,7 +27401,7 @@ msgstr "错误"
 #: src/Glpi/Console/System/CheckRequirementsCommand.php:87
 #: src/Glpi/Console/System/CheckRequirementsCommand.php:89
 msgid "INFO"
-msgstr ""
+msgstr "INFO"
 
 #: src/Glpi/Console/Assets/CleanSoftwareCommand.php:88
 #: src/Glpi/Console/Assets/PurgeSoftwareCommand.php:88
@@ -29293,7 +29293,7 @@ msgstr ""
 
 #: src/Glpi/Console/Database/UpdateCommand.php:190
 msgid "Current"
-msgstr ""
+msgstr "当前"
 
 #: src/Glpi/Console/Database/UpdateCommand.php:191
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:109
@@ -29791,7 +29791,7 @@ msgstr ""
 
 #: src/Glpi/ContentTemplates/TemplateDocumentation.php:127
 msgid "Variable"
-msgstr ""
+msgstr "变量"
 
 #: src/Glpi/ContentTemplates/TemplateDocumentation.php:129
 msgid "Usage"
@@ -29799,7 +29799,7 @@ msgstr "使用"
 
 #: src/Glpi/ContentTemplates/TemplateDocumentation.php:130
 msgid "References"
-msgstr ""
+msgstr "参考"
 
 #: src/Glpi/Config/ProxyExclusions.php:78
 msgid "Objects that should not use proxy configuration:"
@@ -29836,7 +29836,7 @@ msgstr[0] ""
 #: src/Appliance.php:278 src/Item_Environment.php:51
 msgid "Environment"
 msgid_plural "Environments"
-msgstr[0] ""
+msgstr[0] "环境"
 
 #: src/Item_SoftwareLicense.php:297
 msgid "A version is required!"
@@ -29984,7 +29984,7 @@ msgstr[0] "電池種類"
 msgctxt "camera"
 msgid "Format"
 msgid_plural "Formats"
-msgstr[0] ""
+msgstr[0] "格式"
 
 #: src/Contract_Item.php:86
 msgid "Link Contract/Item"
@@ -30072,7 +30072,7 @@ msgstr ""
 msgctxt "image"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
+msgstr[0] "分辨率"
 
 #: src/MassiveAction.php:250
 msgid "No action available"
@@ -30247,7 +30247,7 @@ msgstr ""
 
 #: src/NetworkPort.php:800
 msgid "Hub "
-msgstr ""
+msgstr "集线器"
 
 #: src/NetworkPort.php:801
 msgid "Other equipments"
@@ -30294,7 +30294,7 @@ msgstr "Tbps"
 
 #: src/NetworkPort.php:1052
 msgid "Half"
-msgstr ""
+msgstr "半双工"
 
 #: src/NetworkPort.php:1081
 #, php-format
@@ -30333,7 +30333,7 @@ msgstr ""
 
 #: src/NetworkPort.php:1666
 msgid "Duplex"
-msgstr ""
+msgstr "双工"
 
 #: src/NetworkPort.php:1710
 msgid "Last connection"
@@ -30378,7 +30378,7 @@ msgstr ""
 
 #: src/Notification_NotificationTemplate.php:391
 msgid "Browser"
-msgstr ""
+msgstr "浏览器"
 
 #: src/NetworkInterface.php:44
 msgid "Network interface"
@@ -30922,7 +30922,7 @@ msgstr[0] "已註冊 IDs (由PCI-SIG發行)"
 
 #: src/Telemetry.php:55
 msgid "Telemetry"
-msgstr ""
+msgstr "遥测技术"
 
 #: src/Telemetry.php:295
 msgid "Send telemetry information"
@@ -31273,7 +31273,7 @@ msgstr ""
 
 #: src/CommonITILObject.php:6999 src/CommonITILObject.php:7042
 msgid "Planification"
-msgstr ""
+msgstr "规划"
 
 #: src/CommonITILObject.php:7459 src/CommonITILObject.php:7460
 msgctxt "button"
@@ -31298,7 +31298,7 @@ msgstr ""
 #: src/CommonITILObject.php:7480
 msgctxt "button"
 msgid "Solution"
-msgstr ""
+msgstr "方案"
 
 #: src/CommonITILObject.php:7490
 msgctxt "button"
@@ -31381,7 +31381,7 @@ msgstr[0] ""
 #: src/Toolbox.php:871 js/common.js:670
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: src/Toolbox.php:872 js/common.js:671
 msgctxt "size"
@@ -31626,7 +31626,7 @@ msgstr "新增印表機耗材"
 
 #: src/Cartridge.php:1051 src/SavedSearch.php:347
 msgid "Count"
-msgstr ""
+msgstr "计数"
 
 #: src/Cartridge.php:1113
 msgid "End of life"
@@ -31718,7 +31718,7 @@ msgstr ""
 
 #: src/SavedSearch.php:373
 msgid "Counter"
-msgstr ""
+msgstr "计数器"
 
 #: src/SavedSearch.php:381
 msgid "Last execution date"
@@ -32429,7 +32429,7 @@ msgstr ""
 
 #: src/Impact.php:1166
 msgid "Fullscreen"
-msgstr ""
+msgstr "全屏"
 
 #: src/Impact.php:1851
 msgid "Impact analysis configuration"
@@ -32626,7 +32626,7 @@ msgstr[0] "預算類型"
 
 #: src/ItemVirtualMachine.php:58
 msgid "Virtualization"
-msgstr ""
+msgstr "虚拟化"
 
 #: src/ItemVirtualMachine.php:200
 msgid "List of hosts"
@@ -32789,7 +32789,7 @@ msgstr ""
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
+msgstr[0] "关系"
 
 #: src/Appliance_Item_Relation.php:130
 msgid "An appliance item is required"
@@ -33670,7 +33670,7 @@ msgstr "錯誤 / 清除"
 
 #: src/Plugin.php:2743
 msgid "Directory"
-msgstr ""
+msgstr "目录"
 
 #: src/Plugin.php:2781
 msgid "Authors"
@@ -33853,7 +33853,7 @@ msgstr ""
 
 #: js/impact.js:2614
 msgid "Requests"
-msgstr ""
+msgstr "请求"
 
 #: js/impact.js:2615
 msgid "Incidents"
@@ -33869,7 +33869,7 @@ msgstr ""
 
 #: js/glpi_dialog.js:386
 msgid "Success"
-msgstr ""
+msgstr "成功"
 
 #: js/common.js:1165
 msgid "just now"
@@ -33941,7 +33941,7 @@ msgstr ""
 
 #: js/src/vue/Kanban/SearchInput.js:651
 msgid "Exclude"
-msgstr ""
+msgstr "排除"
 
 #: js/planning.js:284
 msgid "Clone"
@@ -34083,7 +34083,7 @@ msgstr "箭头"
 #: js/modules/Form/WebIconSelector.js:132
 msgctxt "icons"
 msgid "Badges"
-msgstr ""
+msgstr "徽章"
 
 #: js/modules/Form/WebIconSelector.js:133
 msgctxt "icons"
@@ -34093,17 +34093,17 @@ msgstr "品牌"
 #: js/modules/Form/WebIconSelector.js:134
 msgctxt "icons"
 msgid "Buildings"
-msgstr ""
+msgstr "楼宇"
 
 #: js/modules/Form/WebIconSelector.js:135
 msgctxt "icons"
 msgid "Charts"
-msgstr ""
+msgstr "图表"
 
 #: js/modules/Form/WebIconSelector.js:136
 msgctxt "icons"
 msgid "Communication"
-msgstr ""
+msgstr "沟通"
 
 #: js/modules/Form/WebIconSelector.js:137
 msgctxt "icons"
@@ -34113,7 +34113,7 @@ msgstr "電腦"
 #: js/modules/Form/WebIconSelector.js:138
 msgctxt "icons"
 msgid "Currencies"
-msgstr ""
+msgstr "货币"
 
 #: js/modules/Form/WebIconSelector.js:139
 msgctxt "icons"

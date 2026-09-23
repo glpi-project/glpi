@@ -59,6 +59,10 @@ if (
 
 $user = new User();
 
+if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
+    $_REQUEST['totp_code'] = implode('', $_POST['totp_code']);
+}
+
 // Manage lost password
 // REQUEST needed : GET on first access / POST on submit form
 if (isset($_REQUEST['password_forget_token'])) {

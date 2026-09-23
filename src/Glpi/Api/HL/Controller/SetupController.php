@@ -50,7 +50,6 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -1283,9 +1282,7 @@ EOT,
     #[Doc\SearchRoute(schema_name: 'Config')]
     public function searchConfigValuesByContext(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';context==' . $request->getAttribute('context');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'context==' . $request->getAttribute('context'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Config', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1361,9 +1358,7 @@ EOT,
     public function searchAutomaticActionLogs(Request $request): Response
     {
         $automatic_action_id = $request->getAttribute('id');
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';automatic_action.id==' . $automatic_action_id;
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'automatic_action.id==' . $automatic_action_id);
         return ResourceAccessor::searchBySchema($this->getKnownSchema('AutomaticActionLog', $this->getAPIVersion($request)), $request->getParameters());
     }
 

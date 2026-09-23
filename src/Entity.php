@@ -646,6 +646,16 @@ class Entity extends CommonTreeDropdown implements
             if (array_key_exists($max_key, $input) && empty($input[$max_key])) {
                 unset($input[$max_key]);
             }
+
+            // `inquest_default_rate` and `inquest_mandatory_comment` are integer columns; an empty submitted value would break the SQL update.
+            $default_rate_key = 'inquest_default_rate' . $suffix;
+            if (array_key_exists($default_rate_key, $input) && $input[$default_rate_key] === '') {
+                $input[$default_rate_key] = 0;
+            }
+            $mandatory_comment_key = 'inquest_mandatory_comment' . $suffix;
+            if (array_key_exists($mandatory_comment_key, $input) && $input[$mandatory_comment_key] === '') {
+                $input[$mandatory_comment_key] = 0;
+            }
         }
 
         return $input;

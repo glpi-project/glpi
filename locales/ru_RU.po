@@ -51,6 +51,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # Гайткулов Николай Валентинович <kvozar@ya.ru>, 2026
 # Denis Zykin, 2026
+# Tagir Magdanov, 2026
 # 
 #, fuzzy
 msgid ""
@@ -59,7 +60,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Denis Zykin, 2026\n"
+"Last-Translator: Tagir Magdanov, 2026\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1126,11 +1127,11 @@ msgstr "Добавить примечание"
 
 #: templates/components/notepad/form.html.twig
 msgid "Expand all"
-msgstr ""
+msgstr "Развернуть все"
 
 #: templates/components/notepad/form.html.twig
 msgid "Collapse all"
-msgstr ""
+msgstr "Свернуть все"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
@@ -1546,7 +1547,7 @@ msgstr "Согласовывать"
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/components/form/genericdate_picker.html.twig src/Html.php:2639
 msgid "Enter or select a date"
-msgstr ""
+msgstr "Введите или выберите дату"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/components/form/rulematchedlogs.html.twig
@@ -4222,7 +4223,7 @@ msgstr "Выберите элементы для показа по умолча�
 #: templates/components/search/controls.html.twig
 #: src/Glpi/Dashboard/Widget.php:88 js/planning.js:405
 msgid "Refresh"
-msgstr ""
+msgstr "Обновить"
 
 #: templates/components/search/controls.html.twig
 #: templates/components/logs.html.twig
@@ -7381,7 +7382,7 @@ msgstr ""
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "SQL Error:"
-msgstr ""
+msgstr "Ошибка SQL"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy validation"
@@ -10582,7 +10583,7 @@ msgstr ""
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 msgid "No default value"
-msgstr ""
+msgstr "Нет значения по умолчанию"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
@@ -11669,7 +11670,7 @@ msgstr ""
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Search bar"
-msgstr ""
+msgstr "Поле поиска"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Expand categories in the service catalog"
@@ -12411,11 +12412,11 @@ msgstr "Переключить автоматическое обновление
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Collapse"
-msgstr ""
+msgstr "Свернуть"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Expand"
-msgstr ""
+msgstr "Развернуть"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "The log file is empty"
@@ -12666,15 +12667,15 @@ msgstr "%1$s (руководитель %2$s)"
 
 #: ajax/dropdownValidator.php:119
 msgid "Select a user"
-msgstr ""
+msgstr "Выберите пользователя"
 
 #: ajax/dropdownValidator.php:132 ajax/dropdownValidator.php:146
 msgid "Select a group"
-msgstr ""
+msgstr "Выберите группу"
 
 #: ajax/dropdownValidator.php:208
 msgid "Select users"
-msgstr ""
+msgstr "Выберите пользователей"
 
 #: ajax/dropdownTrackingDeviceType.php:68
 msgid "Enter the first letters (user, item name, serial or asset number)"
@@ -13173,7 +13174,7 @@ msgstr "база данных"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Add database"
-msgstr ""
+msgstr "Добавьте базу данных"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -13183,17 +13184,17 @@ msgstr "Доставка"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Diagnostic"
-msgstr ""
+msgstr "Диагностика"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
 msgid "Developer documentation"
-msgstr ""
+msgstr "Документация разработчика"
 
 #: resources/.illustrations_translations.php:71
 msgctxt "Icon"
 msgid "Documentation"
-msgstr ""
+msgstr "Документация"
 
 #: resources/.illustrations_translations.php:72
 msgctxt "Icon"
@@ -13488,7 +13489,7 @@ msgstr "Партнер"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "Экспорт PDF"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
@@ -13715,7 +13716,7 @@ msgstr "Мир"
 #: resources/.illustrations_translations.php:175
 msgctxt "Icon"
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: resources/.illustrations_translations.php:176
 msgctxt "Icon"
@@ -13725,7 +13726,7 @@ msgstr "плагин"
 #: resources/.illustrations_translations.php:177
 msgctxt "Icon"
 msgid "charts"
-msgstr ""
+msgstr "диаграмма"
 
 #: resources/.illustrations_translations.php:178
 msgctxt "Icon"
@@ -13740,17 +13741,17 @@ msgstr "дашборд"
 #: resources/.illustrations_translations.php:180
 msgctxt "Icon"
 msgid "form"
-msgstr ""
+msgstr "форма"
 
 #: resources/.illustrations_translations.php:181
 msgctxt "Icon"
 msgid "survey"
-msgstr ""
+msgstr "опрос"
 
 #: resources/.illustrations_translations.php:182
 msgctxt "Icon"
 msgid "Qrcode"
-msgstr ""
+msgstr "QR код"
 
 #: resources/.illustrations_translations.php:184
 msgctxt "Icon"
@@ -13770,7 +13771,7 @@ msgstr "уведомление"
 #: resources/.illustrations_translations.php:187
 msgctxt "Icon"
 msgid "warning"
-msgstr ""
+msgstr "предупреждение"
 
 #: resources/.illustrations_translations.php:188
 msgctxt "Icon"
@@ -13795,7 +13796,7 @@ msgstr "каталог"
 #: resources/.illustrations_translations.php:192
 msgctxt "Icon"
 msgid "automation"
-msgstr ""
+msgstr "автоматизация"
 
 #: resources/.illustrations_translations.php:193
 msgctxt "Icon"
@@ -13820,7 +13821,7 @@ msgstr "проверка"
 #: resources/.illustrations_translations.php:197
 msgctxt "Icon"
 msgid "check"
-msgstr ""
+msgstr "проверка"
 
 #: resources/.illustrations_translations.php:198
 msgctxt "Icon"
@@ -13935,12 +13936,12 @@ msgstr "iphone"
 #: resources/.illustrations_translations.php:221
 msgctxt "Icon"
 msgid "cloud"
-msgstr ""
+msgstr "облако"
 
 #: resources/.illustrations_translations.php:222
 msgctxt "Icon"
 msgid "building"
-msgstr ""
+msgstr "здание"
 
 #: resources/.illustrations_translations.php:224
 msgctxt "Icon"
@@ -14010,17 +14011,17 @@ msgstr ""
 #: resources/.illustrations_translations.php:238
 msgctxt "Icon"
 msgid "office"
-msgstr ""
+msgstr "офис"
 
 #: resources/.illustrations_translations.php:239
 msgctxt "Icon"
 msgid "date"
-msgstr ""
+msgstr "дата"
 
 #: resources/.illustrations_translations.php:240
 msgctxt "Icon"
 msgid "schedule"
-msgstr ""
+msgstr "расписание"
 
 #: resources/.illustrations_translations.php:241
 msgctxt "Icon"
@@ -14030,12 +14031,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:242
 msgctxt "Icon"
 msgid "time"
-msgstr ""
+msgstr "время"
 
 #: resources/.illustrations_translations.php:243
 msgctxt "Icon"
 msgid "event"
-msgstr ""
+msgstr "событие"
 
 #: resources/.illustrations_translations.php:244
 msgctxt "Icon"
@@ -14045,17 +14046,17 @@ msgstr ""
 #: resources/.illustrations_translations.php:245
 msgctxt "Icon"
 msgid "vehicle"
-msgstr ""
+msgstr "транспортное средство"
 
 #: resources/.illustrations_translations.php:246
 msgctxt "Icon"
 msgid "transport"
-msgstr ""
+msgstr "транспорт"
 
 #: resources/.illustrations_translations.php:247
 msgctxt "Icon"
 msgid "automobile"
-msgstr ""
+msgstr "автомобиль"
 
 #: resources/.illustrations_translations.php:248
 msgctxt "Icon"
@@ -14075,7 +14076,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:251
 msgctxt "Icon"
 msgid "co2"
-msgstr ""
+msgstr "co2"
 
 #: resources/.illustrations_translations.php:252
 msgctxt "Icon"
@@ -14100,7 +14101,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:256
 msgctxt "Icon"
 msgid "chat"
-msgstr ""
+msgstr "чат"
 
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
@@ -14110,32 +14111,32 @@ msgstr ""
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
 msgid "webhook"
-msgstr ""
+msgstr "вебхук"
 
 #: resources/.illustrations_translations.php:259
 msgctxt "Icon"
 msgid "network"
-msgstr ""
+msgstr "сеть"
 
 #: resources/.illustrations_translations.php:260
 msgctxt "Icon"
 msgid "internet"
-msgstr ""
+msgstr "интернет"
 
 #: resources/.illustrations_translations.php:261
 msgctxt "Icon"
 msgid "connection"
-msgstr ""
+msgstr "соединение"
 
 #: resources/.illustrations_translations.php:262
 msgctxt "Icon"
 msgid "docker"
-msgstr ""
+msgstr "докер"
 
 #: resources/.illustrations_translations.php:263
 msgctxt "Icon"
 msgid "virtualization"
-msgstr ""
+msgstr "виртуализация"
 
 #: resources/.illustrations_translations.php:264
 msgctxt "Icon"
@@ -14155,12 +14156,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:267
 msgctxt "Icon"
 msgid "ticket"
-msgstr ""
+msgstr "заявка"
 
 #: resources/.illustrations_translations.php:268
 msgctxt "Icon"
 msgid "helpdesk"
-msgstr ""
+msgstr "поддержка"
 
 #: resources/.illustrations_translations.php:269
 msgctxt "Icon"
@@ -14170,7 +14171,7 @@ msgstr "CSV"
 #: resources/.illustrations_translations.php:270
 msgctxt "Icon"
 msgid "import"
-msgstr ""
+msgstr "импорт"
 
 #: resources/.illustrations_translations.php:271
 msgctxt "Icon"
@@ -14195,17 +14196,17 @@ msgstr ""
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
 msgid "developer"
-msgstr ""
+msgstr "разработчик"
 
 #: resources/.illustrations_translations.php:276
 msgctxt "Icon"
 msgid "api"
-msgstr ""
+msgstr "api"
 
 #: resources/.illustrations_translations.php:277
 msgctxt "Icon"
 msgid "code"
-msgstr ""
+msgstr "код"
 
 #: resources/.illustrations_translations.php:278
 msgctxt "Icon"

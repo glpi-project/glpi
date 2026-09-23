@@ -9,6 +9,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # Cédric Anne, 2026
 # Tiago Graça, 2026
+# François Robertson, 2026
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Tiago Graça, 2026\n"
+"Last-Translator: François Robertson, 2026\n"
 "Language-Team: French (Canada) (https://app.transifex.com/glpi/teams/1637/fr_CA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -82,11 +83,11 @@ msgstr "Veuillez sélectionner une base de données :"
 
 #: templates/install/step3.html.twig
 msgid "Create a new database:"
-msgstr ""
+msgstr "Créer une nouvelle base de données :"
 
 #: templates/install/step3.html.twig
 msgid "Or use an existing one:"
-msgstr ""
+msgstr "Ou utiliser une base existante :"
 
 #: templates/install/step3.html.twig
 msgid "Please select a database to update:"
@@ -95,21 +96,24 @@ msgstr "Veuillez sélectionner une base de données à mettre à jour :"
 #: templates/install/install.install_required.html.twig install/update.php:99
 #: install/update.php:119 install/install.php:67 install/install.php:89
 msgid "GLPI setup"
-msgstr ""
+msgstr "Installation GLPI"
 
 #: templates/install/install.install_required.html.twig
 msgid "The GLPI database must be configured and installed."
-msgstr ""
+msgstr "La base de données de  GLPI doit être installée et configurée."
 
 #: templates/install/install.install_required.html.twig
 msgid "Go to install page"
-msgstr ""
+msgstr "Aller à la page d'installation"
 
 #: templates/install/install.install_required.html.twig
 msgid ""
 "If you see this page when the installation has already been done, it means "
 "that the GLPI database configuration file has been removed or corrupted."
 msgstr ""
+"Si vous voyez cette page alors que l'installation est terminée, cela "
+"signifie que la configuration de la base de données de GLPI est soit "
+"supprimée, soit corrompue."
 
 #: templates/install/post_update_step.html.twig
 #: src/Glpi/Console/Database/UpdateCommand.php:286
@@ -123,6 +127,7 @@ msgstr ""
 #, php-format
 msgid "It is recommended to run the \"%s\" command to see the differences."
 msgstr ""
+"Il est recommandé d'exécuter la commande \"%s\" pour voir les différences."
 
 #: templates/install/post_update_step.html.twig
 #: templates/install/step7.html.twig
@@ -136,21 +141,25 @@ msgstr "Utiliser GLPI"
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr ""
+msgstr "Vérification de l'accès en écriture sur les fichiers de configuration"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
-msgstr ""
+msgstr "Accès en écriture refusé sur les fichiers de configuration"
 
 #: templates/install/step1.html.twig src/Glpi/Console/Application.php:477
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
 msgstr ""
+"Un accès temporaire en écriture est nécessaire sur les fichiers suivants : "
+"%s."
 
 #: templates/install/step1.html.twig src/Glpi/Console/Application.php:478
 msgid ""
 "Write access to these files can be removed once the operation is finished."
 msgstr ""
+"L'accès en écriture sur ces fichiers pourra être supprimé une fois "
+"l'opération terminée."
 
 #: templates/install/step1.html.twig
 msgid ""
@@ -257,6 +266,8 @@ msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
 msgstr ""
+"Le code source de GLPI a été mis à jour. La mise à jour de la base de "
+"données de GLPI est nécessaire."
 
 #: templates/install/update.need_update.html.twig
 #: templates/install/step0.html.twig src/Plugin.php:2918
@@ -574,7 +585,7 @@ msgstr "Autres images"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "User menu"
-msgstr ""
+msgstr "Menu utilisateur"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
@@ -632,6 +643,8 @@ msgstr "Fermer"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Cette version est INSTABLE et certains CORRECTIFS DE SÉCURITÉ pourraient ne "
+"pas être inclus."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -646,7 +659,7 @@ msgstr "Une nouvelle version est disponible : %s"
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Aller au contenu principal"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -663,7 +676,7 @@ msgstr "Accueil"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Fils d'Ariane"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -675,11 +688,11 @@ msgstr "A droite"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:440
 msgid "On top"
-msgstr ""
+msgstr "Au dessus"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:444
 msgid "On bottom"
-msgstr ""
+msgstr "En dessous"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig
 #, php-format
@@ -697,15 +710,15 @@ msgstr "Arrêter la personnification"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Barre latérale"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Basculer la navigation"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Navigation principale"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -799,12 +812,12 @@ msgstr "Configuration"
 #: templates/pages/admin/form/import/step4_execute.html.twig
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Import forms"
-msgstr ""
+msgstr "Importer des formulaires"
 
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "Sélectionner l'entité %1set toutes ses sous-entités"
 
 #: templates/layout/parts/global_search_form.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -830,7 +843,7 @@ msgstr "Privée"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Read-only mode"
-msgstr ""
+msgstr "Mode lecture seule"
 
 #: templates/layout/parts/objectlock_message.html.twig
 #: templates/components/notepad/form.html.twig
@@ -846,7 +859,7 @@ msgstr "Éditer"
 #: templates/layout/parts/objectlock_message.html.twig
 #, php-format
 msgid "Locked: %1$s by %2$s"
-msgstr ""
+msgstr "Verrouillé : %1$s par %2$s"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Ask for unlock"
@@ -873,11 +886,11 @@ msgstr "Tableau de bord"
 #: templates/layout/parts/page_footer.html.twig
 #: templates/maintenance.html.twig
 msgid "MAINTENANCE MODE"
-msgstr ""
+msgstr "MODE MAINTENANCE"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Change profile"
-msgstr ""
+msgstr "Changer de profil"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Profiles"
@@ -928,7 +941,7 @@ msgstr "Sélectionner tout"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Entity tree"
-msgstr ""
+msgstr "Arbre des entités"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "No entity found"
@@ -1027,11 +1040,11 @@ msgstr "Envoyer"
 
 #: templates/components/pager.html.twig
 msgid "Rows per page"
-msgstr ""
+msgstr "Lignes par page"
 
 #: templates/components/pager.html.twig
 msgid "rows / page"
-msgstr ""
+msgstr "lignes / pages"
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -1046,7 +1059,7 @@ msgstr "%s-%s/%s"
 #: templates/components/pager.html.twig
 #, php-format
 msgid "%s-%s of %s"
-msgstr ""
+msgstr "%s-%s de %s"
 
 #: templates/components/pager.html.twig
 #: templates/components/form/support_hours.html.twig
@@ -1085,19 +1098,19 @@ msgstr "Fin"
 #: templates/components/notepad/form.html.twig
 msgctxt "button"
 msgid "Add a note"
-msgstr ""
+msgstr "Ajouter une note"
 
 #: templates/components/notepad/form.html.twig
 msgid "Expand all"
-msgstr ""
+msgstr "Déplier tous"
 
 #: templates/components/notepad/form.html.twig
 msgid "Collapse all"
-msgstr ""
+msgstr "Réduire tous"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
-msgstr ""
+msgstr "Ajouter une note"
 
 #: templates/components/notepad/form.html.twig
 #: templates/pages/tools/kb/article.html.twig
@@ -1122,7 +1135,7 @@ msgstr "Contenu"
 
 #: templates/components/notepad/form.html.twig
 msgid "Visible on tickets"
-msgstr ""
+msgstr "Visible sur les billets"
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/form/dates.html.twig
@@ -1162,7 +1175,7 @@ msgstr "Supprimer"
 
 #: templates/components/notepad/form.html.twig
 msgid "Edit a note"
-msgstr ""
+msgstr "Modifier une note"
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/form/buttons.html.twig
@@ -1216,18 +1229,18 @@ msgstr "Mettre à jour"
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "New %s for this user"
-msgstr ""
+msgstr "Nouveau %s pour cet utilisateur"
 
 #: templates/components/form/item_itilobject_item_list.html.twig
 #: src/DomainRecord.php:445
 #, php-format
 msgid "New %s for this item"
-msgstr ""
+msgstr "Nouveau %s pour cet élément"
 
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "%d linked %s"
-msgstr ""
+msgstr "%d %s lié(s)"
 
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
@@ -4704,7 +4717,7 @@ msgstr ""
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Service catalog pages"
-msgstr ""
+msgstr "Pages du catalogue de services"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "First page"
@@ -5456,9 +5469,9 @@ msgstr ""
 #: src/Glpi/Form/Category.php:57
 msgid "Service catalog category"
 msgid_plural "Service catalog categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Catégorie du catalogue de services"
+msgstr[1] "Catégories du catalogue de services"
+msgstr[2] "Catégories du catalogue de services"
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
@@ -5466,7 +5479,7 @@ msgstr[2] ""
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:92
 #: js/modules/Forms/ServiceCatalogController.js:219
 msgid "Service catalog"
-msgstr ""
+msgstr "Catalogue de services"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by: "
@@ -7787,6 +7800,8 @@ msgstr "Dispositifs affichés dans le menu"
 msgid ""
 "%1$s services website seems to be unavailable from your network or offline!"
 msgstr ""
+"Le site web des services %1$s ne semble pas disponible ou votre réseau est "
+"\"hors ligne\" !"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #: src/GLPINetwork.php:46
@@ -9339,7 +9354,7 @@ msgstr "Copier l'URL CalDAV dans le presse-papiers"
 
 #: templates/pages/form_renderer.html.twig src/Glpi/Form/Form.php:480
 msgid "Form title"
-msgstr ""
+msgstr "Titre du formulaire"
 
 #: templates/pages/form_renderer.html.twig
 #: templates/pages/admin/form/form_editor.html.twig src/Glpi/Form/Form.php:489
@@ -9369,7 +9384,7 @@ msgstr ""
 
 #: templates/pages/form_renderer.html.twig
 msgid "Go back to service catalog"
-msgstr ""
+msgstr "Retourner au catalogue de services"
 
 #: templates/pages/form_renderer.html.twig
 msgid "See my tickets"
@@ -10292,7 +10307,7 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Service catalog configuration"
-msgstr ""
+msgstr "Configuration du catalogue de services"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
@@ -10307,7 +10322,7 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Pin to top of the service catalog"
-msgstr ""
+msgstr "Épingler en haut du catalogue de services"
 
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
@@ -11469,11 +11484,11 @@ msgstr ""
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Expand categories in the service catalog"
-msgstr ""
+msgstr "Déplier les catégories dans le catalogue de services"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default sort order in the service catalog"
-msgstr ""
+msgstr "Ordre de tri par défaut du catalogue de services"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Save general settings"
@@ -13295,7 +13310,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:138
 msgctxt "Icon"
 msgid "Request a service"
-msgstr ""
+msgstr "Demander un service"
 
 #: resources/.illustrations_translations.php:139
 msgctxt "Icon"
@@ -13391,7 +13406,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:157
 msgctxt "Icon"
 msgid "Ticket"
-msgstr "Ticket"
+msgstr "Billet"
 
 #: resources/.illustrations_translations.php:158
 msgctxt "Icon"
@@ -14166,7 +14181,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:316
 msgctxt "Icon"
 msgid "service"
-msgstr ""
+msgstr "service"
 
 #: resources/.illustrations_translations.php:317
 msgctxt "Icon"
@@ -17232,7 +17247,7 @@ msgstr "Ajout d'un élément"
 
 #: src/RuleDictionnaryOperatingSystemServicePackCollection.php:43
 msgid "Dictionary of service packs"
-msgstr ""
+msgstr "Dictionnaire des service packs"
 
 #: src/Location.php:138 src/RuleLocation.php:119
 #: src/Glpi/Form/Destination/CommonITILField/LocationField.php:60
@@ -21074,6 +21089,12 @@ msgid ""
 "\n"
 "In this same space, you will be able to contact an official partner to help you with your GLPI integration."
 msgstr ""
+"Vous souhaitez obtenir de l’aide pour intégrer GLPI dans votre SI, faire corriger un bug ou bénéficier de règles ou dictionnaires pré-configurés ?\n"
+"\n"
+"Nous mettons à votre disposition l’espace %s.\n"
+"GLPI-Network est un service commercial qui comprend une souscription au support niveau 3, garantissant la correction des bugs rencontrés avec un engagement de délai.\n"
+"\n"
+"Sur ce même espace, vous pourrez contacter un partenaire officiel pour vous aider dans votre intégration de GLPI."
 
 #: src/GLPINetwork.php:276
 #, php-format
@@ -22236,7 +22257,7 @@ msgstr ""
 #: src/Dropdown.php:4263
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Mes %s"
 
 #: src/Dropdown.php:4393
 #, php-format
@@ -25630,6 +25651,8 @@ msgstr[2] ""
 #: src/Glpi/Asset/Capacity/HasRemoteManagementCapacity.php:58
 msgid "Generate links for common remote access and control services"
 msgstr ""
+"Générer des liens pour les services courants d’accès et de contrôle à "
+"distance"
 
 #: src/Glpi/Asset/Capacity/HasRemoteManagementCapacity.php:77
 #, php-format
@@ -26781,7 +26804,7 @@ msgstr ""
 
 #: src/Glpi/Form/Form.php:498
 msgid "Service catalog description"
-msgstr ""
+msgstr "Description du catalogue de services"
 
 #: src/Glpi/Form/Form.php:544
 msgid "Purge old form drafts"
@@ -27194,6 +27217,8 @@ msgstr ""
 #: src/Glpi/Helpdesk/DefaultDataManager.php:119
 msgid "Go to our service catalog and pick a form to create a new ticket."
 msgstr ""
+"Accédez à notre catalogue de services et choisissez un formulaire pour créer"
+" un nouveau ticket."
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:125
 msgid "See your tickets"
@@ -27217,11 +27242,11 @@ msgstr ""
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:363
 msgid "Request a service"
-msgstr ""
+msgstr "Demander un service"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:364
 msgid "Ask for a service to be provided by our team."
-msgstr ""
+msgstr "Demander un service offert par notre équipe."
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:507
 msgid "User devices"

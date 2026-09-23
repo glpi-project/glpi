@@ -129,6 +129,106 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         $this->assertFalse($collection->moveLicenses($old_software->getID(), 99999999));
     }
 
+    public function testMoveVersionsToExistingVersionInstalledOnSameItem()
+    {
+        global $DB;
+
+        $this->login();
+
+        $old_software = $this->createItem(\Software::class, [
+            'name'        => 'Software ' . $this->getUniqueString(),
+            'entities_id' => 0,
+        ]);
+        $new_software = $this->createItem(\Software::class, [
+            'name'        => 'Software ' . $this->getUniqueString(),
+            'entities_id' => 0,
+        ]);
+        $old_version = $this->createItem(\SoftwareVersion::class, [
+            'name'         => '1.0',
+            'softwares_id' => $old_software->getID(),
+            'entities_id'  => 0,
+        ]);
+        $new_version = $this->createItem(\SoftwareVersion::class, [
+            'name'         => '1.0',
+            'softwares_id' => $new_software->getID(),
+            'entities_id'  => 0,
+        ]);
+
+        $computer_with_both_versions = $this->createItem(\Computer::class, [
+            'name'        => 'Computer ' . $this->getUniqueString(),
+            'entities_id' => 0,
+        ]);
+        $computer_with_old_version = $this->createItem(\Computer::class, [
+            'name'        => 'Computer ' . $this->getUniqueString(),
+            'entities_id' => 0,
+        ]);
+        // Same id as the computer, so only the itemtype tells their installations apart
+        // Guard the assumption, so a future dataset that already uses this id fails here
+        // instead of making the insert below fail with an unrelated message.
+        $this->assertSame(
+            0,
+            countElementsInTable(\Phone::getTable(), ['id' => $computer_with_both_versions->getID()])
+        );
+        $this->assertNotFalse($DB->insert(\Phone::getTable(), [
+            'id'          => $computer_with_both_versions->getID(),
+            'name'        => 'Phone ' . $this->getUniqueString(),
+            'entities_id' => 0,
+        ]));
+        $phone_with_old_version = new \Phone();
+        $this->assertTrue($phone_with_old_version->getFromDB($computer_with_both_versions->getID()));
+
+        $installations = [
+            [$computer_with_both_versions, $old_version],
+            [$computer_with_both_versions, $new_version],
+            [$computer_with_old_version, $old_version],
+            [$phone_with_old_version, $old_version],
+        ];
+        foreach ($installations as [$item, $version]) {
+            $this->createItem(\Item_SoftwareVersion::class, [
+                'itemtype'            => $item::class,
+                'items_id'            => $item->getID(),
+                'softwareversions_id' => $version->getID(),
+                'entities_id'         => 0,
+            ]);
+        }
+
+        $license = $this->createItem(\SoftwareLicense::class, [
+            'name'                    => 'Software license ' . $this->getUniqueString(),
+            'softwares_id'            => $old_software->getID(),
+            'softwareversions_id_buy' => $old_version->getID(),
+            'softwareversions_id_use' => $old_version->getID(),
+            'entities_id'             => 0,
+        ]);
+
+        $collection = new \RuleDictionnarySoftwareCollection();
+        $collection->moveVersions(
+            $old_software->getID(),
+            $new_software->getID(),
+            $old_version->getID(),
+            '1.0',
+            '1.0',
+            0
+        );
+
+        foreach ([$computer_with_both_versions, $computer_with_old_version, $phone_with_old_version] as $item) {
+            $item_installations = getAllDataFromTable(\Item_SoftwareVersion::getTable(), [
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ]);
+            $this->assertCount(1, $item_installations);
+            $this->assertSame($new_version->getID(), current($item_installations)['softwareversions_id']);
+        }
+        $this->assertSame(
+            0,
+            countElementsInTable(\Item_SoftwareVersion::getTable(), ['softwareversions_id' => $old_version->getID()])
+        );
+        $this->assertFalse((new \SoftwareVersion())->getFromDB($old_version->getID()));
+
+        $this->assertTrue($license->getFromDB($license->getID()));
+        $this->assertSame($new_version->getID(), $license->fields['softwareversions_id_buy']);
+        $this->assertSame($new_version->getID(), $license->fields['softwareversions_id_use']);
+    }
+
     public function testPutOldSoftsInTrash()
     {
         $this->login();

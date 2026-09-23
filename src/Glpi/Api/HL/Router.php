@@ -632,6 +632,11 @@ EOT;
 
         // Fill parameters from $_REQUEST
         foreach ($_REQUEST as $key => $value) {
+            // Reserved parameters that carry trusted internal scopes must never be seeded by a
+            // caller, otherwise the scope enforced by sub-resource routes could be bypassed.
+            if ($key === Search::MANDATORY_FILTER_PARAM) {
+                continue;
+            }
             $request->setParameter($key, $value);
         }
 
@@ -646,6 +651,10 @@ EOT;
                 $body = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
                 if (is_array($body)) {
                     foreach ($body as $key => $value) {
+                        // See above: a reserved internal scope parameter cannot be seeded by a caller.
+                        if ((string) $key === Search::MANDATORY_FILTER_PARAM) {
+                            continue;
+                        }
                         $request->setParameter((string) $key, $value);
                     }
                 } else {

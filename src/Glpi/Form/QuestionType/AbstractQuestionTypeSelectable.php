@@ -238,8 +238,8 @@ TWIG;
             return [];
         }
 
-        $options = json_decode($rawData['values']);
-        if (empty($options)) {
+        $options = $this->convertExtraData($rawData)[QuestionTypeSelectableExtraDataConfig::OPTIONS] ?? [];
+        if (!is_array($options) || $options === []) {
             return [];
         }
 
@@ -257,8 +257,17 @@ TWIG;
             $default_values = [$rawData['default_values']];
         }
 
-        // Return the indexes of the default values
-        return array_map(fn($value) => array_search($value, $options) + 1, $default_values);
+        // Skip unmatched values: `array_search` returning false would
+        // otherwise wrongly resolve to the first option's index (false + 1).
+        $indexes = [];
+        foreach ($default_values as $value) {
+            $index = array_search($value, $options);
+            if ($index !== false) {
+                $indexes[] = (int) $index;
+            }
+        }
+
+        return $indexes;
     }
 
     #[Override]

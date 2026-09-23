@@ -285,4 +285,62 @@ class WidgetTest extends DbTestCase
             Widget::getGradientPalette($bg_color, $nb_series, $revert)
         );
     }
+
+    /**
+     * Extract the `chart_options` JS variable embedded in the HTML returned by
+     * chart widgets (simpleBar/simpleLine/...) and decode it back to an array.
+     */
+    private function extractChartOptions(string $html): array
+    {
+        $this->assertMatchesRegularExpression(
+            '/const chart_options = (\{.*\});$/m',
+            $html
+        );
+        preg_match('/const chart_options = (\{.*\});$/m', $html, $matches);
+
+        return json_decode($matches[1], true);
+    }
+
+    public static function simpleBarDistributionProvider(): iterable
+    {
+        // Mirrors what Provider::ticketsOpened() returns: a single (non-multiple)
+        // bar serie, explicitly marked as non-distributed.
+        yield 'non-distributed single serie (e.g. Provider::ticketsOpened)' => [
+            'distributed' => false,
+        ];
+        // Default behaviour of Widget::simpleBar() when the provider does not
+        // force 'distributed', each bar getting its own color from the palette.
+        yield 'distributed single serie (simpleBar default)' => [
+            'distributed' => true,
+        ];
+    }
+
+    /**
+     * Regression test for the "Number of tickets by month" dashboard card
+     * displaying `undefined`/`NaN` in its "View data" table and no bars at all
+     */
+    #[DataProvider('simpleBarDistributionProvider')]
+    public function testSimpleBarSingleSerieDataIsNotDoubleWrapped(bool $distributed): void
+    {
+        $data = [
+            ['number' => 440, 'label' => '2025-09', 'url' => '/front/ticket.php?…'],
+            ['number' => 558, 'label' => '2025-10', 'url' => '/front/ticket.php?…'],
+            ['number' => 581, 'label' => '2025-11', 'url' => '/front/ticket.php?…'],
+        ];
+
+        $html = Widget::simpleBar([
+            'data'        => $data,
+            'distributed' => $distributed,
+            'label'       => 'Number of tickets by month',
+        ]);
+
+        $chart_options = $this->extractChartOptions($html);
+
+        $this->assertCount(1, $chart_options['series']);
+        $serie_data = $chart_options['series'][0]['data'];
+
+        $this->assertCount(3, $serie_data);
+        $this->assertEquals([440, 558, 581], array_column($serie_data, 'value'));
+        $this->assertEquals(['2025-09', '2025-10', '2025-11'], array_column($serie_data, 'meta'));
+    }
 }

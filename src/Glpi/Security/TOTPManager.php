@@ -587,6 +587,7 @@ final class TOTPManager
             TemplateRenderer::getInstance()->display('pages/2fa/2fa_new_secret.html.twig', [
                 'qrcode' => $qr,
                 'secret' => $secret,
+                'user_id' => $users_id,
             ]);
         }
     }
@@ -612,6 +613,7 @@ final class TOTPManager
             'secret' => $secret,
             'enforcement' => $this->get2FAEnforcement($users_id),
             'grace_period_days_left' => $this->getGracePeriodDaysLeft(),
+            'user_id' => $users_id,
         ]);
     }
 

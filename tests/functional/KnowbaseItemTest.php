@@ -1683,6 +1683,37 @@ HTML,
         }
     }
 
+    public function testChildGroupInheritsParentGroupVisibility(): void
+    {
+        $this->login();
+
+        $parent_group = $this->createItem("Group", ['name' => 'KB parent group']);
+        $child_group = $this->createItem("Group", [
+            'name' => 'KB child group',
+            'groups_id' => $parent_group->getID(),
+        ]);
+
+        $tech_user = getItemByTypeName("User", "tech", true);
+        $this->createItem("Group_User", ['users_id' => $tech_user, 'groups_id' => $child_group->getID()]);
+
+        $kb = $this->createItem("KnowbaseItem", [
+            'name'         => 'KB visible to parent group',
+            'answer'       => 'KB visible to parent group',
+            'is_faq'       => false,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            '_visibility'  => [
+                'entities_id'  => -1,
+                'is_recursive' => 1,
+                '_type'        => \Group::class,
+                'groups_id'    => $parent_group->getID(),
+            ],
+        ]);
+
+        $this->login('tech', 'tech');
+        $this->assertTrue((new \KnowbaseItem())->can($kb->getID(), READ));
+    }
+
     public function testClone()
     {
         $this->login();

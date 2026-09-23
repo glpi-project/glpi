@@ -12,6 +12,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # Evert Meulie <evert@arkivo.no>, 2026
+# Ola Kleppa, 2026
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Evert Meulie <evert@arkivo.no>, 2026\n"
+"Last-Translator: Ola Kleppa, 2026\n"
 "Language-Team: Norwegian Bokmål (Norway) (https://app.transifex.com/glpi/teams/1637/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1402,7 +1403,7 @@ msgstr "Kommentarer"
 #: src/Search.php:978 src/CartridgeItem_PrinterModel.php:194
 #: js/modules/Form/GeolocationField.js:87
 msgid "No results found"
-msgstr ""
+msgstr "Ingen resultater funnet"
 
 #: templates/components/form/item_disk.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
@@ -3940,15 +3941,15 @@ msgstr ""
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "rule"
-msgstr ""
+msgstr "regel"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "global rule"
-msgstr ""
+msgstr "global regel"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "group"
-msgstr ""
+msgstr "gruppe"
 
 #: templates/components/search/query_builder/main.html.twig
 #: templates/pages/setup/crontask/crontask.html.twig
@@ -4083,7 +4084,7 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
-msgstr ""
+msgstr "Vis som tabell"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as map"
@@ -4095,7 +4096,7 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
-msgstr ""
+msgstr "Vis papirkurven"
 
 #: templates/components/search/controls.html.twig
 msgid "Show unpublished"
@@ -4110,7 +4111,7 @@ msgstr "Velg standard elementer som skal vises"
 #: templates/components/search/controls.html.twig
 #: src/Glpi/Dashboard/Widget.php:88 js/planning.js:405
 msgid "Refresh"
-msgstr ""
+msgstr "Oppdater"
 
 #: templates/components/search/controls.html.twig
 #: templates/components/logs.html.twig
@@ -4359,7 +4360,7 @@ msgstr "Tittel"
 #: templates/components/user/info_card.html.twig
 #: templates/pages/admin/user/user.html.twig src/RuleRight.php:326
 msgid "Default group"
-msgstr ""
+msgstr "Standardgruppe"
 
 #: templates/components/user/create_user.html.twig
 msgid "Create user"
@@ -4659,7 +4660,7 @@ msgstr ""
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Service catalog pages"
-msgstr ""
+msgstr "Tjenestekatalog sider"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "First page"
@@ -5214,7 +5215,7 @@ msgstr ""
 
 #: templates/impact/edit_compound_modal.html.twig
 msgid "Edit group"
-msgstr ""
+msgstr "Rediger gruppe"
 
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/pages/assets/cable.html.twig src/PlanningEventCategory.php:48
@@ -5229,7 +5230,7 @@ msgstr ""
 #: templates/impact/ongoing_modal.html.twig
 #: src/Glpi/Helpdesk/HomePageTabs.php:77
 msgid "Ongoing tickets"
-msgstr ""
+msgstr "Pågående saker"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Please enter the code from your authenticator app"
@@ -5414,19 +5415,19 @@ msgstr[1] ""
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:92
 #: js/modules/Forms/ServiceCatalogController.js:219
 msgid "Service catalog"
-msgstr ""
+msgstr " Tjenestekatalog"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by: "
-msgstr ""
+msgstr "Sorter etter:"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by"
-msgstr ""
+msgstr "Sorter etter"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Search for forms..."
-msgstr ""
+msgstr "Søk etter skjema..."
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Forms"
@@ -9122,7 +9123,7 @@ msgstr ""
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search for knowledge base entries or forms"
-msgstr ""
+msgstr "Søk etter kunnskapsbase artikler eller skjemaer"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search results"
@@ -9262,7 +9263,7 @@ msgstr ""
 
 #: templates/pages/form_renderer.html.twig
 msgid "Go back to service catalog"
-msgstr ""
+msgstr "Gå tilbake til tjenestekatalog"
 
 #: templates/pages/form_renderer.html.twig
 msgid "See my tickets"
@@ -10179,7 +10180,7 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Service catalog configuration"
-msgstr ""
+msgstr "Tjenestekatalog konfigurasjon"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
@@ -10194,7 +10195,7 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Pin to top of the service catalog"
-msgstr ""
+msgstr "Fest til toppen av tjenestekatalogen"
 
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
@@ -11562,15 +11563,15 @@ msgstr ""
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by file path"
-msgstr ""
+msgstr "Sorter etter filsti"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by size"
-msgstr ""
+msgstr "Sorter etter størrelse"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
-msgstr ""
+msgstr "Sorter etter dato"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
@@ -13147,7 +13148,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:138
 msgctxt "Icon"
 msgid "Request a service"
-msgstr ""
+msgstr "Be om en tjeneste"
 
 #: resources/.illustrations_translations.php:139
 msgctxt "Icon"
@@ -13853,7 +13854,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:283
 msgctxt "Icon"
 msgid "group"
-msgstr ""
+msgstr "gruppe"
 
 #: resources/.illustrations_translations.php:284
 msgctxt "Icon"
@@ -16202,7 +16203,7 @@ msgstr ""
 
 #: src/Entity.php:3482
 msgid "How can we help you?"
-msgstr ""
+msgstr "Hvordan kan vi hjelpe deg?"
 
 #: src/Entity.php:3494
 msgid "Tiles may be overriden by profile."
@@ -20501,7 +20502,7 @@ msgstr ""
 
 #: src/AuthLDAP.php:3935
 msgid "Move to trashbin"
-msgstr ""
+msgstr "Flytt til papirkurven"
 
 #: src/AuthLDAP.php:3948
 msgid "Delete dynamic groups"
@@ -20521,7 +20522,7 @@ msgstr ""
 
 #: src/AuthLDAP.php:3977
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "Gjennopprett (flytt ut av papirkurven)"
 
 #: src/AuthLDAP.php:3978 src/Glpi/Marketplace/View.php:797 src/Plugin.php:3186
 msgid "Enable"
@@ -26725,7 +26726,7 @@ msgstr ""
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:363
 msgid "Request a service"
-msgstr ""
+msgstr "Be om en tjeneste"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:364
 msgid "Ask for a service to be provided by our team."
@@ -27608,7 +27609,7 @@ msgstr ""
 #: src/Glpi/Search/Output/HTMLSearchOutput.php:206
 #, php-format
 msgid "Sorted by %s"
-msgstr ""
+msgstr "Sortert etter %s"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:229
 #, php-format
@@ -34336,11 +34337,11 @@ msgstr ""
 
 #: js/impact.js:1384
 msgid "Show ongoing tickets"
-msgstr ""
+msgstr "Vis pågående saker"
 
 #: js/impact.js:1385
 msgid "Show ongoing tickets for this item"
-msgstr ""
+msgstr "Vis pågående saker for dette elementet"
 
 #: js/impact.js:1391
 msgid "Edge properties..."

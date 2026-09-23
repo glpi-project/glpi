@@ -95,6 +95,14 @@ final class Search
     /** @var array<string, string> */
     private array $sql_field_cache = [];
 
+    /**
+     * Request parameter holding a mandatory RSQL scope. It is set by the controllers to restrict a
+     * sub-resource listing (e.g. the items of a given rack) and is parsed on its own, then ANDed as
+     * a separate criteria, so a user `filter` cannot escape it through operator precedence. Being
+     * ANDed, it can only ever narrow the results, so an end user setting it cannot widen their access.
+     */
+    public const MANDATORY_FILTER_PARAM = '_mandatory_filter';
+
     public function __construct(array $schema, array $request_params)
     {
         $this->context = new SearchContext($schema, $request_params);
@@ -405,6 +413,21 @@ final class Search
      */
     public function addRSQLCriteria(array &$criteria, ?callable $schema_resolver = null): void
     {
+        $where = [];
+        $having = [];
+
+        // Wrap each parsed filter in its own parentheses before ANDing it in. The RSQL parser
+        // only parenthesizes individual comparisons, not the whole expression, so a top-level OR
+        // would otherwise escape anything ANDed after it (a mandatory scope, the visibility
+        // restriction, ...). A trivial always-true expression ("1") is skipped.
+        $add_expression = static function (array &$list, QueryExpression $expression): void {
+            $sql = $expression->getValue();
+            if ($sql === '' || $sql === '1') {
+                return;
+            }
+            $list[] = new QueryExpression('(' . $sql . ')');
+        };
+
         if (!empty($this->context->getRequestParameter('filter'))) {
             $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->context->getRequestParameter('filter')));
             $unknown_properties = array_keys(
@@ -427,8 +450,24 @@ final class Search
                 return;
             }
 
-            $criteria['WHERE'] = [$filter_result->getSQLWhereCriteria()];
-            $criteria['HAVING'] = [$filter_result->getSQLHavingCriteria()];
+            $add_expression($where, $filter_result->getSQLWhereCriteria());
+            $add_expression($having, $filter_result->getSQLHavingCriteria());
+        }
+
+        $mandatory_filter = $this->context->getRequestParameter(self::MANDATORY_FILTER_PARAM);
+        if (!empty($mandatory_filter)) {
+            // The mandatory scope is parsed on its own and ANDed as a separate (parenthesized)
+            // element so the user `filter` cannot widen it back through operator precedence.
+            $scope_result = $this->rsql_parser->parse(Lexer::tokenize($mandatory_filter));
+            $add_expression($where, $scope_result->getSQLWhereCriteria());
+            $add_expression($having, $scope_result->getSQLHavingCriteria());
+        }
+
+        if ($where !== []) {
+            $criteria['WHERE'] = $where;
+        }
+        if ($having !== []) {
+            $criteria['HAVING'] = $having;
         }
     }
 
