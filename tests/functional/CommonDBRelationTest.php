@@ -504,6 +504,25 @@ class CommonDBRelationTest extends DbTestCase
         $this->assertTrue((new \Item_Rack())->can(-1, CREATE, $input));
     }
 
+    public function testCannotCreateRelationWithNonexistentUncheckedItem(): void
+    {
+        $this->login('glpi', 'glpi');
+        $rack = $this->createItem(\Rack::class, [
+            'name'        => 'Rack with nonexistent item',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $input = [
+            'racks_id'    => $rack->getID(),
+            'itemtype'    => \Computer::class,
+            'items_id'    => 999999999,
+            'position'    => 1,
+            'orientation' => \Rack::FRONT,
+        ];
+
+        $this->assertFalse((new \Item_Rack())->can(-1, CREATE, $input));
+    }
+
     public function testCannotCreateRelationWithItemFromUnrelatedEntity(): void
     {
         $this->login('glpi', 'glpi');

@@ -580,8 +580,16 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         // An unchecked side that is not set yet (e.g. new relation form) cannot be used to check entities
         if (
-            (!$item1 instanceof CommonDBTM && static::$checkItem_1_Rights == self::DONT_CHECK_ITEM_RIGHTS)
-            || (!$item2 instanceof CommonDBTM && static::$checkItem_2_Rights == self::DONT_CHECK_ITEM_RIGHTS)
+            (
+                !$item1 instanceof CommonDBTM
+                && static::$checkItem_1_Rights == self::DONT_CHECK_ITEM_RIGHTS
+                && empty($this->fields[static::$items_id_1])
+            )
+            || (
+                !$item2 instanceof CommonDBTM
+                && static::$checkItem_2_Rights == self::DONT_CHECK_ITEM_RIGHTS
+                && empty($this->fields[static::$items_id_2])
+            )
         ) {
             $check_entity = false;
         }
