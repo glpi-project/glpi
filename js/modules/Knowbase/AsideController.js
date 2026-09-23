@@ -1321,6 +1321,7 @@ export class GlpiKnowbaseAsideController
         if (line) {
             line.removeAttribute('data-glpi-kb-aside-category-header');
             line.classList.remove('mb-2');
+            line.querySelector(':scope > a')?.classList.remove('fw-bold');
         }
     }
 
