@@ -1677,8 +1677,8 @@ $kb-aside-min-width: 300px;
 // KB aside: drag and drop reparenting.
 .kb-drag-ghost {
     position: fixed;
-    inset-block-start: 0;
-    inset-inline-start: 0;
+    top: 0;
+    left: 0;
     z-index: 1080;
     max-width: 240px;
     padding: 0.25rem 0.5rem;
