@@ -187,11 +187,9 @@ class Session
                 $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
                 $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
                 $_SESSION["glpiextauth"]         = $auth->extauth;
-                if (isset($_SESSION['phpCAS']['user'])) {
-                    $_SESSION["glpiauthtype"]     = Auth::CAS;
+                $_SESSION["glpiauthtype"]        = $auth->getAuthType();
+                if ($_SESSION["glpiauthtype"] === Auth::CAS) {
                     $_SESSION["glpiextauth"]      = 0;
-                } else {
-                    $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
                 }
                 $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                 $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
@@ -2063,6 +2061,7 @@ class Session
          : self::getLoginUserID();
         $lang             = $_SESSION['glpilanguage'];
         $session_use_mode = $_SESSION['glpi_use_mode'];
+        $authtype         = $_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED;
 
         $impersonator_info = [
             'id'                            => $impersonator_id,
@@ -2086,6 +2085,8 @@ class Session
         // Force usage of current user lang and session mode
         $_SESSION['glpilanguage'] = $lang;
         $_SESSION['glpi_use_mode'] = $session_use_mode;
+        // The session is still the one opened by the impersonator
+        $_SESSION['glpiauthtype'] = $authtype;
         Session::loadLanguage();
 
         $_SESSION['impersonator_id'] = $impersonator_id;
@@ -2120,11 +2121,13 @@ class Session
         //store user which was impersonated by another user
         $impersonate_user = $_SESSION['glpiname'];
         $impersonator_info = $_SESSION['impersonator_info'] ?? [];
+        $authtype = $_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED;
 
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
         Session::init($auth);
+        $_SESSION['glpiauthtype'] = $authtype;
 
         // Restore previous user values
         if (!empty($impersonator_info)) {

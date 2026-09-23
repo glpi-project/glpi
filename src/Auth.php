@@ -519,6 +519,7 @@ class Auth extends CommonGLPI
                 $this->user->getFromDBByCrit(['id' => $row['id']]);
                 $this->extauth                  = 0;
                 $this->user_present             = true;
+                $this->setAuthType(self::DB_GLPI);
                 $this->user->fields["authtype"] = self::DB_GLPI;
                 $this->user->fields["password"] = $password;
 
@@ -1055,6 +1056,7 @@ class Auth extends CommonGLPI
             $login_name     = $_SESSION['mfa_pre_auth']['username'];
             $noauto         = $_SESSION['mfa_pre_auth']['noauto'];
             $remember_me    = $_SESSION['mfa_pre_auth']['remember_me'];
+            $this->setAuthType($_SESSION['mfa_pre_auth']['auth_type'] ?? self::NOT_YET_AUTHENTIFIED);
 
             $this->user = new User();
             $this->auth_succeded = $this->user->getFromDB($_SESSION['mfa_pre_auth']['user_id']);
@@ -1134,6 +1136,7 @@ class Auth extends CommonGLPI
                     'remember_me' => $remember_me,
                     'noauto'      => $noauto,
                     'redirect'    => $_REQUEST['redirect'] ?? null,
+                    'auth_type'   => $this->auth_type,
                 ];
 
                 if ($this->user_present && $totp->is2FAEnabled($this->user->fields['id'])) {
@@ -1851,6 +1854,14 @@ class Auth extends CommonGLPI
         );
 
         $_COOKIE[$cookie_name] = $token_uid . ':' . $token;
+    }
+
+    /**
+     * Set the authentication method that validated the credentials.
+     */
+    public function setAuthType(int $auth_type): void
+    {
+        $this->auth_type = $auth_type;
     }
 
     /**
