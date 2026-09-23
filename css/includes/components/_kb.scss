@@ -100,7 +100,7 @@
 
 .kb-sidepanel {
     background-color: var(--tblr-card-cap-bg);
-    border-left: 1px solid var(--tblr-border-color);
+    border-inline-start: 1px solid var(--tblr-border-color);
     height: calc(100vh - 150px);
 
     // Mirror .kb-article's transition so the pair always sums to the row width;
@@ -112,15 +112,15 @@
 
     .steps-vertical {
         position: relative;
-        left: -1.5rem;
+        inset-inline-start: -1.5rem;
         width: calc(100% + 3rem);
-        margin-left: 0;
-        padding-right: 1.25rem;
-        border-left: none;
+        margin-inline-start: 0;
+        padding-inline-end: 1.25rem;
+        border-inline-start: none;
     }
 
     &.closed {
-        border-left: 0;
+        border-inline-start: 0;
         width: 0;
         overflow: hidden;
         padding: 0 !important;
@@ -186,7 +186,7 @@ body.in_modal .kb-article {
     .steps-vertical {
         --tblr-steps-padding: 1.5rem;
 
-        margin-left: 0;
+        margin-inline-start: 0;
     }
 }
 
@@ -323,17 +323,6 @@ body.in_modal .kb-article {
             color: var(--tblr-bg-surface) !important;
         }
     }
-}
-
-// KB permission owner footer (full-width, differentiated background)
-.kb-permission-owner {
-    background-color: var(--tblr-body-bg);
-    margin: 0 calc(-1 * var(--tblr-modal-padding))
-        calc(-1 * var(--tblr-modal-padding));
-    padding: var(--tblr-modal-padding);
-    border-top: 1px solid var(--tblr-border-color);
-    border-radius: 0 0 var(--tblr-modal-inner-border-radius)
-        var(--tblr-modal-inner-border-radius);
 }
 
 // KB permission visibility fields (AJAX-loaded from visibility.php)
@@ -509,7 +498,7 @@ body.in_modal .kb-editor-reserved {
             content: var(--suggestion-placeholder);
             color: var(--tblr-muted);
             pointer-events: none;
-            margin-left: 0.25rem;
+            margin-inline-start: 0.25rem;
             font-style: italic;
         }
 
@@ -1450,7 +1439,7 @@ $kb-aside-min-width: 300px;
 
             // The root article's children read as its siblings.
             &:not([data-glpi-kb-root-children]) {
-                padding-left: 1.5rem;
+                padding-inline-start: 1.5rem;
 
                 > li {
                     // L-shaped connector: starts $gap below the top edge so the
@@ -1460,24 +1449,24 @@ $kb-aside-min-width: 300px;
 
                         content: "";
                         position: absolute;
-                        left: -1rem;
-                        top: 0;
+                        inset-inline-start: -1rem;
+                        inset-block-start: 0;
                         width: calc(
                             1rem - #{$gap}
                         ); // leave a small gap before the content
 
                         height: 0.825rem; // half of the 20px illustration = 10px
-                        border-left: 1px solid var(--tblr-border-color);
-                        border-bottom: 1px solid var(--tblr-border-color);
+                        border-inline-start: 1px solid var(--tblr-border-color);
+                        border-block-end: 1px solid var(--tblr-border-color);
                     }
 
                     // Vertical run down to the next sibling.
                     &:not(:last-child)::after {
                         content: "";
                         position: absolute;
-                        left: -1rem;
-                        top: 0.825rem;
-                        bottom: 0;
+                        inset-inline-start: -1rem;
+                        inset-block-start: 0.825rem;
+                        inset-block-end: 0;
                         width: 1px;
                         background-color: var(--tblr-border-color);
                     }
@@ -1688,8 +1677,8 @@ $kb-aside-min-width: 300px;
 // KB aside: drag and drop reparenting.
 .kb-drag-ghost {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset-block-start: 0;
+    inset-inline-start: 0;
     z-index: 1080;
     max-width: 240px;
     padding: 0.25rem 0.5rem;
