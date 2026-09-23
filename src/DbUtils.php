@@ -307,7 +307,7 @@ final class DbUtils
             if (!is_dir($allowed_dir)) {
                 continue;
             }
-            if (str_starts_with($real_class_file, realpath($allowed_dir) . '/')) {
+            if (str_starts_with($real_class_file, realpath($allowed_dir) . DIRECTORY_SEPARATOR)) {
                 return true;
             }
         }
