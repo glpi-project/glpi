@@ -108,6 +108,12 @@ The present file will list all changes made to the project; according to the
 - `escapeMarkupText()` javascript function.
 - `Html::link()`
 - Inclusion of the `inc/includes.php` file.
+- `Knowbase` class. The knowledge base is browsed from the side panel of `KnowbaseItem`.
+- `KnowbaseItem::SEEALL` constant.
+- `KnowbaseItem::searchForm()`
+- `KnowbaseItem::showList()`
+- `KnowbaseItem::showRecentPopular()`
+- `knowbaseitems_id_parent` parameter and `allmy`, `myunpublished`, `allunpublished`, `allpublished` types of `KnowbaseItem::getListRequest()`.
 
 #### Removed
 
