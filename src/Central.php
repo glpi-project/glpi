@@ -90,13 +90,11 @@ class Central extends CommonGLPI
                 );
             }
 
-            ksort($tabs);
-
             if (Grid::canViewOneDashboard()) {
-                $tabs = [
-                    0 => self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon()),
-                ] + $tabs;
+                $tabs[0] = self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon());
             }
+
+            ksort($tabs);
 
             return $tabs;
         }
