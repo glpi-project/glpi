@@ -481,6 +481,44 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
         }
     }
 
+    public function testIsUsedWhenOnlyUsedAsPeripheral(): void
+    {
+        // A custom asset with the capacity can be connected as the *peripheral* of another
+        // asset (native or custom) without ever being used as a host itself. Disabling the
+        // capacity still deletes that relation (see onCapacityDisabled()), so isUsed() must
+        // report it as used - otherwise the "this will delete data" confirmation is skipped.
+        $entity_id = $this->getTestRootEntity(true);
+
+        $definition = $this->initAssetDefinition(
+            capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
+        );
+        $class = $definition->getAssetClassName();
+
+        $peripheral = $this->createItem(
+            $class,
+            ['name' => __FUNCTION__, 'entities_id' => $entity_id]
+        );
+
+        $capacity = new HasPeripheralAssetsCapacity();
+        $this->assertFalse($capacity->isUsed($class));
+
+        $this->createItem(
+            Asset_PeripheralAsset::class,
+            [
+                'itemtype_asset'      => Computer::class,
+                'items_id_asset'      => getItemByTypeName(Computer::class, '_test_pc01', true),
+                'itemtype_peripheral' => $class,
+                'items_id_peripheral' => $peripheral->getID(),
+            ]
+        );
+
+        $this->assertTrue($capacity->isUsed($class));
+        $this->assertStringContainsString(
+            '1 assets connected as a peripheral of another asset',
+            $capacity->getCapacityUsageDescription($class)
+        );
+    }
+
     public function testGetCapacityUsageDescription(): void
     {
         global $CFG_GLPI;
