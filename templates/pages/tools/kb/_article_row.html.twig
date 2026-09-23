@@ -90,7 +90,8 @@
                     <i class="ti ti-plus" aria-hidden="true"></i>
                 </button>
             {% endif %}
-            {% if show_actions %}
+            {# The root article has no action, see `KnowbaseItem::getAsideActions()`. #}
+            {% if show_actions and not call('KnowbaseItem::isRootId', [article.id]) %}
                 {{ actions_menu.render_actions_menu_lazy() }}
             {% endif %}
         </div>

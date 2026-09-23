@@ -1783,7 +1783,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // Toggle actions
         $toggles = [];
-        if (KnowbaseItem_Favorite::canCreate()) {
+        // The root article cannot be a favorite, see `KnowbaseItem_Favorite::canCreateItem()`.
+        if (KnowbaseItem_Favorite::canCreate() && !$this->isRoot()) {
             $toggles[] = new EditorAction(
                 label: __("Add to favorites"),
                 icon: "ti ti-star",
