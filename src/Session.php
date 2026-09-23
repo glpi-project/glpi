@@ -188,6 +188,13 @@ class Session
                 $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
                 $_SESSION["glpiextauth"]         = $auth->extauth;
                 $_SESSION["glpiauthtype"]        = $auth->getAuthType();
+                if ($_SESSION["glpiauthtype"] === Auth::COOKIE) {
+                    // Keep the method the user originally logged in with
+                    $_SESSION["glpiauthtype"] = SessionTracker::getLoginSessionAuthType(
+                        $_SESSION['login_session_uid'],
+                        $auth->user->getID()
+                    );
+                }
                 if ($_SESSION["glpiauthtype"] === Auth::CAS) {
                     $_SESSION["glpiextauth"]      = 0;
                 }
