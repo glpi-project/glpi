@@ -89,8 +89,14 @@ final class MailReAuthStrategy extends InPlaceReAuthStrategy
         $is_sso_backed_by_mail = $session_authtype === Auth::EXTERNAL
             && $user->fields['authtype'] === Auth::MAIL;
 
-        return ($session_authtype === Auth::MAIL || $is_sso_backed_by_mail)
-            && (int) $user->fields['auths_id'] > 0;
+        if ($session_authtype !== Auth::MAIL && !$is_sso_backed_by_mail) {
+            return false;
+        }
+
+        // A missing server or an empty connect_string can never be verified: let a weaker strategy
+        // take over. An unreachable server, on the other hand, fails closed in verify().
+        $method = Auth::getMethodsByID(Auth::MAIL, (int) $user->fields['auths_id']);
+        return !empty($method['connect_string']);
     }
 
     #[Override]

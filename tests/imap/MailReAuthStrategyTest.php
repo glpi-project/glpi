@@ -159,6 +159,31 @@ class MailReAuthStrategyTest extends DbTestCase
         $this->assertFalse((new MailReAuthStrategy())->isAvailable($users_id));
     }
 
+    /** Not available when the linked mail server has no connection string: it could never be verified. */
+    public function testIsAvailableIsFalseWhenConnectStringIsEmpty(): void
+    {
+        // --- arrange ---
+        $users_id = $this->createMailUser('');
+        $_SESSION['glpiauthtype'] = Auth::MAIL;
+
+        // --- act + assert ---
+        $this->assertFalse((new MailReAuthStrategy())->isAvailable($users_id));
+    }
+
+    /** Not available when the linked mail server no longer exists. */
+    public function testIsAvailableIsFalseWhenMailServerIsMissing(): void
+    {
+        global $DB;
+
+        // --- arrange ---
+        $users_id = $this->createMailUser();
+        $DB->update('glpi_users', ['auths_id' => 999999], ['id' => $users_id]);
+        $_SESSION['glpiauthtype'] = Auth::MAIL;
+
+        // --- act + assert ---
+        $this->assertFalse((new MailReAuthStrategy())->isAvailable($users_id));
+    }
+
     public static function verifyProvider(): iterable
     {
         // [create_mail_user, password, expected]

@@ -176,6 +176,36 @@ class LdapReAuthStrategyTest extends DbTestCase
         $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
     }
 
+    /** Not available when the linked directory has no host: it could never be verified. */
+    #[RequiresPhpExtension('ldap')]
+    public function testIsAvailableIsFalseWhenDirectoryHostIsEmpty(): void
+    {
+        global $DB;
+
+        // --- arrange ---
+        $users_id = $this->importLdapUser('brazil6');
+        $DB->update('glpi_authldaps', ['host' => ''], ['id' => $this->ldap->getID()]);
+        $_SESSION['glpiauthtype'] = Auth::LDAP;
+
+        // --- act + assert ---
+        $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
+    }
+
+    /** Not available when the linked directory no longer exists. */
+    #[RequiresPhpExtension('ldap')]
+    public function testIsAvailableIsFalseWhenDirectoryIsMissing(): void
+    {
+        global $DB;
+
+        // --- arrange ---
+        $users_id = $this->importLdapUser('brazil6');
+        $DB->update('glpi_users', ['auths_id' => 999999], ['id' => $users_id]);
+        $_SESSION['glpiauthtype'] = Auth::LDAP;
+
+        // --- act + assert ---
+        $this->assertFalse((new LdapReAuthStrategy())->isAvailable($users_id));
+    }
+
     public static function verifyProvider(): iterable
     {
         // [import_ldap_user, password, expected]
