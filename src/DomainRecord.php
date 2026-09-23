@@ -199,6 +199,9 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return $tab;
     }
 
+    /**
+     * @return array<int>
+     */
     private static function getManagedDomainRecordTypes(): array
     {
         return $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? [];
@@ -214,9 +217,6 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public static function canUpdate(): bool
     {
-        if (!self::canUpdateAssignableItem()) {
-            return false;
-        }
         if (count(self::getManagedDomainRecordTypes())) {
             return true;
         }
@@ -246,8 +246,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
             return false;
         }
 
-        return $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
-            || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true);
+        return self::getManagedDomainRecordTypes() === [-1]
+            || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true);
     }
 
     public function canUpdateItem(): bool
@@ -256,29 +256,31 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         if (!CommonDBTM::canUpdateItem()) {
             return false;
         }
-        return parent::canUpdateItem()
-         && (
-             self::getManagedDomainRecordTypes() === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true)
-         );
+
+        return self::getManagedDomainRecordTypes() === [-1]
+            || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true);
     }
 
     public function canDeleteItem(): bool
     {
-        return parent::canDeleteItem()
-         && (
-             self::getManagedDomainRecordTypes() === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true)
-         );
+        // Skip CommonDBChild checks since authorization is enforced by the parent Domain.
+        if (!CommonDBTM::canDeleteItem()) {
+            return false;
+        }
+
+        return self::getManagedDomainRecordTypes() === [-1]
+            || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true);
     }
 
     public function canPurgeItem(): bool
     {
-        return parent::canPurgeItem()
-         && (
-             self::getManagedDomainRecordTypes() === [-1]
-         || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true)
-         );
+        // Skip CommonDBChild checks since authorization is enforced by the parent Domain.
+        if (!CommonDBTM::canPurgeItem()) {
+            return false;
+        }
+
+        return self::getManagedDomainRecordTypes() === [-1]
+            || in_array($this->fields['domainrecordtypes_id'], self::getManagedDomainRecordTypes(), true);
     }
 
     public function defineTabs($options = [])
