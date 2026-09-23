@@ -94,6 +94,24 @@ class CentralTest extends DbTestCase
         );
     }
 
+    public function testGroupViewDoesNotRenderWithoutRight(): void
+    {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+        $_SESSION['glpiactiveprofile']['problem'] = 0;
+        $_SESSION['glpiactiveprofile']['change'] = 0;
+        $_SESSION['glpiactiveprofile']['project'] = 0;
+        $_SESSION['glpiactiveprofile']['projecttask'] = 0;
+        $_SESSION['glpigroups'] = [1];
+
+        ob_start();
+        Central::showGroupView();
+        $output = ob_get_clean();
+
+        $this->assertSame('', $output);
+    }
+
     public function testAvailableCentralTabsAreShown(): void
     {
         $this->login();
@@ -110,6 +128,23 @@ class CentralTest extends DbTestCase
         $this->assertSame('Group View', strip_tags($tabs[2]));
         $this->assertArrayHasKey(4, $tabs);
         $this->assertSame('RSS feed', strip_tags($tabs[4]));
+    }
+
+    public function testGroupViewRendersWithRight(): void
+    {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = Ticket::READALL;
+        $_SESSION['glpigroups'] = [1];
+
+        ob_start();
+        Central::showGroupView();
+        $output = ob_get_clean();
+
+        $this->assertTrue(
+            str_contains($output, 'data-itemtype="Ticket"'),
+            'Group View must be rendered with permission.',
+        );
     }
 
     public function testPersonalViewRendersReminderWithRight(): void
