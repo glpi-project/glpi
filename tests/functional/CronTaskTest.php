@@ -332,6 +332,28 @@ class CronTaskTest extends DbTestCase
         );
     }
 
+    public function testShowFormWithLastRunAndNullNextRun(): void
+    {
+        $this->login();
+
+        $crontask = $this->createItem(\CronTask::class, [
+            'itemtype'  => \CronTask::class,
+            'name'      => 'test_null_next_run',
+            'frequency' => MINUTE_TIMESTAMP,
+            'hourmin'   => 0,
+            'hourmax'   => 24,
+            'lastrun'   => '2025-01-01 10:00:00',
+            'next_run'  => null,
+        ]);
+        $this->assertNull($crontask->fields['next_run']);
+
+        ob_start();
+        $this->assertTrue($crontask->showForm($crontask->getID()));
+        $html = ob_get_clean();
+
+        $this->assertStringContainsString(__('As soon as possible'), $html);
+    }
+
     public function testDuplicateCronTaskName()
     {
         global $DB;

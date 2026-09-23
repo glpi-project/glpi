@@ -711,7 +711,7 @@ class CronTask extends CommonDBTM
         if (empty($this->fields['lastrun'])) {
             $next_run_display = __('As soon as possible');
         } else {
-            $next = strtotime($this->fields['next_run']);
+            $next = strtotime($this->fields['next_run'] ?? $this->fields['lastrun']);
             $h    = date('H', $next);
             $deb  = ($this->fields['hourmin'] < 10 ? "0" . $this->fields['hourmin']
                                                 : $this->fields['hourmin']);
