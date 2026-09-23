@@ -1759,7 +1759,7 @@ HTML;
         ];
         $p = array_merge($default, $params);
 
-        $id = "search-table-" . $p['rand'];
+        $id = "search-table-" . Html::sanitizeDomId($p['rand']);
 
         $color = new Color($p['color']);
         $is_light = $color->isLight();
