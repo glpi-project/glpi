@@ -36,6 +36,16 @@ jobs:
         uses: "actions/checkout@v7"
         with:
           ref: "${{ matrix.branch }}"
+      - name: "Restore dependencies cache"
+        uses: "actions/cache@v6"
+        with:
+          path: |
+            ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
+          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-
       - name: "Initialize containers"
         run: |
           .github/actions/init_containers-start.sh
