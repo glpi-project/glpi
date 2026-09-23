@@ -243,6 +243,67 @@ class DbUtilsTest extends DbTestCase
         }
     }
 
+    public function testIsGlpiClassFile()
+    {
+        $instance = new \DbUtils();
+
+        // A GLPI class
+        $this->assertTrue(
+            $instance->isGlpiClassFile((new \ReflectionClass(\Computer::class))->getFileName())
+        );
+
+        // A file that does not exist
+        $this->assertFalse($instance->isGlpiClassFile(GLPI_ROOT . '/src/ThisDoesNotExist.php'));
+
+        // A plugin installed in a directory located outside of the GLPI tree
+        $base        = sys_get_temp_dir() . '/' . uniqid('glpi_plugins_', false);
+        $plugins_dir = $base . '/plugins';
+        $class_file  = $plugins_dir . '/myplugin/inc/stuff.class.php';
+        mkdir(dirname($class_file), 0o755, true);
+        file_put_contents($class_file, '<?php');
+
+        // A sibling directory that only shares its prefix with the plugins directory
+        $sibling_dir  = $base . '/plugins_bak';
+        $sibling_file = $sibling_dir . '/myplugin/inc/stuff.class.php';
+        mkdir(dirname($sibling_file), 0o755, true);
+        file_put_contents($sibling_file, '<?php');
+
+        try {
+            $this->assertFalse(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [GLPI_ROOT . '/plugins'])
+            );
+            $this->assertTrue(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [GLPI_ROOT . '/plugins', $plugins_dir])
+            );
+
+            // A directory that does not exist must not make every file valid
+            $this->assertFalse(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [$plugins_dir . '/not_there'])
+            );
+
+            // A path prefix is not a parent directory
+            $this->assertFalse(
+                $instance->isGlpiClassFile($sibling_file, GLPI_ROOT, [$plugins_dir])
+            );
+            $this->assertTrue(
+                $instance->isGlpiClassFile($sibling_file, GLPI_ROOT, [$sibling_dir])
+            );
+
+            // The allowed directory itself is not a class file
+            $this->assertFalse(
+                $instance->isGlpiClassFile($plugins_dir, GLPI_ROOT, [$plugins_dir])
+            );
+        } finally {
+            foreach ([$class_file, $sibling_file] as $file) {
+                unlink($file);
+                rmdir(dirname($file));
+                rmdir(dirname($file, 2));
+                rmdir(dirname($file, 3));
+            }
+            rmdir($base);
+        }
+    }
+
     public function testGetTableForItemtypeDoesNotConflictWithGetItemTypeForTable()
     {
         $instance = new \DbUtils();
