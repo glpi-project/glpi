@@ -503,4 +503,29 @@ class CommonDBRelationTest extends DbTestCase
 
         $this->assertTrue((new \Item_Rack())->can(-1, CREATE, $input));
     }
+
+    public function testCannotCreateRelationWithItemFromUnrelatedEntity(): void
+    {
+        $this->login('glpi', 'glpi');
+        $rack = $this->createItem(\Rack::class, [
+            'name'         => 'Rack in child 1',
+            'entities_id'  => getItemByTypeName(\Entity::class, '_test_child_1', true),
+            'is_recursive' => 0,
+        ]);
+        $computer = $this->createItem(\Computer::class, [
+            'name'         => 'Computer in child 2',
+            'entities_id'  => getItemByTypeName(\Entity::class, '_test_child_2', true),
+            'is_recursive' => 0,
+        ]);
+
+        $input = [
+            'racks_id'    => $rack->getID(),
+            'itemtype'    => \Computer::class,
+            'items_id'    => $computer->getID(),
+            'position'    => 1,
+            'orientation' => \Rack::FRONT,
+        ];
+
+        $this->assertFalse((new \Item_Rack())->can(-1, CREATE, $input));
+    }
 }
