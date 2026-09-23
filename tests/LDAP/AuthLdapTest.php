@@ -689,6 +689,60 @@ class AuthLdapTest extends DbTestCase
         $this->assertSame($guid, AuthLDAP::getFieldValue($infos, 'ms-ds-consistencyguid'));
     }
 
+    public static function formatValueForDisplayProvider(): iterable
+    {
+        $bin      = hex2bin('d318577c54c4214190e3a7f7e8e1d9f1');
+        $guid_str = '7c5718d3-c454-4121-90e3-a7f7e8e1d9f1';
+
+        yield 'objectguid binary is converted to canonical GUID string' => [
+            'key'      => 'objectguid',
+            'value'    => $bin,
+            'expected' => $guid_str,
+        ];
+
+        yield 'ms-ds-consistencyguid binary is converted to canonical GUID string' => [
+            'key'      => 'ms-ds-consistencyguid',
+            'value'    => $bin,
+            'expected' => $guid_str,
+        ];
+
+        yield 'guid attribute name is matched case-insensitively' => [
+            'key'      => 'ms-DS-ConsistencyGuid',
+            'value'    => $bin,
+            'expected' => $guid_str,
+        ];
+
+        yield 'guid attribute already in string form is left unchanged' => [
+            'key'      => 'objectguid',
+            'value'    => $guid_str,
+            'expected' => $guid_str,
+        ];
+
+        yield 'guid attribute with bytes that cannot form a valid GUID keeps its raw value' => [
+            'key'      => 'objectguid',
+            'value'    => 'short',
+            'expected' => 'short',
+        ];
+
+        yield 'non-guid binary attribute is converted to uppercase hexadecimal' => [
+            'key'      => 'jpegphoto',
+            'value'    => hex2bin('ffd8ffe0'),
+            'expected' => 'FFD8FFE0',
+        ];
+
+        yield 'plain UTF-8 attribute is left unchanged' => [
+            'key'      => 'cn',
+            'value'    => 'Jean Dupont',
+            'expected' => 'Jean Dupont',
+        ];
+    }
+
+    #[DataProvider('formatValueForDisplayProvider')]
+    public function testFormatValueForDisplay(string $key, string $value, string $expected): void
+    {
+        $this->assertSame($expected, AuthLDAP::formatValueForDisplay($key, $value));
+    }
+
     public function testPassword()
     {
         $ldap = new AuthLDAP();

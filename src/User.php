@@ -5969,6 +5969,8 @@ HTML;
                         foreach ($values as $value) {
                             if (str_contains($key, 'password')) {
                                 $value = '********';
+                            } else {
+                                $value = AuthLDAP::formatValueForDisplay($key, $value);
                             }
                             $printed_values[] = htmlescape($value);
                         }
