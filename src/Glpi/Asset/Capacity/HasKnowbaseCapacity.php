@@ -36,15 +36,17 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
+use Knowbase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use Override;
+use Session;
 
 class HasKnowbaseCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
-        return __('Knowledge base');
+        return Knowbase::getTypeName(Session::getPluralNumber());
     }
 
     public function getIcon(): string

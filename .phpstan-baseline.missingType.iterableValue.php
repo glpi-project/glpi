@@ -20378,7 +20378,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method KnowbaseItem\\:\\:searchForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method KnowbaseItem\\:\\:showFull\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method KnowbaseItem\\:\\:showList\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
