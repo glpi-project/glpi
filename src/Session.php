@@ -2061,7 +2061,6 @@ class Session
          : self::getLoginUserID();
         $lang             = $_SESSION['glpilanguage'];
         $session_use_mode = $_SESSION['glpi_use_mode'];
-        $authtype         = $_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED;
 
         $impersonator_info = [
             'id'                            => $impersonator_id,
@@ -2077,6 +2076,8 @@ class Session
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
+        // The session is still the one opened by the impersonator
+        $auth->setAuthType($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED);
         Session::init($auth);
 
         // The impersonated user must not inherit the impersonator's re-authentication token
@@ -2085,8 +2086,6 @@ class Session
         // Force usage of current user lang and session mode
         $_SESSION['glpilanguage'] = $lang;
         $_SESSION['glpi_use_mode'] = $session_use_mode;
-        // The session is still the one opened by the impersonator
-        $_SESSION['glpiauthtype'] = $authtype;
         Session::loadLanguage();
 
         $_SESSION['impersonator_id'] = $impersonator_id;
@@ -2121,13 +2120,12 @@ class Session
         //store user which was impersonated by another user
         $impersonate_user = $_SESSION['glpiname'];
         $impersonator_info = $_SESSION['impersonator_info'] ?? [];
-        $authtype = $_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED;
 
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
+        $auth->setAuthType($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED);
         Session::init($auth);
-        $_SESSION['glpiauthtype'] = $authtype;
 
         // Restore previous user values
         if (!empty($impersonator_info)) {
