@@ -1431,7 +1431,7 @@ $kb-aside-min-width: 300px;
         // connectors and list spacing never bleed into the actions dropdown.
         ul:not(.dropdown-menu) {
             list-style: none;
-            padding: 0 0 0 1.5rem;
+            padding: 0;
             margin: 0;
 
             > li {
@@ -1446,36 +1446,41 @@ $kb-aside-min-width: 300px;
                 &:not([data-glpi-kb-search-hidden]) {
                     display: flow-root;
                 }
+            }
 
-                // L-shaped connector: starts $gap below the top edge so the
-                // vertical segment never "touches" the line above it.
-                &::before {
-                    $gap: 0.25rem;
+            // The root article's children read as its siblings.
+            &:not([data-glpi-kb-root-children]) {
+                padding-left: 1.5rem;
 
-                    content: "";
-                    position: absolute;
-                    left: -1rem;
-                    top: 0;
-                    width: calc(
-                        1rem - #{$gap}
-                    ); // leave a small gap before the content
+                > li {
+                    // L-shaped connector: starts $gap below the top edge so the
+                    // vertical segment never "touches" the line above it.
+                    &::before {
+                        $gap: 0.25rem;
 
-                    height: 0.825rem; // half of the 20px illustration = 10px
-                    border-left: 1px solid var(--tblr-border-color);
-                    border-bottom: 1px solid var(--tblr-border-color);
-                }
+                        content: "";
+                        position: absolute;
+                        left: -1rem;
+                        top: 0;
+                        width: calc(
+                            1rem - #{$gap}
+                        ); // leave a small gap before the content
 
-                // Vertical run down to the next sibling's connector. No `height`: with
-                // `top` and `bottom` both set it would win and `bottom` be ignored, so
-                // the line stopped short as soon as the row hosted a subtree.
-                &:not(:last-child)::after {
-                    content: "";
-                    position: absolute;
-                    left: -1rem;
-                    top: 0.825rem;
-                    bottom: 0;
-                    width: 1px;
-                    background-color: var(--tblr-border-color);
+                        height: 0.825rem; // half of the 20px illustration = 10px
+                        border-left: 1px solid var(--tblr-border-color);
+                        border-bottom: 1px solid var(--tblr-border-color);
+                    }
+
+                    // Vertical run down to the next sibling.
+                    &:not(:last-child)::after {
+                        content: "";
+                        position: absolute;
+                        left: -1rem;
+                        top: 0.825rem;
+                        bottom: 0;
+                        width: 1px;
+                        background-color: var(--tblr-border-color);
+                    }
                 }
             }
         }

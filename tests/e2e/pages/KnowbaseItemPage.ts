@@ -784,7 +784,8 @@ export class KnowbaseItemPage extends GlpiPage
      * child article's link, or the "+" add-child link). Every node (leaf or
      * not, as long as article creation is allowed) has exactly one of these,
      * so it is a safe hover/click target regardless of whether the article
-     * has a fold toggle (which only renders when it already has children).
+     * has a fold toggle (which renders when it already has children, and never
+     * on the root article).
      */
     public getAsideArticleTitleLink(title: string): Locator
     {
@@ -876,16 +877,6 @@ export class KnowbaseItemPage extends GlpiPage
     public get asideTree(): Locator
     {
         return this.page.getByTestId('aside-tree');
-    }
-
-    /**
-     * The root tree's own header row, hovered/focused to reveal
-     * `asideRootCreateLink` (mirrors a regular node's header).
-     */
-    public get asideRootHeader(): Locator
-    {
-        // eslint-disable-next-line playwright/no-raw-locators -- using scope
-        return this.asideTree.locator(':scope > [data-glpi-kb-aside-category-header]');
     }
 
     public get asideSearchInput(): Locator

@@ -208,6 +208,7 @@ final class Builder
             collapsed: $folded,
             has_children: $children !== [],
             children_loaded: !$folded,
+            is_root: KnowbaseItem::isRootId($id),
         );
 
         if (!$folded) {
