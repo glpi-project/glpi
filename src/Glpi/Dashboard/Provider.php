@@ -1112,6 +1112,7 @@ class Provider
 
         if (
             isset($params['apply_filters'][DatesFilter::getId()])
+            && is_array($params['apply_filters'][DatesFilter::getId()])
             && count($params['apply_filters'][DatesFilter::getId()]) == 2
         ) {
             $begin = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][0]));
