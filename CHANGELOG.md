@@ -20,6 +20,7 @@ The present file will list all changes made to the project; according to the
 - Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
 - High-Level API version 3.0.0.
 - `=istruthy=` and `=isnottruthy=` RSQL operators.
+- New "Assignment of a project task" notification event, raised when a member is added to a project task team, with a "New project task team member" recipient.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.

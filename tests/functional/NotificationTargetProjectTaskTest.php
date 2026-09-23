@@ -35,11 +35,23 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_User;
+use Notification;
+use Notification_NotificationTemplate;
+use NotificationEventMailing;
 use NotificationTarget;
+use NotificationTargetProjectTask;
+use NotificationTemplate;
+use NotificationTemplateTranslation;
 use Project;
 use ProjectState;
 use ProjectTask;
+use ProjectTaskTeam;
 use ProjectType;
+use QueuedNotification;
+use User;
+use UserEmail;
 
 /* Test for inc/notificationtargetprojecttask.class.php */
 
@@ -83,7 +95,7 @@ class NotificationTargetProjectTaskTest extends DbTestCase
             'entities_id' => $root_entity,
         ]);
 
-        $notiftarget = new \NotificationTargetProjectTask($root_entity, 'new', $ptask);
+        $notiftarget = new NotificationTargetProjectTask($root_entity, 'new', $ptask);
         $notiftarget->getTags();
 
         // basic test for the ##projecttask.projectcode## tag description
@@ -152,5 +164,204 @@ class NotificationTargetProjectTaskTest extends DbTestCase
             \CommonITILObject::getPriorityName(4),
             $data['##projecttask.projectpriority##']
         );
+    }
+
+    private function createProjectTask(): ProjectTask
+    {
+        $entities_id = $this->getTestRootEntity(true);
+
+        $project = $this->createItem(Project::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+
+        return $this->createItem(ProjectTask::class, [
+            'name'        => __FUNCTION__,
+            'projects_id' => $project->getID(),
+            'entities_id' => $entities_id,
+        ]);
+    }
+
+    private function addEmail(string $username, string $email): int
+    {
+        $users_id = getItemByTypeName(User::class, $username, true);
+        $this->createItem(UserEmail::class, [
+            'users_id'   => $users_id,
+            'email'      => $email,
+            'is_default' => 1,
+        ]);
+
+        return $users_id;
+    }
+
+    private function getMailingTarget(ProjectTask $task): NotificationTargetProjectTask
+    {
+        $target = new NotificationTargetProjectTask(event: 'assign', object: $task);
+        $target->setEvent(NotificationEventMailing::class);
+
+        return $target;
+    }
+
+    public function testAssignEventAndRecipientAreAvailable(): void
+    {
+        $this->login();
+
+        $target = NotificationTarget::getInstanceByType(ProjectTask::class);
+        $this->assertInstanceOf(NotificationTargetProjectTask::class, $target);
+        $this->assertArrayHasKey('assign', $target->getAllEvents());
+
+        $recipient_key = Notification::USER_TYPE . '_' . Notification::NEW_TEAM_MEMBER;
+
+        // Recipient is only offered for the assign event
+        $assign_target = NotificationTarget::getInstanceByType(ProjectTask::class, 'assign');
+        $this->assertInstanceOf(NotificationTargetProjectTask::class, $assign_target);
+        $this->assertArrayHasKey($recipient_key, $assign_target->notification_targets);
+
+        $update_target = NotificationTarget::getInstanceByType(ProjectTask::class, 'update');
+        $this->assertInstanceOf(NotificationTargetProjectTask::class, $update_target);
+        $this->assertArrayNotHasKey($recipient_key, $update_target->notification_targets);
+    }
+
+    public function testNewTeamMemberUserRecipient(): void
+    {
+        $this->login();
+
+        $task      = $this->createProjectTask();
+        $tech_id   = $this->addEmail('tech', 'tech@localhost');
+        $normal_id = $this->addEmail('normal', 'normal@localhost');
+
+        // Existing member must not be notified of someone else's assignment
+        $this->createItem(ProjectTaskTeam::class, [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => User::class,
+            'items_id'        => $normal_id,
+            '_disablenotif'   => true,
+        ]);
+
+        $target = $this->getMailingTarget($task);
+        $target->addSpecificTargets(
+            ['type' => Notification::USER_TYPE, 'items_id' => Notification::NEW_TEAM_MEMBER],
+            ['team_member_itemtype' => User::class, 'team_member_items_id' => $tech_id]
+        );
+
+        $this->assertSame(['tech@localhost'], array_keys($target->target));
+    }
+
+    public function testNewTeamMemberGroupRecipient(): void
+    {
+        $this->login();
+
+        $task    = $this->createProjectTask();
+        $tech_id = $this->addEmail('tech', 'tech@localhost');
+
+        $group = $this->createItem(Group::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => $tech_id,
+        ]);
+
+        $target = $this->getMailingTarget($task);
+        $target->addSpecificTargets(
+            ['type' => Notification::USER_TYPE, 'items_id' => Notification::NEW_TEAM_MEMBER],
+            ['team_member_itemtype' => Group::class, 'team_member_items_id' => $group->getID()]
+        );
+
+        $this->assertSame(['tech@localhost'], array_keys($target->target));
+    }
+
+    public function testNewTeamMemberWithInvalidOptions(): void
+    {
+        $this->login();
+
+        $task = $this->createProjectTask();
+        $this->addEmail('tech', 'tech@localhost');
+
+        $invalid_options = [
+            [],
+            ['team_member_itemtype' => User::class, 'team_member_items_id' => 0],
+            ['team_member_itemtype' => User::class, 'team_member_items_id' => 999999],
+            ['team_member_itemtype' => 'Computer', 'team_member_items_id' => 1],
+        ];
+
+        foreach ($invalid_options as $options) {
+            $target = $this->getMailingTarget($task);
+            $target->addSpecificTargets(
+                ['type' => Notification::USER_TYPE, 'items_id' => Notification::NEW_TEAM_MEMBER],
+                $options
+            );
+            $this->assertEmpty($target->target);
+        }
+    }
+
+    public function testAssignNotificationIsQueuedOnTeamMemberAdd(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['use_notifications']     = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $task      = $this->createProjectTask();
+        $tech_id   = $this->addEmail('tech', 'tech@localhost');
+        $normal_id = $this->addEmail('normal', 'normal@localhost');
+
+        $notification = $this->createItem(Notification::class, [
+            'name'         => __FUNCTION__,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'is_active'    => 1,
+            'itemtype'     => ProjectTask::class,
+            'event'        => 'assign',
+        ]);
+        $template = $this->createItem(NotificationTemplate::class, [
+            'name'     => __FUNCTION__,
+            'itemtype' => ProjectTask::class,
+        ]);
+        $this->createItem(NotificationTemplateTranslation::class, [
+            'notificationtemplates_id' => $template->getID(),
+            'language'                 => '',
+            'subject'                  => 'Assigned to ##projecttask.name##',
+            'content_text'             => '##newteammember.name## (##newteammember.itemtype##)',
+            'content_html'             => '##newteammember.name## (##newteammember.itemtype##)',
+        ]);
+        $this->createItem(Notification_NotificationTemplate::class, [
+            'notifications_id'         => $notification->getID(),
+            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+            'notificationtemplates_id' => $template->getID(),
+        ]);
+        $this->createItem(NotificationTarget::class, [
+            'notifications_id' => $notification->getID(),
+            'type'             => Notification::USER_TYPE,
+            'items_id'         => Notification::NEW_TEAM_MEMBER,
+        ]);
+
+        // Existing member, added without notification: must not receive the assign notification
+        $this->createItem(ProjectTaskTeam::class, [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => User::class,
+            'items_id'        => $normal_id,
+            '_disablenotif'   => true,
+        ]);
+
+        $this->createItem(ProjectTaskTeam::class, [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => User::class,
+            'items_id'        => $tech_id,
+        ]);
+
+        $queued = (new QueuedNotification())->find([
+            'itemtype' => ProjectTask::class,
+            'items_id' => $task->getID(),
+            'event'    => 'assign',
+        ]);
+        $this->assertCount(1, $queued);
+
+        $queued = reset($queued);
+        $this->assertSame('tech@localhost', $queued['recipient']);
+        $this->assertStringContainsString(getItemByTypeName(User::class, 'tech')->getName(), $queued['body_text']);
     }
 }
