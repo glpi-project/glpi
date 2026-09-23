@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Contact;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_User;
@@ -44,12 +45,14 @@ use NotificationTarget;
 use NotificationTargetProjectTask;
 use NotificationTemplate;
 use NotificationTemplateTranslation;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Project;
 use ProjectState;
 use ProjectTask;
 use ProjectTaskTeam;
 use ProjectType;
 use QueuedNotification;
+use Supplier;
 use User;
 use UserEmail;
 
@@ -270,6 +273,55 @@ class NotificationTargetProjectTaskTest extends DbTestCase
         );
 
         $this->assertSame(['tech@localhost'], array_keys($target->target));
+    }
+
+    public static function anonymousTeamMemberProvider(): iterable
+    {
+        yield 'contact' => [Contact::class];
+        yield 'supplier' => [Supplier::class];
+    }
+
+    /**
+     * @param class-string<Contact|Supplier> $itemtype
+     */
+    #[DataProvider('anonymousTeamMemberProvider')]
+    public function testNewTeamMemberAnonymousRecipient(string $itemtype): void
+    {
+        $this->login();
+
+        $task = $this->createProjectTask();
+
+        // Existing member of the same type must not be notified of someone else's assignment
+        $existing_member = $this->createItem($itemtype, [
+            'name'        => __FUNCTION__ . ' existing',
+            'email'       => 'existing@localhost',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(ProjectTaskTeam::class, [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => $itemtype,
+            'items_id'        => $existing_member->getID(),
+            '_disablenotif'   => true,
+        ]);
+
+        $new_member = $this->createItem($itemtype, [
+            'name'        => __FUNCTION__ . ' new',
+            'email'       => 'new@localhost',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $target = $this->getMailingTarget($task);
+        $target->addSpecificTargets(
+            ['type' => Notification::USER_TYPE, 'items_id' => Notification::NEW_TEAM_MEMBER],
+            ['team_member_itemtype' => $itemtype, 'team_member_items_id' => $new_member->getID()]
+        );
+
+        $this->assertSame(['new@localhost'], array_keys($target->target));
+        $this->assertSame(__FUNCTION__ . ' new', $target->target['new@localhost']['username']);
+        $this->assertSame(
+            NotificationTarget::ANONYMOUS_USER,
+            $target->target['new@localhost']['additionnaloption']['usertype']
+        );
     }
 
     public function testNewTeamMemberWithInvalidOptions(): void
