@@ -486,4 +486,21 @@ class CommonDBRelationTest extends DbTestCase
         // Assert: should be allowed
         $this->assertTrue($can_create);
     }
+
+    public function testCanCreateRelationWhenUncheckedItemIsNotSetYet(): void
+    {
+        $this->login('glpi', 'glpi');
+        $rack = $this->createItem(\Rack::class, [
+            'name'        => 'Rack for new item form',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $input = [
+            'racks_id'    => $rack->getID(),
+            'position'    => 1,
+            'orientation' => \Rack::FRONT,
+        ];
+
+        $this->assertTrue((new \Item_Rack())->can(-1, CREATE, $input));
+    }
 }
