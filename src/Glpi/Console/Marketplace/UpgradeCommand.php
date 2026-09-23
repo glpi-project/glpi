@@ -42,7 +42,8 @@ use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
+use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Process;
 
 class UpgradeCommand extends AbstractCommand
 {
@@ -170,67 +171,64 @@ class UpgradeCommand extends AbstractCommand
             }
         }
 
-        // Automatically process plugin update and reactivation of active plugins.
-        if (count($active_plugins) > 0) {
-            \asort($active_plugins);
-
-            Plugin::forcePluginsExecution(true); // Temporarly force the plugins execution
-            foreach ($active_plugins as $plugin_key => $plugin_id) {
-                if (!\in_array($plugin_key, $updated_plugins, true)) {
-                    continue;
-                }
-
-                $plugin = new Plugin();
-
-                try {
-                    $plugin->install($plugin_id);
-                    $installed = \in_array($plugin->fields['state'], [Plugin::NOTACTIVATED, Plugin::TOBECONFIGURED]);
-                } catch (Throwable $e) {
-                    global $PHPLOGGER;
-                    $PHPLOGGER->error(
-                        sprintf('Error while installing plugin `%s`, error was: `%s`.', $plugin_key, $e->getMessage()),
-                        ['exception' => $e]
-                    );
-
-                    $installed = false;
-                }
-                if (!$installed) {
-                    $has_errors = true;
-                    $output->writeln(
-                        '<error>' . sprintf(__('Plugin "%s" installation failed.'), $plugin_key) . '</error>',
-                        OutputInterface::VERBOSITY_QUIET
-                    );
-                    $this->outputSessionBufferedMessages([WARNING, ERROR]);
-                    continue;
-                }
-
-                try {
-                    $activated = $plugin->activate($plugin_id);
-                } catch (Throwable $e) {
-                    global $PHPLOGGER;
-                    $PHPLOGGER->error(
-                        sprintf('Error while activating plugin `%s`, error was: `%s`.', $plugin_key, $e->getMessage()),
-                        ['exception' => $e]
-                    );
-
-                    $activated = false;
-                }
-
-                if (!$activated) {
-                    $has_errors = true;
-                    $output->writeln(
-                        '<error>' . sprintf(__('Plugin "%s" activation failed.'), $plugin_key) . '</error>',
-                        OutputInterface::VERBOSITY_QUIET
-                    );
-                    $this->outputSessionBufferedMessages([WARNING, ERROR]);
-                    continue;
-                }
-
-                $output->writeln('<info>' . sprintf(__('Plugin "%1$s" has been updated and reactivated.'), $plugin_key) . '</info>', );
-            }
-            Plugin::forcePluginsExecution(false);
+        // Each plugin is processed in its own subprocess so its loaded code doesn't accumulate in memory.
+        if ($this->upgradeActivePlugins($active_plugins, $updated_plugins, $username, $output)) {
+            $has_errors = true;
         }
 
         return $has_errors ? self::FAILURE : self::SUCCESS;
+    }
+
+    /**
+     * @param array<string, int> $active_plugins Plugin ids indexed by plugin directory.
+     * @param string[] $updated_plugins Directories of the plugins to process.
+     * @return bool `true` if at least one plugin could not be upgraded.
+     */
+    protected function upgradeActivePlugins(
+        array $active_plugins,
+        array $updated_plugins,
+        ?string $username,
+        OutputInterface $output
+    ): bool {
+        $has_errors = false;
+
+        if (count($active_plugins) === 0) {
+            return $has_errors;
+        }
+
+        \asort($active_plugins);
+
+        foreach ($active_plugins as $plugin_key => $plugin_id) {
+            if (!\in_array($plugin_key, $updated_plugins, true)) {
+                continue;
+            }
+
+            if (!$this->upgradePlugin($plugin_key, $username, $output)) {
+                $has_errors = true;
+            }
+        }
+
+        return $has_errors;
+    }
+
+    /**
+     * Install and activate the given plugin in a dedicated subprocess.
+     */
+    protected function upgradePlugin(string $plugin_key, ?string $username, OutputInterface $output): bool
+    {
+        $php_binary = (new PhpExecutableFinder())->find();
+
+        $command = [$php_binary, GLPI_ROOT . '/bin/console', 'marketplace:upgrade:plugin', $plugin_key];
+        if ($username !== null) {
+            $command[] = "--username={$username}";
+        }
+
+        $process = new Process($command);
+        $process->setTimeout(null);
+        $process->run(static function ($type, $buffer) use ($output) {
+            $output->write($buffer);
+        });
+
+        return $process->isSuccessful();
     }
 }
