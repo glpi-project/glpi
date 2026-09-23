@@ -37,8 +37,6 @@ namespace tests\units;
 use DocumentCategory;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
-use Glpi\Form\AccessControl\ControlType\DirectAccess;
-use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeFile;
