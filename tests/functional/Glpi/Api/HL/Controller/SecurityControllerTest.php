@@ -224,4 +224,13 @@ class SecurityControllerTest extends HLAPITestCase
             'logout_reason' => SessionTracker::REVOKE_REASON_ADMIN,
         ]));
     }
+
+    public function testUserAgentGraphQLDirectAccessForbidden(): void
+    {
+        $this->login();
+
+        $this->graphql->call('query { UserAgentInfo { user_agent_string } }', function ($call) {
+            $call->response->isCompletelyError();
+        });
+    }
 }

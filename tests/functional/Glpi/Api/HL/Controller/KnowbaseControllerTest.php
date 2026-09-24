@@ -279,4 +279,110 @@ class KnowbaseControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testCRUDKBArticleShareToken()
+    {
+        $this->loginWeb();
+        $article_id = $this->createItem(KnowbaseItem::class, [
+            'name' => 'test_kb_article_share_token',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->login();
+
+        $this->api->autoTestCRUD('/Knowledgebase/Article/' . $article_id . '/ShareToken', [
+            'is_active' => 1,
+        ], [
+            'is_active' => 0,
+        ], ['new_location_singleton' => true]);
+    }
+
+    public function testKBSharingTokenGraphQL(): void
+    {
+        $this->login();
+
+        $this->graphql->call('query { ShareToken { id token } }', function ($call) {
+            // No ShareToken query should be exposed
+            $call->response->isCompletelyError();
+        });
+    }
+
+    public function testGetKBArticleByToken(): void
+    {
+        $this->loginWeb();
+        $article_id = $this->createItem(KnowbaseItem::class, [
+            'name' => 'test_kb_article_share_token',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->login();
+
+        $token = null;
+        $this->api->call(new Request('POST', '/Knowledgebase/Article/' . $article_id . '/ShareToken'), function ($call) use (&$token) {
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $article_id . '/ShareToken'), function ($call) use (&$token) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$token) {
+                    $this->assertArrayHasKey('token', $content);
+                    $token = $content['token'];
+                });
+        });
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) use ($article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($article_id) {
+                    $this->assertEquals($article_id, (int) $content['id']);
+                });
+        });
+
+        $request = new Request('PATCH', '/Knowledgebase/Article/' . $article_id . '/ShareToken');
+        $request->setParameter('is_active', 0);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) {
+            $call->response->isNotFoundError();
+        });
+
+        $this->logOut();
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) {
+            $call->response->isNotFoundError();
+        });
+
+        $this->login('post-only', 'postonly');
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) {
+            $call->response->isNotFoundError();
+        });
+
+        $this->login();
+
+        $request = new Request('PATCH', '/Knowledgebase/Article/' . $article_id . '/ShareToken');
+        $request->setParameter('is_active', 1);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->logOut();
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) use ($article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($article_id) {
+                    $this->assertEquals($article_id, (int) $content['id']);
+                });
+        });
+
+        $this->login('post-only', 'postonly');
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/ShareToken/' . $token), function ($call) use ($article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($article_id) {
+                    $this->assertEquals($article_id, (int) $content['id']);
+                });
+        });
+    }
 }
