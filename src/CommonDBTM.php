@@ -5545,7 +5545,11 @@ class CommonDBTM extends CommonGLPI
                 continue;
             }
 
-            if (!isHLAPI()) {
+            if (isHLAPI()) {
+                // HLAPI already created the document, we just need to link it to the item
+                $docID = $file;
+                $doc->getFromDB($docID);
+            } else {
                 // The HLAPI already handles inline images as well as file uploads. We only need to worry about creating the links between the item and the document.
 
                 //retrieve entity
@@ -5646,10 +5650,6 @@ class CommonDBTM extends CommonGLPI
                         $docadded[$docID]['tag'] = $doc->fields["tag"];
                     }
                 }
-            } elseif (isHLAPI()) {
-                // HLAPI already created the document, we just need to link it to the item
-                $docID = $file;
-                $doc->getFromDB($docID);
             }
 
             if ($docID > 0) {
