@@ -34,6 +34,8 @@
 
 namespace tests\units;
 
+use Glpi\Knowbase\EditorAction;
+use Glpi\Knowbase\EditorActionType;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Favorite;
@@ -166,6 +168,27 @@ final class KnowbaseItem_FavoriteTest extends DbTestCase
         $this->assertFalse(KnowbaseItem_Favorite::canPurge());
         $this->assertFalse($favorite->can(-1, CREATE, $favorite_input));
         $this->assertFalse($favorite->can($favorite_id, PURGE));
+    }
+
+    public function testRootArticleCannotBeFavorite(): void
+    {
+        $this->login();
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+
+        $favorite = new KnowbaseItem_Favorite();
+        $input = [
+            'knowbaseitems_id' => $root->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ];
+        $this->assertFalse($favorite->can(-1, CREATE, $input));
+        $this->assertFalse($favorite->add($input));
+
+        $action_types = array_map(
+            fn($action) => $action instanceof EditorAction ? $action->type : null,
+            $root->getAsideActions()
+        );
+        $this->assertNotContains(EditorActionType::TOGGLE_FAVORITE, $action_types);
     }
 
     public function testPurgingUserDeletesFavorites(): void
