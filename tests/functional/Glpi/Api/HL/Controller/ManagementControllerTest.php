@@ -423,6 +423,55 @@ EOT;
         });
     }
 
+    public function testCreateDocumentRejectsMultipleSingletonFileUploads(): void
+    {
+        $this->login();
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $name = __FUNCTION__;
+        $first_file_content = $this->getUniquePngContent($name . '_first');
+        $second_file_content = $this->getUniquePngContent($name . '_second');
+        $first_sha1sum = sha1($first_file_content);
+        $second_sha1sum = sha1($second_file_content);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+$name
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="file"; filename="first.png"
+Content-Type: image/png
+
+$first_file_content
+-----boundary
+Content-Disposition: form-data; name="file"; filename="second.png"
+Content-Type: image/png
+
+$second_file_content
+-----boundary--
+EOT;
+        $request = new Request('POST', '/Management/Document', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isNotOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(AbstractController::ERROR_INVALID_PARAMETER, $content['status']);
+                    $this->assertEquals('maxItems', $content['detail']['file'][0]['error']);
+                });
+        });
+
+        $this->assertEquals(0, countElementsInTable(Document::getTable(), ['name' => $name]));
+        $this->assertFileDoesNotExist($this->getDocumentFilePath($first_sha1sum));
+        $this->assertFileDoesNotExist($this->getDocumentFilePath($second_sha1sum));
+    }
+
     /**
      * Build a PNG payload that is unique to the given test so that its hash, and therefore the path it would be
      * stored at, cannot collide with the files written by the other tests of the suite.
