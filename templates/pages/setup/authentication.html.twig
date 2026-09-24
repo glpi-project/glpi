@@ -62,10 +62,12 @@
                   <span>{{ 'AuthMail'|itemtype_name }}</span>
                </a>
 
-               <a class="list-group-item list-group-item-action" href="{{ path('front/auth.others.php') }}">
-                  <i class="ti ti-login me-1"></i>
-                  <span>{{ __('Others authentication methods') }}</span>
-               </a>
+               {% if has_profile_right('config', constant('UPDATE')) %}
+                  <a class="list-group-item list-group-item-action" href="{{ path('front/auth.others.php') }}">
+                     <i class="ti ti-login me-1"></i>
+                     <span>{{ __('Others authentication methods') }}</span>
+                  </a>
+               {% endif %}
             </div>
          </div>
       </div>

@@ -97,7 +97,19 @@ class AuthTest extends DbTestCase
         $this->removeRightFromProfile('Technician', Config::$rightname, UPDATE);
         $this->addRightToProfile('Technician', Config::$rightname, READ);
         \Session::reloadCurrentProfile();
-        $this->assertIsArray(Auth::getMenuContent());
+        $menu = Auth::getMenuContent();
+        $this->assertIsArray($menu);
+        $this->assertArrayNotHasKey('add', $menu['options'][AuthLDAP::class]['links']);
+        $this->assertArrayNotHasKey('add', $menu['options'][AuthMail::class]['links']);
+        $this->assertArrayNotHasKey('others', $menu['options']);
+        $this->assertArrayNotHasKey('settings', $menu['options']);
+
+        $this->addRightToProfile('Technician', Config::$rightname, UPDATE);
+        \Session::reloadCurrentProfile();
+        $menu = Auth::getMenuContent();
+        $this->assertArrayHasKey('add', $menu['options'][AuthLDAP::class]['links']);
+        $this->assertArrayHasKey('others', $menu['options']);
+        $this->assertArrayHasKey('settings', $menu['options']);
     }
 
     /**
