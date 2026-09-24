@@ -331,7 +331,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
         // Default values are supplied by `EngineInput::fromForm()` as the raw
         // `default_value` database column, i.e. a comma separated list of
         // option uuids. An empty string means "no option checked by default",
-        // which must behave exactly like an unanswered question.
+        // which must behave exactly like a question with no option checked.
         yield "Equals check with a default value for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::EQUALS,
@@ -361,7 +361,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_operator'  => ValueOperator::NOT_EQUALS,
             'condition_value'     => ["option_c"],
             'submitted_answer'    => "",
-            'expected_result'     => false,
+            'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
         yield "Contains check with a default value for $type" => [
@@ -393,7 +393,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_operator'  => ValueOperator::NOT_CONTAINS,
             'condition_value'     => ["option_c"],
             'submitted_answer'    => "",
-            'expected_result'     => false,
+            'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
     }
