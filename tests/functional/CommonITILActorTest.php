@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Change;
 use CommonDBTM;
+use CommonITILActor;
 use CommonITILObject;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
@@ -45,10 +46,35 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Supplier;
 use Ticket;
+use Ticket_User;
 use User;
 
 class CommonITILActorTest extends DbTestCase
 {
+    public function testCanAddExternalRequester(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket with an external requester',
+            'content'     => 'Ticket with an external requester',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $input = [
+            'tickets_id'       => $ticket->getID(),
+            'users_id'         => 0,
+            'type'             => CommonITILActor::REQUESTER,
+            'use_notification' => 1,
+            'alternative_email' => 'external.user@example.com',
+        ];
+
+        $this->assertTrue((new Ticket_User())->can(-1, CREATE, $input));
+
+        $input['alternative_email'] = '';
+        $this->assertFalse((new Ticket_User())->can(-1, CREATE, $input));
+    }
+
     public static function addCombinations(): iterable
     {
         $classes = [Ticket::class, Change::class, Problem::class];
