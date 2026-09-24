@@ -375,6 +375,88 @@ EOT;
         });
     }
 
+    public function testUpdateAssetModelPictureDeletesPreviousFile(): void
+    {
+        $first_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
+        $second_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $this->login();
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+{$this->getUniqueString()}
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="picture_front_upload"; filename="bar.png"
+Content-Type: image/png
+
+$first_picture_content
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Dropdowns/MonitorModel', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$new_location) {
+                    $new_location = $content['href'];
+                });
+        });
+
+        $original_picture_path = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$original_picture_path) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$original_picture_path) {
+                    $original_picture_path = $this->getPicturePathFromUrl($content['picture_front']);
+                });
+        });
+
+        $this->assertNotNull($original_picture_path);
+        $this->assertFileExists($original_picture_path);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="picture_front_upload"; filename="foo.png"
+Content-Type: image/png
+
+$second_picture_content
+-----boundary--
+EOT;
+
+        $request = new Request('PATCH', $new_location, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $updated_picture_path = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$updated_picture_path) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$updated_picture_path) {
+                    $updated_picture_path = $this->getPicturePathFromUrl($content['picture_front']);
+                });
+        });
+
+        $this->assertNotNull($updated_picture_path);
+        $this->assertNotSame($original_picture_path, $updated_picture_path);
+        $this->assertFileDoesNotExist($original_picture_path);
+        $this->assertFileExists($updated_picture_path);
+    }
+
     public function testCreateAssetModelRejectsMultipleSingletonPictureUploads(): void
     {
         $front_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
@@ -521,6 +603,17 @@ EOT;
                     $this->assertEquals([$picture], $content['pictures']);
                 });
         });
+    }
+
+    /**
+     * Create a monitor model owning a single picture and return its API location and picture reference.
+     * @return array{0: string, 1: string}
+     */
+    private function getPicturePathFromUrl(string $picture_url): string
+    {
+        $this->assertStringContainsString('_pictures%2F', $picture_url);
+        $reference = substr($picture_url, strpos($picture_url, '_pictures%2F') + strlen('_pictures%2F'));
+        return GLPI_PICTURE_DIR . '/' . urldecode($reference);
     }
 
     /**
