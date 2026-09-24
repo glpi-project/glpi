@@ -442,6 +442,35 @@ test.describe('Service Catalog Page - Isolated', () => {
         await expect(service_catalog.getItemRegion(kb_name_2)).toBeHidden();
     });
 
+    test(`Links in the service catalog item description are clickable`, async ({page, profile, api, entity}) => {
+        const uuid = randomUUID();
+        const entity_id = getWorkerEntityId();
+        const kb_name = `KB with links ${uuid}`;
+
+        const kb_id = await createKnowledgeBaseItem(api, kb_name, entity_id, {
+            'description': '<p><a href="https://glpi-project.org/datasheet">Datasheet</a></p>',
+        });
+
+        await profile.set(Profiles.SelfService);
+        await entity.switchToWithoutRecursion(entity_id);
+        const service_catalog = new ServiceCatalogPage(page);
+        await service_catalog.goto();
+        await service_catalog.doSearchItem(kb_name);
+
+        // Description link is rendered as a real link, not nested in the tile link
+        const region = service_catalog.getItemRegion(kb_name);
+        const description_link = region.getByTestId('service-catalog-description').getByRole('link', { name: 'Datasheet' });
+        await expect(description_link).toHaveAttribute('href', 'https://glpi-project.org/datasheet');
+        await expect(region.getByRole('link')).toHaveCount(2);
+
+        // Description link is not covered by the tile link
+        await description_link.click({ trial: true });
+
+        // The tile itself still leads to the item
+        await region.getByRole('link', { name: kb_name }).click();
+        await expect(page).toHaveURL(new RegExp(`id=${kb_id}`));
+    });
+
     test(`Can navigate through the expanded service catalog using the breadcrumbs`, async ({page, profile, api, entity}) => {
         const uuid = randomUUID();
 
