@@ -32,7 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-
 namespace tests\units\Glpi\Controller\Knowbase;
 
 use Glpi\Controller\Knowbase\GetTranslationContentController;
