@@ -730,6 +730,12 @@ class AuthLdapTest extends DbTestCase
             'expected' => 'FFD8FFE0',
         ];
 
+        yield 'guid attribute with binary bytes that cannot form a valid GUID is converted to uppercase hexadecimal' => [
+            'key'      => 'objectguid',
+            'value'    => hex2bin('ffd8ffe0'),
+            'expected' => 'FFD8FFE0',
+        ];
+
         yield 'non-guid binary attribute is converted to uppercase hexadecimal' => [
             'key'      => 'jpegphoto',
             'value'    => hex2bin('ffd8ffe0'),
