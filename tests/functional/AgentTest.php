@@ -779,4 +779,33 @@ XML;
         $this->assertSame(Computer::class, $agent->fields['itemtype']);
         $this->assertSame($computer->getID(), $agent->fields['items_id']);
     }
+
+    public function testRequestAgentWithSpacesInComputerName(): void
+    {
+        global $DB;
+
+        $computer = $this->createItem(
+            Computer::class,
+            ['name' => 'U039126 - HP EliteBook 640 G9']
+        );
+
+        $agents_id = (new \Agent())->add([
+            'name'      => 'U039126-2023-12-18-09-14-46',
+            'deviceid'  => 'U039126-2023-12-18-09-14-46',
+            'itemtype'  => Computer::class,
+            'items_id'  => $computer->getID(),
+            'port'      => 62354,
+        ]);
+        $this->assertGreaterThan(0, $agents_id);
+
+        $agent = new \Agent();
+        $this->assertTrue($agent->getFromDB($agents_id));
+
+        // Even with a computer name containing spaces, requesting the agent status
+        // must not throw (a malformed URI was raised before reaching the addresses
+        // and aborted the whole loop).
+        $result = $agent->requestStatus();
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('answer', $result);
+    }
 }

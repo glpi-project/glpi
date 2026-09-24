@@ -714,9 +714,9 @@ class Agent extends CommonDBTM
                 $options['proxy_excluded'] = true;
             }
 
-            // init guzzle client with base options
-            $httpClient = Toolbox::getGuzzleClient($options);
             try {
+                // init guzzle client with base options
+                $httpClient = Toolbox::getGuzzleClient($options);
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
