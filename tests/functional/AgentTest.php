@@ -782,6 +782,8 @@ XML;
 
     public function testRequestAgentWithSpacesInComputerName(): void
     {
+        global $DB;
+
         $computer = $this->createItem(
             Computer::class,
             [
@@ -792,12 +794,14 @@ XML;
 
         // A fresh Computer has no network ports, so the only guessed address
         // is the friendly name, which contains spaces and produces an invalid URI.
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $agents_id = (new \Agent())->add([
-            'name'      => 'U039126-2023-12-18-09-14-46',
-            'deviceid'  => 'U039126-2023-12-18-09-14-46',
-            'itemtype'  => Computer::class,
-            'items_id'  => $computer->getID(),
-            'port'      => 62354,
+            'name'          => 'U039126-2023-12-18-09-14-46',
+            'deviceid'      => 'U039126-2023-12-18-09-14-46',
+            'itemtype'      => Computer::class,
+            'items_id'      => $computer->getID(),
+            'agenttypes_id' => $agenttype['id'],
+            'port'          => 62354,
         ]);
         $this->assertGreaterThan(0, $agents_id);
 
