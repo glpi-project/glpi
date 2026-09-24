@@ -122,9 +122,10 @@ final class FileManager
     /**
      * Uploads a file for use in a Document and returns the input parameters required to associate it with a Document.
      * @param HashedUploadedFile $uploaded_file
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]}|null $rollback_journal
      * @return array{filename: string, sha1sum: string, filepath: string}|int The input parameters for Document creation or an error status
      */
-    public static function uploadFile(HashedUploadedFile $uploaded_file): array|int
+    public static function uploadFile(HashedUploadedFile $uploaded_file, ?array &$rollback_journal = null): array|int
     {
         if ($uploaded_file->getError() !== UPLOAD_ERR_OK) {
             return $uploaded_file->getError();
@@ -143,12 +144,21 @@ final class FileManager
             return UPLOAD_ERR_CANT_WRITE;
         }
         $target_path = GLPI_DOC_DIR . '/' . $dest;
+        $was_created = false;
         if (!file_exists($target_path)) {
             try {
                 $uploaded_file->moveTo($target_path);
+                $was_created = true;
             } catch (\RuntimeException $e) {
                 return UPLOAD_ERR_CANT_WRITE;
             }
+        }
+
+        if ($was_created && $rollback_journal !== null) {
+            $rollback_journal['files'][] = [
+                'filepath' => $dest,
+                'sha1sum' => $uploaded_file->getHash(),
+            ];
         }
 
         return [
@@ -164,11 +174,12 @@ final class FileManager
      * @param HashedUploadedFile $uploaded_file The file to upload
      * @param int $entities_id The ID of the entity to associate with the Document
      * @param bool $recursive Whether to apply the entity association recursively to child entities
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]}|null $rollback_journal
      * @return Document|int The created Document or an upload error status
      */
-    public static function uploadAsDocument(HashedUploadedFile $uploaded_file, int $entities_id, bool $recursive): Document|int
+    public static function uploadAsDocument(HashedUploadedFile $uploaded_file, int $entities_id, bool $recursive, ?array &$rollback_journal = null): Document|int
     {
-        $result = self::uploadFile($uploaded_file);
+        $result = self::uploadFile($uploaded_file, $rollback_journal);
         if (is_int($result)) {
             return $result;
         }
@@ -180,13 +191,14 @@ final class FileManager
         $document = new Document();
         $documents_id = $document->add($input);
         if ($documents_id === false) {
-            $orphan_document = new Document();
-            $orphan_document->fields = [
-                'filepath' => $input['filepath'],
-                'sha1sum' => $input['sha1sum'],
-            ];
-            $orphan_document->cleanFile();
+            if ($rollback_journal === null) {
+                self::cleanUploadedFile($input['filepath'], $input['sha1sum']);
+            }
             return UPLOAD_ERR_CANT_WRITE;
+        }
+
+        if ($rollback_journal !== null) {
+            $rollback_journal['documents'][] = $document;
         }
 
         return $document;
@@ -194,9 +206,10 @@ final class FileManager
 
     /**
      * @param HashedUploadedFile $uploaded_file
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]}|null $rollback_journal
      * @return array{filepath: string}|int The input parameters for picture saving or an error status
      */
-    public static function uploadAsPicture(HashedUploadedFile $uploaded_file): array|int
+    public static function uploadAsPicture(HashedUploadedFile $uploaded_file, ?array &$rollback_journal = null): array|int
     {
         if ($uploaded_file->getError() !== UPLOAD_ERR_OK) {
             return $uploaded_file->getError();
@@ -229,9 +242,23 @@ final class FileManager
         } catch (\RuntimeException $e) {
             return UPLOAD_ERR_CANT_WRITE;
         }
+
+        if ($rollback_journal !== null) {
+            $rollback_journal['pictures'][] = $subdir . '/' . $unique_name;
+        }
         return [
             'filepath' => $subdir . '/' . $unique_name,
         ];
+    }
+
+    public static function cleanUploadedFile(string $filepath, string $sha1sum): void
+    {
+        $orphan_document = new Document();
+        $orphan_document->fields = [
+            'filepath' => $filepath,
+            'sha1sum' => $sha1sum,
+        ];
+        $orphan_document->cleanFile();
     }
 
     /**
@@ -262,9 +289,10 @@ final class FileManager
      * @param int $entities_id The ID of the entity to associate with the created documents
      * @param bool $is_recursive Whether to apply the entity association recursively to child entities
      * @param Document[] $created_documents An array to store the created documents. Useful for implementing cleanup logic if needed.
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]}|null $rollback_journal
      * @return false|string The modified HTML content with inline images replaced by document references
      */
-    public static function handleInlineImagesInHTML(string $html_content, int $entities_id, bool $is_recursive, array &$created_documents = []): false|string
+    public static function handleInlineImagesInHTML(string $html_content, int $entities_id, bool $is_recursive, array &$created_documents = [], ?array &$rollback_journal = null): false|string
     {
         global $CFG_GLPI;
 
@@ -329,7 +357,7 @@ final class FileManager
                 );
 
                 // Upload the image as a document
-                $upload_result = self::uploadAsDocument($uploaded_file, $entities_id, $is_recursive);
+                $upload_result = self::uploadAsDocument($uploaded_file, $entities_id, $is_recursive, $rollback_journal);
                 if (!$upload_result instanceof Document) {
                     return false;
                 }

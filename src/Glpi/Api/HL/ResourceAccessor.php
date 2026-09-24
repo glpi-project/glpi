@@ -382,9 +382,10 @@ final class ResourceAccessor
      * @param array<string, mixed> $schema The schema
      * @param array<string, mixed> $input The input parameters
      * @param Document[] $created_documents An array to store the created documents. Useful for implementing cleanup logic if needed.
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]} $rollback_journal
      * @return array<string, mixed> The modified input parameters with inline images handled
      */
-    private static function handleRichTextInputs(array $schema, array $input, array &$created_documents): array
+    private static function handleRichTextInputs(array $schema, array $input, array &$created_documents, array &$rollback_journal): array
     {
         $entities_id = $input['entities_id'] ?? Session::getActiveEntity();
         $is_recursive = (bool) ($input['is_recursive'] ?? false);
@@ -397,7 +398,7 @@ final class ResourceAccessor
                     // Need to extract base64 data uris from img tags and upload them as documents, replacing the src with the document URL
                     $html = $input[$field_name] ?? null;
                     if ($html !== null) {
-                        $html = FileManager::handleInlineImagesInHTML($html, $entities_id, $is_recursive, $created_documents);
+                        $html = FileManager::handleInlineImagesInHTML($html, $entities_id, $is_recursive, $created_documents, $rollback_journal);
                         if ($html === false) {
                             throw new FileUploadException(
                                 $prop_name,
@@ -438,9 +439,10 @@ final class ResourceAccessor
      * @param array<string, mixed> $request_params The request parameters used for the creation or update
      * @param array<string, mixed> $input The input parameters that were used for the creation or update.
      * May also include some internal-only fields that were added during the input parameter mapping process that are required for post-action handling.
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]} $rollback_journal
      * @return void
      */
-    private static function handlePostCreateOrUpdate(CommonDBTM $item, array $schema, array $request_params, array $input): void
+    private static function handlePostCreateOrUpdate(CommonDBTM $item, array $schema, array $request_params, array $input, array &$rollback_journal): void
     {
         $new_input = [];
 
@@ -498,7 +500,7 @@ final class ResourceAccessor
             /** @var HashedUploadedFile $file */
             foreach ($files as $file) {
                 if ($upload_as === FileManager::UPLOAD_AS_FILE) {
-                    $result = FileManager::uploadFile($file);
+                $result = FileManager::uploadFile($file, $rollback_journal);
                     if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
                     } else {
@@ -510,7 +512,7 @@ final class ResourceAccessor
                     if (!FileManager::isDocumentUploadAllowed($mime, $ext)) {
                         throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
                     }
-                    $result = FileManager::uploadAsDocument($file, $item->getEntityID() > 0 ? $item->getEntityID() : 0, $item->isRecursive());
+                    $result = FileManager::uploadAsDocument($file, $item->getEntityID() > 0 ? $item->getEntityID() : 0, $item->isRecursive(), $rollback_journal);
                     if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
                     } else {
@@ -526,7 +528,7 @@ final class ResourceAccessor
                         }
                     }
                 } elseif ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
-                    $result = FileManager::uploadAsPicture($file);
+                    $result = FileManager::uploadAsPicture($file, $rollback_journal);
                     if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
                     } else {
@@ -553,19 +555,26 @@ final class ResourceAccessor
     }
 
     /**
-     * Delete the files of the documents created during a create/update that has since been rolled back.
+     * Delete the files and pictures created during a create/update that has since been rolled back.
      *
      * The rollback takes care of the DB records, but the files written to disk are outside the transaction and have
-     * to be removed explicitly or they are left orphaned. Ideally we should almost never get here as the HLAPI
-     * should catch potential input issues before the item is added/updated.
+     * to be removed explicitly or they are left orphaned.
      *
-     * @param Document[] $created_documents
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]} $rollback_journal
      * @return void
      */
-    private static function cleanRolledBackDocuments(array $created_documents): void
+    private static function cleanRolledBackUploads(array $rollback_journal): void
     {
-        foreach ($created_documents as $doc) {
+        foreach ($rollback_journal['documents'] as $doc) {
             $doc->cleanFile();
+        }
+
+        foreach ($rollback_journal['files'] as $file_info) {
+            FileManager::cleanUploadedFile($file_info['filepath'], $file_info['sha1sum']);
+        }
+
+        foreach (array_unique($rollback_journal['pictures']) as $picture_path) {
+            FileManager::deletePicture($picture_path);
         }
     }
 
@@ -681,6 +690,11 @@ final class ResourceAccessor
         $DB->beginTransaction();
         /** @var Document[] $created_documents */
         $created_documents = [];
+        $rollback_journal = [
+            'documents' => [],
+            'files' => [],
+            'pictures' => [],
+        ];
         $must_roll_back = true;
         try {
             $input_for_rich_text_handling = $input;
@@ -688,14 +702,14 @@ final class ResourceAccessor
                 $input_for_rich_text_handling['entities_id'] = $item->getEntityID();
                 $input_for_rich_text_handling['is_recursive'] = $item->isRecursive();
             }
-            $input = self::handleRichTextInputs($schema, $input_for_rich_text_handling, $created_documents);
+            $input = self::handleRichTextInputs($schema, $input_for_rich_text_handling, $created_documents, $rollback_journal);
             $result = $item->update($input);
 
             if ($result === false) {
                 return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_UPDATE);
             }
 
-            self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
+            self::handlePostCreateOrUpdate($item, $schema, $request_params, $input, $rollback_journal);
             foreach ($created_documents as $doc) {
                 $doc_item = new Document_Item();
                 $doc_item->add([
@@ -720,7 +734,7 @@ final class ResourceAccessor
         } finally {
             if ($must_roll_back) {
                 $DB->rollBack();
-                self::cleanRolledBackDocuments($created_documents);
+                self::cleanRolledBackUploads($rollback_journal);
             }
         }
 
@@ -767,16 +781,21 @@ final class ResourceAccessor
         $DB->beginTransaction();
         /** @var Document[] $created_documents */
         $created_documents = [];
+        $rollback_journal = [
+            'documents' => [],
+            'files' => [],
+            'pictures' => [],
+        ];
         $must_roll_back = true;
         try {
-            $input = self::handleRichTextInputs($schema, $input, $created_documents);
+            $input = self::handleRichTextInputs($schema, $input, $created_documents, $rollback_journal);
             $items_id = $item->add($input);
 
             if (!$items_id) {
                 return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_CREATE);
             }
 
-            self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
+            self::handlePostCreateOrUpdate($item, $schema, $request_params, $input, $rollback_journal);
             foreach ($created_documents as $doc) {
                 $doc_item = new Document_Item();
                 $doc_item->add([
@@ -801,7 +820,7 @@ final class ResourceAccessor
         } finally {
             if ($must_roll_back) {
                 $DB->rollBack();
-                self::cleanRolledBackDocuments($created_documents);
+                self::cleanRolledBackUploads($rollback_journal);
             }
         }
 
