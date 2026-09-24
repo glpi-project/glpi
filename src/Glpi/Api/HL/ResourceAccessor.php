@@ -520,9 +520,7 @@ final class ResourceAccessor
                         throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
                     }
                     $result = FileManager::uploadAsDocument($file, $item->getEntityID() > 0 ? $item->getEntityID() : 0, $item->isRecursive());
-                    if ($result === null) {
-                        throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
-                    } elseif (is_int($result)) {
+                    if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
                     } else {
                         $document_id = $result->getID();
