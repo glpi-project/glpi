@@ -638,7 +638,7 @@ final class ResourceAccessor
      * Run a create or update action inside a DB transaction, taking care of the commit/rollback bookkeeping and
      * uploaded file cleanup shared by {@link self::createBySchema()} and {@link self::updateBySchema()}.
      *
-     * @param callable(array &$rollback_journal): (int|Response) $action Callable performing the actual add/update and
+     * @param callable(RollbackJournal &$rollback_journal): (int|Response) $action Callable performing the actual add/update and
      *      any subsequent handling. It receives the rollback journal by reference and must return either:
      *      - A {@link Response}, to short-circuit with an error response. The transaction is then rolled back and
      *        any uploaded files/pictures created so far are cleaned up.
