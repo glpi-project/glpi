@@ -49,14 +49,29 @@ class FileManagerTest extends DbTestCase
     {
         // Ensure an img tag with a declared mime type that doesn't match the actual file is removed - security measure
         $html = '<p>Here is an image: <img src="data:image/jpg;base64,' . self::PNG_1X1 . '" alt="test image"></p>';
-        $this->assertEquals('<p>Here is an image: </p>', trim(FileManager::handleInlineImagesInHTML($html, 0, false)));
+        $created_documents = [];
+        $rollback_journal = [
+            'documents' => [],
+            'files' => [],
+            'pictures' => [],
+            'deferred_picture_deletions' => [],
+        ];
+        $this->assertEquals('<p>Here is an image: </p>', trim(FileManager::handleInlineImagesInHTML($html, 0, false, $created_documents, $rollback_journal)));
     }
 
     public function testHandleInlineImagesInHTML_ValidImage(): void
     {
+        $created_documents = [];
+        $rollback_journal = [
+            'documents' => [],
+            'files' => [],
+            'pictures' => [],
+            'deferred_picture_deletions' => [],
+        ];
+
         // Ensure an img tag with a valid base64 image is processed correctly
         $html = '<p>Été déjà</p><p>Here is an image: <img src="data:image/png;base64,' . self::PNG_1X1 . '" alt="test image"></p>';
-        $processedHtml = FileManager::handleInlineImagesInHTML($html, 0, false);
+        $processedHtml = FileManager::handleInlineImagesInHTML($html, 0, false, $created_documents, $rollback_journal);
         $this->assertStringContainsString('<p>Été déjà</p>', $processedHtml);
         $this->assertStringContainsString('document.send.php?docid=', $processedHtml);
         $this->assertStringContainsString('alt="test image"', $processedHtml);
@@ -64,7 +79,7 @@ class FileManagerTest extends DbTestCase
 
         // Same test but with a different case for the mime type, to ensure the comparison is case-insensitive
         $html = '<p>Été déjà</p><p>Here is an image: <img src="data:image/PnG;base64,' . self::PNG_1X1 . '" alt="test image"></p>';
-        $processedHtml = FileManager::handleInlineImagesInHTML($html, 0, false);
+        $processedHtml = FileManager::handleInlineImagesInHTML($html, 0, false, $created_documents, $rollback_journal);
         $this->assertStringContainsString('<p>Été déjà</p>', $processedHtml);
         $this->assertStringContainsString('document.send.php?docid=', $processedHtml);
         $this->assertStringContainsString('alt="test image"', $processedHtml);
@@ -96,7 +111,14 @@ class FileManagerTest extends DbTestCase
         $img = '<img src="data:image/jpg;base64,' . self::PNG_1X1 . '" alt="rejected">';
         $html = '<p>' . $img . $img . $img . '</p>';
 
-        $result = FileManager::handleInlineImagesInHTML($html, 0, false);
+        $created_documents = [];
+        $rollback_journal = [
+            'documents' => [],
+            'files' => [],
+            'pictures' => [],
+            'deferred_picture_deletions' => [],
+        ];
+        $result = FileManager::handleInlineImagesInHTML($html, 0, false, $created_documents, $rollback_journal);
 
         $this->assertStringNotContainsString('base64,', $result);
         $this->assertStringNotContainsString('<img', $result);
