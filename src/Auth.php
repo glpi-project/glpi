@@ -783,7 +783,8 @@ class Auth extends CommonGLPI
     /**
      * Checks if a user can log in with the given username, password, and auth type without actually logging them in.
      *
-     * This process will create the user in GLPI if they are provided by an external source, and runs the LDAP deleted user workflow if needed.
+     * This process runs the LDAP deleted user workflow if needed, but it does not create or update the GLPI user.
+     * Use {@link applyValidatedLogin()} for that, once this method returned `true`.
      * This method modifies the Auth object's properties.
      * More information about the login validation can be retreived from those properties.
      * If testing more than one set of credentials, it is best to use a new Auth object for each set of credentials.
@@ -1031,6 +1032,81 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * Finalize the result of a successful {@link validateLogin()} call to the database but does not start a session.
+     *
+     * Creates the GLPI user when they are provided by an external source and the auto add feature
+     * is enabled, or updates the fields of the already existing user.
+     * It also handles the "deny login" right rule and the restoration of the users that were
+     * previously flagged as deleted in the LDAP directory.
+     *
+     * Automatically called by {@link login()}.
+     *
+     * @return bool True if the user is authorized and present in the database, false otherwise
+     */
+    public function applyValidatedLogin(): bool
+    {
+        global $CFG_GLPI, $DB;
+
+        if (isset($this->user->fields['_deny_login'])) {
+            $this->addToError(__('User not authorized to connect in GLPI'));
+            $this->auth_succeded = false;
+            $this->denied_by_rule = true;
+        }
+
+        // Capture restore need before clearing the flag (original DB state still in fields).
+        $needs_ldap_restore = $this->user_present
+            && ($this->user->fields['authtype'] ?? 0) == self::LDAP
+            && ($this->user->fields['is_deleted_ldap'] || !$this->user->fields['is_active']);
+
+        //Set user an not deleted from LDAP
+        $this->user->fields['is_deleted_ldap'] = 0;
+
+        // Prepare data
+        // Use current time as session time may not be initialized yet or may be from previous session
+        $this->user->fields["last_login"] = date("Y-m-d H:i:s");
+        if ($this->extauth) {
+            $this->user->fields["_extauth"] = 1;
+        }
+
+        if ($DB->isSlave()) {
+            if (!$this->user_present) { // Can't add in slave mode
+                $this->addToError(__('User not authorized to connect in GLPI'));
+                $this->auth_succeded = false;
+            }
+        } else {
+            if ($this->user_present) {
+                // Add the user e-mail if present
+                if (count($this->user_emails) > 0) {
+                    $this->user->fields['_useremails'] = $this->user_emails;
+                }
+
+                $input = $this->user->fields;
+                unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
+
+                $this->user->update($input);
+
+                if ($needs_ldap_restore) {
+                    User::manageRestoredUserInLdap($this->user->fields['id']);
+                }
+            } elseif ($CFG_GLPI["is_users_auto_add"]) {
+                // Auto add user
+                $input = $this->user->fields;
+                $this->user->fields = [];
+                if ($this->auth_type == self::EXTERNAL && !isset($input["authtype"])) {
+                    $input["authtype"] = $this->auth_type;
+                }
+                $this->user->add($input);
+            } else {
+                // Auto add not enable so auth failed
+                $this->addToError(__('User not authorized to connect in GLPI'));
+                $this->auth_succeded = false;
+            }
+        }
+
+        return $this->auth_succeded;
+    }
+
+    /**
      * Manage use authentication and initialize the session
      *
      * @param string  $login_name      Login
@@ -1056,61 +1132,7 @@ class Auth extends CommonGLPI
 
             unset($_SESSION['mfa_pre_auth'], $_SESSION['mfa_success'], $_SESSION['mfa_exploit_grace_period']);
         } elseif ($this->validateLogin($login_name, $login_password, $noauto, $login_auth)) {
-            if (isset($this->user->fields['_deny_login'])) {
-                $this->addToError(__('User not authorized to connect in GLPI'));
-                $this->auth_succeded = false;
-                $this->denied_by_rule = true;
-            }
-
-            // Capture restore need before clearing the flag (original DB state still in fields).
-            $needs_ldap_restore = $this->user_present
-                && ($this->user->fields['authtype'] ?? 0) == self::LDAP
-                && ($this->user->fields['is_deleted_ldap'] || !$this->user->fields['is_active']);
-
-            //Set user an not deleted from LDAP
-            $this->user->fields['is_deleted_ldap'] = 0;
-
-            // Prepare data
-            // Use current time as session time may not be initialized yet or may be from previous session
-            $this->user->fields["last_login"] = date("Y-m-d H:i:s");
-            if ($this->extauth) {
-                $this->user->fields["_extauth"] = 1;
-            }
-
-            if ($DB->isSlave()) {
-                if (!$this->user_present) { // Can't add in slave mode
-                    $this->addToError(__('User not authorized to connect in GLPI'));
-                    $this->auth_succeded = false;
-                }
-            } else {
-                if ($this->user_present) {
-                    // Add the user e-mail if present
-                    if (count($this->user_emails) > 0) {
-                        $this->user->fields['_useremails'] = $this->user_emails;
-                    }
-
-                    $input = $this->user->fields;
-                    unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
-
-                    $this->user->update($input);
-
-                    if ($needs_ldap_restore) {
-                        User::manageRestoredUserInLdap($this->user->fields['id']);
-                    }
-                } elseif ($CFG_GLPI["is_users_auto_add"]) {
-                    // Auto add user
-                    $input = $this->user->fields;
-                    $this->user->fields = [];
-                    if ($this->auth_type == self::EXTERNAL && !isset($input["authtype"])) {
-                        $input["authtype"] = $this->auth_type;
-                    }
-                    $this->user->add($input);
-                } else {
-                    // Auto add not enable so auth failed
-                    $this->addToError(__('User not authorized to connect in GLPI'));
-                    $this->auth_succeded = false;
-                }
-            }
+            $this->applyValidatedLogin();
 
             $check_mfa = $this->auth_succeded
                 && !isAPI()
@@ -1199,8 +1221,8 @@ class Auth extends CommonGLPI
             }
         }
 
-        if ($this->auth_succeded && !empty($this->user->fields['timezone']) && 'null' !== strtolower($this->user->fields['timezone'])) {
-            $DB->setTimezone($this->user->fields['timezone']);
+        if ($this->auth_succeded) {
+            $DB->setTimezoneForUser($this->user);
         }
 
         return $this->auth_succeded;

@@ -798,11 +798,16 @@ EOT;
      */
     public function startTemporarySession(Request $request): void
     {
+        global $DB;
+
         $this->current_client = Server::validateAccessToken($request);
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = new User();
         $auth->user->getFromDB($this->current_client['user_id']);
+        if ($this->current_client['user_id']) {
+            $DB->setTimezoneForUser($auth->user);
+        }
         Session::init($auth);
         if ($request->getHeaderLine('Accept-Language')) {
             // Make sure language header is set in SERVER superglobal so that Session::getPreferredLanguage() works

@@ -55,7 +55,7 @@ class UserRepository implements UserRepositoryInterface
         $auth = new Auth();
         $valid_login = $auth->validateLogin($username, $password, true);
 
-        if (!$valid_login) {
+        if (!$valid_login || !$auth->applyValidatedLogin() || empty($auth->user->fields['id'])) {
             return null;
         }
 
