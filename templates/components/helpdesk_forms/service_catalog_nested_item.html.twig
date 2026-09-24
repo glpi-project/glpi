@@ -62,7 +62,10 @@
                             {{ child.getServiceCatalogItemTitle() }}
                         </h2>
                     </a>
-                    <div class="text-secondary remove-last-tinymce-margin service-catalog-description">
+                    <div
+                        class="text-secondary remove-last-tinymce-margin service-catalog-description"
+                        data-testid="service-catalog-description"
+                    >
                         {{ child.getServiceCatalogItemDescription()|safe_html }}
                     </div>
                 </div>

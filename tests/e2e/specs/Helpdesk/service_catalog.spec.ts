@@ -457,17 +457,11 @@ test.describe('Service Catalog Page - Isolated', () => {
         await service_catalog.goto();
         await service_catalog.doSearchItem(kb_name);
 
-        // Description link is rendered as a real link, not nested in the tile link
-        const region = service_catalog.getItemRegion(kb_name);
-        const description_link = region.getByTestId('service-catalog-description').getByRole('link', { name: 'Datasheet' });
-        await expect(description_link).toHaveAttribute('href', 'https://glpi-project.org/datasheet');
-        await expect(region.getByRole('link')).toHaveCount(2);
-
         // Description link is not covered by the tile link
-        await description_link.click({ trial: true });
+        await service_catalog.assertItemDescriptionLinkIsClickable(kb_name, 'Datasheet', 'https://glpi-project.org/datasheet');
 
         // The tile itself still leads to the item
-        await region.getByRole('link', { name: kb_name }).click();
+        await service_catalog.doGoToItem(kb_name);
         await expect(page).toHaveURL(new RegExp(`id=${kb_id}`));
     });
 
