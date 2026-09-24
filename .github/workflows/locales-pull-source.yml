@@ -51,7 +51,7 @@ jobs:
       - name: "Pull translations"
         uses: "transifex/cli-action@v2"
         with:
-          args: "pull --force --all --minimum-perc=80"
+          args: "pull --force"
           token: "${{ secrets.TRANSIFEX_TOKEN }}"
       - name: "Initialize containers"
         run: |
