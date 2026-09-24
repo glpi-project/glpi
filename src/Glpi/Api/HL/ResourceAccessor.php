@@ -539,6 +539,10 @@ final class ResourceAccessor
                             }
                             $new_input[$input_name][] = $result['filepath'];
                         } else {
+                            $existing_picture_path = FileManager::normalizePictureClientValue((string) ($item->fields[$input_name] ?? ''));
+                            if ($existing_picture_path !== null && $existing_picture_path !== $result['filepath']) {
+                                $rollback_journal['deferred_picture_deletions'][] = $existing_picture_path;
+                            }
                             $new_input[$input_name] = $result['filepath'];
                         }
                     }
