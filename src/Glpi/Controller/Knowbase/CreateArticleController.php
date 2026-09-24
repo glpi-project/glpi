@@ -35,7 +35,7 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Controller\CrudControllerTrait;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
 use Session;
@@ -47,8 +47,6 @@ use function Safe\json_decode;
 
 final class CreateArticleController extends AbstractController
 {
-    use CrudControllerTrait;
-
     #[Route(
         "/Knowbase/KnowbaseItem/Create",
         name: "knowbase_article_create",
@@ -66,16 +64,30 @@ final class CreateArticleController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        $raw_parent_id = (int) ($data['knowbaseitems_id_parent'] ?? 0);
-        $parent_id = KnowbaseItem::getReadablePrefilledParentId($raw_parent_id);
-
-        $item = $this->add(KnowbaseItem::class, [
+        $parent_id = (int) ($data['knowbaseitems_id_parent'] ?? 0);
+        $input = [
             'name'         => $name,
             'answer'       => '',
             'entities_id'  => Session::getActiveEntity(),
             'is_recursive' => 0,
-            '_parents'     => $parent_id !== null ? [$parent_id] : [],
-        ]);
+            '_parents'     => $parent_id > 0 ? [$parent_id] : [],
+        ];
+
+        $item = new KnowbaseItem();
+        if (!$item->can(-1, CREATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+        // The model only refuses the parent, see `KnowbaseItem_KnowbaseItem::canAttach()`,
+        // with a redirect flash message: this endpoint never redirects, so it is dropped.
+        $errors_before = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? null;
+        if (!$item->add($input)) {
+            if ($errors_before === null) {
+                unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
+            } else {
+                $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] = $errors_before;
+            }
+            throw new AccessDeniedHttpException();
+        }
 
         return new JsonResponse([
             'id'  => (int) $item->getID(),

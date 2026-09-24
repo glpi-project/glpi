@@ -87,30 +87,11 @@ final class MoveArticleController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        // KnowbaseItem_KnowbaseItem::$checkAlwaysBothItems only applies when the caller
-        // goes through can()/canCreateItem(); add() below never does, so this stands in
-        // for it, and enforces the same rule: gaining a child is editing the parent.
-        $target = new KnowbaseItem();
-        if (!$target->getFromDB($to_parent_id)) {
+        if (countElementsInTable(KnowbaseItem::getTable(), ['id' => $to_parent_id]) === 0) {
             throw new NotFoundHttpException();
         }
-        if (!$target->can($to_parent_id, UPDATE)) {
-            throw new AccessDeniedHttpException();
-        }
-        if (!KnowbaseItem_KnowbaseItem::areEntitiesCoherent($article, $target)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        // Same on the source, which loses a child: deleteByCriteria() checks no rights
-        // either, and reports success on zero rows, so it would sever silently.
-        if ($from_parent_id > 0) {
-            $source = new KnowbaseItem();
-            if (!$source->getFromDB($from_parent_id)) {
-                throw new NotFoundHttpException();
-            }
-            if (!$source->can($from_parent_id, UPDATE)) {
-                throw new AccessDeniedHttpException();
-            }
+        if ($from_parent_id > 0 && countElementsInTable(KnowbaseItem::getTable(), ['id' => $from_parent_id]) === 0) {
+            throw new NotFoundHttpException();
         }
 
         $link = new KnowbaseItem_KnowbaseItem();
@@ -130,37 +111,34 @@ final class MoveArticleController extends AbstractController
             'knowbaseitems_id_parent' => $to_parent_id,
         ]) !== [];
 
-        // Target edge created first: the model's cycle check needs it in place.
-        if (!$already_linked) {
-            $errors_before = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? null;
+        // The model refuses the move (rights, entities, cycle) with a redirect flash
+        // message, but this endpoint never redirects: the bucket is put back as it
+        // was, so only the model's own message is dropped.
+        $errors_before = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? null;
 
-            if (
-                $link->add([
+        // Target edge created first: the model's cycle check needs it in place.
+        if (
+            (
+                !$already_linked
+                && $link->add([
                     'knowbaseitems_id'        => $id,
                     'knowbaseitems_id_parent' => $to_parent_id,
                 ]) === false
-            ) {
-                $DB->rollBack();
-                // The model reports the reason via a redirect flash message, but this
-                // endpoint never redirects: put the bucket back as it was, so only the
-                // model's own message is dropped.
-                if ($errors_before === null) {
-                    unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
-                } else {
-                    $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] = $errors_before;
-                }
-                throw new BadRequestHttpException();
-            }
-        }
-
-        if (
-            $from_parent_id > 0
-            && !$link->deleteByCriteria([
-                'knowbaseitems_id'        => $id,
-                'knowbaseitems_id_parent' => $from_parent_id,
-            ])
+            )
+            || (
+                $from_parent_id > 0
+                && !$link->deleteByCriteria([
+                    'knowbaseitems_id'        => $id,
+                    'knowbaseitems_id_parent' => $from_parent_id,
+                ])
+            )
         ) {
             $DB->rollBack();
+            if ($errors_before === null) {
+                unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
+            } else {
+                $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] = $errors_before;
+            }
             throw new BadRequestHttpException();
         }
 

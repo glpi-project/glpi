@@ -48,9 +48,12 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
     public bool $dohistory = true;
     public static string $rightname = 'knowbase';
 
+    /** Set while an article's purge removes its links, see `cleanDBonItemDelete()`. */
+    private bool $is_cleaning_item_deletion = false;
+
     public function prepareInputForAdd($input)
     {
-        if (!$this->prepareInput($input)) {
+        if (!$this->prepareInput($input, is_update: false)) {
             return false;
         }
         return parent::prepareInputForAdd($input);
@@ -58,23 +61,50 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
 
     public function prepareInputForUpdate($input)
     {
-        if (!$this->prepareInput($input)) {
+        if (!$this->prepareInput($input, is_update: true)) {
             return false;
         }
         return parent::prepareInputForUpdate($input);
     }
 
+    public function pre_deleteItem()
+    {
+        if (!$this->is_cleaning_item_deletion && Session::getLoginUserID() !== false) {
+            $parent = KnowbaseItem::getById((int) $this->fields['knowbaseitems_id_parent']);
+            if ($parent !== false && !self::canDetach($parent)) {
+                self::addRefusalMessage();
+                return false;
+            }
+        }
+        return parent::pre_deleteItem();
+    }
+
+    public function cleanDBonItemDelete($itemtype, $items_id)
+    {
+        // Purging an article unlinks it, whatever the rights on the other side.
+        $this->is_cleaning_item_deletion = true;
+        try {
+            parent::cleanDBonItemDelete($itemtype, $items_id);
+        } finally {
+            $this->is_cleaning_item_deletion = false;
+        }
+    }
+
     /**
      * @param array<string, mixed> $input
+     * @param bool $is_update Whether the loaded link is updated, its fields are
+     *                        stale otherwise (the object may be reused).
      */
-    private function prepareInput(array $input): bool
+    private function prepareInput(array $input, bool $is_update): bool
     {
         // Target articles should be specified
-        $child_id = $this->getAndValidateArticleId($input, 'knowbaseitems_id');
-        $parent_id = $this->getAndValidateArticleId($input, 'knowbaseitems_id_parent');
-        if ($child_id === null || $parent_id === null) {
+        $child = $this->getAndValidateArticle($input, 'knowbaseitems_id', $is_update);
+        $parent = $this->getAndValidateArticle($input, 'knowbaseitems_id_parent', $is_update);
+        if ($child === null || $parent === null) {
             return false;
         }
+        $child_id = $child->getID();
+        $parent_id = $parent->getID();
 
         // Parent and child must be different
         if ($child_id === $parent_id) {
@@ -88,7 +118,7 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
 
         // The root article is the base of the knowledge base tree, it cannot be
         // moved under another article.
-        if (KnowbaseItem::isRootId($child_id)) {
+        if ($child->isRoot()) {
             Session::addMessageAfterRedirect(
                 __s('The root article of the knowledge base cannot have a parent.'),
                 false,
@@ -107,13 +137,26 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
             return false;
         }
 
+        // Internal processes (CLI, cron, migrations) act on behalf of no user.
+        if (Session::getLoginUserID() === false) {
+            return true;
+        }
+        $previous_parent = $is_update ? KnowbaseItem::getById((int) $this->fields['knowbaseitems_id_parent']) : false;
+        if (
+            !self::canAttach($child, $parent)
+            || ($previous_parent !== false && !self::canDetach($previous_parent))
+        ) {
+            self::addRefusalMessage();
+            return false;
+        }
+
         return true;
     }
 
     /** @param array<string, mixed> $input */
-    private function getAndValidateArticleId(array $input, string $key): ?int
+    private function getAndValidateArticle(array $input, string $key, bool $is_update): ?KnowbaseItem
     {
-        $article_id  = (int) ($input[$key] ?? $this->fields[$key] ?? 0);
+        $article_id  = (int) ($input[$key] ?? ($is_update ? $this->fields[$key] : 0));
         if ($article_id == 0) {
             Session::addMessageAfterRedirect(
                 msg: htmlescape(sprintf(__("Missing '%s' value."), $key)),
@@ -121,7 +164,8 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
             );
             return null;
         }
-        if (!KnowbaseItem::getById($article_id)) {
+        $article = KnowbaseItem::getById($article_id);
+        if ($article === false) {
             Session::addMessageAfterRedirect(
                 msg: htmlescape(sprintf(__("Invalid '%s' value: '%s'."), $key, $article_id)),
                 message_type: ERROR,
@@ -129,7 +173,7 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
             return null;
         }
 
-        return $article_id;
+        return $article;
     }
 
     /**
@@ -199,6 +243,34 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
             }
         }
         return false;
+    }
+
+    /**
+     * Gaining a child is editing the parent. The root article is everyone's
+     * default parent, see `KnowbaseItem::setRootAsDefaultParent()`.
+     *
+     * Not `can(UPDATE)`: it also requires the UPDATE right, that authors with
+     * CREATE or PUBLISHFAQ only lack.
+     */
+    public static function canAttach(KnowbaseItem $child, KnowbaseItem $parent): bool
+    {
+        return $parent->isRoot()
+            || ($parent->canUpdateItem() && self::areEntitiesCoherent($child, $parent));
+    }
+
+    /** Losing a child is editing the parent too, see `canAttach()`. */
+    public static function canDetach(KnowbaseItem $parent): bool
+    {
+        return $parent->isRoot() || $parent->canUpdateItem();
+    }
+
+    public static function addRefusalMessage(): void
+    {
+        Session::addMessageAfterRedirect(
+            __s('You are not allowed to change the parents of this article.'),
+            false,
+            ERROR,
+        );
     }
 
     /**

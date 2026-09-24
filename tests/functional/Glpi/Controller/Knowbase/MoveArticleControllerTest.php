@@ -83,11 +83,9 @@ class MoveArticleControllerTest extends DbTestCase
     }
 
     /**
-     * An article the current user may read but not edit, and drops them to the rights
-     * that make the difference visible: an FAQ article authored by someone else needs
+     * An article the current user may read but not edit, once dropped to the rights of
+     * `dropToKnowbaseEditorRights()`: an FAQ article authored by someone else needs
      * PUBLISHFAQ to be edited, while plain READ is enough to see it.
-     *
-     * Everything is created before the rights drop, so creation itself stays allowed.
      */
     private function makeUneditableArticle(): int
     {
@@ -103,15 +101,20 @@ class MoveArticleControllerTest extends DbTestCase
             'users_id'         => Session::getLoginUserID(),
         ]);
 
+        return $id;
+    }
+
+    /** Fixtures are created before, so creation itself stays allowed. */
+    private function dropToKnowbaseEditorRights(int $uneditable_id): void
+    {
         $this->setEntity('_test_root_entity', true);
         $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
 
         // Not vacuous: only editing the article is out of reach.
         $article = new KnowbaseItem();
-        $this->assertTrue($article->getFromDB($id));
-        $this->assertTrue($article->can($id, READ));
-
-        return $id;
+        $this->assertTrue($article->getFromDB($uneditable_id));
+        $this->assertTrue($article->can($uneditable_id, READ));
+        $this->assertFalse($article->can($uneditable_id, UPDATE));
     }
 
     private function countLink(int $child_id, int $parent_id): int
@@ -248,11 +251,18 @@ class MoveArticleControllerTest extends DbTestCase
         $this->login();
         $child  = $this->makeArticle();
         $target = $this->makeUneditableArticle();
+        $this->dropToKnowbaseEditorRights($target);
         $this->assertEditable($child);
 
-        // Gaining a child is editing the parent, as the model's own rules have it.
-        $this->expectException(AccessDeniedHttpException::class);
-        $this->callController($child, 0, $target);
+        try {
+            // Gaining a child is editing the parent, as the model's own rules have it.
+            $this->callController($child, 0, $target);
+            $this->fail('A target the user cannot edit must be rejected.');
+        } catch (BadRequestHttpException) {
+            // Expected.
+        }
+
+        $this->assertSame(0, $this->countLink($child, $target));
     }
 
     public function testDetachingFromASourceTheUserCannotEditIsDenied(): void
@@ -261,12 +271,21 @@ class MoveArticleControllerTest extends DbTestCase
         $source = $this->makeUneditableArticle();
         $child  = $this->makeArticle([$source]);
         $target = $this->makeArticle();
+        $this->dropToKnowbaseEditorRights($source);
         $this->assertEditable($child);
         $this->assertEditable($target);
 
-        // Losing a child is editing the parent too.
-        $this->expectException(AccessDeniedHttpException::class);
-        $this->callController($child, $source, $target);
+        try {
+            // Losing a child is editing the parent too.
+            $this->callController($child, $source, $target);
+            $this->fail('A source the user cannot edit must be rejected.');
+        } catch (BadRequestHttpException) {
+            // Expected.
+        }
+
+        // The target edge, created first, is rolled back.
+        $this->assertSame(1, $this->countLink($child, $source));
+        $this->assertSame(0, $this->countLink($child, $target));
     }
 
     public function testDetachingFromAnUnresolvableParentIsDenied(): void
@@ -298,7 +317,7 @@ class MoveArticleControllerTest extends DbTestCase
             'entities_id' => $entity_b,
         ])->getID();
 
-        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectException(BadRequestHttpException::class);
         $this->callController($child, 0, $target);
     }
 
