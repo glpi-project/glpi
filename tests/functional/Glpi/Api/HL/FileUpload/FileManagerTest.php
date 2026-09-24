@@ -61,6 +61,14 @@ class FileManagerTest extends DbTestCase
         $this->assertStringContainsString('document.send.php?docid=', $processedHtml);
         $this->assertStringContainsString('alt="test image"', $processedHtml);
         $this->assertStringNotContainsString('data:image/png;base64', $processedHtml);
+
+        // Same test but with a different case for the mime type, to ensure the comparison is case-insensitive
+        $html = '<p>Été déjà</p><p>Here is an image: <img src="data:image/PnG;base64,' . self::PNG_1X1 . '" alt="test image"></p>';
+        $processedHtml = FileManager::handleInlineImagesInHTML($html, 0, false);
+        $this->assertStringContainsString('<p>Été déjà</p>', $processedHtml);
+        $this->assertStringContainsString('document.send.php?docid=', $processedHtml);
+        $this->assertStringContainsString('alt="test image"', $processedHtml);
+        $this->assertStringNotContainsString('data:image/png;base64', $processedHtml);
     }
 
     public function testDeletePictureWithEmptyReference(): void

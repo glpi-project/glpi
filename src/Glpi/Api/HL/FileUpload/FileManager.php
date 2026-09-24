@@ -284,7 +284,7 @@ final class FileManager
         foreach ($images as $img) {
             $src = $img->getAttribute('src');
             if (preg_match('/^data:(image\/[a-zA-Z]+);base64,(.*)$/', $src, $matches)) {
-                $mime_type = (string) $matches[1];
+                $mime_type = strtolower((string) $matches[1]);
                 $extension = self::$image_mime_to_extension_map[$mime_type] ?? '';
                 $base64_data = $matches[2];
                 // Rough estimate of the decoded size (won't be more than this) to avoid decoding large images into memory unnecessarily
@@ -345,7 +345,7 @@ final class FileManager
             return false;
         }
         /** @phpstan-ignore-next-line */
-        return str_replace('<?xml encoding="utf-8" ?>', '', mb_convert_encoding($html, 'UTF-8', 'HTML-ENTITIES'));
+        return str_replace('<?xml encoding="utf-8" ?>', '', html_entity_decode($html, ENT_QUOTES, 'UTF-8'));
     }
 
     /**
