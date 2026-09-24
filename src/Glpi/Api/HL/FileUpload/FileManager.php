@@ -122,7 +122,7 @@ final class FileManager
     /**
      * Uploads a file for use in a Document and returns the input parameters required to associate it with a Document.
      * @param HashedUploadedFile $uploaded_file
-     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]}|null $rollback_journal
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[], deferred_picture_deletions: string[]}|null $rollback_journal
      * @return array{filename: string, sha1sum: string, filepath: string}|int The input parameters for Document creation or an error status
      */
     public static function uploadFile(HashedUploadedFile $uploaded_file, ?array &$rollback_journal = null): array|int
@@ -174,7 +174,7 @@ final class FileManager
      * @param HashedUploadedFile $uploaded_file The file to upload
      * @param int $entities_id The ID of the entity to associate with the Document
      * @param bool $recursive Whether to apply the entity association recursively to child entities
-     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]}|null $rollback_journal
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[], deferred_picture_deletions: string[]}|null $rollback_journal
      * @return Document|int The created Document or an upload error status
      */
     public static function uploadAsDocument(HashedUploadedFile $uploaded_file, int $entities_id, bool $recursive, ?array &$rollback_journal = null): Document|int
@@ -206,7 +206,7 @@ final class FileManager
 
     /**
      * @param HashedUploadedFile $uploaded_file
-     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]}|null $rollback_journal
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[], deferred_picture_deletions: string[]}|null $rollback_journal
      * @return array{filepath: string}|int The input parameters for picture saving or an error status
      */
     public static function uploadAsPicture(HashedUploadedFile $uploaded_file, ?array &$rollback_journal = null): array|int
@@ -289,7 +289,7 @@ final class FileManager
      * @param int $entities_id The ID of the entity to associate with the created documents
      * @param bool $is_recursive Whether to apply the entity association recursively to child entities
      * @param Document[] $created_documents An array to store the created documents. Useful for implementing cleanup logic if needed.
-     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]}|null $rollback_journal
+     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[], deferred_picture_deletions: string[]}|null $rollback_journal
      * @return false|string The modified HTML content with inline images replaced by document references
      */
     public static function handleInlineImagesInHTML(string $html_content, int $entities_id, bool $is_recursive, array &$created_documents = [], ?array &$rollback_journal = null): false|string
