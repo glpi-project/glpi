@@ -395,13 +395,38 @@ final class ResourceAccessor
                     $field_name = self::resolveInternalFieldNameForProperty($prop_name, $prop);
                     // Need to extract base64 data uris from img tags and upload them as documents, replacing the src with the document URL
                     $html = $input[$field_name] ?? null;
-                    if ($html !== null && ($html = FileManager::handleInlineImagesInHTML($html, $entities_id, $is_recursive, $created_documents)) !== false) {
+                    if ($html !== null) {
+                        $html = FileManager::handleInlineImagesInHTML($html, $entities_id, $is_recursive, $created_documents);
+                        if ($html === false) {
+                            throw new FileUploadException(
+                                $prop_name,
+                                'One or more inline images could not be uploaded.',
+                                UPLOAD_ERR_CANT_WRITE
+                            );
+                        }
                         $input[$field_name] = $html;
                     }
                 }
             }
         }
         return $input;
+    }
+
+    private static function getFileUploadErrorResponse(FileUploadException $exception): Response
+    {
+        return new JSONResponse(
+            AbstractController::getErrorResponseBody(
+                AbstractController::ERROR_INVALID_PARAMETER,
+                'Invalid input parameters',
+                [
+                    $exception->getPropertyName() => [[
+                        'error' => $exception->getErrorName(),
+                        'message' => $exception->getUserMessage(),
+                    ]],
+                ]
+            ),
+            400
+        );
     }
 
     /**
@@ -679,6 +704,8 @@ final class ResourceAccessor
 
             $DB->commit();
             $must_roll_back = false;
+        } catch (FileUploadException $e) {
+            return self::getFileUploadErrorResponse($e);
         } catch (Throwable $e) {
             $message = (new APIException())->getUserMessage();
             $detail = null;
@@ -758,6 +785,8 @@ final class ResourceAccessor
 
             $DB->commit();
             $must_roll_back = false;
+        } catch (FileUploadException $e) {
+            return self::getFileUploadErrorResponse($e);
         } catch (Throwable $e) {
             $message = (new APIException())->getUserMessage();
             $detail = null;

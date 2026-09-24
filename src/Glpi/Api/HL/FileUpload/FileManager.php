@@ -164,9 +164,9 @@ final class FileManager
      * @param HashedUploadedFile $uploaded_file The file to upload
      * @param int $entities_id The ID of the entity to associate with the Document
      * @param bool $recursive Whether to apply the entity association recursively to child entities
-     * @return Document|int|null An array containing the ID of the created Document, an error status, or null if the Document could not be created
+     * @return Document|int The created Document or an upload error status
      */
-    public static function uploadAsDocument(HashedUploadedFile $uploaded_file, int $entities_id, bool $recursive): Document|int|null
+    public static function uploadAsDocument(HashedUploadedFile $uploaded_file, int $entities_id, bool $recursive): Document|int
     {
         $result = self::uploadFile($uploaded_file);
         if (is_int($result)) {
@@ -179,7 +179,17 @@ final class FileManager
         $input['is_recursive'] = $recursive ? 1 : 0;
         $document = new Document();
         $documents_id = $document->add($input);
-        return $documents_id !== false ? $document : null;
+        if ($documents_id === false) {
+            $orphan_document = new Document();
+            $orphan_document->fields = [
+                'filepath' => $input['filepath'],
+                'sha1sum' => $input['sha1sum'],
+            ];
+            $orphan_document->cleanFile();
+            return UPLOAD_ERR_CANT_WRITE;
+        }
+
+        return $document;
     }
 
     /**
@@ -320,11 +330,13 @@ final class FileManager
 
                 // Upload the image as a document
                 $upload_result = self::uploadAsDocument($uploaded_file, $entities_id, $is_recursive);
-                if ($upload_result instanceof Document) {
-                    // Replace the inline image with a reference to the document
-                    $img->setAttribute('src', $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $upload_result->getID());
-                    $created_documents[] = $upload_result;
+                if (!$upload_result instanceof Document) {
+                    return false;
                 }
+
+                // Replace the inline image with a reference to the document
+                $img->setAttribute('src', $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $upload_result->getID());
+                $created_documents[] = $upload_result;
             }
         }
 
