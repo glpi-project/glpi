@@ -59,6 +59,7 @@ use function Safe\preg_match;
 
 /**
  * Class contaning methods for accessing GLPI resources (items) from the HL API via schemas.
+ * @phpstan-type RollbackJournal array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[], deferred_picture_deletions: string[]}
  * @todo v3 Separate methods related to input handling into a new class that can be instantiated for each create/update request. This would allow for better handling of uploaded files and other request-specific data.
  */
 final class ResourceAccessor
@@ -382,7 +383,7 @@ final class ResourceAccessor
      * @param array<string, mixed> $schema The schema
      * @param array<string, mixed> $input The input parameters
      * @param Document[] $created_documents An array to store the created documents. Useful for implementing cleanup logic if needed.
-     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]} $rollback_journal
+     * @param RollbackJournal $rollback_journal
      * @return array<string, mixed> The modified input parameters with inline images handled
      */
     private static function handleRichTextInputs(array $schema, array $input, array &$created_documents, array &$rollback_journal): array
@@ -439,7 +440,7 @@ final class ResourceAccessor
      * @param array<string, mixed> $request_params The request parameters used for the creation or update
      * @param array<string, mixed> $input The input parameters that were used for the creation or update.
      * May also include some internal-only fields that were added during the input parameter mapping process that are required for post-action handling.
-     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]} $rollback_journal
+     * @param RollbackJournal $rollback_journal
      * @return void
      */
     private static function handlePostCreateOrUpdate(CommonDBTM $item, array $schema, array $request_params, array $input, array &$rollback_journal): void
@@ -464,13 +465,12 @@ final class ResourceAccessor
                 $upload_as = $file_upload_spec['options']['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
 
                 if ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
-                    // The path handed over is the one stored on the item, never anything coming from the request,
-                    // as FileManager::deletePicture() expects an already trusted path.
-                    if (FileManager::deletePicture($item->fields[$internal_name])) {
-                        $new_input[$internal_name] = null;
-                    } else {
+                    $picture_path = FileManager::normalizePictureClientValue((string) $item->fields[$internal_name]);
+                    if ($picture_path === null) {
                         throw new FileUploadException($prop_name, 'File removal failed', 0, null, null, 'file_removal_failed');
                     }
+                    $rollback_journal['deferred_picture_deletions'][] = $picture_path;
+                    $new_input[$internal_name] = null;
                 }
             }
         }
@@ -500,7 +500,7 @@ final class ResourceAccessor
             /** @var HashedUploadedFile $file */
             foreach ($files as $file) {
                 if ($upload_as === FileManager::UPLOAD_AS_FILE) {
-                $result = FileManager::uploadFile($file, $rollback_journal);
+                    $result = FileManager::uploadFile($file, $rollback_journal);
                     if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
                     } else {
@@ -560,7 +560,7 @@ final class ResourceAccessor
      * The rollback takes care of the DB records, but the files written to disk are outside the transaction and have
      * to be removed explicitly or they are left orphaned.
      *
-     * @param array{documents: Document[], files: array<int, array{filepath: string, sha1sum: string}>, pictures: string[]} $rollback_journal
+     * @param RollbackJournal $rollback_journal
      * @return void
      */
     private static function cleanRolledBackUploads(array $rollback_journal): void
@@ -575,6 +575,21 @@ final class ResourceAccessor
 
         foreach (array_unique($rollback_journal['pictures']) as $picture_path) {
             FileManager::deletePicture($picture_path);
+        }
+    }
+
+    /**
+     * Delete pictures that were removed from existing items only after their database changes have committed.
+     *
+     * @param RollbackJournal $rollback_journal
+     * @return void
+     */
+    private static function cleanCommittedPictureDeletions(array $rollback_journal): void
+    {
+        foreach (array_unique($rollback_journal['deferred_picture_deletions']) as $picture_path) {
+            if (!FileManager::deletePicture($picture_path)) {
+                trigger_error(sprintf('Failed to delete the picture %s', GLPI_PICTURE_DIR . '/' . $picture_path), E_USER_WARNING);
+            }
         }
     }
 
@@ -694,6 +709,7 @@ final class ResourceAccessor
             'documents' => [],
             'files' => [],
             'pictures' => [],
+            'deferred_picture_deletions' => [],
         ];
         $must_roll_back = true;
         try {
@@ -721,6 +737,7 @@ final class ResourceAccessor
             }
 
             $DB->commit();
+            self::cleanCommittedPictureDeletions($rollback_journal);
             $must_roll_back = false;
         } catch (FileUploadException $e) {
             return self::getFileUploadErrorResponse($e);
@@ -785,6 +802,7 @@ final class ResourceAccessor
             'documents' => [],
             'files' => [],
             'pictures' => [],
+            'deferred_picture_deletions' => [],
         ];
         $must_roll_back = true;
         try {
@@ -807,6 +825,7 @@ final class ResourceAccessor
             }
 
             $DB->commit();
+            self::cleanCommittedPictureDeletions($rollback_journal);
             $must_roll_back = false;
         } catch (FileUploadException $e) {
             return self::getFileUploadErrorResponse($e);
