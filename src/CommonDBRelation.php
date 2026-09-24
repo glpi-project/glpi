@@ -544,6 +544,29 @@ abstract class CommonDBRelation extends CommonDBConnexity
             }
         }
 
+        // An unchecked side that is not set yet (e.g. new relation form) cannot be used to check entities
+        if (
+            (
+                !$item1 instanceof CommonDBTM
+                && static::$checkItem_1_Rights == self::DONT_CHECK_ITEM_RIGHTS
+                && empty($this->fields[static::$items_id_1])
+            )
+            || (
+                !$item2 instanceof CommonDBTM
+                && static::$checkItem_2_Rights == self::DONT_CHECK_ITEM_RIGHTS
+                && empty($this->fields[static::$items_id_2])
+            )
+        ) {
+            // A side that must be attached cannot be left unset
+            if (
+                (!$item1 instanceof CommonDBTM && static::$mustBeAttached_1 && !$this->isAttach1Valid($this->fields))
+                || (!$item2 instanceof CommonDBTM && static::$mustBeAttached_2 && !$this->isAttach2Valid($this->fields))
+            ) {
+                return false;
+            }
+            $check_entity = false;
+        }
+
         // Check coherency of entities
         if ($check_entity && static::$check_entity_coherency) {
             // If one of both extremity is not valid => not allowed !
