@@ -560,3 +560,55 @@ test('Add task', async ({ profile, page, api }) => {
     await expect(last_task.getByRole('checkbox', { name: 'Done' })).toBeChecked();
     await expect(last_task.getByText('1 hours 30 minutes 0 seconds')).toBeVisible();
 });
+
+test.describe('Mandatory technician field', () => {
+    test.afterEach(async ({ profile, api }) => {
+        // Ensure the worker entity's default template is reset, as it is shared with other tests
+        await profile.set(Profiles.SuperAdmin);
+        await api.updateItem('Entity', getWorkerEntityId(), {
+            tickettemplates_id: 0,
+        });
+    });
+
+    test('Mandatory technician field shows an error instead of silently failing', async ({ profile, page, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const rand = randomUUID();
+
+        const template_id = await api.createItem('TicketTemplate', {
+            name: `test mandatory technician ${rand}`,
+            entities_id: getWorkerEntityId(),
+        });
+        // num: 5 => '_users_id_assign' (see ITILTemplate::getAllowedFields())
+        await api.createItem('TicketTemplateMandatoryField', {
+            tickettemplates_id: template_id,
+            num: 5,
+        });
+
+        await api.updateItem('Entity', getWorkerEntityId(), {
+            tickettemplates_id: template_id,
+        });
+
+        const ticket = new TicketPage(page);
+        await ticket.gotoCreationPage();
+
+        // Remove auto-assigned technician
+        const assign_dropdown = ticket.getDropdownByLabel('Assigned to *');
+        // eslint-disable-next-line playwright/no-raw-locators -- select2 remove button has no accessible role/label
+        await assign_dropdown.locator('.select2-selection__choice__remove').click();
+
+        await ticket.getButton('Add').click();
+
+        const error_alert = ticket.getAlert('Mandatory fields are not filled');
+        await expect(error_alert).toBeVisible();
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php$/);
+        await error_alert.getByRole('button', { name: 'Close' }).click();
+
+        const add_response = page.waitForResponse(
+            (resp) => resp.url().includes('/front/ticket.form.php') && resp.request().method() === 'POST'
+        );
+        await ticket.getButton('Add').click();
+        await add_response;
+
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
+    });
+});
