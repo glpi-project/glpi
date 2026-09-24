@@ -782,8 +782,6 @@ XML;
 
     public function testRequestAgentWithSpacesInComputerName(): void
     {
-        global $DB;
-
         $computer = $this->createItem(
             Computer::class,
             ['name' => 'U039126 - HP EliteBook 640 G9']
