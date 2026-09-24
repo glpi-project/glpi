@@ -50,8 +50,10 @@ if (!$valid_obj || !($item_obj instanceof CommonItilObject_Item)) {
 switch ($_POST['action']) {
     case 'add':
         if (!empty($_POST['my_items'])) {
-            // Fix #24162: Split on last underscore to handle multi-underscore itemtype names
             $last_underscore = strrpos($_POST['my_items'], '_');
+            if ($last_underscore === false) {
+                throw new BadRequestHttpException();
+            }
             $_POST['itemtype'] = substr($_POST['my_items'], 0, $last_underscore);
             $_POST['items_id'] = substr($_POST['my_items'], $last_underscore + 1);
         }

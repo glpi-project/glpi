@@ -39,8 +39,10 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
-    // Fix #24162: Split on last underscore to handle multi-underscore itemtype names
     $last_underscore = strrpos($_POST["my_items"], "_");
+    if ($last_underscore === false) {
+        throw new AccessDeniedHttpException();
+    }
     $_POST["itemtype"] = substr($_POST["my_items"], 0, $last_underscore);
     $_POST["items_id"] = substr($_POST["my_items"], $last_underscore + 1);
 }
