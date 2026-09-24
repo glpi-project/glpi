@@ -38,17 +38,19 @@ namespace Glpi\Security\ReAuth;
 
 enum ReAuthStrategyEnum: string
 {
-    case TOTP = 'totp';
+    case TOTP     = 'totp';
     case PASSWORD = 'password';
-    case LDAP = 'ldap';
+    case LDAP     = 'ldap';
+    case MAIL     = 'mail';
     case FALLBACK = 'fallback';
 
     public function createStrategy(): ReAuthStrategyInterface
     {
         return match ($this) {
-            self::TOTP => new TOTPReAuthStrategy(),
+            self::TOTP     => new TOTPReAuthStrategy(),
             self::PASSWORD => new PasswordReAuthStrategy(),
-            self::LDAP => new LdapReAuthStrategy(),
+            self::LDAP     => new LdapReAuthStrategy(),
+            self::MAIL     => new MailReAuthStrategy(),
             self::FALLBACK => new FallbackReAuthStrategy(),
         };
     }

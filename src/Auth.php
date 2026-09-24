@@ -954,6 +954,10 @@ class Auth extends CommonGLPI
         }
 
         if (!$this->auth_succeded) {
+            // An alternate auth system may have been detected then failed (e.g. a client certificate rejected by the x509 restrictions).
+            // The session will be opened by one of the regular methods below, so the type it left behind must not be kept.
+            $this->auth_type = self::NOT_YET_AUTHENTIFIED;
+
             if (
                 empty($login_name) || str_contains($login_name, "\0")
                 || empty($login_password) || str_contains($login_password, "\0")
@@ -1851,13 +1855,33 @@ class Auth extends CommonGLPI
     }
 
     /**
-     * @return int
+     * Authentication method this login actually went through.
+     *
+     * Answers "how did this user prove who they are, this time?", which is not the same question
+     * as "how is this account configured?": an account may be reached by several methods, and the
+     * one stored on the user record is not always the one that was used.
+     *
+     * @return int One of the auth type constants
+     * @phpstan-return Auth::NOT_YET_AUTHENTIFIED|Auth::DB_GLPI|Auth::MAIL|Auth::LDAP|Auth::EXTERNAL|Auth::CAS|Auth::X509|Auth::API|Auth::COOKIE|Auth::OAUTH
      */
     public function getAuthType(): int
     {
         if ($this->auth_type === self::NOT_YET_AUTHENTIFIED && Router::getInstance()->getCurrentClient() !== null) {
             return self::OAUTH;
         }
-        return $this->auth_type;
+
+        // The regular login methods (local database, LDAP, mail server) do not set the auth type:
+        // they only write it on the user record.
+        $auth_type = $this->auth_type === self::NOT_YET_AUTHENTIFIED
+            ? (int) ($this->user->fields['authtype'] ?? self::NOT_YET_AUTHENTIFIED)
+            : $this->auth_type;
+
+        // Anything else than a known method is reported as unknown, so that callers deciding on
+        // this value always fall back to their safest branch.
+        return match ($auth_type) {
+            self::DB_GLPI, self::MAIL, self::LDAP, self::EXTERNAL,
+            self::CAS, self::X509, self::API, self::COOKIE, self::OAUTH => $auth_type,
+            default => self::NOT_YET_AUTHENTIFIED,
+        };
     }
 }

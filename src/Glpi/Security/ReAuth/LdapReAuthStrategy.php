@@ -90,8 +90,13 @@ final class LdapReAuthStrategy extends InPlaceReAuthStrategy
             return false;
         }
 
-        return $user->fields['authtype'] === Auth::LDAP
-            && (int) $user->fields['auths_id'] > 0;
+        if (SessionAuthType::resolve($user) !== Auth::LDAP) {
+            return false;
+        }
+
+        $ldap_method = Auth::getMethodsByID(Auth::LDAP, (int) $user->fields['auths_id']);
+
+        return !empty($ldap_method['host']);
     }
 
     #[Override]

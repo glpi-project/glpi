@@ -39,6 +39,7 @@ use AuthLDAP;
 use AuthMail;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use User;
 
 /* Test for inc/auth.class.php */
@@ -553,6 +554,90 @@ class AuthTest extends DbTestCase
                 'A verified client certificate must authenticate the matching user'
             );
             $this->assertSame($email, $auth->user->fields['name']);
+        } finally {
+            $CFG_GLPI = $cfg_backup;
+            unset($_SERVER['SSL_CLIENT_S_DN'], $_SERVER['SSL_CLIENT_VERIFY']);
+        }
+    }
+
+    /**
+     * The regular login paths only write the method on the user record, so getAuthType() must
+     * report it rather than the NOT_YET_AUTHENTIFIED it was left with.
+     */
+    public function testGetAuthTypeAfterLocalLogin(): void
+    {
+        // --- arrange ---
+        $auth = new Auth();
+
+        // --- act ---
+        $this->assertTrue($auth->login(TU_USER, TU_PASS, true));
+
+        // --- assert ---
+        $this->assertSame(Auth::DB_GLPI, $auth->getAuthType());
+        $this->assertSame(Auth::DB_GLPI, $_SESSION['glpiauthtype']);
+        $this->assertSame(Auth::DB_GLPI, Session::getAuthType());
+    }
+
+    /** A session opened with a client certificate reports X509, which is never stored on the record. */
+    public function testGetAuthTypeAfterX509Login(): void
+    {
+        global $CFG_GLPI;
+
+        // --- arrange ---
+        $this->login();
+
+        $email = 'x509_' . mt_rand() . '@example.com';
+        $this->createItem(User::class, ['name' => $email, '_profiles_id' => 1]);
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['x509_email_field'] = 'Email';
+        $CFG_GLPI['x509_ou_restrict'] = '';
+        $CFG_GLPI['x509_o_restrict']  = '';
+        $CFG_GLPI['x509_cn_restrict'] = '';
+        $_SERVER['SSL_CLIENT_S_DN']   = "CN=Someone/OU=Dept/O=Comp/Email={$email}/";
+        $_SERVER['SSL_CLIENT_VERIFY'] = 'SUCCESS';
+
+        try {
+            // --- act ---
+            $auth = new Auth();
+            $this->assertTrue($auth->login('', '', false));
+
+            // --- assert : the record still says DB_GLPI, the session says x509 ---
+            $this->assertSame(Auth::DB_GLPI, (int) $auth->user->fields['authtype']);
+            $this->assertSame(Auth::X509, $auth->getAuthType());
+            $this->assertSame(Auth::X509, Session::getAuthType());
+        } finally {
+            $CFG_GLPI = $cfg_backup;
+            unset($_SERVER['SSL_CLIENT_S_DN'], $_SERVER['SSL_CLIENT_VERIFY']);
+        }
+    }
+
+    /**
+     * An alternate auth system detected then rejected must not leave its type behind: the session
+     * is finally opened with the local password, and that is what must be reported.
+     */
+    public function testGetAuthTypeIgnoresRejectedAlternateAuth(): void
+    {
+        global $CFG_GLPI;
+
+        // --- arrange : a verified certificate whose OU is not in the allowed list ---
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['x509_email_field'] = 'Email';
+        $CFG_GLPI['x509_ou_restrict'] = 'an-allowed-ou';
+        $CFG_GLPI['x509_o_restrict']  = '';
+        $CFG_GLPI['x509_cn_restrict'] = '';
+        $_SERVER['SSL_CLIENT_S_DN']   = 'CN=Rejected/OU=Dept/O=Comp/Email=rejected@example.com/';
+        $_SERVER['SSL_CLIENT_VERIFY'] = 'SUCCESS';
+        unset($_COOKIE[session_name() . '_rememberme']);
+
+        try {
+            // --- act : the x509 branch is entered, fails, and the local login takes over ---
+            $auth = new Auth();
+            $this->assertTrue($auth->login(TU_USER, TU_PASS, false));
+
+            // --- assert ---
+            $this->assertSame(Auth::DB_GLPI, $auth->getAuthType());
+            $this->assertSame(Auth::DB_GLPI, Session::getAuthType());
         } finally {
             $CFG_GLPI = $cfg_backup;
             unset($_SERVER['SSL_CLIENT_S_DN'], $_SERVER['SSL_CLIENT_VERIFY']);
