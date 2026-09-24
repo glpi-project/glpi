@@ -148,9 +148,6 @@ class Auth extends CommonGLPI
                     'search' => AuthLDAP::getSearchURL(false),
                 ],
             ];
-            if (Config::canUpdate()) {
-                $menu['options'][AuthLDAP::class]['links']['add'] = AuthLDAP::getFormURL(false);
-            }
 
             $menu['options'][AuthMail::class] = [
                 'icon'  => AuthMail::getIcon(),
@@ -160,11 +157,11 @@ class Auth extends CommonGLPI
                     'search' => AuthMail::getSearchURL(false),
                 ],
             ];
-            if (Config::canUpdate()) {
-                $menu['options'][AuthMail::class]['links']['add'] = AuthMail::getFormURL(false);
-            }
 
             if (Config::canUpdate()) {
+                $menu['options'][AuthLDAP::class]['links']['add'] = AuthLDAP::getFormURL(false);
+                $menu['options'][AuthMail::class]['links']['add'] = AuthMail::getFormURL(false);
+
                 $menu['options']['others'] = [
                     'icon'  => 'ti ti-login',
                     'title' => __('Others'),
