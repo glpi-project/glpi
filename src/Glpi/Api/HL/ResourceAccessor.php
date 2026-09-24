@@ -39,6 +39,7 @@ use CommonGLPI;
 use CommonITILObject;
 use Document;
 use Document_Item;
+use Entity;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\FileUpload\FileManager;
@@ -684,7 +685,12 @@ final class ResourceAccessor
         $created_documents = [];
         $must_roll_back = true;
         try {
-            $input = self::handleRichTextInputs($schema, $input, $created_documents);
+            $input_for_rich_text_handling = $input;
+            if (!($item instanceof Entity) && $item->isEntityAssign()) {
+                $input_for_rich_text_handling['entities_id'] = $item->getEntityID();
+                $input_for_rich_text_handling['is_recursive'] = $item->isRecursive();
+            }
+            $input = self::handleRichTextInputs($schema, $input_for_rich_text_handling, $created_documents);
             $result = $item->update($input);
 
             if ($result === false) {
