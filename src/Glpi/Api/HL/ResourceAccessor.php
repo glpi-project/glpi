@@ -594,6 +594,26 @@ final class ResourceAccessor
     }
 
     /**
+     * @param Document[] $created_documents
+     * @param class-string<CommonDBTM> $itemtype
+     * @return void
+     */
+    private static function linkCreatedDocumentsToItem(array $created_documents, int $items_id, string $itemtype): void
+    {
+        foreach ($created_documents as $doc) {
+            $doc_item = new Document_Item();
+            if (!$doc_item->add([
+                'documents_id' => $doc->getID(),
+                'items_id' => $items_id,
+                'itemtype' => $itemtype,
+                'timeline_position' => CommonITILObject::NO_TIMELINE,
+            ])) {
+                throw new RuntimeException('Failed to link uploaded document to item');
+            }
+        }
+    }
+
+    /**
      * Filter the schema properties based on the read restrictions.
      * @param array<string, mixed> $schema The schema
      * @param bool $is_graphql_mode Whether the schema is being used in GraphQL mode. If false, the x-graphql-only properties are filtered out.
@@ -726,15 +746,7 @@ final class ResourceAccessor
             }
 
             self::handlePostCreateOrUpdate($item, $schema, $request_params, $input, $rollback_journal);
-            foreach ($created_documents as $doc) {
-                $doc_item = new Document_Item();
-                $doc_item->add([
-                    'documents_id' => $doc->getID(),
-                    'items_id' => $items_id,
-                    'itemtype' => $item::class,
-                    'timeline_position' => CommonITILObject::NO_TIMELINE,
-                ]);
-            }
+            self::linkCreatedDocumentsToItem($created_documents, $items_id, $item::class);
 
             $DB->commit();
             self::cleanCommittedPictureDeletions($rollback_journal);
@@ -814,15 +826,7 @@ final class ResourceAccessor
             }
 
             self::handlePostCreateOrUpdate($item, $schema, $request_params, $input, $rollback_journal);
-            foreach ($created_documents as $doc) {
-                $doc_item = new Document_Item();
-                $doc_item->add([
-                    'documents_id' => $doc->getID(),
-                    'items_id' => $items_id,
-                    'itemtype' => $item::class,
-                    'timeline_position' => CommonITILObject::NO_TIMELINE,
-                ]);
-            }
+            self::linkCreatedDocumentsToItem($created_documents, $items_id, $item::class);
 
             $DB->commit();
             self::cleanCommittedPictureDeletions($rollback_journal);

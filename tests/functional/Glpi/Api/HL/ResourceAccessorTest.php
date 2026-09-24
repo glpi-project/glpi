@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Api\HL;
 
+use CommonITILObject;
+use Document_Item;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\ResourceAccessor;
@@ -292,5 +294,41 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertSame([$picture_path], $rollback_journal['deferred_picture_deletions']);
 
         FileManager::deletePicture($picture_path);
+    }
+
+    public function testLinkCreatedDocumentsToItemThrowsWhenAssociationIsRejected(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $source_ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__ . '_source',
+            'content' => __FUNCTION__ . '_source',
+        ]);
+        $target_ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__ . '_target',
+            'content' => __FUNCTION__ . '_target',
+        ]);
+        $document = $this->addDocumentToItem('association-rejection.txt', __FUNCTION__, $source_ticket);
+
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'linkCreatedDocumentsToItem');
+        $original_slave = $DB->slave;
+        $DB->slave = true;
+        try {
+            $rm->invoke(null, [$document], $target_ticket->getID(), Ticket::class);
+            $this->fail('Expected the document association to be rejected.');
+        } catch (RuntimeException $e) {
+            $this->assertSame('Failed to link uploaded document to item', $e->getMessage());
+        } finally {
+            $DB->slave = $original_slave;
+        }
+
+        $this->assertEquals(0, countElementsInTable(Document_Item::getTable(), [
+            'documents_id' => $document->getID(),
+            'items_id' => $target_ticket->getID(),
+            'itemtype' => Ticket::class,
+            'timeline_position' => CommonITILObject::NO_TIMELINE,
+        ]));
     }
 }
