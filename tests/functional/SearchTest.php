@@ -7355,7 +7355,7 @@ class SearchTest extends DbTestCase
         $this->login();
         $entities_id = $this->getTestRootEntity(true);
 
-        $software = $this->createItem(\Software::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
+        $software = $this->createItem(Software::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
         $this->createItems(\SoftwareLicense::class, [
             ['name' => __FUNCTION__ . ' 1', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 2],
             ['name' => __FUNCTION__ . ' 2', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 3],
