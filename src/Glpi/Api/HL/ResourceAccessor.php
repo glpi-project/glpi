@@ -433,6 +433,22 @@ final class ResourceAccessor
     }
 
     /**
+     * Build the generic 500 error response used whenever an unexpected {@link Throwable} is caught.
+     * The exception message is only included in the response when running in debug mode.
+     * @param Throwable $e
+     * @return Response
+     */
+    private static function getGenericErrorResponse(Throwable $e): Response
+    {
+        $message = (new APIException())->getUserMessage();
+        $detail = null;
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $detail = $e->getMessage();
+        }
+        return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
+    }
+
+    /**
      * Handles any actions that should happen after the creation or update of an item is successful.
      *
      * @param CommonDBTM $item The item that was created or updated
@@ -516,35 +532,20 @@ final class ResourceAccessor
                     if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
                     } else {
-                        $document_id = $result->getID();
-                        if ($is_array_of_files) {
-                            if (!is_array($new_input[$input_name] ?? null)) {
-                                // Should never happen but needed for PHPStan to be happy
-                                $new_input[$input_name] = [];
-                            }
-                            $new_input[$input_name][] = $document_id;
-                        } else {
-                            $new_input[$input_name] = $document_id;
-                        }
+                        self::assignUploadedFileInputValue($new_input, $input_name, $result->getID(), $is_array_of_files);
                     }
                 } elseif ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
                     $result = FileManager::uploadAsPicture($file, $rollback_journal);
                     if (is_int($result)) {
                         throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
                     } else {
-                        if ($is_array_of_files) {
-                            if (!is_array($new_input[$input_name] ?? null)) {
-                                // Should never happen but needed for PHPStan to be happy
-                                $new_input[$input_name] = [];
-                            }
-                            $new_input[$input_name][] = $result['filepath'];
-                        } else {
+                        if (!$is_array_of_files) {
                             $existing_picture_path = FileManager::normalizePictureClientValue((string) ($item->fields[$input_name] ?? ''));
                             if ($existing_picture_path !== null && $existing_picture_path !== $result['filepath']) {
                                 $rollback_journal['deferred_picture_deletions'][] = $existing_picture_path;
                             }
-                            $new_input[$input_name] = $result['filepath'];
                         }
+                        self::assignUploadedFileInputValue($new_input, $input_name, $result['filepath'], $is_array_of_files);
                     }
                 }
             }
@@ -555,6 +556,28 @@ final class ResourceAccessor
             if (!$item->update($new_input)) {
                 throw new RuntimeException('Failed to handle post-create/update actions');
             }
+        }
+    }
+
+    /**
+     * Assign an uploaded file's resulting input value onto the "new input" array used to update the item after
+     * upload handling, merging it into the existing array when the target property accepts multiple files.
+     * @param array<string, mixed> $new_input The input array to update, passed by reference
+     * @param string $input_name The internal field name to assign the value to
+     * @param mixed $value The value to assign (e.g. a document ID or a picture file path)
+     * @param bool $is_array Whether the target property accepts multiple files
+     * @return void
+     */
+    private static function assignUploadedFileInputValue(array &$new_input, string $input_name, mixed $value, bool $is_array): void
+    {
+        if ($is_array) {
+            if (!is_array($new_input[$input_name] ?? null)) {
+                // Should never happen but needed for PHPStan to be happy
+                $new_input[$input_name] = [];
+            }
+            $new_input[$input_name][] = $value;
+        } else {
+            $new_input[$input_name] = $value;
         }
     }
 
@@ -593,6 +616,62 @@ final class ResourceAccessor
         foreach (array_unique($rollback_journal['deferred_picture_deletions']) as $picture_path) {
             if (!FileManager::deletePicture($picture_path)) {
                 trigger_error(sprintf('Failed to delete the picture %s', GLPI_PICTURE_DIR . '/' . $picture_path), E_USER_WARNING);
+            }
+        }
+    }
+
+    /**
+     * Build a fresh, empty rollback journal.
+     * @return RollbackJournal
+     */
+    private static function newRollbackJournal(): array
+    {
+        return [
+            'documents' => [],
+            'files' => [],
+            'pictures' => [],
+            'deferred_picture_deletions' => [],
+        ];
+    }
+
+    /**
+     * Run a create or update action inside a DB transaction, taking care of the commit/rollback bookkeeping and
+     * uploaded file cleanup shared by {@link self::createBySchema()} and {@link self::updateBySchema()}.
+     *
+     * @param callable(array &$rollback_journal): (int|Response) $action Callable performing the actual add/update and
+     *      any subsequent handling. It receives the rollback journal by reference and must return either:
+     *      - A {@link Response}, to short-circuit with an error response. The transaction is then rolled back and
+     *        any uploaded files/pictures created so far are cleaned up.
+     *      - The ID of the created/updated item, once the action completed successfully. The transaction is then
+     *        committed and any deferred picture deletions are applied.
+     * @return int|Response The item ID returned by $action on success, or the Response it returned on failure.
+     */
+    private static function runCreateOrUpdateTransaction(callable $action): int|Response
+    {
+        global $DB;
+
+        $DB->beginTransaction();
+        $rollback_journal = self::newRollbackJournal();
+        $must_roll_back = true;
+        try {
+            $result = $action($rollback_journal);
+            if ($result instanceof Response) {
+                return $result;
+            }
+
+            $DB->commit();
+            self::cleanCommittedPictureDeletions($rollback_journal);
+            $must_roll_back = false;
+
+            return $result;
+        } catch (FileUploadException $e) {
+            return self::getFileUploadErrorResponse($e);
+        } catch (Throwable $e) {
+            return self::getGenericErrorResponse($e);
+        } finally {
+            if ($must_roll_back) {
+                $DB->rollBack();
+                self::cleanRolledBackUploads($rollback_journal);
             }
         }
     }
@@ -686,8 +765,6 @@ final class ResourceAccessor
      */
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
-        global $DB;
-
         $schema = self::applyFieldReadRestrictions($schema);
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
         // Ignore entity updates. This needs to be done through the Transfer process
@@ -726,17 +803,9 @@ final class ResourceAccessor
         $input = self::getInputParamsBySchema($schema, $request_params);
         $input['id'] = $items_id;
 
-        $DB->beginTransaction();
-        /** @var Document[] $created_documents */
-        $created_documents = [];
-        $rollback_journal = [
-            'documents' => [],
-            'files' => [],
-            'pictures' => [],
-            'deferred_picture_deletions' => [],
-        ];
-        $must_roll_back = true;
-        try {
+        $transaction_result = self::runCreateOrUpdateTransaction(static function (array &$rollback_journal) use ($schema, $item, $items_id, $request_params, $input): int|Response {
+            /** @var Document[] $created_documents */
+            $created_documents = [];
             $input_for_rich_text_handling = $input;
             if (!($item instanceof Entity) && $item->isEntityAssign()) {
                 $input_for_rich_text_handling['entities_id'] = $item->getEntityID();
@@ -752,23 +821,11 @@ final class ResourceAccessor
             self::handlePostCreateOrUpdate($item, $schema, $request_params, $input, $rollback_journal);
             self::linkCreatedDocumentsToItem($created_documents, $items_id, $item::class);
 
-            $DB->commit();
-            self::cleanCommittedPictureDeletions($rollback_journal);
-            $must_roll_back = false;
-        } catch (FileUploadException $e) {
-            return self::getFileUploadErrorResponse($e);
-        } catch (Throwable $e) {
-            $message = (new APIException())->getUserMessage();
-            $detail = null;
-            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                $detail = $e->getMessage();
-            }
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
-        } finally {
-            if ($must_roll_back) {
-                $DB->rollBack();
-                self::cleanRolledBackUploads($rollback_journal);
-            }
+            return $items_id;
+        });
+
+        if ($transaction_result instanceof Response) {
+            return $transaction_result;
         }
 
         // We should return the updated item but we NEVER return the GLPI item fields directly. Need to use special API methods.
@@ -790,8 +847,6 @@ final class ResourceAccessor
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
-        global $DB;
-
         $schema = self::applyFieldReadRestrictions($schema);
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
             $request_params['entity'] = $_SESSION['glpiactive_entity'];
@@ -811,17 +866,9 @@ final class ResourceAccessor
             return AbstractController::getAccessDeniedErrorResponse();
         }
 
-        $DB->beginTransaction();
-        /** @var Document[] $created_documents */
-        $created_documents = [];
-        $rollback_journal = [
-            'documents' => [],
-            'files' => [],
-            'pictures' => [],
-            'deferred_picture_deletions' => [],
-        ];
-        $must_roll_back = true;
-        try {
+        $transaction_result = self::runCreateOrUpdateTransaction(static function (array &$rollback_journal) use ($schema, $item, $request_params, $input): int|Response {
+            /** @var Document[] $created_documents */
+            $created_documents = [];
             $input = self::handleRichTextInputs($schema, $input, $created_documents, $rollback_journal);
             $items_id = $item->add($input);
 
@@ -832,24 +879,14 @@ final class ResourceAccessor
             self::handlePostCreateOrUpdate($item, $schema, $request_params, $input, $rollback_journal);
             self::linkCreatedDocumentsToItem($created_documents, $items_id, $item::class);
 
-            $DB->commit();
-            self::cleanCommittedPictureDeletions($rollback_journal);
-            $must_roll_back = false;
-        } catch (FileUploadException $e) {
-            return self::getFileUploadErrorResponse($e);
-        } catch (Throwable $e) {
-            $message = (new APIException())->getUserMessage();
-            $detail = null;
-            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                $detail = $e->getMessage();
-            }
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
-        } finally {
-            if ($must_roll_back) {
-                $DB->rollBack();
-                self::cleanRolledBackUploads($rollback_journal);
-            }
+            return $items_id;
+        });
+
+        if ($transaction_result instanceof Response) {
+            return $transaction_result;
         }
+
+        $items_id = $transaction_result;
 
         [$controller, $method] = $get_route;
 
@@ -863,6 +900,7 @@ final class ResourceAccessor
 
         return AbstractController::getCRUDCreateResponse($items_id, $controller::getAPIPathForRouteFunction($controller, $method, $request_params));
     }
+
 
     /**
      * Search items using the given schema and request parameters.
@@ -902,12 +940,7 @@ final class ResourceAccessor
         } catch (APIException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()), $e->getCode() ?: 400);
         } catch (Throwable $e) {
-            $message = (new APIException())->getUserMessage();
-            $detail = null;
-            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                $detail = $e->getMessage();
-            }
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
+            return self::getGenericErrorResponse($e);
         }
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));
@@ -952,12 +985,7 @@ final class ResourceAccessor
         } catch (APIException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()), $e->getCode() ?: 400);
         } catch (Throwable $e) {
-            $message = (new APIException())->getUserMessage();
-            $detail = null;
-            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                $detail = $e->getMessage();
-            }
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
+            return self::getGenericErrorResponse($e);
         }
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();
