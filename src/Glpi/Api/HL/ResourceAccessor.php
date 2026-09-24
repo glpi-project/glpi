@@ -657,16 +657,15 @@ final class ResourceAccessor
         $DB->beginTransaction();
         /** @var Document[] $created_documents */
         $created_documents = [];
-        $input = self::handleRichTextInputs($schema, $input, $created_documents);
-        $result = $item->update($input);
-
-        if ($result === false) {
-            $DB->rollBack();
-            self::cleanRolledBackDocuments($created_documents);
-            return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_UPDATE);
-        }
-
+        $must_roll_back = true;
         try {
+            $input = self::handleRichTextInputs($schema, $input, $created_documents);
+            $result = $item->update($input);
+
+            if ($result === false) {
+                return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_UPDATE);
+            }
+
             self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
             foreach ($created_documents as $doc) {
                 $doc_item = new Document_Item();
@@ -677,17 +676,22 @@ final class ResourceAccessor
                     'timeline_position' => CommonITILObject::NO_TIMELINE,
                 ]);
             }
+
+            $DB->commit();
+            $must_roll_back = false;
         } catch (Throwable $e) {
-            $DB->rollBack();
-            self::cleanRolledBackDocuments($created_documents);
             $message = (new APIException())->getUserMessage();
             $detail = null;
             if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                 $detail = $e->getMessage();
             }
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
+        } finally {
+            if ($must_roll_back) {
+                $DB->rollBack();
+                self::cleanRolledBackDocuments($created_documents);
+            }
         }
-        $DB->commit();
 
         // We should return the updated item but we NEVER return the GLPI item fields directly. Need to use special API methods.
         return self::getOneBySchema($schema, $request_attrs + ['id' => $items_id], $request_params);
@@ -732,37 +736,41 @@ final class ResourceAccessor
         $DB->beginTransaction();
         /** @var Document[] $created_documents */
         $created_documents = [];
-        $input = self::handleRichTextInputs($schema, $input, $created_documents);
-        $items_id = $item->add($input);
+        $must_roll_back = true;
+        try {
+            $input = self::handleRichTextInputs($schema, $input, $created_documents);
+            $items_id = $item->add($input);
 
-        if ($items_id) {
-            try {
-                self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
-                foreach ($created_documents as $doc) {
-                    $doc_item = new Document_Item();
-                    $doc_item->add([
-                        'documents_id' => $doc->getID(),
-                        'items_id' => $items_id,
-                        'itemtype' => $item::class,
-                        'timeline_position' => CommonITILObject::NO_TIMELINE,
-                    ]);
-                }
-            } catch (Throwable $e) {
+            if (!$items_id) {
+                return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_CREATE);
+            }
+
+            self::handlePostCreateOrUpdate($item, $schema, $request_params, $input);
+            foreach ($created_documents as $doc) {
+                $doc_item = new Document_Item();
+                $doc_item->add([
+                    'documents_id' => $doc->getID(),
+                    'items_id' => $items_id,
+                    'itemtype' => $item::class,
+                    'timeline_position' => CommonITILObject::NO_TIMELINE,
+                ]);
+            }
+
+            $DB->commit();
+            $must_roll_back = false;
+        } catch (Throwable $e) {
+            $message = (new APIException())->getUserMessage();
+            $detail = null;
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                $detail = $e->getMessage();
+            }
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
+        } finally {
+            if ($must_roll_back) {
                 $DB->rollBack();
                 self::cleanRolledBackDocuments($created_documents);
-                $message = (new APIException())->getUserMessage();
-                $detail = null;
-                if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                    $detail = $e->getMessage();
-                }
-                return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
             }
-        } else {
-            $DB->rollBack();
-            self::cleanRolledBackDocuments($created_documents);
-            return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_CREATE);
         }
-        $DB->commit();
 
         [$controller, $method] = $get_route;
 
