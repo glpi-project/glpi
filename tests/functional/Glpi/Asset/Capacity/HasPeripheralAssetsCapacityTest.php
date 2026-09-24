@@ -549,6 +549,14 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
             $count_assets++;
 
             foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
+                if ($peripheral_itemtype === $class) {
+                    // $class is itself dual-role (host + peripheral) and therefore already
+                    // part of directconnect_types; skip it here since connecting it to
+                    // itself would also count towards "used as a peripheral", which is
+                    // covered separately by testIsUsedWhenOnlyUsedAsPeripheral().
+                    continue;
+                }
+
                 $peripheral = $this->createItem(
                     $peripheral_itemtype,
                     [
