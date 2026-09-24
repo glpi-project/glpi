@@ -310,6 +310,16 @@ final class ResourceAccessor
             if ($file_upload_spec === null || !isset($uploaded_files[$key])) {
                 continue;
             }
+
+            if (!$file_upload_spec['is_array'] && count($uploaded_files[$key]) > 1) {
+                $errors[$key][] = [
+                    'error' => 'maxItems',
+                    'message' => 'This field accepts at most one uploaded file',
+                    'maxItems' => 1,
+                ];
+                continue;
+            }
+
             $file_upload_options = $file_upload_spec['options'];
 
             foreach ($uploaded_files[$key] as $file) {
@@ -453,6 +463,11 @@ final class ResourceAccessor
             $is_array_of_files = $file_upload_spec['is_array'];
             $input_name = $file_upload_spec['definition']['x-input-field'] ?? $field;
             $upload_as = $file_upload_spec['options']['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
+
+            if (!$is_array_of_files && count($files) > 1) {
+                // Throwing exception here because this should of been caught in the validation step.
+                throw new RuntimeException("Expected at most one uploaded file for '{$field}'");
+            }
 
             /** @var HashedUploadedFile $file */
             foreach ($files as $file) {
