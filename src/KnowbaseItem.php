@@ -204,6 +204,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 && $this->haveVisibilityAccess()));
     }
 
+    public function canAddItem(string $type): bool
+    {
+        return $this->can($this->getID(), UPDATE);
+    }
+
     public function canDeleteItem(): bool
     {
         // The root article is the base of the knowledge base tree, it must
