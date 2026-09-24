@@ -43,6 +43,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class CustomAssetControllerTest extends HLAPITestCase
 {
+    private const PNG_1X1 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAEElEQVR4nGLK06gFBAAA//8CIwEWK2unAQAAAABJRU5ErkJggg==';
+
     public function testGetAssetTypes(): void
     {
         $this->assertNotEmpty(CustomAssetController::getCustomAssetTypes());
@@ -213,6 +215,7 @@ class CustomAssetControllerTest extends HLAPITestCase
     {
         $first_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
         $second_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+        $third_picture_content = base64_decode(self::PNG_1X1);
 
         $this->login();
 
@@ -231,6 +234,11 @@ Content-Disposition: form-data; name="pictures_upload"; filename="foo.png"
 Content-Type: image/png
 
 $second_picture_content
+-----boundary
+Content-Disposition: form-data; name="pictures_upload"; filename="form-with-image.png"
+Content-Type: image/png
+
+$third_picture_content
 -----boundary--
 EOT;
 
@@ -252,14 +260,16 @@ EOT;
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use (&$pictures) {
-                    $this->assertCount(2, $content['pictures']);
+                    $this->assertCount(3, $content['pictures']);
                     $pictures = $content['pictures'];
                 });
         });
 
         $removed_path = $this->getPicturePathFromUrl($pictures[0]);
-        $kept_path = $this->getPicturePathFromUrl($pictures[1]);
+        $second_removed_path = $this->getPicturePathFromUrl($pictures[1]);
+        $kept_path = $this->getPicturePathFromUrl($pictures[2]);
         $this->assertFileExists($removed_path);
+        $this->assertFileExists($second_removed_path);
         $this->assertFileExists($kept_path);
 
         $multipart_body = <<<EOT
@@ -267,6 +277,10 @@ EOT;
 Content-Disposition: form-data; name="pictures_remove[]"
 
 {$pictures[0]}
+-----boundary
+Content-Disposition: form-data; name="pictures_remove[]"
+
+{$pictures[1]}
 -----boundary--
 EOT;
 
@@ -283,12 +297,13 @@ EOT;
                 ->isOK()
                 ->jsonContent(function ($content) use ($pictures) {
                     $this->assertCount(1, $content['pictures']);
-                    $this->assertEquals($pictures[1], array_values($content['pictures'])[0]);
+                    $this->assertEquals($pictures[2], array_values($content['pictures'])[0]);
                 });
         });
 
-        // The removed picture must be gone from disk as well, and only that one
+        // The removed pictures must be gone from disk as well, and only those two
         $this->assertFileDoesNotExist($removed_path);
+        $this->assertFileDoesNotExist($second_removed_path);
         $this->assertFileExists($kept_path);
 
         unlink($kept_path);

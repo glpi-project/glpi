@@ -104,6 +104,8 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
                     hash_algo: 'sha1',
                     hash: $sha1
                 );
+            } elseif ($is_array_field) {
+                $input->request->appendParameter($part_name, $part->getBody());
             } else {
                 $input->request->setParameter($part_name, $part->getBody());
             }
