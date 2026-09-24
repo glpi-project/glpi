@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Blacklist;
 use BlacklistedMailContent;
+use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
@@ -372,6 +373,53 @@ EOT;
                     $this->assertCount(1, $content['pictures']);
                 });
         });
+    }
+
+    public function testCreateAssetModelRejectsMultipleSingletonPictureUploads(): void
+    {
+        $front_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
+        $rear_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $name = __FUNCTION__;
+
+        $this->login();
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+$name
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="picture_front_upload"; filename="bar.png"
+Content-Type: image/png
+
+$front_picture_content
+-----boundary
+Content-Disposition: form-data; name="picture_front_upload"; filename="foo.png"
+Content-Type: image/png
+
+$rear_picture_content
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Dropdowns/MonitorModel', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isNotOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(AbstractController::ERROR_INVALID_PARAMETER, $content['status']);
+                    $this->assertEquals('maxItems', $content['detail']['picture_front_upload'][0]['error']);
+                });
+        });
+
+        $this->assertEquals(0, countElementsInTable(\MonitorModel::getTable(), ['name' => $name]));
     }
 
     public function testUpdateAssetModelWithInvalidPictureRemoval(): void
