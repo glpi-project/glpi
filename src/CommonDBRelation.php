@@ -482,6 +482,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 static::$items_id_1,
                 $item1
             );
+            if (!($item1 instanceof CommonDBTM)) {
+                // Item is not found (and its rights are not checked), handle it like other not found items.
+                throw new CommonDBConnexityItemNotFound();
+            }
             if ($OneWriteIsEnough) {
                 $view1 = $this->canConnexityItem(
                     $method,
@@ -511,6 +515,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 static::$items_id_2,
                 $item2
             );
+            if (!($item2 instanceof CommonDBTM)) {
+                // Item is not found (and its rights are not checked), handle it like other not found items.
+                throw new CommonDBConnexityItemNotFound();
+            }
             if ($OneWriteIsEnough) {
                 $view2 = $this->canConnexityItem(
                     $method,

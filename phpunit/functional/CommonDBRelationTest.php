@@ -109,4 +109,29 @@ final class CommonDBRelationTest extends DbTestCase
         // Assert: should be allowed
         $this->assertTrue($can_create);
     }
+
+    public function testCanCreateRelationWithoutItemOnUncheckedSide(): void
+    {
+        // Arrange: a rack, and a new rack item whose item is not selected yet (e.g. on rack item creation form)
+        $this->login('glpi', 'glpi');
+        $rack_id = $this->createItem(
+            \Rack::class,
+            [
+                'name'        => 'Test rack',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        $input = [
+            'racks_id'    => $rack_id,
+            'orientation' => \Rack::FRONT,
+            'position'    => 1,
+        ];
+
+        // Act: compute creation rights
+        $can_create = (new \Item_Rack())->can(-1, CREATE, $input);
+
+        // Assert: should be allowed
+        $this->assertTrue($can_create);
+    }
 }
