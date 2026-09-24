@@ -39,15 +39,10 @@ use Glpi\Marketplace\Api\Plugins;
 use Glpi\Marketplace\Controller;
 use GLPINetwork;
 use Plugin;
-use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
-
-use function Safe\file_get_contents;
-use function Safe\preg_match;
-use function Safe\realpath;
 
 class UpgradeCommand extends AbstractCommand
 {
@@ -207,8 +202,7 @@ class UpgradeCommand extends AbstractCommand
                 continue;
             }
 
-            // Avoid an uncatchable "Cannot redeclare class" fatal if this plugin's vendored Composer
-            // autoloader class name collides with one already loaded by another plugin in this batch.
+            // Avoid an uncatchable "Cannot redeclare class" fatal on a Composer autoloader class collision.
             if ($this->hasConflictingAutoloader($plugin_key)) {
                 $has_errors = true;
                 $output->writeln(
@@ -284,44 +278,11 @@ class UpgradeCommand extends AbstractCommand
     }
 
     /**
-     * Detects if the plugin's vendored Composer autoloader class name is already declared by a
-     * different plugin's autoloader.
+     * Delegates to {@see Plugin::hasConflictingAutoloader()}; kept as its own method so this
+     * command can report a "skipped, will retry next run" message instead of a generic failure.
      */
     protected function hasConflictingAutoloader(string $plugin_key): bool
     {
-        $plugin_dir = Plugin::getPhpDir($plugin_key);
-        if ($plugin_dir === false) {
-            return false;
-        }
-
-        $autoload_real_file = $plugin_dir . '/vendor/composer/autoload_real.php';
-        if (!\is_file($autoload_real_file)) {
-            return false;
-        }
-
-        try {
-            $content = file_get_contents($autoload_real_file, false, null, 0, 4096);
-        } catch (FilesystemException) {
-            return false;
-        }
-
-        if (!preg_match('/^class\s+(ComposerAutoloaderInit\w+)/m', $content, $matches)) {
-            return false;
-        }
-        $autoloader_class = $matches[1];
-
-        if (!\class_exists($autoloader_class, false)) {
-            return false;
-        }
-
-        $declared_in = (new \ReflectionClass($autoloader_class))->getFileName();
-
-        try {
-            $real_autoload_real_file = realpath($autoload_real_file);
-        } catch (FilesystemException) {
-            return true; // Cannot confirm it's the plugin's own file, so err on the side of caution.
-        }
-
-        return $declared_in !== $real_autoload_real_file;
+        return Plugin::hasConflictingAutoloader($plugin_key);
     }
 }

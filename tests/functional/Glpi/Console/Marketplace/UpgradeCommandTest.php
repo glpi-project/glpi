@@ -38,7 +38,6 @@ use Glpi\Console\Marketplace\UpgradeCommand;
 use Glpi\Tests\GLPITestCase;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 class UpgradeCommandTest extends GLPITestCase
 {
@@ -161,78 +160,5 @@ class UpgradeCommandTest extends GLPITestCase
         $this->assertTrue($has_errors);
         // The conflicting plugin must have been skipped, not passed to `upgradePlugin()`.
         $this->assertEquals(['safe'], $command->processed);
-    }
-
-    public function testHasConflictingAutoloaderReturnsFalseWhenNoVendorDir(): void
-    {
-        $command = new UpgradeCommand();
-
-        $conflict = $this->callPrivateMethod($command, 'hasConflictingAutoloader', 'a-plugin-key-that-does-not-exist');
-
-        $this->assertFalse($conflict);
-    }
-
-    public function testHasConflictingAutoloaderReturnsFalseWhenClassNotYetLoaded(): void
-    {
-        $plugin_root = $this->createPluginAutoloaderFixture('test_upgrade_autoloader_fixture_unloaded', 'ComposerAutoloaderInitUnloaded');
-
-        try {
-            $command = new UpgradeCommand();
-            $conflict = $this->callPrivateMethod($command, 'hasConflictingAutoloader', 'test_upgrade_autoloader_fixture_unloaded');
-        } finally {
-            (new Filesystem())->remove($plugin_root);
-        }
-
-        // The class is declared on disk but was never `require`d, so it is not a real conflict.
-        $this->assertFalse($conflict);
-    }
-
-    public function testHasConflictingAutoloaderReturnsFalseForItsOwnAlreadyLoadedAutoloader(): void
-    {
-        $plugin_root = $this->createPluginAutoloaderFixture('test_upgrade_autoloader_fixture_own', 'ComposerAutoloaderInitOwn');
-
-        try {
-            require $plugin_root . '/vendor/composer/autoload_real.php';
-
-            $command = new UpgradeCommand();
-            $conflict = $this->callPrivateMethod($command, 'hasConflictingAutoloader', 'test_upgrade_autoloader_fixture_own');
-        } finally {
-            (new Filesystem())->remove($plugin_root);
-        }
-
-        $this->assertFalse($conflict);
-    }
-
-    public function testHasConflictingAutoloaderReturnsTrueWhenClassDeclaredByAnotherPlugin(): void
-    {
-        $shared_class = 'ComposerAutoloaderInitShared' . \bin2hex(\random_bytes(4));
-        $plugin_root_a = $this->createPluginAutoloaderFixture('test_upgrade_autoloader_fixture_a', $shared_class);
-        $plugin_root_b = $this->createPluginAutoloaderFixture('test_upgrade_autoloader_fixture_b', $shared_class);
-
-        try {
-            // Only plugin `a`'s file is actually loaded, simulating it being processed first in the batch.
-            require $plugin_root_a . '/vendor/composer/autoload_real.php';
-
-            $command = new UpgradeCommand();
-            $conflict = $this->callPrivateMethod($command, 'hasConflictingAutoloader', 'test_upgrade_autoloader_fixture_b');
-        } finally {
-            $filesystem = new Filesystem();
-            $filesystem->remove($plugin_root_a);
-            $filesystem->remove($plugin_root_b);
-        }
-
-        $this->assertTrue($conflict);
-    }
-
-    private function createPluginAutoloaderFixture(string $plugin_key, string $class_name): string
-    {
-        $plugin_root = GLPI_ROOT . '/plugins/' . $plugin_key;
-        \mkdir($plugin_root . '/vendor/composer', 0o777, true);
-        \file_put_contents(
-            $plugin_root . '/vendor/composer/autoload_real.php',
-            "<?php\n\nclass {$class_name}\n{\n}\n"
-        );
-
-        return $plugin_root;
     }
 }
