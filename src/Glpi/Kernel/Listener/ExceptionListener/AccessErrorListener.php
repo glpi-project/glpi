@@ -42,6 +42,7 @@ use Glpi\Exception\SessionExpiredException;
 use Glpi\Http\RedirectResponse;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -85,12 +86,18 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
                 $http_exception->setMessageToDisplay(__('Your session has expired. Please log in again.'));
                 throw $http_exception;
             } else {
-                // For HTML requests, redirect to login page (existing behavior)
+                // For HTML requests, redirect to login page (existing behavior).
+                // The original URL is kept as redirection target only for safe methods, as replaying it with
+                // a `GET` method after the login may target a route that does not accept this method.
+                // The `redirect` parameter must not be empty, as it is required to display the "session expired" message.
+                $redirect = in_array($request->getRealMethod(), [Request::METHOD_GET, Request::METHOD_HEAD], true)
+                    ? $request->getPathInfo() . '?' . $request->getQueryString()
+                    : '/';
                 $response = new RedirectResponse(
                     sprintf(
                         '%s/?redirect=%s&error=3',
                         $request->getBasePath(),
-                        \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString())
+                        \rawurlencode($redirect)
                     )
                 );
             }
