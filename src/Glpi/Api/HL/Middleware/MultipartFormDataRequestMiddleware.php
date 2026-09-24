@@ -47,7 +47,7 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
     public function process(MiddlewareInput $input, callable $next): void
     {
         $content_type = $input->request->getHeaderLine('Content-Type');
-        if (!str_starts_with($content_type, 'multipart/form-data')) {
+        if (!str_starts_with(strtolower($content_type), 'multipart/form-data')) {
             $next($input);
             return;
         }
