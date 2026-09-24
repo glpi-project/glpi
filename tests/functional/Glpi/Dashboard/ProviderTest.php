@@ -811,6 +811,14 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testGetTicketsEvolutionWithInvalidDatesFilter()
+    {
+        // Non-array "dates" filter value must not crash (regression test)
+        $result = Provider::getTicketsEvolution(['apply_filters' => ['dates' => '']]);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertNotEmpty($result['data']['labels']);
+    }
+
 
     public function testGetTicketsEvolutionWithUninitializedDatesFilter()
     {

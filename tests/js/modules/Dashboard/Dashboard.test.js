@@ -1372,6 +1372,27 @@ describe('Dashboard', () => {
         expect(window.sortable).toHaveBeenNthCalledWith(2, '.filters', 'disable');
     });
 
+    test('initFilters does not mutate the cached filters', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const cached_filters = {'filter3': []};
+        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => cached_filters);
+        window.sortable = jest.fn().mockImplementation((el) => $(el));
+        window.AjaxMock.start();
+
+        dashboard.filters_selector = '.filters';
+        $('#dashboard-12345').append('<div class="filters"></div>');
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+            action: 'get_dashboard_filters',
+            filters: {'filter3': ''}
+        }, () => `<div class="new-filter-selector"></div>`));
+
+        dashboard.initFilters();
+        await new Promise(process.nextTick);
+
+        // regression: initFilters must not turn the cached empty array into a string
+        expect(cached_filters.filter3).toEqual([]);
+    });
+
     test('getFiltersFromDB', () => {
         const dashboard = new GLPIDashboard({
             'rand': '12345',
