@@ -123,6 +123,8 @@ class KnowbaseItem_Item extends CommonDBRelation
      */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        global $DB;
+
         $item_id = $item->getID();
 
         if (isset($_GET["start"])) {
@@ -162,20 +164,44 @@ class KnowbaseItem_Item extends CommonDBRelation
         }
 
         $is_kb = $item::class === KnowbaseItem::class;
-        // READ is checked in PHP on linked items, so count and page only after the check
-        $linked_items = $is_kb ? self::getItems($item) : self::getItems($item, $start, $_SESSION['glpilist_limit']);
-        $entries = [];
-        foreach ($linked_items as $data) {
-            $linked_item = null;
-            if ($is_kb) {
-                $linked_item = getItemForItemtype($data['itemtype']);
-                if (
-                    !$linked_item instanceof CommonDBTM
-                    || !$linked_item->getFromDB($data['items_id'])
-                    || !$linked_item->can($data['items_id'], READ)
-                ) {
+        if ($is_kb) {
+            // READ is checked in PHP on linked items, so count and page only after the check
+            $linked_items = self::getItems($item);
+            $readable = [];
+            foreach (array_unique(array_column($linked_items, 'itemtype')) as $itemtype) {
+                $linked_item = getItemForItemtype($itemtype);
+                if (!$linked_item instanceof CommonDBTM) {
                     continue;
                 }
+                $ids = array_column(array_filter($linked_items, static fn($data) => $data['itemtype'] === $itemtype), 'items_id');
+                foreach ($DB->request(['FROM' => $linked_item::getTable(), 'WHERE' => ['id' => $ids]]) as $fields) {
+                    $linked_item->getFromResultSet($fields);
+                    $linked_item->post_getFromDB();
+                    if ($linked_item->can($fields['id'], READ)) {
+                        $readable[$itemtype][$fields['id']] = $fields;
+                    }
+                }
+            }
+            $linked_items = array_values(array_filter(
+                $linked_items,
+                static fn($data) => isset($readable[$data['itemtype']][$data['items_id']])
+            ));
+            $number = count($linked_items);
+            $linked_items = array_slice($linked_items, $start, $_SESSION['glpilist_limit']);
+        } else {
+            $linked_items = self::getItems($item, $start, $_SESSION['glpilist_limit']);
+            $number = self::getCountForItem($item);
+        }
+
+        $entries = [];
+        foreach ($linked_items as $data) {
+            if ($is_kb) {
+                $linked_item = getItemForItemtype($data['itemtype']);
+                if (!$linked_item instanceof CommonDBTM) {
+                    continue;
+                }
+                $linked_item->getFromResultSet($readable[$data['itemtype']][$data['items_id']]);
+                $linked_item->post_getFromDB();
             } else {
                 $linked_item = getItemForItemtype(KnowbaseItem::class);
                 $linked_item->getFromDB($data['knowbaseitems_id']);
@@ -193,13 +219,6 @@ class KnowbaseItem_Item extends CommonDBRelation
                 'date_creation' => $linked_item->fields['date_creation'],
                 'date_mod'      => $linked_item->fields['date_mod'],
             ];
-        }
-
-        if ($is_kb) {
-            $number = count($entries);
-            $entries = array_slice($entries, $start, $_SESSION['glpilist_limit']);
-        } else {
-            $number = self::getCountForItem($item);
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
