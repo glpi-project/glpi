@@ -4160,7 +4160,6 @@ final class SQLProvider implements SearchProviderInterface
             $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
                 && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
             $orig_table = SearchEngine::getOrigTableName($itemtype);
-
             $complexjoin = isset($searchopt[$ID]['joinparams'])
                 ? self::computeComplexJoinID($searchopt[$ID]['joinparams'])
                 : '';
