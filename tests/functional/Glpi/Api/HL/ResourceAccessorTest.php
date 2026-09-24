@@ -34,14 +34,18 @@
 
 namespace tests\units\Glpi\Api\HL;
 
+use CommonITILObject;
+use Document_Item;
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\ResourceAccessor;
-use Glpi\Tests\GLPITestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionMethod;
+use RuntimeException;
 use Ticket;
 
-class ResourceAccessorTest extends GLPITestCase
+class ResourceAccessorTest extends DbTestCase
 {
     public static function getInputParamsBySchemaProvider()
     {
@@ -227,6 +231,109 @@ class ResourceAccessorTest extends GLPITestCase
         ]));
         $this->assertArrayHasKey('If-Unmodified-Since', $rm->invoke(null, $ticket, [
             'If-Unmodified-Since' => ['2026-08-15 12:00:00'],
+        ]));
+    }
+
+    public function testSinglePictureRemovalKeepsFileOnRollback(): void
+    {
+        global $DB;
+
+        $monitor_model = $this->createItem(\MonitorModel::class, [
+            'name' => __FUNCTION__,
+        ]);
+        $monitor_model_id = $monitor_model->getID();
+
+        $picture_path = \Toolbox::savePicture(GLPI_ROOT . '/tests/fixtures/uploads/bar.png', '', true);
+        $this->assertIsString($picture_path);
+
+        $DB->update(\MonitorModel::getTable(), [
+            'picture_front' => $picture_path,
+        ], [
+            'id' => $monitor_model_id,
+        ]);
+
+        $monitor_model = new \MonitorModel();
+        $this->assertTrue($monitor_model->getFromDB($monitor_model_id));
+
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'picture_front_upload' => [
+                    'type' => 'string',
+                    'x-input-field' => 'picture_front',
+                    'x-file-upload-options' => [
+                        'upload_as' => FileManager::UPLOAD_AS_PICTURE,
+                    ],
+                ],
+            ],
+        ];
+        $request_params = [
+            'picture_front_upload' => '',
+        ];
+        $rollback_journal = [
+            'documents' => [],
+            'files' => [],
+            'pictures' => [],
+            'deferred_picture_deletions' => [],
+        ];
+
+        $full_picture_path = GLPI_PICTURE_DIR . '/' . $picture_path;
+        $this->assertFileExists($full_picture_path);
+
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'handlePostCreateOrUpdate');
+
+        $DB->beginTransaction();
+        try {
+            $rm->invokeArgs(null, [$monitor_model, $schema, $request_params, ['id' => $monitor_model_id], &$rollback_journal]);
+            throw new RuntimeException('Simulated later post-action failure');
+        } catch (RuntimeException $e) {
+            $this->assertSame('Simulated later post-action failure', $e->getMessage());
+        } finally {
+            $DB->rollBack();
+        }
+
+        $reloaded_monitor_model = new \MonitorModel();
+        $this->assertTrue($reloaded_monitor_model->getFromDB($monitor_model_id));
+        $this->assertSame($picture_path, $reloaded_monitor_model->fields['picture_front']);
+        $this->assertFileExists($full_picture_path);
+        $this->assertSame([$picture_path], $rollback_journal['deferred_picture_deletions']);
+
+        FileManager::deletePicture($picture_path);
+    }
+
+    public function testLinkCreatedDocumentsToItemThrowsWhenAssociationIsRejected(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $source_ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__ . '_source',
+            'content' => __FUNCTION__ . '_source',
+        ]);
+        $target_ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__ . '_target',
+            'content' => __FUNCTION__ . '_target',
+        ]);
+        $document = $this->addDocumentToItem('association-rejection.txt', __FUNCTION__, $source_ticket);
+
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'linkCreatedDocumentsToItem');
+        $original_slave = $DB->slave;
+        $DB->slave = true;
+        try {
+            $rm->invoke(null, [$document], $target_ticket->getID(), Ticket::class);
+            $this->fail('Expected the document association to be rejected.');
+        } catch (RuntimeException $e) {
+            $this->assertSame('Failed to link uploaded document to item', $e->getMessage());
+        } finally {
+            $DB->slave = $original_slave;
+        }
+
+        $this->assertEquals(0, countElementsInTable(Document_Item::getTable(), [
+            'documents_id' => $document->getID(),
+            'items_id' => $target_ticket->getID(),
+            'itemtype' => Ticket::class,
+            'timeline_position' => CommonITILObject::NO_TIMELINE,
         ]));
     }
 }

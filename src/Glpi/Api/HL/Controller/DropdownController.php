@@ -69,6 +69,7 @@ use EnclosureModel;
 use Entity;
 use Filesystem;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -1032,6 +1033,39 @@ EOT,
             ],
         ];
 
+        $asset_model_pic_front_upload_property = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_BINARY,
+            'writeOnly' => true,
+            'x-input-field' => 'picture_front',
+            'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+        ];
+        $asset_model_pic_rear_upload_property = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_BINARY,
+            'writeOnly' => true,
+            'x-input-field' => 'picture_rear',
+            'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+        ];
+        $asset_model_pics_upload_property = [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
+                'type' => Doc\Schema::TYPE_STRING,
+                'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                'writeOnly' => true,
+                'x-input-field' => 'pictures',
+                'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+            ],
+        ];
+        $asset_model_pics_remove_property = [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
+                'type' => Doc\Schema::TYPE_STRING,
+                'writeOnly' => true,
+                'x-input-field' => 'pictures_remove',
+            ],
+        ];
+
         $schemas['ComputerModel'] = [
             'x-version-introduced' => '2.3',
             'x-itemtype' => ComputerModel::class,
@@ -1061,6 +1095,10 @@ EOT,
                 'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front_upload' => $asset_model_pic_front_upload_property + ['x-version-introduced' => '2.4.0'],
+                'picture_rear_upload' => $asset_model_pic_rear_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_upload' => $asset_model_pics_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_remove' => $asset_model_pics_remove_property + ['x-version-introduced' => '2.4.0'],
                 'picture_front' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'picture_front',
@@ -1163,6 +1201,10 @@ EOT,
                 'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front_upload' => $asset_model_pic_front_upload_property + ['x-version-introduced' => '2.4.0'],
+                'picture_rear_upload' => $asset_model_pic_rear_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_upload' => $asset_model_pics_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_remove' => $asset_model_pics_remove_property + ['x-version-introduced' => '2.4.0'],
                 'picture_front' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'picture_front',
@@ -1248,6 +1290,10 @@ EOT,
                 'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front_upload' => $asset_model_pic_front_upload_property + ['x-version-introduced' => '2.4.0'],
+                'picture_rear_upload' => $asset_model_pic_rear_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_upload' => $asset_model_pics_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_remove' => $asset_model_pics_remove_property + ['x-version-introduced' => '2.4.0'],
                 'picture_front' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'picture_front',
@@ -1333,6 +1379,10 @@ EOT,
                 'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front_upload' => $asset_model_pic_front_upload_property + ['x-version-introduced' => '2.4.0'],
+                'picture_rear_upload' => $asset_model_pic_rear_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_upload' => $asset_model_pics_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_remove' => $asset_model_pics_remove_property + ['x-version-introduced' => '2.4.0'],
                 'picture_front' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'picture_front',
@@ -1402,6 +1452,10 @@ EOT,
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'product_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'picture_front_upload' => $asset_model_pic_front_upload_property + ['x-version-introduced' => '2.4.0'],
+                'picture_rear_upload' => $asset_model_pic_rear_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_upload' => $asset_model_pics_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_remove' => $asset_model_pics_remove_property + ['x-version-introduced' => '2.4.0'],
                 'picture_front' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'picture_front',
@@ -1471,6 +1525,10 @@ EOT,
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'product_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'picture_front_upload' => $asset_model_pic_front_upload_property + ['x-version-introduced' => '2.4.0'],
+                'picture_rear_upload' => $asset_model_pic_rear_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_upload' => $asset_model_pics_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_remove' => $asset_model_pics_remove_property + ['x-version-introduced' => '2.4.0'],
                 'picture_front' => [
                     'x-version-introduced' => '2.3.0',
                     'type' => Doc\Schema::TYPE_STRING,
@@ -1559,6 +1617,10 @@ EOT,
                 'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
                 'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front_upload' => $asset_model_pic_front_upload_property + ['x-version-introduced' => '2.4.0'],
+                'picture_rear_upload' => $asset_model_pic_rear_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_upload' => $asset_model_pics_upload_property + ['x-version-introduced' => '2.4.0'],
+                'pictures_remove' => $asset_model_pics_remove_property + ['x-version-introduced' => '2.4.0'],
                 'picture_front' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'picture_front',
