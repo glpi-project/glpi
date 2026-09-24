@@ -4304,7 +4304,7 @@ TWIG, $twig_params);
                 $value = $guid;
             }
         }
-        
+
         if (!mb_check_encoding($value, 'UTF-8')) {
             return strtoupper(bin2hex($value));
         }
