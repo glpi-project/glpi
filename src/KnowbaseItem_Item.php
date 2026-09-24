@@ -133,9 +133,6 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         $canedit = $item->can($item_id, UPDATE);
 
-        // Total Number of KB items
-        $number = self::getCountForItem($item);
-
         $ok_state = true;
         if ($item instanceof CommonITILObject) {
             $ok_state = !in_array($item->fields['status'], array_merge(
@@ -164,13 +161,21 @@ class KnowbaseItem_Item extends CommonDBRelation
             ]);
         }
 
-        $linked_items = self::getItems($item, $start, $_SESSION['glpilist_limit']);
+        $is_kb = $item::class === KnowbaseItem::class;
+        // READ is checked in PHP on linked items, so count and page only after the check
+        $linked_items = $is_kb ? self::getItems($item) : self::getItems($item, $start, $_SESSION['glpilist_limit']);
         $entries = [];
         foreach ($linked_items as $data) {
             $linked_item = null;
-            if ($item::class === KnowbaseItem::class) {
+            if ($is_kb) {
                 $linked_item = getItemForItemtype($data['itemtype']);
-                $linked_item->getFromDB($data['items_id']);
+                if (
+                    !$linked_item instanceof CommonDBTM
+                    || !$linked_item->getFromDB($data['items_id'])
+                    || !$linked_item->can($data['items_id'], READ)
+                ) {
+                    continue;
+                }
             } else {
                 $linked_item = getItemForItemtype(KnowbaseItem::class);
                 $linked_item->getFromDB($data['knowbaseitems_id']);
@@ -188,6 +193,13 @@ class KnowbaseItem_Item extends CommonDBRelation
                 'date_creation' => $linked_item->fields['date_creation'],
                 'date_mod'      => $linked_item->fields['date_mod'],
             ];
+        }
+
+        if ($is_kb) {
+            $number = count($entries);
+            $entries = array_slice($entries, $start, $_SESSION['glpilist_limit']);
+        } else {
+            $number = self::getCountForItem($item);
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
