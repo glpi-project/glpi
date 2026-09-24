@@ -304,61 +304,8 @@ final class FileManager
 
         /** @var DOMElement $img */
         foreach ($images as $img) {
-            $src = $img->getAttribute('src');
-            if (preg_match('/^data:(image\/[a-zA-Z]+);base64,(.*)$/', $src, $matches)) {
-                $mime_type = strtolower((string) $matches[1]);
-                $extension = self::$image_mime_to_extension_map[$mime_type] ?? '';
-                $base64_data = $matches[2];
-                // Rough estimate of the decoded size (won't be more than this) to avoid decoding large images into memory unnecessarily
-                $estimated_size = ceil(strlen($base64_data) * 3 / 4);
-                if ($estimated_size > $max_image_size) {
-                    // completely remove the image if it exceeds the maximum size
-                    $img->remove();
-                    continue;
-                }
-
-                $image_data = base64_decode($base64_data);
-                unset($base64_data);
-                $image_data_size = strlen($image_data);
-                $image_data_hash = sha1($image_data);
-                $detected_mime_type = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $image_data);
-
-                if ($detected_mime_type === false || strtolower($mime_type) !== strtolower($detected_mime_type) || !self::isDocumentUploadAllowed($mime_type, $extension)) {
-                    // completely remove the image if the upload is not allowed
-                    $img->remove();
-                    continue;
-                }
-
-                $image_stream = fopen('php://memory', 'r+b');
-                fwrite($image_stream, $image_data);
-                unset($image_data);
-                rewind($image_stream);
-
-                $file_name = uniqid('inline_image_', true);
-                if ($extension !== '') {
-                    $file_name .= '.' . $extension;
-                }
-
-                // Create a HashedUploadedFile instance
-                $uploaded_file = new HashedUploadedFile(
-                    streamOrFile: $image_stream,
-                    size: $image_data_size,
-                    errorStatus: UPLOAD_ERR_OK,
-                    clientFilename: $file_name,
-                    clientMediaType: $mime_type,
-                    hash_algo: 'sha1',
-                    hash: $image_data_hash
-                );
-
-                // Upload the image as a document
-                $upload_result = self::uploadAsDocument($uploaded_file, $entities_id, $is_recursive, $rollback_journal);
-                if (!$upload_result instanceof Document) {
-                    return false;
-                }
-
-                // Replace the inline image with a reference to the document
-                $img->setAttribute('src', $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $upload_result->getID());
-                $created_documents[] = $upload_result;
+            if (!self::processInlineImage($img, $max_image_size, $entities_id, $is_recursive, $created_documents, $rollback_journal)) {
+                return false;
             }
         }
 
@@ -367,6 +314,88 @@ final class FileManager
             return false;
         }
         return str_replace('<?xml encoding="utf-8" ?>', '', html_entity_decode($html, ENT_QUOTES, 'UTF-8'));
+    }
+
+    /**
+     * Process a single inline `<img>` element found in HTML content passed to {@link self::handleInlineImagesInHTML()}.
+     *
+     * If the element's `src` isn't a base64-encoded data URI, it is left untouched. If the embedded image exceeds
+     * the maximum allowed size or isn't an allowed upload type, the element is removed from the DOM. Otherwise, the
+     * image is uploaded as a Document and the element's `src` is replaced with a reference to the created document.
+     *
+     * @param DOMElement $img The `<img>` element to process, modified in place
+     * @param int $max_image_size The maximum allowed size, in bytes, for the decoded image data
+     * @param int $entities_id The ID of the entity to associate with the created document
+     * @param bool $is_recursive Whether to apply the entity association recursively to child entities
+     * @param Document[] $created_documents An array to store the created documents. Useful for implementing cleanup logic if needed.
+     * @param RollbackJournal $rollback_journal
+     * @return bool False if the image could not be uploaded as a document, meaning the whole HTML content handling
+     *      must be aborted. True otherwise, including when the element was simply skipped or removed.
+     */
+    private static function processInlineImage(DOMElement $img, int $max_image_size, int $entities_id, bool $is_recursive, array &$created_documents, array &$rollback_journal): bool
+    {
+        global $CFG_GLPI;
+
+        $src = $img->getAttribute('src');
+        if (!preg_match('/^data:(image\/[a-zA-Z]+);base64,(.*)$/', $src, $matches)) {
+            return true;
+        }
+
+        $mime_type = strtolower((string) $matches[1]);
+        $extension = self::$image_mime_to_extension_map[$mime_type] ?? '';
+        $base64_data = $matches[2];
+        // Rough estimate of the decoded size (won't be more than this) to avoid decoding large images into memory unnecessarily
+        $estimated_size = ceil(strlen($base64_data) * 3 / 4);
+        if ($estimated_size > $max_image_size) {
+            // completely remove the image if it exceeds the maximum size
+            $img->remove();
+            return true;
+        }
+
+        $image_data = base64_decode($base64_data);
+        unset($base64_data);
+        $image_data_size = strlen($image_data);
+        $image_data_hash = sha1($image_data);
+        $detected_mime_type = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $image_data);
+
+        if ($detected_mime_type === false || strtolower($mime_type) !== strtolower($detected_mime_type) || !self::isDocumentUploadAllowed($mime_type, $extension)) {
+            // completely remove the image if the upload is not allowed
+            $img->remove();
+            return true;
+        }
+
+        $image_stream = fopen('php://memory', 'r+b');
+        fwrite($image_stream, $image_data);
+        unset($image_data);
+        rewind($image_stream);
+
+        $file_name = uniqid('inline_image_', true);
+        if ($extension !== '') {
+            $file_name .= '.' . $extension;
+        }
+
+        // Create a HashedUploadedFile instance
+        $uploaded_file = new HashedUploadedFile(
+            streamOrFile: $image_stream,
+            size: $image_data_size,
+            errorStatus: UPLOAD_ERR_OK,
+            clientFilename: $file_name,
+            clientMediaType: $mime_type,
+            hash_algo: 'sha1',
+            hash: $image_data_hash
+        );
+
+        // Upload the image as a document
+        $upload_result = self::uploadAsDocument($uploaded_file, $entities_id, $is_recursive, $rollback_journal);
+        if (!$upload_result instanceof Document) {
+            return false;
+        }
+
+        // Replace the inline image with a reference to the document
+        $img->setAttribute('src', $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $upload_result->getID());
+        $created_documents[] = $upload_result;
+
+        return true;
     }
 
     /**
