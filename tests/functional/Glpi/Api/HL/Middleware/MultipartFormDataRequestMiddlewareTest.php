@@ -75,13 +75,10 @@ class MultipartFormDataRequestMiddlewareTest extends DbTestCase
         return $tmp_file;
     }
 
-    /**
-     * @return array<string, HashedUploadedFile[]>
-     */
-    private function processRequest(): array
+    private function processRequest(?Request $request = null): Request
     {
         $input = new MiddlewareInput(
-            new Request('POST', '/', ['Content-Type' => 'multipart/form-data; boundary=---boundary'], ''),
+            $request ?? new Request('POST', '/', ['Content-Type' => 'multipart/form-data; boundary=---boundary'], ''),
             new RoutePath('', '', '', ['POST'], 1, Route::SECURITY_AUTHENTICATED, ''),
             null
         );
@@ -91,7 +88,7 @@ class MultipartFormDataRequestMiddlewareTest extends DbTestCase
         });
         $this->assertTrue($called);
 
-        return $input->request->getUploadedFiles();
+        return $input->request;
     }
 
     public function testSingleFile(): void
@@ -109,7 +106,7 @@ class MultipartFormDataRequestMiddlewareTest extends DbTestCase
             ],
         ];
 
-        $uploaded_files = $this->processRequest();
+        $uploaded_files = $this->processRequest()->getUploadedFiles();
 
         $this->assertArrayHasKey('file', $uploaded_files);
         $this->assertCount(1, $uploaded_files['file']);
@@ -139,7 +136,7 @@ class MultipartFormDataRequestMiddlewareTest extends DbTestCase
             ],
         ];
 
-        $uploaded_files = $this->processRequest();
+        $uploaded_files = $this->processRequest()->getUploadedFiles();
 
         $this->assertArrayNotHasKey('pictures_upload[]', $uploaded_files);
         $this->assertArrayHasKey('pictures_upload', $uploaded_files);
@@ -181,7 +178,7 @@ class MultipartFormDataRequestMiddlewareTest extends DbTestCase
             ],
         ];
 
-        $uploaded_files = $this->processRequest();
+        $uploaded_files = $this->processRequest()->getUploadedFiles();
 
         $this->assertCount(1, $uploaded_files['too_big']);
         $this->assertEquals(UPLOAD_ERR_INI_SIZE, $uploaded_files['too_big'][0]->getError());
@@ -209,7 +206,7 @@ class MultipartFormDataRequestMiddlewareTest extends DbTestCase
             ],
         ];
 
-        $this->assertEquals([], $this->processRequest());
+        $this->assertEquals([], $this->processRequest()->getUploadedFiles());
     }
 
     public function testNonMultipartRequestIsUntouched(): void
@@ -233,5 +230,33 @@ class MultipartFormDataRequestMiddlewareTest extends DbTestCase
         (new MultipartFormDataRequestMiddleware())->process($input, static function () {});
 
         $this->assertEquals([], $input->request->getUploadedFiles());
+    }
+
+    public function testRepeatedNonFileArrayFieldsAreCollected(): void
+    {
+        $request = new Request('PATCH', '/', ['Content-Type' => 'multipart/form-data; boundary=---boundary'], <<<EOT
+-----boundary
+Content-Disposition: form-data; name="pictures_remove[]"
+
+first-picture
+-----boundary
+Content-Disposition: form-data; name="pictures_remove[]"
+
+second-picture
+-----boundary
+Content-Disposition: form-data; name="pictures_remove[]"
+
+third-picture
+-----boundary
+Content-Disposition: form-data; name="name"
+
+updated-name
+-----boundary--
+EOT);
+
+        $request = $this->processRequest($request);
+
+        $this->assertSame(['first-picture', 'second-picture', 'third-picture'], $request->getParameter('pictures_remove'));
+        $this->assertSame('updated-name', $request->getParameter('name'));
     }
 }

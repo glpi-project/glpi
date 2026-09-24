@@ -70,9 +70,9 @@ class Request extends ServerRequest
         return array_key_exists($name, $this->parameters);
     }
 
-    public function getParameter(string $name): mixed
+    public function getParameter(string $name, mixed $default = null): mixed
     {
-        return $this->parameters[$name];
+        return $this->parameters[$name] ?? $default;
     }
 
     public function getParameters(): array
@@ -88,5 +88,16 @@ class Request extends ServerRequest
     public function setParameter(string $name, mixed $value): void
     {
         $this->parameters[$name] = $value;
+    }
+
+    public function appendParameter(string $name, mixed $value): void
+    {
+        $existing_values = $this->getParameter($name, []);
+        if (!is_array($existing_values)) {
+            $existing_values = [$existing_values];
+        }
+
+        $existing_values[] = $value;
+        $this->setParameter($name, $existing_values);
     }
 }
