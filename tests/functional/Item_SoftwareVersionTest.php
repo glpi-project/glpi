@@ -39,6 +39,7 @@ use Glpi\Asset\Capacity\HasSoftwaresCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Item_SoftwareVersion;
+use Search;
 use Toolbox;
 
 class Item_SoftwareVersionTest extends DbTestCase
@@ -369,5 +370,25 @@ class Item_SoftwareVersionTest extends DbTestCase
         // Restore original rights
         $_SESSION['glpiactiveprofile']['software'] = $original_software;
         $_SESSION['glpiactiveprofile']['computer'] = $original_computer;
+    }
+
+    public function testMassiveUpdateOnlyProposesInstallationDate()
+    {
+        $this->login();
+
+        $fields = [];
+        foreach (Search::getCleanedOptions(Item_SoftwareVersion::class, UPDATE) as $index => $option) {
+            if (
+                is_array($option)
+                && count($option) > 1
+                && $option['field'] !== 'id'
+                && $index != 1
+                && ($option['massiveaction'] ?? true)
+            ) {
+                $fields[] = $option['table'] . '.' . $option['field'];
+            }
+        }
+
+        $this->assertSame(['glpi_items_softwareversions.date_install'], $fields);
     }
 }
