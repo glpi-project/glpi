@@ -140,9 +140,9 @@ final class MoveCandidates
         if (Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)) {
             return false;
         }
-        // The root article has no author rule of its own, see `KnowbaseItem::canUpdateItem()`.
+        // See `KnowbaseItem_KnowbaseItem::canAttach()`.
         if ($parent->isRoot()) {
-            return !Session::haveRight(KnowbaseItem::$rightname, UPDATE);
+            return false;
         }
         // Its author edits it whatever the article is, central interface only.
         if (

@@ -2491,9 +2491,10 @@ HTML,
 
     public function testVisibilityInheritsFromAncestor(): void
     {
-        // Non-admin central user
-        $this->login('normal', 'normal');
-        $entity = (int) $_SESSION['glpiactiveentities'][0];
+        // Articles are linked as admin: `normal` cannot edit the parent.
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
         // Author the articles as *another* user (glpi): otherwise the author
         // bypass (`users_id => current user`) would make them directly visible
@@ -2510,6 +2511,9 @@ HTML,
         // child has NO direct visibility, linked under the parent
         $child = new KnowbaseItem();
         $child_id = (int) $child->add(['name' => 'Nested', 'answer' => '', 'users_id' => $glpi_user, '_parents' => [$parent_id]]);
+
+        // Non-admin central user
+        $this->login('normal', 'normal');
 
         // browse list applies visibility criteria
         $visible_ids = $this->listBrowseIds();
@@ -3213,6 +3217,234 @@ HTML,
             '__parents_defined' => 1,
         ]);
         $this->assertSame([$root_id], $this->getParentIds($child->getID()));
+    }
+
+    /**
+     * An article the current user may read but not edit: an FAQ article
+     * authored by someone else needs PUBLISHFAQ to be edited. Rights are
+     * dropped last, so the fixtures are created as admin.
+     */
+    private function makeUneditableArticle(): KnowbaseItem
+    {
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Uneditable ' . $this->getUniqueString(),
+            'answer'   => '',
+            'users_id' => getItemByTypeName('User', 'normal', true),
+            'is_faq'   => 1,
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+        // Reloaded for the grant above to be part of the visibility rules.
+        $this->assertTrue($article->getFromDB($article->getID()));
+
+        return $article;
+    }
+
+    private function dropToKnowbaseEditorRights(): void
+    {
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE | UPDATE;
+    }
+
+    public function testParentsInputCannotAttachToAParentTheUserCannotEdit(): void
+    {
+        $this->login();
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Article ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $parent = $this->makeUneditableArticle();
+        $this->dropToKnowbaseEditorRights();
+        $this->assertTrue($article->can($article->getID(), UPDATE));
+        $this->assertTrue($parent->can($parent->getID(), READ));
+        $this->assertFalse($parent->can($parent->getID(), UPDATE));
+
+        $expected_message = 'You are not allowed to change the parents of this article.';
+        $this->assertFalse($article->update([
+            'id'       => $article->getID(),
+            '_parents' => [$parent->getID()],
+        ]));
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+        $this->assertSame([KnowbaseItem::getRootId()], $this->getParentIds($article->getID()));
+
+        // Same on creation.
+        $this->assertFalse((new KnowbaseItem())->add([
+            'name'     => 'New ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]));
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+    }
+
+    public function testParentsInputCannotDetachFromAParentTheUserCannotEdit(): void
+    {
+        $this->login();
+        $parent = $this->makeUneditableArticle();
+        $other_parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Other parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID(), $other_parent->getID()],
+        ]);
+        $this->dropToKnowbaseEditorRights();
+        $this->assertTrue($article->can($article->getID(), UPDATE));
+
+        $this->assertFalse($article->update([
+            'id'       => $article->getID(),
+            '_parents' => [$other_parent->getID()],
+        ]));
+        $this->hasSessionMessages(ERROR, ['You are not allowed to change the parents of this article.']);
+        $this->assertEqualsCanonicalizing(
+            [$parent->getID(), $other_parent->getID()],
+            $this->getParentIds($article->getID()),
+        );
+    }
+
+    public function testParentsInputCannotAttachToAParentInAnIncoherentEntity(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Parent ' . __FUNCTION__,
+            'answer'      => '',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Article ' . __FUNCTION__,
+            'answer'      => '',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+        $this->assertTrue($parent->can($parent->getID(), UPDATE));
+
+        $this->assertFalse($article->update([
+            'id'       => $article->getID(),
+            '_parents' => [$parent->getID()],
+        ]));
+        $this->hasSessionMessages(ERROR, ['You are not allowed to change the parents of this article.']);
+        $this->assertSame([KnowbaseItem::getRootId()], $this->getParentIds($article->getID()));
+    }
+
+    public function testAuthorWithoutUpdateRightCanCreateUnderTheirOwnArticle(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE;
+        $this->assertFalse($parent->can($parent->getID(), UPDATE));
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+        $this->assertSame([$parent->getID()], $this->getParentIds($article->getID()));
+    }
+
+    public function testFaqPublisherCanCreateUnderAnFaqArticle(): void
+    {
+        $this->login();
+        $parent = $this->makeUneditableArticle();
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = KnowbaseItem::READFAQ | KnowbaseItem::PUBLISHFAQ;
+        $this->assertFalse($parent->can($parent->getID(), UPDATE));
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+        $this->assertSame([$parent->getID()], $this->getParentIds($article->getID()));
+    }
+
+    public function testRootIsAttachableAndDetachableWithoutUpdateRight(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Article ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE;
+        $root = KnowbaseItem::getById(KnowbaseItem::getRootId());
+        $this->assertFalse($root->can($root->getID(), UPDATE));
+
+        $this->updateItem(KnowbaseItem::class, $article->getID(), ['_parents' => [$parent->getID()]]);
+        $this->assertSame([$parent->getID()], $this->getParentIds($article->getID()));
+
+        $this->updateItem(KnowbaseItem::class, $article->getID(), ['_parents' => []]);
+        $this->assertSame([KnowbaseItem::getRootId()], $this->getParentIds($article->getID()));
+    }
+
+    public function testAddOnAReusedObjectIsCheckedAgainstTheNewArticle(): void
+    {
+        $this->login();
+        $parent = $this->makeUneditableArticle();
+        $loaded = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Loaded ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+        $this->dropToKnowbaseEditorRights();
+
+        // The loaded article already has this parent, the new one has not.
+        $this->assertFalse($loaded->add([
+            'name'     => 'New ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]));
+        $this->hasSessionMessages(ERROR, ['You are not allowed to change the parents of this article.']);
+
+        // The root article has no parent, the new one gets the default one.
+        $root = KnowbaseItem::getById(KnowbaseItem::getRootId());
+        $new_id = $root->add(['name' => 'New from root ' . __FUNCTION__, 'answer' => '']);
+        $this->assertGreaterThan(0, $new_id);
+        $this->assertSame([KnowbaseItem::getRootId()], $this->getParentIds($new_id));
+    }
+
+    public function testDirectLinksFollowTheParentRules(): void
+    {
+        $this->login();
+        $parent = $this->makeUneditableArticle();
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Other ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->dropToKnowbaseEditorRights();
+        $expected_message = 'You are not allowed to change the parents of this article.';
+
+        $relation = new KnowbaseItem_KnowbaseItem();
+        $this->assertFalse($relation->add([
+            'knowbaseitems_id'        => $other->getID(),
+            'knowbaseitems_id_parent' => $parent->getID(),
+        ]));
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+
+        $this->assertFalse($relation->deleteByCriteria([
+            'knowbaseitems_id'        => $article->getID(),
+            'knowbaseitems_id_parent' => $parent->getID(),
+        ]));
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+        $this->assertSame([$parent->getID()], $this->getParentIds($article->getID()));
+
+        // Purging the article unlinks it anyway.
+        $this->assertTrue($article->delete(['id' => $article->getID()], force: true));
+        $this->assertSame([], $this->getParentIds($article->getID()));
     }
 
     public function testDeletingAnArticleIsRefusedWhenItWouldDetachAChild(): void

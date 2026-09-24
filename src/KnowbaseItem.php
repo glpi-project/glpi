@@ -502,9 +502,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $kb_item_item->add($params);
         }
 
-        // Handle parent articles. Articles created without a parent are attached
-        // to the root article, so the knowledge base always is a single tree.
-        $this->setRootAsDefaultParent(on_creation: true);
+        // Handle parent articles, see `prepareInputForAdd()`.
         $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, "_parents");
 
         NotificationEvent::raiseEvent('new', $this);
@@ -1166,6 +1164,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["users_id"] = Session::getLoginUserID();
         }
 
+        $input = $this->setRootAsDefaultParent($input, on_creation: true);
+        if (!$this->canUpdateParentsFromInput($input, on_creation: true)) {
+            return false;
+        }
+
         return $this->prepareIllustrationInput($input);
     }
 
@@ -1182,6 +1185,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // down to anonymous users on a public FAQ, see `canViewItem()`.
         if ($this->isRoot()) {
             unset($input['is_faq'], $input['show_in_service_catalog']);
+        }
+
+        $input = $this->setRootAsDefaultParent($input, on_creation: false);
+        if (!$this->canUpdateParentsFromInput($input, on_creation: false)) {
+            return false;
         }
 
         return $this->prepareIllustrationInput($input);
@@ -1214,43 +1222,99 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * knowledge base tree: an article that would end up without any parent is
      * attached to the root article instead.
      *
+     * @param array<string, mixed> $input
      * @param bool $on_creation Whether the article is being created, in which
      *                          case an input that does not mention the parents
-     *                          at all must be defaulted too.
+     *                          at all must be defaulted too, and the loaded
+     *                          fields are stale (the object may be reused).
+     *
+     * @return array<string, mixed>
      */
-    private function setRootAsDefaultParent(bool $on_creation): void
+    private function setRootAsDefaultParent(array $input, bool $on_creation): array
     {
         // The root article is the only one allowed to have no parent.
-        if (!is_array($this->input) || $this->isRoot()) {
-            return;
+        if (!$on_creation && $this->isRoot()) {
+            return $input;
         }
 
-        $parents = $this->input['_parents'] ?? null;
+        $parents = $input['_parents'] ?? null;
 
         // See `update1NTableData()`: an input that does not target the parents
         // at all must be left alone, unless the article has no parent yet.
         $targets_parents = $parents !== null
-            || (bool) ($this->input['__parents_defined'] ?? false);
+            || (bool) ($input['__parents_defined'] ?? false);
         if (!$targets_parents && !$on_creation) {
-            return;
+            return $input;
         }
 
         // Only an emptied input needs a default.
         if (!empty($parents)) {
-            return;
+            return $input;
         }
 
         // Guard against an installation that has no root article: a link to a
         // missing article would be worse than no link at all.
         if (!self::hasRoot()) {
-            return;
+            return $input;
         }
         $root_id = self::getRootId();
         if (countElementsInTable(self::getTable(), ['id' => $root_id]) === 0) {
-            return;
+            return $input;
         }
 
-        $this->input['_parents'] = [$root_id];
+        $input['_parents'] = [$root_id];
+        return $input;
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     * @param bool $on_creation See `setRootAsDefaultParent()`.
+     */
+    private function canUpdateParentsFromInput(array $input, bool $on_creation): bool
+    {
+        // Internal processes (CLI, cron, migrations) act on behalf of no user.
+        if (Session::getLoginUserID() === false) {
+            return true;
+        }
+
+        // Same "no update" rule as `update1NTableData()`.
+        $parents = $input['_parents'] ?? null;
+        if ($parents === null && !($input['__parents_defined'] ?? false)) {
+            return true;
+        }
+        $current   = $on_creation ? [] : $this->fields;
+        $requested = is_array($parents) ? array_map('intval', $parents) : [];
+        $existing  = array_map('intval', $current['_parents'] ?? []);
+
+        // The article as it will be saved, for the entity coherence check. The
+        // id is needed, `isEntityAssign()` resets the fields otherwise.
+        $child = new self();
+        $child->fields = [
+            'id'           => $current['id'] ?? 0,
+            'entities_id'  => $input['entities_id'] ?? $current['entities_id'] ?? 0,
+            'is_recursive' => $input['is_recursive'] ?? $current['is_recursive'] ?? 0,
+        ];
+
+        $allowed = true;
+        foreach (array_diff($requested, $existing) as $parent_id) {
+            $parent = new self();
+            if (!$parent->getFromDB($parent_id) || !KnowbaseItem_KnowbaseItem::canAttach($child, $parent)) {
+                $allowed = false;
+                break;
+            }
+        }
+        foreach (array_diff($existing, $requested) as $parent_id) {
+            $parent = new self();
+            if ($parent->getFromDB($parent_id) && !KnowbaseItem_KnowbaseItem::canDetach($parent)) {
+                $allowed = false;
+                break;
+            }
+        }
+
+        if (!$allowed) {
+            KnowbaseItem_KnowbaseItem::addRefusalMessage();
+        }
+        return $allowed;
     }
 
     public function post_updateItem($history = true)
@@ -1264,10 +1328,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ]
         );
 
-        // Update parent articles. An article whose parents are all removed is
-        // attached back to the root article, so the knowledge base always is a
-        // single tree.
-        $this->setRootAsDefaultParent(on_creation: false);
+        // Update parent articles, see `prepareInputForUpdate()`.
         $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, '_parents');
         NotificationEvent::raiseEvent('update', $this);
     }

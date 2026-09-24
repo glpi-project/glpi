@@ -266,18 +266,17 @@ final class MoveCandidatesTest extends DbTestCase
         $this->assertArrayNotHasKey($parent->getID(), $candidates);
     }
 
-    public function testRootArticleIsNotACandidateWithoutTheUpdateRight(): void
+    public function testRootArticleIsACandidateWithoutTheUpdateRight(): void
     {
         $this->login();
         $moved = $this->makeArticle('Moved ' . __FUNCTION__);
 
-        // The root article has neither an author rule nor a visibility rule of its own,
-        // see `KnowbaseItem::canUpdateItem()`: only the global right stands in the way.
+        // Everyone's default parent, see `KnowbaseItem_KnowbaseItem::canAttach()`.
         $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::PUBLISHFAQ;
 
         $candidates = (new MoveCandidates($moved->getID()))->build();
 
-        $this->assertArrayNotHasKey(KnowbaseItem::getRootId(), $candidates);
+        $this->assertArrayHasKey(KnowbaseItem::getRootId(), $candidates);
     }
 
     public function testIncoherentEntityArticleIsNotACandidateEvenIfVisible(): void

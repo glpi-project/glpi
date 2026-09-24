@@ -39,6 +39,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use KnowbaseItem_User;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\json_decode;
@@ -50,8 +52,9 @@ final class CreateArticleControllerTest extends DbTestCase
     {
         $this->login();
         $parent = $this->createItem(KnowbaseItem::class, [
-            'name'   => 'Parent article',
-            'answer' => '',
+            'name'        => 'Parent article',
+            'answer'      => '',
+            'entities_id' => Session::getActiveEntity(),
         ]);
 
         $request = new Request(content: json_encode([
@@ -127,25 +130,67 @@ final class CreateArticleControllerTest extends DbTestCase
         (new CreateArticleController())($request);
     }
 
-    public function testUnreadableParentIsSilentlyDropped(): void
+    public function testUnresolvableParentIsRejected(): void
     {
         $this->login();
 
+        // Same answer as for a hidden parent, not to disclose which ids exist.
+        $this->expectException(AccessDeniedHttpException::class);
         $request = new Request(content: json_encode([
-            'name' => 'Unreadable parent test',
+            'name' => 'Unresolvable parent test',
             'knowbaseitems_id_parent' => 999999,
         ]));
-        $response = (new CreateArticleController())($request);
+        (new CreateArticleController())($request);
+    }
 
-        $this->assertSame(200, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
+    public function testParentTheUserCannotEditIsRejected(): void
+    {
+        $this->login();
+        // Readable but not editable: an FAQ article of someone else needs PUBLISHFAQ.
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Uneditable parent',
+            'answer'      => '',
+            'entities_id' => Session::getActiveEntity(),
+            'users_id'    => getItemByTypeName('User', 'normal', true),
+            'is_faq'      => 1,
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE | UPDATE;
+        // Reloaded: the grant above is not in the loaded visibility rules.
+        $this->assertTrue($parent->getFromDB($parent->getID()));
+        $this->assertTrue($parent->can($parent->getID(), READ));
+        $this->assertFalse($parent->can($parent->getID(), UPDATE));
 
-        // The unreadable parent is dropped, so the article falls back to the
-        // root article like any other parentless creation.
-        $this->assertSame(
-            [KnowbaseItem::getRootId()],
-            $this->getParentIds((int) $data['id']),
-        );
+        $this->expectException(AccessDeniedHttpException::class);
+        $request = new Request(content: json_encode([
+            'name' => 'Uneditable parent test',
+            'knowbaseitems_id_parent' => $parent->getID(),
+        ]));
+        (new CreateArticleController())($request);
+    }
+
+    public function testParentInAnIncoherentEntityIsRejected(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Parent in a child entity',
+            'answer'      => '',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+        // Editable, but the new article lands in the non-recursive parent entity.
+        $this->setEntity('_test_root_entity', true);
+        $this->assertTrue($parent->can($parent->getID(), UPDATE));
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $request = new Request(content: json_encode([
+            'name' => 'Incoherent entity test',
+            'knowbaseitems_id_parent' => $parent->getID(),
+        ]));
+        (new CreateArticleController())($request);
     }
 
     /**
