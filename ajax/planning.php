@@ -130,6 +130,10 @@ if ($_REQUEST["action"] == "add_event_classic_form") {
     Planning::showAddEventClassicForm($_REQUEST);
 }
 
+if ($_REQUEST["action"] == "add_event_dates_form") {
+    Planning::showEventDatesForm($_REQUEST);
+}
+
 if ($_REQUEST["action"] == "edit_event_form") {
     Planning::editEventForm($_REQUEST);
 }
