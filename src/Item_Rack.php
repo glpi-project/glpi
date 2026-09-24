@@ -1000,6 +1000,13 @@ JAVASCRIPT;
         }
 
         if (!count($error_detected)) {
+            $item = getItemForItemtype($itemtype);
+            if (!($item instanceof CommonDBTM) || !$item->getFromDB($items_id)) {
+                $error_detected[] = __('Item not found');
+            }
+        }
+
+        if (!count($error_detected)) {
             //check if required U are available at position
             $rack = new Rack();
             $rack->getFromDB($racks_id);
@@ -1011,8 +1018,6 @@ JAVASCRIPT;
                 $filled = $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']);
             }
 
-            $item = new $itemtype();
-            $item->getFromDB($items_id);
             $model_class = $item->getType() . 'Model';
             $modelsfield = strtolower($item->getType()) . 'models_id';
             $model = new $model_class();

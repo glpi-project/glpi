@@ -218,6 +218,32 @@ class Item_RackTest extends DbTestCase
 
         $this->hasSessionMessages(ERROR, ['Item is out of rack bounds']);
 
+        //try to add a non existing item
+        $ira->getEmpty();
+        $this->assertFalse(
+            $ira->add([
+                'racks_id'  => $rack->getID(),
+                'position'  => 1,
+                'itemtype'  => 'Computer',
+                'items_id'  => 999999,
+            ])
+        );
+
+        $this->hasSessionMessages(ERROR, ['Item not found']);
+
+        //try to add an invalid itemtype
+        $ira->getEmpty();
+        $this->assertFalse(
+            $ira->add([
+                'racks_id'  => $rack->getID(),
+                'position'  => 1,
+                'itemtype'  => 'NotAnItemtype',
+                'items_id'  => $SRVNUX1,
+            ])
+        );
+
+        $this->hasSessionMessages(ERROR, ['Item not found']);
+
         //add item at the first position
         $ira->getEmpty();
         $this->assertGreaterThan(
