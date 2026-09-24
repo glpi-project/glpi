@@ -110,28 +110,80 @@ final class CommonDBRelationTest extends DbTestCase
         $this->assertTrue($can_create);
     }
 
-    public function testCanCreateRelationWithoutItemOnUncheckedSide(): void
+    public function testCanCreateRelationWhenUncheckedItemIsNotSetYet(): void
     {
-        // Arrange: a rack, and a new rack item whose item is not selected yet (e.g. on rack item creation form)
         $this->login('glpi', 'glpi');
-        $rack_id = $this->createItem(
-            \Rack::class,
-            [
-                'name'        => 'Test rack',
-                'entities_id' => $this->getTestRootEntity(true),
-            ]
-        )->getID();
+        $rack = $this->createItem(\Rack::class, [
+            'name'        => 'Rack for new item form',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
 
         $input = [
-            'racks_id'    => $rack_id,
-            'orientation' => \Rack::FRONT,
+            'racks_id'    => $rack->getID(),
             'position'    => 1,
+            'orientation' => \Rack::FRONT,
         ];
 
-        // Act: compute creation rights
-        $can_create = (new \Item_Rack())->can(-1, CREATE, $input);
+        $this->assertTrue((new \Item_Rack())->can(-1, CREATE, $input));
+    }
 
-        // Assert: should be allowed
-        $this->assertTrue($can_create);
+    public function testCannotCreateRelationWithNonexistentUncheckedItem(): void
+    {
+        $this->login('glpi', 'glpi');
+        $rack = $this->createItem(\Rack::class, [
+            'name'        => 'Rack with nonexistent item',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $input = [
+            'racks_id'    => $rack->getID(),
+            'itemtype'    => \Computer::class,
+            'items_id'    => 999999999,
+            'position'    => 1,
+            'orientation' => \Rack::FRONT,
+        ];
+
+        $this->assertFalse((new \Item_Rack())->can(-1, CREATE, $input));
+    }
+
+    public function testCannotCreateRelationWithItemFromUnrelatedEntity(): void
+    {
+        $this->login('glpi', 'glpi');
+        $rack = $this->createItem(\Rack::class, [
+            'name'         => 'Rack in child 1',
+            'entities_id'  => getItemByTypeName(\Entity::class, '_test_child_1', true),
+            'is_recursive' => 0,
+        ]);
+        $computer = $this->createItem(\Computer::class, [
+            'name'         => 'Computer in child 2',
+            'entities_id'  => getItemByTypeName(\Entity::class, '_test_child_2', true),
+            'is_recursive' => 0,
+        ]);
+
+        $input = [
+            'racks_id'    => $rack->getID(),
+            'itemtype'    => \Computer::class,
+            'items_id'    => $computer->getID(),
+            'position'    => 1,
+            'orientation' => \Rack::FRONT,
+        ];
+
+        $this->assertFalse((new \Item_Rack())->can(-1, CREATE, $input));
+    }
+
+    public function testCannotCreateRelationWhenMandatoryUncheckedItemIsNotSet(): void
+    {
+        $this->login('glpi', 'glpi');
+        $reminder = $this->createItem(\Reminder::class, [
+            'name'     => 'Reminder without target user',
+            'text'     => 'Reminder without target user',
+            'users_id' => \Session::getLoginUserID(),
+        ]);
+
+        $input = [
+            'reminders_id' => $reminder->getID(),
+        ];
+
+        $this->assertFalse((new \Reminder_User())->can(-1, CREATE, $input));
     }
 }

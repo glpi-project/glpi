@@ -482,10 +482,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 static::$items_id_1,
                 $item1
             );
-            if (!($item1 instanceof CommonDBTM)) {
-                // Item is not found (and its rights are not checked), handle it like other not found items.
-                throw new CommonDBConnexityItemNotFound();
-            }
             if ($OneWriteIsEnough) {
                 $view1 = $this->canConnexityItem(
                     $method,
@@ -515,10 +511,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 static::$items_id_2,
                 $item2
             );
-            if (!($item2 instanceof CommonDBTM)) {
-                // Item is not found (and its rights are not checked), handle it like other not found items.
-                throw new CommonDBConnexityItemNotFound();
-            }
             if ($OneWriteIsEnough) {
                 $view2 = $this->canConnexityItem(
                     $method,
@@ -550,6 +542,29 @@ abstract class CommonDBRelation extends CommonDBConnexity
             if (!$can1 || !$can2) {
                 return false;
             }
+        }
+
+        // An unchecked side that is not set yet (e.g. new relation form) cannot be used to check entities
+        if (
+            (
+                !$item1 instanceof CommonDBTM
+                && static::$checkItem_1_Rights == self::DONT_CHECK_ITEM_RIGHTS
+                && empty($this->fields[static::$items_id_1])
+            )
+            || (
+                !$item2 instanceof CommonDBTM
+                && static::$checkItem_2_Rights == self::DONT_CHECK_ITEM_RIGHTS
+                && empty($this->fields[static::$items_id_2])
+            )
+        ) {
+            // A side that must be attached cannot be left unset
+            if (
+                (!$item1 instanceof CommonDBTM && static::$mustBeAttached_1 && !$this->isAttach1Valid($this->fields))
+                || (!$item2 instanceof CommonDBTM && static::$mustBeAttached_2 && !$this->isAttach2Valid($this->fields))
+            ) {
+                return false;
+            }
+            $check_entity = false;
         }
 
         // Check coherency of entities
