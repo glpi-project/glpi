@@ -1002,11 +1002,10 @@ JAVASCRIPT;
         if (!count($error_detected)) {
             $item = getItemForItemtype($itemtype);
             if (!($item instanceof CommonDBTM) || !$item->getFromDB($items_id)) {
-                $error_detected[] = __('Item not found');
+                Session::addMessageAfterRedirect(__('Item not found'), true, ERROR);
+                return false;
             }
-        }
 
-        if (!count($error_detected)) {
             //check if required U are available at position
             $rack = new Rack();
             $rack->getFromDB($racks_id);
