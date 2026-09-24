@@ -4303,8 +4303,10 @@ TWIG, $twig_params);
             if (self::isValidGuid($guid)) {
                 $value = $guid;
             }
-        } elseif (!mb_check_encoding($value, 'UTF-8')) {
-            $value = strtoupper(bin2hex($value));
+        }
+        
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            return strtoupper(bin2hex($value));
         }
 
         return $value;
