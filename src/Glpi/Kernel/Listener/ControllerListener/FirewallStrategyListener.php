@@ -36,6 +36,7 @@ namespace Glpi\Kernel\Listener\ControllerListener;
 
 use Glpi\Http\Firewall;
 use Glpi\Http\SessionManager;
+use Glpi\Kernel\ListenersPriority;
 use Glpi\Security\Attribute\SecurityStrategy;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -51,7 +52,9 @@ final readonly class FirewallStrategyListener implements EventSubscriberInterfac
 
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::CONTROLLER => 'onKernelController'];
+        return [
+            KernelEvents::CONTROLLER => ['onKernelController', ListenersPriority::CONTROLLER_LISTENERS_PRIORITIES[self::class]],
+        ];
     }
 
     public function onKernelController(ControllerEvent $event): void
