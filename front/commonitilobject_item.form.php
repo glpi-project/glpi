@@ -51,6 +51,7 @@ $obj_fkey = $obj->getForeignKeyField();
 
 if (isset($_POST["add"])) {
     if (isset($_POST['my_items']) && !empty($_POST['my_items'])) {
+        // Split on last underscore to handle multi-underscore itemtype names
         $last_underscore = strrpos($_POST['my_items'], '_');
         if ($last_underscore === false) {
             throw new BadRequestHttpException('Bad request');
