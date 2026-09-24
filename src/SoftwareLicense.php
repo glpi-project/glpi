@@ -310,6 +310,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'name'               => __('Number'),
             'datatype'           => 'number',
             'max'                => 100,
+            'forcegroupby'       => true,
             'toadd'              => [
                 '-1'                 => 'Unlimited',
             ],

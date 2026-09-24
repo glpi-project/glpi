@@ -7350,6 +7350,28 @@ class SearchTest extends DbTestCase
         $this->assertContains('86', $ids);
     }
 
+    public function testSoftwareLicenseNumberColumnKeepsOneRowPerLicense(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $software = $this->createItem(\Software::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
+        $this->createItems(\SoftwareLicense::class, [
+            ['name' => __FUNCTION__ . ' 1', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 2],
+            ['name' => __FUNCTION__ . ' 2', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 3],
+        ]);
+
+        $data = $this->doSearch(\SoftwareLicense::class, [
+            'criteria' => [['field' => 10, 'searchtype' => 'contains', 'value' => __FUNCTION__]],
+        ], [4]);
+
+        // "Number" (4) uses aggregate functions and must not collapse rows into a single one without ID
+        $this->assertSame(2, $data['data']['totalcount']);
+        foreach ($data['data']['rows'] as $row) {
+            $this->assertIsInt($row['id']);
+        }
+    }
+
     public function testTypeHasAssetUrlSearchOption(): void
     {
         global $CFG_GLPI;
