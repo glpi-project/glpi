@@ -6427,6 +6427,7 @@ CREATE TABLE `glpi_queuednotifications` (
   `attach_documents` tinyint NOT NULL DEFAULT '0',
   `itemtype_trigger` varchar(255) DEFAULT NULL,
   `items_id_trigger` int unsigned NOT NULL DEFAULT '0',
+  `is_body_encrypted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`,`notificationtemplates_id`),
   KEY `is_deleted` (`is_deleted`),
