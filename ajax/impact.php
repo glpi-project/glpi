@@ -210,6 +210,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         // Save impact compound delta
+        $compounds_mapping = [];
         $em = new ImpactCompound();
         foreach ($data['compounds'] as $id => $compound) {
             // Extract action
@@ -219,6 +220,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             switch ($action) {
                 case DELTA_ACTION_ADD:
                     $newCompoundID = $em->add($compound);
+
+                    // Map temporary frontend IDs to their database IDs.
+                    $compounds_mapping[$id] = $newCompoundID;
 
                     // Update id reference in impactitem
                     // This is needed because some nodes might have this compound
@@ -271,6 +275,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
         }
 
-        header('Content-Type: application/javascript');
+        header('Content-Type: application/json');
+        echo json_encode(['compounds_mapping' => $compounds_mapping]);
         break;
 }
