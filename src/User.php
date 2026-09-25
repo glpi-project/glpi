@@ -93,6 +93,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public const UPDATEAUTHENT       = 4096;
     public const IMPERSONATE         = 8192;
 
+    private const DB_KEEPALIVE_INTERVAL = 30;
+
     public static $rightname = 'user';
 
     public static $undisclosedFields = [
@@ -2403,7 +2405,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     {
         global $DB;
 
-        if (time() - $last_db_activity < 30) {
+        if (time() - $last_db_activity < self::DB_KEEPALIVE_INTERVAL) {
             return $last_db_activity;
         }
 
