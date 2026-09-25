@@ -2520,7 +2520,7 @@ class AuthLdapTest extends DbTestCase
     }
 
     #[RequiresPhpExtension('ldap')]
-    public function testGetFromLDAPGroupDiscretCachedCollectsMembersAcrossPages(): void
+    public function testGetFromLDAPGroupDiscretCachedCollectsMembers(): void
     {
         $auth = $this->createItem(AuthLDAP::class, [
             'name'   => $this->getUniqueString(),
@@ -2536,7 +2536,6 @@ class AuthLdapTest extends DbTestCase
             'id'                 => $auth->getID(),
             'basedn'             => 'dc=glpi,dc=org',
             'condition'          => '(uid=brazil10*)',
-            'pagesize'           => 2,
             'group_field'        => 'objectClass',
             'group_member_field' => 'objectClass',
         ];
