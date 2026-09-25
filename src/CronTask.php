@@ -411,6 +411,8 @@ class CronTask extends CommonDBTM
 
         if ($this->fields['error_count'] >= self::MAX_ERROR_COUNT) {
             $this->fields['state'] = self::STATE_ERROR;
+        } elseif ($this->fields['state'] !== self::STATE_DISABLE) {
+            $this->fields['state'] = self::STATE_WAITING;
         }
 
         return $this->updateAfterExecution($retcode, $log_state);
