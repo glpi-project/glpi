@@ -55,6 +55,39 @@ final class KnowbaseItem_Revision extends CommonDBTM
         return 'ti ti-history';
     }
 
+    // Revisions are written only through createNew()/addToDB(); no direct write.
+    #[Override]
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public static function canUpdate(): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public static function canPurge(): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public static function canDelete(): bool
+    {
+        return false;
+    }
+
+    // View access follows the parent article.
+    #[Override]
+    public function canViewItem(): bool
+    {
+        $kb = KnowbaseItem::getById((int) ($this->fields['knowbaseitems_id'] ?? 0));
+        return $kb !== false && $kb->can($kb->getID(), READ);
+    }
+
     /**
      * Populate and create a new revision from KnowbaseItem or KnowbaseItemTranslation information
      *
