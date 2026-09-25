@@ -74,6 +74,13 @@ class Document_Item extends CommonDBRelation
         return $forbidden;
     }
 
+    public function isPrivate()
+    {
+        // `is_private` is a visibility flag (gated by SEEPRIVATE in canViewItem()), not an ownership marker. 
+        // Keep it out of CommonDBTM::can() so it cannot grant owner-based CREATE/UPDATE/PURGE and bypass document rights.
+        return false;
+    }
+
     public function canCreateItem(): bool
     {
         if ($this->fields['itemtype'] === Ticket::class) {
@@ -208,7 +215,8 @@ class Document_Item extends CommonDBRelation
                 if (
                     countElementsInTable(
                         static::getTable(),
-                        ['items_id' => $this->fields['items_id'],
+                        [
+                            'items_id' => $this->fields['items_id'],
                             'itemtype' => Ticket::class,
                         ]
                     ) === 1
@@ -854,13 +862,14 @@ TWIG, $twig_params);
      */
     protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = [])
     {
-        $commonwhere = ['OR'  => [
-            static::getTable() . '.' . static::$items_id_1  => $items_id,
-            [
-                static::getTable() . '.itemtype'                => static::$itemtype_1,
-                static::getTable() . '.' . static::$items_id_2  => $items_id,
+        $commonwhere = [
+            'OR'  => [
+                static::getTable() . '.' . static::$items_id_1  => $items_id,
+                [
+                    static::getTable() . '.itemtype'                => static::$itemtype_1,
+                    static::getTable() . '.' . static::$items_id_2  => $items_id,
+                ],
             ],
-        ],
         ];
 
         if ($itemtype !== KnowbaseItem::class) {
@@ -935,13 +944,14 @@ TWIG, $twig_params);
      */
     public static function getDistinctTypesParams($items_id, $extra_where = [])
     {
-        $commonwhere = ['OR'  => [
-            static::getTable() . '.' . static::$items_id_1  => $items_id,
-            [
-                static::getTable() . '.itemtype'                => static::$itemtype_1,
-                static::getTable() . '.' . static::$items_id_2  => $items_id,
+        $commonwhere = [
+            'OR'  => [
+                static::getTable() . '.' . static::$items_id_1  => $items_id,
+                [
+                    static::getTable() . '.itemtype'                => static::$itemtype_1,
+                    static::getTable() . '.' . static::$items_id_2  => $items_id,
+                ],
             ],
-        ],
         ];
 
         $params = parent::getDistinctTypesParams($items_id, $extra_where);
