@@ -556,7 +556,7 @@ class DefaultResolvers
                 }
             }
         }
-        $context->updateSchema($new_schema);
+        $context->updateSchema(ResourceAccessor::applyFieldReadRestrictions($new_schema, true));
     }
 
     /**
