@@ -6671,8 +6671,6 @@ HTML;
 
     public static function getFriendlyNameFields(string $alias = "name")
     {
-        global $DB;
-
         $config = Config::getConfigurationValues('core');
         if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
             $first = "firstname";
@@ -6684,17 +6682,30 @@ HTML;
 
         $table  = self::getTable();
 
-        $first  = new QueryIdentifier("$table.$first");
-        $second = new QueryIdentifier("$table.$second");
-        $alias  = new QueryIdentifier($alias);
-        $name   = new QueryIdentifier($table . '.' . self::getNameField());
+        $first_field  = "$table.$first";
+        $second_field = "$table.$second";
 
-        return new QueryExpression("CASE
-            WHEN $first <> '' AND $second <> '' THEN CONCAT($first, ' ', $second)
-            WHEN $first <> '' THEN $first
-            WHEN $second <> '' THEN $second
-            ELSE $name
-        END AS $alias");
+        $first_id  = new QueryIdentifier($first_field);
+        $second_id = new QueryIdentifier($second_field);
+        $name_id   = new QueryIdentifier($table . '.' . self::getNameField());
+
+        return QueryFunction::if(
+            condition: [
+                $first_field  => ['<>', ''],
+                $second_field => ['<>', ''],
+            ],
+            true_expression: QueryFunction::concat([$first_id, new QueryValue(' '), $second_id]),
+            false_expression: QueryFunction::if(
+                condition: [$first_field => ['<>', '']],
+                true_expression: $first_id,
+                false_expression: QueryFunction::if(
+                    condition: [$second_field => ['<>', '']],
+                    true_expression: $second_id,
+                    false_expression: $name_id
+                )
+            ),
+            alias: $alias
+        );
     }
 
     public static function getIcon()
