@@ -42,6 +42,7 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\LogLevel;
+use User;
 
 /* Test for inc/dbutils.class.php */
 
@@ -1845,5 +1846,160 @@ class DbUtilsTest extends DbTestCase
         $instance = new \DbUtils();
         $result = $instance->fixItemtypeCase($itemtype, vfsStream::url($name), [vfsStream::url("$name/plugins"), vfsStream::url("$name/marketplace")]);
         $this->assertEquals($expected, $result);
+    }
+
+    public static function formatUserNameProvider()
+    {
+        return [
+            [
+                'id' => 1,
+                'login' => 'jdoe',
+                'realname' => 'Doe',
+                'firstname' => 'John',
+                'force_config' => false,
+                'format' => User::REALNAME_BEFORE,
+                'session_format_preference' => User::FIRSTNAME_BEFORE,
+                // No force_config = use session preference
+                'expected' => 'John Doe',
+            ],
+            [
+                'id' => 1,
+                'login' => 'jdoe',
+                'realname' => 'Doe',
+                'firstname' => 'John',
+                'force_config' => false,
+                'format' => User::REALNAME_BEFORE,
+                'session_format_preference' => User::REALNAME_BEFORE,
+                // No force_config = use session preference
+                'expected' => 'Doe John',
+            ],
+            [
+                'id' => 1,
+                'login' => 'jdoe',
+                'realname' => 'Doe',
+                'firstname' => 'John',
+                'force_config' => true,
+                'format' => User::FIRSTNAME_BEFORE,
+                'session_format_preference' => User::REALNAME_BEFORE,
+                // force_config = use format preference
+                'expected' => 'John Doe',
+            ],
+            [
+                'id' => 1,
+                'login' => 'asmith',
+                'realname' => null,
+                'firstname' => null,
+                'force_config' => false,
+                'format' => User::FIRSTNAME_BEFORE,
+                'session_format_preference' => User::FIRSTNAME_BEFORE,
+                'expected' => 'asmith',
+            ],
+            [
+                'id' => 1,
+                'login' => null,
+                'realname' => null,
+                'firstname' => null,
+                'force_config' => false,
+                'format' => User::REALNAME_BEFORE,
+                'session_format_preference' => User::REALNAME_BEFORE,
+                // No names or login shows ID only even if the is_ids_visible preference is false
+                'expected' => ' (1)',
+            ],
+            [
+                'id' => 1,
+                'login' => 'jsmith',
+                'realname' => 'Smith',
+                'firstname' => null,
+                'force_config' => false,
+                'format' => User::FIRSTNAME_BEFORE,
+                'session_format_preference' => User::FIRSTNAME_BEFORE,
+                'expected' => 'Smith',
+            ],
+            [
+                'id' => 1,
+                'login' => 'jsmith',
+                'realname' => null,
+                'firstname' => 'Smith',
+                'force_config' => false,
+                'format' => User::FIRSTNAME_BEFORE,
+                'session_format_preference' => User::FIRSTNAME_BEFORE,
+                // No realname = use login only
+                'expected' => 'jsmith',
+            ],
+            [
+                // Test when preference is a numeric string
+                'id' => 1,
+                'login' => 'jsmith',
+                'realname' => 'Smith',
+                'firstname' => 'John',
+                'force_config' => true,
+                'format' => (string) User::REALNAME_BEFORE,
+                'session_format_preference' => User::FIRSTNAME_BEFORE,
+                'expected' => 'Smith John',
+            ],
+            [
+                // Test when session format is used and is a numeric string
+                'id' => 1,
+                'login' => 'jsmith',
+                'realname' => 'Smith',
+                'firstname' => 'John',
+                'force_config' => false,
+                'format' => (string) User::FIRSTNAME_BEFORE,
+                'session_format_preference' => (string) User::REALNAME_BEFORE,
+                'expected' => 'Smith John',
+            ],
+            [
+                // Test when format is null that it defaults to REALNAME_BEFORE
+                'id' => 1,
+                'login' => 'jsmith',
+                'realname' => 'Smith',
+                'firstname' => 'John',
+                'force_config' => true,
+                'format' => null,
+                'session_format_preference' => User::FIRSTNAME_BEFORE,
+                'expected' => 'Smith John',
+            ],
+            [
+                // Test that when session format is null, that the CFG_GLPI format is used even if force_config is false
+                'id' => 1,
+                'login' => 'jsmith',
+                'realname' => 'Smith',
+                'firstname' => 'John',
+                'force_config' => false,
+                'format' => User::FIRSTNAME_BEFORE,
+                'session_format_preference' => null,
+                'expected' => 'John Smith',
+            ],
+        ];
+    }
+
+    #[DataProvider('formatUserNameProvider')]
+    public function testFormatUserName(
+        int $id,
+        ?string $login,
+        ?string $realname,
+        ?string $firstname,
+        bool $force_config,
+        string|int|null $format,
+        string|int|null $session_format_preference,
+        string $expected
+    ): void {
+        global $CFG_GLPI;
+
+        $instance = new \DbUtils();
+
+        if ($format !== null) {
+            $CFG_GLPI['names_format'] = $format;
+        }
+        if ($session_format_preference !== null) {
+            $_SESSION['glpinames_format'] = $session_format_preference;
+        } else {
+            unset($_SESSION['glpinames_format']);
+        }
+
+        $this->assertSame(
+            $expected,
+            $instance->formatUserName(ID: $id, login: $login, realname: $realname, firstname: $firstname, force_config: $force_config)
+        );
     }
 }
