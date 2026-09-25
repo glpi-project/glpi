@@ -1963,15 +1963,15 @@ class DocumentTest extends DbTestCase
         $this->login('glpi', 'glpi');
         $owner_id = \Session::getLoginUserID();
 
-        $privateDocument = new \Document();
-        $this->assertGreaterThan(0, $privateDocument->add([
+        $private_document = new \Document();
+        $this->assertGreaterThan(0, $private_document->add([
             'name'     => 'private itil document',
             'filename' => 'private_itil.txt',
             'users_id' => $owner_id,
         ]));
 
-        $publicDocument = new \Document();
-        $this->assertGreaterThan(0, $publicDocument->add([
+        $public_document = new \Document();
+        $this->assertGreaterThan(0, $public_document->add([
             'name'     => 'public itil document',
             'filename' => 'public_itil.txt',
             'users_id' => $owner_id,
@@ -1985,7 +1985,7 @@ class DocumentTest extends DbTestCase
 
         $document_item = new \Document_Item();
         $this->assertGreaterThan(0, $document_item->add([
-            'documents_id'      => $privateDocument->getID(),
+            'documents_id'      => $private_document->getID(),
             'items_id'          => $ticket->getID(),
             'itemtype'          => \Ticket::class,
             'is_private'        => 1,
@@ -1993,7 +1993,7 @@ class DocumentTest extends DbTestCase
             'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
         ]));
         $this->assertGreaterThan(0, (new \Document_Item())->add([
-            'documents_id'      => $publicDocument->getID(),
+            'documents_id'      => $public_document->getID(),
             'items_id'          => $ticket->getID(),
             'itemtype'          => \Ticket::class,
             'is_private'        => 0,
@@ -2016,14 +2016,14 @@ class DocumentTest extends DbTestCase
         ]));
 
         $itil_opts = ['itemtype' => \Ticket::class, 'items_id' => $ticket->getID()];
-        $this->assertTrue($publicDocument->canViewFile($itil_opts));
-        $this->assertTrue($publicDocument->canViewFile(['tickets_id' => $ticket->getID()]));
-        $this->assertFalse($privateDocument->canViewFile($itil_opts));
-        $this->assertFalse($privateDocument->canViewFile(['tickets_id' => $ticket->getID()]));
+        $this->assertTrue($public_document->canViewFile($itil_opts));
+        $this->assertTrue($public_document->canViewFile(['tickets_id' => $ticket->getID()]));
+        $this->assertFalse($private_document->canViewFile($itil_opts));
+        $this->assertFalse($private_document->canViewFile(['tickets_id' => $ticket->getID()]));
 
         // Granting SEEPRIVATE restores access to the private attachment.
         $_SESSION['glpiactiveprofile'][\Document::$rightname] = \Document_Item::SEEPRIVATE;
-        $this->assertTrue($privateDocument->canViewFile($itil_opts));
-        $this->assertTrue($privateDocument->canViewFile(['tickets_id' => $ticket->getID()]));
+        $this->assertTrue($private_document->canViewFile($itil_opts));
+        $this->assertTrue($private_document->canViewFile(['tickets_id' => $ticket->getID()]));
     }
 }
