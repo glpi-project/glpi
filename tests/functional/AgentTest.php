@@ -44,6 +44,7 @@ use Glpi\Inventory\Inventory;
 use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Tests\DbTestCase;
+use GuzzleHttp\Exception\ConnectException;
 use NetworkEquipment;
 
 use function Safe\json_decode;
@@ -825,7 +826,7 @@ XML;
         // The first guessed address (spaced hostname) produces a malformed URI.
         // The client must be created inside the loop so that failure is caught,
         // the loop moves to the IP address, and only a connection error remains.
-        $this->expectException(\GuzzleHttp\Exception\ConnectException::class);
+        $this->expectException(ConnectException::class);
         $agent->requestAgent('status');
     }
 }
