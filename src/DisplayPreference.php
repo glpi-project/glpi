@@ -290,8 +290,16 @@ class DisplayPreference extends CommonDBTM
             foreach ($iterator as $data) {
                 unset($data["id"]);
                 $data["users_id"] = $input["users_id"];
-                $this->fields     = $data;
-                $this->addToDB();
+                $DB->updateOrInsert(
+                    self::getTable(),
+                    $data,
+                    [
+                        'itemtype'  => $data['itemtype'],
+                        'users_id'  => $data['users_id'],
+                        'num'       => $data['num'],
+                        'interface' => $data['interface'],
+                    ]
+                );
             }
         } else {
             // No items in the global config
@@ -306,12 +314,21 @@ class DisplayPreference extends CommonDBTM
                         && ($key != 1)
                         && !$done
                     ) {
-                        $data["users_id"] = $input["users_id"];
-                        $data["itemtype"] = $input["itemtype"];
-                        $data["rank"]     = 1;
-                        $data["num"]      = $key;
-                        $this->fields     = $data;
-                        $this->addToDB();
+                        $data["users_id"]  = $input["users_id"];
+                        $data["itemtype"]  = $input["itemtype"];
+                        $data["rank"]      = 1;
+                        $data["num"]       = $key;
+                        $data["interface"] = $input["interface"] ?? 'central';
+                        $DB->updateOrInsert(
+                            self::getTable(),
+                            $data,
+                            [
+                                'itemtype'  => $data['itemtype'],
+                                'users_id'  => $data['users_id'],
+                                'num'       => $data['num'],
+                                'interface' => $data['interface'],
+                            ]
+                        );
                         $done = true;
                     }
                 }
