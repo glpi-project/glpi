@@ -44,6 +44,7 @@ export default class ItemtypeCommentPopover {
     constructor(container, info_card_selectors = []) {
         this.container = $(container);
         this.info_card_selectors = info_card_selectors;
+        this.requests = {};
         this.#initPopover();
         this.#initInfoCardHoverBehavior();
     }
@@ -99,19 +100,30 @@ export default class ItemtypeCommentPopover {
      * @param {number} items_id
      */
     attachTo(element, itemtype, items_id) {
-        const unique_id = `comment_popover_${itemtype}_${items_id}_${Math.floor(Math.random() * 1000000)}`;
+        const key = `${itemtype}_${items_id}`;
 
-        $.ajax({
-            url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
-            type: 'POST',
-            data: {
-                itemtype: itemtype,
-                value: items_id,
-            }
-        }).then((result) => {
-            // `result` is a safe HTML string
-            if (result) {
-                this.container.append(`<div id="${unique_id}" style="display: none;">${result}</div>`);
+        if (!this.requests[key]) {
+            const unique_id = `comment_popover_${itemtype}_${items_id}_${Math.floor(Math.random() * 1000000)}`;
+
+            this.requests[key] = $.ajax({
+                url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
+                type: 'POST',
+                data: {
+                    itemtype: itemtype,
+                    value: items_id,
+                }
+            }).then((result) => {
+                // `result` is a safe HTML string
+                if (result) {
+                    this.container.append(`<div id="${unique_id}" style="display: none;">${result}</div>`);
+                    return unique_id;
+                }
+                return null;
+            });
+        }
+
+        this.requests[key].then((unique_id) => {
+            if (unique_id) {
                 $(element).attr('data-glpi-popover-source', unique_id);
             }
         });
