@@ -304,7 +304,7 @@ final class ResourceAccessor
             try {
                 $header_dates[$header_name] = new DateTime($header_value);
             } catch (\Exception $e) {
-                throw new InvalidArgumentException(sprintf('Invalid value for %s header.', $header_name), previous: $e);
+                throw new InvalidArgumentException(sprintf('Invalid value for %s header.', $header_name), $e->getCode(), $e);
             }
         }
 
