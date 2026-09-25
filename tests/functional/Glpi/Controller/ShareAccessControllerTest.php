@@ -42,6 +42,7 @@ use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use User;
 
@@ -102,6 +103,24 @@ final class ShareAccessControllerTest extends DbTestCase
         $response = $controller->__invoke($request, $plain);
 
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
+    }
+
+    public function testAuthenticatedUserWithoutKnowbaseRightGetsSharedView(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
+
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
+        $request = Request::create('/Share/' . $plain, 'GET');
+        $response = (new ShareAccessController())->__invoke($request, $plain);
+
+        $this->assertNotInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString($kb->fields['name'], (string) $response->getContent());
     }
 
     public function testUnknownTokenIsRejected(): void

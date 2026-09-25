@@ -63,13 +63,13 @@ final class ShareAccessController extends AbstractController
         }
 
         // Authenticated user: redirect to normal item URL
-        if (Session::isAuthenticated()) {
+        if (Session::isAuthenticated() && $shared_item->can($shared_item->getID(), READ)) {
             $response = new RedirectResponse($shared_item->getItemUrl());
             $response->headers->set('Referrer-Policy', 'no-referrer');
             return $response;
         }
 
-        // Anonymous user: render the shared item into a sessionless state.
+        // Anonymous user, or no right on the item: render the shared item.
         $response = $this->render(
             $shared_item->getShareableViewTemplate(),
             $shared_item->getShareableViewParams(),

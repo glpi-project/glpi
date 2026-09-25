@@ -69,13 +69,47 @@ final class ShareableAccessTest extends DbTestCase
         $this->login();
         $kb = $this->createKnowbaseItem();
         $token = $this->createToken($kb);
-        $this->logOut();
+
+        // KB READ right, but no visibility on the article
+        $this->login('normal', 'normal');
+        $item = new KnowbaseItem();
+        $this->assertFalse($item->can($kb->getID(), READ));
+
+        $manager = new ShareTokenManager();
+        $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
+
+        $this->assertTrue($item->can($kb->getID(), READ));
+    }
+
+    public function testSharedAccessDoesNotGrantReadWithoutKnowbaseRight(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
 
         $manager = new ShareTokenManager();
         $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
 
         $item = new KnowbaseItem();
-        $this->assertTrue($item->can($kb->getID(), READ));
+        $this->assertFalse($item->can($kb->getID(), READ));
+    }
+
+    public function testSharedAccessDoesNotGrantReadToAnonymousUser(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+        $this->logOut();
+
+        $manager = new ShareTokenManager();
+        $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
+
+        // Anonymous user sees the shared view, not the item
+        $item = new KnowbaseItem();
+        $this->assertFalse($item->can($kb->getID(), READ));
     }
 
     public function testSharedAccessDoesNotGrantUpdate(): void
@@ -123,7 +157,7 @@ final class ShareableAccessTest extends DbTestCase
         $kb1 = $this->createKnowbaseItem();
         $kb2 = $this->createKnowbaseItem();
         $token = $this->createToken($kb1);
-        $this->logOut();
+        $this->login('normal', 'normal');
 
         $manager = new ShareTokenManager();
         $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
@@ -161,7 +195,7 @@ final class ShareableAccessTest extends DbTestCase
         $this->login();
         $kb = $this->createKnowbaseItem();
         $token = $this->createToken($kb);
-        $this->logOut();
+        $this->login('normal', 'normal');
 
         $manager = new ShareTokenManager();
         $validated = $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
