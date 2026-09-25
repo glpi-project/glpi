@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryValue;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
@@ -5152,8 +5153,12 @@ HTML;
                 $iterator_params = [
                     'SELECT'  => [
                         "$itemtable.*",
-                        new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName($relation_table . '.groups_id') . ') AS ' . $DB->quoteName('groups_ids')),
-                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
+                        QueryFunction::groupConcat(
+                            expression: new QueryIdentifier($relation_table . '.groups_id'),
+                            distinct: true,
+                            alias: 'groups_ids'
+                        ),
+                        new QueryExpression(new QueryValue($itemtype), 'itemtype'),
                     ],
                     'FROM'    => $itemtable,
                     'LEFT JOIN' => [
