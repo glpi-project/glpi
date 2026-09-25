@@ -6440,13 +6440,11 @@ HTML;
                     self::getTableField('is_deleted') => 0,
                     self::getTableField('is_active')  => 1,
                     self::getTableField('authtype')   => Auth::DB_GLPI,
-                    new QueryExpression(
-                        QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
-                            date: self::getTableField('password_last_update'),
-                            interval: $expiration_delay - $notice_time,
-                            interval_unit: 'DAY'
-                        )
-                    ),
+                    self::getTableField('password_last_update') => ['<', QueryFunction::dateSub(
+                        date: QueryFunction::now(),
+                        interval: new QueryValue($expiration_delay - $notice_time),
+                        interval_unit: 'DAY'
+                    )],
                     // Get only users that has not yet been notified within last day
                     'OR'                              => [
                         [Alert::getTableField('date') => null],
@@ -6525,13 +6523,11 @@ HTML;
                 'is_deleted' => 0,
                 'is_active'  => 1,
                 'authtype'   => Auth::DB_GLPI,
-                new QueryExpression(
-                    QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
-                        date: new QueryIdentifier('password_last_update'),
-                        interval: $expiration_delay + $lock_delay,
-                        interval_unit: 'DAY'
-                    )
-                ),
+                'password_last_update' => ['<', QueryFunction::dateSub(
+                    date: QueryFunction::now(),
+                    interval: new QueryValue($expiration_delay + $lock_delay),
+                    interval_unit: 'DAY'
+                )],
             ];
 
             $DB->delete('glpi_usertokens', [
@@ -7033,13 +7029,11 @@ HTML;
             'SELECT' => ['id', 'password_forget_token'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                new QueryExpression(
-                    QueryFunction::now() . ' < ' . QueryFunction::dateAdd(
-                        date: new QueryIdentifier('password_forget_token_date'),
-                        interval: $CFG_GLPI['password_init_token_delay'],
-                        interval_unit: 'SECOND'
-                    )
-                ),
+                'password_forget_token_date' => ['>', QueryFunction::dateSub(
+                    date: QueryFunction::now(),
+                    interval: new QueryValue($CFG_GLPI['password_init_token_delay']),
+                    interval_unit: 'SECOND'
+                )],
             ],
         ]);
 
