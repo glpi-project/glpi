@@ -1319,11 +1319,18 @@ HTML,
         $this->assertNotContains($grandchild->getID(), $ids);
     }
 
+    public static function helpdeskHiddenKnowbaseRightsProvider(): iterable
+    {
+        yield 'READ' => [READ];
+        yield 'READ + KNOWBASEADMIN' => [READ | KnowbaseItem::KNOWBASEADMIN];
+    }
+
     /**
-     * `getVisibilityCriteria()` keys on the READ right, never on the interface:
-     * a helpdesk profile holding READ must still find its articles.
+     * A central profile moved to helpdesk keeps KB rights that the helpdesk
+     * form does not show. Helpdesk must still show the FAQ only.
      */
-    public function testHelpdeskProfileWithReadRightSeesItsNonFaqArticles(): void
+    #[DataProvider('helpdeskHiddenKnowbaseRightsProvider')]
+    public function testHelpdeskProfileWithHiddenKnowbaseRightsSeesFaqOnly(int $rights): void
     {
         $glpi_user = getItemByTypeName('User', 'glpi', true);
         $this->login();
@@ -1331,9 +1338,10 @@ HTML,
 
         $profile = $this->createItem(Profile::class, [
             'name'      => __FUNCTION__ . '_profile',
-            'interface' => 'helpdesk',
+            'interface' => 'central',
         ]);
-        ProfileRight::updateProfileRights($profile->getID(), ['knowbase' => READ]);
+        ProfileRight::updateProfileRights($profile->getID(), ['knowbase' => $rights]);
+        $this->updateItem(Profile::class, $profile->getID(), ['interface' => 'helpdesk']);
 
         $user = $this->createItem(User::class, ['name' => __FUNCTION__ . '_user']);
         $this->createItem(Profile_User::class, [
@@ -1343,30 +1351,51 @@ HTML,
             'is_recursive' => 1,
         ]);
 
-        $article = $this->createItem(KnowbaseItem::class, [
-            'name'     => __FUNCTION__ . '_article',
-            'answer'   => __FUNCTION__ . '_article',
+        $shared = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_shared',
+            'answer'   => __FUNCTION__ . '_shared',
             'is_faq'   => 0,
             'users_id' => $glpi_user,
         ]);
         $this->createItem(KnowbaseItem_User::class, [
-            'knowbaseitems_id' => $article->getID(),
+            'knowbaseitems_id' => $shared->getID(),
+            'users_id'         => $user->getID(),
+        ]);
+        $owned = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_owned',
+            'answer'   => __FUNCTION__ . '_owned',
+            'is_faq'   => 0,
+            'users_id' => $user->getID(),
+        ]);
+        $faq = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_faq',
+            'answer'   => __FUNCTION__ . '_faq',
+            'is_faq'   => 1,
+            'users_id' => $glpi_user,
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $faq->getID(),
             'users_id'         => $user->getID(),
         ]);
 
         $this->login(__FUNCTION__ . '_user');
         Session::changeProfile($profile->getID());
         $this->assertSame('helpdesk', Session::getCurrentInterface());
-        $this->assertTrue(Session::haveRight(KnowbaseItem::$rightname, READ));
+        $this->assertTrue(Session::haveRight(KnowbaseItem::$rightname, $rights), 'the hidden rights survive the switch');
 
-        $item = new KnowbaseItem();
-        $this->assertTrue($item->can($article->getID(), READ), 'canViewItem admits it');
-        $this->assertContains($article->getID(), $this->getBrowseListRequestIds(), 'the list must agree with can()');
-
+        $list_ids = $this->getBrowseListRequestIds();
         $root = new KnowbaseItem();
         $this->assertTrue($root->getFromDB($root_id));
-        $ids = array_column($this->callPrivateMethod($root, 'getChildArticlesInfo'), 'id');
-        $this->assertContains($article->getID(), $ids);
+        $child_ids = array_column($this->callPrivateMethod($root, 'getChildArticlesInfo'), 'id');
+
+        foreach ([$shared, $owned] as $article) {
+            $this->assertFalse((new KnowbaseItem())->can($article->getID(), READ));
+            $this->assertNotContains($article->getID(), $list_ids);
+            $this->assertNotContains($article->getID(), $child_ids);
+        }
+
+        $this->assertTrue((new KnowbaseItem())->can($faq->getID(), READ));
+        $this->assertContains($faq->getID(), $list_ids);
     }
 
     /**

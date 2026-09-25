@@ -166,6 +166,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return self::canReadRoot();
         }
 
+        // Helpdesk shows the FAQ only, whatever rights the profile keeps.
+        if (!$this->fields['is_faq'] && Session::getCurrentInterface() === 'helpdesk') {
+            return false;
+        }
+
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
         }
@@ -878,8 +883,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         // Handle logged in users
-        // Keyed on the right, like `canViewItem()`.
-        $criteria['WHERE'] = !Session::haveRight(self::$rightname, READ)
+        // Helpdesk shows the FAQ only, like `canViewItem()`.
+        $criteria['WHERE'] = Session::getCurrentInterface() === 'helpdesk' || !Session::haveRight(self::$rightname, READ)
             ? self::getVisibilityCriteriaFAQ()
             : self::getVisibilityCriteriaKB();
         return $criteria;
