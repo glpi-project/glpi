@@ -38,20 +38,26 @@
 
 {% block dropdown_content %}
     <div data-glpi-form-editor-item-dropdown-advanced-configuration="{{ rand }}">
+        {% set root_items_id_options = {
+            'full_width'   : true,
+            'is_horizontal': false,
+            'init'         : question is not null ? true : false,
+        } %}
+        {# Entity: 0 is the root entity, use -1 as empty value #}
+        {% if itemtype == 'Entity' %}
+            {% set root_items_id_options = root_items_id_options|merge({
+                'display_emptychoice': false,
+                'toadd'              : {
+                    '-1': constant('Dropdown::EMPTY_VALUE'),
+                },
+            }) %}
+        {% endif %}
         {{ fields.dropdownField(
             itemtype,
             'extra_data[root_items_id]',
             root_items_id|default(0),
             __('Subtree root'),
-            {
-                'full_width'         : true,
-                'is_horizontal'      : false,
-                'init'               : question is not null ? true : false,
-                'display_emptychoice': false,
-                'toadd'              : {
-                    '-1': constant('Dropdown::EMPTY_VALUE')
-                }
-            }
+            root_items_id_options
         ) }}
         {{ fields.numberField(
             'extra_data[subtree_depth]',

@@ -36,7 +36,6 @@
     question.getEndUserInputName() ~ '[itemtype]',
     itemtype
 ) }}
-{# Define empty choice manually to handle root entity #}
 {% set dropdown_options = {
     'no_label'           : true,
     'right'              : 'all',
@@ -46,11 +45,16 @@
     'comments'           : false,
     'condition'          : dropdown_restriction_params,
     'nochecklimit'       : true,
-    'display_emptychoice': false,
-    'toadd'              : {
-        '-1': constant('Dropdown::EMPTY_VALUE'),
-    },
 } %}
+{# Entity: 0 is the root entity, use -1 as empty value #}
+{% if itemtype == 'Entity' %}
+    {% set dropdown_options = dropdown_options|merge({
+        'display_emptychoice': false,
+        'toadd'              : {
+            '-1': constant('Dropdown::EMPTY_VALUE'),
+        },
+    }) %}
+{% endif %}
 
 {# Display additional fields in dropdown: IDs for ITIL objects, serial/user for assets #}
 {% if displaywith is not empty %}
