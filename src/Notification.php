@@ -155,6 +155,8 @@ class Notification extends CommonDBTM implements FilterableInterface
     public const OLD_ASSIGN_GROUP                    = 46;
     //Notification to the assigned supplier previously in charge of the ticket
     public const OLD_ASSIGN_SUPPLIER                 = 47;
+    // Notification to the member just added to a project task team
+    public const NEW_TEAM_MEMBER                     = 48;
 
     // From CommonDBTM
     public bool $dohistory = true;
