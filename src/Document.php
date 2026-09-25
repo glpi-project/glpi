@@ -702,6 +702,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             Reminder::getVisibilityCriteria()
         );
 
+        $private_criteria = $this->getPrivateDocumentItemCriteria();
+        if ($private_criteria !== []) {
+            $criteria['WHERE'][] = $private_criteria;
+        }
+
         $result = $DB->request($criteria)->current();
         return $result['cpt'] > 0;
     }
@@ -757,9 +762,40 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             $request['WHERE'] += $visibilityCriteria['WHERE'];
         }
 
+        $private_criteria = $this->getPrivateDocumentItemCriteria();
+        if ($private_criteria !== []) {
+            $request['WHERE'][] = $private_criteria;
+        }
+
         $result = $DB->request($request)->current();
 
         return $result['cpt'] > 0;
+    }
+
+    /**
+     * Criteria that excludes private `glpi_documents_items` rows from file access
+     * checks, unless the current user may see private attachments (SEEPRIVATE
+     * right) or owns the row. Anonymous access only reaches public rows.
+     *
+     * @return array<string, mixed>
+     */
+    private function getPrivateDocumentItemCriteria(): array
+    {
+        if (Session::haveRight(self::$rightname, Document_Item::SEEPRIVATE)) {
+            return [];
+        }
+
+        $allowed = ['glpi_documents_items.is_private' => 0];
+        if (Session::getLoginUserID()) {
+            $allowed = [
+                'OR' => [
+                    'glpi_documents_items.is_private' => 0,
+                    'glpi_documents_items.users_id'   => Session::getLoginUserID(),
+                ],
+            ];
+        }
+
+        return $allowed;
     }
 
     /**
@@ -789,13 +825,19 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
+        $where = [
+            'documents_id' => $this->fields['id'],
+            'OR' => $conditions,
+        ];
+        $private_criteria = $this->getPrivateDocumentItemCriteria();
+        if ($private_criteria !== []) {
+            $where[] = $private_criteria;
+        }
+
         $result = $DB->request([
             'FROM'  => 'glpi_documents_items',
             'COUNT' => 'cpt',
-            'WHERE' => [
-                'documents_id' => $this->fields['id'],
-                'OR' => $conditions,
-            ],
+            'WHERE' => $where,
         ])->current();
 
         return $result['cpt'] > 0;
@@ -829,13 +871,19 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $itil->getFromDB($items_id);
 
+        $where = [
+            'documents_id' => $this->fields['id'],
+            $itil->getAssociatedDocumentsCriteria(),
+        ];
+        $private_criteria = $this->getPrivateDocumentItemCriteria();
+        if ($private_criteria !== []) {
+            $where[] = $private_criteria;
+        }
+
         $result = $DB->request([
             'FROM'  => Document_Item::getTable(),
             'COUNT' => 'cpt',
-            'WHERE' => [
-                'documents_id' => $this->fields['id'],
-                $itil->getAssociatedDocumentsCriteria(),
-            ],
+            'WHERE' => $where,
             'LIMIT' => 1, // Only need to see one result
         ])->current();
 
@@ -877,14 +925,20 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     {
         global $DB;
 
+        $where = [
+            'itemtype'     => $itemtype,
+            'items_id'     => $items_id,
+            'documents_id' => $this->getID(),
+        ];
+        $private_criteria = $this->getPrivateDocumentItemCriteria();
+        if ($private_criteria !== []) {
+            $where[] = $private_criteria;
+        }
+
         $result = $DB->request([
             'FROM'  => Document_Item::getTable(),
             'COUNT' => 'nb_of_linked_documents',
-            'WHERE' => [
-                'itemtype'     => $itemtype,
-                'items_id'     => $items_id,
-                'documents_id' => $this->getID(),
-            ],
+            'WHERE' => $where,
         ])->current();
 
         return $result['nb_of_linked_documents'] > 0;

@@ -1902,4 +1902,128 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($can_view_3);
         $this->assertFalse($can_view_4);
     }
+
+    /**
+     * A private `glpi_documents_items` row must not expose the file to a viewer
+     * who reaches it only through the linked item (here a KB article) unless the
+     * viewer holds SEEPRIVATE or owns the row.
+     */
+    public function testCanViewFilePrivateDocumentItemRespectsSeeprivate()
+    {
+        $this->login();
+        // Owner of the private link is the logged-in admin, not the "tech" viewer below.
+        $owner_id = \Session::getLoginUserID();
+
+        $document = $this->createItem(\Document::class, [
+            'name'     => __FUNCTION__,
+            'filename' => 'private_kb.txt',
+        ]);
+
+        $kb = $this->createItem(\KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => 'answer',
+            'is_faq' => 0,
+        ]);
+        // Make the article visible to the "tech" viewer so only the private flag
+        // gates the file access.
+        $this->createItem(\KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => getItemByTypeName('User', 'tech', true),
+        ]);
+
+        // Private link owned by the admin (not by the viewer below).
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb->getID(),
+            'is_private'   => 1,
+            'users_id'     => $owner_id,
+        ]);
+
+        // A user with KB read but no document SEEPRIVATE cannot download the file.
+        $this->login('tech', 'tech');
+        $this->assertNotEquals($owner_id, \Session::getLoginUserID());
+        $_SESSION['glpiactiveprofile'][\Document::$rightname]     = 0;
+        $_SESSION['glpiactiveprofile'][\KnowbaseItem::$rightname] = READ | \KnowbaseItem::READFAQ;
+        $this->assertFalse($document->canViewFile());
+
+        // Granting SEEPRIVATE restores access (legit ITIL private-attachment feature).
+        $_SESSION['glpiactiveprofile'][\Document::$rightname] = \Document_Item::SEEPRIVATE;
+        $this->assertTrue($document->canViewFile());
+    }
+
+    /**
+     * A private document attached to a ticket must not be downloadable through the
+     * ITIL file-access path (`canViewFileFromItilObject`) by a ticket viewer who
+     * lacks SEEPRIVATE and does not own the link. This is the path where private
+     * `glpi_documents_items` rows are actually created (ITIL timeline).
+     */
+    public function testCanViewFilePrivateItilDocumentRespectsSeeprivate()
+    {
+        $this->login('glpi', 'glpi');
+        $owner_id = \Session::getLoginUserID();
+
+        $private_document = new \Document();
+        $this->assertGreaterThan(0, $private_document->add([
+            'name'     => 'private itil document',
+            'filename' => 'private_itil.txt',
+            'users_id' => $owner_id,
+        ]));
+
+        $public_document = new \Document();
+        $this->assertGreaterThan(0, $public_document->add([
+            'name'     => 'public itil document',
+            'filename' => 'public_itil.txt',
+            'users_id' => $owner_id,
+        ]));
+
+        $ticket = new \Ticket();
+        $this->assertGreaterThan(0, $ticket->add([
+            'name'    => 'Ticket with private attachment',
+            'content' => 'content',
+        ]));
+
+        $document_item = new \Document_Item();
+        $this->assertGreaterThan(0, $document_item->add([
+            'documents_id'      => $private_document->getID(),
+            'items_id'          => $ticket->getID(),
+            'itemtype'          => \Ticket::class,
+            'is_private'        => 1,
+            'users_id'          => $owner_id,
+            'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+        ]));
+        $this->assertGreaterThan(0, (new \Document_Item())->add([
+            'documents_id'      => $public_document->getID(),
+            'items_id'          => $ticket->getID(),
+            'itemtype'          => \Ticket::class,
+            'is_private'        => 0,
+            'users_id'          => $owner_id,
+            'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+        ]));
+
+        // A ticket observer (can READ the ticket) without SEEPRIVATE and not the
+        // link owner: sees the public attachment but NOT the private one.
+        $this->login('post-only', 'postonly');
+        $this->assertNotEquals($owner_id, \Session::getLoginUserID());
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]   = READ;
+        $_SESSION['glpiactiveprofile'][\Document::$rightname] = 0;
+
+        $ticket_user = new \Ticket_User();
+        $this->assertGreaterThan(0, $ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'type'       => \CommonITILActor::OBSERVER,
+            'users_id'   => \Session::getLoginUserID(),
+        ]));
+
+        $itil_opts = ['itemtype' => \Ticket::class, 'items_id' => $ticket->getID()];
+        $this->assertTrue($public_document->canViewFile($itil_opts));
+        $this->assertTrue($public_document->canViewFile(['tickets_id' => $ticket->getID()]));
+        $this->assertFalse($private_document->canViewFile($itil_opts));
+        $this->assertFalse($private_document->canViewFile(['tickets_id' => $ticket->getID()]));
+
+        // Granting SEEPRIVATE restores access to the private attachment.
+        $_SESSION['glpiactiveprofile'][\Document::$rightname] = \Document_Item::SEEPRIVATE;
+        $this->assertTrue($private_document->canViewFile($itil_opts));
+        $this->assertTrue($private_document->canViewFile(['tickets_id' => $ticket->getID()]));
+    }
 }

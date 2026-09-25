@@ -820,4 +820,48 @@ class Document_ItemTest extends DbTestCase
         ];
         $this->assertFalse($doc2->can(-1, CREATE, $input2));
     }
+
+    /**
+     * A user without document rights must not be able to link a document by
+     * setting `is_private` + `users_id`. `is_private` is a visibility flag here,
+     * so it must not trigger the CommonDBTM::can() owner shortcut that skips
+     * canCreate()/canCreateItem().
+     *
+     * @see Document_Item::isPrivate()
+     */
+    public function testPrivateFlagDoesNotBypassCreateRights()
+    {
+        $this->login();
+
+        $kb_id = $this->createItem(\KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => 'answer',
+            'is_faq' => 0,
+        ])->getID();
+
+        $doc_id = $this->createItem(\Document::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        // Session with no rights at all on documents.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile'][\Document::$rightname] = 0;
+
+        $base_input = [
+            'documents_id' => $doc_id,
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb_id,
+        ];
+
+        // Baseline: creation is refused without any document right.
+        $this->assertFalse((new Document_Item())->can(-1, CREATE, $base_input));
+
+        // The `is_private` + `users_id` shortcut must NOT grant creation.
+        $private_input = $base_input + [
+            'is_private' => 1,
+            'users_id'   => \Session::getLoginUserID(),
+        ];
+        $this->assertFalse((new Document_Item())->can(-1, CREATE, $private_input));
+    }
 }
