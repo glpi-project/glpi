@@ -303,7 +303,7 @@ final class ResourceAccessor
 
             try {
                 $header_dates[$header_name] = new DateTime($header_value);
-            } catch (\DateMalformedStringException $e) {
+            } catch (\Exception $e) {
                 throw new InvalidArgumentException(sprintf('Invalid value for %s header.', $header_name), previous: $e);
             }
         }
