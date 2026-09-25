@@ -51,12 +51,12 @@ final class KnowbaseItem_RevisionTest extends DbTestCase
     public function testGetTypeName()
     {
         $expected = 'Revision';
-        $this->assertSame($expected, \KnowbaseItem_Revision::getTypeName(1));
+        $this->assertSame($expected, KnowbaseItem_Revision::getTypeName(1));
 
         $expected = 'Revisions';
-        $this->assertSame($expected, \KnowbaseItem_Revision::getTypeName(0));
-        $this->assertSame($expected, \KnowbaseItem_Revision::getTypeName(2));
-        $this->assertSame($expected, \KnowbaseItem_Revision::getTypeName(10));
+        $this->assertSame($expected, KnowbaseItem_Revision::getTypeName(0));
+        $this->assertSame($expected, KnowbaseItem_Revision::getTypeName(2));
+        $this->assertSame($expected, KnowbaseItem_Revision::getTypeName(10));
     }
 
     public function testNewRevision()
