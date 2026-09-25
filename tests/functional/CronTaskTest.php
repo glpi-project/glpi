@@ -354,6 +354,44 @@ class CronTaskTest extends DbTestCase
         $this->assertStringContainsString(__('As soon as possible'), $html);
     }
 
+    public static function manualExecutionStateProvider(): iterable
+    {
+        yield 'disabled task stays disabled' => [
+            'initial_state'  => \CronTask::STATE_DISABLE,
+            'error_count'    => 0,
+            'expected_state' => \CronTask::STATE_DISABLE,
+        ];
+        yield 'task in error goes back to waiting' => [
+            'initial_state'  => \CronTask::STATE_ERROR,
+            'error_count'    => \CronTask::MAX_ERROR_COUNT,
+            'expected_state' => \CronTask::STATE_WAITING,
+        ];
+        yield 'aborted task goes back to waiting' => [
+            'initial_state'  => \CronTask::STATE_ABORTED,
+            'error_count'    => 0,
+            'expected_state' => \CronTask::STATE_WAITING,
+        ];
+    }
+
+    #[DataProvider('manualExecutionStateProvider')]
+    public function testManualExecutionState(int $initial_state, int $error_count, int $expected_state): void
+    {
+        $crontask = new \CronTask();
+        $this->assertTrue($crontask->getFromDBbyName(\CronTask::class, 'graph'));
+        $this->updateItem(\CronTask::class, $crontask->getID(), [
+            'state'       => $initial_state,
+            'error_count' => $error_count,
+            'allowmode'   => \CronTask::MODE_INTERNAL | \CronTask::MODE_EXTERNAL,
+        ]);
+
+        // Manual execution, as done from the crontask form
+        $this->assertSame('graph', \CronTask::launch(-\CronTask::MODE_INTERNAL, 1, 'graph'));
+
+        $this->assertTrue($crontask->getFromDB($crontask->getID()));
+        $this->assertSame($expected_state, $crontask->fields['state']);
+        $this->assertSame(0, $crontask->fields['error_count']);
+    }
+
     public function testDuplicateCronTaskName()
     {
         global $DB;
