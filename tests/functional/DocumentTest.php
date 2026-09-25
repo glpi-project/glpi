@@ -39,6 +39,7 @@ use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -1897,5 +1898,79 @@ class DocumentTest extends DbTestCase
         // are not linked to the form he is allowed to see.
         $this->assertFalse($can_view_3);
         $this->assertFalse($can_view_4);
+    }
+
+    public static function formFileQuestionSubmitterProvider(): array
+    {
+        return [
+            'authenticated user' => ['anonymous' => false],
+            'anonymous user'     => ['anonymous' => true],
+        ];
+    }
+
+    #[DataProvider('formFileQuestionSubmitterProvider')]
+    public function testFormFileQuestionDoesNotDuplicateDocument(bool $anonymous): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $root_entities_id = $this->getTestRootEntity(only_id: true);
+        $child_entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+
+        // Define a default heading (category) for documents attached to tickets
+        $document_category = $this->createItem(DocumentCategory::class, ['name' => 'Default Category']);
+        $CFG_GLPI['documentcategories_id_forticket'] = $document_category->getID();
+
+        $builder = new FormBuilder();
+        $builder->setEntitiesId($child_entities_id);
+        $builder->addQuestion('Attachment', QuestionTypeFile::class);
+        $form = $this->createForm($builder);
+        $question_id = $this->getQuestionId($form, 'Attachment');
+
+        if ($anonymous) {
+            $this->logOut();
+            $expected_entities_id = 0;
+        } else {
+            $this->assertTrue(\Session::changeActiveEntities($root_entities_id, false));
+            $expected_entities_id = $root_entities_id;
+        }
+
+        $prefix = 'testFormFileQuestionDoesNotDuplicateDocument';
+        $tag = \Rule::getUuid();
+        $filename = $prefix . 'foo.txt';
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $_POST['_prefix_answers_' . $question_id] = $prefix;
+
+        $ticket = $this->sendFormAndGetCreatedTicket(
+            $form,
+            ['Attachment' => [$filename]],
+            ['filename' => [$filename], 'prefix' => [$prefix], 'tag' => [$tag]],
+        );
+        unset($_POST['_prefix_answers_' . $question_id]);
+
+        $this->assertEquals($expected_entities_id, (int) $ticket->fields['entities_id']);
+
+        $sha1sum = sha1_file(FIXTURE_DIR . '/uploads/foo.txt');
+        $document = new \Document();
+        $documents = $document->find([
+            'sha1sum' => $sha1sum,
+        ]);
+
+        $this->assertCount(
+            1,
+            $documents,
+            'Submitting a form file question must not create a duplicate, orphaned Document.'
+        );
+
+        $document = current($documents);
+
+        $docitem = new \Document_Item();
+        $this->assertTrue($docitem->getFromDBByCrit([
+            'documents_id' => $document['id'],
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ]));
+        $this->assertEquals(\Session::getActiveEntity(), (int) $document['entities_id']);
     }
 }
