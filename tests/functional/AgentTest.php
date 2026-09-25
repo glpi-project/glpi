@@ -44,6 +44,7 @@ use Glpi\Inventory\Inventory;
 use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Tests\DbTestCase;
+use GuzzleHttp\Exception\ConnectException;
 use NetworkEquipment;
 
 use function Safe\json_decode;
@@ -778,5 +779,57 @@ XML;
         $this->assertTrue($agent->getFromDB($agent->getID()));
         $this->assertSame(Computer::class, $agent->fields['itemtype']);
         $this->assertSame($computer->getID(), $agent->fields['items_id']);
+    }
+
+    public function testRequestAgentWithSpacesInComputerName(): void
+    {
+        global $DB;
+
+        $computer = $this->createItem(
+            Computer::class,
+            [
+                'name'        => 'Computer name with spaces - Model',
+                'entities_id' => $this->getTestRootEntity(only_id: true),
+            ]
+        );
+
+        // Give the computer a second guessed address (an IP) so the request loop
+        // must fall through to it after the invalid spaced hostname.
+        $networkPort = new \NetworkPort();
+        $this->assertGreaterThan(
+            0,
+            $networkPort->add([
+                'name'                       => 'eth0',
+                'itemtype'                   => Computer::class,
+                'items_id'                   => $computer->getID(),
+                'instantiation_type'         => 'NetworkPortEthernet',
+                'logical_number'             => 0,
+                'items_devicenetworkcards_id' => 0,
+                '_create_children'           => 1,
+                'NetworkName_name'           => '',
+                'NetworkName_fqdns_id'       => 0,
+                'NetworkName__ipaddresses'   => ['-1' => '127.0.0.2'],
+            ])
+        );
+
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents_id = (new \Agent())->add([
+            'name'          => 'computer-agent-device',
+            'deviceid'      => 'computer-agent-device',
+            'itemtype'      => Computer::class,
+            'items_id'      => $computer->getID(),
+            'agenttypes_id' => $agenttype['id'],
+            'port'          => 62354,
+        ]);
+        $this->assertGreaterThan(0, $agents_id);
+
+        $agent = new \Agent();
+        $this->assertTrue($agent->getFromDB($agents_id));
+
+        // The first guessed address (spaced hostname) produces a malformed URI.
+        // The client must be created inside the loop so that failure is caught,
+        // the loop moves to the IP address, and only a connection error remains.
+        $this->expectException(ConnectException::class);
+        $agent->requestAgent('status');
     }
 }
