@@ -2821,7 +2821,7 @@ class UserTest extends DbTestCase
         global $DB;
 
         $db_mock = $this->createMock(DBmysql::class);
-        $db_mock->expects($this->never())->method('doQuery');
+        $db_mock->expects($this->never())->method('getVersion');
 
         $original_db = $DB;
         $DB = $db_mock;
@@ -2840,7 +2840,7 @@ class UserTest extends DbTestCase
         global $DB;
 
         $db_mock = $this->createMock(DBmysql::class);
-        $db_mock->expects($this->once())->method('doQuery')->with('SELECT 1');
+        $db_mock->expects($this->once())->method('getVersion');
 
         $original_db = $DB;
         $DB = $db_mock;

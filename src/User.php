@@ -2407,7 +2407,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return $last_db_activity;
         }
 
-        $DB->doQuery('SELECT 1');
+        $DB->getVersion();
         return time();
     }
 
