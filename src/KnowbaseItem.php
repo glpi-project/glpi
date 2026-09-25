@@ -82,7 +82,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public const PUBLISHFAQ    = 4096;
     public const COMMENTS      = 8192;
 
-    // Special value meaning "no parent filter applied" (see `getListRequest()`/`showList()`).
+    /**
+     * Special value meaning "no parent filter applied" (see `getListRequest()`/`showList()`).
+     *
+     * @deprecated 12.0.0
+     */
     public const int SEEALL = -1;
 
     public static string $rightname   = 'knowbase';
@@ -161,13 +165,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canViewItem(): bool
     {
-        // The root article is the entry point of the knowledge base: everyone
-        // allowed to read the knowledge base, administrators included, can view
-        // it, it has no visibility rules of its own. FAQ-only readers are not
-        // concerned: the root article is not part of the FAQ, see
-        // `getVisibilityCriteriaFAQ()` and `prepareInputForUpdate()`.
+        global $CFG_GLPI;
+
+        // The root article is the knowledge base entry point and the FAQ home
+        // page. It is admitted by its id, never by `is_faq`, which stays 0.
         if ($this->isRoot()) {
-            return Session::haveRightsOr(self::$rightname, [READ, self::KNOWBASEADMIN]);
+            if (Session::getLoginUserID() === false) {
+                return (bool) $CFG_GLPI['use_public_faq'];
+            }
+
+            return Session::haveRightsOr(
+                self::$rightname,
+                [READ, self::READFAQ, self::KNOWBASEADMIN]
+            );
         }
 
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
@@ -947,6 +957,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $where[self::getTable() . '.is_faq'] = 1;
         }
 
+        // The root arm stays outside `$where`, which seeds the inheritance term:
+        // the root must not lend its visibility to every article below it.
+        $root_id = self::getConfiguredRootId();
+        $can_read_root = Session::getLoginUserID() === false
+            || Session::haveRightsOr(self::$rightname, [READ, self::READFAQ, self::KNOWBASEADMIN]);
+        if ($root_id > 0 && $can_read_root) {
+            return [
+                'OR' => [
+                    [self::getTableField('id') => $root_id],
+                    $where,
+                ],
+            ];
+        }
+
         return $where;
     }
 
@@ -1182,9 +1206,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         // The root article is the entry point of the knowledge base, not a
-        // piece of content to publish. Listing it in the FAQ or in the service
-        // catalog would offer it to readers that are not allowed to open it,
-        // down to anonymous users on a public FAQ, see `canViewItem()`.
+        // piece of content to publish. Its `is_faq` stays 0: the FAQ admits it
+        // by its id, and the service catalog must not list it at all.
         if ($this->isRoot()) {
             unset($input['is_faq'], $input['show_in_service_catalog']);
         }
@@ -1651,6 +1674,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
+     * The nearest readable descendants: each readable direct child, or the
+     * readable articles below it when it is not readable itself.
+     *
      * @return list<array{
      *      'id': int,
      *      'name': string,
@@ -1659,6 +1685,61 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * }>
      */
     private function getChildArticlesInfo(): array
+    {
+        global $DB;
+
+        // The set the aside lists, and it decides here too: in the helpdesk
+        // interface a non-FAQ article stays out, even from its author.
+        $visible_criteria = self::getListRequest([], 'browse');
+        $visible_criteria['SELECT'] = self::getTableField('id');
+        $visible = [];
+        foreach ($DB->request($visible_criteria) as $row) {
+            $visible[(int) $row['id']] = true;
+        }
+
+        $children = [];
+        $visited  = [$this->fields['id'] => true];
+        $frontier = [$this->fields['id']];
+        $child    = new self();
+
+        while ($frontier !== []) {
+            $next_frontier = [];
+            foreach ($this->getDirectChildIds($frontier) as $child_id) {
+                if (isset($visited[$child_id])) {
+                    continue; // already resolved through another branch
+                }
+                $visited[$child_id] = true;
+
+                if (isset($visible[$child_id]) && $child->can($child_id, READ)) {
+                    $children[] = [
+                        'id'           => $child_id,
+                        'name'         => $child->getName(),
+                        'illustration' => $child->fields['illustration'] ?? '',
+                        'link_url'     => self::getFormURLWithID($child_id),
+                    ];
+                    continue; // readable: stop this branch here
+                }
+
+                // Not readable: look for readable articles among its own children.
+                $next_frontier[] = $child_id;
+            }
+            $frontier = $next_frontier;
+        }
+
+        usort($children, static fn(array $a, array $b): int => strnatcasecmp($a['name'], $b['name']));
+
+        return $children;
+    }
+
+    /**
+     * Direct children (by link) of every article in `$parent_ids`, in one query.
+     * No validity window: it belongs on the results, not on these hops.
+     *
+     * @param int[] $parent_ids
+     *
+     * @return int[]
+     */
+    private function getDirectChildIds(array $parent_ids): array
     {
         global $DB;
 
@@ -1674,44 +1755,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             ],
             'WHERE'      => [
-                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $this->fields['id'],
+                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $parent_ids,
             ],
-            'ORDER'      => [self::getTableField('name') . ' ASC'],
         ];
 
-        // can() ignores the validity window, so apply it here exactly as getListRequest() does.
-        if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    [self::getTableField('begin_date') => null],
-                    [self::getTableField('begin_date') => ['<', QueryFunction::now()]],
-                ],
-            ];
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    [self::getTableField('end_date') => null],
-                    [self::getTableField('end_date') => ['>', QueryFunction::now()]],
-                ],
-            ];
+        $ids = [];
+        foreach ($DB->request($criteria) as $row) {
+            $ids[] = (int) $row['id'];
         }
 
-        $children = [];
-        $child = new self();
-        $rows = $DB->request($criteria);
-        foreach ($rows as $row) {
-            $child_id = (int) $row['id'];
-            if (!$child->can($child_id, READ)) {
-                continue;
-            }
-            $children[] = [
-                'id'           => $child_id,
-                'name'         => $child->getName(),
-                'illustration' => $child->fields['illustration'] ?? '',
-                'link_url'     => self::getFormURLWithID($child_id),
-            ];
-        }
-
-        return $children;
+        return $ids;
     }
 
     /** @return array<EditorAction|EditorActionSeparator> */
@@ -2005,9 +2058,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * @param array $options   $_GET
      *
      * @return void
+     *
+     * @deprecated 12.0.0
      */
     public function searchForm($options)
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         if (
@@ -2070,7 +2127,7 @@ TWIG, $twig_params);
      *
      * @since 0.83
      *
-     * @param array $params (contains, knowbaseitems_id_parent, faq)
+     * @param array $params (contains, faq, and the deprecated knowbaseitems_id_parent)
      * @param string $type search type : browse / search (default search)
      *
      * @return array : SQL request
@@ -2081,9 +2138,16 @@ TWIG, $twig_params);
 
         $params = array_replace([
             'contains' => '',
-            'knowbaseitems_id_parent' => self::SEEALL,
+            'knowbaseitems_id_parent' => self::SEEALL, // @phpstan-ignore classConstant.deprecated
             'faq' => false,
         ], $params);
+
+        if (!in_array($params['knowbaseitems_id_parent'], [null, self::SEEALL], true)) { // @phpstan-ignore classConstant.deprecated
+            Toolbox::deprecated('Usage of the `knowbaseitems_id_parent` parameter is deprecated.');
+        }
+        if (in_array($type, ['allmy', 'myunpublished', 'allunpublished', 'allpublished'], true)) {
+            Toolbox::deprecated(sprintf('Usage of the `%s` type is deprecated.', $type));
+        }
 
         $params = self::forceFaqForRightsLessReaders($params);
 
@@ -2131,23 +2195,44 @@ TWIG, $twig_params);
                 } else {
                     // Anonymous access
                     if (Session::isMultiEntitiesMode()) {
-                        $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = 0;
-                        $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
+                        $anonymous_entity_where = [
+                            'glpi_entities_knowbaseitems.entities_id'  => 0,
+                            'glpi_entities_knowbaseitems.is_recursive' => 1,
+                        ];
+
+                        // The root article has no visibility row of its own.
+                        $root_id = self::getConfiguredRootId();
+                        if ($root_id > 0) {
+                            $criteria['WHERE'][] = [
+                                'OR' => [
+                                    [self::getTableField('id') => $root_id],
+                                    $anonymous_entity_where,
+                                ],
+                            ];
+                        } else {
+                            $criteria['WHERE'][] = $anonymous_entity_where;
+                        }
                     }
                 }
                 break;
         }
 
         if ($params['faq']) { // helpdesk
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    'glpi_knowbaseitems.is_faq' => 1,
-                    'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
-                ],
+            $faq_where = [
+                'glpi_knowbaseitems.is_faq' => 1,
+                'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
             ];
+
+            // The root article is admitted by its id, because `is_faq` stays 0.
+            $root_id = self::getConfiguredRootId();
+            if ($root_id > 0) {
+                $faq_where[] = [self::getTableField('id') => $root_id];
+            }
+
+            $criteria['WHERE'][] = ['OR' => $faq_where];
         }
 
-        if ($params['knowbaseitems_id_parent'] !== self::SEEALL) {
+        if ($params['knowbaseitems_id_parent'] !== self::SEEALL) { // @phpstan-ignore classConstant.deprecated
             $criteria['LEFT JOIN'][KnowbaseItem_KnowbaseItem::getTable()] = [
                 'FKEY' => [
                     KnowbaseItem_KnowbaseItem::getTable() => 'knowbaseitems_id',
@@ -2422,9 +2507,13 @@ TWIG, $twig_params);
      * @param string $type search type : browse / search (default search)
      *
      * @return void
+     *
+     * @deprecated 12.0.0
      */
     public static function showList($options, $type = 'search')
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         $DBread = DBConnection::getReadConnection();
@@ -2688,9 +2777,13 @@ TWIG, $twig_params);
      * @param bool   $display if false, return html
      *
      * @return void|string
+     *
+     * @deprecated 12.0.0
      **/
     public static function showRecentPopular(string $type = "", bool $display = true)
     {
+        Toolbox::deprecated();
+
         global $DB;
 
         $faq = !Session::haveRight(self::$rightname, READ);

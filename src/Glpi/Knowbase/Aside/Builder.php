@@ -41,12 +41,8 @@ use KnowbaseItem_KnowbaseItem;
  * Builds the aside article tree from the set of articles the current user
  * may see.
  *
- * The hierarchy is NOT a naive `knowbaseitems_id_parent` walk: an article
- * visible to the user may have all of its parents invisible to them (e.g. a
- * closed-by-default migrated category). Such an article must still surface
- * somewhere in the tree, so it is "promoted" to the root level whenever none
- * of its parents are themselves visible. An article with several visible
- * parents appears under each of them.
+ * An article whose direct parent is invisible attaches to its nearest visible
+ * ancestor, or becomes a root if it has none. Ties each get a copy.
  */
 final class Builder
 {
@@ -59,13 +55,13 @@ final class Builder
     /** @var array<int, array<string, mixed>> Visible articles, id => row */
     private array $data = [];
 
-    /** @var array<int, int[]> parent_id => visible child ids */
+    /** @var array<int, int[]> ancestor_id => visible article ids attached to it */
     private array $children_of = [];
 
-    /** @var array<int, int[]> child_id => visible parent ids */
+    /** @var array<int, int[]> child_id => nearest visible ancestor ids */
     private array $parents_of = [];
 
-    /** @var array<int, true> Visible articles with no visible parent */
+    /** @var array<int, true> Visible articles with no visible ancestor at all */
     private array $roots = [];
 
     /**
@@ -161,25 +157,107 @@ final class Builder
             return;
         }
 
-        // 2) Visible parent-> [visible children] adjacency, and the reverse.
-        $has_visible_parent = [];
+        // 2) The full child graph: the walk needs the invisible links too.
+        $raw_children_of = [];
         foreach ($DB->request(['FROM' => KnowbaseItem_KnowbaseItem::getTable()]) as $link) {
             $child  = (int) $link['knowbaseitems_id'];
             $parent = (int) $link['knowbaseitems_id_parent'];
-            if (!isset($this->data[$child], $this->data[$parent])) {
-                continue; // one of the ends is not visible to the current user
-            }
-            $this->children_of[$parent][] = $child;
-            $this->parents_of[$child][] = $parent;
-            $has_visible_parent[$child] = true;
+            $raw_children_of[$parent][] = $child;
         }
 
-        // 3) Roots = visible articles with no visible parent (promote-to-root).
+        // 3) Attach each article to its nearest visible ancestor, or make it a root.
+        $attached = $this->findNearestVisibleAncestors($raw_children_of);
         foreach (array_keys($this->data) as $id) {
-            if (!isset($has_visible_parent[$id])) {
+            $ancestors = $attached[$id] ?? [];
+            unset($ancestors[$id]); // a cycle can make an article its own ancestor
+            if ($ancestors === []) {
                 $this->roots[$id] = true;
+                continue;
+            }
+            foreach (array_keys($ancestors) as $ancestor_id) {
+                $this->children_of[$ancestor_id][] = $id;
+                $this->parents_of[$id][] = $ancestor_id;
             }
         }
+
+        // 4) A cycle reaches no root: promote what the walk left out.
+        $reached = [];
+        foreach (array_keys($this->roots) as $id) {
+            $this->markReachable($id, $reached);
+        }
+        foreach (array_keys($this->data) as $id) {
+            if (isset($reached[$id])) {
+                continue;
+            }
+            $this->roots[$id] = true;
+            $this->markReachable($id, $reached);
+        }
+    }
+
+    /**
+     * @param array<int, true> $reached
+     */
+    private function markReachable(int $id, array &$reached): void
+    {
+        $stack = [$id];
+        while ($stack !== []) {
+            $current = array_pop($stack);
+            if (isset($reached[$current])) {
+                continue;
+            }
+            $reached[$current] = true;
+            foreach ($this->children_of[$current] ?? [] as $child_id) {
+                $stack[] = $child_id;
+            }
+        }
+    }
+
+    /**
+     * For every visible article, the visible ancestors that reach it with the
+     * fewest hops down, ties included. Breadth-first from every visible article
+     * at once; a visible article stops the walk, a cycle is an article seen twice.
+     *
+     * @param array<int, int[]> $raw_children_of parent_id => every child id, visible or not
+     *
+     * @return array<int, array<int, true>> visible article id => ancestor ids
+     */
+    private function findNearestVisibleAncestors(array $raw_children_of): array
+    {
+        $frontier = [];
+        foreach (array_keys($this->data) as $id) {
+            $frontier[$id] = [$id => true]; // seeds itself, to carry its id down
+        }
+        $walked = array_fill_keys(array_keys($frontier), true); // expand once: the first hop wins
+
+        $attached = [];
+        $attached_at = [];
+        $hops = 0;
+        while ($frontier !== []) {
+            $hops++;
+            $next = [];
+            foreach ($frontier as $id => $ancestors) {
+                foreach ($raw_children_of[$id] ?? [] as $child_id) {
+                    if (isset($this->data[$child_id])) {
+                        $attached_at[$child_id] ??= $hops;
+                        if ($attached_at[$child_id] === $hops) {
+                            $attached[$child_id] = ($attached[$child_id] ?? []) + $ancestors; // tie
+                        }
+                        continue;
+                    }
+                    if (isset($walked[$child_id])) {
+                        if (isset($next[$child_id])) {
+                            $next[$child_id] += $ancestors; // tie
+                        }
+                        continue;
+                    }
+                    $walked[$child_id] = true;
+                    $next[$child_id] = $ancestors;
+                }
+            }
+            $frontier = $next;
+        }
+
+        return $attached;
     }
 
     /**

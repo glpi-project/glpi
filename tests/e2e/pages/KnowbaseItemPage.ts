@@ -156,6 +156,17 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * The helpdesk FAQ entry point, which lands on the root article.
+     */
+    public async gotoFaqHome(): Promise<void>
+    {
+        await this.page.goto(
+            '/front/helpdesk.faq.php',
+            { waitUntil: 'domcontentloaded' }
+        );
+    }
+
+    /**
      * The article header's dots menu trigger, scoped to avoid other "More
      * actions" menus (aside rows, comments); `.first()` picks the header's.
      */
@@ -349,13 +360,13 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * A button inside an aside tree article row's (lazy) actions menu,
-     * addressed by its data-glpi-kb-action (e.g. 'TOGGLE_FAVORITE').
+     * A button inside an aside tree article row's (lazy) actions menu, hidden
+     * until the dropdown opens.
      */
-    public getAsideArticleActionsMenuButton(id: number, action: string): Locator
+    public getAsideArticleActionsMenuButton(id: number, name: string): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- no accessible role while the dropdown is closed
-        return this.getAsideArticleActionsMenu(id).locator(`button[data-glpi-kb-action="${action}"]`);
+        return this.getAsideArticleActionsMenu(id)
+            .getByRole('button', { name, includeHidden: true });
     }
 
     public async doToggleAsideFavorite(id: number): Promise<void>
