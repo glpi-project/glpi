@@ -44,7 +44,7 @@ use PhpCsFixer\Finder;
  */
 return static fn(Finder $finder): Config => (new Config())
     ->setRules([
-        '@PER-CS' => true,
+        '@PER-CS3x0' => true,
         'fully_qualified_strict_types' => ['import_symbols' => true],
         'ordered_imports' => ['imports_order' => ['class', 'const', 'function']],
         'no_unused_imports' => true,
