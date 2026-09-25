@@ -402,6 +402,7 @@ class CoreControllerTest extends HLAPITestCase
             'client_id'             => $client->fields['identifier'],
             'redirect_uri'          => '/api.php/oauth2/redirection',
             'scope'                 => 'user',
+            'state'                 => 'xyzABC123',
             'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cU',
             'code_challenge_method' => 'S256',
         ]);
@@ -415,6 +416,7 @@ class CoreControllerTest extends HLAPITestCase
                     $redirect_target = urldecode(explode('redirect=', $location, 2)[1]);
                     $this->assertStringContainsString('code_challenge=', $redirect_target);
                     $this->assertStringContainsString('code_challenge_method=', $redirect_target);
+                    $this->assertStringContainsString('state=', $redirect_target);
                 });
         }, false);
     }

@@ -670,6 +670,9 @@ HTML;
                     $redirect_params['code_challenge'] = $auth_request->getCodeChallenge();
                     $redirect_params['code_challenge_method'] = $auth_request->getCodeChallengeMethod();
                 }
+                if ($auth_request->getState() !== null) {
+                    $redirect_params['state'] = $auth_request->getState();
+                }
                 $redirect_uri = $CFG_GLPI['url_base']
                     . '/api.php/v2'
                     . $this->getAPIPathForRouteFunction(self::class, 'authorize')
