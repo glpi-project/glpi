@@ -2519,6 +2519,41 @@ class AuthLdapTest extends DbTestCase
         );
     }
 
+    #[RequiresPhpExtension('ldap')]
+    public function testGetFromLDAPGroupDiscretCachedCollectsMembersAcrossPages(): void
+    {
+        $auth = $this->createItem(AuthLDAP::class, [
+            'name'   => $this->getUniqueString(),
+            'host'   => 'openldap',
+            'basedn' => 'dc=glpi,dc=org',
+        ]);
+        $group_id = $this->createItem(Group::class, [
+            'name'          => __FUNCTION__,
+            'ldap_group_dn' => 'inetOrgPerson',
+        ])->getID();
+
+        $ldap_method = [
+            'id'                 => $auth->getID(),
+            'basedn'             => 'dc=glpi,dc=org',
+            'condition'          => '(uid=brazil10*)',
+            'pagesize'           => 2,
+            'group_field'        => 'objectClass',
+            'group_member_field' => 'objectClass',
+        ];
+
+        $user = new \User();
+        $result = $this->callPrivateMethod(
+            $user,
+            'getFromLDAPGroupDiscretCached',
+            $this->ldap->connect(),
+            $ldap_method,
+            'uid=brazil109,ou=people,ou=R&D,dc=glpi,dc=org'
+        );
+
+        $this->assertTrue($result);
+        $this->assertContains($group_id, $user->fields['_groups'] ?? []);
+    }
+
 
     /**
      * Test if rules targeting ldap criteria are working

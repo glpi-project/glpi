@@ -2329,7 +2329,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $last_db_activity = time();
 
             foreach ($groups_iterator as $group_row) {
-                $last_db_activity = self::keepDbConnectionAlive($last_db_activity);
                 $group_id = (int) $group_row['id'];
                 $group_dn = $group_row['ldap_group_dn'];
                 $escaped  = ldap_escape($group_dn, '', LDAP_ESCAPE_FILTER);
@@ -2337,6 +2336,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $cookie   = '';
 
                 do {
+                    $last_db_activity = self::keepDbConnectionAlive($last_db_activity);
                     if (!empty($ldap_method['pagesize'])) {
                         $controls = [[
                             'oid'        => LDAP_CONTROL_PAGEDRESULTS,
