@@ -142,27 +142,6 @@ test.describe('Dropdown item form question type', () => {
         await form.page.keyboard.press('Escape');
     };
 
-    const doSearchAndSelectHighlightedValue = async (
-        form: FormPage,
-        dropdown: Locator,
-        search: string,
-    ): Promise<void> => {
-        const search_response = form.page.waitForResponse((response) =>
-            response.url().includes('/ajax/getDropdownValue.php')
-            && response.request().postDataJSON()?.searchText === search
-        );
-
-        await dropdown.click();
-        await expect(form.page.getByRole('listbox')).toBeVisible();
-        await form.page.keyboard.type(search);
-        await search_response;
-
-        await expect(
-            form.page.getByRole('listbox').getByRole('option', { name: '-----', exact: true })
-        ).toHaveCount(0);
-        await form.page.keyboard.press('Enter');
-    };
-
     test('searching in the end user dropdown highlights the first matching value', async ({
         page,
         profile,
@@ -176,7 +155,7 @@ test.describe('Dropdown item form question type', () => {
         await page.goto(`/Form/Render/${form_id}`);
 
         const dropdown = form.getDropdownByLabel('Test dropdown item question');
-        await doSearchAndSelectHighlightedValue(form, dropdown, `Subroot category ${uuid}`);
+        await form.doSearchAndSelectHighlightedDropdownValue(dropdown, `Subroot category ${uuid}`);
 
         await expect(dropdown).toContainText(`Subroot category ${uuid}`);
         await expect(dropdown).not.toContainText(`Subsubroot category ${uuid}`);
@@ -196,7 +175,7 @@ test.describe('Dropdown item form question type', () => {
         await form.getButton('Advanced configuration').click();
 
         const dropdown = form.getDropdownByLabel('Subtree root', getAdvancedConfigurationMenu(form));
-        await doSearchAndSelectHighlightedValue(form, dropdown, `Subroot category ${uuid}`);
+        await form.doSearchAndSelectHighlightedDropdownValue(dropdown, `Subroot category ${uuid}`);
 
         await expect(dropdown).toContainText(`Subroot category ${uuid}`);
         await expect(dropdown).not.toContainText(`Subsubroot category ${uuid}`);

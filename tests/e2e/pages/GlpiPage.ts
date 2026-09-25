@@ -127,6 +127,37 @@ export class GlpiPage
         await expect(dropdown).toContainText(value);
     }
 
+    public async doSearchAndSelectHighlightedDropdownValue(
+        dropdown: Locator,
+        search: string,
+        expected_value: string = search,
+    ): Promise<void> {
+        const search_response = this.page.waitForResponse((response) =>
+            response.url().includes('/ajax/getDropdownValue.php')
+            && response.request().postDataJSON()?.searchText === search
+        );
+
+        await dropdown.click();
+        const listbox = this.page.getByRole('listbox');
+        await expect(listbox).toBeVisible();
+        await this.page.keyboard.type(search);
+        await search_response;
+
+        // We have no control on select2 selectors
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(this.page.locator('.loading-results')).toHaveCount(0);
+
+        // Values of the tree dropdowns are prefixed by a "»"
+        await expect(
+            listbox.getByRole('option', { name: expected_value, exact: true })
+                .or(listbox.getByRole('option', { name: `»${expected_value}`, exact: true }))
+        ).toBeVisible();
+        await expect(
+            listbox.getByRole('option', { name: '-----', exact: true })
+        ).toHaveCount(0);
+        await this.page.keyboard.press('Enter');
+    }
+
     public async doSetDropdownValue(
         dropdown: Locator,
         value: string,
