@@ -76,7 +76,7 @@ class Document_Item extends CommonDBRelation
 
     public function isPrivate()
     {
-        // `is_private` is a visibility flag (gated by SEEPRIVATE in canViewItem()), not an ownership marker. 
+        // `is_private` is a visibility flag (gated by SEEPRIVATE in canViewItem()), not an ownership marker.
         // Keep it out of CommonDBTM::can() so it cannot grant owner-based CREATE/UPDATE/PURGE and bypass document rights.
         return false;
     }
