@@ -54,6 +54,9 @@ class KnowbaseItem_Item extends CommonDBRelation
     // From CommonDBTM
     public bool $dohistory          = true;
 
+    /** Max number of linked items loaded at once to check READ right */
+    private const READ_CHECK_CHUNK_SIZE = 100;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Knowledge base item', 'Knowledge base items', $nb);
@@ -133,9 +136,6 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         $canedit = $item->can($item_id, UPDATE);
 
-        // Total Number of KB items
-        $number = self::getCountForItem($item);
-
         $ok_state = true;
         if ($item instanceof CommonITILObject) {
             $ok_state = !in_array($item->fields['status'], array_merge(
@@ -164,13 +164,45 @@ class KnowbaseItem_Item extends CommonDBRelation
             ]);
         }
 
-        $linked_items = self::getItems($item, $start, $_SESSION['glpilist_limit']);
+        $is_kb = $item::class === KnowbaseItem::class;
+        if ($is_kb) {
+            // READ is checked in PHP on linked items, so count and page only after the check.
+            // Check by chunks and keep the fields of the requested page only.
+            $limit = (int) $_SESSION['glpilist_limit'];
+            $number = 0;
+            $linked_items = [];
+            $readable = [];
+            $offset = 0;
+            do {
+                $chunk = self::getItems($item, $offset, self::READ_CHECK_CHUNK_SIZE);
+                $offset += self::READ_CHECK_CHUNK_SIZE;
+                $chunk_readable = self::getReadableLinkedItemsFields($chunk);
+                foreach ($chunk as $data) {
+                    $fields = $chunk_readable[$data['itemtype']][$data['items_id']] ?? null;
+                    if ($fields === null) {
+                        continue;
+                    }
+                    if ($number >= $start && $number < $start + $limit) {
+                        $linked_items[] = $data;
+                        $readable[$data['itemtype']][$data['items_id']] = $fields;
+                    }
+                    $number++;
+                }
+            } while (count($chunk) === self::READ_CHECK_CHUNK_SIZE);
+        } else {
+            $linked_items = self::getItems($item, $start, $_SESSION['glpilist_limit']);
+            $number = self::getCountForItem($item);
+        }
+
         $entries = [];
         foreach ($linked_items as $data) {
-            $linked_item = null;
-            if ($item::class === KnowbaseItem::class) {
+            if ($is_kb) {
                 $linked_item = getItemForItemtype($data['itemtype']);
-                $linked_item->getFromDB($data['items_id']);
+                if (!$linked_item instanceof CommonDBTM) {
+                    continue;
+                }
+                $linked_item->getFromResultSet($readable[$data['itemtype']][$data['items_id']]);
+                $linked_item->post_getFromDB();
             } else {
                 $linked_item = getItemForItemtype(KnowbaseItem::class);
                 $linked_item->getFromDB($data['knowbaseitems_id']);
@@ -252,6 +284,39 @@ class KnowbaseItem_Item extends CommonDBRelation
             'checkright'      => $checkright,
             'used'            => $used,
         ]);
+    }
+
+    /**
+     * Get the fields of the linked items the current user can read, with one query per item type
+     *
+     * @param array<int, array<string, mixed>> $links Rows of glpi_knowbaseitems_items
+     *
+     * @return array<class-string<CommonDBTM>, array<int, array<string, mixed>>> Fields by itemtype and ID
+     */
+    private static function getReadableLinkedItemsFields(array $links): array
+    {
+        global $DB;
+
+        $ids_by_itemtype = [];
+        foreach ($links as $data) {
+            $ids_by_itemtype[$data['itemtype']][] = $data['items_id'];
+        }
+
+        $readable = [];
+        foreach ($ids_by_itemtype as $itemtype => $ids) {
+            $linked_item = getItemForItemtype($itemtype);
+            if (!$linked_item instanceof CommonDBTM) {
+                continue;
+            }
+            foreach ($DB->request(['FROM' => $linked_item::getTable(), 'WHERE' => ['id' => $ids]]) as $fields) {
+                $linked_item->getFromResultSet($fields);
+                $linked_item->post_getFromDB();
+                if ($linked_item->can($fields['id'], READ)) {
+                    $readable[$itemtype][$fields['id']] = $fields;
+                }
+            }
+        }
+        return $readable;
     }
 
     /**
