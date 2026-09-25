@@ -61,7 +61,7 @@ final class CompareRevisionController extends AbstractCompareController
         }
 
         // Make sure the user is able to update the current KB
-        if (!$kb->can($id, READ)) {
+        if (!$kb->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 

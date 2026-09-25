@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
+use Session;
 
 final class KnowbaseItem_RevisionTest extends DbTestCase
 {
@@ -160,7 +161,7 @@ final class KnowbaseItem_RevisionTest extends DbTestCase
         $this->assertFalse(KnowbaseItem_Revision::canDelete());
     }
 
-    public function testCanViewItemFollowsReadableParent(): void
+    public function testCanViewItemFollowsEditableParent(): void
     {
         $this->login();
         $kb = $this->getNewKbItem();
@@ -172,6 +173,31 @@ final class KnowbaseItem_RevisionTest extends DbTestCase
         $this->assertTrue($revision->getFromDBByCrit(['knowbaseitems_id' => $kb->getID()]));
 
         $this->assertTrue($revision->canViewItem());
+    }
+
+    public function testCanViewItemDeniedForReadOnlyParent(): void
+    {
+        $this->login();
+
+        // Own article: always readable, editable only with UPDATE.
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'read only ' . $this->getUniqueString(),
+            'answer'   => '<p>v1</p>',
+            'users_id' => Session::getLoginUserID(),
+            'is_faq'   => 0,
+        ]);
+        $this->assertTrue(
+            $kb->update(['id' => $kb->getID(), 'answer' => '<p>v2</p>'])
+        );
+
+        $revision = new KnowbaseItem_Revision();
+        $this->assertTrue($revision->getFromDBByCrit(['knowbaseitems_id' => $kb->getID()]));
+
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+
+        $this->assertTrue($kb->can($kb->getID(), READ)); // guard: parent still readable
+        $this->assertFalse($kb->can($kb->getID(), UPDATE));
+        $this->assertFalse($revision->canViewItem());
     }
 
     public function testCanViewItemDeniedForRestrictedParent(): void

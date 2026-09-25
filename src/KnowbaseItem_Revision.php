@@ -80,12 +80,12 @@ final class KnowbaseItem_Revision extends CommonDBTM
         return false;
     }
 
-    // View access follows the parent article.
+    // Only editors of the parent article can see its revisions.
     #[Override]
     public function canViewItem(): bool
     {
         $kb = KnowbaseItem::getById((int) ($this->fields['knowbaseitems_id'] ?? 0));
-        return $kb !== false && $kb->can($kb->getID(), READ);
+        return $kb !== false && $kb->can($kb->getID(), UPDATE);
     }
 
     /**
