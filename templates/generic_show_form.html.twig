@@ -332,7 +332,8 @@
                                   specific_field_options|merge({
                                       'entity': item.fields['entities_id']|default(-1),
                                       'condition': {'is_assign': 1},
-                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
+                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false,
+                                      'templateSelection': item is usingtrait('Glpi\\Features\\AssignableItem') ? 'templateGroupSelection' : null
                                   })
                               ) }}
                           {% elseif field is same as item.getModelForeignKeyField() %}
@@ -451,7 +452,8 @@
                                   specific_field_options|merge({
                                       'entity': item.fields['entities_id']|default(-1),
                                       'condition': {'is_itemgroup': 1},
-                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
+                                      'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false,
+                                      'templateSelection': item is usingtrait('Glpi\\Features\\AssignableItem') ? 'templateGroupSelection' : null
                                   })
                               ) }}
                           {% elseif field is same as 'uuid' %}
