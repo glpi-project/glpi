@@ -2194,9 +2194,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $lgroups = [];
                         foreach ($v[$i][$field] as $lgroup) {
                             $lgroups[] = [
-                                new QueryExpression($DB->quoteValue($lgroup)
-                                             . " LIKE "
-                                             . $DB->quoteName('ldap_value')),
+                                new QueryExpression('? LIKE `ldap_value`', values: [$lgroup]),
                             ];
                         }
                         $group_iterator = $DB->request([
@@ -4386,13 +4384,15 @@ HTML;
             if (((string) $search) !== '') {
                 $txt_search = Search::makeTextSearchValue($search);
 
-                $firstname_field = new QueryIdentifier(self::getTableField('firstname'));
-                $realname_field = new QueryIdentifier(self::getTableField('realname'));
-                $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
-                ? [$firstname_field, new QueryExpression($DB::quoteValue(' ')), $realname_field]
-                : [$realname_field, new QueryExpression($DB::quoteValue(' ')), $firstname_field];
-
-                $concat = new QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
+                $concat = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
+                    ? new QueryExpression(
+                        'CONCAT(`glpi_users`.`firstname`, ?, `glpi_users`.`realname`) LIKE ?',
+                        values: [' ', $txt_search]
+                    )
+                    : new QueryExpression(
+                        'CONCAT(`glpi_users`.`realname`, ?, `glpi_users`.`firstname`) LIKE ?',
+                        values: [' ', $txt_search]
+                    );
                 $WHERE[] = [
                     'OR' => [
                         'glpi_users.name'                => ['LIKE', $txt_search],
@@ -6648,32 +6648,23 @@ HTML;
 
     public static function getFriendlyNameSearchCriteria(string $filter): array
     {
-        global $DB;
-
-        $table     = self::getTable();
-
         $filter = strtolower($filter);
         $filter_no_spaces = str_replace(" ", "", $filter);
-        $concat_names_first_last = QueryFunction::lower(
-            QueryFunction::replace(
-                expression: QueryFunction::concat([new QueryIdentifier("$table.firstname"), new QueryIdentifier("$table.realname")]),
-                search: new QueryExpression($DB::quoteValue(' ')),
-                replace: new QueryExpression($DB::quoteValue(''))
-            )
-        );
-        $concat_names_last_first = QueryFunction::lower(
-            QueryFunction::replace(
-                expression: QueryFunction::concat([new QueryIdentifier("$table.realname"), new QueryIdentifier("$table.firstname")]),
-                search: new QueryExpression($DB::quoteValue(' ')),
-                replace: new QueryExpression($DB::quoteValue(''))
-            )
-        );
 
         return [
             'OR' => [
-                new QueryExpression(QueryFunction::lower(new QueryIdentifier("$table.name")) . ' LIKE ' . $DB::quoteValue("%$filter%")),
-                new QueryExpression($concat_names_first_last . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
-                new QueryExpression($concat_names_last_first . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
+                new QueryExpression(
+                    'LOWER(`glpi_users`.`name`) LIKE ?',
+                    values: ["%$filter%"]
+                ),
+                new QueryExpression(
+                    'LOWER(REPLACE(CONCAT(`glpi_users`.`firstname`, `glpi_users`.`realname`), ?, ?)) LIKE ?',
+                    values: [' ', '', "%$filter_no_spaces%"]
+                ),
+                new QueryExpression(
+                    'LOWER(REPLACE(CONCAT(`glpi_users`.`realname`, `glpi_users`.`firstname`), ?, ?)) LIKE ?',
+                    values: [' ', '', "%$filter_no_spaces%"]
+                ),
             ],
         ];
     }
