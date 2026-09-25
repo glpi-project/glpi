@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
 - Fixed import of exported forms containing a condition on an item dropdown with no item selected.
+- Changing the format of High-Level API responses for GET endpoints via the `Accept` header no longer changes the format of non-success responses.
 
 ### Deprecated
 

@@ -43,6 +43,7 @@ use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 use Glpi\Toolbox\ArrayPathAccessor;
+use InvalidArgumentException;
 use RuntimeException;
 use Safe\DateTime;
 use Session;
@@ -281,37 +282,61 @@ final class ResourceAccessor
     }
 
     /**
+     * @param array<string, string[]> $headers
+     * @return array<string, DateTime>
+     * @throws InvalidArgumentException
+     */
+    private static function getPreconditionHeaderDates(array $headers): array
+    {
+        $supported_headers = ['If-Modified-Since', 'If-Unmodified-Since'];
+        $header_dates = [];
+
+        foreach ($supported_headers as $header_name) {
+            if (!isset($headers[$header_name])) {
+                continue;
+            }
+
+            $header_value = $headers[$header_name];
+            if (is_array($header_value)) {
+                $header_value = $header_value[0] ?? '';
+            }
+
+            try {
+                $header_dates[$header_name] = new DateTime($header_value);
+            } catch (\DateMalformedStringException $e) {
+                throw new InvalidArgumentException(sprintf('Invalid value for %s header.', $header_name), previous: $e);
+            }
+        }
+
+        if (count($header_dates) > 1) {
+            throw new InvalidArgumentException('If-Modified-Since and If-Unmodified-Since headers cannot be used together.');
+        }
+
+        return $header_dates;
+    }
+
+    /**
      * @param CommonDBTM $item
      * @param array<string, string[]> $headers
      * @return array<string, string> Array of failed preconditions. Empty array if all preconditions passed.
-     * @throws \DateMalformedStringException
+     * @throws InvalidArgumentException
      */
     private static function validatePreconditions(CommonDBTM $item, array $headers): array
     {
         $failures = [];
 
         $item_date_mod = $item->fields['date_mod'] ?? null;
+        if ($item_date_mod === null) {
+            return $failures;
+        }
 
-        if ($item_date_mod !== null && isset($headers['If-Unmodified-Since'])) {
-            $if_unmodified_since = $headers['If-Unmodified-Since'];
-            if (is_array($if_unmodified_since)) {
-                $if_unmodified_since = $if_unmodified_since[0];
-            }
-            $item_last_update_dt = new DateTime($item_date_mod);
-            $if_unmodified_since_dt = new DateTime($if_unmodified_since);
-            if ($item_last_update_dt > $if_unmodified_since_dt) {
-                $failures['If-Unmodified-Since'] = 'The item has been modified since the specified date';
-            }
-        } elseif ($item_date_mod !== null && isset($headers['If-Modified-Since'])) {
-            $if_modified_since = $headers['If-Modified-Since'];
-            if (is_array($if_modified_since)) {
-                $if_modified_since = $if_modified_since[0];
-            }
-            $item_last_update_dt = new DateTime($item_date_mod);
-            $if_modified_since_dt = new DateTime($if_modified_since);
-            if ($item_last_update_dt <= $if_modified_since_dt) {
-                $failures['If-Modified-Since'] = 'The item has not been modified since the specified date';
-            }
+        $header_dates = self::getPreconditionHeaderDates($headers);
+        $item_last_update_dt = new DateTime($item_date_mod);
+
+        if (isset($header_dates['If-Unmodified-Since']) && $item_last_update_dt > $header_dates['If-Unmodified-Since']) {
+            $failures['If-Unmodified-Since'] = 'The item has been modified since the specified date';
+        } elseif (isset($header_dates['If-Modified-Since']) && $item_last_update_dt <= $header_dates['If-Modified-Since']) {
+            $failures['If-Modified-Since'] = 'The item has not been modified since the specified date';
         }
         return $failures;
     }
@@ -356,7 +381,14 @@ final class ResourceAccessor
 
         $final_request = Router::getInstance()->getFinalRequest();
         if ($final_request !== null) {
-            $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            try {
+                $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            } catch (InvalidArgumentException $e) {
+                return new JSONResponse(
+                    AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()),
+                    400
+                );
+            }
             if ($precondition_failures !== []) {
                 return new JSONResponse(
                     AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),
@@ -371,7 +403,7 @@ final class ResourceAccessor
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_UPDATE);
         }
         // We should return the updated item but we NEVER return the GLPI item fields directly. Need to use special API methods.
-        return self::getOneBySchema($schema, $request_attrs + ['id' => $items_id], $request_params);
+        return self::getOneBySchema($schema, $request_attrs + ['id' => $items_id], $request_params, $field, false);
     }
 
     /**
@@ -484,11 +516,12 @@ final class ResourceAccessor
      * @param array $request_params The request parameters
      * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
      * The field must be present in the route path (request attributes).
+     * @param bool $check_preconditions Whether request precondition headers should be applied to the result.
      * @return Response
      * @see self::getIDForOtherUniqueFieldBySchema()
      * @see ResourceAccessor::searchBySchema()
      */
-    public static function getOneBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
+    public static function getOneBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id', bool $check_preconditions = true): Response
     {
         $schema = self::applyFieldReadRestrictions($schema);
         $itemtype = self::getItemtypeFromSchema($schema);
@@ -524,10 +557,17 @@ final class ResourceAccessor
         $result = $results['results'][0];
 
         $final_request = Router::getInstance()->getFinalRequest();
-        if ($final_request !== null && !empty($result['date_mod'])) {
+        if ($check_preconditions && $final_request !== null && !empty($result['date_mod'])) {
             $item = self::getItemFromSchema($schema);
             $item->fields['date_mod'] = $result['date_mod'];
-            $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            try {
+                $precondition_failures = self::validatePreconditions($item, $final_request->getHeaders());
+            } catch (InvalidArgumentException $e) {
+                return new JSONResponse(
+                    AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()),
+                    400
+                );
+            }
             if ($precondition_failures !== []) {
                 return new JSONResponse(
                     AbstractController::getErrorResponseBody(AbstractController::ERROR_PRECONDITION_FAILED, 'Precondition failed', $precondition_failures),

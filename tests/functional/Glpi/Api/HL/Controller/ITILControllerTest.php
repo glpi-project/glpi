@@ -65,6 +65,157 @@ class ITILControllerTest extends HLAPITestCase
         }
     }
 
+    public function testUpdateWithIfUnmodifiedSinceReturnsUpdatedResource(): void
+    {
+        $this->login();
+        $updated_name = __FUNCTION__ . '_updated';
+
+        $create_request = new Request('POST', '/Assistance/Ticket');
+        $create_request->setParameter('name', __FUNCTION__);
+        $create_request->setParameter('content', 'test');
+        $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+
+        $ticket_location = null;
+        $this->api->call($create_request, function ($call) use (&$ticket_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$ticket_location) {
+                    $ticket_location = $headers['Location'];
+                });
+        });
+
+        $ticket_date_mod = null;
+        $this->api->call(new Request('GET', $ticket_location), function ($call) use (&$ticket_date_mod) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$ticket_date_mod) {
+                    $ticket_date_mod = $content['date_mod'];
+                });
+        });
+
+        $update_request = new Request('PATCH', $ticket_location, [
+            'If-Unmodified-Since' => $ticket_date_mod,
+        ]);
+        $update_request->setParameter('name', $updated_name);
+        $this->api->call($update_request, function ($call) use ($updated_name) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($updated_name) {
+                    $this->assertEquals($updated_name, $content['name']);
+                });
+        });
+    }
+
+    public function testConditionalHeadersValidation(): void
+    {
+        $this->login();
+
+        $create_request = new Request('POST', '/Assistance/Ticket');
+        $create_request->setParameter('name', __FUNCTION__);
+        $create_request->setParameter('content', 'test');
+        $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+
+        $ticket_location = null;
+        $this->api->call($create_request, function ($call) use (&$ticket_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$ticket_location) {
+                    $ticket_location = $headers['Location'];
+                });
+        });
+
+        $this->api->call(new Request('GET', $ticket_location, [
+            'If-Modified-Since' => 'not-a-date',
+        ]), function ($call) {
+            $call->response
+                ->isNotOK()
+                ->status(function ($status) {
+                    $this->assertEquals(400, $status);
+                })
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('ERROR_INVALID_PARAMETER', $content['status']);
+                    $this->assertEquals('Invalid value for If-Modified-Since header.', $content['title']);
+                });
+        });
+
+        $this->api->call(new Request('GET', $ticket_location, [
+            'If-Modified-Since' => '2026-09-01 12:00:00',
+            'If-Unmodified-Since' => '2026-09-01 12:00:00',
+        ]), function ($call) {
+            $call->response
+                ->isNotOK()
+                ->status(function ($status) {
+                    $this->assertEquals(400, $status);
+                })
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('ERROR_INVALID_PARAMETER', $content['status']);
+                    $this->assertEquals('If-Modified-Since and If-Unmodified-Since headers cannot be used together.', $content['title']);
+                });
+        });
+    }
+
+    public function testConditionalGetPreservesFormatterStatus(): void
+    {
+        $this->login();
+
+        $create_request = new Request('POST', '/Assistance/Ticket');
+        $create_request->setParameter('name', __FUNCTION__);
+        $create_request->setParameter('content', 'test');
+        $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+
+        $ticket_location = null;
+        $this->api->call($create_request, function ($call) use (&$ticket_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$ticket_location) {
+                    $ticket_location = $headers['Location'];
+                });
+        });
+
+        $ticket_date_mod = null;
+        $this->api->call(new Request('GET', $ticket_location), function ($call) use (&$ticket_date_mod) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$ticket_date_mod) {
+                    $ticket_date_mod = $content['date_mod'];
+                });
+        });
+
+        $this->api->call(new Request('GET', $ticket_location, [
+            'Accept' => 'text/csv',
+            'If-Modified-Since' => $ticket_date_mod,
+        ]), function ($call) {
+            $call->response
+                ->isNotOK()
+                ->status(function ($status) {
+                    $this->assertEquals(304, $status);
+                })
+                ->headers(function ($headers) {
+                    $this->assertEquals('application/json', $headers['Content-Type']);
+                })
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('ERROR_PRECONDITION_FAILED', $content['status']);
+                });
+        });
+
+        $this->api->call(new Request('GET', $ticket_location, [
+            'Accept' => 'text/csv',
+            'If-Unmodified-Since' => '2000-01-01 00:00:00',
+        ]), function ($call) {
+            $call->response
+                ->isNotOK()
+                ->status(function ($status) {
+                    $this->assertEquals(412, $status);
+                })
+                ->headers(function ($headers) {
+                    $this->assertEquals('application/json', $headers['Content-Type']);
+                })
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('ERROR_PRECONDITION_FAILED', $content['status']);
+                });
+        });
+    }
+
     public function testCreateGetUpdateDeleteFollowup()
     {
         $this->login();
