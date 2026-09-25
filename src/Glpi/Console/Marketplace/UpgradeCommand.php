@@ -170,67 +170,119 @@ class UpgradeCommand extends AbstractCommand
             }
         }
 
-        // Automatically process plugin update and reactivation of active plugins.
-        if (count($active_plugins) > 0) {
-            \asort($active_plugins);
-
-            Plugin::forcePluginsExecution(true); // Temporarly force the plugins execution
-            foreach ($active_plugins as $plugin_key => $plugin_id) {
-                if (!\in_array($plugin_key, $updated_plugins, true)) {
-                    continue;
-                }
-
-                $plugin = new Plugin();
-
-                try {
-                    $plugin->install($plugin_id);
-                    $installed = \in_array($plugin->fields['state'], [Plugin::NOTACTIVATED, Plugin::TOBECONFIGURED]);
-                } catch (Throwable $e) {
-                    global $PHPLOGGER;
-                    $PHPLOGGER->error(
-                        sprintf('Error while installing plugin `%s`, error was: `%s`.', $plugin_key, $e->getMessage()),
-                        ['exception' => $e]
-                    );
-
-                    $installed = false;
-                }
-                if (!$installed) {
-                    $has_errors = true;
-                    $output->writeln(
-                        '<error>' . sprintf(__('Plugin "%s" installation failed.'), $plugin_key) . '</error>',
-                        OutputInterface::VERBOSITY_QUIET
-                    );
-                    $this->outputSessionBufferedMessages([WARNING, ERROR]);
-                    continue;
-                }
-
-                try {
-                    $activated = $plugin->activate($plugin_id);
-                } catch (Throwable $e) {
-                    global $PHPLOGGER;
-                    $PHPLOGGER->error(
-                        sprintf('Error while activating plugin `%s`, error was: `%s`.', $plugin_key, $e->getMessage()),
-                        ['exception' => $e]
-                    );
-
-                    $activated = false;
-                }
-
-                if (!$activated) {
-                    $has_errors = true;
-                    $output->writeln(
-                        '<error>' . sprintf(__('Plugin "%s" activation failed.'), $plugin_key) . '</error>',
-                        OutputInterface::VERBOSITY_QUIET
-                    );
-                    $this->outputSessionBufferedMessages([WARNING, ERROR]);
-                    continue;
-                }
-
-                $output->writeln('<info>' . sprintf(__('Plugin "%1$s" has been updated and reactivated.'), $plugin_key) . '</info>', );
-            }
-            Plugin::forcePluginsExecution(false);
+        if ($this->upgradeActivePlugins($active_plugins, $updated_plugins, $output)) {
+            $has_errors = true;
         }
 
         return $has_errors ? self::FAILURE : self::SUCCESS;
+    }
+
+    /**
+     * @param array<string, int> $active_plugins Plugin ids indexed by plugin directory.
+     * @param string[] $updated_plugins Directories of the plugins to process.
+     * @return bool `true` if at least one plugin could not be upgraded.
+     */
+    protected function upgradeActivePlugins(
+        array $active_plugins,
+        array $updated_plugins,
+        OutputInterface $output
+    ): bool {
+        $has_errors = false;
+
+        if (count($active_plugins) === 0) {
+            return $has_errors;
+        }
+
+        \asort($active_plugins);
+
+        Plugin::forcePluginsExecution(true); // Temporarly force the plugins execution
+
+        foreach ($active_plugins as $plugin_key => $plugin_id) {
+            if (!\in_array($plugin_key, $updated_plugins, true)) {
+                continue;
+            }
+
+            // Avoid an uncatchable "Cannot redeclare class" fatal on a Composer autoloader class collision.
+            if ($this->hasConflictingAutoloader($plugin_key)) {
+                $has_errors = true;
+                $output->writeln(
+                    '<error>' . sprintf(__('Plugin "%s" was skipped due to an autoloader conflict with another plugin processed in the same batch. It will be retried on the next run.'), $plugin_key) . '</error>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
+                continue;
+            }
+
+            if (!$this->upgradePlugin($plugin_key, $plugin_id, $output)) {
+                $has_errors = true;
+            }
+
+            \gc_collect_cycles();
+        }
+
+        Plugin::forcePluginsExecution(false);
+
+        return $has_errors;
+    }
+
+    /**
+     * Install and activate a single plugin.
+     */
+    protected function upgradePlugin(string $plugin_key, int $plugin_id, OutputInterface $output): bool
+    {
+        $plugin = new Plugin();
+
+        try {
+            $plugin->install($plugin_id);
+            $installed = \in_array($plugin->fields['state'], [Plugin::NOTACTIVATED, Plugin::TOBECONFIGURED]);
+        } catch (Throwable $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                sprintf('Error while installing plugin `%s`, error was: `%s`.', $plugin_key, $e->getMessage()),
+                ['exception' => $e]
+            );
+
+            $installed = false;
+        }
+        if (!$installed) {
+            $output->writeln(
+                '<error>' . sprintf(__('Plugin "%s" installation failed.'), $plugin_key) . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            $this->outputSessionBufferedMessages([WARNING, ERROR]);
+            return false;
+        }
+
+        try {
+            $activated = $plugin->activate($plugin_id);
+        } catch (Throwable $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                sprintf('Error while activating plugin `%s`, error was: `%s`.', $plugin_key, $e->getMessage()),
+                ['exception' => $e]
+            );
+
+            $activated = false;
+        }
+        if (!$activated) {
+            $output->writeln(
+                '<error>' . sprintf(__('Plugin "%s" activation failed.'), $plugin_key) . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            $this->outputSessionBufferedMessages([WARNING, ERROR]);
+            return false;
+        }
+
+        $output->writeln('<info>' . sprintf(__('Plugin "%1$s" has been updated and reactivated.'), $plugin_key) . '</info>');
+
+        return true;
+    }
+
+    /**
+     * Delegates to {@see Plugin::hasConflictingAutoloader()}; kept as its own method so this
+     * command can report a "skipped, will retry next run" message instead of a generic failure.
+     */
+    protected function hasConflictingAutoloader(string $plugin_key): bool
+    {
+        return Plugin::hasConflictingAutoloader($plugin_key);
     }
 }
