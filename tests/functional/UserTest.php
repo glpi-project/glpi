@@ -37,6 +37,7 @@ namespace tests\units;
 use AuthLDAP;
 use DateInterval;
 use DateTime;
+use DBmysql;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Tests\DbTestCase;
@@ -2813,6 +2814,44 @@ class UserTest extends DbTestCase
         );
         $this->assertTrue($result);
         $this->assertEmpty($user2->fields['_groups'] ?? []);
+    }
+
+    public function testKeepDbConnectionAliveSkipsQueryWhenRecentActivity(): void
+    {
+        global $DB;
+
+        $db_mock = $this->createMock(DBmysql::class);
+        $db_mock->expects($this->never())->method('doQuery');
+
+        $original_db = $DB;
+        $DB = $db_mock;
+        try {
+            $last_db_activity = time();
+            $result = $this->callPrivateMethod(new User(), 'keepDbConnectionAlive', $last_db_activity);
+        } finally {
+            $DB = $original_db;
+        }
+
+        $this->assertSame($last_db_activity, $result);
+    }
+
+    public function testKeepDbConnectionAlivePingsDbWhenIdleTooLong(): void
+    {
+        global $DB;
+
+        $db_mock = $this->createMock(DBmysql::class);
+        $db_mock->expects($this->once())->method('doQuery')->with('SELECT 1');
+
+        $original_db = $DB;
+        $DB = $db_mock;
+        try {
+            $before_call = time();
+            $result = $this->callPrivateMethod(new User(), 'keepDbConnectionAlive', $before_call - 3600);
+        } finally {
+            $DB = $original_db;
+        }
+
+        $this->assertGreaterThanOrEqual($before_call, $result);
     }
 
     public function testIsValidUserForEntity(): void

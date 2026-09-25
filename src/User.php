@@ -2326,8 +2326,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ]);
 
             $ldap_error = false;
+            $last_db_activity = time();
 
             foreach ($groups_iterator as $group_row) {
+                $last_db_activity = self::keepDbConnectionAlive($last_db_activity);
                 $group_id = (int) $group_row['id'];
                 $group_dn = $group_row['ldap_group_dn'];
                 $escaped  = ldap_escape($group_dn, '', LDAP_ESCAPE_FILTER);
@@ -2394,6 +2396,19 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         return true;
+    }
+
+    // Long LDAP-only phases would otherwise exceed the DB server wait_timeout.
+    private static function keepDbConnectionAlive(int $last_db_activity): int
+    {
+        global $DB;
+
+        if (time() - $last_db_activity < 30) {
+            return $last_db_activity;
+        }
+
+        $DB->doQuery('SELECT 1');
+        return time();
     }
 
 
