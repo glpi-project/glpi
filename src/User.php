@@ -93,6 +93,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public const UPDATEAUTHENT       = 4096;
     public const IMPERSONATE         = 8192;
 
+    private const DB_KEEPALIVE_INTERVAL = 30;
+
     public static $rightname = 'user';
 
     public static $undisclosedFields = [
@@ -2326,6 +2328,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ]);
 
             $ldap_error = false;
+            $last_db_activity = time();
 
             foreach ($groups_iterator as $group_row) {
                 $group_id = (int) $group_row['id'];
@@ -2335,6 +2338,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $cookie   = '';
 
                 do {
+                    $last_db_activity = self::keepDbConnectionAlive($last_db_activity);
                     if (!empty($ldap_method['pagesize'])) {
                         $controls = [[
                             'oid'        => LDAP_CONTROL_PAGEDRESULTS,
@@ -2394,6 +2398,19 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         return true;
+    }
+
+    // Long LDAP-only phases would otherwise exceed the DB server wait_timeout.
+    private static function keepDbConnectionAlive(int $last_db_activity): int
+    {
+        global $DB;
+
+        if (time() - $last_db_activity < self::DB_KEEPALIVE_INTERVAL) {
+            return $last_db_activity;
+        }
+
+        $DB->getVersion();
+        return time();
     }
 
 
