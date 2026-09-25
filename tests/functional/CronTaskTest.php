@@ -354,6 +354,25 @@ class CronTaskTest extends DbTestCase
         $this->assertStringContainsString(__('As soon as possible'), $html);
     }
 
+    public function testManualExecutionOfDisabledTaskKeepsItDisabled(): void
+    {
+        $crontask = new \CronTask();
+        $this->assertTrue($crontask->getFromDBbyName(\CronTask::class, 'graph'));
+        $this->updateItem(\CronTask::class, $crontask->getID(), [
+            'state'     => \CronTask::STATE_DISABLE,
+            'allowmode' => \CronTask::MODE_INTERNAL | \CronTask::MODE_EXTERNAL,
+        ]);
+
+        // Manual execution, as done from the crontask form
+        $this->assertSame('graph', \CronTask::launch(-\CronTask::MODE_INTERNAL, 1, 'graph'));
+
+        $this->assertTrue($crontask->getFromDB($crontask->getID()));
+        $this->assertSame(\CronTask::STATE_DISABLE, $crontask->fields['state']);
+
+        // Task must not be picked by the scheduler
+        $this->assertFalse((new \CronTask())->getNeedToRun(0, 'graph'));
+    }
+
     public function testDuplicateCronTaskName()
     {
         global $DB;
