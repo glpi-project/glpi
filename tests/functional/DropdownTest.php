@@ -105,6 +105,16 @@ class DropdownTest extends DbTestCase
         $this->assertStringContainsString("value='fr_FR'", $out);
     }
 
+    public function testShowTemplateSelection()
+    {
+        $out = Dropdown::show('Group', [
+            'display'           => false,
+            'multiple'          => true,
+            'templateSelection' => 'templateGroupSelection',
+        ]);
+        $this->assertStringContainsString('templateSelection: templateGroupSelection,', $out);
+    }
+
     public static function dataTestImport()
     {
         return [

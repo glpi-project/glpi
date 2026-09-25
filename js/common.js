@@ -914,6 +914,26 @@ var templateSelection = function (selection) {
     return _elt;
 };
 
+window.glpiGroupCommentPopovers = window.glpiGroupCommentPopovers || {};
+var templateGroupSelection = function (selection) {
+    var _elt = templateSelection(selection);
+
+    if (selection.element && selection.id) {
+        var select_id = selection.element.parentElement.id;
+        import('/js/modules/Form/ItemtypeCommentPopover.js').then((m) => {
+            if (!window.glpiGroupCommentPopovers[select_id]) {
+                window.glpiGroupCommentPopovers[select_id] = new m.default(
+                    $('#' + CSS.escape(select_id)).parent(),
+                    ['.group-info-card']
+                );
+            }
+            window.glpiGroupCommentPopovers[select_id].attachTo(_elt, 'Group', selection.id);
+        });
+    }
+
+    return _elt;
+};
+
 var templateItilStatus = function(option) {
     if (option === false) {
         // Option is false when element does not match searched terms
