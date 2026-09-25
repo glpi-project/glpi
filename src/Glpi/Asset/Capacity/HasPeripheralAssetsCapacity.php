@@ -100,25 +100,72 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         return $count;
     }
 
+    /**
+     * Count instances of $asset_classname that are used as the *peripheral* side of a
+     * relation (i.e. connected to another, possibly custom, asset acting as the host).
+     */
+    private function countAssetsUsedAsPeripheral(string $asset_classname, string $relation_classname): int
+    {
+        return countDistinctElementsInTable(
+            $relation_classname::getTable(),
+            'items_id_peripheral',
+            [
+                'itemtype_peripheral' => $asset_classname,
+            ]
+        );
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
-            && $this->countAssetsLinkedToPeripherals($classname, Asset_PeripheralAsset::class) > 0;
+            && (
+                $this->countAssetsLinkedToPeripherals($classname, Asset_PeripheralAsset::class) > 0
+                // A custom asset can also be connected as the peripheral of another asset
+                // (native or custom); disabling the capacity deletes those relations too,
+                // so they must also trigger the "this will delete data" confirmation.
+                || $this->countAssetsUsedAsPeripheral($classname, Asset_PeripheralAsset::class) > 0
+            );
     }
 
     public function getCapacityUsageDescription(string $classname): string
     {
-        return sprintf(
-            __('%1$s peripheral assets attached to %2$s assets'),
-            $this->countPeripheralItemsUsage($classname, Asset_PeripheralAsset::class),
-            $this->countAssetsLinkedToPeripherals($classname, Asset_PeripheralAsset::class)
-        );
+        $descriptions = [];
+
+        $assets_as_host = $this->countAssetsLinkedToPeripherals($classname, Asset_PeripheralAsset::class);
+        if ($assets_as_host > 0) {
+            $descriptions[] = sprintf(
+                __('%1$s peripheral assets attached to %2$s assets'),
+                $this->countPeripheralItemsUsage($classname, Asset_PeripheralAsset::class),
+                $assets_as_host
+            );
+        }
+
+        $assets_as_peripheral = $this->countAssetsUsedAsPeripheral($classname, Asset_PeripheralAsset::class);
+        if ($assets_as_peripheral > 0) {
+            $descriptions[] = sprintf(
+                __('%1$s assets connected as a peripheral of another asset'),
+                $assets_as_peripheral
+            );
+        }
+
+        if ($descriptions === []) {
+            return sprintf(
+                __('%1$s peripheral assets attached to %2$s assets'),
+                0,
+                0
+            );
+        }
+
+        return implode(' - ', $descriptions);
     }
 
     public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         // Allow the asset to be linked to peripheral asset
         $this->registerToTypeConfig('peripheralhost_types', $classname);
+
+        // Allow the asset to be connected to another asset as a peripheral
+        $this->registerToTypeConfig('directconnect_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, Asset_PeripheralAsset::class, 55);
     }
@@ -128,9 +175,22 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         // Unregister from peripheral hosts types
         $this->unregisterFromTypeConfig('peripheralhost_types', $classname);
 
-        // Delete related items
+        // Unregister from direct connect types
+        $this->unregisterFromTypeConfig('directconnect_types', $classname);
+
+        // Delete related items, whether the class was acting as the host (asset) or as
+        // the connected peripheral of the relation.
         $relation = new Asset_PeripheralAsset();
-        $relation->deleteByCriteria(['itemtype_asset' => $classname], force: true, history: false);
+        $relation->deleteByCriteria(
+            [
+                'OR' => [
+                    'itemtype_asset'      => $classname,
+                    'itemtype_peripheral' => $classname,
+                ],
+            ],
+            force: true,
+            history: false
+        );
 
         // Clean history related items
         $this->deleteRelationLogs($classname, Asset_PeripheralAsset::class);
