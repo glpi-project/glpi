@@ -603,6 +603,18 @@ body pre {
     }
 }
 
+.service-catalog-item {
+    &:hover {
+        color: var(--tblr-link-hover-color);
+    }
+
+    // Keep description links clickable above the title stretched link
+    .service-catalog-description a {
+        position: relative;
+        z-index: 2;
+    }
+}
+
 // Missing class from tabler, probably need to update it ?
 .btn-check:checked+.btn {
     color           : var(--tblr-btn-hover-color) !important;
