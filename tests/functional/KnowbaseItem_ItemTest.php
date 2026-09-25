@@ -340,4 +340,50 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $this->assertStringNotContainsString('Linked computer name', $output);
         $this->assertStringContainsString('No results found', $output);
     }
+
+    public function testShowForItemPaginatesReadableLinkedItemsAcrossChunks(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entities_id = $this->getTestRootEntity(only_id: true);
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'entities_id' => $entities_id,
+            'name'        => 'Article with many links',
+            'answer'      => 'Content',
+        ]);
+        $computers = [];
+        for ($i = 0; $i < 101; $i++) {
+            $computers[$i] = $this->createItem(Computer::class, [
+                'entities_id' => $entities_id,
+                'name'        => "[kb-pc-$i]",
+            ]);
+            $this->createItem(KnowbaseItem_Item::class, [
+                'knowbaseitems_id' => $kb->getID(),
+                'itemtype'         => Computer::class,
+                'items_id'         => $computers[$i]->getID(),
+            ]);
+        }
+        // Link to a missing item, first in the list: it must not be counted
+        $this->assertTrue($DB->insert(KnowbaseItem_Item::getTable(), [
+            'knowbaseitems_id' => $kb->getID(),
+            'itemtype'         => Computer::class,
+            'items_id'         => $computers[100]->getID() + 1000,
+        ]));
+
+        $_SESSION['glpilist_limit'] = 10;
+        $_GET['start'] = 95;
+        ob_start();
+        KnowbaseItem_Item::showForItem($kb);
+        $output = ob_get_clean();
+        unset($_GET['start']);
+
+        // Order is items_id DESC: visible rows 95 to 100 are computers 5 to 0
+        $this->assertStringContainsString('Showing 96 to 101 of 101 rows', $output);
+        for ($i = 0; $i <= 5; $i++) {
+            $this->assertStringContainsString("[kb-pc-$i]", $output);
+        }
+        $this->assertStringNotContainsString('[kb-pc-6]', $output);
+        $this->assertStringNotContainsString('[kb-pc-100]', $output);
+    }
 }
