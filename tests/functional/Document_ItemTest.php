@@ -820,4 +820,59 @@ class Document_ItemTest extends DbTestCase
         ];
         $this->assertFalse($doc2->can(-1, CREATE, $input2));
     }
+
+    public function testLinkAndUnlinkKnowbaseItemRequireArticleUpdateRight(): void
+    {
+        $this->login();
+
+        // Create a FAQ article authored by someone else
+        $kb_id = $this->createItem(\KnowbaseItem::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'answer'      => '<p>x</p>',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id'    => getItemByTypeName('User', 'normal', true),
+            'is_faq'      => 1,
+        ])->getID();
+        $this->createItem(\KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb_id,
+            'users_id'         => \Session::getLoginUserID(),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $link_id = $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb_id,
+        ])->getID();
+
+        $this->setEntity('_test_root_entity', true);
+        $link = new Document_Item();
+
+        // We are a KB admin so we can edit the articles (and thus unlink the doc).
+        $this->assertTrue($link->can($link_id, PURGE));
+
+        // No longer kb admin but still has the document update right
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+        $this->assertTrue($document->can($document->getID(), UPDATE));
+
+        // Load article using ID and confirm expected rights
+        $kb = new \KnowbaseItem();
+        $this->assertTrue($kb->getFromDB($kb_id));
+        $this->assertTrue($kb->can($kb_id, READ));
+        $this->assertFalse($kb->can($kb_id, UPDATE));
+
+        // Should not be able to unlink the doc
+        $this->assertFalse($link->can($link_id, DELETE));
+        $this->assertFalse($link->can($link_id, PURGE));
+
+        // Should not be able to link another document either
+        $input = [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb_id,
+        ];
+        $this->assertFalse((new Document_Item())->can(-1, CREATE, $input));
+    }
 }
