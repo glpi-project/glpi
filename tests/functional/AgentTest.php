@@ -808,7 +808,7 @@ XML;
                 '_create_children'           => 1,
                 'NetworkName_name'           => '',
                 'NetworkName_fqdns_id'       => 0,
-                'NetworkName__ipaddresses'   => ['-1' => '192.0.2.1'],
+                'NetworkName__ipaddresses'   => ['-1' => '127.0.0.2'],
             ])
         );
 
