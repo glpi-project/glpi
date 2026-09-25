@@ -787,17 +787,31 @@ XML;
         $computer = $this->createItem(
             Computer::class,
             [
-                'name'        => 'U039126 - HP EliteBook 640 G9',
+                'name'        => 'Computer name with spaces - Model',
                 'entities_id' => $this->getTestRootEntity(only_id: true),
             ]
         );
 
-        // A fresh Computer has no network ports, so the only guessed address
-        // is the friendly name, which contains spaces and produces an invalid URI.
+        // Give the computer a second guessed address (an IP) so the request loop
+        // must fall through to it after the invalid spaced hostname.
+        $networkPort = new \NetworkPort();
+        $this->assertGreaterThan(
+            0,
+            $networkPort->add([
+                'name'              => 'eth0',
+                'itemtype'          => Computer::class,
+                'items_id'          => $computer->getID(),
+                'instantiation_type' => 'NetworkPortEthernet',
+                'logical_number'    => 0,
+                'items_devicenetworkcards_id' => 0,
+                '_create_children'  => true,
+            ])
+        );
+
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $agents_id = (new \Agent())->add([
-            'name'          => 'U039126-2023-12-18-09-14-46',
-            'deviceid'      => 'U039126-2023-12-18-09-14-46',
+            'name'          => 'computer-agent-device',
+            'deviceid'      => 'computer-agent-device',
             'itemtype'      => Computer::class,
             'items_id'      => $computer->getID(),
             'agenttypes_id' => $agenttype['id'],
@@ -808,9 +822,10 @@ XML;
         $agent = new \Agent();
         $this->assertTrue($agent->getFromDB($agents_id));
 
-        // The malformed URI raised by the spaced name must be caught instead of
-        // aborting the address loop, so the status request returns an answer.
-        $result = $agent->requestStatus();
-        $this->assertArrayHasKey('answer', $result);
+        // The first guessed address (spaced hostname) produces a malformed URI.
+        // The client must be created inside the loop so that failure is caught,
+        // the loop moves to the IP address, and only a connection error remains.
+        $this->expectException(\GuzzleHttp\Exception\ConnectException::class);
+        $agent->requestAgent('status');
     }
 }
