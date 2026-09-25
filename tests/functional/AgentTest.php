@@ -799,13 +799,16 @@ XML;
         $this->assertGreaterThan(
             0,
             $networkPort->add([
-                'name'              => 'eth0',
-                'itemtype'          => Computer::class,
-                'items_id'          => $computer->getID(),
-                'instantiation_type' => 'NetworkPortEthernet',
-                'logical_number'    => 0,
+                'name'                       => 'eth0',
+                'itemtype'                   => Computer::class,
+                'items_id'                   => $computer->getID(),
+                'instantiation_type'         => 'NetworkPortEthernet',
+                'logical_number'             => 0,
                 'items_devicenetworkcards_id' => 0,
-                '_create_children'  => true,
+                '_create_children'           => 1,
+                'NetworkName_name'           => '',
+                'NetworkName_fqdns_id'       => 0,
+                'NetworkName__ipaddresses'   => ['-1' => '192.0.2.1'],
             ])
         );
 
