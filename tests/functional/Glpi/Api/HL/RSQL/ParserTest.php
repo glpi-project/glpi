@@ -36,9 +36,11 @@ namespace tests\units\Glpi\Api\HL\RSQL;
 
 use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\RSQL\Error;
+use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -248,6 +250,41 @@ class ParserTest extends GLPITestCase
         $result = $parser->parse([[5, 'mapped'], [6, '=='], [7, 'test']]);
         $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::MAPPED_PROPERTY, $result->getInvalidFilters()['mapped']);
+    }
+
+    public static function computedAndInvalidFilterProvider(): array
+    {
+        return [
+            ['computed==test;missing==ignored;name==test', ' AND '],
+            ['computed==test,missing==ignored,name==test', ' OR '],
+            ['(computed==test);(missing==ignored);(name==test)', ' AND '],
+        ];
+    }
+
+    #[DataProvider('computedAndInvalidFilterProvider')]
+    public function testComputedAndInvalidFilters(string $filter, string $separator): void
+    {
+        $parser = $this->getParserInstance([
+            'properties' => [
+                'name' => ['type' => 'string'],
+                'computed' => [
+                    'type' => 'string',
+                    'computation' => new QueryExpression("COALESCE(`_`.`computed`, '')"),
+                ],
+            ],
+        ]);
+
+        $result = $parser->parse(Lexer::tokenize($filter));
+
+        $computed = "(((COALESCE(`_`.`computed`, '')) = 'test'))";
+        $name = "(`_`.`name` = 'test')";
+        if (str_starts_with($filter, '(')) {
+            $computed = '(' . $computed . ')';
+            $name = '(' . $name . ')';
+        }
+        $this->assertSame($computed . $separator . $name, (string) $result->getSQLWhereCriteria());
+        $this->assertSame('1', (string) $result->getSQLHavingCriteria());
+        $this->assertSame(Error::UNKNOWN_PROPERTY, $result->getInvalidFilters()['missing']);
     }
 
     public function testMissingValue()
