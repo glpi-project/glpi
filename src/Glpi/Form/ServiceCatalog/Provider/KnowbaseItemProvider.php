@@ -74,6 +74,11 @@ final class KnowbaseItemProvider implements LeafProviderInterface
         if ($item_request->getContext() !== ItemRequestContext::HOME_PAGE_SEARCH) {
             $criteria['show_in_service_catalog'] = true;
         }
+        // The root article is the FAQ home page, not content to offer.
+        if (KnowbaseItem::hasRoot()) {
+            $criteria[] = ['NOT' => ['id' => KnowbaseItem::getRootId()]];
+        }
+
         $raw_knowbase_items = (new KnowbaseItem())->find($criteria, ['name']);
 
         foreach ($raw_knowbase_items as $raw_knowbase_item) {
@@ -93,10 +98,7 @@ final class KnowbaseItemProvider implements LeafProviderInterface
                 continue;
             }
 
-            /// Note: this is in theory less performant than applying the parameters
-            // directly to the SQL query (which would require more complicated code).
-            // However, the number of KB items is expected to be low, so this is acceptable.
-            // If performance becomes an issue, we can revisit this and/or add a cache.
+            // Checked per item, not in SQL: the number of KB items stays low.
             if (!$knowbase_item->can($knowbase_item->getID(), READ)) {
                 continue;
             }

@@ -40,6 +40,7 @@ use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\Aside\Tree;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_User;
 use Session;
 
@@ -178,11 +179,9 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * An article whose parents are all invisible to the current user must
-     * still be reachable, promoted to the root level (see Builder's
-     * promote-to-root algorithm) — not silently dropped from the tree.
+     * An article with an invisible parent attaches to its nearest visible ancestor.
      */
-    public function testArticleWithoutVisibleParentIsPromotedToRoot(): void
+    public function testArticleWithInvisibleParentIsAttachedToNearestVisibleAncestor(): void
     {
         // Author both articles as another user so the "author" visibility
         // bypass never makes them directly visible to the restricted user below.
@@ -195,7 +194,7 @@ final class BuilderTest extends DbTestCase
             'users_id' => $glpi_user,
         ]);
         $child = $this->createItem(KnowbaseItem::class, [
-            'name'     => 'Promoted child ' . __FUNCTION__,
+            'name'     => 'Nested child ' . __FUNCTION__,
             'answer'   => '',
             'users_id' => $glpi_user,
             '_parents' => [$parent->getID()],
@@ -215,9 +214,154 @@ final class BuilderTest extends DbTestCase
 
         $tree = (new Builder())->buildTree();
 
-        $titles = array_column($tree->getArticles(), 'title');
-        $this->assertContains('Promoted child ' . __FUNCTION__, $titles, 'child promoted to root');
-        $this->assertNotContains('Invisible parent ' . __FUNCTION__, $titles, 'invisible parent absent');
+        // Single root: the child nests under it, not next to it.
+        $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
+
+        $top_level = $this->getTopLevelArticles($tree);
+        $this->assertArrayNotHasKey('Invisible parent ' . __FUNCTION__, $top_level, 'invisible parent absent');
+        $this->assertArrayHasKey(
+            'Nested child ' . __FUNCTION__,
+            $top_level,
+            'child attached under the root, past its invisible parent',
+        );
+    }
+
+    /**
+     * A and B invisible and in a cycle: an article below them still nests
+     * under the root instead of being promoted next to it.
+     */
+    public function testArticleBelowACycleOfInvisibleParentsStaysUnderTheRoot(): void
+    {
+        // Author the cycle as another user: the author bypass would show it.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $cycle_a = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'zz cycle A ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [KnowbaseItem::getRootId()],
+        ]);
+        $cycle_b = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'zz cycle B ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$cycle_a->getID()],
+        ]);
+
+        // isAncestor() refuses this on write: only corrupt data gets here.
+        /** @var \DBmysql $DB */
+        global $DB;
+        $DB->insert(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id'        => $cycle_a->getID(),
+            'knowbaseitems_id_parent' => $cycle_b->getID(),
+        ]);
+
+        $leaf1 = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'zz leaf 1 ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$cycle_a->getID()],
+        ]);
+        $leaf2 = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'zz leaf 2 ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$cycle_b->getID()],
+        ]);
+
+        // Restricted user: the leaves are visible, the cycle is not.
+        $this->login('normal', 'normal');
+        foreach ([$leaf1, $leaf2] as $leaf) {
+            (new KnowbaseItem_User())->add([
+                'knowbaseitems_id' => $leaf->getID(),
+                'users_id'         => Session::getLoginUserID(),
+            ]);
+        }
+        foreach ([$cycle_a, $cycle_b] as $item) {
+            $obj = new KnowbaseItem();
+            $this->assertTrue($obj->getFromDB($item->getID()));
+            $this->assertFalse($obj->canViewItem(), 'cycle node must NOT be viewable for this test');
+        }
+
+        $tree = (new Builder())->buildTree();
+
+        // One root only: both leaves nest under it.
+        $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
+
+        $top_level = $this->getTopLevelArticles($tree);
+        $this->assertArrayHasKey('zz leaf 1 ' . __FUNCTION__, $top_level);
+        $this->assertArrayHasKey('zz leaf 2 ' . __FUNCTION__, $top_level, 'leaf 2 promoted to a root');
+    }
+
+    /**
+     * Corrupt data can leave articles in a cycle that reaches no root.
+     */
+    public function testArticlesInACycleWithNoPathToTheRootStayInTheTree(): void
+    {
+        $this->login();
+
+        $first  = $this->makeArticle('zz cycle first ' . __FUNCTION__);
+        $second = $this->makeArticle('zz cycle second ' . __FUNCTION__, $first->getID());
+
+        // isAncestor() refuses this on write: only corrupt data gets here.
+        /** @var \DBmysql $DB */
+        global $DB;
+        $DB->delete(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id' => $first->getID(),
+        ]);
+        $DB->insert(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id'        => $first->getID(),
+            'knowbaseitems_id_parent' => $second->getID(),
+        ]);
+
+        $titles = $this->getAllTitles((new Builder())->buildUnfoldedTree());
+        $this->assertContains('zz cycle first ' . __FUNCTION__, $titles);
+        $this->assertContains('zz cycle second ' . __FUNCTION__, $titles);
+    }
+
+    /**
+     * An article attached to a cycle renders once, whatever the name order.
+     */
+    public function testArticleAttachedToACycleIsNotRenderedTwice(): void
+    {
+        $this->login();
+
+        // Names put the attached article before the cycle nodes.
+        $attached = $this->makeArticle('zz cycle attached ' . __FUNCTION__);
+        $node_m   = $this->makeArticle('zz cycle node m ' . __FUNCTION__);
+        $node_n   = $this->makeArticle('zz cycle node n ' . __FUNCTION__);
+
+        // isAncestor() refuses this on write: only corrupt data gets here.
+        /** @var \DBmysql $DB */
+        global $DB;
+        foreach ([$attached, $node_m, $node_n] as $item) {
+            $DB->delete(KnowbaseItem_KnowbaseItem::getTable(), [
+                'knowbaseitems_id' => $item->getID(),
+            ]);
+        }
+        foreach (
+            [
+                [$node_m->getID(), $node_n->getID()],
+                [$node_n->getID(), $node_m->getID()],
+                [$attached->getID(), $node_n->getID()],
+            ] as [$child_id, $parent_id]
+        ) {
+            $DB->insert(KnowbaseItem_KnowbaseItem::getTable(), [
+                'knowbaseitems_id'        => $child_id,
+                'knowbaseitems_id_parent' => $parent_id,
+            ]);
+        }
+
+        $titles = $this->getAllTitles((new Builder())->buildUnfoldedTree());
+
+        $this->assertSame(
+            1,
+            count(array_keys($titles, 'zz cycle attached ' . __FUNCTION__, true)),
+            'the article below the cycle renders once'
+        );
+        $this->assertContains('zz cycle node m ' . __FUNCTION__, $titles);
+        $this->assertContains('zz cycle node n ' . __FUNCTION__, $titles);
     }
 
     /**
@@ -263,6 +407,24 @@ final class BuilderTest extends DbTestCase
         }
 
         $this->fail('The root article is missing from the tree');
+    }
+
+    /**
+     * @return string[] Every article title of the tree, at any depth.
+     */
+    private function getAllTitles(Tree $tree): array
+    {
+        $titles = [];
+        $stack  = $tree->getArticles();
+        while ($stack !== []) {
+            $article = array_pop($stack);
+            $titles[] = $article->title;
+            foreach ($article->getChildren() as $child) {
+                $stack[] = $child;
+            }
+        }
+
+        return $titles;
     }
 
     public function testArticlesAreFoldedByDefaultExceptTheRoot(): void
@@ -403,9 +565,7 @@ final class BuilderTest extends DbTestCase
     }
 
     /**
-     * A helpdesk reader gets the hierarchy of the articles published to the
-     * FAQ. The root article is never part of the FAQ, so a published parent is
-     * promoted to the top level and keeps its published children under it.
+     * The root is admitted by its id, so a published parent nests under it.
      */
     public function testFaqReaderGetsFaqArticlesNestedUnderTheirFaqParent(): void
     {
@@ -441,14 +601,68 @@ final class BuilderTest extends DbTestCase
         $this->login('post-only', 'postonly');
         $this->assertFalse(Session::haveRight(KnowbaseItem::$rightname, READ));
 
-        $articles = array_column((new Builder())->buildTree()->getArticles(), null, 'title');
+        // Passing the child id unfolds its branch, so the nesting is visible.
+        $tree = (new Builder($child->getID()))->buildTree();
 
-        $this->assertArrayHasKey($parent_title, $articles);
-        $this->assertArrayNotHasKey($child_title, $articles);
+        // The root is the only top-level entry: the FAQ parent nests under it.
+        $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
+
+        $top_level = $this->getTopLevelArticles($tree);
+        $this->assertArrayHasKey($parent_title, $top_level);
+        $this->assertArrayNotHasKey($child_title, $top_level);
         $this->assertSame(
             [$child_title],
-            array_column($articles[$parent_title]->getChildren(), 'title'),
+            array_column($top_level[$parent_title]->getChildren(), 'title'),
         );
+    }
+
+    /**
+     * A nested article folds by default, so `hasChildren()` is true before
+     * its children load.
+     */
+    public function testNestedFaqParentReportsItsChildrenWithoutLoadingThem(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $entity = $this->getTestRootEntity(only_id: true);
+        $parent_title = 'FAQ parent ' . __FUNCTION__;
+        $child_title = 'FAQ child ' . __FUNCTION__;
+
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => $parent_title,
+            'answer'      => '<p>Parent</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => $child_title,
+            'answer'      => '<p>Child</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+        foreach ([$parent, $child] as $item) {
+            $this->createItem(Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $item->getID(),
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login('post-only', 'postonly');
+
+        // No current id: the parent renders folded.
+        $tree = (new Builder())->buildTree();
+
+        $top_level = $this->getTopLevelArticles($tree);
+        $this->assertArrayHasKey($parent_title, $top_level);
+
+        $parent_node = $top_level[$parent_title];
+        $this->assertTrue($parent_node->hasChildren());
+        $this->assertFalse($parent_node->children_loaded);
+        $this->assertSame([], $parent_node->getChildren());
     }
 
     /**
