@@ -410,7 +410,7 @@ $(document).ready(function() {
    });
 
     // show massive actions control when at least one checkbox is checked
-    $('.massive_action_checkbox').change(function() {
+    const update_massiveactions_control = function() {
         const nb_ma_checked = $('.massive_action_checkbox:checked').length;
 
         if (nb_ma_checked === 0) {
@@ -423,8 +423,16 @@ $(document).ready(function() {
                 .removeClass('animate__slideOutLeft')
                 .addClass('animate__slideInLeft');
         }
-    });
-    // also call it on page load
-    $('.massive_action_checkbox').trigger('change');
+    };
+    $('.massive_action_checkbox').on('change', update_massiveactions_control);
+
+    // Ensure the actions button visibility is in sync with the checkbox state.
+    // Browsers may restore the checked state of form controls on back/forward
+    // navigation (bfcache) without firing any standard event, so we also handle
+    // the `pageshow` event (which is fired on both regular loads and bfcache
+    // restorations) to refresh the control state. A single call is enough, no
+    // need to trigger the change event for every single checkbox.
+    $(window).on('pageshow', update_massiveactions_control);
+    update_massiveactions_control();
 });
 </script>
