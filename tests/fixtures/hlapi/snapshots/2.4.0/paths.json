@@ -65569,6 +65569,441 @@
             ]
         }
     },
+    "/Assistance/Ticket/{id}/AssociatedItem": {
+        "put": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "linked_itemtype": {
+                                    "type": "string",
+                                    "format": "string",
+                                    "description": "The type of the associated item"
+                                },
+                                "linked_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "The ID of the associated item"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        },
+                        "text/csv": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assistance/Change/{id}/AssociatedItem": {
+        "put": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "linked_itemtype": {
+                                    "type": "string",
+                                    "format": "string",
+                                    "description": "The type of the associated item"
+                                },
+                                "linked_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "The ID of the associated item"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        },
+                        "text/csv": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assistance/Problem/{id}/AssociatedItem": {
+        "put": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "linked_itemtype": {
+                                    "type": "string",
+                                    "format": "string",
+                                    "description": "The type of the associated item"
+                                },
+                                "linked_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "description": "The ID of the associated item"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        },
+                        "text/csv": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Assistance_AssociatedItem"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assistance/Ticket/{id}/AssociatedItem/{linked_itemtype}/{linked_id}": {
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "linked_itemtype",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": "\\w+"
+                    }
+                },
+                {
+                    "name": "linked_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assistance/Change/{id}/AssociatedItem/{linked_itemtype}/{linked_id}": {
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "linked_itemtype",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": "\\w+"
+                    }
+                },
+                {
+                    "name": "linked_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assistance/Problem/{id}/AssociatedItem/{linked_itemtype}/{linked_id}": {
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "linked_itemtype",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": "\\w+"
+                    }
+                },
+                {
+                    "name": "linked_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
     "/Administration/User": {
         "get": {
             "responses": {
