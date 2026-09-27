@@ -93,6 +93,20 @@ class Types
     }
 
     /**
+     * @param array<mixed> $union_defs
+     * @return string[]
+     */
+    private static function getTypesFromUnionDefs(array $union_defs): array
+    {
+        /** @var string[] $types */
+        $types = array_values(array_filter(array_map(
+            static fn($r) => is_string($r) ? $r : (isset($r['$ref']) ? str_replace('#/components/schemas/', '', $r['$ref']) : null),
+            $union_defs
+        )));
+        return $types;
+    }
+
+    /**
      * @param array<string, mixed> $property
      * @param string|null $name
      * @param string $prefix
@@ -124,12 +138,8 @@ class Types
 
         // Handle top-level anyOf/oneOf on properties (union of object types)
         if (isset($property['anyOf']) || isset($property['oneOf'])) {
-            $union_defs = $property['anyOf'] ?? $property['oneOf'];
             // Accept either bare schema names (strings) or $ref objects
-            $type_list = array_values(array_filter(array_map(
-                static fn($r) => is_string($r) ? $r : (isset($r['$ref']) ? str_replace('#/components/schemas/', '', $r['$ref']) : null),
-                $union_defs
-            )));
+            $type_list = self::getTypesFromUnionDefs($property['anyOf'] ?? $property['oneOf']);
 
             $disc_prop = $property['discriminator']['propertyName'] ?? null;
             $union_config = [
@@ -146,7 +156,6 @@ class Types
                     } elseif (isset($value['_itemtype'])) {
                         $type_name = $value['_itemtype'];
                     }
-                    /** @phpstan-ignore-next-line */
                     return $type_name ? self::load($type_name, $api_version) : null;
                 },
             ];
@@ -161,11 +170,7 @@ class Types
 
             // Unions
             if (isset($items['anyOf']) || isset($items['oneOf'])) {
-                $union_defs = $items['anyOf'] ?? $items['oneOf'];
-                $type_list = array_values(array_filter(array_map(
-                    static fn($r) => is_string($r) ? $r : (isset($r['$ref']) ? str_replace('#/components/schemas/', '', $r['$ref']) : null),
-                    $union_defs
-                )));
+                $type_list = self::getTypesFromUnionDefs($items['anyOf'] ?? $items['oneOf']);
 
                 $disc_prop = $property['discriminator']['propertyName'] ?? ($items['discriminator']['propertyName'] ?? null);
                 // anyOf and oneOf could both use UnionType. Not sure there is a good way to properly say for oneOf that all items are the same type.
@@ -174,7 +179,6 @@ class Types
                     'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
                     'resolveType' => static function ($value) use ($api_version, $disc_prop): ?Type {
                         if ($disc_prop !== null && isset($value[$disc_prop])) {
-                            /** @phpstan-ignore-next-line */
                             return self::load($value[$disc_prop], $api_version);
                         }
                         return null;
@@ -196,12 +200,8 @@ class Types
         if ($type === Doc\Schema::TYPE_OBJECT) {
             // Support anyOf/oneOf union for object properties
             if (isset($property['anyOf']) || isset($property['oneOf'])) {
-                $union_defs = $property['anyOf'] ?? $property['oneOf'];
                 // Accept either bare schema names (strings) or $ref objects
-                $type_list = array_values(array_filter(array_map(
-                    static fn($r) => is_string($r) ? $r : (isset($r['$ref']) ? str_replace('#/components/schemas/', '', $r['$ref']) : null),
-                    $union_defs
-                )));
+                $type_list = self::getTypesFromUnionDefs($property['anyOf'] ?? $property['oneOf']);
 
                 $disc_prop = $property['discriminator']['propertyName'] ?? null;
 
@@ -210,7 +210,6 @@ class Types
                     'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
                     'resolveType' => static function ($value) use ($api_version, $disc_prop): ?Type {
                         if ($disc_prop !== null && isset($value[$disc_prop])) {
-                            /** @phpstan-ignore-next-line */
                             return self::load($value[$disc_prop], $api_version);
                         }
                         return null;
