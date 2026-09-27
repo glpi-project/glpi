@@ -944,6 +944,111 @@
                 }
             }
         },
+        "Assistance_AssociatedItem": {
+            "type": "object",
+            "properties": {
+                "_type": {
+                    "type": "string",
+                    "enum": [
+                        "Computer",
+                        "Monitor",
+                        "NetworkEquipment",
+                        "Peripheral",
+                        "Phone",
+                        "Printer",
+                        "Software",
+                        "SoftwareLicense",
+                        "Certificate",
+                        "DCRoom",
+                        "Rack",
+                        "Enclosure",
+                        "PDU",
+                        "Appliance",
+                        "SIMCardItem",
+                        "PassiveDCEquipment",
+                        "Cable"
+                    ]
+                },
+                "data": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/components/schemas/Computer"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Monitor"
+                        },
+                        {
+                            "$ref": "#/components/schemas/NetworkEquipment"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Peripheral"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Phone"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Printer"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Software"
+                        },
+                        {
+                            "$ref": "#/components/schemas/SoftwareLicense"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Certificate"
+                        },
+                        {
+                            "$ref": "#/components/schemas/DCRoom"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Rack"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Enclosure"
+                        },
+                        {
+                            "$ref": "#/components/schemas/PDU"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Appliance"
+                        },
+                        {
+                            "$ref": "#/components/schemas/SIMCardItem"
+                        },
+                        {
+                            "$ref": "#/components/schemas/PassiveDCEquipment"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Cable"
+                        }
+                    ]
+                }
+            },
+            "discriminator": {
+                "propertyName": "_type",
+                "mapping": {
+                    "Computer": "#/components/schemas/Computer",
+                    "Monitor": "#/components/schemas/Monitor",
+                    "NetworkEquipment": "#/components/schemas/NetworkEquipment",
+                    "Peripheral": "#/components/schemas/Peripheral",
+                    "Phone": "#/components/schemas/Phone",
+                    "Printer": "#/components/schemas/Printer",
+                    "Software": "#/components/schemas/Software",
+                    "SoftwareLicense": "#/components/schemas/SoftwareLicense",
+                    "Certificate": "#/components/schemas/Certificate",
+                    "DCRoom": "#/components/schemas/DCRoom",
+                    "Rack": "#/components/schemas/Rack",
+                    "Enclosure": "#/components/schemas/Enclosure",
+                    "PDU": "#/components/schemas/PDU",
+                    "Appliance": "#/components/schemas/Appliance",
+                    "SIMCardItem": "#/components/schemas/SIMCardItem",
+                    "PassiveDCEquipment": "#/components/schemas/PassiveDCEquipment",
+                    "Cable": "#/components/schemas/Cable"
+                }
+            }
+        },
         "AutoUpdateSystem": {
             "type": "object",
             "x-itemtype": "AutoUpdateSystem",
@@ -3191,6 +3296,21 @@
                             }
                         },
                         "x-full-schema": "ChangeCost"
+                    }
+                },
+                "associated_items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Change_Item",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Assistance_AssociatedItem"
                     }
                 }
             },
@@ -17662,6 +17782,21 @@
                         },
                         "x-full-schema": "ProblemCost"
                     }
+                },
+                "associated_items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_Problem",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Assistance_AssociatedItem"
+                    }
                 }
             },
             "x-itemtype": "Problem"
@@ -25054,6 +25189,21 @@
                             }
                         },
                         "x-full-schema": "TicketCost"
+                    }
+                },
+                "associated_items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_Ticket",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Assistance_AssociatedItem"
                     }
                 }
             },
