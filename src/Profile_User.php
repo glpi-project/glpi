@@ -94,7 +94,8 @@ class Profile_User extends CommonDBRelation
             return false;
         }
 
-        return true;
+        return Profile::currentUserHaveMoreRightThan([$this->fields['profiles_id']])
+            && Session::haveAccessToEntity($this->fields['entities_id']);
     }
 
     public function prepareInputForAdd($input)
