@@ -213,6 +213,8 @@ class MassiveActionTest extends DbTestCase
         bool $itemtype_is_compatible,
         bool $has_right
     ) {
+        $this->login();
+
         $base_comment = "test comment";
         $amendment = "test amendment";
         $old_session = $_SESSION['glpiactiveentities'] ?? [];
@@ -222,12 +224,16 @@ class MassiveActionTest extends DbTestCase
             $_SESSION['glpiactiveentities'] = [
                 $item->getEntityID(),
             ];
+        } else {
+            $_SESSION['glpiactiveentities'] = [
+                $item->getEntityID() + 1, // session is outside of scope
+            ];
         }
 
         // Check supplied params match the data
         $comment_exist = array_key_exists('comment', $item->fields);
         $this->assertSame($itemtype_is_compatible, $comment_exist);
-        $this->assertSame($has_right, $item->canUpdateItem());
+        $this->assertSame($has_right, $item->can($item->getID(), UPDATE));
 
         if ($itemtype_is_compatible && $has_right) {
             $expected_ok = 1;
@@ -305,13 +311,18 @@ class MassiveActionTest extends DbTestCase
         ];
 
         if ($has_right) {
-            $_SESSION['glpiactiveprofile'][$item::$rightname] = UPDATENOTE;
+            $_SESSION['glpiactiveprofile'][$item::$rightname] = READ | UPDATENOTE;
+        } else {
+            $_SESSION['glpiactiveprofile'][$item::$rightname] = READ;
         }
 
         // Check expected rights
         $this->assertSame(
             $has_right,
             (bool) Session::haveRight($item::$rightname, UPDATENOTE)
+        );
+        $this->assertTrue(
+            $item->can($item->getID(), READ)
         );
 
         if ($has_right) {
@@ -389,17 +400,34 @@ class MassiveActionTest extends DbTestCase
         array $input,
         bool $has_right
     ) {
+        $this->login();
+
         // Set up session rights
         $old_session = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
         if ($has_right) {
-            $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = ALLSTANDARDRIGHT;
+            $_SESSION['glpiactiveprofile'][Problem::$rightname] = ALLSTANDARDRIGHT + Problem::READALL;
+        } else {
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+            $_SESSION['glpiactiveprofile'][Problem::$rightname] = 0;
         }
 
-        // Default expectation: can't run
-        $expected_ok = 0;
-        $expected_ko = 0;
+        // Expectations
+        if ($item instanceof \Ticket) {
+            $expected_ok = ($input['problems_id'] ?? -1) > 0 ? 1 : 0;
+            $expected_ko = ($input['problems_id'] ?? -1) <= 0 ? 1 : 0;
+
+
+        } else {
+            $expected_ok = 0;
+            $expected_ko = 1;
+        }
 
         // Check rights set up was successful
+        $this->assertSame(
+            $has_right,
+            (bool) Session::haveRight(Ticket::$rightname, UPDATE)
+        );
         $this->assertSame(
             $has_right,
             (bool) Session::haveRight(Problem::$rightname, UPDATE)
@@ -415,9 +443,6 @@ class MassiveActionTest extends DbTestCase
                 'entities_id' => $item->getEntityID(),
             ]);
             $this->assertGreaterThan(0, $input['problems_id']);
-
-            // Update expectation: this item should be OK
-            $expected_ok = 1;
         }
 
         // Execute action
@@ -476,9 +501,12 @@ class MassiveActionTest extends DbTestCase
         int    $expected_ok,
         int    $expected_ko
     ): void {
+        $this->login();
+
         // Grant Problem update right
         $old_right = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
-        $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = ALLSTANDARDRIGHT;
+        $_SESSION['glpiactiveprofile'][Problem::$rightname] = ALLSTANDARDRIGHT + Problem::READALL;
 
         $problem    = new Problem();
         $problem_id = $problem->add([
@@ -603,6 +631,7 @@ class MassiveActionTest extends DbTestCase
         $id = $ticket->add([
             'name'    => 'test',
             'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $ticket->getFromDB($id);
         $this->assertGreaterThan(0, $id);
@@ -662,7 +691,7 @@ class MassiveActionTest extends DbTestCase
 
             // Set up session rights
             if ($has_right) {
-                $this->login('tech', 'tech');
+                $this->login();
             } else {
                 $this->login('post-only', 'postonly');
             }

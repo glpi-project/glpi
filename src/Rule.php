@@ -669,9 +669,21 @@ class Rule extends CommonDBTM
         switch ($ma->getAction()) {
             case 'export':
                 if (count($ids)) {
-                    $_SESSION['exportitems'] = $ids;
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                    $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item->getType());
+                    $_SESSION['exportitems'] = [];
+                    foreach ($ids as $id) {
+                        if (!$item->can($id, READ)) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
+                        $_SESSION['exportitems'][$id] = $id;
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+
+                    if ($_SESSION['exportitems'] !== []) {
+                        $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item->getType());
+                    }
                 }
                 break;
 
@@ -681,6 +693,12 @@ class Rule extends CommonDBTM
                 $rulecollection = new $collectionname();
                 if ($rulecollection->canUpdate()) {
                     foreach ($ids as $id) {
+                        if (!$item->can($id, UPDATE)) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         if ($item->getFromDB($id)) {
                             if ($rulecollection->moveRule($id, $input['ranking'], $input['move_type'])) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);

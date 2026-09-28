@@ -1230,14 +1230,32 @@ class Lock extends CommonGLPI
                             [$itemtype, $field] = explode(' - ', $fields);
                             $lock_fields_name[] = $field;
                         }
-                        $lockfield = new Lockedfield();
-                        $res = $lockfield->deleteByCriteria([
-                            "itemtype" => $base_itemtype,
-                            "items_id" => $id,
-                            "field" => $lock_fields_name,
-                            "is_global" => 0,
+
+                        $found = $DB->request([
+                            'FROM' => Lockedfield::getTable(),
+                            'WHERE' => [
+                                "itemtype" => $base_itemtype,
+                                "items_id" => $id,
+                                "field" => $lock_fields_name,
+                                "is_global" => 0,
+                            ],
                         ]);
-                        if ($res) {
+
+                        $success = true;
+                        foreach (Lockedfield::getFromIter($found) as $lockfield) {
+                            if (!$lockfield->can($lockfield->getID(), PURGE)) {
+                                $success = false;
+                                $ma->addMessage($baseitem->getErrorMessage(ERROR_RIGHT));
+                                continue;
+                            }
+
+                            if (!$lockfield->delete(['id' => $lockfield->getID()])) {
+                                $success = false;
+                                $ma->addMessage($baseitem->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        }
+
+                        if ($success) {
                             $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_KO);
@@ -1262,18 +1280,21 @@ class Lock extends CommonGLPI
                         }
                     }
                     foreach ($ids as $id) {
-                        $action_valid = false;
+                        $action_valid = true;
                         foreach ($links as $infos) {
                             $infos['condition'][$infos['field']] = $id;
                             $locked_items = $DB->request($infos['table'], $infos['condition']);
 
-                            if ($locked_items->count() === 0) {
-                                $action_valid = true;
-                                continue;
-                            }
                             foreach ($locked_items as $data) {
                                 // Restore without history
-                                $action_valid = $infos['item']->restore(['id' => $data['id']]);
+                                if (!$infos['item']->can($data['id'], DELETE)) {
+                                    $action_valid = false;
+                                    continue;
+                                }
+
+                                if (!$infos['item']->restore(['id' => $data['id']])) {
+                                    $action_valid = false;
+                                }
                             }
                         }
 

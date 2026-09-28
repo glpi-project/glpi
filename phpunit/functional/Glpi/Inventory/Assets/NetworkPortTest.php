@@ -1540,6 +1540,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $ma->method('getInput')->willReturn([]);
 
         // Execute method
+        $this->login('glpi', 'glpi');
         $_POST['itemtype'] = \NetworkEquipment::getType();
         \Unmanaged::processMassiveActionsForOneItemtype($ma, $unmanaged, [$unmanaged->fields['id']]);
 

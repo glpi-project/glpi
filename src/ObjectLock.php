@@ -570,6 +570,12 @@ class ObjectLock extends CommonDBTM
         array $ids
     ) {
         foreach ($ids as $items_id) {
+            if (!Session::haveRight($item::$rightname, UNLOCK) || !$item->can($items_id, UPDATE)) {
+                $ma->itemDone($item->getType(), $items_id, MassiveAction::ACTION_NORIGHT);
+                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                continue;
+            }
+
             $itemtype = get_class($item);
             $lo       = new self($itemtype, $items_id);
             if ($lo->getLockedObjectInfo()) {

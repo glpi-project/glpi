@@ -2900,6 +2900,8 @@ JAVASCRIPT;
                     $mergeparams['append_actors'] = [];
                 }
 
+                // /!\ rights checks are made inside the Ticket::merge() method
+
                 Ticket::merge($input['_mergeticket'], $ids, $status, $mergeparams);
                 foreach ($status as $id => $status_code) {
                     if ($status_code == 0) {
@@ -2917,12 +2919,14 @@ JAVASCRIPT;
             case 'link_to_problem':
                 // Skip if not tickets
                 if ($item::getType() !== Ticket::getType()) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                     return;
                 }
 
                 // Skip if missing update rights on problems
                 if (!Problem::canUpdate()) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -2930,12 +2934,14 @@ JAVASCRIPT;
                 // Check input
                 $input = $ma->getInput();
                 if (!isset($input['problems_id'])) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage(__("Missing input: no Problem selected"));
                     return;
                 }
 
                 $problem = new Problem();
                 if (!$problem->getFromDB($input['problems_id'])) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage(__("Selected Problem can't be loaded"));
                     return;
                 }
@@ -2972,11 +2978,20 @@ JAVASCRIPT;
                         continue;
                     }
 
-                    // Add new link
-                    $res = $em->add([
+                    $add_input = [
                         'problems_id' => $input['problems_id'],
                         'tickets_id'  => $id,
-                    ]);
+                    ];
+
+                    // Check item creation right
+                    if (!$em->can(-1, CREATE, $add_input)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    // Add new link
+                    $res = $em->add($add_input);
 
                     // Check if creation was successful
                     if ($res) {
@@ -3021,6 +3036,7 @@ JAVASCRIPT;
                     if (!$ticket->getFromDB($id)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        continue;
                     }
 
                     // Check ticket is not already resolved or closed
@@ -3031,11 +3047,19 @@ JAVASCRIPT;
                     if (in_array($ticket->fields['status'], $invalid_status)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        continue;
                     }
 
                     // Add reference to ticket in input
                     $input['itemtype'] = self::getType();
                     $input['items_id'] = $id;
+
+                    // Check item creation right
+                    if (!$em->can(-1, CREATE, $input)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
 
                     // Insert new solution
                     $res = $em->add($input);
@@ -3084,11 +3108,20 @@ JAVASCRIPT;
                         continue;
                     }
 
-                    // Add link
-                    $res = $em->add([
+                    $add_input = [
                         'contracts_id' => $contracts_id,
                         'tickets_id'   => $id,
-                    ]);
+                    ];
+
+                    // Check item creation right
+                    if (!$em->can(-1, CREATE, $add_input)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    // Add link
+                    $res = $em->add($add_input);
 
                     // Check if creation was successful
                     if ($res) {

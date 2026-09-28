@@ -249,6 +249,31 @@ class Unmanaged extends CommonDBTM
                 $unmanaged = new self();
                 foreach ($ids as $id) {
                     $itemtype = $_POST['itemtype'];
+
+                    if (!$unmanaged->getFromDB($id)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                        continue;
+                    }
+
+                    $target_item = getItemForItemtype($unmanaged->fields['itemtype'] ?: $itemtype);
+                    if ($target_item === false) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        continue;
+                    }
+
+                    $entities_input = ['entities_id' => $unmanaged->getEntityID()];
+                    if (
+                        !$unmanaged->can($unmanaged->getID(), UPDATE)
+                        || !$target_item->can(-1, CREATE, $entities_input)
+                    ) {
+                        // Check ability to create the target item in the given entity
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
                     $new_asset_id = $unmanaged->convert($id, $itemtype);
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                     if (count($ids) === 1) {

@@ -6638,12 +6638,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/SlaLevel_Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type CommonDBTM supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Socket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Socket\\:\\:showListForItem\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 2,

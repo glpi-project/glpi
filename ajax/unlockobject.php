@@ -55,8 +55,14 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
     // then we may have something to unlock
     $ol = new ObjectLock();
     if ($ol->getFromDB($_POST["id"])) {
+        $item = getItemForItemtype($ol->fields['itemtype']);
+
         $can_unlock = $ol->fields['users_id'] === Session::getLoginUserID()
-            || Session::haveRight($ol->fields['itemtype']::$rightname, UNLOCK);
+            || (
+                $item instanceof CommonDBTM
+                && Session::haveRight($item::$rightname, UNLOCK)
+                && $item->can($ol->fields['items_id'], UPDATE)
+            );
         if ($can_unlock && $ol->deleteFromDB(true)) {
             Log::history(
                 $ol->fields['items_id'],
