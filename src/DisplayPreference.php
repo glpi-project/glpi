@@ -208,6 +208,13 @@ class DisplayPreference extends CommonDBTM
                 return;
             case 'reset_to_default':
                 $input = $ma->getInput();
+
+                if (!Session::haveRight(static::$rightname, DisplayPreference::GENERAL)) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    return;
+                }
+
                 if (!isset($input['users_id']) || $input['users_id'] <= 0) {
                     foreach ($ids as $itemtype) {
                         if (self::resetToDefaultOptions($itemtype)) {
@@ -288,6 +295,17 @@ class DisplayPreference extends CommonDBTM
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
+                $existing_crit = [
+                    'itemtype'  => $data['itemtype'],
+                    'users_id'  => $input['users_id'],
+                    'num'       => $data['num'],
+                    'interface' => $data['interface'],
+                ];
+                if (countElementsInTable(self::getTable(), $existing_crit)) {
+                    // The display preference is already set for the user.
+                    continue;
+                }
+
                 unset($data["id"]);
                 $data["users_id"] = $input["users_id"];
                 $DB->updateOrInsert(

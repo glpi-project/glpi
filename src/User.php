@@ -3480,6 +3480,12 @@ HTML;
             case 'reapply_rights':
                 $user = new self();
                 foreach ($ids as $id) {
+                    if (!$user->can($id, UPDATE)) {
+                        $ma->itemDone(self::class, $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($user->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
                     if ($user->getFromDB($id)) {
                         $user->reapplyRightRules();
                         $ma->itemDone(self::class, $id, MassiveAction::ACTION_OK);

@@ -3304,6 +3304,12 @@ class Plugin extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
+        if (!Config::canUpdate()) {
+            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+            return;
+        }
+
         $plugin = new self();
         switch ($ma->getAction()) {
             case 'install':

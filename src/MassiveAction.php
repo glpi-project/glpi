@@ -1680,6 +1680,12 @@ class MassiveAction
                     $_SESSION['glpitransfer_list'][$itemtype] = [];
                 }
                 foreach ($ids as $id) {
+                    if (!$item->can($id, UPDATE)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
                     $_SESSION['glpitransfer_list'][$itemtype][$id] = $id;
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }
@@ -1703,7 +1709,7 @@ class MassiveAction
                     $item->getFromDB($id);
 
                     // Check rights
-                    if (!$item->canUpdateItem()) {
+                    if (!$item->can($id, UPDATE)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
@@ -1748,13 +1754,21 @@ class MassiveAction
                 $em = new Notepad();
 
                 foreach ($ids as $id) {
-                    $success = $em->add([
+                    $add_input = [
                         'itemtype'             => $item::getType(),
                         'items_id'             => $id,
                         'content'              => $content,
                         'users_id'             => Session::getLoginUserID(),
                         'users_id_lastupdater' => Session::getLoginUserID(),
-                    ]);
+                    ];
+
+                    if (!$em->can(-1, CREATE, $add_input)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    $success = $em->add($add_input);
 
                     if (!$success) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

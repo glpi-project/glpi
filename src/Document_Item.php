@@ -813,6 +813,14 @@ TWIG, $twig_params);
                 continue;
             }
             $doc_id = (int) $item->fields['documents_id'];
+
+            $document = new Document();
+            if (!$document->can($doc_id, UPDATE)) {
+                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                continue;
+            }
+
             $_SESSION['glpitransfer_list'][Document::class][$doc_id] = $doc_id;
             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
         }
