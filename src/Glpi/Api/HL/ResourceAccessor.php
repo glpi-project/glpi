@@ -302,6 +302,9 @@ final class ResourceAccessor
             }
 
             try {
+                if (trim($header_value) === '') {
+                    throw new InvalidArgumentException(sprintf('Invalid value for %s header: empty string.', $header_name));
+                }
                 $header_dates[$header_name] = new DateTime($header_value);
             } catch (\Exception $e) {
                 throw new InvalidArgumentException(sprintf('Invalid value for %s header.', $header_name), $e->getCode(), $e);
@@ -403,7 +406,12 @@ final class ResourceAccessor
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_UPDATE);
         }
         // We should return the updated item but we NEVER return the GLPI item fields directly. Need to use special API methods.
-        return self::getOneBySchema($schema, $request_attrs + ['id' => $items_id], $request_params, $field, false);
+        return self::getOneBySchema(
+            schema: $schema,
+            request_attrs: $request_attrs + ['id' => $items_id],
+            request_params: $request_params,
+            check_preconditions: false
+        );
     }
 
     /**
