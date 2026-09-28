@@ -1275,6 +1275,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'is_active',
                 'begin_date',
                 'end_date',
+
+                // Prevent changing 2fa settings
+                '2fa',
+                '2fa_unenforced',
             ];
             if (
                 count(array_intersect($protected_input_keys, array_keys($input))) > 0
@@ -1296,6 +1300,21 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         sprintf(
                             __s('You are not allowed to update the following fields: %s'),
                             htmlescape(implode(', ', $ignored_fields))
+                        ),
+                        false,
+                        ERROR
+                    );
+                    return false;
+                }
+            }
+
+            foreach (['2fa', '2fa_unenforced'] as $mfa_field) {
+                if (array_key_exists($mfa_field, $input) && !Session::haveRight(User::$rightname, User::UPDATEAUTHENT)) {
+                    // similar check than the `disable_2fa` form action
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __s('You are not allowed to update the following fields: %s'),
+                            $mfa_field
                         ),
                         false,
                         ERROR
@@ -3461,8 +3480,12 @@ HTML;
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
                     }
-                    $totp->disable2FAForUser($id);
-                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    if ($totp->disable2FAForUser($id)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                    }
                 }
                 break;
             case 'send_pw_reset':

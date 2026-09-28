@@ -54,6 +54,7 @@ use Symfony\Component\Cache\Adapter\Psr16Adapter;
 use Symfony\Component\RateLimiter\LimiterInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\RateLimiter\Storage\CacheStorage;
+use User;
 
 use function Safe\json_encode;
 
@@ -203,13 +204,13 @@ final class TOTPManager
      */
     public function disable2FAForUser(int $users_id): bool
     {
-        global $DB;
+        $user = User::getById($users_id);
 
-        return $DB->update('glpi_users', [
-            '2fa'   => null,
-        ], [
-            'id' => $users_id,
-        ]) !== false;
+        if ($user === false) {
+            return false;
+        }
+
+        return $user->update(['id' => $users_id, '2fa' => null]);
     }
 
     /**
