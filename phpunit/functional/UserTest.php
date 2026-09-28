@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use Glpi\Toolbox\Sanitizer;
+use Group;
+use Group_User;
 use Monolog\Logger;
 use Profile_User;
 use QuerySubQuery;
@@ -944,6 +946,142 @@ class UserTest extends \DbTestCase
                 'is_dynamic'    => $row['is_dynamic'],
             ]));
         }
+    }
+
+    public function testCloneDoesNotEscalatePrivileges(): void
+    {
+        // A Technician cloning a Super-Admin user must not inherit Super-Admin rights
+        $this->login('tech', 'tech');
+
+        $source = getItemByTypeName('User', 'glpi');
+        $this->assertInstanceOf(User::class, $source);
+
+        $puser = new Profile_User();
+        $this->assertTrue($puser->getFromDBByCrit([
+            'users_id'    => $source->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited the Super-Admin authorization,
+        // since the Technician performing the clone could not grant it directly.
+        $this->assertFalse($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+    }
+
+    public function testCloneStillCopiesAuthorizedProfiles(): void
+    {
+        $this->login();
+
+        $user = $this->createItem(User::class, ['name' => 'clone_source_technician']);
+
+        $puser = $this->createItem(Profile_User::class, [
+            'users_id'    => $user->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $this->assertTrue($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+        ]));
+    }
+
+    public function testCloneDoesNotEscalateAuthorizationAcrossEntities(): void
+    {
+        $this->login();
+
+        // A technician authorized only (non-recursively) on _test_root_entity.
+        $this->createItem(User::class, [
+            'name'         => 'clone_restricted_technician',
+            'password'     => TU_PASS,
+            'password2'    => TU_PASS,
+            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ], ['password', 'password2']);
+
+        // The user to clone is authorized in a child entity the technician has no access to.
+        $source = $this->createItem(User::class, ['name' => 'clone_source_other_entity']);
+        $puser = $this->createItem(Profile_User::class, [
+            'users_id'    => $source->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+
+        $this->login('clone_restricted_technician');
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited the authorization on an entity
+        // the technician performing the clone had no access to.
+        $this->assertFalse($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]));
+    }
+
+    public function testCloneStillCopiesAuthorizedGroupMembership(): void
+    {
+        $this->login();
+
+        $user = $this->createItem(User::class, ['name' => 'clone_source_with_group']);
+
+        $group = $this->createItem(Group::class, [
+            'name'        => 'clone_group_in_scope',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $gu = $this->createItem(Group_User::class, [
+            'users_id'  => $user->getID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $this->assertTrue($gu->getFromDBByCrit(['users_id' => $cloned_id, 'groups_id' => $group->getID()]));
+    }
+
+    public function testCloneDoesNotEscalateGroupMembership(): void
+    {
+        $this->login();
+
+        // A technician authorized only (non-recursively) on _test_root_entity.
+        $this->createItem(User::class, [
+            'name'         => 'clone_restricted_technician_group',
+            'password'     => TU_PASS,
+            'password2'    => TU_PASS,
+            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ], ['password', 'password2']);
+
+        // The user to clone belongs to a group defined in a child entity the technician has no access to.
+        $source = $this->createItem(User::class, ['name' => 'clone_source_group_other_entity']);
+        $group = $this->createItem(Group::class, [
+            'name'        => 'clone_group_other_entity',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+        $gu = $this->createItem(Group_User::class, [
+            'users_id'  => $source->getID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        $this->login('clone_restricted_technician_group');
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited membership in a group defined
+        // in an entity the technician performing the clone had no access to.
+        $this->assertFalse($gu->getFromDBByCrit(['users_id' => $cloned_id, 'groups_id' => $group->getID()]));
     }
 
     public function testGetFromDBbyDn()

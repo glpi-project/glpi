@@ -77,10 +77,7 @@ class User extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [
-            Profile_User::class,
-            Group_User::class,
-        ];
+        return [];
     }
 
     public function prepareInputForClone($input)
@@ -99,7 +96,27 @@ class User extends CommonDBTM
 
     public function post_clone($source, $history)
     {
-        //FIXME? clone config
+        // Only copy the profiles the current session user could grant directly
+        $profile_user = new Profile_User();
+        foreach ($profile_user->find(['users_id' => $source->getID()]) as $data) {
+            unset($data['id']);
+            $data['users_id'] = $this->getID();
+            if (!$profile_user->can(-1, CREATE, $data)) {
+                continue;
+            }
+            $profile_user->add($data, [], $history);
+        }
+
+        // Only copy the group memberships the current session user could grant directly
+        $group_user = new Group_User();
+        foreach ($group_user->find(['users_id' => $source->getID()]) as $data) {
+            unset($data['id']);
+            $data['users_id'] = $this->getID();
+            if (!$group_user->can(-1, CREATE, $data)) {
+                continue;
+            }
+            $group_user->add($data, [], $history);
+        }
     }
 
     public static function getTypeName($nb = 0)
