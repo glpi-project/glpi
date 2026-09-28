@@ -3565,6 +3565,39 @@ HTML,
         $this->assertEquals(1, $other->fields['show_in_service_catalog']);
     }
 
+    public function testFaqPublicationNeedsThePublishFaqRight(): void
+    {
+        // The article is authored by another user: the author bypass would otherwise let the tested user edit it without any visibility rule.
+        $this->login();
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => getItemByTypeName('User', 'glpi', true),
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'users_id'         => getItemByTypeName('User', 'tech', true),
+        ]);
+
+        $this->login('tech', 'tech');
+        $this->assertTrue($article->getFromDB($article->getID()));
+
+        // `UPDATE` alone does not publish in the FAQ.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+        $this->assertTrue($article->canUpdateItem());
+        $this->assertNotContains('Add to FAQ', $this->getAsideActionLabels($article));
+        $this->assertTrue($article->update(['id' => $article->getID(), 'is_faq' => 1]));
+        $this->assertTrue($article->getFromDB($article->getID()));
+        $this->assertEquals(0, $article->fields['is_faq']);
+
+        // `PUBLISHFAQ` does.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | KnowbaseItem::PUBLISHFAQ;
+        $this->assertContains('Add to FAQ', $this->getAsideActionLabels($article));
+        $this->assertTrue($article->update(['id' => $article->getID(), 'is_faq' => 1]));
+        $this->assertTrue($article->getFromDB($article->getID()));
+        $this->assertEquals(1, $article->fields['is_faq']);
+    }
+
     /**
      * @return string[]
      */

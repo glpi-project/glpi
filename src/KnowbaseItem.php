@@ -1224,6 +1224,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             unset($input['users_id']);
         }
 
+        // Adding to or removing from the FAQ is a right of its own, `UPDATE` is not enough.
+        if (!Session::haveRightsOr(self::$rightname, [self::PUBLISHFAQ, self::KNOWBASEADMIN])) {
+            unset($input['is_faq']);
+        }
+
         return $this->prepareIllustrationInput($input);
     }
 
@@ -1901,7 +1906,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             );
         }
         // The root article is not part of the FAQ, see `prepareInputForUpdate()`.
-        if ($can_author && !$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
+        if (
+            $can_author
+            && !$this->isRoot()
+            && Session::haveRightsOr(self::$rightname, [self::PUBLISHFAQ, self::KNOWBASEADMIN])
+            && $this->can($this->fields['id'], UPDATE)
+        ) {
             $toggles[] = new EditorAction(
                 label: __("Add to FAQ"),
                 icon: "ti ti-bookmark",
