@@ -284,6 +284,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
+        // Prevent deleting a user that has more rights than the current user
+        if (!$this->currentUserHaveMoreRightThan($this->fields['id'])) {
+            return false;
+        }
+
         if (
             Session::canViewAllEntities()
             || Session::haveAccessToAllOfEntities($this->getEntities())

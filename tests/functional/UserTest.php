@@ -2061,6 +2061,24 @@ class UserTest extends DbTestCase
         $this->assertTrue($glpi->delete(['id' => $glpi->getID()]));
     }
 
+    public function testCannotDeleteUserWithMoreRights(): void
+    {
+        // Technician profile has DELETE and PURGE rights on users
+        $this->login('tech', 'tech');
+
+        // Super-Admin user: more rights than the current user
+        $jsmith123 = getItemByTypeName('User', 'jsmith123');
+        $this->assertFalse($jsmith123->canDeleteItem());
+        $this->assertFalse($jsmith123->canPurgeItem());
+        $this->assertFalse($jsmith123->can($jsmith123->getID(), DELETE));
+        $this->assertFalse($jsmith123->can($jsmith123->getID(), PURGE));
+
+        // Self-Service user: less rights than the current user
+        $post_only = getItemByTypeName('User', 'post-only');
+        $this->assertTrue($post_only->canDeleteItem());
+        $this->assertTrue($post_only->canPurgeItem());
+    }
+
     public function testUserPreferences()
     {
         if (version_compare(PHP_VERSION, '8.0', '<')) {
