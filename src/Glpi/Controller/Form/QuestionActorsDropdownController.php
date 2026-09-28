@@ -70,6 +70,15 @@ final class QuestionActorsDropdownController extends AbstractController
             'page_size'        => $request->request->getInt('page_limit', -1),
         ];
 
+        if (
+            !Session::validateIDOR([
+                'itemtype'    => FormActorsDropdown::class,
+                '_idor_token' => $request->request->getString('_idor_token'),
+            ] + $options)
+        ) {
+            throw new AccessDeniedHttpException();
+        }
+
         return new JsonResponse(
             FormActorsDropdown::fetchValues(
                 $request->request->getString('searchText'),

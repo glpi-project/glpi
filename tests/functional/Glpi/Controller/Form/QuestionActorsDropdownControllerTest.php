@@ -35,10 +35,13 @@
 namespace tests\units\Glpi\Controller\Form;
 
 use Glpi\Controller\Form\QuestionActorsDropdownController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Form\Dropdown\FormActorsDropdown;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use Supplier;
 use Symfony\Component\HttpFoundation\Request;
 use User;
@@ -245,6 +248,18 @@ final class QuestionActorsDropdownControllerTest extends DbTestCase
 
         // Act: fetch dropdown values
         $this->login();
+
+        // Request must contain a valid IDOR token for the current session
+        $token = Session::getNewIDORToken(
+            FormActorsDropdown::class,
+            [
+                'allowed_types'    => $request->get('allowed_types', []),
+                'right_for_users'  => $request->get('right_for_users', 'all'),
+                'group_conditions' => $request->get('group_conditions', []),
+            ],
+        );
+        $request->request->set('_idor_token', $token);
+
         $controller = new QuestionActorsDropdownController();
         $response = $controller->__invoke($request);
         $values = json_decode($response->getContent(), associative: true);
@@ -253,6 +268,49 @@ final class QuestionActorsDropdownControllerTest extends DbTestCase
         // Assert: compare the values with the expectations
         $this->assertEquals($expected, $text_values);
         $this->assertEquals(count($expected), $values['count']);
+    }
+
+    public function testFetchValuesWithMissingIdorToken(): void
+    {
+        // Arrange: create request
+        $this->login();
+
+        $request = Request::create('', 'POST', [
+            'allowed_types' => [User::class, Group::class, Supplier::class],
+            'page' => 1,
+            'page_limit' => 2,
+            'searchText' => 'test pagination',
+        ]);
+
+        // Act: fetch dropdown values
+        $controller = new QuestionActorsDropdownController();
+        $this->expectException(AccessDeniedHttpException::class);
+        $controller->__invoke($request);
+    }
+
+    public function testFetchValuesWithInvalidIdorToken(): void
+    {
+        // Arrange: create request
+        $this->login();
+
+        $request = Request::create('', 'POST', [
+            '_idor_token'   => Session::getNewIDORToken(
+                FormActorsDropdown::class,
+                [
+                    'group_conditions' => ['is_watcher' => 1],
+                ],
+            ),
+            'allowed_types'    => [User::class, Group::class],
+            'group_conditions' => [], // differs from token
+            'page' => 1,
+            'page_limit' => 2,
+            'searchText' => 'test pagination',
+        ]);
+
+        // Act: fetch dropdown values
+        $controller = new QuestionActorsDropdownController();
+        $this->expectException(AccessDeniedHttpException::class);
+        $controller->__invoke($request);
     }
 
     private function extractTextFromOutput(array $dropdown_output): array
