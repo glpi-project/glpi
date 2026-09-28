@@ -240,6 +240,8 @@ class MassiveActionTest extends DbTestCase
         bool $itemtype_is_compatible,
         bool $has_right
     ) {
+        $this->login();
+
         $base_comment = "test comment";
         $amendment = "test amendment";
         $old_session = $_SESSION['glpiactiveentities'] ?? [];
@@ -250,12 +252,16 @@ class MassiveActionTest extends DbTestCase
             $_SESSION['glpiactiveentities'] = [
                 $item->getEntityID(),
             ];
+        } else {
+            $_SESSION['glpiactiveentities'] = [
+                $item->getEntityID() + 1, // session is outside of scope
+            ];
         }
 
         // Check supplied params match the data
         $comment_exist = array_key_exists('comment', $item->fields);
         $this->assertSame($itemtype_is_compatible, $comment_exist);
-        $this->assertSame($has_right, $item->canUpdateItem());
+        $this->assertSame($has_right, $item->can($item->getID(), UPDATE));
 
         if ($itemtype_is_compatible && $has_right) {
             $expected_ok = 1;
@@ -274,7 +280,7 @@ class MassiveActionTest extends DbTestCase
         } else {
             // No update right, the action will run and fail
             $expected_ok = 0;
-            $expected_ko = 0; // no items set KO, action canceled before the foreach loop.
+            $expected_ko = 1;
         }
 
         // Execute action
@@ -447,13 +453,18 @@ class MassiveActionTest extends DbTestCase
         ];
 
         if ($has_right) {
-            $_SESSION['glpiactiveprofile'][$item::$rightname] = UPDATENOTE;
+            $_SESSION['glpiactiveprofile'][$item::$rightname] = READ | UPDATENOTE;
+        } else {
+            $_SESSION['glpiactiveprofile'][$item::$rightname] = READ;
         }
 
         // Check expected rights
         $this->assertSame(
             $has_right,
             (bool) Session::haveRight($item::$rightname, UPDATENOTE)
+        );
+        $this->assertTrue(
+            $item->can($item->getID(), READ)
         );
 
         if ($has_right) {
@@ -589,6 +600,7 @@ class MassiveActionTest extends DbTestCase
         $id = $ticket->add([
             'name'    => 'test',
             'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $ticket->getFromDB($id);
         $this->assertGreaterThan(0, $id);
@@ -648,7 +660,7 @@ class MassiveActionTest extends DbTestCase
 
             // Set up session rights
             if ($has_right) {
-                $this->login('tech', 'tech');
+                $this->login();
             } else {
                 $this->login('post-only', 'postonly');
             }
@@ -780,7 +792,7 @@ class MassiveActionTest extends DbTestCase
             0,
             $computer->add([
                 'name' => 'test',
-                'entities_id' => 1,
+                'entities_id' => $this->getTestRootEntity(true),
             ])
         );
 
@@ -790,7 +802,7 @@ class MassiveActionTest extends DbTestCase
             0,
             $manual_domain->add([
                 'name' => 'manual_domain',
-                'entities_id' => 1,
+                'entities_id' => $this->getTestRootEntity(true),
             ])
         );
 
@@ -840,7 +852,6 @@ class MassiveActionTest extends DbTestCase
                 'is_deleted'            => false,
             ])
         );
-
 
         // Execute action to remove link between Computer and Manual Domain
         $this->processMassiveActionsForOneItemtype(

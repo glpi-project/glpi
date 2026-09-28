@@ -237,14 +237,16 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $itemtoadd = new Item_SoftwareVersion();
                 if (isset($_POST['peer_softwareversions_id'])) {
                     foreach ($ids as $id) {
-                        if ($item->can($id, UPDATE)) {
+                        $add_input = [
+                            'items_id'              => $id,
+                            'itemtype'              => $item::class,
+                            'softwareversions_id'   => $_POST['peer_softwareversions_id'],
+                        ];
+
+                        if ($itemtoadd->can(-1, CREATE, $add_input)) {
                             //Process rules
                             if (
-                                $itemtoadd->add([
-                                    'items_id'              => $id,
-                                    'itemtype'              => $item::class,
-                                    'softwareversions_id'   => $_POST['peer_softwareversions_id'],
-                                ])
+                                $itemtoadd->add($add_input)
                             ) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
