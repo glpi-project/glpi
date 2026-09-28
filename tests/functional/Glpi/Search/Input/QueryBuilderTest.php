@@ -36,7 +36,9 @@ namespace tests\units\Glpi\Search\Input;
 
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Tests\GLPITestCase;
+use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\DomCrawler\Crawler;
 
 class QueryBuilderTest extends GLPITestCase
 {
@@ -375,5 +377,35 @@ class QueryBuilderTest extends GLPITestCase
                 sprintf('Invalid result for field `%s` with value `%s`.', $datatype, $value)
             );
         }
+    }
+
+    public function testShowGenericSearchIgnoresVirtualCriteria(): void
+    {
+        $regular_criteria = [
+            0 => ['link' => 'AND', 'field' => '1', 'searchtype' => 'contains', 'value' => 'foo'],
+            1 => ['link' => 'AND', 'field' => '7', 'searchtype' => 'contains', 'value' => 'bar'],
+        ];
+        // Criteria rows are rendered from the search session data, as done by `Search::manageParams()`
+        $_SESSION['glpisearch'][KnowbaseItem::class]['criteria'] = $regular_criteria;
+
+        // Virtual criteria are appended by the search engine internals (e.g. tree browse category filter)
+        $criteria = $regular_criteria;
+        $criteria[] = ['link' => 'AND', 'field' => '4', 'searchtype' => 'equals', 'value' => 0, 'virtual' => true];
+
+        ob_start();
+        QueryBuilder::showGenericSearch(KnowbaseItem::class, ['criteria' => $criteria]);
+        $output = ob_get_clean();
+
+        $crawler = new Crawler($output);
+
+        // Regular criteria are displayed with their own values
+        $this->assertSame('1', $crawler->filter('select[name="criteria[0][field]"] option[selected]')->attr('value'));
+        $this->assertSame('7', $crawler->filter('select[name="criteria[1][field]"] option[selected]')->attr('value'));
+
+        // Virtual criterion is neither displayed nor submitted back
+        $this->assertCount(0, $crawler->filter('[name^="criteria[2]"]'));
+
+        // "Add rule" counter only counts displayed criteria, so the next rule gets a free index
+        $this->assertMatchesRegularExpression('/nbcriteria\w+\s*=\s*2;/', $output);
     }
 }
