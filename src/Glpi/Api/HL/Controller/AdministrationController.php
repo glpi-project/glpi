@@ -50,6 +50,7 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\UI\ThemeManager;
 use Group;
+use Notification;
 use Planning;
 use Profile;
 use Session;
@@ -253,6 +254,9 @@ EOD,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                         'readOnly' => true,
                         'x-version-introduced' => '2.2.0',
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Session::haveRight(User::$rightname, User::READAUTHENT),
+                        ],
                     ],
                     'title' => self::getDropdownTypeSchema(class: UserTitle::class, full_schema: 'UserTitle') + ['x-version-introduced' => '2.2.0'],
                     'category' => self::getDropdownTypeSchema(class: UserCategory::class, full_schema: 'UserCategory') + ['x-version-introduced' => '2.2.0'],
@@ -421,6 +425,9 @@ EOD,
                         'x-field' => '2fa_enforced',
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is two-factor authentication enforced for members of this group',
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Session::haveRight(User::$rightname, User::READAUTHENT),
+                        ],
                     ],
                     'date_creation' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -558,49 +565,76 @@ EOD,
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_EMAIL,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'admin_email_name' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'from_email' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_EMAIL,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'from_email_name' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'noreply_email' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_EMAIL,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'noreply_email_name' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'replyto_email' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_EMAIL,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'replyto_email_name' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'notification_subject_tag' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 255,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'ldap_dn' => [
                         'x-version-introduced' => '2.3.0',
@@ -627,6 +661,9 @@ EOD,
                     'mailing_signature' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_STRING,
+                        'x-rights-conditions' => [
+                            'read' => static fn() => Notification::canView(),
+                        ],
                     ],
                     'url_base' => [
                         'x-version-introduced' => '2.3.0',

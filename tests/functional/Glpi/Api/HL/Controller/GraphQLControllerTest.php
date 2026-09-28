@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Computer;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
@@ -176,7 +177,7 @@ class GraphQLControllerTest extends HLAPITestCase
             'is_visible_computer' => 1,
             'is_visible_monitor' => 0,
         ]));
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertGreaterThan(0, $computers_id = $computer->add([
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
@@ -496,6 +497,64 @@ class GraphQLControllerTest extends HLAPITestCase
                     $ticket = $tickets[0];
                     $this->assertEquals('New', $ticket['status']['name']);
                 });
+        });
+    }
+
+    public function testFieldAccessDenied(): void
+    {
+        global $DB;
+
+        $this->login('tech', 'tech');
+
+        // Ensure at least one computer has a user to trigger the resolver on the User field to have the date_sync field visibility evaluated
+        $DB->insert(Computer::getTable(), [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id' => getItemByTypeName('User', 'glpi', true),
+        ]);
+        $DB->insert(Computer::getTable(), [
+            'name' => __FUNCTION__ . '2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id' => getItemByTypeName('User', 'glpi', true),
+        ]);
+
+        // Direct access to a field the user does not have access to
+        $this->graphql->call('query { User { id username date_sync } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('User.date_sync');
+        });
+
+        $this->graphql->call('query { Computer { id name user { id username date_sync } } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('Computer.user.date_sync');
+        });
+
+        // Error message adapts to aliases
+        $this->graphql->call('query { Computer { id name owner:user { id username last_sync:date_sync } } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('Computer.owner.last_sync');
+        });
+
+        $DB->insert('glpi_users', [
+            'name' => __FUNCTION__,
+            'date_sync' => '2026-07-01 06:07:00',
+        ]);
+
+        // Filtering by date_sync should not affect the results as missing fields are silently ignored currently
+        $this->graphql->call('query { User(filter: "date_sync=gt=2026-01-01") { id username } }', function ($call) {
+            $call->response
+                ->isOK()
+                ->data('User', function ($users) {
+                    $this->assertGreaterThan(4, count($users));
+                });
+        });
+
+        // Cannot sort by field not in the used schema
+        $this->graphql->call('query { User(sort: "date_sync") { id username } }', function ($call) {
+            $call->response->isCompletelyError();
         });
     }
 }
