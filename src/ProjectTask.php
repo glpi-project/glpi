@@ -363,11 +363,15 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     $type
                 );
                 foreach ($ids as $id) {
-                    $taskteam->add([
+                    $team_input = [
                         'projecttasks_id' => $this->fields['id'],
                         'itemtype'        => $type,
                         'items_id'        => $id,
-                    ]);
+                    ];
+                    if (isset($this->input['_disablenotif'])) {
+                        $team_input['_disablenotif'] = true;
+                    }
+                    $taskteam->add($team_input);
                 }
             }
         }
