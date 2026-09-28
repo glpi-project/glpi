@@ -133,6 +133,12 @@ class NotificationEventMailing extends NotificationEventAbstract
         $transport = Transport::fromDsn(GLPIMailer::buildDsn(true));
 
         foreach ($data as $row) {
+            if ((bool) $row['is_body_encrypted']) {
+                $glpi_key = new GLPIKey();
+                $row['body_text'] = $glpi_key->decrypt($row['body_text']);
+                $row['body_html'] = $glpi_key->decrypt($row['body_html']);
+            }
+
             //make sure mailer is reset on each mail
             $mmail = self::$mailer ?? new GLPIMailer($transport);
             $mail = $mmail->getEmail();
