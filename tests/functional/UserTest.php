@@ -713,7 +713,7 @@ class UserTest extends DbTestCase
             '_reset_personal_token' => true,
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
             '_emails'               => ['test1@example.com', 'test2@example.com'],
-            'is_active'              => false,
+            'is_active'             => false,
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {
@@ -750,6 +750,45 @@ class UserTest extends DbTestCase
                 $this->assertEquals(true, \array_key_exists($key, $output));
             }
         }
+    }
+
+    public function testPrepareInputForUpdate2fa(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $target_user = \getItemByTypeName(User::class, 'tech');
+        $update_input = ['id' => $target_user->getID(), '2fa' => \bin2hex(\random_bytes(16)), '2fa_unenforced' => 1];
+
+        // Admin with `User::UPDATEAUTHENT` right can change `2fa`/`2fa_unenforced` fields
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate($update_input);
+        $this->assertArrayHasKey('2fa', $update_input);
+        $this->assertArrayHasKey('2fa_unenforced', $update_input);
+        $this->assertSame($update_input['2fa'], $output['2fa']);
+        $this->assertSame($update_input['2fa_unenforced'], $output['2fa_unenforced']);
+
+        // Admin without `User::UPDATEAUTHENT` right cannot change `2fa`/`2fa_unenforced` fields
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate($update_input);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa']);
+
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa_unenforced' => 1]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa_unenforced']);
+
+        // User with lower privileges cannot change the `2fa`/`2fa_unenforced` fields,
+        // even when having the `User::UPDATEAUTHENT` right
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa' => \bin2hex(\random_bytes(16))]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa']);
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa_unenforced' => 1]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa_unenforced']);
     }
 
     public function testPrepareInputForUpdateAuthTypeWithSession(): void
