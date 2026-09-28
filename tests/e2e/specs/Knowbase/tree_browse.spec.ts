@@ -32,6 +32,7 @@
 
 import { randomUUID } from 'crypto';
 import { test, expect } from '../../fixtures/glpi_fixture';
+import { KnowbaseTreeBrowsePage } from '../../pages/KnowbaseTreeBrowsePage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
@@ -97,29 +98,21 @@ test('tree browse does not duplicate search criteria', async ({ page, profile, a
         entities_id: getWorkerEntityId(),
     });
 
-    await page.goto('/front/knowbaseitem.php?browse=1&forcetab=Knowbase$2&reset=reset');
-
-    const filters_panel = page.getByTestId('search-filters-panel');
-    // eslint-disable-next-line playwright/no-raw-locators
-    const criteria_fields = filters_panel.locator('select[name$="[field]"]');
-    await expect(criteria_fields).toHaveCount(1);
+    const tree_browse_page = new KnowbaseTreeBrowsePage(page);
+    await tree_browse_page.goto();
+    await expect(tree_browse_page.search_criteria_fields).toHaveCount(1);
 
     // Executing a search must only submit the displayed criteria, not the virtual category criterion
-    await page.getByTestId('search-filters-button').click();
-    await filters_panel.getByRole('button', { name: /Search$/ }).click();
-    await page.waitForURL((url) => url.searchParams.has('criteria[0][field]'));
+    await tree_browse_page.doSubmitSearchFilters();
 
     const submitted_params = [...new URL(page.url()).searchParams.keys()];
     expect(submitted_params.filter((key) => /^criteria\[\d+\]\[field\]$/.test(key))).toEqual(['criteria[0][field]']);
     expect(submitted_params.filter((key) => key.endsWith('[virtual]'))).toEqual([]);
-    await expect(criteria_fields).toHaveCount(1);
+    await expect(tree_browse_page.search_criteria_fields).toHaveCount(1);
 
     // Category filter must still be applied after the search has been submitted
-    // eslint-disable-next-line playwright/no-raw-locators
-    await page.locator('#tree_category .fancytree-title').filter({ hasText: category_name }).click();
-    // eslint-disable-next-line playwright/no-raw-locators
-    const items_list = page.locator('#items_list');
-    await expect(items_list.getByRole('link', { name: categorized_article })).toBeVisible();
-    await expect(items_list.getByRole('link', { name: uncategorized_article })).toBeHidden();
-    await expect(criteria_fields).toHaveCount(1);
+    await tree_browse_page.doSelectCategory(category_name);
+    await expect(tree_browse_page.getArticleLink(categorized_article)).toBeVisible();
+    await expect(tree_browse_page.getArticleLink(uncategorized_article)).toBeHidden();
+    await expect(tree_browse_page.search_criteria_fields).toHaveCount(1);
 });

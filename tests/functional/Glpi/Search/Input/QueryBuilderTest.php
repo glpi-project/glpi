@@ -379,18 +379,44 @@ class QueryBuilderTest extends GLPITestCase
         }
     }
 
-    public function testShowGenericSearchIgnoresVirtualCriteria(): void
+    public static function showGenericSearchVirtualCriteriaProvider(): iterable
     {
-        $regular_criteria = [
-            0 => ['link' => 'AND', 'field' => '1', 'searchtype' => 'contains', 'value' => 'foo'],
-            1 => ['link' => 'AND', 'field' => '7', 'searchtype' => 'contains', 'value' => 'bar'],
-        ];
-        // Criteria rows are rendered from the search session data, as done by `Search::manageParams()`
-        $_SESSION['glpisearch'][KnowbaseItem::class]['criteria'] = $regular_criteria;
+        $virtual = ['link' => 'AND', 'field' => '4', 'searchtype' => 'equals', 'value' => 0, 'virtual' => true];
 
-        // Virtual criteria are appended by the search engine internals (e.g. tree browse category filter)
-        $criteria = $regular_criteria;
-        $criteria[] = ['link' => 'AND', 'field' => '4', 'searchtype' => 'equals', 'value' => 0, 'virtual' => true];
+        yield 'virtual criterion after regular criteria' => [
+            'criteria' => [
+                0 => ['link' => 'AND', 'field' => '1', 'searchtype' => 'contains', 'value' => 'foo'],
+                1 => ['link' => 'AND', 'field' => '7', 'searchtype' => 'contains', 'value' => 'bar'],
+                2 => $virtual,
+            ],
+            'expected_fields'  => [0 => '1', 1 => '7'],
+            'virtual_key'      => 2,
+            'expected_counter' => 2,
+        ];
+
+        yield 'virtual criterion before a regular criterion' => [
+            'criteria' => [
+                0 => $virtual,
+                1 => ['link' => 'AND', 'field' => '1', 'searchtype' => 'contains', 'value' => 'foo'],
+            ],
+            'expected_fields'  => [1 => '1'],
+            'virtual_key'      => 0,
+            'expected_counter' => 2,
+        ];
+    }
+
+    #[DataProvider('showGenericSearchVirtualCriteriaProvider')]
+    public function testShowGenericSearchIgnoresVirtualCriteria(
+        array $criteria,
+        array $expected_fields,
+        int $virtual_key,
+        int $expected_counter
+    ): void {
+        // Criteria rows are rendered from the search session data, as done by `Search::manageParams()`
+        $_SESSION['glpisearch'][KnowbaseItem::class]['criteria'] = array_filter(
+            $criteria,
+            static fn($criterion) => !($criterion['virtual'] ?? false)
+        );
 
         ob_start();
         QueryBuilder::showGenericSearch(KnowbaseItem::class, ['criteria' => $criteria]);
@@ -399,13 +425,17 @@ class QueryBuilderTest extends GLPITestCase
         $crawler = new Crawler($output);
 
         // Regular criteria are displayed with their own values
-        $this->assertSame('1', $crawler->filter('select[name="criteria[0][field]"] option[selected]')->attr('value'));
-        $this->assertSame('7', $crawler->filter('select[name="criteria[1][field]"] option[selected]')->attr('value'));
+        foreach ($expected_fields as $key => $field) {
+            $this->assertSame(
+                $field,
+                $crawler->filter(sprintf('select[name="criteria[%d][field]"] option[selected]', $key))->attr('value')
+            );
+        }
 
         // Virtual criterion is neither displayed nor submitted back
-        $this->assertCount(0, $crawler->filter('[name^="criteria[2]"]'));
+        $this->assertCount(0, $crawler->filter(sprintf('[name^="criteria[%d]"]', $virtual_key)));
 
-        // "Add rule" counter only counts displayed criteria, so the next rule gets a free index
-        $this->assertMatchesRegularExpression('/nbcriteria\w+\s*=\s*2;/', $output);
+        // "Add rule" counter starts above the highest displayed criterion index, so the next rule gets a free index
+        $this->assertMatchesRegularExpression(sprintf('/nbcriteria\w+\s*=\s*%d;/', $expected_counter), $output);
     }
 }
