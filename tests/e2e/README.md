@@ -49,6 +49,17 @@ make playwright-ui
 Then, go to `http://127.0.0.1:9323` or click the link displayed in your terminal.  
 You can also bookmark the URL for easy access.  
 
+#### Execute the isolated tests
+
+The isolated tests (see [Isolated tests](#isolated-tests)) are not part of the
+main run and have their own commands:
+
+```sh
+make playwright-isolated
+make playwright-isolated c=tests/e2e/specs/example.spec.isolated.ts
+make playwright-isolated-report
+```
+
 ### Without docker
 
 #### Install playwright browsers
@@ -98,6 +109,13 @@ npx playwright show-report tests/e2e/results
 
 ```sh
 npx playwright test --ui
+```
+
+#### Execute the isolated tests
+
+```sh
+npx playwright test -c playwright.isolated.config.ts
+npx playwright show-report tests/e2e/results-isolated
 ```
 
 ## Writing tests
@@ -346,10 +364,44 @@ const id = await api.createItem("Glpi\\Form\\Form", {
 Some tests might require global actions that goes beyond entities (for example,
 editing GLPI's config).
 
-This will need a special treatment to make sure it doesn't impact other workers.
+These tests need a special treatment to make sure they don't impact other
+workers, see [Isolated tests](#isolated-tests).
 
-The documentation will be updated once we encounter such a case to explain how to
-deal with it.
+### Isolated tests
+
+A few features can't be tested inside your worker entity because they are global
+to the whole application:
+- the maintenance mode;
+- the general configuration;
+- the display preferences of the global and helpdesk views;
+- the LDAP servers configuration;
+- ...
+
+A test that modifies this kind of data would break every other test running at
+the same time.
+
+Such a test must be written in a `*.spec.isolated.ts` file. These files are
+ignored by `playwright.config.ts` and are executed by
+`playwright.isolated.config.ts` instead, in a dedicated run that uses a single
+worker:
+
+```
+tests/e2e/specs/Setup/general_config.spec.isolated.ts
+```
+
+Since the tests are retried on the CI, an isolated test **must** restore the
+initial values in an `afterEach` hook. Otherwise, a test that fails in the
+middle would leave the application in a dirty state for its own retries and for
+the tests that follow:
+
+```ts
+test.afterEach(async ({ api }) => {
+    // Restore the initial value, whatever happened during the test.
+});
+```
+
+Do not put a test in an isolated file if you can avoid it: the isolated tests
+run one at a time, thus they are much slower than the parallel ones.
 
 ## Debugging CI failures
 
