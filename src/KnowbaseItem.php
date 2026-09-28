@@ -1225,7 +1225,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         // Adding to or removing from the FAQ is a right of its own, `UPDATE` is not enough.
-        if (!Session::haveRightsOr(self::$rightname, [self::PUBLISHFAQ, self::KNOWBASEADMIN])) {
+        // Updates without a user session (cron, CLI) are not restricted.
+        if (
+            Session::getLoginUserID() !== false
+            && !Session::haveRightsOr(self::$rightname, [self::PUBLISHFAQ, self::KNOWBASEADMIN])
+        ) {
             unset($input['is_faq']);
         }
 
