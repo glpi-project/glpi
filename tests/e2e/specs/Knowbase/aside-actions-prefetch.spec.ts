@@ -83,5 +83,5 @@ test('A row the pointer rests on gets its actions menu prefetched', async ({ pag
 
     // Checked in the DOM, not via role/visibility: the dropdown stays closed (display:none).
     await expect(kb.getAsideArticleActionsMenu(id)).toHaveAttribute('data-glpi-kb-actions-loaded', '');
-    await expect(kb.getAsideArticleActionsMenuButton(id, 'TOGGLE_FAVORITE')).toBeAttached();
+    await expect(kb.getAsideArticleActionsMenuButton(id, 'Add to favorites')).toBeAttached();
 });

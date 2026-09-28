@@ -161,13 +161,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canViewItem(): bool
     {
-        // The root article is the entry point of the knowledge base: everyone
-        // allowed to read the knowledge base, administrators included, can view
-        // it, it has no visibility rules of its own. FAQ-only readers are not
-        // concerned: the root article is not part of the FAQ, see
-        // `getVisibilityCriteriaFAQ()` and `prepareInputForUpdate()`.
+        // The root article is admitted by its id: its `is_faq` stays 0.
         if ($this->isRoot()) {
-            return Session::haveRightsOr(self::$rightname, [READ, self::KNOWBASEADMIN]);
+            return self::canReadRoot();
+        }
+
+        // Helpdesk shows the FAQ only, whatever rights the profile keeps.
+        if (!$this->fields['is_faq'] && Session::getCurrentInterface() === 'helpdesk') {
+            return false;
         }
 
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
@@ -296,6 +297,31 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         global $CFG_GLPI;
 
         return (int) ($CFG_GLPI['root_knowbaseitems_id'] ?? 0);
+    }
+
+    /**
+     * The root article has no visibility rules of its own.
+     */
+    private static function canReadRoot(): bool
+    {
+        return self::canView() || Session::haveRight(self::$rightname, self::KNOWBASEADMIN);
+    }
+
+    /**
+     * `$where`, widened to admit the root article outside the inheritance seed.
+     *
+     * @param array<mixed> $where
+     *
+     * @return array<mixed>
+     */
+    private static function withRootArm(array $where): array
+    {
+        $root_id = self::getConfiguredRootId();
+        if ($root_id <= 0) {
+            return $where;
+        }
+
+        return ['OR' => [[self::getTableField('id') => $root_id], $where]];
     }
 
     public static function getSearchURL($full = true)
@@ -857,8 +883,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         // Handle logged in users
-        // Show FAQ for helpdesk user, knowledge base for central users
-        $criteria['WHERE'] = Session::getCurrentInterface() === "helpdesk" || !Session::haveRight(self::$rightname, READ)
+        // Helpdesk shows the FAQ only, like `canViewItem()`.
+        $criteria['WHERE'] = Session::getCurrentInterface() === 'helpdesk' || !Session::haveRight(self::$rightname, READ)
             ? self::getVisibilityCriteriaFAQ()
             : self::getVisibilityCriteriaKB();
         return $criteria;
@@ -947,7 +973,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $where[self::getTable() . '.is_faq'] = 1;
         }
 
-        return $where;
+        return self::canReadRoot() ? self::withRootArm($where) : $where;
     }
 
     /**
@@ -1181,10 +1207,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["name"] = __('New item');
         }
 
-        // The root article is the entry point of the knowledge base, not a
-        // piece of content to publish. Listing it in the FAQ or in the service
-        // catalog would offer it to readers that are not allowed to open it,
-        // down to anonymous users on a public FAQ, see `canViewItem()`.
+        // The root article is the entry point, not content to publish.
         if ($this->isRoot()) {
             unset($input['is_faq'], $input['show_in_service_catalog']);
         }
@@ -1651,6 +1674,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
+     * The nearest readable descendants: a readable child, or what is readable below it.
+     *
      * @return list<array{
      *      'id': int,
      *      'name': string,
@@ -1659,6 +1684,65 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * }>
      */
     private function getChildArticlesInfo(): array
+    {
+        global $DB;
+
+        // One query, instead of a `can()` call per candidate.
+        $visible_criteria = self::getListRequest([], 'browse');
+        $visible_criteria['SELECT'] = self::getTableField('id');
+        $visible = [];
+        foreach ($DB->request($visible_criteria) as $row) {
+            $visible[(int) $row['id']] = true;
+        }
+
+        $children = [];
+        $visited  = [$this->fields['id'] => true];
+        $frontier = [$this->fields['id']];
+        $child    = new self();
+
+        while ($frontier !== []) {
+            $next_frontier = [];
+            foreach ($this->getDirectChildIds($frontier) as $child_id) {
+                if (isset($visited[$child_id])) {
+                    continue; // already resolved through another branch
+                }
+                $visited[$child_id] = true;
+
+                if (isset($visible[$child_id]) && $child->can($child_id, READ)) {
+                    $children[] = [
+                        'id'           => $child_id,
+                        'name'         => $child->getName(),
+                        'illustration' => $child->fields['illustration'] ?? '',
+                        'link_url'     => self::getFormURLWithID($child_id),
+                    ];
+                    continue; // readable: stop this branch here
+                }
+
+                // Not readable: descend.
+                $next_frontier[] = $child_id;
+            }
+            $frontier = $next_frontier;
+        }
+
+        $collator = collator_create($_SESSION['glpilanguage'] ?? 'en_GB');
+        if ($collator) {
+            $collator->setStrength(Collator::PRIMARY);
+        }
+        usort($children, static fn(array $a, array $b): int => $collator
+            ? (int) collator_compare($collator, $a['name'], $b['name'])
+            : strnatcasecmp($a['name'], $b['name']));
+
+        return $children;
+    }
+
+    /**
+     * Direct children of every article in `$parent_ids`, in one query.
+     *
+     * @param int[] $parent_ids
+     *
+     * @return int[]
+     */
+    private function getDirectChildIds(array $parent_ids): array
     {
         global $DB;
 
@@ -1674,44 +1758,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             ],
             'WHERE'      => [
-                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $this->fields['id'],
+                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $parent_ids,
             ],
-            'ORDER'      => [self::getTableField('name') . ' ASC'],
         ];
 
-        // can() ignores the validity window, so apply it here exactly as getListRequest() does.
-        if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    [self::getTableField('begin_date') => null],
-                    [self::getTableField('begin_date') => ['<', QueryFunction::now()]],
-                ],
-            ];
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    [self::getTableField('end_date') => null],
-                    [self::getTableField('end_date') => ['>', QueryFunction::now()]],
-                ],
-            ];
+        $ids = [];
+        foreach ($DB->request($criteria) as $row) {
+            $ids[] = (int) $row['id'];
         }
 
-        $children = [];
-        $child = new self();
-        $rows = $DB->request($criteria);
-        foreach ($rows as $row) {
-            $child_id = (int) $row['id'];
-            if (!$child->can($child_id, READ)) {
-                continue;
-            }
-            $children[] = [
-                'id'           => $child_id,
-                'name'         => $child->getName(),
-                'illustration' => $child->fields['illustration'] ?? '',
-                'link_url'     => self::getFormURLWithID($child_id),
-            ];
-        }
-
-        return $children;
+        return $ids;
     }
 
     /** @return array<EditorAction|EditorActionSeparator> */
@@ -2131,20 +2187,26 @@ TWIG, $twig_params);
                 } else {
                     // Anonymous access
                     if (Session::isMultiEntitiesMode()) {
-                        $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = 0;
-                        $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
+                        $anonymous_entity_where = [
+                            'glpi_entities_knowbaseitems.entities_id'  => 0,
+                            'glpi_entities_knowbaseitems.is_recursive' => 1,
+                        ];
+
+                        // The root article has no visibility row of its own.
+                        $criteria['WHERE'][] = self::withRootArm($anonymous_entity_where);
                     }
                 }
                 break;
         }
 
         if ($params['faq']) { // helpdesk
-            $criteria['WHERE'][] = [
-                'OR' => [
-                    'glpi_knowbaseitems.is_faq' => 1,
-                    'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
-                ],
+            $faq_where = [
+                'glpi_knowbaseitems.is_faq' => 1,
+                'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
             ];
+
+            // Admitted by its id: `is_faq` stays 0.
+            $criteria['WHERE'][] = self::withRootArm(['OR' => $faq_where]);
         }
 
         if ($params['knowbaseitems_id_parent'] !== self::SEEALL) {

@@ -58,6 +58,16 @@ if (isset($_GET["id"])) {
     }
 }
 
+// The FAQ opens on the root article, as `front/knowbaseitem.php` does.
+// `redirect` and `forcetab` are not a page request.
+if (array_diff(array_keys($_GET), ['redirect', 'forcetab']) === [] && KnowbaseItem::hasRoot()) {
+    $root_id = KnowbaseItem::getRootId();
+    if ((new KnowbaseItem())->can($root_id, READ)) { // can() loads the row itself
+        // Not getFormURLWithID(): it leaves the helpdesk in a central session.
+        Html::redirect($CFG_GLPI['root_doc'] . '/front/helpdesk.faq.php?id=' . $root_id);
+    }
+}
+
 if (Session::getLoginUserID()) {
     Html::helpHeader(__('FAQ'), 'faq');
 } else {
