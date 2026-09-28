@@ -1188,16 +1188,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
         if (
             !Session::haveRight(self::$rightname, self::PUBLISHFAQ)
-            && Session::haveRight(self::$rightname, UPDATE)
+            && Session::getLoginUserID() !== false
         ) {
             $input["is_faq"] = 0;
         }
 
-        if (!isset($input['users_id'])) {
+        if (!isset($input['users_id']) || !self::canChooseAuthor()) {
             $input["users_id"] = Session::getLoginUserID();
         }
 
         return $this->prepareIllustrationInput($input);
+    }
+
+    // The author can always read and update the article. Session-less calls are trusted.
+    private static function canChooseAuthor(): bool
+    {
+        return Session::getLoginUserID() === false
+            || Session::haveRight(self::$rightname, self::KNOWBASEADMIN);
     }
 
     public function prepareInputForUpdate($input)
@@ -1210,6 +1217,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // The root article is the entry point, not content to publish.
         if ($this->isRoot()) {
             unset($input['is_faq'], $input['show_in_service_catalog']);
+        }
+
+        if (!self::canChooseAuthor()) {
+            unset($input['users_id']);
         }
 
         return $this->prepareIllustrationInput($input);
