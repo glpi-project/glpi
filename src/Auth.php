@@ -131,7 +131,7 @@ class Auth extends CommonGLPI
     public static function getMenuContent()
     {
         $menu = [];
-        if (Config::canUpdate()) {
+        if (Config::canView()) {
             $menu = [
                 'title'   => __('Authentication'),
                 'page'    => '/front/setup.auth.php',
@@ -146,7 +146,6 @@ class Auth extends CommonGLPI
                 'page'  => AuthLDAP::getSearchURL(false),
                 'links' => [
                     'search' => AuthLDAP::getSearchURL(false),
-                    'add'    => AuthLDAP::getFormURL(false),
                 ],
             ];
 
@@ -156,21 +155,25 @@ class Auth extends CommonGLPI
                 'page'  => AuthMail::getSearchURL(false),
                 'links' => [
                     'search' => AuthMail::getSearchURL(false),
-                    'add'    => AuthMail::getFormURL(false),
                 ],
             ];
 
-            $menu['options']['others'] = [
-                'icon'  => 'ti ti-login',
-                'title' => __('Others'),
-                'page'  => '/front/auth.others.php',
-            ];
+            if (Config::canUpdate()) {
+                $menu['options'][AuthLDAP::class]['links']['add'] = AuthLDAP::getFormURL(false);
+                $menu['options'][AuthMail::class]['links']['add'] = AuthMail::getFormURL(false);
 
-            $menu['options']['settings'] = [
-                'icon'  => 'ti ti-adjustments',
-                'title' => __('Setup'),
-                'page'  => '/front/auth.settings.php',
-            ];
+                $menu['options']['others'] = [
+                    'icon'  => 'ti ti-login',
+                    'title' => __('Others'),
+                    'page'  => '/front/auth.others.php',
+                ];
+
+                $menu['options']['settings'] = [
+                    'icon'  => 'ti ti-adjustments',
+                    'title' => __('Setup'),
+                    'page'  => '/front/auth.settings.php',
+                ];
+            }
         }
 
         if (count($menu)) {
