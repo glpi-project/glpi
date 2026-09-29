@@ -41,19 +41,48 @@ use Override;
 use Symfony\Component\HttpFoundation\Request;
 use User;
 
-final class PasswordReAuthStrategy extends InPlaceReAuthStrategy
+/**
+ * Mail server re-authentication strategy.
+ *
+ * Verifies the user identity by logging in on the IMAP/POP server with the password provided in
+ * the prompt, reusing the same mail server configuration as the regular login flow.
+ *
+ * It fails closed: if the server is unreachable, the verification fails and no bypass is granted,
+ * so the sensitive action stays protected.
+ */
+final class MailReAuthStrategy extends InPlaceReAuthStrategy
 {
     #[Override]
     public function verify(int $users_id, Request $request): bool
     {
+        $mail_password = (string) $request->request->get('user_input', '');
+
+        // Guard against empty password and null-byte injection: some servers accept an
+        // unauthenticated login on an empty password, which would turn this check into an
+        // authentication bypass.
+        if ($mail_password === '' || str_contains($mail_password, "\0")) {
+            return false;
+        }
+
+        // user not in db
         $user = new User();
         if (!$user->getFromDB($users_id)) {
             return false;
         }
 
-        $user_input = (string) $request->request->get('user_input', '');
+        // no connection string
+        $mail_method = Auth::getMethodsByID(Auth::MAIL, (int) $user->fields['auths_id']);
+        if (empty($mail_method['connect_string'])) {
+            return false;
+        }
 
-        return Auth::checkPassword($user_input, $user->fields['password']);
+        // connection_imap() returns false on a wrong password as well as on an unreachable
+        // server. Both cases fail closed here.
+        return (new Auth())->connection_imap(
+            $mail_method['connect_string'],
+            $user->fields['name'],
+            $mail_password
+        ) !== false;
     }
 
     #[Override]
@@ -64,8 +93,16 @@ final class PasswordReAuthStrategy extends InPlaceReAuthStrategy
             return false;
         }
 
-        return SessionAuthType::resolve($user) === Auth::DB_GLPI
-            && !empty($user->fields['password']);
+        if (SessionAuthType::resolve($user) !== Auth::MAIL) {
+            return false;
+        }
+
+        // A strategy whose verify() can never succeed is not available: without a server to log
+        // in against, the prompt would be a dead end, as no lower priority strategy would be
+        // reached to take over.
+        $mail_method = Auth::getMethodsByID(Auth::MAIL, (int) $user->fields['auths_id']);
+
+        return !empty($mail_method['connect_string']);
     }
 
     #[Override]

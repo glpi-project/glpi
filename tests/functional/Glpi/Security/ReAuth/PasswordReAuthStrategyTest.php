@@ -41,6 +41,7 @@ use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use User;
 
 #[Group('reauth')]
@@ -48,12 +49,13 @@ class PasswordReAuthStrategyTest extends DbTestCase
 {
     use ReAuthTrait;
 
-    /** Returns true for an active DB_GLPI user with a non-empty password. */
+    /** Returns true for a session opened locally by a user with a non-empty password. */
     public function testIsAvailableForDbUserWithPassword(): void
     {
         // --- arrange ---
         $strategy = new PasswordReAuthStrategy();
         $users_id = getItemByTypeName(User::class, TU_USER, true);
+        $this->setSessionAuthType(Auth::DB_GLPI);
 
         // --- act + assert ---
         $this->assertTrue($strategy->isAvailable($users_id));
@@ -65,13 +67,50 @@ class PasswordReAuthStrategyTest extends DbTestCase
         // --- arrange : ensure the user id does not exist in DB ---
         $non_existing_user_id = 999999;
         assert(!(new User())->getFromDB($non_existing_user_id), 'Fixture: user 999999 must not exist');
+        $this->setSessionAuthType(Auth::DB_GLPI);
 
         // --- act + assert ---
         $this->assertFalse((new PasswordReAuthStrategy())->isAvailable($non_existing_user_id));
     }
 
-    /** Returns false when the user is authenticated through an external LDAP directory. */
-    public function testIsAvailableIsFalseForNonDbGlpiAuthType(): void
+    /**
+     * Returns false whenever the session was not opened with the local password, even though the
+     * user record still carries a usable hash.
+     */
+    #[TestWith([Auth::LDAP], 'LDAP directory')]
+    #[TestWith([Auth::MAIL], 'mail server')]
+    #[TestWith([Auth::EXTERNAL], 'SSO http header')]
+    #[TestWith([Auth::CAS], 'CAS server')]
+    #[TestWith([Auth::X509], 'x509 client certificate')]
+    #[TestWith([Auth::NOT_YET_AUTHENTIFIED], 'not yet authenticated')]
+    public function testIsAvailableIsFalseForNonDbGlpiSessionAuthType(int $auth_type): void
+    {
+        // --- arrange ---
+        $strategy = new PasswordReAuthStrategy();
+        $users_id = getItemByTypeName(User::class, TU_USER, true);
+        $this->setSessionAuthType($auth_type);
+
+        // --- act + assert ---
+        $this->assertFalse($strategy->isAvailable($users_id));
+    }
+
+    /**
+     * A "remember me" session falls back to the credential stored on the account, so a local user
+     * is still asked for their password instead of getting the confirmation-only fallback.
+     */
+    public function testIsAvailableForRememberMeSessionOfALocalUser(): void
+    {
+        // --- arrange ---
+        $strategy = new PasswordReAuthStrategy();
+        $users_id = getItemByTypeName(User::class, TU_USER, true);
+        $this->setSessionAuthType(Auth::COOKIE);
+
+        // --- act + assert ---
+        $this->assertTrue($strategy->isAvailable($users_id));
+    }
+
+    /** Returns false for a "remember me" session of a user that authenticates against a directory. */
+    public function testIsAvailableIsFalseForRememberMeSessionOfAnLdapUser(): void
     {
         global $DB;
 
@@ -87,6 +126,7 @@ class PasswordReAuthStrategyTest extends DbTestCase
             'authtype' => Auth::LDAP,
             'auths_id' => $ldap->getID(),
         ], ['id' => $users_id]);
+        $this->setSessionAuthType(Auth::COOKIE);
 
         // --- act + assert ---
         $this->assertFalse($strategy->isAvailable($users_id));
@@ -100,7 +140,9 @@ class PasswordReAuthStrategyTest extends DbTestCase
         // --- arrange : clear the test user password ---
         $strategy = new PasswordReAuthStrategy();
         $users_id = getItemByTypeName(User::class, TU_USER, true);
+        // Direct DB write: updateItem() cannot produce this state
         $DB->update('glpi_users', ['password' => ''], ['id' => $users_id]);
+        $this->setSessionAuthType(Auth::DB_GLPI);
 
         // --- act + assert ---
         $this->assertFalse($strategy->isAvailable($users_id));

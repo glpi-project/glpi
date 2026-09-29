@@ -34,10 +34,17 @@
 
 namespace tests\units\Glpi\Security\ReAuth;
 
+use Auth;
+use AuthLDAP;
+use AuthMail;
 use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\RedirectException;
 use Glpi\Kernel\Listener\RequestListener\ReAuthReplayListener;
+use Glpi\Security\ReAuth\FallbackReAuthStrategy;
+use Glpi\Security\ReAuth\LdapReAuthStrategy;
+use Glpi\Security\ReAuth\MailReAuthStrategy;
+use Glpi\Security\ReAuth\PasswordReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
@@ -315,6 +322,117 @@ class ReAuthManagerTest extends DbTestCase
         // --- act + assert : the fallback prompt is used and any input is accepted ---
         $this->assertSame('pages/reauth/fallback_form.html.twig', $manager->getPromptTemplate());
         $this->assertTrue($manager->verify($this->makeVerifyRequest('no-check-is-done')));
+    }
+
+    /**
+     * The method that opened the session drives the choice, not the authtype on the user record,
+     * which stays DB_GLPI here throughout.
+     */
+    #[TestWith([Auth::DB_GLPI, PasswordReAuthStrategy::class], 'local database')]
+    #[TestWith([Auth::LDAP, LdapReAuthStrategy::class], 'LDAP directory')]
+    #[TestWith([Auth::MAIL, MailReAuthStrategy::class], 'mail server')]
+    // External systems cannot be replayed as a challenge, and the record points at no queryable
+    // store, so the confirmation takes over even though a local hash is still present.
+    #[TestWith([Auth::EXTERNAL, FallbackReAuthStrategy::class], 'SSO http header')]
+    #[TestWith([Auth::CAS, FallbackReAuthStrategy::class], 'CAS server')]
+    #[TestWith([Auth::X509, FallbackReAuthStrategy::class], 'x509 client certificate')]
+    // The one case answered from the record: a remember me session resumes a local account.
+    #[TestWith([Auth::COOKIE, PasswordReAuthStrategy::class], 'remember me cookie')]
+    public function testStrategyIsSelectedFromTheSessionAuthType(
+        int $session_auth_type,
+        string $expected_strategy
+    ): void {
+        // --- arrange : keep the record constant (local, with a password) and attach the auth
+        // source the case needs, so the session type is the only thing that varies ---
+        $this->login();
+        $users_id = (int) $_SESSION['glpiID'];
+        $ldap = $this->createItem(AuthLDAP::class, [
+            'name'   => $this->getUniqueString(),
+            'host'   => '127.0.0.1',
+            'basedn' => 'dc=example,dc=com',
+        ]);
+        $mail = $this->createItem(AuthMail::class, [
+            'name'           => $this->getUniqueString(),
+            'connect_string' => '{127.0.0.1:143/imap/notls}',
+        ]);
+        $this->updateItem(
+            User::class,
+            $users_id,
+            ['auths_id' => $session_auth_type === Auth::MAIL ? $mail->getID() : $ldap->getID()]
+        );
+        $this->setSessionAuthType($session_auth_type);
+
+        // --- act + assert ---
+        $this->assertInstanceOf($expected_strategy, $this->getSelectedStrategy());
+    }
+
+    public static function externalSessionOverAQueryableStoreProvider(): iterable
+    {
+        // [session auth type, record auth type, expected strategy]
+        yield 'x509 over a directory' => [Auth::X509, Auth::LDAP, LdapReAuthStrategy::class];
+        yield 'SSO header over a directory' => [Auth::EXTERNAL, Auth::LDAP, LdapReAuthStrategy::class];
+        yield 'x509 over a mail server' => [Auth::X509, Auth::MAIL, MailReAuthStrategy::class];
+        yield 'SSO header over a mail server' => [Auth::EXTERNAL, Auth::MAIL, MailReAuthStrategy::class];
+    }
+
+    /**
+     * An external transport over an account backed by a directory or a mail server still gets a
+     * real challenge: User::getFromLDAP()/getFromIMAP() stamp that store on the record precisely
+     * because the login may have come through SSO, and the user knows that credential.
+     */
+    #[DataProvider('externalSessionOverAQueryableStoreProvider')]
+    public function testExternalSessionFallsBackToTheAccountStore(
+        int $session_auth_type,
+        int $record_auth_type,
+        string $expected_strategy
+    ): void {
+        global $DB;
+
+        // --- arrange ---
+        $this->login();
+        $users_id = (int) $_SESSION['glpiID'];
+        $auth_source = $record_auth_type === Auth::MAIL
+            ? $this->createItem(AuthMail::class, [
+                'name'           => $this->getUniqueString(),
+                'connect_string' => '{127.0.0.1:143/imap/notls}',
+            ])
+            : $this->createItem(AuthLDAP::class, [
+                'name'   => $this->getUniqueString(),
+                'host'   => '127.0.0.1',
+                'basedn' => 'dc=example,dc=com',
+            ]);
+        // Direct DB update: the business layer blanks the password when the auth type changes.
+        $DB->update(
+            'glpi_users',
+            ['authtype' => $record_auth_type, 'auths_id' => $auth_source->getID()],
+            ['id' => $users_id]
+        );
+        $this->setSessionAuthType($session_auth_type);
+
+        // --- act + assert ---
+        $this->assertInstanceOf($expected_strategy, $this->getSelectedStrategy());
+    }
+
+    /**
+     * ... but only when that store can actually be queried: a directory reference pointing
+     * nowhere leaves nothing to challenge, so the confirmation takes over.
+     */
+    public function testExternalSessionFallsBackToConfirmationWithoutAQueryableStore(): void
+    {
+        global $DB;
+
+        // --- arrange ---
+        $this->login();
+        $users_id = (int) $_SESSION['glpiID'];
+        $DB->update(
+            'glpi_users',
+            ['authtype' => Auth::LDAP, 'auths_id' => 0],
+            ['id' => $users_id]
+        );
+        $this->setSessionAuthType(Auth::X509);
+
+        // --- act + assert ---
+        $this->assertInstanceOf(FallbackReAuthStrategy::class, $this->getSelectedStrategy());
     }
 
     /** Throws InvalidArgumentException when a non-CommonGLPI class is passed. */

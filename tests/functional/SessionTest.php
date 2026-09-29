@@ -1606,4 +1606,24 @@ class SessionTest extends DbTestCase
         $this->assertArrayHasKey('glpiparententities_string', $_SESSION);
         $this->assertIsArray($_SESSION['glpiparententities']);
     }
+
+    /** Defaults to NOT_YET_AUTHENTIFIED when no session was opened. */
+    public function testGetAuthTypeWithoutSession(): void
+    {
+        // --- arrange ---
+        unset($_SESSION['glpiauthtype']);
+
+        // --- act + assert ---
+        $this->assertSame(\Auth::NOT_YET_AUTHENTIFIED, \Session::getAuthType());
+    }
+
+    /** Reports the method that opened the session, as recorded by Session::init(). */
+    public function testGetAuthTypeReportsTheSessionAuthType(): void
+    {
+        // --- arrange ---
+        $_SESSION['glpiauthtype'] = \Auth::X509;
+
+        // --- act + assert ---
+        $this->assertSame(\Auth::X509, \Session::getAuthType());
+    }
 }
