@@ -3572,7 +3572,7 @@ HTML,
         $article = $this->createItem(KnowbaseItem::class, [
             'name'     => 'Article ' . __FUNCTION__,
             'answer'   => '',
-            'users_id' => getItemByTypeName(User,::class 'glpi', true),
+            'users_id' => getItemByTypeName(User::class, 'glpi', true),
         ]);
         $this->createItem(KnowbaseItem_User::class, [
             'knowbaseitems_id' => $article->getID(),
