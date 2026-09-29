@@ -85,7 +85,9 @@
 
                     // set planification fields
                     if (data.duration > 0) {
-                        $("#plan_dates_{{ rand_plan }}").trigger("planning:set_duration", data.duration);
+                        document.getElementById("plan_dates_{{ rand_plan }}").dispatchEvent(
+                            new CustomEvent("planning:set_duration", { detail: data.duration })
+                        );
                     }
                     $("#dropdown__planningrecall_before_time_{{ rand_plan }}")
                         .trigger("setValue", data.before_time);
