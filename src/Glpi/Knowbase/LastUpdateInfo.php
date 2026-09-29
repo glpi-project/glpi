@@ -41,7 +41,7 @@ final readonly class LastUpdateInfo
     public function __construct(
         private ?string $author_link,
         private ?string $author_name,
-        private string $date,
+        private ?string $date,
         private bool $can_view_author,
     ) {}
 
@@ -55,13 +55,17 @@ final readonly class LastUpdateInfo
         return $this->author_name ?: __("Deleted user");
     }
 
-    public function getRawDate(): string
+    public function getRawDate(): ?string
     {
         return $this->date;
     }
 
-    public function getRelativeDate(): string
+    public function getRelativeDate(): ?string
     {
+        if ($this->date === null) {
+            return null;
+        }
+
         return Html::timestampToRelativeStr($this->date);
     }
 

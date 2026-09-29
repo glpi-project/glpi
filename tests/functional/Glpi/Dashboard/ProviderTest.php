@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\Filters\DatesFilter;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
 use Item_DeviceSimcard;
@@ -845,6 +846,27 @@ class ProviderTest extends DbTestCase
                 $this->assertStringContainsString(\Ticket::getSearchURL(), $serie_data['url']);
             }
         }
+    }
+
+    public function testGetTicketsEvolutionWithInvalidDatesFilter()
+    {
+        // Non-array "dates" filter value must not crash (regression test)
+        $result = Provider::getTicketsEvolution(['apply_filters' => ['dates' => '']]);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertNotEmpty($result['data']['labels']);
+    }
+
+
+    public function testGetTicketsEvolutionWithUninitializedDatesFilter()
+    {
+        // The dates filter value can be a string (instead of an array) when not initialized yet,
+        // this must not raise a TypeError on count().
+        $result = Provider::getTicketsEvolution([
+            'apply_filters' => [
+                DatesFilter::getId() => '',
+            ],
+        ]);
+        $this->assertArrayHasKey('data', $result);
     }
 
 

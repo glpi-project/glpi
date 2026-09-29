@@ -708,9 +708,7 @@ final class ProjectController extends AbstractController
     public function searchLinkedTasks(Request $request): Response
     {
 
-        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filter .= ';project.id==' . $request->getAttributes()['project_id'];
-        $request->setParameter('filter', $filter);
+        $this->restrictSearch($request, 'project.id==' . $request->getAttributes()['project_id']);
         return ResourceAccessor::searchBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -733,10 +731,7 @@ final class ProjectController extends AbstractController
     public function searchCosts(Request $request): Response
     {
         $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
-        $parameters = $request->getParameters();
-        $filters = $parameters['filter'] ?? '';
-        $filters .= 'project.id==' . $request->getAttribute('id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'project.id==' . $request->getAttribute('id'));
         return ResourceAccessor::searchBySchema($schema, $request->getParameters());
     }
 
@@ -823,9 +818,7 @@ final class ProjectController extends AbstractController
     )]
     public function searchKBArticleItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==Project;items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==Project;items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -840,9 +833,7 @@ final class ProjectController extends AbstractController
     )]
     public function getKBArticleItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==Project;items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==Project;items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -907,9 +898,7 @@ final class ProjectController extends AbstractController
     )]
     public function searchContractItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==Project;items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==Project;items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -924,9 +913,7 @@ final class ProjectController extends AbstractController
     )]
     public function getContractItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==Project;items_id==' . $request->getAttribute('items_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==Project;items_id==' . $request->getAttribute('items_id'));
         return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -966,9 +953,7 @@ final class ProjectController extends AbstractController
     )]
     public function getLinkedTickets(Request $request): Response
     {
-        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filter .= ';project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Ticket';
-        $request->setParameter('filter', $filter);
+        $this->restrictSearch($request, 'project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Ticket');
         return ResourceAccessor::searchBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1026,9 +1011,7 @@ final class ProjectController extends AbstractController
     )]
     public function getLinkedChanges(Request $request): Response
     {
-        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filter .= ';project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Change';
-        $request->setParameter('filter', $filter);
+        $this->restrictSearch($request, 'project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Change');
         return ResourceAccessor::searchBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1086,9 +1069,7 @@ final class ProjectController extends AbstractController
     )]
     public function getLinkedProblems(Request $request): Response
     {
-        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filter .= ';project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Problem';
-        $request->setParameter('filter', $filter);
+        $this->restrictSearch($request, 'project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Problem');
         return ResourceAccessor::searchBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1146,9 +1127,7 @@ final class ProjectController extends AbstractController
     )]
     public function getProjectTeamMembers(Request $request): Response
     {
-        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filter .= ';project.id==' . $request->getAttributes()['project_id'];
-        $request->setParameter('filter', $filter);
+        $this->restrictSearch($request, 'project.id==' . $request->getAttributes()['project_id']);
         return ResourceAccessor::searchBySchema($this->getKnownSchema('ProjectTeamMember', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -1192,9 +1171,7 @@ final class ProjectController extends AbstractController
     )]
     public function getProjectTaskTeamMembers(Request $request): Response
     {
-        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filter .= ';task.id==' . $request->getAttributes()['task_id'];
-        $request->setParameter('filter', $filter);
+        $this->restrictSearch($request, 'task.id==' . $request->getAttributes()['task_id']);
         return ResourceAccessor::searchBySchema(
             $this->getKnownSchema('ProjectTaskTeamMember', $this->getAPIVersion($request)),
             $request->getParameters()

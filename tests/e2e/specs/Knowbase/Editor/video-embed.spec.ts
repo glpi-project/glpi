@@ -123,7 +123,58 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(kb.videoEmbedPlaceholders).toHaveCount(0);
         });
 
-        test('Error alert clears live when a valid URL replaces an invalid one', async ({ page, profile, api }) => {
+        // Regression: Escape also reached the aside controller's own document handler.
+        test('Escape in the dialog leaves the KB aside overlay open', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            await page.setViewportSize({ width: 800, height: 900 }); // below the 992px breakpoint
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Video dialog over the aside overlay',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            // Keyboard-only: a click would hit the overlay's backdrop.
+            await kb.doExpandAside();
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByKeyboard('Video');
+            await expect(kb.videoDialog).toBeVisible();
+
+            await page.keyboard.press('Escape');
+            await expect(kb.videoDialog).toBeHidden();
+            // aria-expanded is synchronous, the slide-out transition is not.
+            await expect(kb.getAsideExpandButton()).toHaveAttribute('aria-expanded', 'true');
+        });
+
+        // Regression: the handler was registered during the Enter that opened the dialog.
+        test('Opening the dialog with Enter does not submit it', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Video dialog opened with Enter',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByKeyboard('Video');
+
+            const dialog = kb.videoDialog;
+            await expect(dialog).toBeVisible();
+            await expect(dialog.getByRole('alert')).toBeHidden();
+        });
+
+        test('The error clears as soon as the URL is edited', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
 
@@ -143,7 +194,11 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             const dialog = kb.videoDialog;
             await expect(dialog.getByRole('alert')).toBeHidden();
 
+            // Nothing is reported until Insert: a URL is incomplete while being typed.
             await dialog.getByLabel('Video URL').fill('not-a-url');
+            await expect(dialog.getByRole('alert')).toBeHidden();
+
+            await dialog.getByRole('button', { name: 'Insert' }).click();
             await expect(dialog.getByRole('alert')).toBeVisible();
 
             await dialog.getByLabel('Video URL').fill('https://www.youtube.com/watch?v=dQw4w9WgXcQ');

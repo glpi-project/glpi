@@ -37,6 +37,7 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\RichText\RichText;
 use KnowbaseItem;
 use KnowbaseItemTranslation;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -74,7 +75,7 @@ final class GetTranslationContentController extends AbstractController
             return new JsonResponse([
                 'exists' => true,
                 'name' => $translation->fields['name'],
-                'answer' => $translation->fields['answer'],
+                'answer' => RichText::getSafeHtml($translation->fields['answer']),
             ]);
         }
 

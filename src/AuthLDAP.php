@@ -4284,6 +4284,35 @@ TWIG, $twig_params);
     }
 
     /**
+     * Format a raw LDAP attribute value for display, converting binary GUID
+     * attributes to their canonical string form and any other non-UTF-8
+     * binary value to its uppercase hexadecimal representation.
+     *
+     * @param string $key   LDAP attribute name
+     * @param string $value Raw attribute value
+     *
+     * @return string
+     */
+    public static function formatValueForDisplay(string $key, string $value): string
+    {
+        $guid_fields = ['objectguid', 'ms-ds-consistencyguid'];
+        $is_guid_field = in_array(strtolower($key), $guid_fields, true);
+
+        if ($is_guid_field && !self::isValidGuid($value)) {
+            $guid = self::guidToString($value);
+            if (self::isValidGuid($guid)) {
+                $value = $guid;
+            }
+        }
+
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            return strtoupper(bin2hex($value));
+        }
+
+        return $value;
+    }
+
+    /**
      * Get the list of LDAP users to add/synchronize
      * When importing, already existing users will be filtered
      *

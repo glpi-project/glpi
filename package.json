@@ -61,7 +61,7 @@
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.18.1",
         "masonry-layout": "^4.2.2",
-        "monaco-editor": "^0.56.0",
+        "monaco-editor": "^0.57.0",
         "path-browserify": "^1.0.1",
         "photoswipe": "^5.4.4",
         "process": "^0.11.10",
@@ -154,11 +154,6 @@
     "overrides": {
         "@tabler/icons-webfont": {
             "sharp": "^0.35.0"
-        },
-        "monaco-editor": {
-            "dompurify": "^3.4.13"
-        },
-        "qs": "^6.15.1",
-        "uuid": "^14.0.0"
+        }
     }
 }

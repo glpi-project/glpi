@@ -169,7 +169,7 @@ export class GlpiKnowbaseAsideDragController
         }
 
         // The root article is the base of the tree: no article may host it.
-        if (Number(row.dataset.glpiKbArticleId) === this.#root_article_id) {
+        if (this.#isRootRow(row)) {
             return;
         }
 
@@ -648,16 +648,23 @@ export class GlpiKnowbaseAsideDragController
         let list = row.querySelector(':scope > ul');
         if (!list) {
             list = document.createElement('ul');
+            list.toggleAttribute('data-glpi-kb-root-children', this.#isRootRow(row));
             row.append(list);
         }
         return list;
     }
 
+    #isRootRow(row)
+    {
+        return Number(row.dataset.glpiKbArticleId) === this.#root_article_id;
+    }
+
     /**
      * Re-apply the leaf/node contract after a row's children changed, on the rule
-     * `_article_row.html.twig` uses: the fold toggle follows the children, the node
-     * markup follows `hasChildren or can_create`. The "+" writes into the child list,
-     * so a row carrying it stays a node without children.
+     * `_article_row.html.twig` uses: the fold toggle follows the children (never on
+     * the root article), the node markup follows `hasChildren or can_create`. The
+     * "+" writes into the child list, so a row carrying it stays a node without
+     * children.
      *
      * The `<ul>` itself is never removed: it is where that "+" affordance writes
      * (AsideController `#openCreateInput`).
@@ -679,7 +686,7 @@ export class GlpiKnowbaseAsideDragController
         const has_children = list !== null && list.children.length > 0;
         const toggle = line.querySelector('[data-glpi-kb-aside-category-toggle]');
 
-        if (has_children && toggle === null) {
+        if (has_children && toggle === null && !this.#isRootRow(row)) {
             line.prepend(this.#buildFoldToggle(row));
         } else if (!has_children && toggle !== null) {
             toggle.remove();

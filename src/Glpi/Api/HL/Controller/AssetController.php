@@ -130,6 +130,7 @@ use Rack;
 use RackModel;
 use RackType;
 use RuntimeException;
+use Session;
 use SNMPCredential;
 use Software;
 use SoftwareCategory;
@@ -683,6 +684,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'last_inventory_update' => [
                     'x-version-introduced' => '2.3.0',
@@ -806,6 +810,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
             ],
@@ -863,6 +870,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
@@ -929,6 +939,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
             ],
@@ -981,7 +994,14 @@ final class AssetController extends AbstractController
                 'is_global' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
-                'ticket_tco' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'x-version-introduced' => '2.3.0'],
+                'ticket_tco' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'x-version-introduced' => '2.3.0',
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
+                ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'last_inventory_update' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3.0'],
             ],
@@ -1069,6 +1089,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
@@ -1590,6 +1613,9 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
                     'x-version-introduced' => '2.3.0',
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
             ],
         ];
@@ -2854,13 +2880,11 @@ EOT,
         if (!Infocom::canView()) {
             return self::getAccessDeniedErrorResponse();
         }
-        $params = $request->getParameters();
         $itemtype = $request->getAttribute('itemtype');
         $items_id = $request->getAttribute('id');
-        $filter = 'itemtype==' . $itemtype . ';items_id==' . $items_id;
-        $params['filter'] = $filter;
+        $this->restrictSearch($request, 'itemtype==' . $itemtype . ';items_id==' . $items_id);
         $management_controller = new ManagementController();
-        $result = ResourceAccessor::searchBySchema($management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)), $params);
+        $result = ResourceAccessor::searchBySchema($management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)), $request->getParameters());
         if ($result->getStatusCode() !== 200) {
             return $result;
         }
@@ -3306,9 +3330,7 @@ EOT,
     )]
     public function getRackItems(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';rack.id==' . $request->getAttribute('rack_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'rack.id==' . $request->getAttribute('rack_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3323,9 +3345,7 @@ EOT,
     )]
     public function getRackItem(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';rack.id==' . $request->getAttribute('rack_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'rack.id==' . $request->getAttribute('rack_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -3607,9 +3627,7 @@ EOT,
     )]
     public function searchSoftwareVersions(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';software.id==' . $request->getAttribute('software_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'software.id==' . $request->getAttribute('software_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3624,9 +3642,7 @@ EOT,
     )]
     public function getSoftwareVersion(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';software.id==' . $request->getAttribute('software_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'software.id==' . $request->getAttribute('software_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -3707,9 +3723,7 @@ EOT,
     )]
     public function searchItemOSInstallation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3721,9 +3735,7 @@ EOT,
     )]
     public function getOSInstallation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -3788,9 +3800,7 @@ EOT,
     )]
     public function searchItemSoftware(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3804,9 +3814,7 @@ EOT,
     )]
     public function getSoftwareInstallation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -3875,9 +3883,7 @@ EOT,
     )]
     public function searchItemAntivirus(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Antivirus', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3891,9 +3897,7 @@ EOT,
     )]
     public function getItemAntivirus(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('Antivirus', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -3962,9 +3966,7 @@ EOT,
     )]
     public function searchItemVirtualMachine(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3978,9 +3980,7 @@ EOT,
     )]
     public function getItemVirtualMachine(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -4049,9 +4049,7 @@ EOT,
     )]
     public function searchItemPeripheralConnection(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4065,9 +4063,7 @@ EOT,
     )]
     public function getItemPeripheralConnection(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -4137,9 +4133,7 @@ EOT,
     )]
     public function searchItemRemoteManagement(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4153,9 +4147,7 @@ EOT,
     )]
     public function getItemRemoteManagement(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -4237,9 +4229,7 @@ EOT,
     )]
     public function getItemApplianceLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('Appliance_Item', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -4284,9 +4274,7 @@ EOT,
     )]
     public function searchDomainItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4302,9 +4290,7 @@ EOT,
     )]
     public function getDomainItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -4375,9 +4361,7 @@ EOT,
     )]
     public function searchCertificateItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4393,9 +4377,7 @@ EOT,
     )]
     public function getCertificateItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -4466,9 +4448,7 @@ EOT,
     )]
     public function searchProjectItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4484,9 +4464,7 @@ EOT,
     )]
     public function getProjectItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -4557,9 +4535,7 @@ EOT,
     )]
     public function searchLineItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4575,9 +4551,7 @@ EOT,
     )]
     public function getLineItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -4648,9 +4622,7 @@ EOT,
     )]
     public function searchKBArticleItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4666,9 +4638,7 @@ EOT,
     )]
     public function getKBArticleItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -4739,9 +4709,7 @@ EOT,
     )]
     public function searchContractItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4757,9 +4725,7 @@ EOT,
     )]
     public function getContractItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 

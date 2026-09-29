@@ -58,9 +58,12 @@ use Group;
 use Group_Item;
 use Group_User;
 use Location;
+use Peripheral;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Problem;
 use Psr\Log\LogLevel;
 use Session;
+use Software;
 use TaskCategory;
 use Ticket;
 use User;
@@ -186,6 +189,125 @@ class SearchTest extends DbTestCase
             . '\)/im',
             $data['sql']['search']->getQuery()
         );
+    }
+
+    public function testMetaComputerSoftwareDuplicateFieldColumn()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [0 => ['field'      => 'view',
+                'searchtype' => 'contains',
+                'value'      => '',
+            ],
+            ],
+            // two meta criteria targeting the same Software field (name)
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'OR',
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                1 => ['link'       => 'OR',
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'chrome',
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Computer::class, $search_params);
+
+        // the Software "name" field must only produce a single result column,
+        // even though it is targeted by two meta criteria
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        // the corresponding SELECT alias must not be duplicated either
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
+    public function testMetaComputerSoftwareDuplicateFieldColumnNested()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+                1 => [
+                    'link'       => 'OR',
+                    'meta'       => true,
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                2 => [
+                    'link'       => 'OR',
+                    'criteria'   => [
+                        0 => [
+                            'link'       => 'OR',
+                            'meta'       => true,
+                            'itemtype'   => Software::class,
+                            'field'      => 160,
+                            'searchtype' => 'contains',
+                            'value'      => 'chrome',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Computer::class, $search_params);
+
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
+    public function testMetaToviewNotLeakedAcrossIndependentCalls()
+    {
+        $opts = SearchOption::getOptionsForItemtype(Software::class);
+        foreach ($opts as $id => $opt) {
+            if (is_array($opt) && ($opt['field'] ?? null) === 'name') {
+                break;
+            }
+        }
+        $field_id = $id;
+        $data = ['itemtype' => Computer::class];
+        $SELECT = '';
+        $FROM = '';
+        $already_link_tables = [];
+        $criteria1 = [
+            ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'firefox'],
+        ];
+        $criteria2 = [
+            ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'chrome'],
+        ];
+        @\Search::constructAdditionalSqlForMetacriteria($criteria1, $SELECT, $FROM, $already_link_tables, $data);
+        $this->assertSame(1, substr_count($SELECT, "ITEM_Software_$field_id"));
+        // second, independent call reusing the same $data (as a plugin might): must not leak nor drop columns
+        $SELECT2 = '';
+        @\Search::constructAdditionalSqlForMetacriteria($criteria2, $SELECT2, $FROM, $already_link_tables, $data);
+        $this->assertSame(1, substr_count($SELECT2, "ITEM_Software_$field_id"));
     }
 
     public function testSoftwareLinkedToAnyComputer()
@@ -2100,7 +2222,7 @@ class SearchTest extends DbTestCase
         $this->assertTrue($DB->delete(Change::getTable(), [new QueryExpression('true')]));
 
         // Creates Changes with different requesters
-        $this->createItems('Change', [
+        $this->createItems(Change::class, [
             // Test set on requester
             [
                 'name' => 'testAddOrderByUser user 1 (R)',
@@ -2160,7 +2282,7 @@ class SearchTest extends DbTestCase
         ]);
 
         yield [
-            'itemtype' => 'Change',
+            'itemtype' => Change::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2186,7 +2308,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Change',
+            'itemtype' => Change::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2212,7 +2334,7 @@ class SearchTest extends DbTestCase
         ];
 
         // Creates Peripheral with different users
-        $this->createItems('Peripheral', [
+        $this->createItems(Peripheral::class, [
             // Test set on user
             [
                 'name' => 'testAddOrderByUser user 1 (U)',
@@ -2231,7 +2353,7 @@ class SearchTest extends DbTestCase
         ]);
 
         yield [
-            'itemtype' => 'Peripheral',
+            'itemtype' => Peripheral::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2254,7 +2376,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Peripheral',
+            'itemtype' => Peripheral::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2278,7 +2400,7 @@ class SearchTest extends DbTestCase
 
         // Creates Problems with different writers
         // Create by glpi user
-        $this->createItems('Problem', [
+        $this->createItems(Problem::class, [
             [
                 'name' => 'testAddOrderByUser by glpi',
                 'content' => '',
@@ -2287,7 +2409,7 @@ class SearchTest extends DbTestCase
 
         // Create by tech user
         $this->login('tech', 'tech');
-        $this->createItems('Problem', [
+        $this->createItems(Problem::class, [
             [
                 'name' => 'testAddOrderByUser by tech',
                 'content' => '',
@@ -2297,7 +2419,7 @@ class SearchTest extends DbTestCase
         $this->login('glpi', 'glpi');
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2319,7 +2441,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2342,7 +2464,7 @@ class SearchTest extends DbTestCase
 
         // Last edit by
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2364,7 +2486,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2518,7 +2640,7 @@ class SearchTest extends DbTestCase
         // reduce the right of tech profile
         // to have only the right of display their own problems (created, assign)
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Problem' => (\Problem::READMY + READNOTE + UPDATENOTE),
+            'Problem' => (Problem::READMY + READNOTE + UPDATENOTE),
         ]);
 
         // add a group for tech user
@@ -2537,7 +2659,7 @@ class SearchTest extends DbTestCase
         );
 
         // create a problem and assign group with tech user
-        $problem = new \Problem();
+        $problem = new Problem();
         $this->assertGreaterThan(
             0,
             $problem->add([
@@ -3042,7 +3164,7 @@ class SearchTest extends DbTestCase
             Computer::getTable(),
             \Monitor::getTable(),
             \NetworkEquipment::getTable(),
-            \Peripheral::getTable(),
+            Peripheral::getTable(),
             \Phone::getTable(),
             \Printer::getTable(),
         ];
@@ -7708,6 +7830,28 @@ class SearchTest extends DbTestCase
         $this->assertContains('86', $ids);
     }
 
+    public function testSoftwareLicenseNumberColumnKeepsOneRowPerLicense(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $software = $this->createItem(Software::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
+        $this->createItems(\SoftwareLicense::class, [
+            ['name' => __FUNCTION__ . ' 1', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 2],
+            ['name' => __FUNCTION__ . ' 2', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 3],
+        ]);
+
+        $data = $this->doSearch(\SoftwareLicense::class, [
+            'criteria' => [['field' => 10, 'searchtype' => 'contains', 'value' => __FUNCTION__]],
+        ], [4]);
+
+        // "Number" (4) uses aggregate functions and must not collapse rows into a single one without ID
+        $this->assertSame(2, $data['data']['totalcount']);
+        foreach ($data['data']['rows'] as $row) {
+            $this->assertIsInt($row['id']);
+        }
+    }
+
     public function testTypeHasAssetUrlSearchOption(): void
     {
         global $CFG_GLPI;
@@ -7864,7 +8008,7 @@ class SearchTest extends DbTestCase
 
         // Sorting on a 1:N aggregate — Software option 72 "Number of installations": same reason,
         // deferral is skipped and the regular query is emitted.
-        $agg = \Search::prepareDatasForSearch(\Software::class, [
+        $agg = \Search::prepareDatasForSearch(Software::class, [
             'reset'    => 'reset',
             'sort'     => [72],
             'order'    => ['DESC'],

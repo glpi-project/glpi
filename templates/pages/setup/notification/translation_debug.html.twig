@@ -64,7 +64,7 @@
     {% endif %}
 
     {% if data is not null %}
-        <table class="table table-borderless">
+        <table class="table table-borderless" style="table-layout: fixed;">
             <tbody>
                 <tr>
                     <th colspan="2">{{ __('Subject') }}</th>
@@ -77,7 +77,7 @@
                     <th>{{ __('Email HTML body') }}</th>
                 </tr>
                 <tr>
-                    <td>{{ data['content_text']|nl2br }}</td>
+                    <td style="overflow-wrap: anywhere;">{{ data['content_text']|nl2br }}</td>
                     <td>
                         <iframe srcdoc="{{ data['content_html']|e('html_attr') }}"
                                 title="{{ __('Email HTML body preview') }}"

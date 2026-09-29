@@ -59,7 +59,7 @@ final class AddPermissionController extends AbstractController
 {
     use CrudControllerTrait;
 
-    #[Route('/Knowbase/AddPermission', name: 'glpi_knowbaseitem_add_permission')]
+    #[Route('/Knowbase/AddPermission', name: 'glpi_knowbaseitem_add_permission', methods: ['POST'])]
     public function __invoke(Request $request): Response
     {
         $id = $request->request->getInt('knowbaseitems_id');

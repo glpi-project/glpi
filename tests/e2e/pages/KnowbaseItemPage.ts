@@ -47,9 +47,12 @@ export class KnowbaseItemPage extends GlpiPage
     private _tableEditorHelper: TableEditorHelper | null = null;
     private _readModeCommentBubbleHelper: ReadModeCommentBubbleHelper | null = null;
 
+    public readonly aside_resizer: Locator;
+
     public constructor(page: Page)
     {
         super(page);
+        this.aside_resizer = this.aside.getByRole('separator', { name: 'Resize articles list' });
     }
 
     public get editor(): TipTapEditorHelper
@@ -94,13 +97,17 @@ export class KnowbaseItemPage extends GlpiPage
 
     public get imageDialog(): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- custom TipTap dialog, no ARIA role available
-        return this.page.locator('.image-dialog');
+        return this.page.getByRole('dialog', { name: 'Insert/Edit Image' });
     }
 
     public get videoDialog(): Locator
     {
         return this.page.getByRole('dialog', { name: 'Insert video' });
+    }
+
+    public get linkDialog(): Locator
+    {
+        return this.page.getByRole('dialog', { name: 'Insert/Edit link' });
     }
 
     public get videoEmbedPlaceholders(): Locator
@@ -132,6 +139,29 @@ export class KnowbaseItemPage extends GlpiPage
     {
         await this.page.goto(
             `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`,
+            { waitUntil: 'domcontentloaded' }
+        );
+    }
+
+    /**
+     * The helpdesk FAQ view of an article, which renders the same aside as the
+     * central knowledge base.
+     */
+    public async gotoFaq(id: number): Promise<void>
+    {
+        await this.page.goto(
+            `/front/helpdesk.faq.php?id=${id}`,
+            { waitUntil: 'domcontentloaded' }
+        );
+    }
+
+    /**
+     * The helpdesk FAQ entry point, which lands on the root article.
+     */
+    public async gotoFaqHome(): Promise<void>
+    {
+        await this.page.goto(
+            '/front/helpdesk.faq.php',
             { waitUntil: 'domcontentloaded' }
         );
     }
@@ -206,6 +236,32 @@ export class KnowbaseItemPage extends GlpiPage
     public async doExpandAside(): Promise<void>
     {
         await this.getAsideExpandButton().click();
+    }
+
+    /** Focuses the resize handle and presses the given keys on it, modifiers included. */
+    public async doPressOnAsideResizer(...keys: string[]): Promise<void>
+    {
+        await this.aside_resizer.focus();
+        for (const key of keys) {
+            await this.page.keyboard.press(key);
+        }
+    }
+
+    /** Drags the resize handle so the aside is `width` px wide, measured from its left edge. */
+    public async doDragAsideToWidth(width: number): Promise<void>
+    {
+        const aside_box = (await this.aside.boundingBox())!;
+        const handle_box = (await this.aside_resizer.boundingBox())!;
+        const y = handle_box.y + 100;
+        await this.page.mouse.move(handle_box.x + handle_box.width / 2, y);
+        await this.page.mouse.down();
+        await this.page.mouse.move(aside_box.x + width, y, { steps: 5 });
+        await this.page.mouse.up();
+    }
+
+    public async doResetAsideWidth(): Promise<void>
+    {
+        await this.aside_resizer.dblclick();
     }
 
     public getAsideTreeArticleRow(id: number): Locator
@@ -291,6 +347,25 @@ export class KnowbaseItemPage extends GlpiPage
     public getAsideArticleAction(id: number, name: string): Locator
     {
         return this.getAsideTreeArticleLine(id).getByRole('button', { name });
+    }
+
+    /**
+     * An aside tree article row's (lazy) actions menu, queryable while its
+     * dropdown stays closed (no accessible role, unlike getAsideArticleAction()).
+     */
+    public getAsideArticleActionsMenu(id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- no accessible role while the dropdown is closed
+        return this.getAsideTreeArticleLine(id).locator('[data-glpi-kb-actions-menu]');
+    }
+
+    /**
+     * A button in an aside row's lazy actions menu, hidden until the dropdown opens.
+     */
+    public getAsideArticleActionsMenuButton(id: number, name: string): Locator
+    {
+        return this.getAsideArticleActionsMenu(id)
+            .getByRole('button', { name, includeHidden: true });
     }
 
     public async doToggleAsideFavorite(id: number): Promise<void>
@@ -719,7 +794,8 @@ export class KnowbaseItemPage extends GlpiPage
      * child article's link, or the "+" add-child link). Every node (leaf or
      * not, as long as article creation is allowed) has exactly one of these,
      * so it is a safe hover/click target regardless of whether the article
-     * has a fold toggle (which only renders when it already has children).
+     * has a fold toggle (which renders when it already has children, and never
+     * on the root article).
      */
     public getAsideArticleTitleLink(title: string): Locator
     {
@@ -811,16 +887,6 @@ export class KnowbaseItemPage extends GlpiPage
     public get asideTree(): Locator
     {
         return this.page.getByTestId('aside-tree');
-    }
-
-    /**
-     * The root tree's own header row, hovered/focused to reveal
-     * `asideRootCreateLink` (mirrors a regular node's header).
-     */
-    public get asideRootHeader(): Locator
-    {
-        // eslint-disable-next-line playwright/no-raw-locators -- using scope
-        return this.asideTree.locator(':scope > [data-glpi-kb-aside-category-header]');
     }
 
     public get asideSearchInput(): Locator

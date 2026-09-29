@@ -68,16 +68,68 @@ class CheckStartupErrorsListenerTest extends GLPITestCase
         $this->assertTrue(true); // no exception, no log record
     }
 
-    #[AllowMockObjectsWithoutExpectations]
-    public function testUnrelatedStartupErrorIsLoggedButDoesNotStopTheRequest(): void
+    public static function errorProvider(): iterable
     {
-        StartupErrors::capture($this->makeError('PHP Startup: Unable to load dynamic library \'foo.so\''));
+        yield [
+            'error_type'     => E_WARNING,
+            'error_message'  => 'var_dump() expects at least 1 parameter, 0 given',
+            'error_file'     => '/var/www/glpi/src/Foo.php',
+            'error_line'     => 128,
+            'expected_level' => LogLevel::WARNING,
+        ];
+        yield [
+            'error_type'     => E_CORE_WARNING,
+            'error_message'  => 'PHP Startup: Unable to load dynamic library \'foo.so\'',
+            'error_file'     => 'Unknown',
+            'error_line'     => 0,
+            'expected_level' => LogLevel::WARNING,
+        ];
+        yield [
+            'error_type'     => E_COMPILE_WARNING,
+            'error_message'  => 'Unsupported declare \'foo\'',
+            'error_file'     => '/var/www/glpi/src/Foo.php',
+            'error_line'     => 128,
+            'expected_level' => LogLevel::WARNING,
+        ];
+        yield [
+            'error_type'     => E_USER_WARNING,
+            'error_message'  => 'Unable to do something',
+            'error_file'     => '/var/www/glpi/src/Bar.php',
+            'error_line'     => 46,
+            'expected_level' => LogLevel::WARNING,
+        ];
+        yield [
+            'error_type'     => E_DEPRECATED,
+            'error_message'  => 'preg_match(): Passing null to parameter #2 ($subject) of type string is deprecated',
+            'error_file'     => '/var/www/glpi/src/Foo.php',
+            'error_line'     => 24,
+            'expected_level' => LogLevel::INFO,
+        ];
+        yield [
+            'error_type'     => E_USER_DEPRECATED,
+            'error_message'  => 'Calling Foo::bar() is deprecated since GLPI 10.0',
+            'error_file'     => '/var/www/glpi/src/Foo.php',
+            'error_line'     => 24,
+            'expected_level' => LogLevel::INFO,
+        ];
+    }
+
+    #[DataProvider('errorProvider')]
+    #[AllowMockObjectsWithoutExpectations]
+    public function testUnrelatedErrorIsLoggedButDoesNotStopTheRequest(
+        int $error_type,
+        string $error_message,
+        string $error_file,
+        int $error_line,
+        string $expected_level
+    ): void {
+        StartupErrors::capture($this->makeError($error_type, $error_message, $error_file, $error_line));
 
         (new CheckStartupErrorsListener())->onKernelRequest($this->makeRequestEvent());
 
         $this->hasPhpLogRecordThatContains(
-            'PHP startup error: PHP Startup: Unable to load dynamic library \'foo.so\'',
-            LogLevel::WARNING
+            sprintf('%s (initially triggered at %s line %d)', $error_message, $error_file, $error_line),
+            $expected_level
         );
     }
 
@@ -104,7 +156,7 @@ class CheckStartupErrorsListenerTest extends GLPITestCase
     #[AllowMockObjectsWithoutExpectations]
     public function testTruncatedInputStopsTheRequest(string $message, int $status_code, string $directive): void
     {
-        StartupErrors::capture($this->makeError($message));
+        StartupErrors::capture($this->makeError(E_CORE_WARNING, $message));
 
         $exception = null;
         try {
@@ -117,13 +169,13 @@ class CheckStartupErrorsListenerTest extends GLPITestCase
         $this->assertSame($status_code, $exception->getStatusCode());
         $this->assertStringContainsString($directive, (string) $exception->getMessageToDisplay());
 
-        $this->hasPhpLogRecordThatContains('PHP startup error: ' . $message, LogLevel::WARNING);
+        $this->hasPhpLogRecordThatContains($message, LogLevel::WARNING);
     }
 
     #[AllowMockObjectsWithoutExpectations]
     public function testSubRequestsAreIgnored(): void
     {
-        StartupErrors::capture($this->makeError('PHP Request Startup: Input variables exceeded 1000.'));
+        StartupErrors::capture($this->makeError(E_CORE_WARNING, 'PHP Request Startup: Input variables exceeded 1000.'));
 
         (new CheckStartupErrorsListener())->onKernelRequest(
             $this->makeRequestEvent(HttpKernelInterface::SUB_REQUEST)
@@ -144,8 +196,8 @@ class CheckStartupErrorsListenerTest extends GLPITestCase
     /**
      * @return array{type: int, message: string, file: string, line: int}
      */
-    private function makeError(string $message): array
+    private function makeError(int $type, string $message, string $file = 'Unknown', int $line = 0): array
     {
-        return ['type' => E_WARNING, 'message' => $message, 'file' => 'Unknown', 'line' => 0];
+        return ['type' => $type, 'message' => $message, 'file' => $file, 'line' => $line];
     }
 }

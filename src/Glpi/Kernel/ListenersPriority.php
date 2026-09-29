@@ -34,6 +34,8 @@
 
 namespace Glpi\Kernel;
 
+use Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener;
+use Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener;
 use Glpi\Kernel\Listener\PostBootListener\BootPlugins;
 use Glpi\Kernel\Listener\PostBootListener\CheckPluginsStates;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsAutoloaderRegistration;
@@ -149,6 +151,14 @@ final class ListenersPriority
         // Update session variables according to request parameters.
         // Must be called as late as possible, just before controllers execution.
         SessionVariables::class            => 0,
+    ];
+
+    public const CONTROLLER_LISTENERS_PRIORITIES = [
+        // Block unsafe requests subject to CSRF.
+        CheckCsrfListener::class        => 20,
+
+        // Applies the security strategy of the controller (authentication, profile rights, ...).
+        FirewallStrategyListener::class => 10,
     ];
 
     private function __construct() {}

@@ -35,11 +35,10 @@
  #
  # - `can_create`   whether to show the "+" (create a child article) action.
  # - `show_actions` whether to show the per-article kebab (favorite/FAQ/delete) menu.
- # - `add_margin`   extra bottom margin on the row (used by the favorites list).
  # - `favorite_state` null | 'active' | 'pending' (used by the favorites list; see
  #   `data-glpi-kb-favorite-current` consumers in AsideController.js).
  #}
-{% macro render_article(article, can_create = false, show_actions = false, add_margin = false, favorite_state = null) %}
+{% macro render_article(article, can_create = false, show_actions = false, favorite_state = null) %}
     {% import _self as macros %}
     {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
     {% set is_node = article.hasChildren or can_create %}
@@ -47,7 +46,7 @@
         data-glpi-kb-article-id="{{ article.id }}"
         {% if is_node %}
             data-glpi-kb-aside-category
-            {{ article.collapsed ? 'data-glpi-kb-aside-category-collapsed' : '' }}
+            {{ (article.collapsed and not article.is_root) ? 'data-glpi-kb-aside-category-collapsed' : '' }}
             role="group"
             aria-label="{{ article.title }}"
         {% endif %}
@@ -58,10 +57,10 @@
             data-glpi-kb-article-current
             aria-current="page"
         {% endif %}
-        class="article {{ is_node ? 'node' : '' }} {{ add_margin ? 'mb-2' : '' }}"
+        class="article {{ is_node ? 'node' : '' }}"
     >
-        <div class="article-line d-flex align-items-center {{ is_node ? 'mb-2' : '' }}" {{ is_node ? 'data-glpi-kb-aside-category-header' : '' }}>
-            {% if article.hasChildren %}
+        <div class="article-line d-flex align-items-center mb-2" {{ is_node ? 'data-glpi-kb-aside-category-header' : '' }}>
+            {% if article.hasChildren and not article.is_root %}
                 <button
                     type="button"
                     class="d-flex align-items-center p-0 border-0 bg-transparent"
@@ -72,7 +71,11 @@
                     <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
                 </button>
             {% endif %}
-            <a class="text-body text-hover-link text-truncate flex-grow-1" href="{{ article.link }}" draggable="false">
+            <a
+                class="text-body text-hover-link text-truncate flex-grow-1 {{ article.is_root ? 'fw-bold' : '' }}"
+                href="{{ article.link }}"
+                draggable="false"
+            >
                 <span data-glpi-kb-article-illustration data-testid="kb-illustration">
                     {% if article.illustration %}
                         {{ render_illustration(article.illustration, 20) }}
@@ -91,14 +94,18 @@
                     <i class="ti ti-plus" aria-hidden="true"></i>
                 </button>
             {% endif %}
-            {% if show_actions %}
+            {# The root article has no action, see `KnowbaseItem::getAsideActions()`. #}
+            {% if show_actions and not call('KnowbaseItem::isRootId', [article.id]) %}
                 {{ actions_menu.render_actions_menu_lazy() }}
             {% endif %}
         </div>
         {% if is_node %}
             {# A folded article renders without its children; the aside fetches
              # them the first time the reader unfolds it. #}
-            <ul {{ article.hasChildren and not article.children_loaded ? 'data-glpi-kb-children-unloaded' : '' }}>
+            <ul
+                {{ article.is_root ? 'data-glpi-kb-root-children' : '' }}
+                {{ article.hasChildren and not article.children_loaded ? 'data-glpi-kb-children-unloaded' : '' }}
+            >
                 {{ macros.render_rows(article.getChildren, can_create, show_actions) }}
             </ul>
         {% endif %}

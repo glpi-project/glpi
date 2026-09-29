@@ -95,6 +95,208 @@ final class HistoryBuilderTest extends DbTestCase
         $this->assertEquals("Created by", $events[0]->getDescription());
     }
 
+    public function testKnowbaseItemWithoutCreationDateReturnsUndatedCreationEvent(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        // Arrange: setup an article with a null data
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Article without creation date',
+            'answer' => '',
+        ]);
+
+        // Raw DB request as date_creation will be auto generated otherwise
+        $DB->update(
+            KnowbaseItem::getTable(),
+            ['date_creation' => null],
+            ['id' => $kb->getID()]
+        );
+        $kb->getFromDB($kb->getID());
+
+        // Act: build history
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // Assert: no failures, the history still work and contains logical data
+        $this->assertCount(1, $events);
+        $this->assertInstanceOf(CreationEvent::class, $events[0]);
+        $this->assertNull($events[0]->getDate());
+
+        $last_update_info = $kb->getLastUpdateInfo();
+        $this->assertNull($last_update_info->getRawDate());
+        $this->assertNull($last_update_info->getRelativeDate());
+    }
+
+    public function testKnowbaseItemWithoutLogDateReturnsUndatedLogEvents(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        // Arrange: setup an article with a name change and a content update
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Original title',
+            'answer' => 'Original content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Updated title',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'answer' => 'Updated content',
+        ]);
+
+        // Raw DB request as both columns are set automatically otherwise
+        $DB->update(
+            Log::getTable(),
+            ['date_mod' => null, 'user_name' => null],
+            [
+                'itemtype' => KnowbaseItem::class,
+                'items_id' => $kb->getID(),
+            ]
+        );
+        $kb->getFromDB($kb->getID());
+
+        // Act: build history
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+        $log_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof LogEvent
+        ));
+
+        // Assert: no failures, both the renaming and the current version are
+        // still reported without a date nor an author
+        $this->assertCount(2, $log_events);
+        foreach ($log_events as $log_event) {
+            $this->assertNull($log_event->getDate());
+            $this->assertEquals(0, $log_event->getAuthor());
+        }
+    }
+
+    public function testKnowbaseItemWithoutRevisionDateReturnsUndatedRevisionEvent(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        // Arrange: setup an article with a single revision
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Original content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'answer' => 'Updated content',
+        ]);
+
+        // Raw DB request as the date will be auto generated otherwise
+        $DB->update(
+            KnowbaseItem_Revision::getTable(),
+            ['date' => null],
+            ['knowbaseitems_id' => $kb->getID()]
+        );
+        $kb->getFromDB($kb->getID());
+
+        // Act: build history
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+        $revision_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof RevisionEvent
+        ));
+
+        // Assert: no failures, the revision is still reported without a date
+        $this->assertCount(1, $revision_events);
+        $this->assertNull($revision_events[0]->getDate());
+        $this->assertEquals("Version 1", $revision_events[0]->getLabel());
+    }
+
+    public function testKnowbaseItemWithoutTranslationDateReturnsUndatedTranslationEvents(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        // Arrange: setup an article with a translation and one translation revision
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $translation = $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'language' => 'fr_FR',
+            'name' => 'Article de test',
+            'answer' => 'Contenu V1',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItemTranslation::class, $translation->getID(), [
+            'answer' => 'Contenu V2',
+        ]);
+
+        // Raw DB requests as both dates will be auto generated otherwise
+        $DB->update(
+            KnowbaseItemTranslation::getTable(),
+            ['date_mod' => null],
+            ['id' => $translation->getID()]
+        );
+        $DB->update(
+            KnowbaseItem_Revision::getTable(),
+            ['date' => null],
+            [
+                'knowbaseitems_id' => $kb->getID(),
+                'NOT' => ['language' => ''],
+            ]
+        );
+        $kb->getFromDB($kb->getID());
+
+        // Act: build history
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // Assert: no failures, the current translation and its revision are
+        // still reported without a date
+        $translation_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof CurrentTranslationEvent
+        ));
+        $this->assertCount(1, $translation_events);
+        $this->assertNull($translation_events[0]->getDate());
+        $this->assertEquals("Français — Current version", $translation_events[0]->getLabel());
+
+        $revision_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof TranslationRevisionEvent
+        ));
+        $this->assertCount(1, $revision_events);
+        $this->assertNull($revision_events[0]->getDate());
+        $this->assertEquals("Français — Version 1", $revision_events[0]->getLabel());
+    }
+
     /**
      * The builder holds the list it fills while reading its sources, so it must
      * start over on each build instead of stacking a second read on top of the

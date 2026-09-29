@@ -1272,7 +1272,8 @@ class GLPIDashboard {
             return;
         }
 
-        const filters = this.getFiltersFromDB();
+        // copy: avoid mutating the cached filters used by later ajax calls
+        const filters = { ...this.getFiltersFromDB() };
 
         // replace empty array by empty string to avoid jquery remove the corresponding key
         // when sending ajax query

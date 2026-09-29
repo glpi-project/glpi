@@ -164,4 +164,38 @@ class DisplayPreferenceTest extends DbTestCase
 
         DisplayPreference::checkCrudItem(['users_id' => $target_users_id]);
     }
+
+    /**
+     * Calling activatePerso() more than once for the same user/itemtype/interface must not
+     * throw a "Duplicate entry" SQL error on the `unicity` key, since the "Create personal
+     * view" button may be re-submitted (concurrent tabs, network retry, ...) after the
+     * personal preferences have already been created.
+     */
+    public function testActivatePersoIsIdempotent(): void
+    {
+        $this->login();
+        $users_id = (int) Session::getLoginUserID();
+        $itemtype = 'Computer';
+
+        $displaypref = new DisplayPreference();
+        // Start from a clean state so the test is deterministic.
+        $displaypref->deleteByCriteria(['users_id' => $users_id, 'itemtype' => $itemtype]);
+
+        $input = ['itemtype' => $itemtype, 'users_id' => $users_id];
+
+        $displaypref->activatePerso($input);
+        $count_after_first_call = countElementsInTable(
+            DisplayPreference::getTable(),
+            ['users_id' => $users_id, 'itemtype' => $itemtype]
+        );
+        $this->assertGreaterThan(0, $count_after_first_call);
+
+        // Must not throw and must not create duplicate rows.
+        $displaypref->activatePerso($input);
+        $count_after_second_call = countElementsInTable(
+            DisplayPreference::getTable(),
+            ['users_id' => $users_id, 'itemtype' => $itemtype]
+        );
+        $this->assertEquals($count_after_first_call, $count_after_second_call);
+    }
 }

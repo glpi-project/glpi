@@ -693,14 +693,13 @@ class Agent extends CommonDBTM
         $exception = null;
         $response = null;
         foreach ($addresses as $address) {
-            $httpClient = new HttpClient(
-                context: self::class,
-                options: [
-                    'base_uri' => $address,
-                ]
-            );
-
             try {
+                $httpClient = new HttpClient(
+                    context: self::class,
+                    options: [
+                        'base_uri' => $address,
+                    ]
+                );
                 $response = $httpClient->get($endpoint, []);
                 self::$found_address = $address;
                 break;

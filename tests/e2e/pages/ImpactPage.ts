@@ -40,6 +40,7 @@ export class ImpactPage extends GlpiPage
     public readonly canvas_elements: Locator;
     public readonly view_as_list_button: Locator;
     public readonly view_as_graph_button: Locator;
+    public readonly save_button: Locator;
 
     public constructor(page: Page)
     {
@@ -51,6 +52,8 @@ export class ImpactPage extends GlpiPage
         this.canvas_elements = page.locator('.__________cytoscape_container > canvas');
         this.view_as_list_button = page.getByTitle('View as list');
         this.view_as_graph_button = page.getByTitle('View graphical representation');
+        // eslint-disable-next-line playwright/no-raw-locators
+        this.save_button = page.locator('#save_impact');
     }
 
     public async gotoComputerImpact(computer_id: number): Promise<void>

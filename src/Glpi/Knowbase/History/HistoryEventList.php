@@ -79,7 +79,7 @@ final class HistoryEventList
         usort(
             $this->events,
             static function (HistoryEventInterface $left, HistoryEventInterface $right): int {
-                $date_cmp = strcmp($right->getDate(), $left->getDate());
+                $date_cmp = strcmp($right->getDate() ?? '', $left->getDate() ?? '');
                 if ($date_cmp !== 0) {
                     return $date_cmp;
                 }

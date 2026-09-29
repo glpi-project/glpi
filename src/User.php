@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryValue;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
@@ -96,6 +97,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public const IMPERSONATE         = 8192;
 
     public static string $rightname = 'user';
+
+    private const DB_KEEPALIVE_INTERVAL = 30;
 
     public static array $undisclosedFields = [
         'password',
@@ -2193,9 +2196,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $lgroups = [];
                         foreach ($v[$i][$field] as $lgroup) {
                             $lgroups[] = [
-                                new QueryExpression($DB->quoteValue($lgroup)
-                                             . " LIKE "
-                                             . $DB->quoteName('ldap_value')),
+                                new QueryExpression('? LIKE `ldap_value`', values: [$lgroup]),
                             ];
                         }
                         $group_iterator = $DB->request([
@@ -2333,6 +2334,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ]);
 
             $ldap_error = false;
+            $last_db_activity = time();
 
             foreach ($groups_iterator as $group_row) {
                 $group_id = (int) $group_row['id'];
@@ -2342,6 +2344,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $cookie   = '';
 
                 do {
+                    $last_db_activity = self::keepDbConnectionAlive($last_db_activity);
                     if (!empty($ldap_method['pagesize'])) {
                         $controls = [[
                             'oid'        => LDAP_CONTROL_PAGEDRESULTS,
@@ -2401,6 +2404,19 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         return true;
+    }
+
+    // Long LDAP-only phases would otherwise exceed the DB server wait_timeout.
+    private static function keepDbConnectionAlive(int $last_db_activity): int
+    {
+        global $DB;
+
+        if (time() - $last_db_activity < self::DB_KEEPALIVE_INTERVAL) {
+            return $last_db_activity;
+        }
+
+        $DB->getVersion();
+        return time();
     }
 
 
@@ -4385,13 +4401,15 @@ HTML;
             if (((string) $search) !== '') {
                 $txt_search = Search::makeTextSearchValue($search);
 
-                $firstname_field = new QueryIdentifier(self::getTableField('firstname'));
-                $realname_field = new QueryIdentifier(self::getTableField('realname'));
-                $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
-                ? [$firstname_field, new QueryExpression($DB::quoteValue(' ')), $realname_field]
-                : [$realname_field, new QueryExpression($DB::quoteValue(' ')), $firstname_field];
-
-                $concat = new QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
+                $concat = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
+                    ? new QueryExpression(
+                        'CONCAT(`glpi_users`.`firstname`, ?, `glpi_users`.`realname`) LIKE ?',
+                        values: [' ', $txt_search]
+                    )
+                    : new QueryExpression(
+                        'CONCAT(`glpi_users`.`realname`, ?, `glpi_users`.`firstname`) LIKE ?',
+                        values: [' ', $txt_search]
+                    );
                 $WHERE[] = [
                     'OR' => [
                         'glpi_users.name'                => ['LIKE', $txt_search],
@@ -5152,8 +5170,12 @@ HTML;
                 $iterator_params = [
                     'SELECT'  => [
                         "$itemtable.*",
-                        new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName($relation_table . '.groups_id') . ') AS ' . $DB->quoteName('groups_ids')),
-                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
+                        QueryFunction::groupConcat(
+                            expression: new QueryIdentifier($relation_table . '.groups_id'),
+                            distinct: true,
+                            alias: 'groups_ids'
+                        ),
+                        new QueryExpression(new QueryValue($itemtype), 'itemtype'),
                     ],
                     'FROM'    => $itemtable,
                     'LEFT JOIN' => [
@@ -5969,6 +5991,8 @@ HTML;
                         foreach ($values as $value) {
                             if (str_contains($key, 'password')) {
                                 $value = '********';
+                            } else {
+                                $value = AuthLDAP::formatValueForDisplay($key, $value);
                             }
                             $printed_values[] = htmlescape($value);
                         }
@@ -6433,13 +6457,11 @@ HTML;
                     self::getTableField('is_deleted') => 0,
                     self::getTableField('is_active')  => 1,
                     self::getTableField('authtype')   => Auth::DB_GLPI,
-                    new QueryExpression(
-                        QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
-                            date: self::getTableField('password_last_update'),
-                            interval: $expiration_delay - $notice_time,
-                            interval_unit: 'DAY'
-                        )
-                    ),
+                    self::getTableField('password_last_update') => ['<', QueryFunction::dateSub(
+                        date: QueryFunction::now(),
+                        interval: new QueryValue($expiration_delay - $notice_time),
+                        interval_unit: 'DAY'
+                    )],
                     // Get only users that has not yet been notified within last day
                     'OR'                              => [
                         [Alert::getTableField('date') => null],
@@ -6518,13 +6540,11 @@ HTML;
                 'is_deleted' => 0,
                 'is_active'  => 1,
                 'authtype'   => Auth::DB_GLPI,
-                new QueryExpression(
-                    QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
-                        date: new QueryIdentifier('password_last_update'),
-                        interval: $expiration_delay + $lock_delay,
-                        interval_unit: 'DAY'
-                    )
-                ),
+                'password_last_update' => ['<', QueryFunction::dateSub(
+                    date: QueryFunction::now(),
+                    interval: new QueryValue($expiration_delay + $lock_delay),
+                    interval_unit: 'DAY'
+                )],
             ];
 
             $DB->delete('glpi_usertokens', [
@@ -6645,40 +6665,29 @@ HTML;
 
     public static function getFriendlyNameSearchCriteria(string $filter): array
     {
-        global $DB;
-
-        $table     = self::getTable();
-
         $filter = strtolower($filter);
         $filter_no_spaces = str_replace(" ", "", $filter);
-        $concat_names_first_last = QueryFunction::lower(
-            QueryFunction::replace(
-                expression: QueryFunction::concat([new QueryIdentifier("$table.firstname"), new QueryIdentifier("$table.realname")]),
-                search: new QueryExpression($DB::quoteValue(' ')),
-                replace: new QueryExpression($DB::quoteValue(''))
-            )
-        );
-        $concat_names_last_first = QueryFunction::lower(
-            QueryFunction::replace(
-                expression: QueryFunction::concat([new QueryIdentifier("$table.realname"), new QueryIdentifier("$table.firstname")]),
-                search: new QueryExpression($DB::quoteValue(' ')),
-                replace: new QueryExpression($DB::quoteValue(''))
-            )
-        );
 
         return [
             'OR' => [
-                new QueryExpression(QueryFunction::lower(new QueryIdentifier("$table.name")) . ' LIKE ' . $DB::quoteValue("%$filter%")),
-                new QueryExpression($concat_names_first_last . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
-                new QueryExpression($concat_names_last_first . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
+                new QueryExpression(
+                    'LOWER(`glpi_users`.`name`) LIKE ?',
+                    values: ["%$filter%"]
+                ),
+                new QueryExpression(
+                    'LOWER(REPLACE(CONCAT(`glpi_users`.`firstname`, `glpi_users`.`realname`), ?, ?)) LIKE ?',
+                    values: [' ', '', "%$filter_no_spaces%"]
+                ),
+                new QueryExpression(
+                    'LOWER(REPLACE(CONCAT(`glpi_users`.`realname`, `glpi_users`.`firstname`), ?, ?)) LIKE ?',
+                    values: [' ', '', "%$filter_no_spaces%"]
+                ),
             ],
         ];
     }
 
     public static function getFriendlyNameFields(string $alias = "name")
     {
-        global $DB;
-
         $config = Config::getConfigurationValues('core');
         if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
             $first = "firstname";
@@ -6690,17 +6699,30 @@ HTML;
 
         $table  = self::getTable();
 
-        $first  = new QueryIdentifier("$table.$first");
-        $second = new QueryIdentifier("$table.$second");
-        $alias  = new QueryIdentifier($alias);
-        $name   = new QueryIdentifier($table . '.' . self::getNameField());
+        $first_field  = "$table.$first";
+        $second_field = "$table.$second";
 
-        return new QueryExpression("CASE
-            WHEN $first <> '' AND $second <> '' THEN CONCAT($first, ' ', $second)
-            WHEN $first <> '' THEN $first
-            WHEN $second <> '' THEN $second
-            ELSE $name
-        END AS $alias");
+        $first_id  = new QueryIdentifier($first_field);
+        $second_id = new QueryIdentifier($second_field);
+        $name_id   = new QueryIdentifier($table . '.' . self::getNameField());
+
+        return QueryFunction::if(
+            condition: [
+                $first_field  => ['<>', ''],
+                $second_field => ['<>', ''],
+            ],
+            true_expression: QueryFunction::concat([$first_id, new QueryValue(' '), $second_id]),
+            false_expression: QueryFunction::if(
+                condition: [$first_field => ['<>', '']],
+                true_expression: $first_id,
+                false_expression: QueryFunction::if(
+                    condition: [$second_field => ['<>', '']],
+                    true_expression: $second_id,
+                    false_expression: $name_id
+                )
+            ),
+            alias: $alias
+        );
     }
 
     public static function getIcon()
@@ -7026,13 +7048,11 @@ HTML;
             'SELECT' => ['id', 'password_forget_token'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                new QueryExpression(
-                    QueryFunction::now() . ' < ' . QueryFunction::dateAdd(
-                        date: new QueryIdentifier('password_forget_token_date'),
-                        interval: $CFG_GLPI['password_init_token_delay'],
-                        interval_unit: 'SECOND'
-                    )
-                ),
+                'password_forget_token_date' => ['>', QueryFunction::dateSub(
+                    date: QueryFunction::now(),
+                    interval: new QueryValue($CFG_GLPI['password_init_token_delay']),
+                    interval_unit: 'SECOND'
+                )],
             ],
         ]);
 

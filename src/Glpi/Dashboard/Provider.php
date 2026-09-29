@@ -61,6 +61,7 @@ use Group_Ticket;
 use Item_OperatingSystem;
 use OperatingSystem;
 use Profile_User;
+use Safe\Exceptions\DatetimeException;
 use Session;
 use Stat;
 use Ticket;
@@ -1537,10 +1538,17 @@ class Provider
 
         if (
             isset($params['apply_filters'][DatesFilter::getId()])
+            && is_array($params['apply_filters'][DatesFilter::getId()])
             && count($params['apply_filters'][DatesFilter::getId()]) == 2
         ) {
-            $begin = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][0]));
-            $end   = date("Y-m-d", strtotime($params['apply_filters'][DatesFilter::getId()][1]));
+            try {
+                $filter_begin = strtotime($params['apply_filters'][DatesFilter::getId()][0]);
+                $filter_end   = strtotime($params['apply_filters'][DatesFilter::getId()][1]);
+                $begin = date("Y-m-d", $filter_begin);
+                $end   = date("Y-m-d", $filter_end);
+            } catch (DatetimeException) {
+                // keep default range if filter values are not parsable dates
+            }
             unset($params['apply_filters'][DatesFilter::getId()]);
         }
 
