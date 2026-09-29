@@ -143,7 +143,7 @@
 
         const locale = getFlatPickerLocale("{{ get_current_locale()['language']|e('js') }}", "{{ get_current_locale()['region']|e('js') }}");
         ['plan_begin_time_{{ rand }}', 'plan_end_time_{{ rand }}'].forEach((id) => {
-            $(`#${id}`).flatpickr({
+            flatpickr(document.getElementById(id), {
                 wrap: true,
                 enableTime: true,
                 noCalendar: true,
@@ -216,7 +216,7 @@
 
             begin_input.value = begin_date.formatDate(begin, 'Y-m-d H:i:S');
             end_input.value   = begin_date.formatDate(all_day ? addDays(end, 1) : end, 'Y-m-d H:i:S');
-            $(begin_input).trigger('change');
+            begin_input.dispatchEvent(new Event('change', { bubbles: true }));
         }
 
         begin_date.config.onChange.push(() => sync(true));
@@ -224,17 +224,23 @@
         end_date.config.onChange.push(() => sync());
         end_time.config.onChange.push(() => sync());
 
-        $(root).on('change', 'input[name="_plan_mode"]', () => {
-            $(root).find('.planning-event-time-row').toggleClass('d-none', isAllDay());
-            sync();
+        root.addEventListener('change', (event) => {
+            if (event.target.matches('input[name="_plan_mode"]')) {
+                root.querySelectorAll('.planning-event-time-row').forEach((el) => {
+                    el.classList.toggle('d-none', isAllDay());
+                });
+                sync();
+            }
         });
 
         // Allow other scripts (e.g. event templates) to force a duration, in seconds
-        $(root).on('planning:set_duration', (e, seconds) => {
-            duration = parseInt(seconds) * 1000;
+        root.addEventListener('planning:set_duration', (event) => {
+            duration = parseInt(event.detail) * 1000;
             if (duration % DAY !== 0) {
-                $(root).find('input[name="_plan_mode"][value="timeslot"]').prop('checked', true);
-                $(root).find('.planning-event-time-row').removeClass('d-none');
+                root.querySelector('input[name="_plan_mode"][value="timeslot"]').checked = true;
+                root.querySelectorAll('.planning-event-time-row').forEach((el) => {
+                    el.classList.remove('d-none');
+                });
             } else if (isAllDay()) {
                 // displayed end date of an "all day" event is its last day, not the following day
                 duration -= DAY;
