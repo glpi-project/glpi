@@ -66,16 +66,6 @@
     {% set end_time = end|date('H:i') %}
 {% endif %}
 
-{% macro timeInput(id, name, value, label) %}
-    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ id }}">
-        <input type="text" class="form-control" id="{{ id }}_input" name="{{ name }}" value="{{ value }}" aria-label="{{ label }}" data-input>
-        <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
-            <i class="ti ti-clock" aria-hidden="true"></i>
-            <span class="visually-hidden">{{ __('Enter or select a time') }}</span>
-        </button>
-    </div>
-{% endmacro %}
-
 <div class="planning-event-dates" id="plan_dates_{{ rand }}">
     <input type="hidden" name="plan[begin]" value="{{ begin }}" data-testid="planning-event-begin">
     <input type="hidden" name="plan[end]" value="{{ end }}" data-testid="planning-event-end">
@@ -103,7 +93,10 @@
         </div>
         <div class="planning-event-dates-row planning-event-time-row {{ is_all_day ? 'd-none' : '' }}">
             <label class="form-label" for="plan_begin_time_{{ rand }}_input">{{ __('Start time') }}</label>
-            {{ _self.timeInput('plan_begin_time_' ~ rand, '_plan_begin_time', begin_time, __('Start time')) }}
+            {{ inputs.time('_plan_begin_time', begin_time, {
+                id: 'plan_begin_time_' ~ rand,
+                field_label: __('Start time'),
+            }) }}
         </div>
     </div>
 
@@ -117,7 +110,10 @@
         </div>
         <div class="planning-event-dates-row planning-event-time-row {{ is_all_day ? 'd-none' : '' }}">
             <label class="form-label" for="plan_end_time_{{ rand }}_input">{{ __('End time') }}</label>
-            {{ _self.timeInput('plan_end_time_' ~ rand, '_plan_end_time', end_time, __('End time')) }}
+            {{ inputs.time('_plan_end_time', end_time, {
+                id: 'plan_end_time_' ~ rand,
+                field_label: __('End time'),
+            }) }}
         </div>
     </div>
 
@@ -139,24 +135,6 @@
     const root      = document.getElementById('plan_dates_{{ rand }}');
     const time_step = {{ time_step|default(5) }};
     const DAY       = 24 * 60 * 60 * 1000;
-
-    const locale = getFlatPickerLocale("{{ get_current_locale()['language']|e('js') }}", "{{ get_current_locale()['region']|e('js') }}");
-    ['plan_begin_time_{{ rand }}', 'plan_end_time_{{ rand }}'].forEach((id) => {
-        flatpickr(document.getElementById(id), {
-            wrap: true,
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: 'H:i',
-            time_24hr: true,
-            minuteIncrement: time_step,
-            allowInput: true,
-            locale: locale,
-            onClose(dates, currentdatestring, picker) {
-                // take manually typed value into account
-                picker.setDate(picker.input.value, true);
-            },
-        });
-    });
 
     const begin_date = document.getElementById('plan_begin_date_{{ rand }}')._flatpickr;
     const end_date   = document.getElementById('plan_end_date_{{ rand }}')._flatpickr;
