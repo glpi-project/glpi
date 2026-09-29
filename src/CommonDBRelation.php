@@ -493,6 +493,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     public function canRelationItem($method, $methodNotItem, $check_entity = true, $forceCheckBoth = false)
     {
 
+        // When both sides require the same right, the right on one side and the view right
+        // on the other side are enough. Otherwise, each side must pass its own check.
         $OneWriteIsEnough = (!$forceCheckBoth
                            && ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
                                || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
@@ -502,7 +504,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         try {
             $item1 = null;
-            // One write is enough: the write must include the global right, as the static check does
+            // canConnexityItem() checks the global right only for a dynamic itemtype,
+            // so check it here for a fixed itemtype.
             $can1  = $this->canConnexityItem(
                 $method,
                 $methodNotItem,
@@ -527,6 +530,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 );
             }
         } catch (CommonDBConnexityItemNotFound $e) {
+            // Item not found (e.g. not selected yet in a creation form): allowed,
+            // unless the relation requires it.
             if (static::$mustBeAttached_1 && !$this->isAttach1Valid($this->fields)) {
                 return false;
             }
@@ -537,6 +542,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         try {
             $item2 = null;
+            // Same checks as for item 1.
             $can2  = $this->canConnexityItem(
                 $method,
                 $methodNotItem,
@@ -570,6 +576,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if ($OneWriteIsEnough) {
+            // Refuse if no side has the right, or if the other side cannot be viewed.
             if (
                 (!$can1 && !$can2)
                 || ($can1 && !$view2)
