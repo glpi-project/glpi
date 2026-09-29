@@ -55,6 +55,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\DBAL\QueryIdentifier`, to designate a database identifier (table or field name) that has to be quoted, instead of relying on a bare string.
 - `Glpi\DBAL\QueryValue`, to designate a scalar value used in a statement. It renders as a `?` placeholder and carries the value to bind for it, instead of the value being inlined into the SQL. Not to be confused with `QueryParam`, which renders as `?` but binds nothing.
 - `Planning::showEventDatesForm()`
+- `inputs.time()` and `fields.timeField()` Twig macros in `basic_inputs_macros.html.twig` and `fields_macros.html.twig`.
 
 #### Changes
 - `QueryFunction` methods now accept any `QueryElementInterface` where they used to accept only a `string` or a `QueryExpression`
