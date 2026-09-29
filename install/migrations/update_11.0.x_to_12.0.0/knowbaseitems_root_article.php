@@ -134,3 +134,6 @@ foreach ($DB->request([
         'knowbaseitems_id_parent' => $root_id,
     ]);
 }
+
+// The root article cannot be a favorite, drop the ones added before that rule.
+$DB->delete('glpi_knowbaseitems_favorites', ['knowbaseitems_id' => $root_id]);
