@@ -39,7 +39,6 @@ use Glpi\Asset\Capacity\HasSoftwaresCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Item_SoftwareVersion;
-use Search;
 use Toolbox;
 
 class Item_SoftwareVersionTest extends DbTestCase
