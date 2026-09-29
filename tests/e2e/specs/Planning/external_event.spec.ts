@@ -32,8 +32,24 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { Profiles } from '../../utils/Profiles';
+import { ExternalEventPage } from '../../pages/ExternalEventPage';
 
 test.describe('External event', () => {
+    test('New event form loads correctly', async ({ page, profile }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const event_page = new ExternalEventPage(page);
+
+        // A new event has no dates yet, the form must still be displayed with default ones
+        await event_page.goto();
+        await expect(event_page.title_input).toBeVisible();
+        await expect(event_page.time_slot_radio).toBeChecked();
+        await expect(event_page.all_day_radio).not.toBeChecked();
+        await expect(event_page.start_time_input).toBeVisible();
+        await expect(event_page.end_time_input).toBeVisible();
+        await expect(event_page.plan_begin_input).toHaveValue(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:00$/);
+        await expect(event_page.plan_end_input).toHaveValue(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:00$/);
+    });
+
     test('Accessibility - Form', async ({ page, profile }) => {
         await profile.set(Profiles.SuperAdmin);
 

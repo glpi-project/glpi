@@ -49,6 +49,7 @@ use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Safe\DateTime;
+use Safe\Exceptions\DatetimeException;
 use Safe\Exceptions\UrlException;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
@@ -1449,7 +1450,11 @@ TWIG, $twig_params);
         // Dates may come from a request, ignore them if they cannot be parsed
         $dates = [];
         foreach (['begin', 'end'] as $key) {
-            $timestamp   = is_string($params[$key] ?? null) ? strtotime($params[$key]) : false;
+            try {
+                $timestamp = is_string($params[$key] ?? null) ? strtotime($params[$key]) : false;
+            } catch (DatetimeException $e) {
+                $timestamp = false;
+            }
             $dates[$key] = $timestamp !== false ? date('Y-m-d H:i:s', $timestamp) : '';
         }
 
