@@ -2074,11 +2074,10 @@ class DBmysql
         if ($stmt->param_count !== count($params)) {
             throw new StatementException(
                 sprintf(
-                    "Number of placeholders (%d) in SQL statement does not match number of values (%d).\n     SQL query:\n%s\n    Parameters:\n%s",
+                    'Number of placeholders (%d) in SQL statement does not match number of values (%d). SQL: %s',
                     $stmt->param_count,
                     count($params),
-                    $this->getStatementQuery($stmt),
-                    var_export($params, true)
+                    $this->getStatementQuery($stmt)
                 )
             );
         }
