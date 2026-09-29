@@ -2958,6 +2958,8 @@ HTML,
         // Author the articles as *another* user (glpi): otherwise the author
         // bypass (`users_id => current user`) would make them directly visible
         // to `normal` and inheritance would never be exercised.
+        // Only an admin can choose the author, so create them as one.
+        $this->login();
         $glpi_user = getItemByTypeName("User", "glpi", true);
 
         $parent = new KnowbaseItem();
@@ -2970,6 +2972,8 @@ HTML,
         // child has NO direct visibility, linked under the parent
         $child = new KnowbaseItem();
         $child_id = (int) $child->add(['name' => 'Nested', 'answer' => '', 'users_id' => $glpi_user, '_parents' => [$parent_id]]);
+
+        $this->login('normal', 'normal');
 
         // browse list applies visibility criteria
         $visible_ids = $this->listBrowseIds();
@@ -4411,5 +4415,48 @@ HTML,
             $_SESSION['glpi_multientitiesmode'] = $multi_entities_mode;
             $CFG_GLPI['use_public_faq'] = false;
         }
+    }
+
+    public function testOnlyAdminsCanChooseTheAuthor(): void
+    {
+        $glpi_user = getItemByTypeName(User::class, 'glpi', true);
+        $tech_user = getItemByTypeName(User::class, 'tech', true);
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article',
+            'answer'   => 'Answer',
+            'users_id' => $glpi_user,
+        ]);
+
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE | UPDATE;
+
+        // Update: the author is not changed.
+        $kb = new KnowbaseItem();
+        $this->assertTrue($kb->update(['id' => $article->getID(), 'users_id' => $tech_user]));
+        $this->assertTrue($kb->getFromDB($article->getID()));
+        $this->assertSame($glpi_user, $kb->fields['users_id']);
+
+        // Add: the current user is the author.
+        $kb = new KnowbaseItem();
+        $id = $kb->add(['name' => 'Other', 'answer' => 'Answer', 'users_id' => $glpi_user]);
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame($tech_user, $kb->fields['users_id']);
+
+        // A knowledge base admin can change the author.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | KnowbaseItem::KNOWBASEADMIN;
+        $this->assertTrue($kb->update(['id' => $id, 'users_id' => $glpi_user]));
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame($glpi_user, $kb->fields['users_id']);
+    }
+
+    public function testCreateRightDoesNotPublishToFaq(): void
+    {
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE;
+
+        $kb = new KnowbaseItem();
+        $id = $kb->add(['name' => 'Article', 'answer' => 'Answer', 'is_faq' => 1]);
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame(0, $kb->fields['is_faq']);
     }
 }
