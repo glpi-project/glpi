@@ -2070,6 +2070,19 @@ class DBmysql
      */
     private function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
     {
+        // Rely on the server count: a "?" inside a quoted literal is not a placeholder.
+        if ($stmt->param_count !== count($params)) {
+            throw new StatementException(
+                sprintf(
+                    "Number of placeholders (%d) in SQL statement does not match number of values (%d).\n     SQL query:\n%s\n    Parameters:\n%s",
+                    $stmt->param_count,
+                    count($params),
+                    $this->getStatementQuery($stmt),
+                    var_export($params, true)
+                )
+            );
+        }
+
         if (count($params) === 0) {
             return;
         }
