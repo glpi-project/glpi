@@ -31,12 +31,16 @@
  */
 
 import { expect, test } from '../../fixtures/glpi_fixture';
+import { Config } from '../../utils/Config';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
 const external_origin = "https://not-my-origin.com";
-const same_origin = "https://my-origin.com";
-const same_origin_with_port = "https://my-origin.com:12345";
+// The `Host` header must not be overridden, as the session cookie name depends
+// on it: the request would not be authenticated anymore and would be redirected
+// to the login page.
+// The origin contains the port when the base URL defines one.
+const same_origin = new URL(Config.getBaseUrl()).origin;
 
 const post_cases = [
     // Test all possible "Sec-Fetch-Site" values
@@ -49,7 +53,6 @@ const post_cases = [
     // Demonstrate "Origin" fallback
     { sec_fetch_site: null, origin: external_origin, expected: 403 },
     { sec_fetch_site: null, origin: same_origin, expected: 200 },
-    { sec_fetch_site: null, origin: same_origin_with_port, expected: 200 },
 
     // Demonstrate that "Sec-Fetch-Site" take precedence over "Origin"
     { sec_fetch_site: "same-origin", origin: external_origin, expected: 200 },
@@ -66,6 +69,9 @@ for (const test_case of post_cases) {
         await profile.set(Profiles.SuperAdmin);
         const response = await request.post('/front/computer.php', {
             headers: configHeaders(test_case.sec_fetch_site, test_case.origin),
+            // A redirection to the login page must not be followed, it would
+            // hide a lost session behind a `200` status.
+            maxRedirects: 0,
             form: {
                 name: "My computer",
                 entities_id: getWorkerEntityId(),
@@ -100,6 +106,9 @@ for (const test_case of get_cases) {
         await profile.set(Profiles.SuperAdmin);
         const response = await request.get('/front/computer.php', {
             headers: configHeaders(test_case.sec_fetch_site, test_case.origin),
+            // A redirection to the login page must not be followed, it would
+            // hide a lost session behind a `200` status.
+            maxRedirects: 0,
         });
         const status = await response.status();
         expect(status).toBe(test_case.expected);
@@ -113,11 +122,7 @@ function configHeaders(
     const headers: {
         'Sec-Fetch-Site'?: string,
         'Origin'?: string,
-        'Host': string,
-    } = {
-        // Host is always set by the browser. Insert port if needed.
-        Host: origin && origin.split(':').length > 2 ? "my-origin.com:12345" : "my-origin.com",
-    };
+    } = {};
 
     if (sec_fetch_site !== null) {
         headers['Sec-Fetch-Site'] = sec_fetch_site;
