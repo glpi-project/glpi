@@ -48,6 +48,7 @@ use Glpi\Api\HL\RSQL\Error;
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
+use Glpi\Api\HL\Search\CursorPagination;
 use Glpi\Api\HL\Search\RecordSet;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Application\Environment;
@@ -94,6 +95,7 @@ final class Search
     private DBmysql $db_read;
     /** @var array<string, string> */
     private array $sql_field_cache = [];
+    private ?array $cursor_params = null;
 
     /**
      * Request parameter holding a mandatory RSQL scope. It is set by the controllers to restrict a
@@ -108,6 +110,18 @@ final class Search
         $this->context = new SearchContext($schema, $request_params);
         $this->rsql_parser = new Parser($this);
         $this->db_read = DBConnection::getReadConnection();
+
+        if (isset($request_params['cursor'])) {
+            try {
+                $this->cursor_params = json_decode(base64_decode($request_params['cursor']), true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw new APIException(
+                    message: 'Invalid cursor token: ' . $e->getMessage(),
+                    user_message: 'Invalid cursor token: ' . $e->getMessage(),
+                    code: 400,
+                );
+            }
+        }
     }
 
     public function getContext(): SearchContext
@@ -265,6 +279,7 @@ final class Search
         }
         return null;
     }
+
     /**
      * @return array SELECT criteria for all properties
      * @see Doc\Schema::flattenProperties()
@@ -582,7 +597,13 @@ final class Search
     {
         $start = $this->context->getRequestParameter('start');
         $limit = $this->context->getRequestParameter('limit');
-        if (is_numeric($start)) {
+
+        if ($this->cursor_params !== null) {
+            $cursor_criteria = CursorPagination::getCriteriaFromCursor($this->cursor_params, $this);
+            if (!empty($cursor_criteria)) {
+                $criteria['WHERE'][] = $cursor_criteria;
+            }
+        } elseif (is_numeric($start)) {
             $criteria['START'] = (int) $start;
         }
         if (is_numeric($limit)) {
@@ -818,7 +839,7 @@ final class Search
             return (int) $row['count'];
         }
 
-        return new RecordSet($this, $records);
+        return new RecordSet($this, $records, $criteria);
     }
 
     public function getItemRecordPath(string $join_name, mixed $id, array $hydrated_record): array
@@ -890,10 +911,12 @@ final class Search
         // Initialize a new search
         $search = new self($schema, $request_params);
         Profiler::getInstance()->start('Get matching records', Profiler::CATEGORY_HLAPI);
+        //TODO Fetch 1 extra record on each side to determine if there are previous/next pages, then discard the extras before hydration
         $record_set = $search->getMatchingRecords();
         Profiler::getInstance()->stop('Get matching records');
         Profiler::getInstance()->start('Hydrate matching records', Profiler::CATEGORY_HLAPI);
         $results = $record_set->hydrate();
+        $cursors = $record_set->getCursors($results);
         Profiler::getInstance()->stop('Hydrate matching records');
 
         $mapped_props = array_filter($search->context->getFlattenedProperties(), static fn($prop) => isset($prop['x-mapper']));
@@ -951,6 +974,8 @@ final class Search
             'results' => array_values($results),
             'start' => $criteria['START'] ?? 0,
             'limit' => $criteria['LIMIT'] ?? count($results),
+            'prev_cursor' => $cursors['prev_cursor'],
+            'next_cursor' => $cursors['next_cursor'],
             'total' => $total,
         ];
     }

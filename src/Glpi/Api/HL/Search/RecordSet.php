@@ -50,7 +50,9 @@ final class RecordSet
     public function __construct(
         private Search $search,
         /** @var array<string, array> */
-        private array $records
+        private array $records,
+        /** @var array The criteria used to fetch this record set. Will be used to generate a cursor. */
+        private array $criteria
     ) {}
 
     private function getJoinNameForFKey(string $fkey): string
@@ -418,5 +420,37 @@ final class RecordSet
                 ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
             }
         }
+    }
+
+    /**
+     * @param list<mixed> $hydrated_records
+     * @return array{prev_cursor: string, next_cursor: string} Cursors that can be used to fetch the previous and next page of results based on the search criteria sorts.
+     * @throws \JsonException
+     * @internal
+     */
+    public function getCursors(array $hydrated_records): array
+    {
+        // Return a base64 encoded json string to represent the cursor
+        $first_record = reset($hydrated_records);
+        $last_record = end($hydrated_records);
+
+        $sort = [];
+        foreach ($this->criteria['ORDERBY'] ?? [] as $k => $order) {
+            if (is_array($order)) {
+                $sort[$k] = $order['order'] ?? 'ASC';
+            } else {
+                $parts = explode(' ', $order);
+                $sort[$parts[0]] = $parts[1] ?? 'ASC';
+            }
+        }
+        // Always add id as the last sort to ensure a stable sort
+        if (!isset($sort['id'])) {
+            $sort['id'] = 'ASC';
+        }
+        //TODO Allow generating cursors for adjacent pages (given a value of 2 for adjacency, generate tokens for 2 pages back and 2 pages forward)
+        return [
+            'prev_cursor' => $first_record ? CursorPagination::generateCursorToken('previous', $first_record, $sort) : null,
+            'next_cursor' => $last_record ? CursorPagination::generateCursorToken('next', $last_record, $sort) : null,
+        ];
     }
 }
