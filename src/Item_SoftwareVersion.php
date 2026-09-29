@@ -98,6 +98,15 @@ class Item_SoftwareVersion extends CommonDBRelation
         $tab[] = [
             'id'                 => '5',
             'table'              => static::getTable(),
+            'field'              => 'itemtype',
+            'name'               => _x('software', 'Request source'),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => '6',
+            'table'              => static::getTable(),
             'field'              => 'date_install',
             'name'               => __('Installation date'),
             'datatype'           => 'date',
