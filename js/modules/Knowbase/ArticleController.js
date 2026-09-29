@@ -31,6 +31,7 @@
  */
 
 /* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, bootstrap, setHasUnsavedChanges */
+/* global Y */
 
 import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
@@ -66,6 +67,12 @@ export class GlpiKnowbaseArticleController
      * @type {KnowbaseEditor|null}
      */
     #editor = null;
+
+    /**
+     * Set while the article is edited in real time with the other editors.
+     * @type {PollingProvider|null}
+     */
+    #collab_provider = null;
 
     /**
      * @type {string}
@@ -949,8 +956,14 @@ export class GlpiKnowbaseArticleController
         // Cancel editing
         if (cancel_button) {
             cancel_button.addEventListener('click', () => {
-                this.#editor.setContent(this.#original_content);
-                this.#editor.setEditable(false);
+                if (this.#collab_provider !== null) {
+                    // The changes stay in the shared draft: the other editors
+                    // still see them, and they come back at the next edit.
+                    this.#stopCollaboration(this.#original_content);
+                } else {
+                    this.#editor.setContent(this.#original_content);
+                    this.#editor.setEditable(false);
+                }
                 this.#is_editing = false;
                 this.#disableTitleEditing(true);
                 this.#getIllustrationPicker()?.restore();
@@ -1319,31 +1332,12 @@ export class GlpiKnowbaseArticleController
         const save_button = this.#container.querySelector('[data-action="save"]');
         const cancel_button = this.#container.querySelector('[data-action="cancel"]');
 
-        // Lazy load editor on first use
-        if (this.#editor === null) {
-            editor_element.style.setProperty('--suggestion-placeholder', `"${__('Keep typing to filter...')}"`);
-            const { KnowbaseEditor } = await import('/js/modules/KnowbaseEditor.js');
-            this.#editor = new KnowbaseEditor(editor_element, {
-                content: this.#original_content,
-                readonly: false,
-                placeholder: ({ pos }) => {
-                    if (pos === 0) {
-                        return __("Type / to insert, or start writing...");
-                    }
-                    return __("Type / to insert...");
-                },
-                item_id: this.#item_id,
-                can_comment: this.#can_comment,
-                comment_anchors: this.#comment_anchors,
-                comment_anchor_max_length: this.#comment_anchor_max_length,
-                onUpdate: () => {
-                    setHasUnsavedChanges(true);
-                    this.#resolved_anchors = this.#editor?.getResolvedCommentAnchors() ?? [];
-                    this.#syncAnchorQuotes();
-                },
-            });
-            // The pointer may already sit on a passage, edit mode being keyboard-reachable.
-            this.#applyHoveredComment();
+        // Only the article itself is edited in real time, not its translations.
+        if (this.#translation_language === null && this.#item_id > 0) {
+            await this.#startCollaboration(editor_element);
+        } else if (this.#editor === null) {
+            // Lazy load editor on first use
+            await this.#createEditor(editor_element);
         } else {
             this.#editor.setEditable(true);
         }
@@ -1364,6 +1358,106 @@ export class GlpiKnowbaseArticleController
         }
 
         this.#broadcastDiffExit();
+    }
+
+    /**
+     * @param {HTMLElement} editor_element
+     * @param {object} options - More options for the editor
+     */
+    async #createEditor(editor_element, options = {})
+    {
+        editor_element.style.setProperty('--suggestion-placeholder', `"${__('Keep typing to filter...')}"`);
+        const { KnowbaseEditor } = await import('/js/modules/KnowbaseEditor.js');
+        this.#editor = new KnowbaseEditor(editor_element, {
+            content: this.#original_content,
+            readonly: false,
+            placeholder: ({ pos }) => {
+                if (pos === 0) {
+                    return __("Type / to insert, or start writing...");
+                }
+                return __("Type / to insert...");
+            },
+            item_id: this.#item_id,
+            can_comment: this.#can_comment,
+            comment_anchors: this.#comment_anchors,
+            comment_anchor_max_length: this.#comment_anchor_max_length,
+            onUpdate: () => {
+                setHasUnsavedChanges(true);
+                this.#resolved_anchors = this.#editor?.getResolvedCommentAnchors() ?? [];
+                this.#syncAnchorQuotes();
+            },
+            ...options,
+        });
+        // The pointer may already sit on a passage, edit mode being keyboard-reachable.
+        this.#applyHoveredComment();
+    }
+
+    /**
+     * Join the real time edition of the article (PoC, HTTP polling).
+     * @param {HTMLElement} editor_element
+     */
+    async #startCollaboration(editor_element)
+    {
+        const { PollingProvider } = await import('/js/modules/TipTap/PollingProvider.js');
+
+        // A plain editor of a previous edition cannot be bound to the shared document.
+        this.#editor?.destroy();
+        this.#editor = null;
+
+        const doc = new Y.Doc();
+        const provider = new PollingProvider(this.#item_id, doc);
+        try {
+            await provider.connect();
+        } catch (e) {
+            provider.destroy();
+            glpi_toast_error(__("An unexpected error occurred."));
+            throw e;
+        }
+        this.#collab_provider = provider;
+
+        await this.#createEditor(editor_element, {
+            collaboration: {
+                document: doc,
+                provider,
+                user: {
+                    name: provider.user.name,
+                    color: this.#getCollaborationColor(provider.user.id),
+                },
+            },
+        });
+
+        // First editor of the article: fill the shared document with the saved content.
+        if (provider.isEmpty) {
+            await provider.seed(this.#editor.createCollaborationSeed(this.#original_content));
+        }
+        provider.start();
+    }
+
+    /**
+     * Leave the real time edition and show the given content in read mode.
+     * @param {string} content
+     */
+    #stopCollaboration(content)
+    {
+        this.#collab_provider?.destroy();
+        this.#collab_provider = null;
+        this.#editor?.destroy();
+        this.#editor = null;
+
+        const editor_element = this.#container.querySelector('#kb-tiptap-editor');
+        editor_element.classList.remove('kb-editor-wrapper', 'is-editing');
+        editor_element.innerHTML = content;
+        this.#renderCommentAnchors();
+    }
+
+    /**
+     * @param {number} user_id
+     * @returns {string} A hex color: the caret extension adds an alpha suffix to it
+     */
+    #getCollaborationColor(user_id)
+    {
+        const colors = ['#d63939', '#f76707', '#f59f00', '#2fb344', '#0ca678', '#17a2b8', '#4263eb', '#ae3ec9', '#d6336c'];
+        return colors[user_id % colors.length];
     }
 
     #enableTitleEditing()
@@ -1469,7 +1563,11 @@ export class GlpiKnowbaseArticleController
                 this.#original_title = new_title;
                 this.#updateAsideTitle(new_title);
             }
-            this.#editor.setEditable(false);
+            if (this.#collab_provider !== null) {
+                this.#stopCollaboration(this.#original_content);
+            } else {
+                this.#editor.setEditable(false);
+            }
             this.#disableTitleEditing();
             this.#setIllustrationEditable(false);
             this.#is_editing = false;

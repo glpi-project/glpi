@@ -818,6 +818,32 @@ body.in_modal .kb-editor-reserved {
     }
 }
 
+// Carets of the other editors (real time collaborative edition).
+.kb-editor-wrapper .collaboration-carets__caret {
+    position: relative;
+    margin-left: -1px;
+    margin-right: -1px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    word-break: normal;
+    pointer-events: none;
+}
+
+.kb-editor-wrapper .collaboration-carets__label {
+    position: absolute;
+    top: -1.4em;
+    left: -1px;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px 3px 3px 0;
+    color: #fff;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    white-space: nowrap;
+    user-select: none;
+}
+
 // Read-only after Save: drop the gutter/grips so the table matches the read view.
 .kb-editor-wrapper:not(.is-editing) .ProseMirror {
     .tableWrapper {

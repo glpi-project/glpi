@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global TiptapCore */
+/* global TiptapCore, TiptapCollaboration */
 
 const { Extension } = TiptapCore;
 
@@ -59,6 +59,10 @@ export const Base64ImageHandler = Extension.create({
 
     onTransaction({ transaction }) {
         if (!this.options.uploadHandler || !transaction.docChanged || !this.editor.isEditable) {
+            return;
+        }
+        // In collaborative edition, only the client that added the image uploads it.
+        if (typeof TiptapCollaboration !== 'undefined' && TiptapCollaboration.isChangeOrigin(transaction)) {
             return;
         }
 

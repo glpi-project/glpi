@@ -27,6 +27,8 @@
         "@tabler/icons-webfont": "^3.35.0",
         "@tiptap/core": "^3.30.5",
         "@tiptap/extension-bubble-menu": "^3.30.5",
+        "@tiptap/extension-collaboration": "^3.30.5",
+        "@tiptap/extension-collaboration-caret": "^3.30.5",
         "@tiptap/extension-file-handler": "^3.30.5",
         "@tiptap/extension-image": "^3.30.5",
         "@tiptap/extension-placeholder": "^3.30.5",
@@ -34,6 +36,7 @@
         "@tiptap/pm": "^3.30.5",
         "@tiptap/starter-kit": "^3.30.5",
         "@tiptap/suggestion": "^3.30.5",
+        "@tiptap/y-tiptap": "^3.0.9",
         "altcha": "^3.2.2",
         "animate.css": "^4.1.1",
         "cropperjs": "^2.2.0",
@@ -76,7 +79,9 @@
         "tinymce": "^8.8.2",
         "tinymce-i18n": "^26.8.2",
         "vue": "^3.5.42",
-        "wunderbaum": "^0.14.1"
+        "wunderbaum": "^0.14.1",
+        "y-protocols": "^1.0.7",
+        "yjs": "^13.6.33"
     },
     "scripts": {
         "audit": "npm audit package-lock-only",
