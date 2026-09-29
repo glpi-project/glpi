@@ -136,10 +136,18 @@
     const time_step = {{ time_step|default(5) }};
     const DAY       = 24 * 60 * 60 * 1000;
 
-    const begin_date = document.getElementById('plan_begin_date_{{ rand }}')._flatpickr;
-    const end_date   = document.getElementById('plan_end_date_{{ rand }}')._flatpickr;
-    const begin_time = document.getElementById('plan_begin_time_{{ rand }}')._flatpickr;
-    const end_time   = document.getElementById('plan_end_time_{{ rand }}')._flatpickr;
+    // date/time macros create the pickers on document ready, which happens after this module runs in Firefox
+    const getPicker = (id) => new Promise((resolve) => {
+        const element = document.getElementById(id);
+        const check = () => (element._flatpickr ? resolve(element._flatpickr) : setTimeout(check, 10));
+        check();
+    });
+    const [begin_date, end_date, begin_time, end_time] = await Promise.all([
+        'plan_begin_date_{{ rand }}',
+        'plan_end_date_{{ rand }}',
+        'plan_begin_time_{{ rand }}',
+        'plan_end_time_{{ rand }}',
+    ].map(getPicker));
     const begin_input = root.querySelector('input[name="plan[begin]"]');
     const end_input   = root.querySelector('input[name="plan[end]"]');
 
