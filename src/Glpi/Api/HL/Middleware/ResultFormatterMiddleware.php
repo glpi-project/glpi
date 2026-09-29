@@ -48,6 +48,10 @@ class ResultFormatterMiddleware extends AbstractMiddleware implements ResponseMi
             $next($input);
             return;
         }
+        if ($input->response->getStatusCode() < 200 || $input->response->getStatusCode() >= 300) {
+            $next($input);
+            return;
+        }
         try {
             $data = json_decode($input->response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
