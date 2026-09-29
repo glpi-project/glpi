@@ -3572,11 +3572,11 @@ HTML,
         $article = $this->createItem(KnowbaseItem::class, [
             'name'     => 'Article ' . __FUNCTION__,
             'answer'   => '',
-            'users_id' => getItemByTypeName('User', 'glpi', true),
+            'users_id' => getItemByTypeName(User,::class 'glpi', true),
         ]);
         $this->createItem(KnowbaseItem_User::class, [
             'knowbaseitems_id' => $article->getID(),
-            'users_id'         => getItemByTypeName('User', 'tech', true),
+            'users_id'         => getItemByTypeName(User::class, 'tech', true),
         ]);
 
         $this->login('tech', 'tech');
