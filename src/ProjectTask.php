@@ -2051,6 +2051,9 @@ TWIG, $twig_params);
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $task->getFromResultSet($data);
+                if (!$task->can($task->getID(), READ)) {
+                    continue;
+                }
                 if (isset($data['notp_date'])) {
                     $data['plan_start_date'] = $data['notp_date'];
                     $data['plan_end_date'] = $data['notp_edate'];
