@@ -132,7 +132,7 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.2", "db-image": "mariadb:10.6", "run-js-tests": true}
+                  {"php-version": "8.3", "db-image": "mariadb:10.11", "run-js-tests": true}
                 ]
               }
             '
