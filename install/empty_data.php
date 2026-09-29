@@ -9622,31 +9622,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
                 'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
             ];
-
-            $tables['glpi_authldaps'][] = [
-                'name'            => '_e2e_ldap',
-                'host'            => 'openldap',
-                'basedn'          => 'dc=glpi,dc=org',
-                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
-                'port'            => '3890',
-                'condition'       => '(objectclass=inetOrgPerson)',
-                'login_field'     => 'uid',
-                'rootdn_passwd'   => (new GLPIKey())->encrypt('insecure'),
-                'is_default'      => 1,
-                'is_active'       => 0,
-                'use_tls'         => 0,
-                'email1_field'    => 'mail',
-                'realname_field'  => 'cn',
-                'firstname_field' => 'sn',
-                'phone_field'     => 'telephonenumber',
-                'comment_field'   => 'description',
-                'title_field'     => 'title',
-                'category_field'  => 'businesscategory',
-                'language_field'  => 'preferredlanguage',
-                'group_search_type'  => AuthLDAP::GROUP_SEARCH_GROUP,
-                'group_condition' => '(objectclass=groupOfNames)',
-                'group_member_field' => 'member',
-            ];
         } elseif ($add_playwright_data) {
             // Main E2E test entity
             $e2e_parent_entity_id = max(
@@ -9774,6 +9749,32 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                     ];
                 }
             }
+
+            // LDAP server of the CI, see `.github/actions/docker-compose-services.yml`.
+            $tables['glpi_authldaps'][] = [
+                'name'            => '_e2e_ldap',
+                'host'            => 'openldap',
+                'basedn'          => 'dc=glpi,dc=org',
+                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+                'port'            => '3890',
+                'condition'       => '(objectclass=inetOrgPerson)',
+                'login_field'     => 'uid',
+                'rootdn_passwd'   => (new GLPIKey())->encrypt('insecure'),
+                'is_default'      => 1,
+                'is_active'       => 0,
+                'use_tls'         => 0,
+                'email1_field'    => 'mail',
+                'realname_field'  => 'cn',
+                'firstname_field' => 'sn',
+                'phone_field'     => 'telephonenumber',
+                'comment_field'   => 'description',
+                'title_field'     => 'title',
+                'category_field'  => 'businesscategory',
+                'language_field'  => 'preferredlanguage',
+                'group_search_type'  => AuthLDAP::GROUP_SEARCH_GROUP,
+                'group_condition' => '(objectclass=groupOfNames)',
+                'group_member_field' => 'member',
+            ];
         }
 
         // initial validation steps
