@@ -78,7 +78,7 @@
         padding: 0.4rem 0.75rem;
 
         & + .planning-event-dates-row:not(.d-none) {
-            border-top: var(--tblr-border-width) solid var(--tblr-border-color);
+            border-block-start: var(--tblr-border-width) solid var(--tblr-border-color);
         }
 
         > .form-label {
@@ -97,9 +97,9 @@
             }
 
             .form-control {
-                padding-left: 0;
-                padding-top: 0.1rem;
-                padding-bottom: 0.1rem;
+                padding-inline-start: 0;
+                padding-block-start: 0.1rem;
+                padding-block-end: 0.1rem;
             }
 
             .btn {
