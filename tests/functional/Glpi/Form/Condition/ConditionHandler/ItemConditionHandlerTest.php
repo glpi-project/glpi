@@ -36,6 +36,7 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use Computer;
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Migration\UnresolvedConditionValueException;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
@@ -158,5 +159,20 @@ final class ItemConditionHandlerTest extends AbstractConditionHandlerTest
                 }
             }
         }
+    }
+
+    public function testConvertConditionValue(): void
+    {
+        $computer = $this->createItem('Computer', ['name' => __FUNCTION__, 'entities_id' => 0]);
+
+        $handler = new ItemConditionHandler(Computer::class);
+        $this->assertSame(
+            ['itemtype' => Computer::class, 'items_ids' => [$computer->getID()]],
+            $handler->convertConditionValue(__FUNCTION__),
+        );
+
+        // Legacy value that no longer matches any item by name.
+        $this->expectException(UnresolvedConditionValueException::class);
+        $handler->convertConditionValue('Deleted computer');
     }
 }

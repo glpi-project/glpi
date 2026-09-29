@@ -5368,6 +5368,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (
                         empty($ORDER) // No sort clause is defined
                         && $data['search']['start'] == 0 // First page of results
+                        && !$data['search']['export_all'] // Full export needs every row
                     ) {
                         $tmpquery .= " LIMIT " . (int) $data['search']['list_limit'];
                     }
@@ -5730,10 +5731,15 @@ final class SQLProvider implements SearchProviderInterface
         &$SELECT = "",
         &$FROM = "",
         &$already_link_tables = [],
-        &$data = []
+        &$data = [],
+        bool $is_recursive_call = false
     ) {
         Toolbox::deprecated('Use getAdditionalSqlForMetacriteria instead', true, '12.0');
-        $data['meta_toview'] = [];
+
+        if (!$is_recursive_call) {
+            $data['meta_toview'] = [];
+        }
+
         foreach ($criteria as $criterion) {
             // manage sub criteria
             if (isset($criterion['criteria'])) {
@@ -5742,7 +5748,8 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT,
                     $FROM,
                     $already_link_tables,
-                    $data
+                    $data,
+                    true
                 );
                 continue;
             }
@@ -5759,6 +5766,15 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $m_itemtype = $criterion['itemtype'];
+
+            // If a column for this itemtype's field is already loaded, we go directly to the next iteration.
+            if (
+                isset($data["meta_toview"][$m_itemtype])
+                && in_array($criterion['field'], $data["meta_toview"][$m_itemtype])
+            ) {
+                continue;
+            }
+
             $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
@@ -5779,7 +5795,7 @@ final class SQLProvider implements SearchProviderInterface
                 $sopt["joinparams"]
             );
             $FROM .= $ljoin->getQuery();
-            $data['sql']['values'] = array_merge($data['sql']['values'], $ljoin->getParams());
+            $data['sql']['values'] = array_merge($data['sql']['values'] ?? [], $ljoin->getParams());
 
             $ref_table = $m_itemtype::getTable() . self::getMetaTableUniqueSuffix($m_itemtype::getTable(), $m_itemtype);
             $ljoin = Search::addLeftJoin(
@@ -5795,7 +5811,7 @@ final class SQLProvider implements SearchProviderInterface
                 $sopt['use_join_subquery'] ?? false
             );
             $FROM .= $ljoin->getQuery() . ' ';
-            $data['sql']['values'] = array_merge($data['sql']['values'], $ljoin->getParams());
+            $data['sql']['values'] = array_merge($data['sql']['values'] ?? [], $ljoin->getParams());
         }
     }
 
@@ -5804,14 +5820,16 @@ final class SQLProvider implements SearchProviderInterface
      **
      * @param  array<int|string, mixed> $criteria             list of search criterion
      * @param  array<int, string>       &$already_link_tables
-     * @param  array<int|string, mixed> &$data
+     * @param  array<int|string, mixed> $data
+     * @param  array                    &$already_added_fields
      *
      * @return array{SELECT: Select[], FROM: LeftJoin[], meta_toview: array<class-string<CommonDBTM>, string[]>}
      */
     public static function getAdditionalSqlForMetacriteria(
         array $criteria = [],
         array &$already_link_tables = [],
-        array $data = []
+        array $data = [],
+        array &$already_added_fields = []
     ): array {
         $result = [
             'SELECT' => [],
@@ -5825,8 +5843,10 @@ final class SQLProvider implements SearchProviderInterface
                 $sub_result = self::getAdditionalSqlForMetacriteria(
                     $criterion['criteria'],
                     $already_link_tables,
-                    $data
+                    $data,
+                    $already_added_fields
                 );
+
                 $result['SELECT'] = array_merge($result['SELECT'], $sub_result['SELECT']);
                 $result['FROM'] = array_merge($result['FROM'], $sub_result['FROM']);
                 $result['meta_toview'] = array_merge($result['meta_toview'], $sub_result['meta_toview']);
@@ -5846,6 +5866,15 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $m_itemtype = $criterion['itemtype'];
+
+            // If a column for this itemtype's field is already loaded, we go directly to the next iteration.
+            if (
+                isset($already_added_fields[$m_itemtype])
+                && in_array($criterion['field'], $already_added_fields[$m_itemtype], true)
+            ) {
+                continue;
+            }
+
             $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
@@ -5881,6 +5910,11 @@ final class SQLProvider implements SearchProviderInterface
                 $sopt['use_join_subquery'] ?? false
             );
             $result['FROM'][] = $ljoin;
+
+            if (!\array_key_exists($m_itemtype, $already_added_fields)) {
+                $already_added_fields[$m_itemtype] = [];
+            }
+            $already_added_fields[$m_itemtype][] = (int) $criterion['field'];
         }
 
         return $result;

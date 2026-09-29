@@ -637,9 +637,7 @@ class KnowbaseController extends AbstractController
     #[Doc\SearchRoute(schema_name: 'KBArticleComment')]
     public function searchKBArticleComments(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleComment', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -648,9 +646,7 @@ class KnowbaseController extends AbstractController
     #[Doc\GetRoute(schema_name: 'KBArticleComment')]
     public function getKBArticleComment(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('KBArticleComment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -675,10 +671,7 @@ class KnowbaseController extends AbstractController
     #[Doc\SearchRoute(schema_name: 'KBArticleRevision')]
     public function searchKBArticleDefaultLangRevisions(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $filters .= ';language=empty=';
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id') . ';language=empty=');
         return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -687,10 +680,7 @@ class KnowbaseController extends AbstractController
     #[Doc\GetRoute(schema_name: 'KBArticleRevision')]
     public function getKBArticleDefaultLangRevision(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $filters .= ';language=empty=';
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id') . ';language=empty=');
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -704,10 +694,7 @@ class KnowbaseController extends AbstractController
     #[Doc\SearchRoute(schema_name: 'KBArticleRevision')]
     public function searchKBArticleRevisions(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $filters .= ';language==' . $request->getAttribute('language');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id') . ';language==' . $request->getAttribute('language'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -716,10 +703,7 @@ class KnowbaseController extends AbstractController
     #[Doc\GetRoute(schema_name: 'KBArticleRevision')]
     public function getKBArticleRevision(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $filters .= ';language==' . $request->getAttribute('language');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id') . ';language==' . $request->getAttribute('language'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)),
             $request->getAttributes(),

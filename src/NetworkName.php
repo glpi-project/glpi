@@ -70,6 +70,19 @@ class NetworkName extends FQDNLabel
         return _n('Network name', 'Network names', $nb);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public static function getConnexityMassiveActionsSpecificities(): array
+    {
+        $specificities = parent::getConnexityMassiveActionsSpecificities();
+
+        $specificities['reaffect'] = true;
+        $specificities['itemtypes'] = [NetworkPort::class];
+
+        return $specificities;
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', CommonDropdown::class, self::class];

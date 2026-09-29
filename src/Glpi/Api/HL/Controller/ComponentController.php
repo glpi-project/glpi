@@ -993,10 +993,7 @@ EOT,
     public function getAssetComponentsByType(Request $request): Response
     {
         // Set itemtype and items_id filters
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('itemtype');
-        $filters .= ';items_id==' . $request->getAttribute('id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('id'));
 
         $component_type = $request->getAttribute('component_type');
         $item_schema = $this->getKnownSchema($component_type . 'Item', $this->getAPIVersion($request));
@@ -1016,10 +1013,7 @@ EOT,
     public function searchAssetVolumes(Request $request): Response
     {
         // Set itemtype and items_id filters
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype');
-        $filters .= ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
 
         $item_schema = $this->getKnownSchema('Volume', $this->getAPIVersion($request));
 
@@ -1038,10 +1032,7 @@ EOT,
     )]
     public function getAssetVolume(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype');
-        $filters .= ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         $item_schema = $this->getKnownSchema('Volume', $this->getAPIVersion($request));
         return ResourceAccessor::getOneBySchema($item_schema, $request->getAttributes(), $request->getParameters());
     }

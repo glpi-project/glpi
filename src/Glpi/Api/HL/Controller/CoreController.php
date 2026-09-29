@@ -513,7 +513,7 @@ HTML;
             $response_headers['Access-Control-Allow-Headers'] = [
                 'Content-Type', 'Authorization', 'Origin', 'Accept',
                 'GLPI-API-Version', 'GLPI-Profile', 'GLPI-Entity', 'GLPI-Entity-Recursive',
-                'X-Debug-Mode',
+                'X-Debug-Mode', 'X-Requested-With', 'Accept-Language', 'Accept-Encoding', 'User-Agent',
             ];
             if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
                 $response_headers['Access-Control-Allow-Headers'][] = 'XDEBUG_TRIGGER';
@@ -672,6 +672,13 @@ HTML;
                     'response_type' => 'code',
                     'redirect_uri'  => $auth_request->getRedirectUri(),
                 ];
+                if ($auth_request->getCodeChallenge() !== null) {
+                    $redirect_params['code_challenge'] = $auth_request->getCodeChallenge();
+                    $redirect_params['code_challenge_method'] = $auth_request->getCodeChallengeMethod();
+                }
+                if ($auth_request->getState() !== null) {
+                    $redirect_params['state'] = $auth_request->getState();
+                }
                 $redirect_uri = $CFG_GLPI['url_base']
                     . '/api.php/v2'
                     . $this->getAPIPathForRouteFunction(self::class, 'authorize')

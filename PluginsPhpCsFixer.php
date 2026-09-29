@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,15 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Maintenance', () => {
-    before(() => {
-        cy.exec('php ../bin/console maintenance:enable');
-    });
-    after(() => {
-        cy.exec('php ../bin/console maintenance:disable');
-    });
-    it('GLPI is not accessible during maintenance', () => {
-        cy.visit('/');
-        cy.findByText("Temporarily down for maintenance").should('be.visible');
-    });
-});
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
+
+/**
+ * Shared php-cs-fixer baseline for GLPI plugins.
+ *
+ *     $baseline = require __DIR__ . '/../../PluginsPhpCsFixer.php';
+ *     return $baseline(Finder::create()->in(__DIR__)->ignoreVCSIgnored(true)->name('*.php'));
+ *
+ */
+return static fn(Finder $finder): Config => (new Config())
+    ->setRules([
+        '@PER-CS3x0' => true,
+        'fully_qualified_strict_types' => ['import_symbols' => true],
+        'ordered_imports' => ['imports_order' => ['class', 'const', 'function']],
+        'no_unused_imports' => true,
+        'heredoc_indentation' => false, // xgettext bug: https://savannah.gnu.org/bugs/?func=detailitem&item_id=62158
+        'phpdoc_scalar' => true,
+        'phpdoc_types' => true,
+    ])
+    ->setFinder($finder)
+;

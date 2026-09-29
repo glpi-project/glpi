@@ -497,9 +497,7 @@ EOT,
     #[Doc\SearchRoute(schema_name: 'NotificationRecipient')]
     public function searchNotificationRecipients(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification.id==' . $request->getAttributes()['notification_id'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification.id==' . $request->getAttributes()['notification_id']);
         return ResourceAccessor::searchBySchema($this->getKnownSchema('NotificationRecipient', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -508,9 +506,7 @@ EOT,
     #[Doc\GetRoute(schema_name: 'NotificationRecipient')]
     public function getNotificationRecipient(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification.id==' . $request->getAttributes()['notification_id'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification.id==' . $request->getAttributes()['notification_id']);
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('NotificationRecipient', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -604,9 +600,7 @@ EOT,
     #[Doc\SearchRoute(schema_name: 'NotificationTemplateTranslation')]
     public function searchNotificationTemplateTranslations(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification_template.id==' . $request->getAttributes()['notification_template_id'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification_template.id==' . $request->getAttributes()['notification_template_id']);
         return ResourceAccessor::searchBySchema($this->getKnownSchema('NotificationTemplateTranslation', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -615,9 +609,7 @@ EOT,
     #[Doc\GetRoute(schema_name: 'NotificationTemplateTranslation')]
     public function getNotificationTemplateTranslation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification_template.id==' . $request->getAttributes()['notification_template_id'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification_template.id==' . $request->getAttributes()['notification_template_id']);
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('NotificationTemplateTranslation', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -632,9 +624,7 @@ EOT,
     #[Doc\GetRoute(schema_name: 'NotificationTemplateTranslation')]
     public function getNotificationTemplateTranslationByLanguage(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification_template.id==' . $request->getAttributes()['notification_template_id'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification_template.id==' . $request->getAttributes()['notification_template_id']);
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('NotificationTemplateTranslation', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -648,9 +638,7 @@ EOT,
     #[Doc\GetRoute(schema_name: 'NotificationTemplateTranslation')]
     public function getNotificationTemplateTranslationDefaultLanguage(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification_template.id==' . $request->getAttributes()['notification_template_id'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification_template.id==' . $request->getAttributes()['notification_template_id']);
         $request->setAttribute('language', '');
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('NotificationTemplateTranslation', $this->getAPIVersion($request)),
@@ -678,10 +666,7 @@ EOT,
     #[Doc\UpdateRoute(schema_name: 'NotificationTemplateTranslation')]
     public function updateNotificationTemplateTranslation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification_template.id==' . $request->getAttributes()['notification_template_id'];
-        $filters .= ';language==' . $request->getAttributes()['language'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification_template.id==' . $request->getAttributes()['notification_template_id'] . ';language==' . $request->getAttributes()['language']);
         return ResourceAccessor::updateBySchema(
             $this->getKnownSchema('NotificationTemplateTranslation', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -707,9 +692,7 @@ EOT,
     #[Doc\SearchRoute(schema_name: 'Notification_NotificationTemplate')]
     public function searchNotification_NotificationTemplates(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification.id==' . $request->getAttributes()['notification_id'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification.id==' . $request->getAttributes()['notification_id']);
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Notification_NotificationTemplate', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -718,9 +701,7 @@ EOT,
     #[Doc\GetRoute(schema_name: 'Notification_NotificationTemplate')]
     public function getNotification_NotificationTemplate(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';notification.id==' . $request->getAttributes()['notification_id'];
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'notification.id==' . $request->getAttributes()['notification_id']);
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('Notification_NotificationTemplate', $this->getAPIVersion($request)),
             $request->getAttributes(),
