@@ -10916,6 +10916,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $input["content"] = str_replace("\r\n", "\n", $input['content']);
         }
 
+        // Keep category in sync on update, so rules relying only on other
+        // changed fields (e.g. validation acceptance) still see it
+        if (!$this->isNewItem() && !isset($input['itilcategories_id'])) {
+            $input['itilcategories_id'] = $this->fields['itilcategories_id'];
+        }
+
         // Set itil category code
         $cat_id = $input['itilcategories_id'] ?? 0;
         if ($cat_id) {

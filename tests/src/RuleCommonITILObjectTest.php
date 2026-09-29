@@ -3244,6 +3244,78 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
     /**
+     * Ensure a rule combining "global_validation" and a category "under" criteria
+     * still triggers when the update is caused by a validation acceptance, which
+     * only carries the validation status in its input, not the category.
+     *
+     * @return void
+     */
+    public function testGlobalValidationCriteriaWithCategoryUnderOnValidationAcceptance(): void
+    {
+        // no validation for problems
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+
+        $this->login(TU_USER, TU_PASS);
+
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $urgency_if_rule_triggered = 5;
+
+        $parent_category = $this->createItem(ITILCategory::class, [
+            'name'         => 'Business software',
+            'entities_id'  => $entity,
+            'is_recursive' => true,
+        ]);
+        $child_category = $this->createItem(ITILCategory::class, [
+            'name'               => 'ERP',
+            'itilcategories_id'  => $parent_category->getID(),
+            'entities_id'        => $entity,
+            'is_recursive'       => true,
+        ]);
+
+        $builder = new RuleBuilder('Test global_validation + category under criteria', $this->getTestedClass());
+        $builder
+            ->addCriteria('global_validation', Rule::PATTERN_IS, CommonITILValidation::ACCEPTED)
+            ->addCriteria('itilcategories_id', Rule::PATTERN_UNDER, $parent_category->getID())
+            ->addAction('assign', 'urgency', $urgency_if_rule_triggered);
+        $this->createRule($builder);
+
+        // Create ITIL object under the child category, with a pending validation
+        $itil_object = $this->createItem($this->getITILObjectClass(), [
+            'name'                => 'Test ITIL object',
+            'entities_id'         => $entity,
+            'content'             => 'Test ITIL object content',
+            'itilcategories_id'   => $child_category->getID(),
+            'validatortype'       => 'user',
+            '_validation_targets' => [
+                [
+                    'itemtype_target' => User::class,
+                    'items_id_target' => $_SESSION['glpiID'],
+                ],
+            ],
+            '_add_validation'     => false,
+        ], ['validatortype']);
+        $this->assertNotEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
+
+        // Accept the validation: this update only carries 'global_validation',
+        // the rule must still see the ticket's actual (unchanged) category.
+        $validation_instance = $this->getITILObjectInstance()->getValidationClassInstance();
+        $validations = $validation_instance->find([
+            $this->getITILObjectInstance()::getForeignKeyField() => $itil_object->getID(),
+        ]);
+        $this->assertCount(1, $validations);
+        $validation = array_pop($validations);
+
+        $this->updateItem($validation_instance::class, $validation['id'], [
+            'status' => CommonITILValidation::ACCEPTED,
+        ]);
+
+        $itil_object->getFromDB($itil_object->getID());
+        $this->assertEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
+    }
+
+    /**
      * Test that the "Code representing the ticket category" criterion works correctly
      * even when the category has been modified just before.
      *
