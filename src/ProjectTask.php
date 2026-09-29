@@ -1517,7 +1517,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                if ($task->getFromDB($data["id"])) {
+                if ($task->getFromDB($data["id"]) && $task->can($task->getID(), READ)) {
                     if (isset($data['notp_date'])) {
                         $data['plan_start_date'] = $data['notp_date'];
                         $data['plan_end_date'] = $data['notp_edate'];

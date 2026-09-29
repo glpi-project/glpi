@@ -1408,9 +1408,18 @@ JAVASCRIPT;
 
     public static function editEventForm($params = [])
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (!in_array($params['itemtype'] ?? null, $CFG_GLPI['planning_types'], true)) {
+            Html::displayRightError();
+        }
+
         $item = getItemForItemtype($params['itemtype']);
         if ($item instanceof CommonDBTM) {
-            $item->getFromDB((int) $params['id']);
+            if (!$item->can((int) $params['id'], READ)) {
+                Html::displayRightError();
+            }
             $url = $item->getLinkURL();
 
             $rand = mt_rand();
@@ -1421,7 +1430,14 @@ JAVASCRIPT;
             ];
             if (isset($params['parentitemtype'])) {
                 $options['parent'] = getItemForItemtype($params['parentitemtype']);
-                $options['parent']->getFromDB($params['parentid']);
+                // The parent must be the item's own parent, and be readable
+                if (
+                    !($options['parent'] instanceof CommonDBTM)
+                    || (int) ($item->fields[$options['parent']::getForeignKeyField()] ?? 0) !== (int) $params['parentid']
+                    || !$options['parent']->can((int) $params['parentid'], READ)
+                ) {
+                    Html::displayRightError();
+                }
                 $url = $options['parent']->getLinkURL();
             }
 
@@ -2041,6 +2057,9 @@ JAVASCRIPT;
                 $param[$key] = $val;
             }
         }
+
+        // `genical` is reserved to the iCal export (see generateIcal()) and alters the session rights.
+        $param['genical'] = false;
 
         $timezone = new DateTimeZone(date_default_timezone_get());
         $time_begin = strtotime($param['start']) - $timezone->getOffset(new DateTime($param['start']));

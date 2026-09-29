@@ -68,6 +68,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'first test, whole period',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-10',
                 'plan_end_date'            => '2019-08-20',
@@ -90,6 +91,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'test, subperiod',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-13',
                 'plan_end_date'            => '2019-08-14',
@@ -120,6 +122,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'test subperiod, out of bounds',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2018-08-13',
                 'plan_end_date'            => '2018-08-24',

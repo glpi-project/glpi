@@ -80,7 +80,9 @@ if ($_REQUEST["action"] == "get_externalevent_template") {
         && $_POST[$key] > 0
     ) {
         $template = new PlanningExternalEventTemplate();
-        $template->getFromDB($_POST[$key]);
+        if (!$template->getFromDB((int) $_POST[$key]) || !$template->canViewItem()) {
+            Html::displayRightError();
+        }
 
         $template->fields = Sanitizer::decodeHtmlSpecialCharsRecursive($template->fields);
         $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
