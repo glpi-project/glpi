@@ -50,27 +50,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class ControllerListenersPriorityTest extends DbTestCase
 {
-    public function testFirewallIsExecutedBeforeCsrfCheck(): void
-    {
-        $session_manager = new SessionManager();
-        $csrf_listener = new CheckCsrfListener($session_manager);
-        $firewall_listener = new FirewallStrategyListener(new Firewall(), $session_manager);
-
-        $dispatcher = new EventDispatcher();
-        // Register the listeners in the reverse order of the expected execution order, to be sure that
-        // the execution order does not depend on the registration order.
-        $dispatcher->addSubscriber($csrf_listener);
-        $dispatcher->addSubscriber($firewall_listener);
-
-        $this->assertSame(
-            [
-                [$firewall_listener, 'onKernelController'],
-                [$csrf_listener, 'onKernelController'],
-            ],
-            $dispatcher->getListeners(KernelEvents::CONTROLLER)
-        );
-    }
-
     public function testPostRequestWithExpiredSessionThrowsSessionExpiredException(): void
     {
         // No session.

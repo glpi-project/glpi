@@ -154,14 +154,11 @@ final class ListenersPriority
     ];
 
     public const CONTROLLER_LISTENERS_PRIORITIES = [
-        // Applies the security strategy of the controller (authentication, profile rights, ...).
-        // Must be executed before the `CheckCsrfListener`: when the session has expired, the CSRF token
-        // no longer exists in the session, and the CSRF check would fail with a generic "access denied" error
-        // instead of letting the firewall throw a `SessionExpiredException` that redirects the user to the login page.
-        FirewallStrategyListener::class => 20,
+        // Block unsafe requests subject to CSRF.
+        CheckCsrfListener::class        => 20,
 
-        // Validates the CSRF token of requests that are supposed to have a body.
-        CheckCsrfListener::class        => 10,
+        // Applies the security strategy of the controller (authentication, profile rights, ...).
+        FirewallStrategyListener::class => 10,
     ];
 
     private function __construct() {}
