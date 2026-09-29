@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\HttpClient;
@@ -1121,9 +1122,17 @@ TWIG, $twig_params);
      */
     public static function editEventForm($params = [])
     {
+        global $CFG_GLPI;
+
+        if (!in_array($params['itemtype'] ?? null, $CFG_GLPI['planning_types'], true)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $item = getItemForItemtype($params['itemtype']);
         if ($item instanceof CommonDBTM) {
-            $item->getFromDB((int) $params['id']);
+            if (!$item->can((int) $params['id'], READ)) {
+                throw new AccessDeniedHttpException();
+            }
             $url = $item->getLinkURL();
 
             $rand = mt_rand();
@@ -1134,7 +1143,14 @@ TWIG, $twig_params);
             ];
             if (isset($params['parentitemtype'])) {
                 $options['parent'] = getItemForItemtype($params['parentitemtype']);
-                $options['parent']->getFromDB($params['parentid']);
+                // The parent must be the item's own parent, and be readable
+                if (
+                    !($options['parent'] instanceof CommonDBTM)
+                    || (int) ($item->fields[$options['parent']::getForeignKeyField()] ?? 0) !== (int) $params['parentid']
+                    || !$options['parent']->can((int) $params['parentid'], READ)
+                ) {
+                    throw new AccessDeniedHttpException();
+                }
                 $url = $options['parent']->getLinkURL();
             }
 
@@ -1680,6 +1696,9 @@ TWIG, $twig_params);
                 $param[$key] = $val;
             }
         }
+
+        // `genical` is reserved to the iCal export (see generateIcal()) and alters the session rights.
+        $param['genical'] = false;
 
         $timezone = new DateTimeZone(date_default_timezone_get());
         $time_begin = strtotime($param['start']) - $timezone->getOffset(new DateTime($param['start']));
