@@ -119,6 +119,7 @@ final class AllowList implements ControlTypeInterface
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
+        //NOTE: If you change the conditions here, update the HLAPI read restrictions too
         if (!$config instanceof AllowListConfig) {
             throw new InvalidArgumentException("Invalid config class");
         }

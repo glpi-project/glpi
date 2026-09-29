@@ -518,4 +518,26 @@ class QueryFunction
             $alias
         );
     }
+
+    public static function jsonOverlaps(string|QueryExpression $doc1, string|QueryExpression $doc2, ?string $alias = null): QueryExpression
+    {
+        global $DB;
+
+        if (is_string($doc1)) {
+            $doc1 = new QueryExpression($DB::quoteName($doc1));
+        }
+
+        if (is_string($doc2)) {
+            $doc2 = new QueryExpression($DB::quoteName($doc2));
+        }
+
+        return self::getExpression(
+            'JSON_OVERLAPS',
+            [
+                $DB->getVersionAndServer()['server'] === 'MariaDB' ? $doc1 : self::cast($doc1, 'JSON'),
+                $DB->getVersionAndServer()['server'] === 'MariaDB' ? $doc2 : self::cast($doc2, 'JSON'),
+            ],
+            $alias
+        );
+    }
 }
