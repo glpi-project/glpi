@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Api\HL;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Tests\GLPITestCase;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionMethod;
 use Ticket;
@@ -228,5 +229,38 @@ class ResourceAccessorTest extends GLPITestCase
         $this->assertArrayHasKey('If-Unmodified-Since', $rm->invoke(null, $ticket, [
             'If-Unmodified-Since' => ['2026-08-15 12:00:00'],
         ]));
+    }
+
+    public function testValidatePreconditionsRejectsMalformedHeader(): void
+    {
+        $ticket = new Ticket();
+        $ticket->fields = [
+            'id' => 1,
+            'date_mod' => '2026-09-01 12:00:00',
+        ];
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'validatePreconditions');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid value for If-Modified-Since header.');
+        $rm->invoke(null, $ticket, [
+            'If-Modified-Since' => ['not-a-date'],
+        ]);
+    }
+
+    public function testValidatePreconditionsRejectsConflictingHeaders(): void
+    {
+        $ticket = new Ticket();
+        $ticket->fields = [
+            'id' => 1,
+            'date_mod' => '2026-09-01 12:00:00',
+        ];
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'validatePreconditions');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('If-Modified-Since and If-Unmodified-Since headers cannot be used together.');
+        $rm->invoke(null, $ticket, [
+            'If-Modified-Since' => ['2026-09-01 12:00:00'],
+            'If-Unmodified-Since' => ['2026-09-01 12:00:00'],
+        ]);
     }
 }
