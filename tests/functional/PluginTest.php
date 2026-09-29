@@ -43,7 +43,9 @@ namespace tests\units {
     use PHPUnit\Framework\Attributes\DataProvider;
     use PHPUnit\Framework\Attributes\RunInSeparateProcess;
     use Plugin;
+    use Psr\Log\LogLevel;
     use Random\RandomException;
+    use Symfony\Component\Filesystem\Filesystem;
 
     class PluginTest extends DbTestCase
     {
@@ -922,6 +924,116 @@ PHP
         {
             $plugin = new Plugin();
             $this->assertEmpty($plugin->getPluginOptions('thisplugindoesnotexists'));
+        }
+
+        public function testHasConflictingAutoloaderReturnsFalseWhenNoVendorDir(): void
+        {
+            $this->assertFalse(Plugin::hasConflictingAutoloader('aplugintheydonotexist'));
+        }
+
+        public function testHasConflictingAutoloaderReturnsFalseWhenClassNotYetLoaded(): void
+        {
+            $plugin_root = $this->createPluginAutoloaderFixture('testautoloaderfixtureunloaded', 'ComposerAutoloaderInitUnloaded');
+
+            try {
+                $conflict = Plugin::hasConflictingAutoloader('testautoloaderfixtureunloaded');
+            } finally {
+                (new Filesystem())->remove($plugin_root);
+            }
+
+            $this->assertFalse($conflict);
+        }
+
+        public function testHasConflictingAutoloaderReturnsFalseForItsOwnAlreadyLoadedAutoloader(): void
+        {
+            $plugin_root = $this->createPluginAutoloaderFixture('testautoloaderfixtureown', 'ComposerAutoloaderInitOwn');
+
+            try {
+                require $plugin_root . '/vendor/composer/autoload_real.php';
+
+                $conflict = Plugin::hasConflictingAutoloader('testautoloaderfixtureown');
+            } finally {
+                (new Filesystem())->remove($plugin_root);
+            }
+
+            $this->assertFalse($conflict);
+        }
+
+        public function testHasConflictingAutoloaderReturnsTrueWhenClassDeclaredByAnotherPlugin(): void
+        {
+            $shared_class = 'ComposerAutoloaderInitShared' . \bin2hex(\random_bytes(4));
+            $plugin_root_a = $this->createPluginAutoloaderFixture('testautoloaderfixturea', $shared_class);
+            $plugin_root_b = $this->createPluginAutoloaderFixture('testautoloaderfixtureb', $shared_class);
+
+            try {
+                require $plugin_root_a . '/vendor/composer/autoload_real.php';
+
+                $conflict = Plugin::hasConflictingAutoloader('testautoloaderfixtureb');
+            } finally {
+                $filesystem = new Filesystem();
+                $filesystem->remove($plugin_root_a);
+                $filesystem->remove($plugin_root_b);
+            }
+
+            $this->assertTrue($conflict);
+        }
+
+        #[RunInSeparateProcess]
+        public function testLoadSkipsPluginWithConflictingAutoloaderWithoutCrashing(): void
+        {
+            $shared_class = 'ComposerAutoloaderInitShared' . \bin2hex(\random_bytes(4));
+            $plugin_root_a = $this->createPluginAutoloaderFixture('testloadautoloadera', $shared_class, withsetup: true);
+            $plugin_root_b = $this->createPluginAutoloaderFixture('testloadautoloaderb', $shared_class, withsetup: true);
+
+            try {
+                require $plugin_root_a . '/vendor/composer/autoload_real.php';
+
+                Plugin::load('testloadautoloaderb');
+            } finally {
+                $filesystem = new Filesystem();
+                $filesystem->remove($plugin_root_a);
+                $filesystem->remove($plugin_root_b);
+            }
+
+            $this->assertFalse(function_exists('plugin_version_testloadautoloaderb'));
+
+            $this->hasPhpLogRecordThatContains(
+                'Plugin `testloadautoloaderb` was not loaded because its vendored Composer autoloader class collides with one already loaded by another plugin.',
+                LogLevel::ERROR
+            );
+        }
+
+        #[RunInSeparateProcess]
+        public function testLoadStillLoadsPluginWithoutConflictingAutoloader(): void
+        {
+            $plugin_root = $this->createPluginAutoloaderFixture('testloadautoloadersafe', 'ComposerAutoloaderInitSafe', withsetup: true);
+
+            try {
+                Plugin::load('testloadautoloadersafe');
+            } finally {
+                (new Filesystem())->remove($plugin_root);
+            }
+
+            $this->assertTrue(function_exists('plugin_version_testloadautoloadersafe'));
+        }
+
+        private function createPluginAutoloaderFixture(string $plugin_key, string $class_name, bool $withsetup = false): string
+        {
+            $plugin_root = GLPI_ROOT . '/plugins/' . $plugin_key;
+            \mkdir($plugin_root . '/vendor/composer', 0o777, true);
+            \file_put_contents(
+                $plugin_root . '/vendor/composer/autoload_real.php',
+                "<?php\n\nclass {$class_name}\n{\n}\n"
+            );
+
+            if ($withsetup) {
+                \file_put_contents(
+                    $plugin_root . '/setup.php',
+                    "<?php\n\nfunction plugin_version_{$plugin_key}()\n{\n    return ['name' => '{$plugin_key}', 'version' => '1.0'];\n}\n"
+                );
+            }
+
+            return $plugin_root;
         }
 
         protected static function pluginDirectoryProvider(): iterable
