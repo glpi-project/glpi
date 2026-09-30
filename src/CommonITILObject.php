@@ -9459,9 +9459,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
             '_from_object'                    => true,
         ];
-        if ($disable_notifications) {
-            $common_actor_input['_disablenotif'] = true;
-        }
+        // Notifications for added actors are raised once removed actors are deleted
+        $common_actor_input['_disablenotif'] = true;
 
         $actor_itemtypes = [
             User::class,
@@ -9474,6 +9473,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'observer',
         ];
 
+        $added_events = [];
         foreach ($actor_types as $actor_type) {
             $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
 
@@ -9717,6 +9717,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             // Add new actors
             foreach ($added as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+                $added_events[] = $actor_type . '_' . strtolower($actor['itemtype']);
                 $actor_obj->add($common_actor_input + $actor + [
                     $actor_obj->getItilObjectForeignKey() => $this->fields['id'],
                     $actor_obj->getActorForeignKey()      => $actor['items_id'],
@@ -9767,6 +9768,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // We just updated actors, clear any cached data
         $this->clearLazyLoadedActors();
+
+        $item = new static();
+        if (!$disable_notifications && $added_events !== [] && $item->getFromDB($this->getID())) {
+            foreach ($added_events as $event) {
+                NotificationEvent::raiseEvent($event, $item);
+            }
+        }
     }
 
 

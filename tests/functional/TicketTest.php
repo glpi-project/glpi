@@ -12294,4 +12294,55 @@ HTML,
         $this->assertTrue($ticket_1->getFromDB($ticket_1->getID()));
         $this->assertSame('Updated', $ticket_1->fields['name']);
     }
+
+    public function testReassignDoesNotNotifyRemovedTechnician(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        $old_tech = getItemByTypeName(User::class, 'tech');
+        $new_tech = getItemByTypeName(User::class, TU_USER);
+        foreach ([$old_tech, $new_tech] as $user) {
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'is_default' => 1,
+                'email'      => $user->fields['name'] . '@reassign.test',
+            ]);
+        }
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'reassign notif',
+            'content'     => 'reassign notif',
+            'entities_id' => 0,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'User', 'items_id' => $old_tech->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ]);
+
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            '_actors' => [
+                'assign' => [
+                    ['itemtype' => 'User', 'items_id' => $new_tech->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ]);
+
+        $recipients = array_column(
+            getAllDataFromTable('glpi_queuednotifications', [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'event'    => 'assign_user',
+            ]),
+            'recipient'
+        );
+        $this->assertContains($new_tech->fields['name'] . '@reassign.test', $recipients);
+        $this->assertNotContains($old_tech->fields['name'] . '@reassign.test', $recipients);
+    }
 }
