@@ -148,12 +148,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
               || Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDMY));
     }
 
-    public function canUpdateItem(): bool
-    {
-        // Relations (e.g. Document_Item) call this method without the global right check.
-        return static::canUpdate() && parent::canUpdateItem();
-    }
-
     public function canCreateItem(): bool
     {
         if (isset($this->input['itemtype'], $this->input['items_id'])) {

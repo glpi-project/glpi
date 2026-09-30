@@ -83,12 +83,6 @@ class Contract extends CommonDBTM implements StateInterface
         return ['management', self::class];
     }
 
-    public function canUpdateItem(): bool
-    {
-        // Relations (e.g. Contract_Item) call this method without the global right check.
-        return static::canUpdate() && parent::canUpdateItem();
-    }
-
     public static function getLogDefaultServiceName(): string
     {
         return 'financial';

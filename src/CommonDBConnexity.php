@@ -436,11 +436,8 @@ abstract class CommonDBConnexity extends CommonDBTM
                     $methodNotItem = 'canView';
                     $methodItem    = 'canViewItem';
                 }
-                // here, we can check item's global rights
-                if (preg_match('/^itemtype/', $itemtype)) {
-                    if (!$connexityItem->$methodNotItem()) {
-                        return false;
-                    }
+                if (!$connexityItem->$methodNotItem()) {
+                    return false;
                 }
                 return $connexityItem->$methodItem();
             } else {

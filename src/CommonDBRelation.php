@@ -504,7 +504,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         try {
             $item1 = null;
-            // canConnexityItem() checks the global right only for a dynamic itemtype.
             $can1  = $this->canConnexityItem(
                 $method,
                 $methodNotItem,
