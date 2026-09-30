@@ -2000,7 +2000,9 @@ TWIG, $twig_params);
                         }
                         $glpi_users[] = ['id'         => $user['id'],
                             'user'       => $userfound['name'],
-                            $field_for_sync => ($userfound[$config_ldap->fields['sync_field']] ?? 'NULL'),
+                            $field_for_sync => $config_ldap->isSyncFieldEnabled()
+                                ? ($userfound[$config_ldap->fields['sync_field']] ?? 'NULL')
+                                : 'NULL',
                             'timestamp'  => $user_infos[$userfound[$field_for_sync]]['timestamp'],
                             'date_sync'  => $tmpuser->fields['date_sync'],
                             'dn'         => $user['user_dn'],

@@ -94,7 +94,7 @@ $empty_data_builder = new class {
         // API need to be enabled to ease e2e testing
         $env = Environment::get();
         $add_playwright_data = $env->shouldAddExtraPlaywrightDataDuringInstallation();
-        $add_cypress_data = $env->shouldAddExtraCypressDataDuringInstallation();
+        $add_testing_data = $env->shouldAddExtraCypressDataDuringInstallation();
 
         $add_e2e_data = $env->shouldAddExtraE2EDataDuringInstallation();
         $enable_api = $add_e2e_data ? "1" : "0";
@@ -9493,7 +9493,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_GLPI,
                 'name' => 'glpi',
                 'realname' => null,
-                'password' => password_hash('glpi', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('glpi'),
                 'language' => null,
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9503,7 +9503,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
                 'realname' => null,
-                'password' => password_hash('postonly', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('postonly'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9513,7 +9513,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_TECH,
                 'name' => 'tech',
                 'realname' => null,
-                'password' => password_hash('tech', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('tech'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9523,7 +9523,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_NORMAL,
                 'name' => 'normal',
                 'realname' => null,
-                'password' => password_hash('normal', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('normal'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9587,7 +9587,14 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
         $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
         $root_entity = current($root_entity);
 
-        if ($add_cypress_data) {
+        if ($add_testing_data) {
+            // Note: this data was added for the Cypress tests, which were
+            // replaced by the Playwright tests. It can't be removed yet because
+            // some PHPUnit tests use it (`E2ETestEntity` and its sub entities,
+            // `e2e_tests` user).
+            // TODO: update these PHPUnit tests so they create their own data,
+            // then remove this data.
+
             // Main E2E test entity
             $e2e_entity = array_replace($root_entity, [
                 'id' => 1,
@@ -9697,31 +9704,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
                 'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
             ];
-
-            $tables['glpi_authldaps'][] = [
-                'name'            => '_e2e_ldap',
-                'host'            => 'openldap',
-                'basedn'          => 'dc=glpi,dc=org',
-                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
-                'port'            => '3890',
-                'condition'       => '(objectclass=inetOrgPerson)',
-                'login_field'     => 'uid',
-                'rootdn_passwd'   => (new GLPIKey())->encrypt('insecure'),
-                'is_default'      => 1,
-                'is_active'       => 0,
-                'use_tls'         => 0,
-                'email1_field'    => 'mail',
-                'realname_field'  => 'cn',
-                'firstname_field' => 'sn',
-                'phone_field'     => 'telephonenumber',
-                'comment_field'   => 'description',
-                'title_field'     => 'title',
-                'category_field'  => 'businesscategory',
-                'language_field'  => 'preferredlanguage',
-                'group_search_type'  => AuthLDAP::GROUP_SEARCH_GROUP,
-                'group_condition' => '(objectclass=groupOfNames)',
-                'group_member_field' => 'member',
-            ];
         } elseif ($add_playwright_data) {
             // Main E2E test entity
             $e2e_parent_entity_id = max(
@@ -9742,10 +9724,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             $users_to_create = [
                 [
                     'login'       => 'e2e_api_account',
-                    'password'    => password_hash(
-                        'e2e_api_account',
-                        PASSWORD_DEFAULT,
-                    ),
+                    'password'    => Auth::getPasswordHash('e2e_api_account'),
                     'realname'    => 'E2E API account',
                     'entities_id' => 0,
                 ],
@@ -9764,10 +9743,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
 
                 $users_to_create[] = [
                     'login'       => "e2e_worker_account_$padded_i",
-                    'password'    => password_hash(
-                        "e2e_worker_account_$padded_i",
-                        PASSWORD_DEFAULT,
-                    ),
+                    'password'    => Auth::getPasswordHash("e2e_worker_account_$padded_i"),
                     'realname'    => "E2E worker account $padded_i",
                     'entities_id' => $entity_id,
                 ];
@@ -9849,6 +9825,32 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                     ];
                 }
             }
+
+            // LDAP server of the CI, see `.github/actions/docker-compose-services.yml`.
+            $tables['glpi_authldaps'][] = [
+                'name'            => '_e2e_ldap',
+                'host'            => 'openldap',
+                'basedn'          => 'dc=glpi,dc=org',
+                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+                'port'            => '3890',
+                'condition'       => '(objectclass=inetOrgPerson)',
+                'login_field'     => 'uid',
+                'rootdn_passwd'   => (new GLPIKey())->encrypt('insecure'),
+                'is_default'      => 1,
+                'is_active'       => 0,
+                'use_tls'         => 0,
+                'email1_field'    => 'mail',
+                'realname_field'  => 'cn',
+                'firstname_field' => 'sn',
+                'phone_field'     => 'telephonenumber',
+                'comment_field'   => 'description',
+                'title_field'     => 'title',
+                'category_field'  => 'businesscategory',
+                'language_field'  => 'preferredlanguage',
+                'group_search_type'  => AuthLDAP::GROUP_SEARCH_GROUP,
+                'group_condition' => '(objectclass=groupOfNames)',
+                'group_member_field' => 'member',
+            ];
         }
 
         // initial validation steps

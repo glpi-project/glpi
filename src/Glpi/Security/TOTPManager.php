@@ -38,6 +38,7 @@ namespace Glpi\Security;
 use DateInterval;
 use Entity;
 use Exception;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\AuthenticationFailedException;
 use GLPIKey;
@@ -348,7 +349,7 @@ final class TOTPManager
                 $code .= $code_chars[random_int(0, strlen($code_chars) - 1)];
             }
             $random_codes[] = $code;
-            $code_hashes[] = password_hash($code, PASSWORD_BCRYPT);
+            $code_hashes[] = password_hash($code, PASSWORD_BCRYPT, Environment::get()->getPasswordHashOptions());
         }
 
         $tfa = $DB->request([

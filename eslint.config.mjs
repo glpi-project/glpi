@@ -2,7 +2,6 @@ import mocha from "eslint-plugin-mocha";
 import globals from "globals";
 import vue from "eslint-plugin-vue";
 import js from "@eslint/js";
-import cypress from "eslint-plugin-cypress";
 import playwright from 'eslint-plugin-playwright';
 import tsParser from "@typescript-eslint/parser";
 import tseslint from "@typescript-eslint/eslint-plugin";
@@ -152,25 +151,8 @@ export default [
         }
     },
     {
-        // Cypress Tests - Recommended rules
-        ...cypress.configs.recommended,
-        files: ["tests/cypress/**"]
-    },
-    {
-        // Cypress Tests - Custom rules
-        files: ["tests/cypress/**"],
-        plugins: {mocha},
-        languageOptions: {
-            globals: {...globals.node, ...globals.vitest, ...cypress.configs.globals.languageOptions.globals},
-            sourceType: "module",
-        },
-        rules: {
-            "mocha/no-exclusive-tests": "error"
-        }
-    },
-    {
         // Config files
-        "files": ["eslint.config.mjs", ".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js", "tests/cypress.config.js"],
+        "files": ["eslint.config.mjs", ".stylelintrc.js", ".webpack.config.js", ".vue.webpack.config.js"],
         "languageOptions": {
             "globals": {...globals.node}
         },

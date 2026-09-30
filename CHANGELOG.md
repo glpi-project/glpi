@@ -235,6 +235,27 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
+## [11.0.11] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
 ## [11.0.10] 2026-09-30
 
 ### Added

@@ -18,9 +18,6 @@
 phpunit.xml
 /tests/config/
 /tests/coverage/
-/tests/cypress/screenshots/
-/tests/cypress/downloads/
-/tests/cypress/videos/
 /tests/files/
 /tests/files-*/
 /tests/.env
