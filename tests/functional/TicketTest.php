@@ -12345,4 +12345,45 @@ HTML,
         $this->assertContains($new_tech->fields['name'] . '@reassign.test', $recipients);
         $this->assertNotContains($old_tech->fields['name'] . '@reassign.test', $recipients);
     }
+
+    public function testAddingSeveralTechniciansNotifiesEachOnce(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        $techs = [getItemByTypeName(User::class, 'tech'), getItemByTypeName(User::class, TU_USER)];
+        $actors = [];
+        foreach ($techs as $user) {
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'is_default' => 1,
+                'email'      => $user->fields['name'] . '@several.test',
+            ]);
+            $actors[] = ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1];
+        }
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'several techs',
+            'content'     => 'several techs',
+            'entities_id' => 0,
+        ]);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_actors' => ['assign' => $actors]]);
+
+        $recipients = array_column(
+            getAllDataFromTable('glpi_queuednotifications', [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'event'    => 'assign_user',
+            ]),
+            'recipient'
+        );
+        foreach ($techs as $user) {
+            $this->assertCount(1, array_keys($recipients, $user->fields['name'] . '@several.test'));
+        }
+    }
 }
