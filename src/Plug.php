@@ -133,7 +133,13 @@ class Plug extends CommonDBRelation
             return false;
         }
 
-        $asset_changed = isset($input['itemtype_asset']) || isset($input['items_id_asset']);
+        $asset_changed = (
+            isset($input['itemtype_asset'])
+            && $input['itemtype_asset'] !== ($this->fields['itemtype_asset'] ?? '')
+        ) || (
+            isset($input['items_id_asset'])
+            && (int) $input['items_id_asset'] !== (int) ($this->fields['items_id_asset'] ?? 0)
+        );
         if ($asset_changed && !isset($input[self::POWER_SUPPLY_FIELD])) {
             // A component reference cannot be kept if its parent asset changes.
             $input[self::POWER_SUPPLY_FIELD] = 0;
@@ -422,6 +428,7 @@ class Plug extends CommonDBRelation
             'WHERE'  => [
                 'itemtype_asset' => $item::class,
                 'items_id_asset' => $ID,
+                'is_deleted' => false,
                 self::POWER_SUPPLY_FIELD => ['>', 0],
             ],
             'ORDER' => ['id'],

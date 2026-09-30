@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Asset\AssetDefinition;
 use Computer;
 use DevicePowerSupply;
+use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Features\Clonable;
@@ -206,6 +206,14 @@ class PlugTest extends DbTestCase
         $this->assertGreaterThan(0, $plug_id);
         $this->assertTrue($plug->getFromDB($plug_id));
         $this->assertSame($power_supply->getID(), (int) $plug->fields[Plug::POWER_SUPPLY_FIELD]);
+
+        $this->assertTrue($plug->update([
+            'id' => $plug_id,
+            'name' => 'Renamed outlet A1',
+            'itemtype_asset' => Computer::class,
+            'items_id_asset' => $computer->getID(),
+        ]));
+        $this->assertSame($power_supply->getID(), (int) $plug->fields[Plug::POWER_SUPPLY_FIELD]);
     }
 
     public function testPowerSupplyMustBelongToAssociatedAsset(): void
@@ -312,7 +320,7 @@ class PlugTest extends DbTestCase
         $power_supply_a = $this->createPowerSupply($computer, 'PSU reverse connection A', 'SERIAL-REVERSE-A');
         $power_supply_b = $this->createPowerSupply($computer, 'PSU reverse connection B', 'SERIAL-REVERSE-B');
 
-        $this->createItem(Plug::class, [
+        $connected_plug = $this->createItem(Plug::class, [
             'name'                          => 'Outlet PSU',
             'itemtype_main'                 => PDU::class,
             'items_id_main'                 => $pdu->getID(),
@@ -321,7 +329,7 @@ class PlugTest extends DbTestCase
             Plug::POWER_SUPPLY_FIELD        => $power_supply_a->getID(),
             'entities_id'                   => $pdu->getEntityID(),
         ]);
-        $this->createItem(Plug::class, [
+        $deleted_plug = $this->createItem(Plug::class, [
             'name'                          => 'Outlet redundant PSU',
             'itemtype_main'                 => PDU::class,
             'items_id_main'                 => $pdu->getID(),
@@ -330,6 +338,16 @@ class PlugTest extends DbTestCase
             Plug::POWER_SUPPLY_FIELD        => $power_supply_b->getID(),
             'entities_id'                   => $pdu->getEntityID(),
         ]);
+
+        ob_start();
+        try {
+            $this->assertTrue($connected_plug->showForm($connected_plug->getID()));
+            $form = (string) ob_get_contents();
+        } finally {
+            ob_end_clean();
+        }
+        $this->assertStringContainsString(Plug::POWER_SUPPLY_FIELD, $form);
+        $this->assertStringContainsString('PSU reverse connection A', $form);
 
         $tab_name = strip_tags((new Plug())->getTabNameForItem($computer));
         $this->assertStringContainsString('Power connections', $tab_name);
@@ -351,6 +369,20 @@ class PlugTest extends DbTestCase
         $this->assertStringContainsString('PSU reverse connection B', $output);
         $this->assertStringContainsString('SERIAL-REVERSE-B', $output);
         $this->assertStringNotContainsString('Entire asset', $output);
+
+        $this->assertTrue($deleted_plug->delete(['id' => $deleted_plug->getID()]));
+        $tab_name = strip_tags((new Plug())->getTabNameForItem($computer));
+        $this->assertStringContainsString('1', $tab_name);
+
+        ob_start();
+        try {
+            $this->assertTrue(Plug::showPowerConnections($computer));
+            $output = (string) ob_get_contents();
+        } finally {
+            ob_end_clean();
+        }
+        $this->assertStringContainsString('Outlet PSU', $output);
+        $this->assertStringNotContainsString('Outlet redundant PSU', $output);
     }
 
     private function createPowerSupply(Computer $computer, string $designation, string $serial): Item_DevicePowerSupply
