@@ -190,7 +190,7 @@ test('Can delete a translation', async ({ page, profile, api }) => {
     // Confirm deletion. Bootstrap ignores a `hide()` requested while the modal
     // is still fading in, so wait for it to be shown before dismissing it.
     const modal = page.getByRole('dialog');
-    await expect(modal).toHaveAttribute('data-cy-shown', 'true');
+    await expect(modal).toHaveAttribute('data-glpi-modal-shown', 'true');
     await modal.getByRole('button', { name: 'Delete' }).click();
     await expect(kb.getAlert('Translation deleted successfully ')).toBeVisible();
 

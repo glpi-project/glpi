@@ -38,6 +38,7 @@ use Auth;
 use AuthLDAP;
 use AuthMail;
 use Config;
+use Glpi\Config\ConfigContainer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
@@ -484,9 +485,9 @@ class AuthTest extends DbTestCase
      * @param string $username Login name that the SSO server will report
      * @param bool   $auto_add Value to set for the `is_users_auto_add` configuration entry
      *
-     * @return array Backup of $CFG_GLPI
+     * @return ConfigContainer Backup of $CFG_GLPI
      */
-    private function setUpSsoAuth(string $username, bool $auto_add): array
+    private function setUpSsoAuth(string $username, bool $auto_add): ConfigContainer
     {
         global $CFG_GLPI, $DB;
 

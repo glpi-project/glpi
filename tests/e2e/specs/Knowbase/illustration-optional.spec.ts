@@ -54,7 +54,7 @@ test('Selecting "No illustration" clears the value and shows the placeholder', a
 
     // Going through the page object matters here: Bootstrap ignores a `hide()`
     // requested while the modal is still fading in, so the picker helpers wait
-    // for `data-cy-shown` instead of mere visibility.
+    // for `data-glpi-modal-shown` instead of mere visibility.
     await picker_page.doOpenIllustrationPicker();
     await picker_page.doSelectIllustration('No illustration');
 

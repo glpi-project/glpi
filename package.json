@@ -99,6 +99,7 @@
         "@eslint/eslintrc": "^3.3.6",
         "@eslint/js": "^9.39.5",
         "@playwright/test": "^1.62.1",
+        "@testing-library/dom": "^10.4.2",
         "@testing-library/jest-dom": "^7.0.1",
         "@types/jsdom": "^30.0.0",
         "@types/node": "^26.4.0",
