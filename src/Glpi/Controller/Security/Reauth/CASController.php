@@ -34,75 +34,78 @@
 
 declare(strict_types=1);
 
-namespace Glpi\Controller\Security;
+namespace Glpi\Controller\Security\Reauth;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Security\ReAuth\CasReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
-class ReAuthController extends AbstractController
+/**
+ * CAS re-authentication round-trip, verified out of band by the CAS server.
+ */
+final class CASController extends AbstractController
 {
     public function __construct(
-        private readonly ReAuthManager $reAuthManager,
+        private readonly ReAuthManager $reauth_manager,
+        private readonly ?CasReAuthStrategy $cas_strategy = null,
     ) {}
 
     /**
-     * @param bool $failed Set by out of band strategies coming back from a failed verification
+     * Send the user to the CAS server, which asks for the credentials again.
      */
     #[Route(
-        path: "/ReAuth/Prompt",
-        name: "reauth_prompt",
+        path: "/ReAuth/CAS",
+        name: "reauth_cas_start",
         methods: ['GET']
     )]
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    public function prompt(#[MapQueryParameter] bool $failed = false): Response
+    public function casStart(): Response
     {
-        return $this->render(
-            'pages/reauth/prompt.html.twig',
-            [
-                ...$this->buildTemplateContext(),
-                'failed' => $failed,
-            ]
-        );
-    }
-
-    #[Route(
-        path: "/ReAuth/Verify",
-        name: "reauth_verify",
-        methods: ['POST']
-    )]
-    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    public function verify(Request $request): Response
-    {
-        if ($this->reAuthManager->verify($request)) {
-            $this->reAuthManager->authenticate();
-
-            return $this->render('pages/redirect_post.html.twig', [
-                'http_method' => $this->reAuthManager->getRequestedMethod(),
-                'url'         => $this->reAuthManager->getRequestedURL(),
-                'replay_data' => $this->reAuthManager->getReplayData(),
-            ]);
-        }
-
-        return $this->prompt(true);
+        return new RedirectResponse($this->getCasStrategy()->start($_SESSION['glpiID']));
     }
 
     /**
-     * @return array{cancel_url: string, label: string, template: string, verify_url: string, verify_http_method: string}
+     * Way back from the CAS server, with the service ticket to validate.
      */
-    private function buildTemplateContext(): array
+    #[Route(
+        path: "/ReAuth/CAS/Callback",
+        name: "reauth_cas_callback",
+        methods: ['GET']
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    public function casCallback(Request $request): Response
     {
-        return [
-            'cancel_url'         => $this->reAuthManager->getOriginURL(),
-            'label'              => $this->reAuthManager->getLabel(),
-            'template'           => $this->reAuthManager->getPromptTemplate(),
-            'verify_url'         => $this->reAuthManager->getVerifyUrl(),
-            'verify_http_method' => $this->reAuthManager->getVerifyHttpMethod(),
-        ];
+        global $CFG_GLPI;
+
+        if ($this->getCasStrategy()->complete($_SESSION['glpiID'], $request)) {
+            $this->reauth_manager->authenticate();
+
+            return $this->render('pages/redirect_post.html.twig', [
+                'http_method' => $this->reauth_manager->getRequestedMethod(),
+                'url'         => $this->reauth_manager->getRequestedURL(),
+                'replay_data' => $this->reauth_manager->getReplayData(),
+            ]);
+        }
+
+        return new RedirectResponse($CFG_GLPI['root_doc'] . '/ReAuth/Prompt?failed=1');
+    }
+
+    /**
+     * The CAS round-trip is only open to users for whom the CAS strategy is the selected one.
+     */
+    private function getCasStrategy(): CasReAuthStrategy
+    {
+        if (!$this->reauth_manager->isSelectedStrategy(CasReAuthStrategy::class)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $this->cas_strategy ?? new CasReAuthStrategy();
     }
 }

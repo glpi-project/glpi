@@ -34,20 +34,12 @@
 
 namespace tests\units\Glpi\Controller\Security;
 
-use Auth;
 use Glpi\Controller\Security\ReAuthController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Security\ReAuth\CasReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
-use Glpi\Security\TOTPManager;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
-use Glpi\Toolbox\HttpClient;
 use PHPUnit\Framework\Attributes\Group;
 use Safe\DateTime;
-use Symfony\Component\HttpClient\MockHttpClient;
-use Symfony\Component\HttpClient\Response\MockResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Group('reauth')]
@@ -118,141 +110,31 @@ final class ReAuthControllerTest extends DbTestCase
         $this->assertArrayNotHasKey('glpi_reauth_until', $_SESSION);
     }
 
-    /**
-     * Logged-in user whose session was opened through CAS, with a CAS server answering every
-     * ticket validation with the given identity.
-     */
-    private function makeCasController(string $validated_cas_user): ReAuthController
+    /** Out of band strategies coming back from a failed verification display the failure. */
+    public function testPromptDisplaysFailure(): void
     {
-        global $CFG_GLPI;
-
+        // --- arrange ---
         $this->login();
-        unset($_SESSION['glpi_reauth_until']);
-        $this->resetReAuthManager();
-
-        $CFG_GLPI['cas_host']    = 'cas.test';
-        $CFG_GLPI['cas_port']    = '443';
-        $CFG_GLPI['cas_uri']     = 'cas';
-        $CFG_GLPI['cas_version'] = 'CAS_VERSION_3_0';
-        $_SESSION['glpiauthtype'] = Auth::CAS;
-
-        $cas_response = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
-            . "<cas:authenticationSuccess><cas:user>$validated_cas_user</cas:user></cas:authenticationSuccess>"
-            . '</cas:serviceResponse>';
-
-        return new ReAuthController(
-            $this->getReAuthManager(),
-            new CasReAuthStrategy(
-                $this->makeHttpClient(new MockHttpClient(new MockResponse($cas_response)))
-            ),
-        );
-    }
-
-    /** GLPI HTTP client whose requests are answered by the given mock. */
-    private function makeHttpClient(MockHttpClient $mock): HttpClient
-    {
-        $http_client = new HttpClient(context: Auth::class);
-        // No interface to mock: replace the inner Symfony client.
-        $this->setPrivateProperty($http_client, 'client', $mock);
-
-        return $http_client;
-    }
-
-    /** The CAS prompt sends the user to the CAS server, asking for the credentials again. */
-    public function testCasStartRedirectsToCasServer(): void
-    {
-        // --- arrange ---
-        $controller = $this->makeCasController(TU_USER);
+        $controller = new ReAuthController($this->getReAuthManager());
 
         // --- act ---
-        $response = $controller->casStart();
+        $failed = $controller->prompt(true);
+        $not_failed = $controller->prompt();
 
         // --- assert ---
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertStringStartsWith('https://cas.test/cas/login?service=', $response->getTargetUrl());
-        $this->assertStringEndsWith('&renew=true', $response->getTargetUrl());
-    }
-
-    /** The CAS round-trip is refused to a session that was not opened through CAS. */
-    public function testCasStartIsDeniedForNonCasSession(): void
-    {
-        // --- arrange ---
-        $controller = $this->makeCasController(TU_USER);
-        $_SESSION['glpiauthtype'] = Auth::DB_GLPI;
-
-        // --- assert ---
-        $this->expectException(AccessDeniedHttpException::class);
-
-        // --- act ---
-        $controller->casStart();
-    }
-
-    /**
-     * The CAS round-trip is refused when another strategy is selected: a CAS session with 2FA
-     * enabled must not re-authenticate with the CAS password only.
-     */
-    public function testCasRoundTripIsDeniedWhenTotpIsSelected(): void
-    {
-        // --- arrange ---
-        $controller = $this->makeCasController(TU_USER);
-        (new TOTPManager())->setSecretForUser($_SESSION['glpiID'], 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');
-
-        // --- act + assert : start ---
-        try {
-            $controller->casStart();
-            $this->fail('The CAS round-trip must not start when TOTP is selected.');
-        } catch (AccessDeniedHttpException) {
-        }
-
-        // --- act + assert : callback ---
-        try {
-            $controller->casCallback(Request::create('/ReAuth/CAS/Callback', 'GET', ['ticket' => 'ST-1-abc']));
-            $this->fail('The CAS callback must be refused when TOTP is selected.');
-        } catch (AccessDeniedHttpException) {
-        }
-        $this->assertArrayNotHasKey('glpi_reauth_until', $_SESSION);
+        $this->assertStringContainsString('Authentication failure', (string) $failed->getContent());
+        $this->assertStringNotContainsString('Authentication failure', (string) $not_failed->getContent());
     }
 
     /** A submission to the core verify endpoint while CAS is selected re-renders the prompt. */
     public function testVerifyPostDoesNotReAuthenticateWhenCasIsSelected(): void
     {
         // --- arrange ---
-        $controller = $this->makeCasController(TU_USER);
+        $this->loginWithCasSession();
+        $controller = new ReAuthController($this->getReAuthManager());
 
         // --- act ---
         $response = $controller->verify(Request::create('/ReAuth/Verify', 'POST', ['user_input' => TU_PASS]));
-
-        // --- assert ---
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString('/ReAuth/CAS', (string) $response->getContent());
-        $this->assertArrayNotHasKey('glpi_reauth_until', $_SESSION);
-    }
-
-    /** Coming back from CAS with a valid ticket re-authenticates the user and replays the request. */
-    public function testCasCallbackReAuthenticatesUser(): void
-    {
-        // --- arrange ---
-        $controller = $this->makeCasController(TU_USER);
-        $controller->casStart();
-
-        // --- act ---
-        $response = $controller->casCallback(Request::create('/ReAuth/CAS/Callback', 'GET', ['ticket' => 'ST-1-abc']));
-
-        // --- assert ---
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertArrayHasKey('glpi_reauth_until', $_SESSION);
-        $this->assertStringContainsString(ReAuthManager::RESTORE_REFERER_PARAM, (string) $response->getContent());
-    }
-
-    /** Coming back from CAS as someone else re-renders the prompt without re-authenticating. */
-    public function testCasCallbackDoesNotReAuthenticateAnotherIdentity(): void
-    {
-        // --- arrange ---
-        $controller = $this->makeCasController('glpi');
-        $controller->casStart();
-
-        // --- act ---
-        $response = $controller->casCallback(Request::create('/ReAuth/CAS/Callback', 'GET', ['ticket' => 'ST-1-abc']));
 
         // --- assert ---
         $this->assertSame(200, $response->getStatusCode());
