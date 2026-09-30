@@ -123,7 +123,7 @@
                      class="form-check-input task-state-checkbox"
                      aria-label="{{ __('To do') }}"
                      title="{{ __('To do') }}"
-                     {% if can_edit_i %}
+                     {% if entry_i['can_change_state'] ?? can_edit_i %}
                         onclick="change_task_state({{ entry_i['id']|json_encode|raw }}, this)"
                      {% else %}
                         disabled
@@ -136,7 +136,7 @@
                      aria-label="{{ __('Done') }}"
                      title="{{ __('Done') }}"
                      checked
-                     {% if can_edit_i %}
+                     {% if entry_i['can_change_state'] ?? can_edit_i %}
                         onclick="change_task_state({{ entry_i['id']|json_encode|raw }}, this)"
                      {% else %}
                         disabled

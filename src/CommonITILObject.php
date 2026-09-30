@@ -7788,6 +7788,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 if (!$params['check_view_rights'] || $tltask->canViewItem()) {
                     $task_row['can_edit'] = $tltask->canUpdateItem();
+                    $task_row['can_change_state'] = $tltask->canChangeState();
                     $task_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
