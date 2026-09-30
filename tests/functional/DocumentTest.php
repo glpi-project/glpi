@@ -43,7 +43,6 @@ use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeFile;
