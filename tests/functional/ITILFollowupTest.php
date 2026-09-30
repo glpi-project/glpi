@@ -833,7 +833,7 @@ HTML,
         global $DB;
 
         $this->login();
-        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $entity = $this->getTestRootEntity(true);
 
         // Two tickets; ticket B is merged (SON_OF) into ticket A and soft-deleted.
         $ticket = new Ticket();
@@ -865,10 +865,6 @@ HTML,
             'content'  => 'problem followup',
         ]));
 
-        $leaked = iterator_to_array($DB->request([
-            'FROM'  => 'glpi_itilfollowups',
-            'WHERE' => ['itemtype' => Problem::class, 'items_id' => $id_a],
-        ]));
-        $this->assertCount(0, $leaked);
+        $this->assertEquals(0, countElementsInTable(CoreITILFollowup::getTable(), ['itemtype' => Problem::class, 'items_id' => $id_a]));
     }
 }
