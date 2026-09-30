@@ -49,6 +49,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
 use ProfileRight;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
@@ -3303,9 +3304,12 @@ HTML,
         $this->assertTrue($parent_obj->getFromDB($parent_id));
         $this->assertFalse($parent_obj->canViewItem(), 'parent must NOT be viewable for this test');
 
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \ob_start();
         KnowbaseItem::showList(['start' => 0], 'browse');
         $output = (string) \ob_get_clean();
+        \error_reporting($reporting_level);
+        $this->hasPhpLogRecordThatContains('Called method is deprecated', LogLevel::INFO);
 
         // The child (visible) is listed, but the unviewable parent must not leak.
         $this->assertStringContainsString('Leaf child ' . __FUNCTION__, $output);
@@ -3335,9 +3339,12 @@ HTML,
             '_parents' => [$parent->getID()],
         ]);
 
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \ob_start();
         KnowbaseItem::showList(['start' => 0], 'browse');
         $output = (string) \ob_get_clean();
+        \error_reporting($reporting_level);
+        $this->hasPhpLogRecordThatContains('Called method is deprecated', LogLevel::INFO);
 
         $this->assertStringContainsString('Visible child ' . __FUNCTION__, $output);
         $this->assertStringContainsString(
