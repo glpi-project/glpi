@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Security\ReAuth;
 use Auth;
 use Glpi\Security\ReAuth\CasReAuthStrategy;
 use Glpi\Tests\DbTestCase;
+use Glpi\Toolbox\HttpClient;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -70,10 +71,22 @@ class CasReAuthStrategyTest extends DbTestCase
     /** CAS server answering every validation request with the given body. */
     private function makeStrategy(string $body): CasReAuthStrategy
     {
-        return new CasReAuthStrategy(new MockHttpClient(function (string $method, string $url) use ($body) {
-            $this->validate_url = $url;
-            return new MockResponse($body);
-        }));
+        return new CasReAuthStrategy($this->makeHttpClient(
+            new MockHttpClient(function (string $method, string $url) use ($body) {
+                $this->validate_url = $url;
+                return new MockResponse($body);
+            })
+        ));
+    }
+
+    /** GLPI HTTP client whose requests are answered by the given mock. */
+    private function makeHttpClient(MockHttpClient $mock): HttpClient
+    {
+        $http_client = new HttpClient(context: Auth::class);
+        // No interface to mock: replace the inner Symfony client.
+        $this->setPrivateProperty($http_client, 'client', $mock);
+
+        return $http_client;
     }
 
     private static function cas20Success(string $user): string
@@ -301,9 +314,9 @@ class CasReAuthStrategyTest extends DbTestCase
     public function testCompleteFailsWhenCasServerIsUnreachable(): void
     {
         // --- arrange ---
-        $strategy = new CasReAuthStrategy(new MockHttpClient(
+        $strategy = new CasReAuthStrategy($this->makeHttpClient(new MockHttpClient(
             new MockResponse('', ['error' => 'Could not resolve host: cas.test'])
-        ));
+        )));
         $strategy->start($this->getTestUserId());
 
         // --- act ---

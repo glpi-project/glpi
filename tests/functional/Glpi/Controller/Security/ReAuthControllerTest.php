@@ -42,6 +42,7 @@ use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\TOTPManager;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
+use Glpi\Toolbox\HttpClient;
 use PHPUnit\Framework\Attributes\Group;
 use Safe\DateTime;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -141,8 +142,20 @@ final class ReAuthControllerTest extends DbTestCase
 
         return new ReAuthController(
             $this->getReAuthManager(),
-            new CasReAuthStrategy(new MockHttpClient(new MockResponse($cas_response))),
+            new CasReAuthStrategy(
+                $this->makeHttpClient(new MockHttpClient(new MockResponse($cas_response)))
+            ),
         );
+    }
+
+    /** GLPI HTTP client whose requests are answered by the given mock. */
+    private function makeHttpClient(MockHttpClient $mock): HttpClient
+    {
+        $http_client = new HttpClient(context: Auth::class);
+        // No interface to mock: replace the inner Symfony client.
+        $this->setPrivateProperty($http_client, 'client', $mock);
+
+        return $http_client;
     }
 
     /** The CAS prompt sends the user to the CAS server, asking for the credentials again. */

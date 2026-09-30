@@ -39,10 +39,9 @@ namespace Glpi\Security\ReAuth;
 use Auth;
 use DOMDocument;
 use Glpi\Error\ErrorHandler;
+use Glpi\Toolbox\HttpClient;
 use Override;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 use User;
 
@@ -73,7 +72,7 @@ final class CasReAuthStrategy implements ReAuthStrategyInterface
     private const string CAS_NAMESPACE = 'http://www.yale.edu/tp/cas';
 
     public function __construct(
-        private readonly ?HttpClientInterface $http_client = null,
+        private readonly ?HttpClient $http_client = null,
     ) {}
 
     #[Override]
@@ -182,7 +181,7 @@ final class CasReAuthStrategy implements ReAuthStrategyInterface
         };
 
         try {
-            $response = ($this->http_client ?? HttpClient::create())->request(
+            $response = ($this->http_client ?? new HttpClient(context: Auth::class))->request(
                 'GET',
                 $this->getServerBaseUrl() . $path,
                 [
