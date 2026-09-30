@@ -90,7 +90,7 @@ $empty_data_builder = new class {
         // API need to be enabled to ease e2e testing
         $env = Environment::get();
         $add_playwright_data = $env->shouldAddExtraPlaywrightDataDuringInstallation();
-        $add_cypress_data = $env->shouldAddExtraCypressDataDuringInstallation();
+        $add_testing_data = $env->shouldAddExtraTestingDataDuringInstallation();
 
         $add_e2e_data = $env->shouldAddExtraE2EDataDuringInstallation();
         $enable_api = $add_e2e_data ? "1" : "0";
@@ -9512,7 +9512,14 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
         $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
         $root_entity = current($root_entity);
 
-        if ($add_cypress_data) {
+        if ($add_testing_data) {
+            // Note: this data was added for the Cypress tests, which were
+            // replaced by the Playwright tests. It can't be removed yet because
+            // some PHPUnit tests use it (`E2ETestEntity` and its sub entities,
+            // `e2e_tests` user).
+            // TODO: update these PHPUnit tests so they create their own data,
+            // then remove this data.
+
             // Main E2E test entity
             $e2e_entity = array_replace($root_entity, [
                 'id' => 1,
