@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -115,7 +114,8 @@ export default class ItemtypeCommentPopover {
             }).then((result) => {
                 // `result` is a safe HTML string
                 if (result) {
-                    this.container.append(`<div id="${unique_id}" style="display: none;">${result}</div>`);
+                    // Body, not `this.container`: a `.btn-group` container relies on `:last-child` for corner radius.
+                    $(document.body).append(`<div id="${unique_id}" style="display: none;">${result}</div>`);
                     return unique_id;
                 }
                 return null;
