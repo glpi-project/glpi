@@ -94,6 +94,7 @@ dev_nodes=(
     "phpstan.neon.dist"
     "phpunit.xml.dist"
     "playwright.config.ts"
+    "playwright.isolated.config.ts"
     "PluginsMakefile.mk"
     "PluginsPhpCsFixer.php"
     "PluginsRector.php"
