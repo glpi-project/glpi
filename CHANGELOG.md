@@ -235,7 +235,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.10] unreleased
+## [11.0.10] 2026-09-30
 
 ### Added
 
