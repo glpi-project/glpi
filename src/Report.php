@@ -139,10 +139,12 @@ class Report extends CommonGLPI
      */
     public static function title()
     {
+        global $CFG_GLPI;
+
         $twig_params = [
             'title' => __('Select the report you want to generate'),
             'selected' => -1,
-            'values'   => ['/front/report.php' => Dropdown::EMPTY_VALUE],
+            'values'   => [$CFG_GLPI['root_doc'] . '/front/report.php' => Dropdown::EMPTY_VALUE],
         ];
 
         $report_list = self::getReports();
