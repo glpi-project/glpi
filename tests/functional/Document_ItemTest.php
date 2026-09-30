@@ -1071,4 +1071,31 @@ class Document_ItemTest extends DbTestCase
         $_SESSION['glpiactiveprofile']['document'] = READ | UPDATE;
         $this->assertTrue($link->can($link_id, PURGE));
     }
+
+    public function testCanLinkExistingDocumentWithCreateRight(): void
+    {
+        $this->login();
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'Link ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Link ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $input = [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Computer::class,
+            'items_id'     => $computer->getID(),
+        ];
+
+        $_SESSION['glpiactiveprofile']['document'] = READ | CREATE;
+        $_SESSION['glpiactiveprofile']['computer'] = READ;
+        $this->assertTrue($computer->canAddItem(\Document::class));
+        $this->assertTrue((new Document_Item())->can(-1, CREATE, $input));
+
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $this->assertFalse($computer->canAddItem(\Document::class));
+        $this->assertFalse((new Document_Item())->can(-1, CREATE, $input));
+    }
 }
