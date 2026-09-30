@@ -257,6 +257,22 @@ enum Environment: string
         };
     }
 
+    /**
+     * Get the options to pass to `password_hash()` and `password_needs_rehash()`.
+     *
+     * @return array{cost?: int}
+     */
+    public function getPasswordHashOptions(): array
+    {
+        // Specific for tests, should never be used anywhere else.
+        // The lowest bcrypt cost makes the hash computation and verification
+        // hundreds of times faster, which greatly reduces the tests duration.
+        return match ($this) {
+            default       => [],
+            self::TESTING => ['cost' => 4],
+        };
+    }
+
     public function shouldAddExtraE2EDataDuringInstallation(): bool
     {
         return

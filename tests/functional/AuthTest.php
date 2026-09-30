@@ -313,12 +313,11 @@ class AuthTest extends DbTestCase
         $user->getFromDB($user->getID());
         $this->assertStringStartsWith('$2y$05$', $user->fields['password']);
 
-        //log in should update password to default PHP (BCRYPT currently, with a higher default than 5)
+        //log in should update password to use the cost of the current environment (4 in the testing environment)
         $this->assertTrue($auth->login('BCRYPT low cost Passwd test', 'dapass'));
         $user->getFromDB($user->getID());
-        $new_cost = null;
-        preg_match('/\$2y\$(\d+)\$.+/', $user->fields['password'], $new_cost);
-        $this->assertGreaterThan(5, (int) $new_cost[1]);
+        $this->assertStringStartsWith('$2y$04$', $user->fields['password']);
+        $this->assertFalse(Auth::needRehash($user->fields['password']));
     }
 
     public function testCheckPasswordWithCurrentHash(): void
