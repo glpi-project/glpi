@@ -133,7 +133,6 @@ final class ReAuthControllerTest extends DbTestCase
         $CFG_GLPI['cas_uri']     = 'cas';
         $CFG_GLPI['cas_version'] = 'CAS_VERSION_3_0';
         $_SESSION['glpiauthtype'] = Auth::CAS;
-        $_SESSION['phpCAS']['user'] = 'cas.tester';
 
         $cas_response = "<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>"
             . "<cas:authenticationSuccess><cas:user>$validated_cas_user</cas:user></cas:authenticationSuccess>"
@@ -149,7 +148,7 @@ final class ReAuthControllerTest extends DbTestCase
     public function testCasStartRedirectsToCasServer(): void
     {
         // --- arrange ---
-        $controller = $this->makeCasController('cas.tester');
+        $controller = $this->makeCasController(TU_USER);
 
         // --- act ---
         $response = $controller->casStart();
@@ -164,7 +163,7 @@ final class ReAuthControllerTest extends DbTestCase
     public function testCasStartIsDeniedForNonCasSession(): void
     {
         // --- arrange ---
-        $controller = $this->makeCasController('cas.tester');
+        $controller = $this->makeCasController(TU_USER);
         $_SESSION['glpiauthtype'] = Auth::DB_GLPI;
 
         // --- assert ---
@@ -178,7 +177,7 @@ final class ReAuthControllerTest extends DbTestCase
     public function testCasCallbackReAuthenticatesUser(): void
     {
         // --- arrange ---
-        $controller = $this->makeCasController('cas.tester');
+        $controller = $this->makeCasController(TU_USER);
         $controller->casStart();
 
         // --- act ---

@@ -45,6 +45,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
+use User;
 
 use function Safe\preg_replace;
 
@@ -55,7 +56,7 @@ use function Safe\preg_replace;
  * user to type their credentials again even when a CAS session is open. On the way back, the
  * service ticket is validated with `renew=true` as well, so that the CAS server rejects any ticket
  * that was not issued from a fresh credential entry, and the returned identity must be the one
- * that opened the GLPI session.
+ * of the user being re-authenticated.
  *
  * phpCAS is not used: its renewAuthentication() trusts the CAS user kept in session since the
  * login, and would never ask for the password again.
@@ -156,15 +157,15 @@ final class CasReAuthStrategy implements ReAuthStrategyInterface
             return false;
         }
 
-        // Identity returned by the CAS server when the session was opened, kept by phpCAS.
-        $login_cas_user = $_SESSION['phpCAS']['user'] ?? null;
-        if (!is_string($login_cas_user) || $login_cas_user === '') {
+        $cas_user = $this->validateTicket($service_ticket);
+        if ($cas_user === null) {
             return false;
         }
 
-        $cas_user = $this->validateTicket($service_ticket);
-
-        return $cas_user !== null && $cas_user === $login_cas_user;
+        // Resolved as the CAS login does. The identity kept by phpCAS is not used: during an
+        // impersonation, it is the impersonator's one.
+        $user = new User();
+        return $user->getFromDBbyName($cas_user) && $user->getID() === $users_id;
     }
 
     /**

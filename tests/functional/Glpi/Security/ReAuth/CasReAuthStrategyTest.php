@@ -47,7 +47,8 @@ use Symfony\Component\HttpFoundation\Request;
 #[Group('reauth')]
 class CasReAuthStrategyTest extends DbTestCase
 {
-    private const CAS_USER = 'cas.tester';
+    /** CAS identity of the test user: the CAS login looks the GLPI user up by this name. */
+    private const CAS_USER = TU_USER;
 
     /** URL of the last validation request sent to the mocked CAS server. */
     private ?string $validate_url = null;
@@ -65,7 +66,6 @@ class CasReAuthStrategyTest extends DbTestCase
         $CFG_GLPI['cas_version'] = 'CAS_VERSION_3_0';
 
         $_SESSION['glpiauthtype'] = Auth::CAS;
-        $_SESSION['phpCAS']['user'] = self::CAS_USER;
     }
 
     /** CAS server answering every validation request with the given body. */
@@ -153,7 +153,7 @@ class CasReAuthStrategyTest extends DbTestCase
         );
     }
 
-    /** A fresh ticket for the identity that opened the session re-authenticates the user. */
+    /** A fresh ticket for the identity of the user re-authenticates them. */
     public function testCompleteSucceeds(): void
     {
         // --- arrange ---
@@ -221,16 +221,36 @@ class CasReAuthStrategyTest extends DbTestCase
         $this->assertFalse($strategy->complete($this->getTestUserId(), $this->makeCallbackRequest()));
     }
 
-    /** Without the identity that opened the session, nothing can be compared: refused. */
-    public function testCompleteFailsWithoutLoginIdentity(): void
+    /** A CAS identity matching no GLPI user is refused. */
+    public function testCompleteFailsForUnknownIdentity(): void
     {
         // --- arrange ---
-        unset($_SESSION['phpCAS']);
-        $strategy = $this->makeStrategy(self::cas20Success(self::CAS_USER));
+        $strategy = $this->makeStrategy(self::cas20Success('unknown.cas.user'));
         $strategy->start($this->getTestUserId());
 
         // --- act + assert ---
         $this->assertFalse($strategy->complete($this->getTestUserId(), $this->makeCallbackRequest()));
+    }
+
+    /**
+     * During an impersonation, the CAS identity kept since the login is the impersonator's one:
+     * only the impersonated user's identity is accepted.
+     */
+    public function testCompleteChecksImpersonatedUserIdentity(): void
+    {
+        // --- arrange ---
+        $_SESSION['phpCAS']['user'] = 'glpi';
+        $impersonated_id = $this->getTestUserId();
+
+        // --- act + assert : impersonator's identity refused ---
+        $strategy = $this->makeStrategy(self::cas20Success('glpi'));
+        $strategy->start($impersonated_id);
+        $this->assertFalse($strategy->complete($impersonated_id, $this->makeCallbackRequest()));
+
+        // --- act + assert : impersonated user's identity accepted ---
+        $strategy = $this->makeStrategy(self::cas20Success(self::CAS_USER));
+        $strategy->start($impersonated_id);
+        $this->assertTrue($strategy->complete($impersonated_id, $this->makeCallbackRequest()));
     }
 
     /** A callback without a started round-trip is refused, before any call to the CAS server. */
