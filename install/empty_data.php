@@ -9418,7 +9418,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_GLPI,
                 'name' => 'glpi',
                 'realname' => null,
-                'password' => password_hash('glpi', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('glpi'),
                 'language' => null,
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9428,7 +9428,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
                 'realname' => null,
-                'password' => password_hash('postonly', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('postonly'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9438,7 +9438,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_TECH,
                 'name' => 'tech',
                 'realname' => null,
-                'password' => password_hash('tech', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('tech'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9448,7 +9448,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'id' => self::USER_NORMAL,
                 'name' => 'normal',
                 'realname' => null,
-                'password' => password_hash('normal', PASSWORD_DEFAULT),
+                'password' => Auth::getPasswordHash('normal'),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9667,10 +9667,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             $users_to_create = [
                 [
                     'login'       => 'e2e_api_account',
-                    'password'    => password_hash(
-                        'e2e_api_account',
-                        PASSWORD_DEFAULT,
-                    ),
+                    'password'    => Auth::getPasswordHash('e2e_api_account'),
                     'realname'    => 'E2E API account',
                     'entities_id' => 0,
                 ],
@@ -9689,10 +9686,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
 
                 $users_to_create[] = [
                     'login'       => "e2e_worker_account_$padded_i",
-                    'password'    => password_hash(
-                        "e2e_worker_account_$padded_i",
-                        PASSWORD_DEFAULT,
-                    ),
+                    'password'    => Auth::getPasswordHash("e2e_worker_account_$padded_i"),
                     'realname'    => "E2E worker account $padded_i",
                     'entities_id' => $entity_id,
                 ];

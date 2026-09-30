@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
@@ -406,7 +407,7 @@ class Auth extends CommonGLPI
      */
     public static function needRehash($hash)
     {
-        return password_needs_rehash($hash, PASSWORD_DEFAULT);
+        return password_needs_rehash($hash, PASSWORD_DEFAULT, Environment::get()->getPasswordHashOptions());
     }
 
     /**
@@ -420,7 +421,7 @@ class Auth extends CommonGLPI
      */
     public static function getPasswordHash($pass)
     {
-        return password_hash($pass, PASSWORD_DEFAULT);
+        return password_hash($pass, PASSWORD_DEFAULT, Environment::get()->getPasswordHashOptions());
     }
 
     /**
@@ -508,7 +509,7 @@ class Auth extends CommonGLPI
                 if (self::needRehash($password_db)) {
                     $DB->update(
                         User::getTable(),
-                        ['password' => password_hash($password, PASSWORD_DEFAULT)],
+                        ['password' => self::getPasswordHash($password)],
                         ['id' => $row['id']]
                     );
                 }
