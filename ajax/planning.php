@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 use function Safe\json_decode;
 use function Safe\json_encode;
 
@@ -83,7 +85,9 @@ if ($_REQUEST["action"] == "get_externalevent_template") {
         && $_POST[$key] > 0
     ) {
         $template = new PlanningExternalEventTemplate();
-        $template->getFromDB($_POST[$key]);
+        if (!$template->getFromDB((int) $_POST[$key]) || !$template->canViewItem()) {
+            throw new AccessDeniedHttpException();
+        }
 
         // Decode rrule field only if not empty
         if (!empty($template->fields['rrule'])) {

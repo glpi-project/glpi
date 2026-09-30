@@ -65,7 +65,7 @@
       {# init criteria count #}
       {% set nbsearchcountvar = "nbcriteria" ~ normalized_itemtype ~ random() %}
       <script>
-         let {{ nbsearchcountvar }} = {{ criteria|length }};
+         let {{ nbsearchcountvar }} = {{ criteria is empty ? 0 : max(criteria|keys) + 1 }};
       </script>
       <div class="list-group list-group-flush list-group-hoverable criteria-list pt-2" id="criteriatable{{ normalized_itemtype }}{{ random() }}">
          {% if p.defaultfilter is defined %}

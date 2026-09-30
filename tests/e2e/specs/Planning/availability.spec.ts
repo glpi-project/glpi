@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -31,27 +29,26 @@
  *
  * ---------------------------------------------------------------------
  */
+import { expect, test } from '../../fixtures/glpi_fixture';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-declare(strict_types=1);
+test.describe('Planning availability', () => {
+    test('is not reachable anonymously', async ({ anonymousPage, api }) => {
+        const realname = `e2e_availability_${Date.now()}`;
+        const users_id = await api.createItem('User', {
+            name: realname,
+            realname: realname,
+            entities_id: getWorkerEntityId(),
+        });
 
-namespace Glpi\Security\ReAuth;
-
-enum ReAuthStrategyEnum: string
-{
-    case TOTP = 'totp';
-    case PASSWORD = 'password';
-    case LDAP = 'ldap';
-    case MAIL = 'mail';
-    case FALLBACK = 'fallback';
-
-    public function createStrategy(): ReAuthStrategyInterface
-    {
-        return match ($this) {
-            self::TOTP => new TOTPReAuthStrategy(),
-            self::PASSWORD => new PasswordReAuthStrategy(),
-            self::LDAP => new LdapReAuthStrategy(),
-            self::MAIL => new MailReAuthStrategy(),
-            self::FALLBACK => new FallbackReAuthStrategy(),
-        };
-    }
-}
+        // The `genical` parameter must not let an anonymous caller reach the availability screen:
+        // the request is sent back to the login page instead.
+        const response = await anonymousPage.request.get(
+            `/front/planning.php?genical=1&checkavailability=1&itemtype=User&users_id=${users_id}&uID=0&token=invalid`,
+            { maxRedirects: 0 }
+        );
+        expect(response.status()).toBe(302);
+        expect(response.headers()['location']).toContain('error=3');
+        expect(await response.text()).not.toContain(realname);
+    });
+});

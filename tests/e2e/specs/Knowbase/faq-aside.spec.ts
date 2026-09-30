@@ -166,6 +166,11 @@ test('The FAQ lands on the Home article', async ({ page, profile, api }) => {
     await expect(page).toHaveURL(/\/front\/helpdesk\.faq\.php\?id=\d+/);
     await expect(kb.subject).toHaveText('Home');
 
+    // The parameters of the removed FAQ list are dropped by the redirect.
+    await page.goto('/front/helpdesk.faq.php?contains=foo&forcetab=Knowbase$2');
+    await expect(page).toHaveURL(/\/front\/helpdesk\.faq\.php\?id=\d+$/);
+    await expect(kb.subject).toHaveText('Home');
+
     await kb.waitForAsideReady();
 
     // The Home article's id, read back from the redirect.

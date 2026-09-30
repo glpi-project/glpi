@@ -693,9 +693,21 @@ class Rule extends CommonDBTM
         switch ($ma->getAction()) {
             case 'export':
                 if (count($ids)) {
-                    $_SESSION['exportitems'] = $ids;
-                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_OK);
-                    $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item::class);
+                    $_SESSION['exportitems'] = [];
+                    foreach ($ids as $id) {
+                        if (!$item->can($id, READ)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
+                        $_SESSION['exportitems'][$id] = $id;
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    }
+
+                    if ($_SESSION['exportitems'] !== []) {
+                        $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item::class);
+                    }
                 }
                 break;
 
@@ -708,6 +720,12 @@ class Rule extends CommonDBTM
                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                 } elseif ($rulecollection->canUpdate()) {
                     foreach ($ids as $id) {
+                        if (!$item->can($id, UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         if ($item->getFromDB($id)) {
                             if ($rulecollection->moveRule($id, $input['ranking'], $input['move_type'])) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
@@ -1160,7 +1178,7 @@ TWIG, $twig_params);
                             $('#viewaction{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->ruleactionclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: action_id
                             });
                         }
@@ -1276,7 +1294,7 @@ TWIG, $twig_params);
                             $('#viewcriteria{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->rulecriteriaclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: criteria_id
                             });
                         }

@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -189,6 +190,30 @@ class CustomAssetControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content);
                     $this->assertEquals('Test02Type01', $content[0]['name']);
+                });
+        });
+    }
+
+    public function testCustomFieldDefaultValueWithQuestionMark(): void
+    {
+        $field = new CustomFieldDefinition();
+        $this->assertTrue($field->getFromDBByCrit(['system_name' => 'teststring']));
+        $this->updateItem(CustomFieldDefinition::class, $field->getID(), ['default_value' => 'N/A?']);
+
+        $asset_id = $this->createItem('Glpi\\CustomAsset\\Test01Asset', [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->login();
+        $this->api->call(new Request('GET', '/Assets/Custom/Test01'), function ($call) {
+            $call->response->isOK();
+        });
+        $this->api->call(new Request('GET', '/Assets/Custom/Test01/' . $asset_id), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertSame('N/A?', $content['custom_fields']['teststring']);
                 });
         });
     }

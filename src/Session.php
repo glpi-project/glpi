@@ -187,11 +187,16 @@ class Session
                 $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
                 $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
                 $_SESSION["glpiextauth"]         = $auth->extauth;
-                if (isset($_SESSION['phpCAS']['user'])) {
-                    $_SESSION["glpiauthtype"]     = Auth::CAS;
+                $_SESSION["glpiauthtype"]        = $auth->getAuthType();
+                if ($_SESSION["glpiauthtype"] === Auth::COOKIE) {
+                    // Keep the method the user originally logged in with
+                    $_SESSION["glpiauthtype"] = SessionTracker::getLoginSessionAuthType(
+                        $_SESSION['login_session_uid'],
+                        $auth->user->getID()
+                    );
+                }
+                if ($_SESSION["glpiauthtype"] === Auth::CAS) {
                     $_SESSION["glpiextauth"]      = 0;
-                } else {
-                    $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
                 }
                 $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                 $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
@@ -2078,6 +2083,8 @@ class Session
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
+        // The session is still the one opened by the impersonator
+        $auth->setAuthType($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED);
         Session::init($auth);
 
         // The impersonated user must not inherit the impersonator's re-authentication token
@@ -2124,6 +2131,7 @@ class Session
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
+        $auth->setAuthType($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED);
         Session::init($auth);
 
         // Restore previous user values

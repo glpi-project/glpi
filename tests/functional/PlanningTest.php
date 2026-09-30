@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -325,6 +326,114 @@ class PlanningTest extends DbTestCase
         $this->assertTrue($events[1]['allDay'] ?? false);
         $this->assertEquals(__FUNCTION__ . '_not_allday', $events[2]['title']);
         $this->assertFalse($events[2]['allDay'] ?? false);
+    }
+
+    public function testConstructEventsArrayIgnoresGenical()
+    {
+        $this->login('tech', 'tech');
+        \Planning::initSessionForCurrentUser();
+
+        $rights = $_SESSION['glpiactiveprofile'];
+
+        // `genical` comes from the request on `ajax/planning.php?action=get_events`
+        \Planning::constructEventsArray([
+            'start'     => date('Y-m-d 00:00:00'),
+            'end'       => date('Y-m-d 00:00:00', time() + WEEK_TIMESTAMP),
+            'view_name' => 'timeGridWeek',
+            'genical'   => 1,
+        ]);
+
+        $this->assertSame($rights, $_SESSION['glpiactiveprofile']);
+    }
+
+    public function testEditEventForm()
+    {
+        $this->login();
+
+        $event = $this->createItem(\PlanningExternalEvent::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'plan'        => [
+                'begin'     => date('Y-m-d H:i:s'),
+                '_duration' => HOUR_TIMESTAMP,
+            ],
+        ], ['plan']);
+
+        ob_start();
+        \Planning::editEventForm([
+            'itemtype' => \PlanningExternalEvent::class,
+            'id'       => $event->getID(),
+            'start'    => date('Y-m-d'),
+        ]);
+        $this->assertStringContainsString('edit_event_form', ob_get_clean());
+    }
+
+    public function testEditEventFormRefusesNonPlanningItemtype()
+    {
+        $this->login();
+
+        $this->expectException(AccessDeniedHttpException::class);
+        \Planning::editEventForm([
+            'itemtype' => \Computer::class,
+            'id'       => getItemByTypeName(\Computer::class, '_test_pc01', true),
+            'start'    => date('Y-m-d'),
+        ]);
+    }
+
+    public function testEditEventFormRefusesUnreadableItem()
+    {
+        $this->login();
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $task = $this->createItem(\TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => __FUNCTION__,
+            'is_private' => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+
+        $this->expectException(AccessDeniedHttpException::class);
+        \Planning::editEventForm([
+            'itemtype'       => \TicketTask::class,
+            'id'             => $task->getID(),
+            'parentitemtype' => \Ticket::class,
+            'parentid'       => $ticket->getID(),
+            'start'          => date('Y-m-d'),
+        ]);
+    }
+
+    public function testEditEventFormRefusesForeignParent()
+    {
+        $this->login();
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $other_ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__ . ' other',
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $task = $this->createItem(\TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => __FUNCTION__,
+        ]);
+
+        $this->expectException(AccessDeniedHttpException::class);
+        \Planning::editEventForm([
+            'itemtype'       => \TicketTask::class,
+            'id'             => $task->getID(),
+            'parentitemtype' => \Ticket::class,
+            'parentid'       => $other_ticket->getID(),
+            'start'          => date('Y-m-d'),
+        ]);
     }
 
     public function testRRuleEncoding()

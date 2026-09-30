@@ -38,7 +38,6 @@ use Glpi\DBAL\QueryElementInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
-use Glpi\Exception\Database\StatementException;
 
 use function Safe\preg_split;
 
@@ -150,16 +149,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $this->buildQuery($criteria);
         $this->res = false;
         if ($this->conn) {
-            if (($scount = substr_count($this->sql ?? '', '?')) != ($vcount = count($this->values))) {
-                throw new StatementException(
-                    sprintf(
-                        'Number of placeholders (%d) in SQL statement does not match number of values (%d). SQL: %s',
-                        $scount,
-                        $vcount,
-                        $this->sql
-                    )
-                );
-            }
             $stmt = $this->conn->prepare($this->sql ?? '');
             $this->conn->executeStatement($stmt, $this->values);
             $this->res = $stmt->get_result();

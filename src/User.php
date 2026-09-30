@@ -113,8 +113,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public function getCloneRelations(): array
     {
         return [
-            Profile_User::class,
-            Group_User::class,
             Certificate_Item::class,
             ManualLink::class,
         ];
@@ -148,7 +146,27 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function post_clone($source, $history)
     {
-        //FIXME? clone config
+        // Only copy the profiles the current session user could grant directly
+        $profile_user = new Profile_User();
+        foreach ($profile_user->find(['users_id' => $source->getID()]) as $data) {
+            unset($data['id']);
+            $data['users_id'] = $this->getID();
+            if (!$profile_user->can(-1, CREATE, $data)) {
+                continue;
+            }
+            $profile_user->add($data, [], $history);
+        }
+
+        // Only copy the group memberships the current session user could grant directly
+        $group_user = new Group_User();
+        foreach ($group_user->find(['users_id' => $source->getID()]) as $data) {
+            unset($data['id']);
+            $data['users_id'] = $this->getID();
+            if (!$group_user->can(-1, CREATE, $data)) {
+                continue;
+            }
+            $group_user->add($data, [], $history);
+        }
     }
 
     public static function getTypeName($nb = 0)
@@ -263,6 +281,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
         //prevent delete / purge from API
         global $CFG_GLPI;
         if ($this->fields['id'] == $CFG_GLPI['system_user']) {
+            return false;
+        }
+
+        // Prevent deleting a user that has more rights than the current user
+        if (!$this->currentUserHaveMoreRightThan($this->fields['id'])) {
             return false;
         }
 
@@ -1257,6 +1280,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'is_active',
                 'begin_date',
                 'end_date',
+
+                // Prevent changing 2fa settings
+                '2fa',
+                '2fa_unenforced',
             ];
             if (
                 count(array_intersect($protected_input_keys, array_keys($input))) > 0
@@ -1278,6 +1305,21 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         sprintf(
                             __s('You are not allowed to update the following fields: %s'),
                             htmlescape(implode(', ', $ignored_fields))
+                        ),
+                        false,
+                        ERROR
+                    );
+                    return false;
+                }
+            }
+
+            foreach (['2fa', '2fa_unenforced'] as $mfa_field) {
+                if (array_key_exists($mfa_field, $input) && !Session::haveRight(User::$rightname, User::UPDATEAUTHENT)) {
+                    // similar check than the `disable_2fa` form action
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __s('You are not allowed to update the following fields: %s'),
+                            $mfa_field
                         ),
                         false,
                         ERROR
@@ -3443,8 +3485,12 @@ HTML;
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
                     }
-                    $totp->disable2FAForUser($id);
-                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    if ($totp->disable2FAForUser($id)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                    }
                 }
                 break;
             case 'send_pw_reset':
@@ -3474,6 +3520,12 @@ HTML;
             case 'reapply_rights':
                 $user = new self();
                 foreach ($ids as $id) {
+                    if (!$user->can($id, UPDATE)) {
+                        $ma->itemDone(self::class, $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($user->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
                     if ($user->getFromDB($id)) {
                         $user->reapplyRightRules();
                         $ma->itemDone(self::class, $id, MassiveAction::ACTION_OK);

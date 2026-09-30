@@ -82,7 +82,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public const PUBLISHFAQ    = 4096;
     public const COMMENTS      = 8192;
 
-    // Special value meaning "no parent filter applied" (see `getListRequest()`/`showList()`).
+    /**
+     * Special value meaning "no parent filter applied" (see `getListRequest()`/`showList()`).
+     *
+     * @deprecated 12.0.0
+     */
     public const int SEEALL = -1;
 
     public static string $rightname   = 'knowbase';
@@ -1224,6 +1228,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             unset($input['users_id']);
         }
 
+        // Adding to or removing from the FAQ is a right of its own, `UPDATE` is not enough.
+        // Updates without a user session (cron, CLI) are not restricted.
+        if (
+            Session::getLoginUserID() !== false
+            && !Session::haveRightsOr(self::$rightname, [self::PUBLISHFAQ, self::KNOWBASEADMIN])
+        ) {
+            unset($input['is_faq']);
+        }
+
         return $this->prepareIllustrationInput($input);
     }
 
@@ -1902,7 +1915,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             );
         }
         // The root article is not part of the FAQ, see `prepareInputForUpdate()`.
-        if ($can_author && !$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
+        if (
+            $can_author
+            && !$this->isRoot()
+            && Session::haveRightsOr(self::$rightname, [self::PUBLISHFAQ, self::KNOWBASEADMIN])
+            && $this->can($this->fields['id'], UPDATE)
+        ) {
             $toggles[] = new EditorAction(
                 label: __("Add to FAQ"),
                 icon: "ti ti-bookmark",
@@ -2074,9 +2092,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * @param array $options   $_GET
      *
      * @return void
+     *
+     * @deprecated 12.0.0
      */
     public function searchForm($options)
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         if (
@@ -2139,7 +2161,7 @@ TWIG, $twig_params);
      *
      * @since 0.83
      *
-     * @param array $params (contains, knowbaseitems_id_parent, faq)
+     * @param array $params (contains, faq, and the deprecated knowbaseitems_id_parent)
      * @param string $type search type : browse / search (default search)
      *
      * @return array : SQL request
@@ -2150,9 +2172,16 @@ TWIG, $twig_params);
 
         $params = array_replace([
             'contains' => '',
-            'knowbaseitems_id_parent' => self::SEEALL,
+            'knowbaseitems_id_parent' => self::SEEALL, // @phpstan-ignore classConstant.deprecated
             'faq' => false,
         ], $params);
+
+        if (!in_array($params['knowbaseitems_id_parent'], [null, self::SEEALL], true)) { // @phpstan-ignore classConstant.deprecated
+            Toolbox::deprecated('Usage of the `knowbaseitems_id_parent` parameter is deprecated.');
+        }
+        if (in_array($type, ['allmy', 'myunpublished', 'allunpublished', 'allpublished'], true)) {
+            Toolbox::deprecated(sprintf('Usage of the `%s` type is deprecated.', $type));
+        }
 
         $params = self::forceFaqForRightsLessReaders($params);
 
@@ -2222,7 +2251,7 @@ TWIG, $twig_params);
             $criteria['WHERE'][] = self::withRootArm(['OR' => $faq_where]);
         }
 
-        if ($params['knowbaseitems_id_parent'] !== self::SEEALL) {
+        if ($params['knowbaseitems_id_parent'] !== self::SEEALL) { // @phpstan-ignore classConstant.deprecated
             $criteria['LEFT JOIN'][KnowbaseItem_KnowbaseItem::getTable()] = [
                 'FKEY' => [
                     KnowbaseItem_KnowbaseItem::getTable() => 'knowbaseitems_id',
@@ -2497,9 +2526,13 @@ TWIG, $twig_params);
      * @param string $type search type : browse / search (default search)
      *
      * @return void
+     *
+     * @deprecated 12.0.0
      */
     public static function showList($options, $type = 'search')
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         $DBread = DBConnection::getReadConnection();
@@ -2763,9 +2796,13 @@ TWIG, $twig_params);
      * @param bool   $display if false, return html
      *
      * @return void|string
+     *
+     * @deprecated 12.0.0
      **/
     public static function showRecentPopular(string $type = "", bool $display = true)
     {
+        Toolbox::deprecated();
+
         global $DB;
 
         $faq = !Session::haveRight(self::$rightname, READ);

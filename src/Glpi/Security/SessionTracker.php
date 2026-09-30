@@ -92,6 +92,31 @@ final class SessionTracker
     }
 
     /**
+     * Get the authentication method that opened the given login session.
+     *
+     * A session restored from a "remember me" cookie reuses the login session UID of the
+     * original login, whose record keeps the original authentication method.
+     *
+     * @return int The {@link Auth} type, or {@link Auth::NOT_YET_AUTHENTIFIED} if unknown
+     */
+    public static function getLoginSessionAuthType(string $login_session_uid, int $users_id): int
+    {
+        global $DB;
+
+        $row = $DB->request([
+            'SELECT' => ['auth_type'],
+            'FROM' => 'glpi_users_sessions',
+            'WHERE' => [
+                'login_session_uid' => $login_session_uid,
+                'users_id'          => $users_id,
+            ],
+            'LIMIT' => 1,
+        ])->current();
+
+        return (int) ($row['auth_type'] ?? Auth::NOT_YET_AUTHENTIFIED);
+    }
+
+    /**
      * Record the new session to the database or update an existing one if the PHP session was just regenerated.
      * @param Auth $auth
      * @return bool true on success, false on failure. If false is returned, the session should be destroyed and the authentication process should be aborted.

@@ -133,6 +133,8 @@ class DbTestCase extends GLPITestCase
         $auth = new Auth();
         $auth->user = getItemByTypeName(User::class, $user_name);
         $auth->auth_succeded = true;
+        // Simulate a login with the method configured on the account
+        $auth->setAuthType((int) $auth->user->fields['authtype']);
         Session::init($auth);
 
         return $auth;

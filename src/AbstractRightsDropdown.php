@@ -306,6 +306,13 @@ abstract class AbstractRightsDropdown
 
         $additional_conditions = [];
         if (isset($options['group_conditions'])) {
+            foreach ($options['group_conditions'] as $key => $value) {
+                if (!\in_array($key, ['is_requester', 'is_watcher', 'is_assign'], true)) {
+                    unset($options['group_conditions'][$key]);
+                }
+                $options['group_conditions'][$key] = \filter_var($value, FILTER_VALIDATE_BOOL);
+            }
+
             $additional_conditions = $options['group_conditions'];
         }
 
