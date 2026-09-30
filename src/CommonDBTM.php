@@ -3070,7 +3070,6 @@ class CommonDBTM extends CommonGLPI
         if (
             $right === READ
             && $this instanceof ShareableInterface
-            && static::canView()
             && (new ShareTokenManager())->hasSessionAccess(static::class, $ID)
         ) {
             $reauth_needed = false;
