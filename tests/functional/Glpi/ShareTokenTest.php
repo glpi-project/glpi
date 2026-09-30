@@ -195,6 +195,20 @@ final class ShareTokenTest extends DbTestCase
         $this->assertTrue($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
     }
 
+    public function testGetSharedItemDoesNotGrantSessionAccess(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $token_manager = new ShareTokenManager();
+        $item = $token_manager->getSharedItem($this->getPlainToken($token));
+
+        $this->assertInstanceOf(KnowbaseItem::class, $item);
+        $this->assertSame($kb->getID(), $item->getID());
+        $this->assertFalse($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
+    }
+
     public function testGrantSessionAccessStoresIdNotPlaintext(): void
     {
         $this->login();

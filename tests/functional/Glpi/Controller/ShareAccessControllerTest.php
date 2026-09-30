@@ -102,7 +102,27 @@ final class ShareAccessControllerTest extends DbTestCase
         $controller = new ShareAccessController();
         $response = $controller->__invoke($request, $plain);
 
+        $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
+    }
+
+    public function testAuthenticatedUserWithoutItemVisibilityGetsSharedView(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        // KB READ right, but no visibility on the article
+        $this->login('normal', 'normal');
+        $this->assertFalse($kb->can($kb->getID(), READ));
+
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
+        $request = Request::create('/Share/' . $plain, 'GET');
+        $response = (new ShareAccessController())->__invoke($request, $plain);
+
+        $this->assertNotInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString($kb->fields['name'], (string) $response->getContent());
     }
 
     public function testAuthenticatedUserWithoutKnowbaseRightGetsSharedView(): void
