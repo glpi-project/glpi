@@ -380,7 +380,11 @@ final class Parser
             } elseif ($type === Lexer::T_AND || $type === Lexer::T_OR) {
                 $current_index = array_key_last($expression_stack);
                 assert($current_index !== null);
-                $expression_stack[$current_index]['operator'] = $type === Lexer::T_AND ? ' AND ' : ' OR ';
+                // When the comparison between two separators was ignored, keep the OR if any
+                // (`a;x,b` and `a,x;b` both become `a OR b`).
+                if ($expression_stack[$current_index]['operator'] !== ' OR ') {
+                    $expression_stack[$current_index]['operator'] = $type === Lexer::T_AND ? ' AND ' : ' OR ';
+                }
             } elseif ($type === Lexer::T_GROUP_OPEN) {
                 $expression_stack[] = ['sql' => '', 'operator' => null];
             } elseif ($type === Lexer::T_GROUP_CLOSE) {

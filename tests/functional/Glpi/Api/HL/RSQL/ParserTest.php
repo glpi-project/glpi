@@ -258,6 +258,11 @@ class ParserTest extends GLPITestCase
             ['computed==test;missing==ignored;name==test', ' AND '],
             ['computed==test,missing==ignored,name==test', ' OR '],
             ['(computed==test);(missing==ignored);(name==test)', ' AND '],
+            // Dropping the ignored comparison from its AND chain leaves an OR in both cases.
+            ['computed==test;missing==ignored,name==test', ' OR '],
+            ['computed==test,missing==ignored;name==test', ' OR '],
+            ['(computed==test);(missing==ignored),(name==test)', ' OR '],
+            ['(computed==test),(missing==ignored);(name==test)', ' OR '],
         ];
     }
 
