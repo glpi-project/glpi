@@ -36,6 +36,8 @@ namespace tests\units;
 
 use AuthLDAP;
 use Glpi\DBAL\QueryExpression;
+use Glpi\OAuth\Client;
+use Glpi\OAuth\UserRepository;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\RuleBuilder;
 use GLPIKey;
@@ -1451,6 +1453,77 @@ class AuthLdapTest extends DbTestCase
             ['sync_field' => null],
             ['id' => $ldap->getID()]
         );
+    }
+
+    /**
+     * A LDAP user that is not known by GLPI yet must be imported when logging in through the
+     * OAuth password grant, exactly like it is when logging in through the login form.
+     *
+     * The OAuth server only calls `Auth::validateLogin()`, which validates the credentials but
+     * does not write anything to the database, so it has to call `Auth::applyValidatedLogin()`
+     * too. Otherwise the user entity is built with an empty identifier.
+     *
+     * @return void
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testOAuthPasswordGrantImportsUnknownLdapUser()
+    {
+        global $CFG_GLPI;
+
+        $user = new \User();
+        $this->assertFalse($user->getFromDBbyName('brazil9'));
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['is_users_auto_add'] = 1;
+
+        $user_entity = (new UserRepository())->getUserEntityByUserCredentials(
+            'brazil9',
+            'password',
+            'password',
+            new Client()
+        );
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertNotNull($user_entity);
+        $this->assertGreaterThan(0, $user_entity->getIdentifier());
+
+        // The user must now exist in GLPI, with the LDAP data.
+        $this->assertTrue($user->getFromDB($user_entity->getIdentifier()));
+        $this->assertSame('brazil9', $user->fields['name']);
+        $this->assertSame('uid=brazil9,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertEquals(\Auth::LDAP, $user->fields['authtype']);
+        $this->assertEquals($this->ldap->getID(), $user->fields['auths_id']);
+    }
+
+    /**
+     * When the auto add feature is disabled, the OAuth password grant must reject a LDAP user
+     * that is unknown to GLPI instead of issuing a token with an empty subject.
+     *
+     * @return void
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testOAuthPasswordGrantRejectsUnknownLdapUserWhenAutoAddIsDisabled()
+    {
+        global $CFG_GLPI;
+
+        $user = new \User();
+        $this->assertFalse($user->getFromDBbyName('brazil10'));
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['is_users_auto_add'] = 0;
+
+        $user_entity = (new UserRepository())->getUserEntityByUserCredentials(
+            'brazil10',
+            'password',
+            'password',
+            new Client()
+        );
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertNull($user_entity);
+        $this->assertFalse($user->getFromDBbyName('brazil10'));
     }
 
     /**

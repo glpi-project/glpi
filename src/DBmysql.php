@@ -1905,6 +1905,13 @@ class DBmysql
         }
     }
 
+    public function setTimezoneForUser(User $user): void
+    {
+        if (!empty($user->fields['timezone']) && 'null' !== strtolower($user->fields['timezone'])) {
+            $this->setTimezone($user->fields['timezone']);
+        }
+    }
+
     /**
      * Defines timezone to use.
      *
