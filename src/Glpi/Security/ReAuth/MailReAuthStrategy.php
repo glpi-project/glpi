@@ -32,8 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
-
 namespace Glpi\Security\ReAuth;
 
 use Auth;
@@ -41,19 +39,41 @@ use Override;
 use Symfony\Component\HttpFoundation\Request;
 use User;
 
-final class PasswordReAuthStrategy extends InPlaceReAuthStrategy
+/**
+ * Mail server (IMAP/POP) re-authentication strategy.
+ *
+ * Verifies the user identity by logging in to the mail server with the password
+ * provided in the prompt, reusing the same mail server configuration as the
+ * regular login flow.
+ *
+ * It fails closed: if the mail server is unreachable, the verification fails
+ * and no bypass is granted, so the sensitive action stays protected.
+ */
+final class MailReAuthStrategy extends InPlaceReAuthStrategy
 {
     #[Override]
     public function verify(int $users_id, Request $request): bool
     {
+        $mail_password = (string) $request->request->get('user_input', '');
+        if ($mail_password === '' || str_contains($mail_password, "\0")) {
+            return false;
+        }
+
         $user = new User();
         if (!$user->getFromDB($users_id)) {
             return false;
         }
 
-        $user_input = (string) $request->request->get('user_input', '');
+        $mail_method = Auth::getMethodsByID(Auth::MAIL, (int) $user->fields['auths_id']);
+        if ($mail_method === []) {
+            return false;
+        }
 
-        return Auth::checkPassword($user_input, $user->fields['password']);
+        return (new Auth())->connection_imap(
+            $mail_method['connect_string'],
+            $user->fields['name'],
+            $mail_password
+        ) === true;
     }
 
     #[Override]
@@ -64,8 +84,19 @@ final class PasswordReAuthStrategy extends InPlaceReAuthStrategy
             return false;
         }
 
-        return ($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED) === Auth::DB_GLPI
-            && !empty($user->fields['password']);
+        $session_authtype = $_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED;
+        // An SSO account backed by a mail server still knows its mail password
+        $is_sso_backed_by_mail = $session_authtype === Auth::EXTERNAL
+            && $user->fields['authtype'] === Auth::MAIL;
+
+        if ($session_authtype !== Auth::MAIL && !$is_sso_backed_by_mail) {
+            return false;
+        }
+
+        // A missing server or an empty connect_string can never be verified: let a weaker strategy
+        // take over. An unreachable server, on the other hand, fails closed in verify().
+        $method = Auth::getMethodsByID(Auth::MAIL, (int) $user->fields['auths_id']);
+        return !empty($method['connect_string']);
     }
 
     #[Override]
