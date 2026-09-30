@@ -200,6 +200,21 @@ final class ReAuthControllerTest extends DbTestCase
         $this->assertArrayNotHasKey('glpi_reauth_until', $_SESSION);
     }
 
+    /** A submission to the core verify endpoint while CAS is selected re-renders the prompt. */
+    public function testVerifyPostDoesNotReAuthenticateWhenCasIsSelected(): void
+    {
+        // --- arrange ---
+        $controller = $this->makeCasController(TU_USER);
+
+        // --- act ---
+        $response = $controller->verify(Request::create('/ReAuth/Verify', 'POST', ['user_input' => TU_PASS]));
+
+        // --- assert ---
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString('/ReAuth/CAS', (string) $response->getContent());
+        $this->assertArrayNotHasKey('glpi_reauth_until', $_SESSION);
+    }
+
     /** Coming back from CAS with a valid ticket re-authenticates the user and replays the request. */
     public function testCasCallbackReAuthenticatesUser(): void
     {

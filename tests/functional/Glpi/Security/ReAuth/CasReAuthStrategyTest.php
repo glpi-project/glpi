@@ -37,7 +37,6 @@ namespace tests\units\Glpi\Security\ReAuth;
 use Auth;
 use Glpi\Security\ReAuth\CasReAuthStrategy;
 use Glpi\Tests\DbTestCase;
-use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -337,13 +336,10 @@ class CasReAuthStrategyTest extends DbTestCase
     }
 
     /** Verification is only done on the way back from CAS, never through the core verify endpoint. */
-    public function testVerifyIsNotSupported(): void
+    public function testVerifyAlwaysFails(): void
     {
-        // --- assert ---
-        $this->expectException(LogicException::class);
-
-        // --- act ---
-        (new CasReAuthStrategy())->verify($this->getTestUserId(), new Request());
+        // --- act + assert ---
+        $this->assertFalse((new CasReAuthStrategy())->verify($this->getTestUserId(), new Request()));
     }
 
     /** Test the prompt metadata and the out of band verify endpoint. */

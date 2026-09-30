@@ -39,7 +39,6 @@ namespace Glpi\Security\ReAuth;
 use Auth;
 use DOMDocument;
 use Glpi\Error\ErrorHandler;
-use LogicException;
 use Override;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,8 +79,9 @@ final class CasReAuthStrategy implements ReAuthStrategyInterface
     #[Override]
     public function verify(int $users_id, Request $request): bool
     {
-        // Verification is done by complete(), on the way back from the CAS server.
-        throw new LogicException('CAS re-authentication does not support synchronous verification.');
+        // Verification is done by complete(), on the way back from the CAS server. A submission
+        // to the core verify endpoint (e.g. a stale prompt) fails and re-renders the prompt.
+        return false;
     }
 
     #[Override]
