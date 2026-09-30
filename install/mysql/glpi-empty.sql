@@ -4241,6 +4241,38 @@ CREATE TABLE `glpi_knowbaseitems_profiles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
+### Dump table glpi_knowbaseitems_collabawareness
+
+DROP TABLE IF EXISTS `glpi_knowbaseitems_collabawareness`;
+CREATE TABLE `glpi_knowbaseitems_collabawareness` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
+  `client_id` bigint unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `data` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`knowbaseitems_id`,`client_id`),
+  KEY `users_id` (`users_id`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_knowbaseitems_collabupdates
+
+DROP TABLE IF EXISTS `glpi_knowbaseitems_collabupdates`;
+CREATE TABLE `glpi_knowbaseitems_collabupdates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
+  `client_id` bigint unsigned NOT NULL DEFAULT '0',
+  `data` mediumtext,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
 ### Dump table glpi_knowbaseitems_favorites
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_favorites`;

@@ -33,6 +33,7 @@
 /* global TiptapCore, TiptapStarterKit, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
 /* global TableKit, TiptapPMTables */
 /* global TiptapFileHandler, glpi_toast_error */
+/* global Y, TiptapYTiptap, TiptapCollaboration, TiptapCollaborationCaret */
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
@@ -93,6 +94,8 @@ class KnowbaseEditor {
      * @param {string} options.placeholder - Placeholder text
      * @param {function} options.onUpdate - Callback when content changes
      * @param {number|null} options.item_id - KB article ID (null for new articles)
+     * @param {{document: Y.Doc, provider: object, user: {name: string, color: string}}|null} options.collaboration
+     *        Real time collaborative edition: the content comes from the Y.js document
      */
     constructor(element, options = {}) {
         this.#element = element;
@@ -105,6 +108,7 @@ class KnowbaseEditor {
             can_comment: false,
             comment_anchors: [],
             comment_anchor_max_length: Number.POSITIVE_INFINITY,
+            collaboration: null,
             ...options
         };
 
@@ -128,8 +132,13 @@ class KnowbaseEditor {
         // Get SlashCommands extension
         const slashCommandsExt = SlashCommands;
 
+        const collaboration = this.#options.collaboration;
+
         const extensions = [
             TiptapStarterKit.configure({
+                // Y.js has its own undo manager, which only undoes the local changes.
+                // Each client would add its own trailing paragraph to the shared document.
+                ...(collaboration === null ? {} : { undoRedo: false, trailingNode: false }),
                 heading: {
                     levels: [1, 2, 3, 4, 5, 6],
                 },
@@ -173,6 +182,18 @@ class KnowbaseEditor {
             CommentHighlight.configure({ anchors: this.#options.comment_anchors }),
         ];
 
+        if (collaboration !== null) {
+            extensions.push(
+                TiptapCollaboration.Collaboration.configure({
+                    document: collaboration.document,
+                }),
+                TiptapCollaborationCaret.configure({
+                    provider: collaboration.provider,
+                    user: collaboration.user,
+                }),
+            );
+        }
+
         // Add FileHandler for image drag & drop and paste (only for existing articles)
         if (this.#options.item_id > 0) {
             extensions.push(TiptapFileHandler.configure({
@@ -213,7 +234,8 @@ class KnowbaseEditor {
         this.#editor = new Editor({
             element: this.#element,
             extensions,
-            content: this.#options.content,
+            // With collaboration, the content comes from the Y.js document.
+            content: collaboration === null ? this.#options.content : undefined,
             editable: this.#isEditable,
             editorProps: {
                 // Chromium/Brave mis-place the caret in table cells on click;
@@ -778,6 +800,18 @@ class KnowbaseEditor {
         }
         const ext = mime.split('/')[1].replace('+xml', '');
         return new File([bytes], `pasted-image.${ext}`, { type: mime });
+    }
+
+    /**
+     * Build the Y.js update that fills an empty shared document with some HTML.
+     * @param {string} html
+     * @returns {Uint8Array}
+     */
+    createCollaborationSeed(html) {
+        const node = TiptapCore.createDocument(html, this.#editor.schema);
+        // 'default' is the field that the Collaboration extension uses.
+        const doc = TiptapYTiptap.prosemirrorToYDoc(node, 'default');
+        return Y.encodeStateAsUpdate(doc);
     }
 
     /**

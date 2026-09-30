@@ -107,7 +107,7 @@ const config = {
         }),
         new webpack.ProvidePlugin(
             {
-                process: 'process/browser', // required by some libs (including `popper.js`)
+                process: 'process/browser.js', // required by some libs (including `popper.js`)
             }
         ),
         new CleanWebpackPlugin(
