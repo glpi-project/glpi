@@ -97,7 +97,7 @@ class Plug extends CommonDBRelation
      *
      * @return false|array<string, mixed>
      */
-    private function prepareInput($input): array|false
+    private function prepareInput($input, bool $on_add = false): array|false
     {
         if (isset($input['name']) && empty($input['name'])) {
             Session::addMessageAfterRedirect(
@@ -133,6 +133,14 @@ class Plug extends CommonDBRelation
             return false;
         }
 
+        $asset_in_input = isset($input['itemtype_asset']) || isset($input['items_id_asset']);
+        $restoring = isset($input['is_deleted'])
+            && (int) $input['is_deleted'] === 0
+            && (int) ($this->fields['is_deleted'] ?? 0) !== 0;
+        if (!$on_add && !$asset_in_input && !isset($input[self::POWER_SUPPLY_FIELD]) && !$restoring) {
+            return $input;
+        }
+
         $asset_changed = (
             isset($input['itemtype_asset'])
             && $input['itemtype_asset'] !== ($this->fields['itemtype_asset'] ?? '')
@@ -151,6 +159,7 @@ class Plug extends CommonDBRelation
 
         if (
             $power_supply_id === 0
+            && ($on_add || $asset_in_input)
             && self::getPowerSupplyChoices($itemtype_asset, $items_id_asset) !== []
         ) {
             Session::addMessageAfterRedirect(
@@ -183,7 +192,14 @@ class Plug extends CommonDBRelation
             return false;
         }
 
-        $criteria = [self::POWER_SUPPLY_FIELD => $power_supply_id];
+        if ((int) ($input['is_deleted'] ?? $this->fields['is_deleted'] ?? 0) !== 0) {
+            return $input;
+        }
+
+        $criteria = [
+            self::POWER_SUPPLY_FIELD => $power_supply_id,
+            'is_deleted' => 0,
+        ];
         $current_id = (int) ($input['id'] ?? $this->getID());
         if ($current_id > 0) {
             $criteria['NOT'] = ['id' => $current_id];
@@ -215,7 +231,7 @@ class Plug extends CommonDBRelation
 
         // always set number
         $input['number'] = $base_number + 1;
-        return $this->prepareInput($input);
+        return $this->prepareInput($input, true);
     }
 
     public function prepareInputForUpdate($input)
@@ -225,36 +241,54 @@ class Plug extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
+    public function restore(array $input, $history = true)
+    {
+        if (!$this->getFromDB($input['id'])) {
+            return false;
+        }
+
+        // Restoring bypasses prepareInputForUpdate(), but must not reconnect an occupied PSU.
+        if ($this->prepareInput([
+            'id' => $this->getID(),
+            'is_deleted' => 0,
+            self::POWER_SUPPLY_FIELD => $this->fields[self::POWER_SUPPLY_FIELD],
+        ]) === false) {
+            return false;
+        }
+
+        return parent::restore($input, $history);
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         global $CFG_GLPI;
 
-        $is_plug_host = in_array($item::class, $CFG_GLPI['plug_types'], true);
-        $nb = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            /** @var CommonDBTM $item */
-            $nb = countElementsInTable(
-                self::getTable(),
-                $is_plug_host
-                    ? [
-                        'itemtype_main' => $item::class,
-                        'items_id_main' => $item->getID(),
-                        'is_deleted' => false,
-                    ]
-                    : [
-                        'itemtype_asset' => $item::class,
-                        'items_id_asset' => $item->getID(),
-                        'is_deleted' => false,
-                        self::POWER_SUPPLY_FIELD => ['>', 0],
-                    ]
-            );
+        if (!$item instanceof CommonDBTM) {
+            return '';
         }
 
-        $label = $is_plug_host
-            ? self::getTypeName(Session::getPluralNumber())
-            : __('Power connections');
+        $is_plug_host = in_array($item::class, $CFG_GLPI['plug_types'], true);
+        $has_power_supplies = in_array(Item_DevicePowerSupply::class, Item_Devices::getItemAffinities($item::class), true);
+        $tabs = [];
+        if ($is_plug_host) {
+            $nb = $_SESSION['glpishow_count_on_tabs'] ? countElementsInTable(self::getTable(), [
+                'itemtype_main' => $item::class,
+                'items_id_main' => $item->getID(),
+                'is_deleted' => false,
+            ]) : 0;
+            $tabs[1] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+        }
+        if ($has_power_supplies) {
+            $nb = $_SESSION['glpishow_count_on_tabs'] ? countElementsInTable(self::getTable(), [
+                'itemtype_asset' => $item::class,
+                'items_id_asset' => $item->getID(),
+                'is_deleted' => false,
+                self::POWER_SUPPLY_FIELD => ['>', 0],
+            ]) : 0;
+            $tabs[$is_plug_host ? 2 : 1] = self::createTabEntry(__('Power connections'), $nb, $item::class);
+        }
 
-        return self::createTabEntry($label, $nb, $item::class);
+        return $is_plug_host && $has_power_supplies ? $tabs : ($tabs[1] ?? '');
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -265,9 +299,18 @@ class Plug extends CommonDBRelation
             return false;
         }
 
-        return in_array($item::class, $CFG_GLPI['plug_types'], true)
-            ? self::showItems($item)
-            : self::showPowerConnections($item);
+        $is_plug_host = in_array($item::class, $CFG_GLPI['plug_types'], true);
+        if ($is_plug_host && $tabnum === 1) {
+            return self::showItems($item);
+        }
+        if (
+            $tabnum === ($is_plug_host ? 2 : 1)
+            && in_array(Item_DevicePowerSupply::class, Item_Devices::getItemAffinities($item::class), true)
+        ) {
+            return self::showPowerConnections($item);
+        }
+
+        return false;
     }
 
     public function showForm($ID, array $options = [])
@@ -423,7 +466,7 @@ class Plug extends CommonDBRelation
         }
 
         $items = $DB->request([
-            'SELECT' => ['id'],
+            'SELECT' => ['*'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'itemtype_asset' => $item::class,
@@ -437,9 +480,7 @@ class Plug extends CommonDBRelation
         $entries = [];
         foreach ($items as $row) {
             $plug = new Plug();
-            if (!$plug->getFromDB($row['id'])) {
-                continue;
-            }
+            $plug->fields = $row;
 
             $plug_host = is_a($plug->fields['itemtype_main'], CommonDBTM::class, true)
                 ? new $plug->fields['itemtype_main']()

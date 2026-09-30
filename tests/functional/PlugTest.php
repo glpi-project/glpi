@@ -34,10 +34,12 @@
 
 namespace tests\units;
 
+use CommonDBTM;
 use Computer;
 use DevicePowerSupply;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasDevicesCapacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
@@ -83,7 +85,7 @@ class PlugTest extends DbTestCase
         }
     }
 
-    private function getPlugMainItem(?AssetDefinition $definition = null): \CommonDBTM
+    private function getPlugMainItem(?AssetDefinition $definition = null): CommonDBTM
     {
         $definition ??= $this->initAssetDefinition(capacities: [new Capacity(name: HasPlugCapacity::class)]);
         return $this->createItem(
@@ -92,7 +94,7 @@ class PlugTest extends DbTestCase
         );
     }
 
-    private function getPlugBaseInput(\CommonDBTM $main_item, string $name = 'Plug name'): array
+    private function getPlugBaseInput(CommonDBTM $main_item, string $name = 'Plug name'): array
     {
         return [
             'itemtype_main' => $main_item::class,
@@ -283,7 +285,7 @@ class PlugTest extends DbTestCase
         ]);
     }
 
-    public function testPurgingPowerSupplyDisconnectsPlugFromAsset(): void
+    public function testPurgingPowerSupplyPreservesPlugAssetConnection(): void
     {
         $pdu = $this->createItem(PDU::class, $this->getMinimalCreationInput(PDU::class));
         $computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
@@ -301,8 +303,12 @@ class PlugTest extends DbTestCase
         $this->assertTrue($power_supply->delete(['id' => $power_supply->getID()], true));
         $this->assertTrue($plug->getFromDB($plug->getID()));
         $this->assertSame(0, (int) $plug->fields[Plug::POWER_SUPPLY_FIELD]);
-        $this->assertSame('', $plug->fields['itemtype_asset']);
-        $this->assertSame(0, (int) $plug->fields['items_id_asset']);
+        $this->assertSame(Computer::class, $plug->fields['itemtype_asset']);
+        $this->assertSame($computer->getID(), (int) $plug->fields['items_id_asset']);
+
+        // Inventory can recreate the component without breaking the existing asset connection.
+        $this->createPowerSupply($computer, 'PSU replacement', '');
+        $this->assertTrue($plug->update(['id' => $plug->getID(), 'custom_name' => 'After inventory']));
     }
 
     public function testComputerDisplaysReversePowerConnections(): void
@@ -385,7 +391,132 @@ class PlugTest extends DbTestCase
         $this->assertStringNotContainsString('Outlet redundant PSU', $output);
     }
 
-    private function createPowerSupply(Computer $computer, string $designation, string $serial): Item_DevicePowerSupply
+    public function testLegacyAssetConnectionCanBeUpdatedAfterInstallingPowerSupply(): void
+    {
+        $pdu = $this->createItem(PDU::class, $this->getMinimalCreationInput(PDU::class));
+        $computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        $plug = $this->createItem(Plug::class, $this->getPlugBaseInput($pdu) + [
+            'itemtype_asset' => Computer::class,
+            'items_id_asset' => $computer->getID(),
+            'is_dynamic' => 1,
+        ]);
+        $power_supply = $this->createPowerSupply($computer, 'Newly installed PSU', '');
+
+        $this->assertTrue($plug->update([
+            'id' => $plug->getID(),
+            'comment' => 'Updated through the API',
+            'custom_name' => 'Legacy outlet',
+        ]));
+        $this->assertTrue($plug->getFromDB($plug->getID()));
+        $this->assertSame('Legacy outlet', $plug->fields['custom_name']);
+        $this->assertSame('Updated through the API', $plug->fields['comment']);
+        $this->assertSame(Computer::class, $plug->fields['itemtype_asset']);
+        $this->assertSame($computer->getID(), (int) $plug->fields['items_id_asset']);
+        $this->assertSame(0, (int) $plug->fields[Plug::POWER_SUPPLY_FIELD]);
+
+        // Explicitly setting the asset still requires choosing its installed PSU.
+        $this->assertFalse($plug->update([
+            'id' => $plug->getID(),
+            'itemtype_asset' => Computer::class,
+            'items_id_asset' => $computer->getID(),
+        ]));
+        $this->hasSessionMessages(ERROR, ['A specific power supply must be selected for this asset']);
+        $this->assertTrue($plug->update([
+            'id' => $plug->getID(),
+            Plug::POWER_SUPPLY_FIELD => $power_supply->getID(),
+        ]));
+    }
+
+    public function testTrashedPlugReleasesPowerSupplyAndCannotRestoreOccupiedConnection(): void
+    {
+        $pdu = $this->createItem(PDU::class, $this->getMinimalCreationInput(PDU::class));
+        $computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        $power_supply = $this->createPowerSupply($computer, 'Reusable PSU', '');
+        $input = $this->getPlugBaseInput($pdu) + [
+            'itemtype_asset' => Computer::class,
+            'items_id_asset' => $computer->getID(),
+            Plug::POWER_SUPPLY_FIELD => $power_supply->getID(),
+        ];
+        $first_plug = $this->createItem(Plug::class, $input);
+        $this->assertTrue($first_plug->delete(['id' => $first_plug->getID()]));
+        $second_plug = $this->createItem(Plug::class, array_replace($input, ['name' => 'Replacement outlet']));
+
+        $this->assertTrue($first_plug->update([
+            'id' => $first_plug->getID(),
+            'custom_name' => 'Still in trash',
+            Plug::POWER_SUPPLY_FIELD => $power_supply->getID(),
+        ]));
+        $this->assertFalse($first_plug->restore(['id' => $first_plug->getID()]));
+        $this->hasSessionMessages(ERROR, ['The selected power supply is already connected to another plug']);
+        $this->assertFalse($first_plug->update(['id' => $first_plug->getID(), 'is_deleted' => 0]));
+        $this->hasSessionMessages(ERROR, ['The selected power supply is already connected to another plug']);
+        $this->assertTrue($first_plug->getFromDB($first_plug->getID()));
+        $this->assertSame(1, (int) $first_plug->fields['is_deleted']);
+
+        $this->assertTrue($second_plug->delete(['id' => $second_plug->getID()]));
+        // Each form action uses a fresh object; a rejected update leaves its input set to false.
+        $first_plug_id = $first_plug->getID();
+        $first_plug = new Plug();
+        $this->assertTrue($first_plug->restore(['id' => $first_plug_id]));
+        $this->assertTrue($first_plug->getFromDB($first_plug->getID()));
+        $this->assertSame(0, (int) $first_plug->fields['is_deleted']);
+        $this->assertSame($power_supply->getID(), (int) $first_plug->fields[Plug::POWER_SUPPLY_FIELD]);
+    }
+
+    public function testPowerSupplyAssetsHaveReverseConnectionTab(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDevicesCapacity::class)]);
+        foreach ($CFG_GLPI['itemdevicepowersupply_types'] as $itemtype) {
+            $item = $this->createItem($itemtype, $this->getMinimalCreationInput($itemtype));
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Plug$1', $tabs, $itemtype);
+            $this->assertStringContainsString('Power connections', $tabs['Plug$1'], $itemtype);
+        }
+    }
+
+    public function testCustomAssetHasSeparateHostAndPowerConnectionTabs(): void
+    {
+        $this->login();
+        foreach ([
+            [new Capacity(name: HasDevicesCapacity::class), new Capacity(name: HasPlugCapacity::class)],
+            [new Capacity(name: HasPlugCapacity::class), new Capacity(name: HasDevicesCapacity::class)],
+        ] as $capacities) {
+            $definition = $this->initAssetDefinition(capacities: $capacities);
+            $asset = $this->getPlugMainItem($definition);
+            $this->login(); // Reload rights for the newly defined asset type.
+            $pdu = $this->createItem(PDU::class, $this->getMinimalCreationInput(PDU::class));
+            $power_supply = $this->createPowerSupply($asset, 'Custom asset PSU', 'CUSTOM-PSU');
+            $this->createItem(Plug::class, $this->getPlugBaseInput($pdu, 'Incoming outlet') + [
+                'itemtype_asset' => $asset::class,
+                'items_id_asset' => $asset->getID(),
+                Plug::POWER_SUPPLY_FIELD => $power_supply->getID(),
+            ]);
+            $this->createItem(Plug::class, $this->getPlugBaseInput($asset, 'Hosted outlet'));
+
+            $tabs = $asset->defineAllTabs();
+            $this->assertArrayHasKey('Plug$1', $tabs);
+            $this->assertArrayHasKey('Plug$2', $tabs);
+            $this->assertStringContainsString('Plugs', $tabs['Plug$1']);
+            $this->assertStringContainsString('Power connections', $tabs['Plug$2']);
+
+            foreach ([1 => 'Hosted outlet', 2 => 'Incoming outlet'] as $tabnum => $expected_name) {
+                ob_start();
+                try {
+                    $this->assertTrue(Plug::displayTabContentForItem($asset, $tabnum));
+                    $output = (string) ob_get_contents();
+                } finally {
+                    ob_end_clean();
+                }
+                $this->assertStringContainsString($expected_name, $output);
+                $this->assertStringNotContainsString($tabnum === 1 ? 'Incoming outlet' : 'Hosted outlet', $output);
+            }
+        }
+    }
+
+    private function createPowerSupply(CommonDBTM $computer, string $designation, string $serial): Item_DevicePowerSupply
     {
         $device = $this->createItem(DevicePowerSupply::class, [
             'designation' => $designation,
@@ -393,7 +524,7 @@ class PlugTest extends DbTestCase
         ]);
 
         return $this->createItem(Item_DevicePowerSupply::class, [
-            'itemtype'                => Computer::class,
+            'itemtype'                => $computer::class,
             'items_id'                => $computer->getID(),
             'devicepowersupplies_id'  => $device->getID(),
             'entities_id'             => $computer->getEntityID(),

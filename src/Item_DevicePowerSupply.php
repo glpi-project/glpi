@@ -67,8 +67,6 @@ class Item_DevicePowerSupply extends Item_Devices
         $DB->update(
             Plug::getTable(),
             [
-                'itemtype_asset'        => '',
-                'items_id_asset'        => 0,
                 Plug::POWER_SUPPLY_FIELD => 0,
             ],
             [Plug::POWER_SUPPLY_FIELD => $this->getID()]

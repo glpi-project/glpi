@@ -130,6 +130,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
         $this->addStandardTab(Item_Process::class, $ong, $options);
         $this->addStandardTab(Item_Environment::class, $ong, $options);
         $this->addStandardTab(Item_Devices::class, $ong, $options);
+        $this->addStandardTab(Plug::class, $ong, $options);
         $this->addStandardTab(Item_Line::class, $ong, $options);
         $this->addStandardTab(Item_Disk::class, $ong, $options);
         $this->addStandardTab(Asset_PeripheralAsset::class, $ong, $options);

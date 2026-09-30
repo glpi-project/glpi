@@ -137,6 +137,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
          ->addStandardTab(Item_OperatingSystem::class, $ong, $options)
          ->addStandardTab(Item_SoftwareVersion::class, $ong, $options)
          ->addStandardTab(Item_Devices::class, $ong, $options)
+         ->addStandardTab(Plug::class, $ong, $options)
          ->addStandardTab(Item_Line::class, $ong, $options)
          ->addStandardTab(Item_Disk::class, $ong, $options)
          ->addStandardTab(NetworkPort::class, $ong, $options)
