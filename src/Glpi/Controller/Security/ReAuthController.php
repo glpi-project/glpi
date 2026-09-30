@@ -130,16 +130,15 @@ class ReAuthController extends AbstractController
     }
 
     /**
-     * The CAS round-trip is only open to sessions the CAS strategy applies to.
+     * The CAS round-trip is only open to users for whom the CAS strategy is the selected one.
      */
     private function getCasStrategy(): CasReAuthStrategy
     {
-        $strategy = $this->casStrategy ?? new CasReAuthStrategy();
-        if (!$strategy->isAvailable($_SESSION['glpiID'])) {
+        if (!$this->reAuthManager->isSelectedStrategy(CasReAuthStrategy::class)) {
             throw new AccessDeniedHttpException();
         }
 
-        return $strategy;
+        return $this->casStrategy ?? new CasReAuthStrategy();
     }
 
     /**

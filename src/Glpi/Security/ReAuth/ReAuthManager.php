@@ -258,6 +258,19 @@ final class ReAuthManager
     }
 
     /**
+     * Whether the strategy selected for the current user is of the given class.
+     *
+     * An endpoint dedicated to one strategy must check it: being available for the user is not
+     * enough, a higher priority strategy may be the one they have to pass.
+     *
+     * @param class-string<ReAuthStrategyInterface> $strategy_class
+     */
+    public function isSelectedStrategy(string $strategy_class): bool
+    {
+        return $this->getStrategy() instanceof $strategy_class;
+    }
+
+    /**
      * Register a new strategy in available strategies
      */
     public function registerStrategy(ReAuthStrategyInterface $strategy): void

@@ -39,6 +39,7 @@ use Glpi\Controller\Security\ReAuthController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Security\ReAuth\CasReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
+use Glpi\Security\TOTPManager;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use PHPUnit\Framework\Attributes\Group;
@@ -171,6 +172,32 @@ final class ReAuthControllerTest extends DbTestCase
 
         // --- act ---
         $controller->casStart();
+    }
+
+    /**
+     * The CAS round-trip is refused when another strategy is selected: a CAS session with 2FA
+     * enabled must not re-authenticate with the CAS password only.
+     */
+    public function testCasRoundTripIsDeniedWhenTotpIsSelected(): void
+    {
+        // --- arrange ---
+        $controller = $this->makeCasController(TU_USER);
+        (new TOTPManager())->setSecretForUser($_SESSION['glpiID'], 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');
+
+        // --- act + assert : start ---
+        try {
+            $controller->casStart();
+            $this->fail('The CAS round-trip must not start when TOTP is selected.');
+        } catch (AccessDeniedHttpException) {
+        }
+
+        // --- act + assert : callback ---
+        try {
+            $controller->casCallback(Request::create('/ReAuth/CAS/Callback', 'GET', ['ticket' => 'ST-1-abc']));
+            $this->fail('The CAS callback must be refused when TOTP is selected.');
+        } catch (AccessDeniedHttpException) {
+        }
+        $this->assertArrayNotHasKey('glpi_reauth_until', $_SESSION);
     }
 
     /** Coming back from CAS with a valid ticket re-authenticates the user and replays the request. */
