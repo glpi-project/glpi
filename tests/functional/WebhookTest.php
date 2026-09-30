@@ -632,6 +632,51 @@ JSON;
         $this->assertSame($ticket->getID(), $body['parent_item']['id']);
     }
 
+    public function testParentItemResolvedWithoutParentReadRight(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test validation webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketValidation::class,
+            'event'               => 'new',
+            'is_active'           => 0,
+            'use_default_payload' => 1,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for validation',
+            'entities_id' => $entity_id,
+        ]);
+        $validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName('User', TU_USER, true),
+        ]);
+
+        // The user raising the event (an approver for instance) may not be able to read the ticket.
+        // The parent must still be resolved, and never replaced by an API error body.
+        $saved_profile = $_SESSION['glpiactiveprofile'];
+        $_SESSION['glpiactiveprofile']['ticket'] = 0;
+        try {
+            $body = $webhook->getResultForPath(
+                $webhook->getApiPath($validation),
+                'new',
+                TicketValidation::class,
+                $validation->getID(),
+                true
+            );
+        } finally {
+            $_SESSION['glpiactiveprofile'] = $saved_profile;
+        }
+
+        $data = json_decode($body, true);
+        $this->assertIsArray($data);
+        $this->assertSame($ticket->getID(), $data['parent_item']['id'] ?? null);
+    }
+
     public function testParentItemResolvedProperly(): void
     {
         $entity_id = $this->getTestRootEntity(only_id: true);

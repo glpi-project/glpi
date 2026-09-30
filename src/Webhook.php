@@ -652,10 +652,15 @@ class Webhook extends CommonDBTM implements FilterableInterface
         if ($parent_schema === null) {
             throw new LogicException("Parent itemtype $parent_itemtype does not have a valid API schema");
         }
-        $parent_result = ResourceAccessor::getOneBySchema($parent_schema, [
+        // Fetch the parent like the item itself (see getAPIResponse()), so the payload does not depend
+        // on the rights of the user who triggered the event, and ignore it if it cannot be retrieved.
+        $parent_result = Session::callAsSystem(static fn() => ResourceAccessor::getOneBySchema($parent_schema, [
             'itemtype' => $parent_itemtype,
             'id' => $parent_id,
-        ], []);
+        ], []));
+        if ($parent_result->getStatusCode() !== 200) {
+            return;
+        }
         $result = json_decode((string) $parent_result->getBody(), true);
         if (is_array($result)) {
             $data['parent_item'] = $result;
