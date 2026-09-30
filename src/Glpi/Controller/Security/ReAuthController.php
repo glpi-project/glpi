@@ -37,9 +37,12 @@ declare(strict_types=1);
 namespace Glpi\Controller\Security;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Security\ReAuth\CasReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -48,6 +51,7 @@ class ReAuthController extends AbstractController
 {
     public function __construct(
         private readonly ReAuthManager $reAuthManager,
+        private readonly ?CasReAuthStrategy $casStrategy = null,
     ) {}
 
     #[Route(
@@ -76,16 +80,66 @@ class ReAuthController extends AbstractController
     public function verify(Request $request): Response
     {
         if ($this->reAuthManager->verify($request)) {
-            $this->reAuthManager->authenticate();
-
-            return $this->render('pages/redirect_post.html.twig', [
-                'http_method' => $this->reAuthManager->getRequestedMethod(),
-                'url'         => $this->reAuthManager->getRequestedURL(),
-                'replay_data' => $this->reAuthManager->getReplayData(),
-            ]);
+            return $this->replayRequested();
         }
 
         return $this->prompt(true);
+    }
+
+    /**
+     * Send the user to the CAS server, which asks for the credentials again.
+     */
+    #[Route(
+        path: "/ReAuth/CAS",
+        name: "reauth_cas_start",
+        methods: ['GET']
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    public function casStart(): Response
+    {
+        return new RedirectResponse($this->getCasStrategy()->start($_SESSION['glpiID']));
+    }
+
+    /**
+     * Way back from the CAS server, with the service ticket to validate.
+     */
+    #[Route(
+        path: "/ReAuth/CAS/Callback",
+        name: "reauth_cas_callback",
+        methods: ['GET']
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    public function casCallback(Request $request): Response
+    {
+        if ($this->getCasStrategy()->complete($_SESSION['glpiID'], $request)) {
+            return $this->replayRequested();
+        }
+
+        return $this->prompt(true);
+    }
+
+    private function replayRequested(): Response
+    {
+        $this->reAuthManager->authenticate();
+
+        return $this->render('pages/redirect_post.html.twig', [
+            'http_method' => $this->reAuthManager->getRequestedMethod(),
+            'url'         => $this->reAuthManager->getRequestedURL(),
+            'replay_data' => $this->reAuthManager->getReplayData(),
+        ]);
+    }
+
+    /**
+     * The CAS round-trip is only open to sessions the CAS strategy applies to.
+     */
+    private function getCasStrategy(): CasReAuthStrategy
+    {
+        $strategy = $this->casStrategy ?? new CasReAuthStrategy();
+        if (!$strategy->isAvailable($_SESSION['glpiID'])) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $strategy;
     }
 
     /**
