@@ -41,7 +41,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
-use Session;
 
 final class QuestionTypeFile extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
@@ -54,7 +53,7 @@ final class QuestionTypeFile extends AbstractQuestionType implements FormQuestio
         foreach ($answer as $file) {
             $document_ids[] = $document->add([
                 'name'             => sprintf('%s - %s', $form->getName(), $question->getName()),
-                'entities_id'      => Session::getActiveEntity(),
+                'entities_id'      => $form->getEntityID(),
                 'is_recursive'     => $form->isRecursive(),
                 '_filename'        => [$file],
                 '_prefix_filename' => [$_POST['_prefix_' . $question->getEndUserInputName()]],
