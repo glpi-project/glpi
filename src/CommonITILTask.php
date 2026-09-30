@@ -693,7 +693,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 // actually waiting; otherwise editing any field of a task would reopen a solved ticket.
                 $parent_status_input = $this->input;
                 if (
-                    !($parent_status_input['pending'] ?? 0)
+                    isset($parent_status_input['pending'])
+                    && !$parent_status_input['pending']
                     && $this->input['_job']->fields['status'] != CommonITILObject::WAITING
                 ) {
                     unset($parent_status_input['pending']);

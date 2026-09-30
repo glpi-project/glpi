@@ -821,6 +821,32 @@ final class TicketTaskTest extends CommonITILTaskTestCase
             'pending'    => 0,
         ]));
         $this->assertEquals(\Ticket::ASSIGNED, \Ticket::getById($ticket_id)->fields['status']);
+
+        // No pending field (API): a requester editing a task of a solved ticket still reopens it.
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name'                => 'ticket title',
+            'content'             => 'a description',
+            'entities_id'         => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_users_id_requester' => \Session::getLoginUserID(),
+            '_users_id_assign'    => getItemByTypeName('User', 'tech', true),
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'tickets_id' => $ticket_id,
+            'content'    => 'Task on a ticket to solve',
+            'actiontime' => 600,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+        $this->assertTrue($ticket->update(['id' => $ticket_id, 'status' => \Ticket::SOLVED]));
+
+        $this->assertTrue($task->update([
+            'id'         => $task_id,
+            'tickets_id' => $ticket_id,
+            'actiontime' => 300,
+        ]));
+        $this->assertEquals(\Ticket::ASSIGNED, \Ticket::getById($ticket_id)->fields['status']);
     }
 
     /**
