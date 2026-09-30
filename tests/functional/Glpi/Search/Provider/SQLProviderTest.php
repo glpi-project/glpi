@@ -39,6 +39,7 @@ use Domain;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Tests\DbTestCase;
 use Html;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Search;
 
 use function Safe\strtotime;
@@ -108,6 +109,51 @@ class SQLProviderTest extends DbTestCase
      *
      * @see https://github.com/glpi-project/glpi/pull/24866
      */
+    public static function metaCriteriaGroupByProvider(): iterable
+    {
+        $meta = [
+            'link'       => 'AND',
+            'itemtype'   => 'Ticket',
+            'meta'       => true,
+            'field'      => '9', // request source
+            'searchtype' => 'equals',
+            'value'      => '1',
+        ];
+        $plain = [
+            'link'       => 'AND',
+            'field'      => '1',
+            'searchtype' => 'contains',
+            'value'      => 'foo',
+        ];
+
+        yield 'no meta criterion' => [
+            'criteria' => [$plain],
+            'expected' => false,
+        ];
+        yield 'top level meta criterion' => [
+            'criteria' => [$meta],
+            'expected' => true,
+        ];
+        yield 'meta criterion nested in a group' => [
+            'criteria' => [$plain, ['link' => 'AND', 'criteria' => [$meta]]],
+            'expected' => true,
+        ];
+        yield 'meta criterion followed by a group without meta' => [
+            'criteria' => [$meta, ['link' => 'AND', 'criteria' => [$plain]]],
+            'expected' => true,
+        ];
+    }
+
+    #[DataProvider('metaCriteriaGroupByProvider')]
+    public function testMetaCriteriaAddGroupBy(array $criteria, bool $expected): void
+    {
+        $this->login();
+
+        $result = Search::getDatas('ITILFollowup', ['criteria' => $criteria]);
+
+        $this->assertSame($expected, str_contains($result['sql']['search'], 'GROUP BY'));
+    }
+
     public function testCertificateExpirationDateBadgeRespectsDateFormat()
     {
         $this->login();

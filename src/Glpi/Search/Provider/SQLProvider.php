@@ -4477,25 +4477,9 @@ final class SQLProvider implements SearchProviderInterface
         //// 7 - Manage GROUP BY
         $GROUPBY = "";
         // Meta Search / Search All / Count tickets
-        // A meta criterion may be nested inside a criteria group, so look for it recursively.
-        $has_meta_criteria = static function (array $criteria) use (&$has_meta_criteria): bool {
-            foreach ($criteria as $criterion) {
-                if (isset($criterion['meta']) && $criterion['meta']) {
-                    return true;
-                }
-                if (
-                    isset($criterion['criteria'])
-                    && is_array($criterion['criteria'])
-                    && $has_meta_criteria($criterion['criteria'])
-                ) {
-                    return true;
-                }
-            }
-            return false;
-        };
         if (
             (count($data['search']['metacriteria']))
-            || $has_meta_criteria($data['search']['criteria'])
+            || !empty($data['meta_toview'])
             || !empty($HAVING)
             || $data['search']['all_search']
         ) {
