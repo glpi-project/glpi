@@ -136,11 +136,10 @@ final class ReAuthManager
     }
 
     /**
-     * Make the user reauthenticated
+     * Mark the current user as reauthenticated.
      *
-     * Consider current user as reauthenticated
      * Set the reauth session validity to now + delay (self::REAUTH_DELAY_SECONDS).
-     * Used to make user reauthenticated just after login.
+     * To be called once the strategy verification succeeded.
      */
     public function authenticate(): void
     {
