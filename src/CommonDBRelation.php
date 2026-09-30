@@ -504,8 +504,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         try {
             $item1 = null;
-            // canConnexityItem() checks the global right only for a dynamic itemtype,
-            // so check it here for a fixed itemtype.
+            // canConnexityItem() checks the global right only for a dynamic itemtype.
             $can1  = $this->canConnexityItem(
                 $method,
                 $methodNotItem,
@@ -513,12 +512,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 static::$itemtype_1,
                 static::$items_id_1,
                 $item1
-            ) && (!$OneWriteIsEnough || static::canConnexity(
-                $methodNotItem,
-                static::$checkItem_1_Rights,
-                static::$itemtype_1,
-                static::$items_id_1
-            ));
+            );
             if ($OneWriteIsEnough) {
                 $view1 = $this->canConnexityItem(
                     $method,
@@ -550,12 +544,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 static::$itemtype_2,
                 static::$items_id_2,
                 $item2
-            ) && (!$OneWriteIsEnough || static::canConnexity(
-                $methodNotItem,
-                static::$checkItem_2_Rights,
-                static::$itemtype_2,
-                static::$items_id_2
-            ));
+            );
             if ($OneWriteIsEnough) {
                 $view2 = $this->canConnexityItem(
                     $method,
