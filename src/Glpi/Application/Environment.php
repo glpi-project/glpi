@@ -260,12 +260,12 @@ enum Environment: string
     public function shouldAddExtraE2EDataDuringInstallation(): bool
     {
         return
-            $this->shouldAddExtraTestingDataDuringInstallation()
+            $this->shouldAddExtraCypressDataDuringInstallation()
             || $this->shouldAddExtraPlaywrightDataDuringInstallation()
         ;
     }
 
-    public function shouldAddExtraTestingDataDuringInstallation(): bool
+    public function shouldAddExtraCypressDataDuringInstallation(): bool
     {
         // Note: this data was added for the Cypress tests, which were replaced
         // by the Playwright tests. It can't be removed yet because some PHPUnit

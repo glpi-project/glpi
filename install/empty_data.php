@@ -90,7 +90,7 @@ $empty_data_builder = new class {
         // API need to be enabled to ease e2e testing
         $env = Environment::get();
         $add_playwright_data = $env->shouldAddExtraPlaywrightDataDuringInstallation();
-        $add_testing_data = $env->shouldAddExtraTestingDataDuringInstallation();
+        $add_testing_data = $env->shouldAddExtraCypressDataDuringInstallation();
 
         $add_e2e_data = $env->shouldAddExtraE2EDataDuringInstallation();
         $enable_api = $add_e2e_data ? "1" : "0";
