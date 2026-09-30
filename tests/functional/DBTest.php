@@ -38,6 +38,7 @@ use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1132,5 +1133,15 @@ SQL,
         $instance = new \DB();
         $this->expectExceptionMessage('Unknown type to drop: UNKNOWN');
         $this->assertSame('', $instance->buildDrop('aname', 'UNKNOWN'));
+    }
+
+    public function testExecuteStatementValueMismatch()
+    {
+        $instance = new \DB();
+        $stmt = $instance->prepare("SELECT ? AS `a`, 'x?y' AS `b`");
+
+        $this->expectException(StatementException::class);
+        $this->expectExceptionMessage('Number of placeholders (1) in SQL statement does not match number of values (2).');
+        $instance->executeStatement($stmt, [1, 2]);
     }
 }
