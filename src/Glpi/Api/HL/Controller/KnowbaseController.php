@@ -124,6 +124,7 @@ class KnowbaseController extends AbstractController
                     'parents' => [
                         'x-version-introduced' => '3.0.0',
                         'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-input-field' => '_parents',
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
                             'x-full-schema' => 'KBArticle',
