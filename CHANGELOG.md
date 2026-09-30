@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- An LDAP field template whose placeholders all resolve to empty values (for example `Site - %{physicalDeliveryOfficeName}` for a user without that attribute) now gives an empty value instead of the leftover static text, so synchronization no longer creates an incomplete location or field value.
 
 ### Deprecated
 
