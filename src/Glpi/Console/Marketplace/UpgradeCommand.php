@@ -227,6 +227,8 @@ class UpgradeCommand extends AbstractCommand
                 }
 
                 $output->writeln('<info>' . sprintf(__('Plugin "%1$s" has been updated and reactivated.'), $plugin_key) . '</info>', );
+
+                \gc_collect_cycles();
             }
             Plugin::forcePluginsExecution(false);
         }
