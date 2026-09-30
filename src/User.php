@@ -6368,9 +6368,7 @@ HTML;
         );
 
         if ($has_placeholder) {
-            // A template with placeholders is only meaningful when at least one
-            // placeholder resolved to an actual value. When every placeholder is
-            // empty, only the static text remains (e.g. "Site - ") and it must
+            // No resolved placeholder: only the static text remains (e.g. "Site - ") and it must
             // not be treated as a real value, otherwise an incomplete location
             // would be created during LDAP synchronization.
             return $has_value ? $ret : '';

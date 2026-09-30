@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.
 
 - Default behavior when submitting a Form that has only one destination is now redirecting to created item instead of showing the feedback page. Previous behavior is obtained by unchecking "Go to created item after creation" in General configuration > Default values.
+- An LDAP field template whose placeholders all resolve to empty values (for example `Site - %{physicalDeliveryOfficeName}` for a user without that attribute) now gives an empty value instead of the leftover static text, so synchronization no longer creates an incomplete location or field value.
 
 ### Deprecated
 
