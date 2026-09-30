@@ -84,7 +84,6 @@ dev_nodes=(
     "docker-compose.yaml"
     "eslint.config.mjs"
     "js"
-    "jsconfig.json"
     "locales/glpi.pot"
     "Makefile"
     "node_modules"

@@ -59,14 +59,6 @@
 <script>
     function viewAddEditSubItem{{ rand }}(id) {
         const modal_el = $('#{{ (subitem_container_id ~ '_modal')|e('css')|e('js') }}');
-        if (modal_el.length) {
-            modal_el[0].addEventListener('shown.bs.modal', (event) => {
-                event.target.setAttribute('data-cy-ready', 'true');
-            });
-            modal_el[0].addEventListener('hidden.bs.modal', (event) => {
-                event.target.removeAttribute('data-cy-ready');
-            });
-        }
         $('#{{ subitem_container_id }}').load('{{ path('/ajax/viewsubitem.php')|e('js') }}',{
             type: "{{ type|e('js') }}",
             parenttype: "{{ parenttype|e('js') }}",

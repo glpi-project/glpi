@@ -283,7 +283,11 @@ enum Environment: string
 
     public function shouldAddExtraCypressDataDuringInstallation(): bool
     {
-        // Note: this will be removed when we switch to playwright.
+        // Note: this data was added for the Cypress tests, which were replaced
+        // by the Playwright tests. It can't be removed yet because some PHPUnit
+        // tests use it.
+        // TODO: update these PHPUnit tests so they create their own data, then
+        // remove this method.
         return match ($this) {
             default       => false,
             self::TESTING => true,
