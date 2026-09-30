@@ -19063,7 +19063,7 @@ msgstr "Pridať dokumenty do oznámení o požiadavke"
 
 #: src/NotificationMailingSetting.php:234
 msgid "Add documents into notifications sent to anonymous users"
-msgstr ""
+msgstr "Pridať dokumenty do oznámení posielaných anonymným používateľom"
 
 #: src/NotificationMailingSetting.php:250
 msgid "Way of sending emails"

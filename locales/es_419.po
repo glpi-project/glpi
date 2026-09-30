@@ -23,6 +23,7 @@
 # Geronimo Jimenez, 2025
 # Cédric Anne, 2025
 # Lorenzo Salvador Osorio Orellana, 2026
+# Jairo Cervantes, 2026
 # 
 #, fuzzy
 msgid ""
@@ -31,7 +32,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Lorenzo Salvador Osorio Orellana, 2026\n"
+"Last-Translator: Jairo Cervantes, 2026\n"
 "Language-Team: Spanish (Latin America) (https://app.transifex.com/glpi/teams/1637/es_419/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -811,7 +812,7 @@ msgstr[2] "Correos electrónicos"
 
 #: templates/password_form.html.twig
 msgid "Forget it,"
-msgstr ""
+msgstr "Olvídalo,"
 
 #: templates/password_form.html.twig
 msgid "send me back"

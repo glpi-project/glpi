@@ -7,6 +7,7 @@
 # Lorenzo Salvador Osorio Orellana, 2024
 # Cédric Anne, 2026
 # Soporte Infraestructura Standby, 2026
+# Jairo Cervantes, 2026
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Soporte Infraestructura Standby, 2026\n"
+"Last-Translator: Jairo Cervantes, 2026\n"
 "Language-Team: Spanish (Ecuador) (https://app.transifex.com/glpi/teams/1637/es_EC/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1880,7 +1881,7 @@ msgstr "Valido hasta %s"
 #: src/Entity.php:2297 src/NotificationTargetInfocom.php:43
 #: src/Infocom.php:1710
 msgid "Alarms on financial and administrative information"
-msgstr "Alertas sobre datos financieros"
+msgstr "Alertas de información financiera y administrativa"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "TTO"
@@ -4574,7 +4575,7 @@ msgstr "Ilimitado"
 #: templates/pages/management/contract.html.twig src/Contract.php:731
 #: src/Infocom.php:1446
 msgid "Email alarms"
-msgstr "Alarmas por correo electrónico"
+msgstr "Alertas por correo electrónico"
 
 #: templates/pages/management/softwarelicense.html.twig src/Entity.php:1905
 #: src/Log.php:489 src/Log.php:495 src/Log.php:933 src/SoftwareVersion.php:119
@@ -7502,16 +7503,16 @@ msgstr "Firma de los mensajes"
 
 #: src/Entity.php:1051
 msgid "Alarms on cartridges"
-msgstr "Alertas sobre cartuchos"
+msgstr "Alertas de cartuchos"
 
 #: src/Entity.php:1061
 msgid "Alarms on consumables"
-msgstr "Alertas sobre insumos"
+msgstr "Alertas de consumibles"
 
 #: src/Entity.php:1071 src/Entity.php:2344
 #: src/NotificationTargetSoftwareLicense.php:43
 msgid "Alarms on expired licenses"
-msgstr "Alertas con licencias vencidas"
+msgstr "Alertas de licencias vencidas"
 
 #: src/Entity.php:1081 src/Entity.php:2355
 msgid "Send license alarms before"
@@ -7519,7 +7520,7 @@ msgstr "Enviar alertas de licencia antes"
 
 #: src/Entity.php:1091 src/Entity.php:2251
 msgid "Alarms on contracts"
-msgstr "Alertas sobre contratos"
+msgstr "Alertas de contratos"
 
 #: src/Entity.php:1101 src/Entity.php:2274
 msgid "Send contract alarms before"
@@ -7535,12 +7536,12 @@ msgstr "Alertas sobre reservas"
 
 #: src/Entity.php:1141
 msgid "Default value for alarms on contracts"
-msgstr "Valor por defecto para alertas de contratos"
+msgstr "Valor predeterminado para alertas de contratos"
 
 #: src/Entity.php:1151
 msgid "Default value for alarms on financial and administrative information"
 msgstr ""
-"Valor por defecto para alertas sobre información financiera y administrativa"
+"Valor predeterminado para alertas de información financiera y administrativa"
 
 #: src/Entity.php:1161 src/Entity.php:2178
 msgid "Default threshold for cartridges count"
@@ -7552,7 +7553,7 @@ msgstr "Umbral por defecto para contador de consumibles"
 
 #: src/Entity.php:1181 src/Entity.php:2379
 msgid "Alarms on expired certificates"
-msgstr "Alertas para certificados caducados"
+msgstr "Alertas de certificados caducados"
 
 #: src/Entity.php:1191
 msgid "Send Certificate alarms before"
@@ -7751,7 +7752,7 @@ msgstr "Correo electrónico no válido"
 
 #: src/Entity.php:2159
 msgid "Alarms options"
-msgstr "Opciones de alarmas"
+msgstr "Opciones de alertas"
 
 #: src/Entity.php:2163 src/CartridgeItem.php:242 src/Printer.php:545
 #: src/Inventory/Asset/Cartridge.php:58 src/Profile.php:2198
@@ -19122,7 +19123,7 @@ msgstr "¡La notificación no existe!"
 
 #: src/SavedSearch_Alert.php:230
 msgid "create it now"
-msgstr "cearlo ahora"
+msgstr "crearlo ahora"
 
 #: src/SavedSearch_Alert.php:234
 msgid "Notification used:"
@@ -20531,7 +20532,7 @@ msgstr "¡URL base de API no válida!"
 
 #: src/Config.php:197
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "URL de cierre de sesión SSO no válida."
 
 #: src/Config.php:304
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:80
