@@ -313,6 +313,44 @@ final class QuestionActorsDropdownControllerTest extends DbTestCase
         $controller->__invoke($request);
     }
 
+    public function testFetchValuesIgnoresUnexpectedGroupConditions(): void
+    {
+        // Arrange: create a group that is both a requester and a task group
+        $this->login();
+        $this->createItem(Group::class, [
+            'name'         => 'Group with whitelisted conditions',
+            'entities_id'  => $this->getTestRootEntity(only_id: true),
+            'is_requester' => 1,
+            'is_task'      => 1,
+        ]);
+
+        // The token only covers `is_requester`, `is_task` is added to the posted conditions
+        $request = Request::create('', 'POST', [
+            '_idor_token'      => Session::getNewIDORToken(
+                FormActorsDropdown::class,
+                [
+                    'allowed_types'    => [Group::class],
+                    'right_for_users'  => 'all',
+                    'group_conditions' => ['is_requester' => 1],
+                ],
+            ),
+            'allowed_types'    => [Group::class],
+            'right_for_users'  => 'all',
+            'group_conditions' => ['is_requester' => 1, 'is_task' => 0],
+            'page'             => 1,
+            'page_limit'       => 10,
+            'searchText'       => 'Group with whitelisted conditions',
+        ]);
+
+        // Act: fetch dropdown values
+        $controller = new QuestionActorsDropdownController();
+        $response = $controller->__invoke($request);
+        $values = json_decode($response->getContent(), associative: true);
+
+        // Assert: the unexpected condition is ignored
+        $this->assertEquals(['Group with whitelisted conditions'], $this->extractTextFromOutput($values));
+    }
+
     private function extractTextFromOutput(array $dropdown_output): array
     {
         // Helper method to compare expected results more easily
