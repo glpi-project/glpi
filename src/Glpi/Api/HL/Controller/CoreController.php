@@ -683,7 +683,12 @@ HTML;
             $user = new \Glpi\OAuth\User();
             $user->setIdentifier($user_id);
             $auth_request->setUser($user);
-            if (!$request->hasParameter('accept') && !$request->hasParameter('deny')) {
+            // The decision must come from the authorization form, with a valid CSRF token.
+            // A link or a cross site request must not be able to approve the authorization.
+            $has_decision = $request->getMethod() === 'POST'
+                && ($request->hasParameter('accept') || $request->hasParameter('deny'))
+                && Session::validateCSRF($request->getParameters());
+            if (!$has_decision) {
                 // Display the authorization page
                 $glpi_user = new User();
                 $glpi_user->getFromDB($user_id);

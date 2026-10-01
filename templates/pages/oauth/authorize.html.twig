@@ -36,6 +36,7 @@
 
 {% block content_block %}
     <form method="post">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">{{ __('%s wants to access your GLPI account')|format(client.name) }}</h3>

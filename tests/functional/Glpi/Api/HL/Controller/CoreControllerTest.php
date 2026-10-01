@@ -462,4 +462,58 @@ class CoreControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testAuthorizeConsentRequiresPostAndCsrfToken(): void
+    {
+        $this->loginWeb();
+
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['authorization_code'],
+        ]);
+
+        $query = [
+            'response_type' => 'code',
+            'client_id'     => $client->fields['identifier'],
+            'redirect_uri'  => '/api.php/oauth2/redirection',
+            'scope'         => 'user',
+            'state'         => 'xyzABC123',
+        ];
+
+        $call_authorize = function (string $method, array $request_params, callable $assert) use ($query): void {
+            $_REQUEST = $request_params;
+            try {
+                $request = (new Request($method, '/authorize'))->withQueryParams($query);
+                $this->api->call($request, $assert, false);
+            } finally {
+                $_REQUEST = [];
+            }
+        };
+
+        // The consent page is displayed, the authorization is not approved
+        $assert_consent_page = function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->headers(fn($headers) => $this->assertArrayNotHasKey('Location', $headers));
+        };
+
+        // A link cannot approve the authorization
+        $call_authorize('GET', $query + ['accept' => ''], $assert_consent_page);
+        // A form submission without CSRF token cannot approve it either
+        $call_authorize('POST', $query + ['accept' => ''], $assert_consent_page);
+        $call_authorize('POST', $query + ['accept' => '', '_glpi_csrf_token' => 'invalid'], $assert_consent_page);
+
+        // The form submission with a valid CSRF token approves the authorization
+        $call_authorize(
+            'POST',
+            $query + ['accept' => '', '_glpi_csrf_token' => \Session::getNewCSRFToken()],
+            function ($call) {
+                $call->response
+                    ->status(fn($status) => $this->assertEquals(302, $status))
+                    ->headers(fn($headers) => $this->assertStringContainsString('code=', $headers['Location']));
+            }
+        );
+    }
 }
