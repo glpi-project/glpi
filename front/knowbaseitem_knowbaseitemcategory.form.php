@@ -46,6 +46,8 @@ if (isset($_POST["add"])) {
         Html::back();
     }
 
+    $category->check(-1, CREATE, $_POST);
+
     if ($category->add($_POST)) {
         Event::log(
             $_POST["knowbaseitems_id"],
