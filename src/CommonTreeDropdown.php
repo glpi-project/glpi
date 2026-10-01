@@ -572,10 +572,15 @@ TWIG, $twig_params);
         }
 
         $fk   = static::getForeignKeyField();
+        $where = [$fk => $ID];
+        if ($this->maybeDeleted()) {
+            // Children moved to the trash must not be listed with the active ones
+            $where['is_deleted'] = 0;
+        }
         $result = $DB->request(
             [
                 'FROM'  => static::getTable(),
-                'WHERE' => [$fk => $ID],
+                'WHERE' => $where,
                 'ORDER' => 'name',
             ]
         );

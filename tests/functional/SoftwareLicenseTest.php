@@ -723,4 +723,39 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertFalse($non_recursive_license->isRecursive());
     }
 
+    public function testShowChildrenHidesDeletedLicenses(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $software_id = $this->createItem(\Software::class, [
+            'name'        => 'Software with child licenses',
+            'entities_id' => $entities_id,
+        ])->getID();
+        $parent = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'Parent license',
+            'softwares_id' => $software_id,
+            'entities_id'  => $entities_id,
+        ]);
+        $this->createItem(\SoftwareLicense::class, [
+            'name'                => 'Active child license',
+            'softwares_id'        => $software_id,
+            'softwarelicenses_id' => $parent->getID(),
+            'entities_id'         => $entities_id,
+        ]);
+        $deleted_child = $this->createItem(\SoftwareLicense::class, [
+            'name'                => 'Deleted child license',
+            'softwares_id'        => $software_id,
+            'softwarelicenses_id' => $parent->getID(),
+            'entities_id'         => $entities_id,
+        ]);
+        $this->assertTrue($deleted_child->delete(['id' => $deleted_child->getID()]));
+
+        ob_start();
+        $parent->showChildren();
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Active child license', $output);
+        $this->assertStringNotContainsString('Deleted child license', $output);
+    }
 }
