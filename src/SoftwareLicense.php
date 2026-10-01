@@ -1109,17 +1109,7 @@ TWIG, $twig_params);
                     if (!self::canView()) {
                         return '';
                     }
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['softwarelicenses_id' => $item->getID(), 'is_deleted' => 0]
-                        );
-                    }
-                    return self::createTabEntry(
-                        self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;'),
-                        $item::class
-                    );
+                    return parent::getTabNameForItem($item, $withtemplate);
             }
         }
         return '';
