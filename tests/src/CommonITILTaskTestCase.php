@@ -440,6 +440,10 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         $this->assertFalse($other_task->canUpdateItem());
         $this->assertFalse($other_task->canChangeState());
+
+        // Cannot change state of a task whose parent is in the trashbin
+        $this->assertTrue($itil_item->delete(['id' => $itil_item->getID()]));
+        $this->assertFalse($assigned_task->canChangeState());
     }
 
     /**

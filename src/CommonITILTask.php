@@ -301,8 +301,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $parent_loaded = $this->isParentAlreadyLoaded();
         $item = $parent_loaded ? $this->item : static::getItilObjectItemInstance();
         if (
-            ($parent_loaded || $item->getFromDB($this->fields[$item::getForeignKeyField()]))
-            && in_array($item->fields['status'], $item->getClosedStatusArray())
+            (!$parent_loaded && !$item->getFromDB($this->fields[$item::getForeignKeyField()]))
+            || $item->isDeleted()
+            || in_array($item->fields['status'], $item->getClosedStatusArray())
         ) {
             return false;
         }
