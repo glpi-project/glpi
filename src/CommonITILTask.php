@@ -688,13 +688,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     return;
                 }
 
-                // The task form always sends the pending toggle, so `pending=0` does not mean it was
-                // just unchecked. Only read it as a request to resume the parent when the parent is
-                // actually waiting; otherwise editing any field of a task would reopen a solved ticket.
+                // Editing a task must not reopen its parent, as in 10.0, unless the pending toggle
+                // is unchecked on a waiting parent.
                 $parent_status_input = $this->input;
                 if (
-                    isset($parent_status_input['pending'])
-                    && !$parent_status_input['pending']
+                    !($parent_status_input['pending'] ?? 0)
                     && $this->input['_job']->fields['status'] != CommonITILObject::WAITING
                 ) {
                     unset($parent_status_input['pending']);

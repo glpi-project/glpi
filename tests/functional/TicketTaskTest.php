@@ -822,7 +822,7 @@ final class TicketTaskTest extends CommonITILTaskTestCase
         ]));
         $this->assertEquals(\Ticket::ASSIGNED, \Ticket::getById($ticket_id)->fields['status']);
 
-        // No pending field (API): a requester editing a task of a solved ticket still reopens it.
+        // No pending field (API): a requester editing a task of a solved ticket does not reopen it either.
         $ticket = new \Ticket();
         $ticket_id = $ticket->add([
             'name'                => 'ticket title',
@@ -846,7 +846,7 @@ final class TicketTaskTest extends CommonITILTaskTestCase
             'tickets_id' => $ticket_id,
             'actiontime' => 300,
         ]));
-        $this->assertEquals(\Ticket::ASSIGNED, \Ticket::getById($ticket_id)->fields['status']);
+        $this->assertEquals(\Ticket::SOLVED, \Ticket::getById($ticket_id)->fields['status']);
     }
 
     /**
