@@ -757,5 +757,12 @@ class SoftwareLicenseTest extends DbTestCase
 
         $this->assertStringContainsString('Active child license', $output);
         $this->assertStringNotContainsString('Deleted child license', $output);
+
+        // The tab count must match the listed children
+        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $this->assertStringContainsString(
+            'data-testid="tab-count-badge">1<',
+            (new \SoftwareLicense())->getTabNameForItem($parent)
+        );
     }
 }

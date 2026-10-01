@@ -102,10 +102,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    $this->getTable(),
-                    [$this->getForeignKeyField() => $item->getID()]
-                );
+                $criteria = [$this->getForeignKeyField() => $item->getID()];
+                if ($this->maybeDeleted()) {
+                    $criteria['is_deleted'] = 0;
+                }
+                $nb = countElementsInTable($this->getTable(), $criteria);
             }
             return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }

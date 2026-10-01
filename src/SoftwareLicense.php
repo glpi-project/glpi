@@ -1112,7 +1112,7 @@ TWIG, $twig_params);
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),
-                            ['softwarelicenses_id' => $item->getID()]
+                            ['softwarelicenses_id' => $item->getID(), 'is_deleted' => 0]
                         );
                     }
                     return self::createTabEntry(
