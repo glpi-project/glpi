@@ -401,6 +401,24 @@ final class ActorConditionHandlerTest extends AbstractConditionHandlerTest
                     'question_extra_data' => $extra_data,
                 ];
             }
+
+            // A JSON value that is not an actors config must not match any actor
+            yield "Contains check with a JSON scalar value for $type" => [
+                'question_type'       => $type,
+                'condition_operator'  => ValueOperator::CONTAINS,
+                'condition_value'     => ['users_id-1'],
+                'submitted_answer'    => 'true',
+                'expected_result'     => false,
+                'question_extra_data' => $extra_data,
+            ];
+            yield "Not contains check with malformed actors ids for $type" => [
+                'question_type'       => $type,
+                'condition_operator'  => ValueOperator::NOT_CONTAINS,
+                'condition_value'     => ['users_id-1'],
+                'submitted_answer'    => '{"users_ids":"1"}',
+                'expected_result'     => true,
+                'question_extra_data' => $extra_data,
+            ];
         }
     }
 }

@@ -215,6 +215,25 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
         );
     }
 
+    public function testSingleActorDefaultValueCanBeAGroup(): void
+    {
+        $group_id = getItemByTypeName(Group::class, '_test_group_1', true);
+        $builder = (new FormBuilder())->addQuestion(
+            "Question",
+            static::getQuestionType(),
+            ["groups_id-$group_id"],
+            json_encode(new QuestionTypeActorsExtraDataConfig(is_multiple_actors: false)),
+        );
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Question"));
+
+        $question_type = new (static::getQuestionType())();
+        $this->assertEquals(
+            ['groups_id' => [$group_id]],
+            $question_type->getDefaultValue($question, false),
+        );
+    }
+
     public function testIsTypeEnabledWithNullQuestion(): void
     {
         $question_type = new (static::getQuestionType())();
