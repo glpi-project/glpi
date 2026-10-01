@@ -226,7 +226,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 3,
+	'count' => 4,
 	'path' => __DIR__ . '/ajax/kanban.php',
 ];
 $ignoreErrors[] = [

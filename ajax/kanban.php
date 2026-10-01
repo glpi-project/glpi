@@ -128,10 +128,14 @@ $checkParams = static function ($required) {
 if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['column_field', 'column_value']);
     // Update project or task based on changes made in the Kanban
-    $item->update([
+    $update_input = [
         'id'                   => (int) $_POST['items_id'],
         $_POST['column_field'] => $_POST['column_value'],
-    ]);
+    ];
+    if (!$item->can($update_input['id'], UPDATE, $update_input)) {
+        throw new AccessDeniedHttpException();
+    }
+    $item->update($update_input);
 } elseif (($_POST['action'] ?? null) === 'add_item') {
     $checkParams(['inputs']);
 

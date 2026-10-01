@@ -2060,7 +2060,8 @@ abstract class API
                     }
 
                     //check rights
-                    if (!$item->can($object->id, UPDATE)) {
+                    $update_input = $this->inputObjectToArray($object);
+                    if (!$item->can($object->id, UPDATE, $update_input)) {
                         $failed++;
                         $current_res = [$object->id => false,
                             'message'    => __("You don't have permission to perform this action."),
