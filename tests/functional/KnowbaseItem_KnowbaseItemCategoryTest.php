@@ -45,22 +45,7 @@ class KnowbaseItem_KnowbaseItemCategoryTest extends DbTestCase
     public function testFormRequiresRightsOnKnowbaseItem(): void
     {
         // Arrange: a FAQ article visible to everybody and a category, created by another user
-        $this->login();
-        $kbitem = $this->createItem(KnowbaseItem::class, [
-            'name'     => 'Article of glpi',
-            'answer'   => 'Answer',
-            'users_id' => \Session::getLoginUserID(),
-            'is_faq'   => 1,
-        ]);
-        $this->createItem(\Entity_KnowbaseItem::class, [
-            'knowbaseitems_id' => $kbitem->getID(),
-            'entities_id'      => 0,
-            'is_recursive'     => 1,
-        ]);
-        $category = $this->createItem(KnowbaseItemCategory::class, [
-            'name'        => 'Category of glpi',
-            'entities_id' => $this->getTestRootEntity(true),
-        ]);
+        [$kbitem, $category] = $this->createVisibleArticleAndCategory(true);
 
         // A user that can read the knowledge base but not update it
         $this->login('normal', 'normal');
@@ -69,13 +54,87 @@ class KnowbaseItem_KnowbaseItemCategoryTest extends DbTestCase
         $this->assertTrue($kbitem->can($kbitem->getID(), READ));
         $this->assertFalse($kbitem->can($kbitem->getID(), UPDATE));
 
+        // Act + Assert: the link is refused
+        $this->assertInstanceOf(AccessDeniedHttpException::class, $this->submitForm($kbitem, $category));
+        $this->assertSame(0, countElementsInTable(KnowbaseItem_KnowbaseItemCategory::getTable(), [
+            'knowbaseitems_id' => $kbitem->getID(),
+        ]));
+    }
+
+    public function testFormRequiresAccessToTheArticle(): void
+    {
+        // Arrange: a private article of another user, and a category
+        [$kbitem, $category] = $this->createVisibleArticleAndCategory(false, false);
+
+        // A user with the global knowledge base rights, but who cannot see this article
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile'][KnowbaseItem::$rightname] = READ | UPDATE | CREATE;
+        $_SESSION['glpiactiveprofile'][KnowbaseItemCategory::$rightname] = READ;
+        $this->assertTrue($kbitem->getFromDB($kbitem->getID()));
+        $this->assertFalse($kbitem->can($kbitem->getID(), UPDATE));
+
+        // Act + Assert: the link is refused although the global rights are granted
+        $this->assertInstanceOf(AccessDeniedHttpException::class, $this->submitForm($kbitem, $category));
+        $this->assertSame(0, countElementsInTable(KnowbaseItem_KnowbaseItemCategory::getTable(), [
+            'knowbaseitems_id' => $kbitem->getID(),
+        ]));
+    }
+
+    public function testFormAllowsUsersThatCanUpdateTheArticle(): void
+    {
+        // Arrange: an article visible to everybody, and a category
+        [$kbitem, $category] = $this->createVisibleArticleAndCategory(false);
+
+        // A user with the global knowledge base rights, who can see this article
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile'][KnowbaseItem::$rightname] = READ | UPDATE | CREATE;
+        $_SESSION['glpiactiveprofile'][KnowbaseItemCategory::$rightname] = READ;
+        $this->assertTrue($kbitem->getFromDB($kbitem->getID()));
+        $this->assertTrue($kbitem->can($kbitem->getID(), UPDATE));
+
+        // Act + Assert: the link is created
+        $this->assertNotInstanceOf(AccessDeniedHttpException::class, $this->submitForm($kbitem, $category));
+        $this->assertSame(1, countElementsInTable(KnowbaseItem_KnowbaseItemCategory::getTable(), [
+            'knowbaseitems_id' => $kbitem->getID(),
+        ]));
+    }
+
+    /**
+     * @return array{0: KnowbaseItem, 1: KnowbaseItemCategory}
+     */
+    private function createVisibleArticleAndCategory(bool $is_faq, bool $visible = true): array
+    {
+        $this->login();
+        $kbitem = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article of glpi',
+            'answer'   => 'Answer',
+            'users_id' => \Session::getLoginUserID(),
+            'is_faq'   => $is_faq ? 1 : 0,
+        ]);
+        if ($visible) {
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $kbitem->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+        $category = $this->createItem(KnowbaseItemCategory::class, [
+            'name'        => 'Category of glpi',
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+
+        return [$kbitem, $category];
+    }
+
+    private function submitForm(KnowbaseItem $kbitem, KnowbaseItemCategory $category): ?\Throwable
+    {
         $_POST = [
             'add'                       => 1,
             'knowbaseitems_id'          => $kbitem->getID(),
             'knowbaseitemcategories_id' => $category->getID(),
         ];
 
-        // Act: submit the form
         $exception = null;
         try {
             include GLPI_ROOT . '/front/knowbaseitem_knowbaseitemcategory.form.php';
@@ -85,10 +144,6 @@ class KnowbaseItem_KnowbaseItemCategoryTest extends DbTestCase
             $_POST = [];
         }
 
-        // Assert: the link is refused
-        $this->assertInstanceOf(AccessDeniedHttpException::class, $exception);
-        $this->assertSame(0, countElementsInTable(KnowbaseItem_KnowbaseItemCategory::getTable(), [
-            'knowbaseitems_id' => $kbitem->getID(),
-        ]));
+        return $exception;
     }
 }
