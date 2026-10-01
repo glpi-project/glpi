@@ -7352,12 +7352,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of static method Gettext\\\\Languages\\\\Language\\:\\:getById\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -19324,12 +19318,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset 2 might not exist on array\\{0\\: int\\<0, max\\>, 1\\: int\\<0, max\\>, 2\\: int, 3\\: string, mime\\: string, channels\\: int, bits\\: int\\}\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 2 on array\\{non\\-empty\\-string, non\\-empty\\-string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
