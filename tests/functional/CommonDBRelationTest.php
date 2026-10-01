@@ -542,4 +542,26 @@ class CommonDBRelationTest extends DbTestCase
         $this->assertTrue($item->canUpdateItem());
         $this->assertTrue((new $relation_class())->can(-1, CREATE, $input));
     }
+
+    public function testRSSFeedOwnerCanShareWithUserWithoutUserReadRight(): void
+    {
+        // Arrange: a feed of the current user, who has no global right on users
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile']['rssfeed_public'] = READ | UPDATE | \RSSFeed::PERSONAL;
+        $_SESSION['glpiactiveprofile']['user'] = 0;
+        $feed = $this->createItem(\RSSFeed::class, [
+            'name'     => 'My feed',
+            'url'      => 'https://example.com/feed',
+            'users_id' => \Session::getLoginUserID(),
+        ], ['url']);
+
+        $input = [
+            'rssfeeds_id' => $feed->getID(),
+            'users_id'    => getItemByTypeName(\User::class, 'tech', true),
+        ];
+
+        // Act/Assert: the owner can still share the feed with a user
+        $this->assertTrue(\RSSFeed_User::canCreate());
+        $this->assertTrue((new \RSSFeed_User())->can(-1, CREATE, $input));
+    }
 }
