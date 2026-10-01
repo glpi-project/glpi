@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use AbstractITILChildTemplate;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\AbstractITILChildTemplateTest;
 use ITILValidationTemplate as GlobalITILValidationTemplate;
 use ITILValidationTemplate_Target;
@@ -98,6 +99,38 @@ class ITILValidationTemplateTest extends AbstractITILChildTemplateTest
             $this->assertEquals(\User::class, $target['itemtype']);
             $this->assertContains($target['items_id'], [1, 2, 3, 4]);
             $this->assertEquals(1, $target['groups_id']);
+        }
+    }
+
+    public function testAjaxRenderingRequiresParentReadRight(): void
+    {
+        // Arrange: a ticket that the self-service user is not involved in
+        $this->login();
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'Ticket of another user',
+            'content'     => 'Ticket of another user',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $template = $this->createItem(GlobalITILValidationTemplate::class, [
+            'name'    => 'Validation template',
+            'content' => 'Validation for {{ itemtype.name }}',
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse($ticket->can($ticket->getID(), READ));
+
+        $_POST['validationtemplates_id'] = $template->getID();
+        $_POST['items_id']               = $ticket->getID();
+        $_POST['itemtype']               = \Ticket::class;
+
+        // Act/Assert: rendering the template on this ticket is refused
+        $this->expectException(AccessDeniedHttpException::class);
+        try {
+            ob_start();
+            include GLPI_ROOT . '/ajax/itilvalidation.php';
+        } finally {
+            ob_end_clean();
+            unset($_POST['validationtemplates_id'], $_POST['items_id'], $_POST['itemtype']);
         }
     }
 

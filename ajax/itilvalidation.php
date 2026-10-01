@@ -79,6 +79,7 @@ $parent = new $parents_itemtype();
 if (!$parent->getFromDB($parents_id)) {
     throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
 }
+$parent->check($parents_id, READ);
 
 $targets = ITILValidationTemplate_Target::getTargets($template->getID());
 // Both template creation form and validation creation form permits to create targets
