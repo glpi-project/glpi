@@ -85,16 +85,17 @@ class ActorConditionHandler implements ConditionHandlerInterface
         // During form rendering, applyValueOperator is called to compute items
         // visibility using the question default value, which is stored as JSON.
         if (is_string($a) && json_validate($a)) {
-            $config = QuestionTypeActorsDefaultValueConfig::jsonDeserialize(json_decode($a, true));
+            $decoded = json_decode($a, true);
             $a = [];
             foreach (
                 [
-                    User::class     => $config->getUsersIds(),
-                    Group::class    => $config->getGroupsIds(),
-                    Supplier::class => $config->getSuppliersIds(),
-                ] as $itemtype => $ids
+                    User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+                    Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+                    Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+                ] as $itemtype => $key
             ) {
-                foreach ($ids as $id) {
+                $ids = is_array($decoded) ? ($decoded[$key] ?? []) : [];
+                foreach (is_array($ids) ? $ids : [] as $id) {
                     $a[] = getForeignKeyFieldForItemType($itemtype) . '-' . $id;
                 }
             }
