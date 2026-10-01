@@ -183,6 +183,25 @@ class PendingReason_Item extends CommonDBRelation
     }
 
     /**
+     * Get the calendar to use: the pending reason one, else the item's one
+     *
+     * @return Calendar|false
+     */
+    private function getCalendarToUse(): Calendar|false
+    {
+        $calendars_id = PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id'];
+
+        if (!$calendars_id && !empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
+            $item = getItemForItemtype($this->fields['itemtype']);
+            if ($item instanceof CommonITILObject && $item->getFromDB($this->fields['items_id'])) {
+                $calendars_id = $item->getCalendar();
+            }
+        }
+
+        return Calendar::getById($calendars_id);
+    }
+
+    /**
      * Get auto resolve date
      *
      * @return string|bool date (Y-m-d H:i:s) or false
@@ -200,9 +219,7 @@ class PendingReason_Item extends CommonDBRelation
             return false;
         }
 
-        $calendar = Calendar::getById(
-            PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
-        );
+        $calendar = $this->getCalendarToUse();
 
         if ($calendar instanceof Calendar) {
             return $calendar->computeEndDate(
@@ -236,9 +253,7 @@ class PendingReason_Item extends CommonDBRelation
         $expected_bumps = max($this->fields['followups_before_resolution'], 0);
         $remaining_bumps = $expected_bumps - $this->fields['bump_count'] + 1;
 
-        $calendar = Calendar::getById(
-            PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
-        );
+        $calendar = $this->getCalendarToUse();
 
         if ($calendar instanceof Calendar) {
             return $calendar->computeEndDate(
