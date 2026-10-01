@@ -386,12 +386,7 @@ class Infocom extends CommonDBChild
 
         switch ($itemtype) {
             case 'SoftwareLicense':
-                $criteria['INNER JOIN']['glpi_softwares'] = [
-                    'ON'  => [
-                        'glpi_softwarelicenses' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
-                    ],
-                ];
+                // Do not join the software, a license may not be linked to any
                 $criteria['WHERE'][] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
                 break;
             default:
