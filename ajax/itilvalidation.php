@@ -37,6 +37,7 @@
  * @since 9.1
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 use function Safe\json_encode;
@@ -78,6 +79,9 @@ if (!$template->getFromDB($validationtemplates_id)) {
 $parent = new $parents_itemtype();
 if (!$parent->getFromDB($parents_id)) {
     throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
+}
+if (!$parent->can($parents_id, READ)) {
+    throw new AccessDeniedHttpException();
 }
 
 $targets = ITILValidationTemplate_Target::getTargets($template->getID());
