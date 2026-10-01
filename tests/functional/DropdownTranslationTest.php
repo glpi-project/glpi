@@ -36,9 +36,11 @@ namespace tests\units;
 
 use DropdownTranslation;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Category;
 use Glpi\Tests\DbTestCase;
 use ITILCategory;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class DropdownTranslationTest extends DbTestCase
 {
@@ -265,5 +267,56 @@ class DropdownTranslationTest extends DbTestCase
 
         // Assert: translation should correspond to the given fallback value parameter
         $this->assertEquals('my fallback value', $translation);
+    }
+
+    public static function formActionProvider(): iterable
+    {
+        yield 'add' => ['add'];
+        yield 'update' => ['update'];
+        yield 'purge' => ['purge'];
+    }
+
+    #[DataProvider('formActionProvider')]
+    public function testFormRequiresRightsOnDropdown(string $action): void
+    {
+        // Arrange: a category with an existing translation
+        $this->login();
+        $category = $this->createItem(ITILCategory::class, [
+            'name'        => 'Category to translate',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $existing_translation = $this->createItem(DropdownTranslation::class, [
+            'itemtype' => ITILCategory::class,
+            'items_id' => $category->getID(),
+            'language' => 'fr_FR',
+            'field'    => 'name',
+            'value'    => 'Categorie a traduire',
+        ]);
+
+        $count_before = countElementsInTable(DropdownTranslation::getTable(), ['items_id' => $category->getID(), 'itemtype' => ITILCategory::class]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse($category->can($category->getID(), UPDATE));
+
+        $_POST = match ($action) {
+            'add'    => ['add' => 1, 'itemtype' => ITILCategory::class, 'items_id' => $category->getID(), 'language' => 'es_ES', 'field' => 'name', 'value' => 'Hacked'],
+            'update' => ['update' => 1, 'id' => $existing_translation->getID(), 'itemtype' => ITILCategory::class, 'items_id' => $category->getID(), 'value' => 'Hacked'],
+            'purge'  => ['purge' => 1, 'id' => $existing_translation->getID(), 'itemtype' => ITILCategory::class, 'items_id' => $category->getID()],
+        };
+
+        // Act: submit the translation form
+        $exception = null;
+        try {
+            include GLPI_ROOT . '/front/dropdowntranslation.form.php';
+        } catch (\Throwable $e) {
+            $exception = $e;
+        } finally {
+            $_POST = [];
+        }
+
+        // Assert: the action is refused and nothing is changed
+        $this->assertInstanceOf(AccessDeniedHttpException::class, $exception);
+        $this->assertSame($count_before, countElementsInTable(DropdownTranslation::getTable(), ['items_id' => $category->getID(), 'itemtype' => ITILCategory::class]));
+        $this->assertSame('Categorie a traduire', DropdownTranslation::getById($existing_translation->getID())->fields['value']);
     }
 }
