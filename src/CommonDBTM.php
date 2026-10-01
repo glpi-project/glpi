@@ -3040,6 +3040,16 @@ class CommonDBTM extends CommonGLPI
                 ) {
                     return true;
                 }
+                // Moving the item to another entity requires access to the target entity
+                if (
+                    is_array($input)
+                    && isset($input['entities_id'])
+                    && $this->isEntityAssign()
+                    && (int) $input['entities_id'] !== (int) $this->getEntityID()
+                    && !Session::haveAccessToEntity((int) $input['entities_id'])
+                ) {
+                    return false;
+                }
                 return (static::canUpdate() && $this->canUpdateItem());
 
             case DELETE:

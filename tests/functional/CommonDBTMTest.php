@@ -2830,4 +2830,34 @@ class CommonDBTMTest extends DbTestCase
 
         $this->assertEquals($expected_result, $template->can($template->getID(), CREATE, $input));
     }
+
+    public function testCannotMoveItemToInaccessibleEntity(): void
+    {
+        $this->login();
+        $child1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'Computer to move',
+            'entities_id' => $child1,
+        ]);
+
+        // Session restricted to child1 only
+        $this->setEntity('_test_child_1', false);
+        $this->assertFalse(\Session::haveAccessToEntity($child2));
+
+        // Updating within the accessible entity is allowed
+        $input_same = ['id' => $computer->getID()];
+        $this->assertTrue($computer->can($computer->getID(), UPDATE, $input_same));
+
+        // Moving to an entity the user cannot access is refused by the rights check
+        // used by the front controllers, the massive actions and the API before any update.
+        $input_move = ['id' => $computer->getID(), 'entities_id' => $child2];
+        $this->assertFalse($computer->can($computer->getID(), UPDATE, $input_move));
+
+        // Moving to an entity the user can access stays allowed
+        $this->setEntity('_test_root_entity', true);
+        $input_move_ok = ['id' => $computer->getID(), 'entities_id' => $child2];
+        $this->assertTrue($computer->can($computer->getID(), UPDATE, $input_move_ok));
+    }
 }
