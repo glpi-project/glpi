@@ -3253,7 +3253,7 @@ HTML;
         $this->createItem(Monitor::class, [
             'name'          => 'Connect monitor of someone else',
             'entities_id'   => $entities_id,
-            'users_id_tech' => getItemByTypeName(\User::class, 'tech', true),
+            'users_id_tech' => getItemByTypeName(User::class, 'tech', true),
         ]);
 
         // The user can only see the monitors assigned to him
