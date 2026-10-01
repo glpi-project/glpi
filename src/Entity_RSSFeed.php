@@ -46,6 +46,8 @@ class Entity_RSSFeed extends CommonDBRelation
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
     public static $logs_for_item_2     = false;
 
+    public static $checkAlwaysBothItems   = true;
+
 
     /**
      * Get entities for a rssfeed
