@@ -51,7 +51,7 @@
         "league/oauth2-server": "^9.4",
         "matomo/device-detector": "^6.5",
         "mexitek/phpcolors": "^1.0",
-        "monolog/monolog": "^3.10",
+        "monolog/monolog": "^3.12",
         "paragonie/sodium_compat": "^2.5",
         "phpdocumentor/reflection-docblock": "^6.0",
         "phpoffice/phpspreadsheet": "^5.10",
