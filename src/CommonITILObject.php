@@ -9001,6 +9001,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $item_link = getItemForItemtype($item_link_class);
             foreach ($this->input['items_id'] as $itemtype => $items) {
                 foreach ($items as $items_id) {
+                    if (!$this->canLinkItem((string) $itemtype, (int) $items_id)) {
+                        continue;
+                    }
                     $item_link->add([
                         'items_id'                    => $items_id,
                         'itemtype'                    => $itemtype,
@@ -9010,6 +9013,34 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
             }
         }
+    }
+
+    /**
+     * Check that the current user can link the given item, like the item dropdowns of the forms only list the accessible items.
+     *
+     * @param string $itemtype
+     * @param int $items_id
+     *
+     * @return bool
+     */
+    private function canLinkItem(string $itemtype, int $items_id): bool
+    {
+        if (Session::getLoginUserID() === false) {
+            // System action (cron, rule, inventory, ...)
+            return true;
+        }
+
+        $item = getItemForItemtype($itemtype);
+        if (!($item instanceof CommonDBTM) || !$item->getFromDB($items_id)) {
+            return false;
+        }
+
+        // The self-service users can link their devices without having the read right on the assets
+        if (Session::getCurrentInterface() === 'helpdesk') {
+            return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
+        }
+
+        return $item->can($items_id, READ);
     }
 
     /**
