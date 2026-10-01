@@ -3842,7 +3842,14 @@ HTML;
             return false;
         }
 
-        $where = [];
+        $where = $item->getSystemSQLCriteria();
+
+        if (Toolbox::hasTrait($post['itemtype'], AssignableItem::class)) {
+            $visibility_criteria = $post['itemtype']::getAssignableVisiblityCriteria();
+            if (count($visibility_criteria)) {
+                $where[] = $visibility_criteria;
+            }
+        }
 
         if ($item->maybeDeleted()) {
             $where["$table.is_deleted"] = 0;
