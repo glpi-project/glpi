@@ -3276,6 +3276,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ) {
             $docitem = new Document_Item();
             foreach ($this->input['_documents_id'] as $docID) {
+                if (!$this->canAttachDocument((int) $docID)) {
+                    continue;
+                }
                 $docitem->add(['documents_id' => $docID,
                     '_do_notif'    => false,
                     'itemtype'     => $this->getType(),
@@ -9041,6 +9044,30 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         return $item->can($items_id, READ);
+    }
+
+    /**
+     * Check that the current user can attach the given existing document.
+     *
+     * @param int $documents_id
+     *
+     * @return bool
+     */
+    private function canAttachDocument(int $documents_id): bool
+    {
+        if (Session::getLoginUserID() === false) {
+            // System action (cron, mail collector, ...)
+            return true;
+        }
+
+        $document = new Document();
+        if (!$document->getFromDB($documents_id)) {
+            return false;
+        }
+
+        // The documents that were just uploaded by the user can be attached
+        return (int) $document->fields['users_id'] === Session::getLoginUserID()
+            || $document->can($documents_id, READ);
     }
 
     /**
