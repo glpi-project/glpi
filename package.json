@@ -26,7 +26,7 @@
         "@tabler/core": "^1.4.0",
         "@tabler/icons-webfont": "^3.35.0",
         "@tiptap/core": "^3.30.5",
-        "@tiptap/extension-bubble-menu": "^3.30.5",
+        "@tiptap/extension-bubble-menu": "^3.30.6",
         "@tiptap/extension-file-handler": "^3.30.5",
         "@tiptap/extension-image": "^3.30.5",
         "@tiptap/extension-placeholder": "^3.30.5",
