@@ -957,16 +957,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.2.4",
+            "version": "1.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "c86e316ee9f6b636ded5d0fe74f835a9646f835a"
+                "reference": "0d5a1415cda6bf5cf41ff85c605fe3b4808f8f0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/c86e316ee9f6b636ded5d0fe74f835a9646f835a",
-                "reference": "c86e316ee9f6b636ded5d0fe74f835a9646f835a",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/0d5a1415cda6bf5cf41ff85c605fe3b4808f8f0d",
+                "reference": "0d5a1415cda6bf5cf41ff85c605fe3b4808f8f0d",
                 "shasum": ""
             },
             "require": {
@@ -1026,7 +1026,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2026-08-18T13:17:07+00:00"
+            "time": "2026-09-01T09:49:07+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -7625,16 +7625,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.38.2",
+            "version": "v1.43.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6"
+                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
-                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
+                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
                 "shasum": ""
             },
             "require": {
@@ -7686,7 +7686,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.38.2"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.0"
             },
             "funding": [
                 {
@@ -7706,7 +7706,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-27T06:59:30+00:00"
+            "time": "2026-09-24T15:19:04+00:00"
         },
         {
             "name": "symfony/polyfill-php83",
