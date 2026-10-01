@@ -1086,8 +1086,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         return [
             'on_redirect' => static function (RequestInterface $request, ResponseInterface $response, UriInterface $uri): void {
-                if (!Toolbox::isUrlSafe((string) $uri)) {
-                    throw new RequestException(sprintf('Redirection to "%s" is not allowed.', $uri), $request, $response);
+                // The fragment is not sent to the server, so it must not be matched by the allowlist
+                if (!Toolbox::isUrlSafe((string) $uri->withFragment(''))) {
+                    // Do not attach the redirect response, the queued webhook must stay retryable
+                    throw new RequestException(sprintf('Redirection to "%s" is not allowed.', $uri), $request);
                 }
             },
         ];

@@ -34,7 +34,6 @@
 
 namespace tests\units;
 
-
 use Change;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\CriteriaFilter;
@@ -684,11 +683,23 @@ JSON;
             $exception = $e;
         }
         $this->assertInstanceOf(RequestException::class, $exception);
+        $this->assertNull($exception->getResponse(), 'The redirect response must not be reported as a delivery');
         $this->assertSame(1, $mock->count(), 'The redirected request must not be sent');
 
         // A redirection to an allowed URL is still followed
         $mock = new MockHandler([
             new Response(302, ['Location' => 'https://example.org/hook']),
+            new Response(200, [], 'ok'),
+        ]);
+        $client = new Client([
+            'handler'         => HandlerStack::create($mock),
+            'allow_redirects' => Webhook::getSafeRedirectOptions(),
+        ]);
+        $this->assertSame('ok', (string) $client->request('GET', 'https://example.com/hook')->getBody());
+
+        // The fragment of an allowed redirection is ignored
+        $mock = new MockHandler([
+            new Response(302, ['Location' => 'https://example.org/hook#status']),
             new Response(200, [], 'ok'),
         ]);
         $client = new Client([
