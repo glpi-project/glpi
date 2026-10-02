@@ -86,6 +86,11 @@ class IPUtilitiesTest extends GLPITestCase
         // Several trusted proxies
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.2.3.4, 10.8.4.5, fd79:a3b1:c4d2:1::1';
         $this->assertEquals('10.8.4.5', $ipUtilities::getClientIP());
+        // An entry that is not a valid IP is not relied on, and the entries before it are not used
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.2.3.4, ';
+        $this->assertEquals('10.10.1.3', $ipUtilities::getClientIP());
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.2.3.4, unknown';
+        $this->assertEquals('10.10.1.3', $ipUtilities::getClientIP());
 
         // Not trusted header
         unset($_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -112,6 +117,17 @@ class IPUtilitiesTest extends GLPITestCase
         // The entries sent by the client before the proxy are not relied on in the Forwarded header too
         $_SERVER['HTTP_FORWARDED'] = 'for=1.2.3.4;proto=http, for="[fd79:a3b1:c4d2:1::5]";proto=http';
         $this->assertEquals('fd79:a3b1:c4d2:1::5', $ipUtilities::getClientIP());
+        // Separators inside quoted strings are ignored
+        $_SERVER['HTTP_FORWARDED'] = 'for=192.0.2.1;foo="opaque, for=198.51.100.7", for="[fd79:a3b1:c4d2:1::1]"';
+        $this->assertEquals('192.0.2.1', $ipUtilities::getClientIP());
+        // Ports are removed
+        $_SERVER['HTTP_FORWARDED'] = 'for=192.0.2.1, for="[fd79:a3b1:c4d2:1::1]:1234"';
+        $this->assertEquals('192.0.2.1', $ipUtilities::getClientIP());
+        $_SERVER['HTTP_FORWARDED'] = 'for="192.0.2.43:47011"';
+        $this->assertEquals('192.0.2.43', $ipUtilities::getClientIP());
+        // Obfuscated identifiers are not relied on
+        $_SERVER['HTTP_FORWARDED'] = 'for=1.2.3.4, for=unknown';
+        $this->assertEquals('10.10.1.3', $ipUtilities::getClientIP());
         unset($_SERVER['HTTP_FORWARDED']);
         $this->assertEquals('10.10.4.4', $ipUtilities::getClientIP());
     }
