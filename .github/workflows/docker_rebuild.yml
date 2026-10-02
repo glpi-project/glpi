@@ -1,7 +1,7 @@
 name: "Docker nightly and security rebuild"
 
 env:
-  SUPPORTED_VERSIONS: "12.0, 11.0, 10.0"
+  SUPPORTED_VERSIONS: "12.0, 11.0"
 
 permissions:
   contents: "read"
@@ -89,7 +89,6 @@ jobs:
                     'glpi-version': latestVersionTag,
                     'image-tag': '',
                     'no-cache': true,
-                    'use-legacy-marketplace-path': Number(latestVersionTag.split('.')[0]) < 11,
                   });
                 } else {
                   core.warning(`No stable releases found for supported version: ${supportedVersion}`);
@@ -103,7 +102,6 @@ jobs:
                   'glpi-version': 'main',
                   'image-tag': 'dev-nightly',
                   'no-cache': false,
-                  'use-legacy-marketplace-path': false,
                 },
                 ...supportedVersions.map(supportedVersion => {
                   const major = supportedVersion.split('.')[0];
@@ -111,7 +109,6 @@ jobs:
                     'glpi-version': `${supportedVersion}/bugfixes`,
                     'image-tag': `${supportedVersion}-nightly`,
                     'no-cache': false,
-                    'use-legacy-marketplace-path': Number(major) < 11,
                   };
                 })
               );
@@ -151,4 +148,3 @@ jobs:
       glpi-version: ${{ matrix.glpi-version }}
       image-tag: ${{ matrix.image-tag }}
       no-cache: ${{ matrix.no-cache }}
-      use-legacy-marketplace-path: ${{ matrix.use-legacy-marketplace-path }}
