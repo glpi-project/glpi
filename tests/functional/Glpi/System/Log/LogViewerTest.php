@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,14 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
+namespace tests\units\Glpi\System\Log;
+
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\System\Log\LogViewer;
+use Glpi\Tests\DbTestCase;
 
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+class LogViewerTest extends DbTestCase
+{
+    public function testAjaxRefreshRequiresSystemLogsRight(): void
+    {
+        // Arrange: a user that can read the items history but not the system logs
+        $this->login();
+        $_SESSION['glpiactiveprofile']['logs'] = READ;
+        $_SESSION['glpiactiveprofile'][LogViewer::$rightname] = 0;
 
-Session::checkRight(LogViewer::$rightname, READ);
+        $_POST['action']   = 'refresh_log_file';
+        $_POST['filepath'] = 'php-errors.log';
 
-if (($_POST['action'] ?? "") == "refresh_log_file") {
-    $logviewer = new LogViewer();
-    $logviewer->showLogFile($_POST['filepath'], true);
+        // Act/Assert: the log file content is not returned
+        $this->expectException(AccessDeniedHttpException::class);
+        try {
+            ob_start();
+            include GLPI_ROOT . '/ajax/logviewer.php';
+        } finally {
+            ob_end_clean();
+            unset($_POST['action'], $_POST['filepath']);
+        }
+    }
 }
