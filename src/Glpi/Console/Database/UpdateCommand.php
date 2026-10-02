@@ -44,6 +44,7 @@ use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\System\Requirement\DatabaseTablesEngine;
+use Glpi\System\Requirement\DbConfiguration;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use GLPIKey;
@@ -108,7 +109,13 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     public function getSpecificMandatoryRequirements(): array
     {
         $valid_db = $this->db instanceof DBmysql && $this->db->connected;
-        return $valid_db ? [new DatabaseTablesEngine($this->db)] : [];
+        return $valid_db
+            ? [
+                new DatabaseTablesEngine($this->db),
+                // Enable the `max_allowed_packet` check as it is needed to import the default data.
+                new DbConfiguration($this->db, true),
+            ]
+            : [];
     }
 
     protected function configure()

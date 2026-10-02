@@ -48,7 +48,9 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 16384,
+                    'max_allowed_packet'  => 67108864,
                 ],
+                'check_max_allowed_packet' => true,
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
@@ -59,7 +61,9 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 8192,
+                    'max_allowed_packet'  => 16777216,
                 ],
+                'check_max_allowed_packet' => true,
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
@@ -70,7 +74,9 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 4096,
+                    'max_allowed_packet'  => 67108864,
                 ],
+                'check_max_allowed_packet' => true,
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
@@ -81,7 +87,9 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '10.6.8-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 16384,
+                    'max_allowed_packet'  => 16777216,
                 ],
+                'check_max_allowed_packet' => true,
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
@@ -92,17 +100,60 @@ class DbConfigurationTest extends GLPITestCase
                 'version'   => '10.6.8-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 4096,
+                    'max_allowed_packet'  => 16777216,
                 ],
+                'check_max_allowed_packet' => true,
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
+                ],
+            ],
+            [
+                // "max_allowed_packet" too low
+                'version'   => '10.11.18-MariaDB',
+                'variables' => [
+                    'innodb_page_size'    => 16384,
+                    'max_allowed_packet'  => 1048576,
+                ],
+                'check_max_allowed_packet' => true,
+                'validated' => false,
+                'messages'  => [
+                    '"max_allowed_packet" must be >= 16 MiB (current value is 1024 KiB).',
+                ],
+            ],
+            [
+                // Both variables incompatible
+                'version'   => '10.11.18-MariaDB',
+                'variables' => [
+                    'innodb_page_size'    => 4096,
+                    'max_allowed_packet'  => 1048576,
+                ],
+                'check_max_allowed_packet' => true,
+                'validated' => false,
+                'messages'  => [
+                    '"innodb_page_size" must be >= 8KB.',
+                    '"max_allowed_packet" must be >= 16 MiB (current value is 1024 KiB).',
+                ],
+            ],
+            [
+                // A too low "max_allowed_packet" is ignored when the check is not
+                // enabled (e.g. migrations), only "innodb_page_size" is checked.
+                'version'   => '10.11.18-MariaDB',
+                'variables' => [
+                    'innodb_page_size'    => 16384,
+                    'max_allowed_packet'  => 1048576,
+                ],
+                'check_max_allowed_packet' => false,
+                'validated' => true,
+                'messages'  => [
+                    'Database configuration is OK.',
                 ],
             ],
         ];
     }
 
     #[DataProvider('configurationProvider')]
-    public function testCheck(string $version, array $variables, bool $validated, array $messages)
+    public function testCheck(string $version, array $variables, bool $check_max_allowed_packet, bool $validated, array $messages)
     {
 
         $that = $this;
@@ -132,7 +183,7 @@ class DbConfigurationTest extends GLPITestCase
             }
         );
 
-        $instance = new DbConfiguration($db);
+        $instance = new DbConfiguration($db, $check_max_allowed_packet);
         $this->assertEquals($validated, $instance->isValidated());
         $this->assertEquals(
             $messages,
