@@ -87,7 +87,8 @@ class Document_Item extends CommonDBRelation
             }
         }
 
-        return $this->canEditLinkedKnowbaseItem() && parent::canCreateItem();
+        return $this->canEditLinkedKnowbaseItem()
+            && (parent::canCreateItem() || $this->canAddToLinkedItem());
     }
 
     public function canUpdateItem(): bool
@@ -116,6 +117,20 @@ class Document_Item extends CommonDBRelation
         }
 
         return !$item->getFromDB($this->fields['items_id']) || $item->canAddItem(Document::class);
+    }
+
+    /**
+     * Same rule as the "Add a document" form, see `CommonDBTM::canAddItem()`.
+     */
+    private function canAddToLinkedItem(): bool
+    {
+        $item     = getItemForItemtype((string) $this->fields['itemtype']);
+        $document = new Document();
+
+        return $item instanceof CommonDBTM
+            && $item->getFromDB($this->fields['items_id'])
+            && $item->canAddItem(Document::class)
+            && $document->can($this->fields['documents_id'], READ);
     }
 
     public function canViewItem(): bool

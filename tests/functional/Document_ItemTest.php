@@ -875,4 +875,64 @@ class Document_ItemTest extends DbTestCase
         ];
         $this->assertFalse((new Document_Item())->can(-1, CREATE, $input));
     }
+
+    public function testCannotUnlinkDocumentWithOnlyReadRights(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'content'     => 'x',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $link_id = $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ])->getID();
+
+        // Can view both items, but can update neither
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ | \Ticket::READALL;
+        $this->assertTrue($ticket->can($ticket->getID(), READ));
+        $this->assertFalse($ticket->can($ticket->getID(), UPDATE));
+
+        $link = new Document_Item();
+        $this->assertFalse($link->can($link_id, DELETE));
+        $this->assertFalse($link->can($link_id, PURGE));
+
+        // Update right on the document side is enough
+        $_SESSION['glpiactiveprofile']['document'] = READ | UPDATE;
+        $this->assertTrue($link->can($link_id, PURGE));
+    }
+
+    public function testCanLinkExistingDocumentWithCreateRight(): void
+    {
+        $this->login();
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'Link ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Link ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $input = [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Computer::class,
+            'items_id'     => $computer->getID(),
+        ];
+
+        $_SESSION['glpiactiveprofile']['document'] = READ | CREATE;
+        $_SESSION['glpiactiveprofile']['computer'] = READ;
+        $this->assertTrue($computer->canAddItem(\Document::class));
+        $this->assertTrue((new Document_Item())->can(-1, CREATE, $input));
+
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $this->assertFalse($computer->canAddItem(\Document::class));
+        $this->assertFalse((new Document_Item())->can(-1, CREATE, $input));
+    }
 }
