@@ -53,6 +53,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Input\SearchInputInterface;
@@ -183,6 +184,10 @@ final class SearchEngine
                     $linked[] = $config_itemtype::getType();
                 }
             }
+        }
+
+        if ($item instanceof CommonITILObject && Form::canView()) {
+            $linked[] = Form::getType();
         }
 
         // Add entity meta if needed
