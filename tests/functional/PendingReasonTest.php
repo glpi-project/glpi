@@ -186,6 +186,40 @@ class PendingReasonTest extends DbTestCase
         $this->assertEquals($expected, $pending_reason_item->getNextFollowupDate());
     }
 
+    public function testGetNextFollowupDateUsesEntityCalendar(): void
+    {
+        $this->login();
+        $entity = $this->createItem('Entity', [
+            'name'              => __FUNCTION__,
+            'entities_id'       => 0,
+            'calendars_strategy' => 0,
+            'calendars_id'      => getItemByTypeName('Calendar', 'Default', true),
+        ]);
+        $ticket = $this->createItem('Ticket', [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity->getID(),
+        ]);
+        $pending_reason = $this->createItem('PendingReason', [
+            'name'         => __FUNCTION__,
+            'calendars_id' => 0,
+        ]);
+
+        $pending_item = new PendingReason_Item();
+        $pending_item->fields = [
+            'itemtype'                    => 'Ticket',
+            'items_id'                    => $ticket->getID(),
+            'pendingreasons_id'           => $pending_reason->getID(),
+            'followup_frequency'          => 3 * DAY_TIMESTAMP,
+            'followups_before_resolution' => 0,
+            'bump_count'                  => 0,
+            'last_bump_date'              => '2026-09-24 10:00:00', // Thursday
+        ];
+
+        // Saturday and Sunday are skipped
+        $this->assertEquals('2026-09-29 10:00:00', $pending_item->getNextFollowupDate());
+    }
+
     public static function getAutoResolvedateProvider(): array
     {
         return [
