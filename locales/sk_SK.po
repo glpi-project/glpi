@@ -9,8 +9,8 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # Radoslav Koren, 2026
 # Peto (wt-ts) <peter.tuharsky@gmail.com>, 2026
-# feonsu <feonsu@gmail.com>, 2026
 # Cédric Anne, 2026
+# feonsu <feonsu@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-28 03:27+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2026\n"
+"Last-Translator: feonsu <feonsu@gmail.com>, 2026\n"
 "Language-Team: Slovak (Slovakia) (https://app.transifex.com/glpi/teams/1637/sk_SK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20909,15 +20909,15 @@ msgstr ""
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:606
 msgid "SSL client key"
-msgstr ""
+msgstr "Kľúč SSL klienta"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:607
 msgid "SSL CA path"
-msgstr ""
+msgstr "Cesta k SSL CA"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:608
 msgid "SSL cipher"
-msgstr ""
+msgstr "Šifra SSL"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:637
 #: src/Glpi/Console/Database/EnableTimezonesCommand.php:83
@@ -21316,7 +21316,7 @@ msgstr "Nový kľúč zabezpečenia bol vygenerovaný, databáza bola aktualizov
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:51
 msgid "(Re)generate OAuth keys"
-msgstr ""
+msgstr "(Opätovne) vygenerovať kľúče OAuth"
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:52
 msgid ""
@@ -21324,18 +21324,23 @@ msgid ""
 " be invalidated. This only generates missing keys unless the --force option "
 "is used."
 msgstr ""
+"Tento príkaz znova vygeneruje kľúče OAuth. Všetky existujúce prístupové "
+"tokeny budú zneplatnené. Ak nepoužijete parameter --force, vygenerujú sa iba"
+" chýbajúce kľúče."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:53
 msgid "Force the regeneration of OAuth keys even if they already exist."
-msgstr ""
+msgstr "Vynútiť opätovné vygenerovanie kľúčov OAuth, aj keď už existujú."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:60
 msgid "OAuth keys already exist. Use --force option to regenerate them."
 msgstr ""
+"OAuth kľúče už existujú. Na ich opätovné vygenerovanie použite parameter "
+"--force."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:67
 msgid "Unable to generate OAuth keys."
-msgstr ""
+msgstr "Nepodarilo sa vygenerovať kľúče OAuth."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:73
 msgid "OAuth keys have been successfully generated."
@@ -22506,7 +22511,7 @@ msgstr "Zadajte voľbu"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:507
 msgid "Copy UUID"
-msgstr ""
+msgstr "Kopírovať UUID"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:139
 msgid "Current date"
@@ -22572,7 +22577,7 @@ msgstr "Odpoveď: %s"
 
 #: src/Glpi/Form/Tag/FullFormTagProvider.php:95
 msgid "Full form (all questions and answers)"
-msgstr ""
+msgstr "Úplný formulár (všetky otázky a odpovede)"
 
 #: src/Glpi/Form/Tag/QuestionTagProvider.php:97
 #, php-format
@@ -22766,7 +22771,7 @@ msgstr "použitie prostriedku initSession s prihlasovacími údajmi je vypnuté"
 
 #: src/Glpi/Api/API.php:312
 msgid "usage of initSession resource with user token is disabled"
-msgstr ""
+msgstr "použitie prostriedku initSession s tokenom používateľa je vypnuté"
 
 #: src/Glpi/Api/API.php:325
 msgid "parameter(s) login, password or user_token are missing"
@@ -22774,11 +22779,11 @@ msgstr "chýbajú parametre meno, heslo alebo token používateľa"
 
 #: src/Glpi/Api/API.php:331
 msgid "parameter(s) login, password are missing"
-msgstr ""
+msgstr "chýbajú parametre meno, heslo"
 
 #: src/Glpi/Api/API.php:337
 msgid "parameter user_token is missing"
-msgstr ""
+msgstr "parameter user_token chýba"
 
 #: src/Glpi/Api/API.php:356
 msgid "parameter user_token seems invalid"
@@ -22908,7 +22913,7 @@ msgstr "Pridať nový panel"
 
 #: src/Glpi/Dashboard/Grid.php:313
 msgid "Reset dashboard to default"
-msgstr ""
+msgstr "Obnoviť panel na predvolený"
 
 #: src/Glpi/Dashboard/Grid.php:426
 msgid "Add filter"
@@ -23255,7 +23260,7 @@ msgstr "Zobraziť údaje"
 
 #: src/Glpi/Dashboard/Widget.php:86
 msgid "Data view"
-msgstr ""
+msgstr "Zobrazenie dát"
 
 #: src/Glpi/Dashboard/Widget.php:120
 msgid "Pie"
@@ -23388,6 +23393,7 @@ msgstr "Helpdeskový tím"
 #: src/Glpi/Security/TOTPManager.php:429
 msgid "Too many failed MFA attempts. Please try again later."
 msgstr ""
+"Príliš veľa neúspešných pokusov o MFA overenie. Skúste to znova neskôr."
 
 #: src/Glpi/Search/SearchEngine.php:556
 msgid "NOT"
@@ -24090,7 +24096,7 @@ msgstr[3] "Kategórie databázy znalostí"
 #: src/KnowbaseItemCategory.php:78
 #, php-format
 msgid "Item not added: a duplicate already exists (%s)"
-msgstr ""
+msgstr "Položka nebola pridaná: už existuje duplicita (%s)"
 
 #: src/NotificationTargetCronTask.php:46 src/NotificationTargetCronTask.php:94
 #: src/CronTask.php:1875
@@ -26900,7 +26906,7 @@ msgstr "Nenašla sa žiadna zmena."
 
 #: src/Change.php:1646
 msgid "Generation of changes satisfaction surveys"
-msgstr ""
+msgstr "Generovanie prieskumov spokojnosti k zmenám"
 
 #: src/Printer_CartridgeInfo.php:49
 msgid "Cartridge inventoried information"
@@ -27315,7 +27321,7 @@ msgstr[3] "Väzby požiadavka/zmena"
 
 #: src/Change_Ticket.php:270
 msgid "Create a ticket from this change"
-msgstr ""
+msgstr "Vytvoriť požiadavku z tejto zmeny"
 
 #: src/Change_Ticket.php:296 src/Problem_Ticket.php:256
 msgid "Solve tickets"
@@ -28303,7 +28309,7 @@ msgstr "Možnosť zápisu"
 
 #: src/Group_User.php:468
 msgid "Include members of sub-groups"
-msgstr ""
+msgstr "Zahrnúť členov podskupín"
 
 #: src/Group_User.php:481
 msgid ""
@@ -28563,7 +28569,7 @@ msgstr "%1$s musí byť jedinečné!"
 
 #: src/State.php:384
 msgid "Visible"
-msgstr ""
+msgstr "Viditeľné"
 
 #: src/State.php:927
 #, php-format
@@ -30425,7 +30431,7 @@ msgstr "Neplatná základná URL adresa!"
 
 #: src/Config.php:218
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "Neplatná odhlasovacia URL pre SSO."
 
 #: src/Config.php:348
 msgid ""
@@ -31004,7 +31010,7 @@ msgstr "stav 2FA"
 
 #: src/User.php:3893
 msgid "Notifications to myself"
-msgstr ""
+msgstr "Oznámenia pre mňa"
 
 #: src/User.php:4699 src/Dropdown.php:377
 #, php-format
@@ -31037,7 +31043,7 @@ msgstr "Inicializácia hesla"
 
 #: src/User.php:5653
 msgid "Invalid or missing authentication code."
-msgstr ""
+msgstr "Neplatný alebo chýbajúci autentifikačný kód."
 
 #: src/User.php:5768
 msgid ""
@@ -31413,10 +31419,10 @@ msgstr "Reakcia na žiadosť o overenie bola vytvorená"
 #: src/NotificationTargetTicket.php:871 src/NotificationTargetTicket.php:876
 msgid "Linked project task"
 msgid_plural "Linked project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Úloha prepojeného projektu"
+msgstr[1] "Úlohy prepojených projektov"
+msgstr[2] "Úlohy prepojených projektov"
+msgstr[3] "Úlohy prepojených projektov"
 
 #: src/NotificationTargetTicket.php:897
 #: src/NotificationTargetCommonITILObject.php:2539
@@ -31774,12 +31780,12 @@ msgstr "Predchádzajúci technik zodpovedný za požiadavku"
 #: src/NotificationTargetCommonITILObject.php:965
 #, php-format
 msgid "Manager of the group in charge of the %s"
-msgstr ""
+msgstr "Manažér skupiny zodpovednej za %s"
 
 #: src/NotificationTargetCommonITILObject.php:969
 #, php-format
 msgid "Group in charge of the %s except manager users"
-msgstr ""
+msgstr "Skupina zodpovedná za %s okrem manažérov"
 
 #: src/NotificationTargetCommonITILObject.php:971
 msgid "Requester group manager"
@@ -31792,12 +31798,12 @@ msgstr "Skupina žiadateľov okrem manažérov"
 #: src/NotificationTargetCommonITILObject.php:976
 #, php-format
 msgid "Technician in charge of the %s"
-msgstr ""
+msgstr "Technik zodpovedný za %s"
 
 #: src/NotificationTargetCommonITILObject.php:979
 #, php-format
 msgid "Group in charge of the %s"
-msgstr ""
+msgstr "Skupina zodpovedná za %s"
 
 #: src/NotificationTargetCommonITILObject.php:982
 msgid "Observer group manager"
@@ -31905,7 +31911,7 @@ msgstr "Počet prepojených problémov"
 #: src/NotificationTargetCommonITILObject.php:2261
 msgctxt "quantity"
 msgid "Number of linked projects"
-msgstr ""
+msgstr "Počet prepojených projektov"
 
 #: src/NotificationTargetCommonITILObject.php:2262
 msgid "Number of sent reminders since status is pending"
@@ -31978,10 +31984,10 @@ msgstr[3] "Prepojené problémy"
 #: src/NotificationTargetCommonITILObject.php:2519
 msgid "Linked project"
 msgid_plural "Linked projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Prepojený projekt"
+msgstr[1] "Prepojené projekty"
+msgstr[2] "Prepojené projekty"
+msgstr[3] "Prepojené projekty"
 
 #: src/NotificationTargetCommonITILObject.php:2306
 msgid "No defined category"
@@ -32686,7 +32692,7 @@ msgstr "Správa je neplatná (%s). Ďalšie podrobnosti nájdete v \"%s\"."
 #: src/MailCollector.php:759
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
-msgstr "Chyba počas analýze správy (%s). Ďalšie podrobnosti nájdete v \"%s\"."
+msgstr "Chyba počas analýzy správy (%s). Ďalšie podrobnosti nájdete v \"%s\"."
 
 #: src/MailCollector.php:800
 #, php-format
@@ -32723,7 +32729,7 @@ msgstr "Nepodarilo sa nahlásiť odmietnutý e-mail (%s)"
 #: src/MailCollector.php:1021
 #, php-format
 msgid "Error during message import (%s). Check in \"%s\" for more details"
-msgstr "Chyba pri importe správy (%s). Ďalšie podrobnosti nájdete v \"%s\""
+msgstr "Chyba počas importu správy (%s). Ďalšie podrobnosti nájdete v \"%s\""
 
 #. TRANS: %s is a directory
 #: src/MailCollector.php:1084
@@ -32743,6 +32749,7 @@ msgstr "Nesprávny priložený súbor"
 #, php-format
 msgid "Error during mails collect (%s). Check in \"%s\" for more details"
 msgstr ""
+"Chyba počas sťahovania e-mailov (%s). Ďalšie podrobnosti nájdete v \"%s\"."
 
 #: src/MailCollector.php:2061
 msgid "Retrieve email (Mails receivers)"
@@ -33592,12 +33599,12 @@ msgstr "Vytvoriť šablónu"
 #: src/MassiveAction.php:681
 msgctxt "button"
 msgid "Associate group"
-msgstr ""
+msgstr "Priradiť skupinu"
 
 #: src/MassiveAction.php:682
 msgctxt "button"
 msgid "Dissociate group"
-msgstr ""
+msgstr "Zrušiť priradenie skupiny"
 
 #: src/MassiveAction.php:708
 msgctxt "button"
@@ -33661,7 +33668,7 @@ msgstr "Túto položku nemôžete zmazať, pretože je používaná v iných pol
 
 #: src/MassiveAction.php:1778
 msgid "Invalid field name."
-msgstr ""
+msgstr "Neplatný názov poľa."
 
 #: src/MassiveAction.php:1943
 #, php-format
@@ -36358,7 +36365,7 @@ msgstr ""
 
 #: js/modules/Dashboard/Dashboard.js:511
 msgid "An error occurred while resetting the dashboard"
-msgstr ""
+msgstr "Pri resetovaní panela nastala chyba"
 
 #: js/modules/Dashboard/Dashboard.js:1087
 #, javascript-format

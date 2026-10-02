@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,42 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class Profile_RSSFeed
-/// @since 0.84
-class Profile_RSSFeed extends CommonDBRelation
+namespace tests\units\Glpi\System\Log;
+
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\System\Log\LogViewer;
+use Glpi\Tests\DbTestCase;
+
+class LogViewerTest extends DbTestCase
 {
-    // From CommonDBRelation
-    public static $itemtype_1          = RSSFeed::class;
-    public static $items_id_1          = 'rssfeeds_id';
-    public static $itemtype_2 = Profile::class;
-    public static $items_id_2          = 'profiles_id';
-
-    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-    public static $logs_for_item_2     = false;
-
-    public static $checkAlwaysBothItems   = true;
-
-
-    /**
-     * Get profiles for a rssfeed
-     *
-     * @param int $rssfeeds_id ID of the rssfeed
-     *
-     * @return array
-     */
-    public static function getProfiles($rssfeeds_id)
+    public function testAjaxRefreshRequiresSystemLogsRight(): void
     {
-        global $DB;
+        // Arrange: a user that can read the items history but not the system logs
+        $this->login();
+        $_SESSION['glpiactiveprofile']['logs'] = READ;
+        $_SESSION['glpiactiveprofile'][LogViewer::$rightname] = 0;
 
-        $prof  = [];
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => ['rssfeeds_id' => $rssfeeds_id],
-        ]);
+        $_POST['action']   = 'refresh_log_file';
+        $_POST['filepath'] = 'php-errors.log';
 
-        foreach ($iterator as $data) {
-            $prof[$data['profiles_id']][] = $data;
+        // Act/Assert: the log file content is not returned
+        $this->expectException(AccessDeniedHttpException::class);
+        try {
+            ob_start();
+            include GLPI_ROOT . '/ajax/logviewer.php';
+        } finally {
+            ob_end_clean();
+            unset($_POST['action'], $_POST['filepath']);
         }
-        return $prof;
     }
 }
