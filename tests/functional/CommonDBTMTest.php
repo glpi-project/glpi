@@ -2882,4 +2882,29 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($computer->update(['update' => 1, 'id' => $computer->getID(), 'entities_id' => $child2]));
         $this->assertEquals($child2, (new Computer())->getById($computer->getID())->fields['entities_id']);
     }
+
+    public function testCanUpdateEntityWithoutAccessToItsParent(): void
+    {
+        $this->login();
+        $root   = getItemByTypeName('Entity', '_test_root_entity', true);
+        $child1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        // Session restricted to child1, so its parent entity is not accessible
+        $this->setEntity('_test_child_1', false);
+        $this->assertFalse(\Session::haveAccessToEntity($root));
+
+        // The parent entity is posted unchanged by the form, it is not a move
+        $entity = new Entity();
+        $input  = ['update' => 1, 'id' => $child1, 'name' => '_test_child_1', 'entities_id' => $root];
+        $this->assertTrue($entity->can($child1, UPDATE, $input));
+        $this->assertTrue($entity->update($input));
+
+        // Moving it under an inaccessible entity is still refused
+        $input = ['update' => 1, 'id' => $child1, 'entities_id' => $child2];
+        $this->assertFalse($entity->can($child1, UPDATE, $input));
+        $this->assertFalse($entity->update($input));
+        $this->assertTrue($entity->getFromDB($child1));
+        $this->assertEquals($root, $entity->fields['entities_id']);
+    }
 }

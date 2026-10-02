@@ -1670,7 +1670,7 @@ class CommonDBTM extends CommonGLPI
             isset($input['update'], $input['entities_id'])
             && $this->isEntityAssign()
             && Session::getLoginUserID() !== false
-            && (int) $input['entities_id'] !== (int) $this->getEntityID()
+            && (int) $input['entities_id'] !== (int) ($this->fields['entities_id'] ?? -1)
             && !Session::haveAccessToEntity((int) $input['entities_id'])
         ) {
             return false;
@@ -3056,7 +3056,7 @@ class CommonDBTM extends CommonGLPI
                     is_array($input)
                     && isset($input['entities_id'])
                     && $this->isEntityAssign()
-                    && (int) $input['entities_id'] !== (int) $this->getEntityID()
+                    && (int) $input['entities_id'] !== (int) ($this->fields['entities_id'] ?? -1)
                     && !Session::haveAccessToEntity((int) $input['entities_id'])
                 ) {
                     return false;
