@@ -80,6 +80,8 @@
     #}
     {% set safe_item_fields = item.fields|filter((value, key) => key != 'content') %}
     <script type="module" defer>
+        import ItemtypeCommentPopover from '/js/modules/Form/ItemtypeCommentPopover.js';
+
         const actorytype = '{{ actortype|e('js') }}';
 
         // function to display an option in the list or the selected input
@@ -155,58 +157,8 @@
             const option_text    = `<span class="actor_text">${text}</span>`;
             const option_element = $(`<span class="actor_entry" data-itemtype="${_.escape(itemtype)}" data-items-id="${_.escape(items_id)}" data-actortype="${_.escape(actorytype)}" data-testid="actor-entry-${_.escape(actorytype)}-${_.escape(itemtype)}-${_.escape(items_id)}">${indent}${icon}${option_text}${actions}</span>`);
 
-            if (is_selection && itemtype == "User") {
-                const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;
-                $.ajax({
-                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
-                    type: 'POST',
-                    data: {
-                        'itemtype': 'User',
-                        'value': items_id,
-                    }
-                }).then((result) => {
-                    {# `result` is a safe HTML string #}
-                    if (result) {
-                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
-                        option_element.attr('data-glpi-popover-source', `content${unique_id}`);
-                    }
-                });
-            }
-
-            if (is_selection && itemtype == "Group") {
-                const unique_id = "group_opt_" + actor_select.attr('data-actor-type') + "Group" + items_id;
-                $.ajax({
-                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
-                    type: 'POST',
-                    data: {
-                        'itemtype': 'Group',
-                        'value': items_id,
-                    }
-                }).then((result) => {
-                    {# `result` is a safe HTML string #}
-                    if (result) {
-                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
-                        option_element.attr('data-glpi-popover-source', `content${unique_id}`);
-                    }
-                });
-            }
-
-            if (is_selection && itemtype == "Supplier") {
-                const unique_id = "supplier_opt_" + actor_select.attr('data-actor-type') + "Supplier" + items_id;
-                $.ajax({
-                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
-                    type: 'POST',
-                    data: {
-                        'itemtype': 'Supplier',
-                        'value': items_id,
-                    }
-                }).then((result) => {
-                    {# `result` is a safe HTML string #}
-                    if (result) {
-                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
-                        option_element.attr('data-glpi-popover-source', `content${unique_id}`);
-                    }
-                });
+            if (is_selection && ['User', 'Group', 'Supplier'].includes(itemtype)) {
+                commentPopover.attachTo(option_element, itemtype, items_id);
             }
 
             // manage ticket information (number of assigned ticket for an actor)
@@ -242,6 +194,10 @@
         const select2_width = "{{ canassigntome ? 'calc(100% - 30px)' : '100%' }}";
 
         const actor_select = $("#actor_{{ rand }}");
+        const commentPopover = new ItemtypeCommentPopover(
+            actor_select.parent(),
+            ['.user-info-card', '.group-info-card', '.supplier-info-card']
+        );
         actor_select.select2({
             tags: true,
             width: select2_width,
@@ -299,52 +255,6 @@
         }).on('select2:open', () => {
             // Close popovers
             $('.popover').popover('hide');
-        });
-
-        actor_select.parent().popover({
-            selector: '[data-glpi-popover-source]',
-            container: actor_select.parent(),
-            html: true,
-            sanitize: false,
-            trigger: 'hover',
-            delay: {
-                hide: 300
-            },
-            content: (el) => {
-                // Close other popovers
-                $('.popover').popover('hide');
-                return $('#' + $(el).attr('data-glpi-popover-source')).html();
-            }
-        }).on('hide.bs.popover', () => {
-            // prevent closing popover when user card is hover
-            if ($('.user-info-card:hover').length > 0) {
-                return false;
-            }
-            // prevent closing popover when group card is hover
-            if ($('.group-info-card:hover').length > 0) {
-                return false;
-            }
-            // prevent closing popover when group card is hover
-            if ($('.supplier-info-card:hover').length > 0) {
-                return false;
-            }
-        });
-
-        // when the mouse leave the info card in the popover, close it
-        $(document).on('mouseleave', '.user-info-card, .group-info-card, .supplier-info-card', (e) => {
-            const popover = $(e.target).closest('.popover');
-            if (popover.length === 0) {
-                return;
-            }
-
-            setTimeout(() => {
-                // Find the trigger element and hide its popover
-                const popover_element = $('[data-glpi-popover-source][aria-describedby="' + CSS.escape(popover.attr('id')) + '"]');
-                if (popover_element.length > 0) {
-                    const popover_instance = bootstrap.Popover.getInstance(popover_element[0]);
-                    popover_instance.hide();
-                }
-            }, 300);
         });
 
         // manage actors change

@@ -916,6 +916,26 @@ var templateSelection = function (selection) {
     return _elt;
 };
 
+window.glpiGroupCommentPopovers = window.glpiGroupCommentPopovers || {};
+var templateGroupSelection = function (selection) {
+    var _elt = templateSelection(selection);
+
+    if (selection.element && selection.id) {
+        var select_id = selection.element.parentElement.id;
+        import('/js/modules/Form/ItemtypeCommentPopover.js').then((m) => {
+            if (!window.glpiGroupCommentPopovers[select_id]) {
+                window.glpiGroupCommentPopovers[select_id] = new m.default(
+                    $('#' + CSS.escape(select_id)).parent(),
+                    ['.group-info-card']
+                );
+            }
+            window.glpiGroupCommentPopovers[select_id].attachTo(_elt, 'Group', selection.id);
+        });
+    }
+
+    return _elt;
+};
+
 var templateItilStatus = function(option) {
     if (option === false) {
         // Option is false when element does not match searched terms
@@ -2103,19 +2123,17 @@ window.displaySessionMessages = () => {
 
 // Add/remove a special data attribute to bootstrap's modals when they are
 // displayed/hidden.
-// This is needed for e2e testing as bootstrap have some compatibility issues
-// with cypress.
-// See https://github.com/cypress-io/cypress/issues/25202.
+// This is used by the e2e tests to wait for the end of the modal animations.
 document.addEventListener('shown.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'true');
+        modal.setAttribute('data-glpi-modal-shown', 'true');
     }
 });
 document.addEventListener('hidden.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'false');
+        modal.setAttribute('data-glpi-modal-shown', 'false');
     }
 });
 

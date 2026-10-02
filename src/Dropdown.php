@@ -114,6 +114,7 @@ class Dropdown
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *    - readonly             : boolean / return self::getDropdownValue if true (default false)
      *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
+     *    - templateSelection    : name of a JS function used by select2 to render a selected value (default null)
      *
      * @return string|false|int
      *
@@ -162,6 +163,7 @@ class Dropdown
         $params['init']                 = true;
         $params['aria_label']           = '';
         $params['required']             = false;
+        $params['templateSelection']    = null;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -310,6 +312,10 @@ class Dropdown
             'aria_label'           => $params['aria_label'],
             'required'             => $params['required'],
         ];
+
+        if ($params['templateSelection'] !== null) {
+            $p['templateSelection'] = $params['templateSelection'];
+        }
 
         if ($params['multiple']) {
             $p['values'] = $params['values'];

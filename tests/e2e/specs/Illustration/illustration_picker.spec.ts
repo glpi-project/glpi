@@ -75,9 +75,9 @@ test.describe('Illustration picker', () => {
         // Trigger: focusable and driven by Enter.
         await picker_page.select_illustration_button.press('Enter');
         await expect(picker_page.picker_modal).toBeVisible();
-        await expect(picker_page.picker_modal).toHaveAttribute('data-cy-shown', 'true');
+        await expect(picker_page.picker_modal).toHaveAttribute('data-glpi-modal-shown', 'true');
 
-        // Autofocus proves the controller ran, unlike `data-cy-shown`.
+        // Autofocus proves the controller ran, unlike `data-glpi-modal-shown`.
         await expect(picker_page.search_input).toBeFocused();
 
         // Tabs must be focusable for the arrows to reach the upload pane.
@@ -100,7 +100,7 @@ test.describe('Illustration picker', () => {
             exact: true,
         }).press('Enter');
 
-        await expect(picker_page.picker_modal).toHaveAttribute('data-cy-shown', 'false');
+        await expect(picker_page.picker_modal).toHaveAttribute('data-glpi-modal-shown', 'false');
         await expect(picker_page.getIllustration('Cartridge')).toBeVisible();
     });
 

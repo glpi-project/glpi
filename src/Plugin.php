@@ -50,16 +50,13 @@ use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
-use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-use function Safe\file_get_contents;
 use function Safe\ini_get;
 use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\preg_grep;
 use function Safe\preg_match;
-use function Safe\realpath;
 use function Safe\scandir;
 
 class Plugin extends CommonDBTM
@@ -461,18 +458,6 @@ class Plugin extends CommonDBTM
 
             if (!file_exists($plugin_directory)) {
                 continue;
-            }
-
-            // Avoid an uncatchable "Cannot redeclare class" fatal on a Composer autoloader class collision.
-            if (!in_array($plugin_key, self::$loaded_plugins) && self::hasConflictingAutoloader($plugin_key)) {
-                global $PHPLOGGER;
-                $PHPLOGGER->error(
-                    sprintf(
-                        'Plugin `%s` was not loaded because its vendored Composer autoloader class collides with one already loaded by another plugin.',
-                        $plugin_key
-                    )
-                );
-                break;
             }
 
             if ((new self())->loadPluginSetupFile($plugin_key)) {
@@ -3124,50 +3109,6 @@ class Plugin extends CommonDBTM
 
         return str_replace('\\', '/', $directory);
     }
-
-    /**
-     * Detects if the plugin's vendored Composer autoloader class name is already declared by a
-     * different plugin's autoloader.
-     */
-    public static function hasConflictingAutoloader(string $plugin_key): bool
-    {
-        $plugin_dir = self::getPhpDir($plugin_key);
-        if ($plugin_dir === false) {
-            return false;
-        }
-
-        $autoload_real_file = $plugin_dir . '/vendor/composer/autoload_real.php';
-        if (!is_file($autoload_real_file)) {
-            return false;
-        }
-
-        try {
-            $content = file_get_contents($autoload_real_file, false, null, 0, 4096);
-        } catch (FilesystemException) {
-            return false;
-        }
-
-        $matches = [];
-        if (!preg_match('/^class\s+(ComposerAutoloaderInit\w+)/m', $content, $matches)) {
-            return false;
-        }
-        $autoloader_class = $matches[1];
-
-        if (!class_exists($autoloader_class, false)) {
-            return false;
-        }
-
-        $declared_in = (new ReflectionClass($autoloader_class))->getFileName();
-
-        try {
-            $real_autoload_real_file = realpath($autoload_real_file);
-        } catch (FilesystemException) {
-            return true; // Cannot confirm it's the plugin's own file, so err on the side of caution.
-        }
-
-        return $declared_in !== $real_autoload_real_file;
-    }
-
 
     public static function getIcon()
     {

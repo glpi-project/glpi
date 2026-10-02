@@ -256,49 +256,6 @@ class AssetDefinitionTest extends DbTestCase
             'messages' => [],
         ];
 
-        // start at 32 to ignore control chars
-        // stop at 8096, no need to test the whole UTF-8 charset
-        for ($i = 32; $i < 8096; $i++) {
-            $char = mb_chr($i);
-            if ($char === false) {
-                continue;
-            }
-
-            $system_name = sprintf('TestAsset%s', $char);
-            if (
-                ($char >= "A" && $char <= "Z") // A -> Z
-                || ($char >= "a" && $char <= "z") // a -> z
-                || ($char >= "0" && $char <= "9") // 0 -> 9
-            ) {
-                yield [
-                    'input'    => [
-                        'system_name' => $system_name,
-                    ],
-                    'output'   => [
-                        'system_name'  => $system_name,
-                        'label'        => $system_name,
-                        'capacities'   => '[]',
-                        'profiles'     => '[]',
-                        'translations' => '[]',
-                        'fields_display' => '[]',
-                    ],
-                    'messages' => [],
-                ];
-            } else {
-                yield [
-                    'input'    => [
-                        'system_name' => $system_name,
-                    ],
-                    'output'   => false,
-                    'messages' => [
-                        ERROR => [
-                            'The following field has an incorrect value: &quot;System name&quot;.',
-                        ],
-                    ],
-                ];
-            }
-        }
-
         $reserved_names = [
             'Computer',
             'Monitor',
@@ -502,6 +459,81 @@ class AssetDefinitionTest extends DbTestCase
 
         foreach ($messages as $level => $level_messages) {
             $this->hasSessionMessages($level, $level_messages);
+        }
+    }
+
+    /**
+     * Validates the system name allowed characters.
+     *
+     * Cases are not provided by a data provider, as the setup/teardown cost of each test case
+     * is far more expensive than the `prepareInputForAdd()` call itself.
+     */
+    public function testPrepareInputForAddSystemNameCharacters(): void
+    {
+        $count = 0;
+        foreach (self::systemNameCharactersProvider() as ['input' => $input, 'output' => $output, 'messages' => $messages]) {
+            $count++;
+
+            $definition = new AssetDefinition();
+
+            $this->assertEquals(
+                $output,
+                $definition->prepareInputForAdd($input),
+                sprintf('Unexpected result for system name `%s`.', $input['system_name'])
+            );
+
+            foreach ($messages as $level => $level_messages) {
+                $this->hasSessionMessages($level, $level_messages);
+            }
+        }
+
+        // Make sure the provider was not silently emptied
+        $this->assertGreaterThan(0, $count);
+    }
+
+    private static function systemNameCharactersProvider(): iterable
+    {
+        // start at 32 to ignore control chars
+        // stop at 8096, no need to test the whole UTF-8 charset
+        for ($i = 32; $i < 8096; $i++) {
+            $char = mb_chr($i);
+            if ($char === false) {
+                continue;
+            }
+
+            $system_name = sprintf('TestAsset%s', $char);
+            if (
+                ($char >= "A" && $char <= "Z") // A -> Z
+                || ($char >= "a" && $char <= "z") // a -> z
+                || ($char >= "0" && $char <= "9") // 0 -> 9
+            ) {
+                yield [
+                    'input'    => [
+                        'system_name' => $system_name,
+                    ],
+                    'output'   => [
+                        'system_name'  => $system_name,
+                        'label'        => $system_name,
+                        'capacities'   => '[]',
+                        'profiles'     => '[]',
+                        'translations' => '[]',
+                        'fields_display' => '[]',
+                    ],
+                    'messages' => [],
+                ];
+            } else {
+                yield [
+                    'input'    => [
+                        'system_name' => $system_name,
+                    ],
+                    'output'   => false,
+                    'messages' => [
+                        ERROR => [
+                            'The following field has an incorrect value: &quot;System name&quot;.',
+                        ],
+                    ],
+                ];
+            }
         }
     }
 

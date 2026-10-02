@@ -297,20 +297,6 @@ rector: ## Run rector
 	$(PHP) php vendor/bin/rector $(c)
 .PHONY: rector
 
-cypress: ## Run cypress tests
-	@$(eval c ?=)
-	$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
-	$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
-	$(PHP) node_modules/.bin/cypress run --project tests $(c)
-.PHONY: cypress
-
-cypress-open: ## Open cypress UI
-	@$(eval c ?=)
-	$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
-	$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
-	$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
-.PHONY: cypress-open
-
 playwright: e2e-db-check ## Run playwright tests
 	@$(eval c ?=)
 	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
