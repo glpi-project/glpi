@@ -280,4 +280,36 @@ class KnowbaseItem_ItemTest extends DbTestCase
 
         $this->assertStringContainsString('entity_restrict:' . $expected_json, $output, 'Dropdown should restrict to child entities for recursive KB articles.');
     }
+
+    public function testTabContentIsEmptyForKnowbaseItem(): void
+    {
+        $this->login();
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name'        => 'Article',
+            'answer'      => 'Content',
+        ]);
+        $computer = $this->createItem(\Computer::class, [
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name'        => 'Linked computer name',
+        ]);
+        $this->createItem(KnowbaseItem_Item::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'itemtype'         => \Computer::class,
+            'items_id'         => $computer->getID(),
+        ]);
+
+        ob_start();
+        $result = KnowbaseItem_Item::displayTabContentForItem($kb);
+        $output = ob_get_clean();
+        $this->assertFalse($result);
+        $this->assertSame('', $output);
+
+        // Other itemtypes still get the tab content
+        ob_start();
+        $result = KnowbaseItem_Item::displayTabContentForItem($computer);
+        $output = ob_get_clean();
+        $this->assertTrue($result);
+        $this->assertStringContainsString('Article', $output);
+    }
 }

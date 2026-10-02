@@ -103,7 +103,7 @@ test.describe('DC Room', () => {
         // eslint-disable-next-line playwright/no-raw-locators
         await page.locator('div.cell_add[data-x="2"][data-y="1"]').click();
         const dialog = page.getByRole('dialog');
-        await expect(dialog).toHaveAttribute('data-cy-shown', 'true');
+        await expect(dialog).toHaveAttribute('data-glpi-modal-shown', 'true');
 
         await expect(dialog.getByRole('heading', { level: 1 }))
             .toContainText('New item - Rack')

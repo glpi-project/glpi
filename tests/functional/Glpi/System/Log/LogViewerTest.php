@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,9 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-declare namespace Cypress {
-    interface Chainable<Subject> {
-        getDropdownByLabelText(value: string): Chainable<any>
-        selectDropdownValue(new_value: string): Chainable<any>
+namespace tests\units\Glpi\System\Log;
+
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\System\Log\LogViewer;
+use Glpi\Tests\DbTestCase;
+
+class LogViewerTest extends DbTestCase
+{
+    public function testAjaxRefreshRequiresSystemLogsRight(): void
+    {
+        // Arrange: a user that can read the items history but not the system logs
+        $this->login();
+        $_SESSION['glpiactiveprofile']['logs'] = READ;
+        $_SESSION['glpiactiveprofile'][LogViewer::$rightname] = 0;
+
+        $_POST['action']   = 'refresh_log_file';
+        $_POST['filepath'] = 'php-errors.log';
+
+        // Act/Assert: the log file content is not returned
+        $this->expectException(AccessDeniedHttpException::class);
+        try {
+            ob_start();
+            include GLPI_ROOT . '/ajax/logviewer.php';
+        } finally {
+            ob_end_clean();
+            unset($_POST['action'], $_POST['filepath']);
+        }
     }
 }

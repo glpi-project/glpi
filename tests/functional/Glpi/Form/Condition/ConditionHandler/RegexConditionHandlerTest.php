@@ -37,6 +37,7 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Computer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
@@ -315,21 +316,16 @@ final class RegexConditionHandlerTest extends AbstractConditionHandlerTest
         bool $expected_result,
         ?JsonFieldInterface $question_extra_data = null,
     ): void {
-        /** @var class-string<AbstractQuestionTypeActors>[] $types */
-        $types = [
-            QuestionTypeRequester::class,
-            QuestionTypeObserver::class,
-            QuestionTypeAssignee::class,
-        ];
-
-        foreach ($types as $type) {
-            $allowed_actor_types = (new $type())->getAllowedActorTypes();
+        // Create the actors expected by the answers of actors questions.
+        // Creating them is expensive, so it is only done for the actors question type being tested.
+        if (is_a($question_type, AbstractQuestionTypeActors::class, true)) {
+            $allowed_actor_types = (new $question_type())->getAllowedActorTypes();
             foreach ($allowed_actor_types as $actor_type) {
                 $this->createItem($actor_type, [
                     'entities_id' => $this->getTestRootEntity(true),
                     'name'        => sprintf(
                         '%s-%s-1',
-                        (new $type())->getName(),
+                        (new $question_type())->getName(),
                         getForeignKeyFieldForItemType($actor_type)
                     ),
                 ]);
@@ -337,7 +333,7 @@ final class RegexConditionHandlerTest extends AbstractConditionHandlerTest
                     'entities_id' => $this->getTestRootEntity(true),
                     'name'        => sprintf(
                         '%s-%s-2',
-                        (new $type())->getName(),
+                        (new $question_type())->getName(),
                         getForeignKeyFieldForItemType($actor_type)
                     ),
                 ]);

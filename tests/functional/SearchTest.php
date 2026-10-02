@@ -68,6 +68,7 @@ use TaskCategory;
 use Ticket;
 use User;
 
+use function Safe\json_encode;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
@@ -6278,7 +6279,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    public static function provideCriteriaWithSubqueries(): iterable
+    private static function provideCriteriaWithSubqueries(): iterable
     {
         $category   = fn() => getItemByTypeName('ITILCategory', 'Test Criteria With Subqueries', true);
         $group_1    = fn() => getItemByTypeName('Group', 'Group 1', true);
@@ -6981,45 +6982,55 @@ class SearchTest extends DbTestCase
         ]);
     }
 
-    #[DataProvider('provideCriteriaWithSubqueries')]
-    public function testCriteriaWithSubqueries(
-        string $itemtype,
-        array $criteria,
-        array $expected
-    ): void {
-        // Init datas
+    public function testCriteriaWithSubqueries(): void
+    {
+        // Init datas once for all cases, as creating them is far more expensive than the searches
         $this->provideCriteriaWithSubqueries_Dataset();
 
-        // Process closure values
-        array_walk_recursive($criteria, function (&$value) {
-            if (is_callable($value)) {
-                $value = $value();
+        $case = 0;
+        foreach (self::provideCriteriaWithSubqueries() as ['itemtype' => $itemtype, 'criteria' => $criteria, 'expected' => $expected]) {
+            $case++;
+
+            // Process closure values
+            array_walk_recursive($criteria, function (&$value) {
+                if (is_callable($value)) {
+                    $value = $value();
+                }
+            });
+
+            // Run search
+            $data = \Search::getDatas($itemtype, [
+                'criteria' => $criteria,
+            ]);
+
+            // Parse results
+            $names = [];
+            foreach ($data['data']['rows'] as $row) {
+                // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
+                $n = $row['raw']["ITEM_{$itemtype}_1"];
+                $names[] = explode('$#$', $n)[0];
             }
-        });
 
-        // Run search
-        $data = \Search::getDatas($itemtype, [
-            'criteria' => $criteria,
-        ]);
+            // Sort both array for comparison
+            sort($names);
+            sort($expected);
 
-        // Parse results
-        $names = [];
-        foreach ($data['data']['rows'] as $row) {
-            // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
-            $n = $row['raw']["ITEM_{$itemtype}_1"];
-            $names[] = explode('$#$', $n)[0];
+            // Validate results
+            $this->assertEquals(
+                $expected,
+                $names,
+                sprintf(
+                    "Search query failed for case #%d (%s).\nCriteria: %s\nRaw SQL WHERE clause: %s",
+                    $case,
+                    $itemtype,
+                    json_encode($criteria, JSON_PRETTY_PRINT),
+                    $data['sql']['raw']['WHERE'] ?? 'N/A'
+                )
+            );
         }
 
-        // Sort both array for comparison
-        sort($names);
-        sort($expected);
-
-        // Validate results
-        $this->assertEquals(
-            $expected,
-            $names,
-            "Search query failed. Raw SQL WHERE clause: " . ($data['sql']['raw']['WHERE'] ?? 'N/A')
-        );
+        // Make sure the provider was not silently emptied
+        $this->assertGreaterThan(0, $case);
     }
 
     /**
