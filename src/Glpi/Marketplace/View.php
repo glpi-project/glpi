@@ -839,6 +839,10 @@ JS;
             );
         }
 
+        if ($exists) {
+            $buttons .= "<span class='d-none new-version' data-new-version='" . htmlescape($plugin_inst->getField('version')) . "'></span>";
+        }
+
         return $buttons;
     }
 
