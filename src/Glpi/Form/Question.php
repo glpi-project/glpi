@@ -81,6 +81,11 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
     private ?Section $section = null;
 
+    /**
+     * Set by `prepareInputForClone()`, so it cannot come from the submitted input.
+     */
+    private bool $is_cloning = false;
+
     #[Override]
     public static function getTypeName($nb = 0)
     {
@@ -359,6 +364,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public function prepareInputForClone($input)
     {
         $input = parent::prepareInputForClone($input);
+        $this->is_cloning = true;
         return FormCloneHelper::getInstance()->prepareQuestionInputForClone($input);
     }
 
@@ -414,9 +420,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             // A clone keeps the extra data stored on the source question, which
             // may no longer be valid for its type (e.g. the question type was
             // changed or a custom asset definition was disabled).
-            $is_cloning = $input['clone'] ?? false;
-
-            if (!$is_cloning && (isset($input['extra_data']) || $is_creating)) {
+            if (!$this->is_cloning && (isset($input['extra_data']) || $is_creating)) {
                 $extra_data = $input['extra_data'] ?? [];
                 if (is_string($extra_data)) {
                     if (empty($extra_data)) {
