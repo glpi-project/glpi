@@ -103,6 +103,25 @@ final class PermissionsRendererTest extends DbTestCase
         );
     }
 
+    public function testCanViewRequiresUpdateRight(): void
+    {
+        // Arrange: create a KB article visible for a user that can not edit it
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addUserVisiblity($kb, getItemByTypeName(User::class, "normal"));
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+        $renderer = new PermissionsRenderer();
+        $this->assertTrue($renderer->canView($kb));
+
+        // Act: log in as this user
+        $this->login('normal', 'normal');
+
+        // Assert: the permissions are only visible to the users that can edit the article
+        $this->assertTrue($kb->can($kb->getID(), READ));
+        $this->assertFalse($kb->can($kb->getID(), UPDATE));
+        $this->assertFalse($renderer->canView($kb));
+    }
+
     public function testBuildEntryReturnsNullForUnknownClass(): void
     {
         $renderer = new PermissionsRenderer();

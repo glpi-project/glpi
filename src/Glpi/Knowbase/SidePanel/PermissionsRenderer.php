@@ -62,7 +62,7 @@ final class PermissionsRenderer implements RendererInterface
     #[Override]
     public function canView(KnowbaseItem $item): bool
     {
-        return $item->can($item->getID(), READ);
+        return $item->can($item->getID(), UPDATE);
     }
 
     #[Override]
