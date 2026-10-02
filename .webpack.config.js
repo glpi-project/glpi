@@ -143,6 +143,7 @@ const config = {
             config: [__filename, path.resolve(__dirname, 'tools/patches/npm') + '/'],
         },
         maxAge: 1000 * 60 * 60 * 24 * 7, // Drop cache entries unused for 7 days, to limit the cache size
+        compression: 'brotli',
     },
     stats: {
         // Limit verbosity to only usefull information
