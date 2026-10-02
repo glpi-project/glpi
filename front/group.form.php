@@ -101,6 +101,9 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(Group::getTypeName(Session::getPluralNumber()), in_modal: true);
+    if (!empty($_GET["id"])) {
+        $group->getFromDB($_GET["id"]);
+    }
     $group->showForm($_GET["id"]);
     Html::popFooter();
 } elseif (isset($_POST["replace"])) {
