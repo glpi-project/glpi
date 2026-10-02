@@ -38,6 +38,7 @@ use CommonDBRelation;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\ItemLinkException;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class CommonDBRelationTest extends DbTestCase
 {
@@ -485,5 +486,82 @@ class CommonDBRelationTest extends DbTestCase
 
         // Assert: should be allowed
         $this->assertTrue($can_create);
+    }
+
+    public static function visibilityRelationProvider(): iterable
+    {
+        foreach ([\Reminder::class, \RSSFeed::class] as $itemtype) {
+            $fkey = getForeignKeyFieldForItemType($itemtype);
+            $prefix = $itemtype === \Reminder::class ? 'Reminder' : 'RSSFeed';
+            yield "Entity_$prefix" => [$itemtype, "Entity_$prefix", ['entities_id' => 0, 'is_recursive' => 1]];
+            yield "Group_$prefix" => [$itemtype, "Group_$prefix", ['groups_id' => '_test_group_1', 'entities_id' => 0]];
+            yield "Profile_$prefix" => [$itemtype, "Profile_$prefix", ['profiles_id' => 'Super-Admin', 'entities_id' => 0]];
+            yield "{$prefix}_User" => [$itemtype, "{$prefix}_User", ['users_id' => 'tech']];
+        }
+    }
+
+    #[DataProvider('visibilityRelationProvider')]
+    public function testVisibilityRelationRequiresUpdateRight(string $itemtype, string $relation_class, array $target): void
+    {
+        // Arrange: an item of another user, visible in all the entities.
+        $this->login('glpi', 'glpi');
+        $rightname = $itemtype::$rightname;
+        $item = $this->createItem($itemtype, [
+            'name'     => 'Public item',
+            'text'     => 'Public item',
+            'url'      => 'https://example.com/feed',
+            'users_id' => \Session::getLoginUserID(),
+        ], ['text', 'url']);
+        $fkey = $item::getForeignKeyField();
+        $this->createItem('Entity_' . ($itemtype === \Reminder::class ? 'Reminder' : 'RSSFeed'), [
+            $fkey          => $item->getID(),
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $input = [$fkey => $item->getID()];
+        foreach ($target as $field => $value) {
+            $input[$field] = match ($field) {
+                'groups_id'   => getItemByTypeName(\Group::class, $value, true),
+                'profiles_id' => getItemByTypeName(\Profile::class, $value, true),
+                'users_id'    => getItemByTypeName(\User::class, $value, true),
+                default       => $value,
+            };
+        }
+
+        // Act/Assert: a user that can only read the item cannot add a visibility target
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile'][$rightname] = READ | $itemtype::PERSONAL;
+        $this->assertTrue($item->getFromDB($item->getID()));
+        $this->assertTrue($item->canViewItem());
+        $this->assertFalse($item->canUpdateItem());
+        $this->assertFalse((new $relation_class())->can(-1, CREATE, $input));
+
+        // Act/Assert: a user that can also update the item can add it
+        $_SESSION['glpiactiveprofile'][$rightname] = READ | UPDATE | $itemtype::PERSONAL;
+        $this->assertTrue($item->canUpdateItem());
+        $this->assertTrue((new $relation_class())->can(-1, CREATE, $input));
+    }
+
+    public function testRSSFeedOwnerCanShareWithUserWithoutUserReadRight(): void
+    {
+        // Arrange: a feed of the current user, who has no global right on users
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile']['rssfeed_public'] = READ | UPDATE | \RSSFeed::PERSONAL;
+        $_SESSION['glpiactiveprofile']['user'] = 0;
+        $feed = $this->createItem(\RSSFeed::class, [
+            'name'     => 'My feed',
+            'url'      => 'https://example.com/feed',
+            'users_id' => \Session::getLoginUserID(),
+        ], ['url']);
+
+        $input = [
+            'rssfeeds_id' => $feed->getID(),
+            'users_id'    => getItemByTypeName(\User::class, 'tech', true),
+        ];
+
+        // Act/Assert: the owner can still share the feed with a user
+        $this->assertTrue(\RSSFeed_User::canCreate());
+        $this->assertTrue((new \RSSFeed_User())->can(-1, CREATE, $input));
     }
 }
