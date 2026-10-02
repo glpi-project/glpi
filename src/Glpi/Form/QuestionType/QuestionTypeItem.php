@@ -500,12 +500,19 @@ TWIG;
             return $result;
         }
 
-        // The itemtype is defined by the question, and the user must be allowed to select the items
-        $items_ids = $answer['items_ids'] ?? [];
+        // The itemtype is defined by the question, and the user must be allowed to select the items.
+        // A list of answers is formatted item by item, so each of them is checked.
         $default_items_ids = $this->getDefaultValuesItemIds($question);
-        $is_valid = ($answer['itemtype'] ?? $itemtype) === $itemtype;
-        foreach (is_array($items_ids) ? $items_ids : [$items_ids] as $items_id) {
-            $is_valid = $is_valid && $this->canSelectItem($itemtype, (int) $items_id, $default_items_ids);
+        $is_valid = true;
+        foreach (array_is_list($answer) ? $answer : [$answer] as $item_answer) {
+            if (!is_array($item_answer) || ($item_answer['itemtype'] ?? $itemtype) !== $itemtype) {
+                $is_valid = false;
+                break;
+            }
+            $items_ids = $item_answer['items_ids'] ?? [];
+            foreach (is_array($items_ids) ? $items_ids : [$items_ids] as $items_id) {
+                $is_valid = $is_valid && $this->canSelectItem($itemtype, (int) $items_id, $default_items_ids);
+            }
         }
         if (!$is_valid) {
             $result->addError($question, __('Unexpected value'));

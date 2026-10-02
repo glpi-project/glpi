@@ -371,6 +371,15 @@ final class QuestionTypeItemTest extends DbTestCase
         // The items of the other entities cannot, nor the items of another itemtype than the one of the question
         $this->assertFalse($is_valid(Computer::class, $computer_2->getID()));
         $this->assertFalse($is_valid(Ticket::class, $ticket_2->getID()));
+
+        // A list of answers is checked item by item
+        $is_valid_list = fn(array $answers): bool => AnswersHandler::getInstance()->validateAnswers($form, [
+            $this->getQuestionId($form, 'Asset') => $answers,
+        ])->isValid();
+        $this->assertTrue($is_valid_list([['itemtype' => Computer::class, 'items_ids' => [$computer_1->getID()]]]));
+        $this->assertFalse($is_valid_list([['itemtype' => Computer::class, 'items_ids' => [$computer_2->getID()]]]));
+        $this->assertFalse($is_valid_list([['itemtype' => Ticket::class, 'items_ids' => [$ticket_2->getID()]]]));
+        $this->assertFalse($is_valid_list(['not an answer']));
     }
 
     #[DataProvider('itemAnswerInTicketProvider')]
