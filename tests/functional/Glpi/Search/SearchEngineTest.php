@@ -34,8 +34,11 @@
 
 namespace tests\units\Glpi\Search;
 
+use Dropdown;
+use Glpi\Form\Form;
 use Glpi\Search\SearchEngine;
 use Glpi\Tests\DbTestCase;
+use Ticket;
 
 class SearchEngineTest extends DbTestCase
 {
@@ -126,5 +129,17 @@ class SearchEngineTest extends DbTestCase
                 implode('\', \'', $fails)
             )
         );
+    }
+
+    public function testFormCanBeUsedAsMetaCriteriaForTicket(): void
+    {
+        $linked = SearchEngine::getMetaItemtypeAvailable(Ticket::class);
+
+        $html = Dropdown::showItemTypes('criteria0itemtype', $linked, [
+            'value'   => Form::class,
+            'display' => false,
+        ]);
+
+        $this->assertStringContainsString("value='" . Form::class . "' selected", $html);
     }
 }
