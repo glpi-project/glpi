@@ -2860,4 +2860,26 @@ class CommonDBTMTest extends DbTestCase
         $input_move_ok = ['id' => $computer->getID(), 'entities_id' => $child2];
         $this->assertTrue($computer->can($computer->getID(), UPDATE, $input_move_ok));
     }
+
+    public function testCannotMoveItemToInaccessibleEntityFromTheInterface(): void
+    {
+        $this->login();
+        $child1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'Computer to move',
+            'entities_id' => $child1,
+        ]);
+
+        // The scripts that give the posted data to update() without giving it to the rights check are covered too
+        $this->setEntity('_test_child_1', false);
+        $this->assertFalse($computer->update(['update' => 1, 'id' => $computer->getID(), 'entities_id' => $child2]));
+        $this->assertEquals($child1, (new Computer())->getById($computer->getID())->fields['entities_id']);
+
+        // Moving to an accessible entity is allowed
+        $this->setEntity('_test_root_entity', true);
+        $this->assertTrue($computer->update(['update' => 1, 'id' => $computer->getID(), 'entities_id' => $child2]));
+        $this->assertEquals($child2, (new Computer())->getById($computer->getID())->fields['entities_id']);
+    }
 }

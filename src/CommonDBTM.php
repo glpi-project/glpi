@@ -1665,6 +1665,17 @@ class CommonDBTM extends CommonGLPI
         // Store input in the object to be available in all sub-method / hook
         $this->input = $input;
 
+        // An item cannot be moved from the interface to an entity that the user cannot access
+        if (
+            isset($input['update'], $input['entities_id'])
+            && $this->isEntityAssign()
+            && Session::getLoginUserID() !== false
+            && (int) $input['entities_id'] !== (int) $this->getEntityID()
+            && !Session::haveAccessToEntity((int) $input['entities_id'])
+        ) {
+            return false;
+        }
+
         // Manage the _no_history
         if (!isset($this->input['_no_history'])) {
             $this->input['_no_history'] = !$history;
