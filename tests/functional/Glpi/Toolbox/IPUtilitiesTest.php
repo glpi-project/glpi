@@ -80,6 +80,13 @@ class IPUtilitiesTest extends GLPITestCase
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.8.4.5';
         $this->assertEquals('10.8.4.5', $ipUtilities::getClientIP());
 
+        // The entries sent by the client before the proxy are not relied on
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.2.3.4, 10.8.4.5';
+        $this->assertEquals('10.8.4.5', $ipUtilities::getClientIP());
+        // Several trusted proxies
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.2.3.4, 10.8.4.5, fd79:a3b1:c4d2:1::1';
+        $this->assertEquals('10.8.4.5', $ipUtilities::getClientIP());
+
         // Not trusted header
         unset($_SERVER['HTTP_X_FORWARDED_FOR']);
         $_SERVER['HTTP_FORWARDED'] = 'for=10.8.4.5;proto=http';
@@ -101,6 +108,9 @@ class IPUtilitiesTest extends GLPITestCase
         $_SERVER['HTTP_FORWARDED'] = 'for=[fd79:a3b1:c4d2:1::5];proto=http';
         $this->assertEquals('fd79:a3b1:c4d2:1::5', $ipUtilities::getClientIP());
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '10.10.4.4';
+        $this->assertEquals('fd79:a3b1:c4d2:1::5', $ipUtilities::getClientIP());
+        // The entries sent by the client before the proxy are not relied on in the Forwarded header too
+        $_SERVER['HTTP_FORWARDED'] = 'for=1.2.3.4;proto=http, for="[fd79:a3b1:c4d2:1::5]";proto=http';
         $this->assertEquals('fd79:a3b1:c4d2:1::5', $ipUtilities::getClientIP());
         unset($_SERVER['HTTP_FORWARDED']);
         $this->assertEquals('10.10.4.4', $ipUtilities::getClientIP());

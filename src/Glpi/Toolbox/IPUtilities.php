@@ -82,22 +82,32 @@ class IPUtilities
         foreach ($proxy_ip_headers as $header) {
             $server_header = 'HTTP_' . str_replace('-', '_', strtoupper($header));
             if (isset($_SERVER[$server_header])) {
-                if ($server_header === 'HTTP_FORWARDED') {
-                    $forwarded_header = $_SERVER[$server_header];
-                    $forwarded_header_parts = explode(';', $forwarded_header);
-                    foreach ($forwarded_header_parts as $part) {
-                        $part = trim($part);
-                        if (str_starts_with($part, 'for=')) {
-                            $ip = substr($part, 4);
-                            // IP may be quoted and IPv6 IPs are supposed to be enclosed in square brackets.
-                            return trim($ip, '"[]');
+                $ip_list = [];
+                foreach (explode(',', $_SERVER[$server_header]) as $element) {
+                    if ($server_header === 'HTTP_FORWARDED') {
+                        foreach (explode(';', $element) as $part) {
+                            $part = trim($part);
+                            if (str_starts_with($part, 'for=')) {
+                                // IP may be quoted and IPv6 IPs are supposed to be enclosed in square brackets.
+                                $ip_list[] = trim(substr($part, 4), '"[]');
+                                break;
+                            }
                         }
+                    } else {
+                        // handle standard headers (X-Forwarded-For, etc.)
+                        $ip_list[] = trim($element);
                     }
                 }
-                // handle standard headers (X-Forwarded-For, etc.)
-                $ip_list = explode(',', $_SERVER[$server_header]);
-                $ip_list = array_map('trim', $ip_list);
-                // return the first IP in the list, which should be the original client IP
+                if ($ip_list === []) {
+                    continue;
+                }
+                // The proxies append the address they received the request from, so only the entries added
+                // by the trusted proxies can be relied on: the client IP is the last one that is not a trusted proxy.
+                foreach (array_reverse($ip_list) as $ip) {
+                    if (!static::isTrustedReverseProxy($ip)) {
+                        return $ip;
+                    }
+                }
                 return $ip_list[0];
             }
         }
