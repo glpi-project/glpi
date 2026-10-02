@@ -2656,6 +2656,15 @@ HTML;
             'is_recursive' => 1,
         ]);
 
+        // A supplier with an email, visible in the assignee dropdown
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => __FUNCTION__ . '_supplier',
+            'email'       => 'supplier-default-email@example.com',
+            'is_active'   => 1,
+            'entities_id' => $root_id,
+            'is_recursive' => 1,
+        ]);
+
         $base_post = [
             'itemtype'           => Ticket::class,
             'actortype'          => 'requester',
@@ -2680,6 +2689,30 @@ HTML;
         $user_result = array_filter($results['results'], static fn($r) => $r['id'] === 'User_' . $user->getID());
         $this->assertNotEmpty($user_result);
         $this->assertSame(0, (int) reset($user_result)['use_notification']);
+
+        // Same behavior for suppliers (assignee dropdown): use_notification follows the item's entity
+        $assign_post = [
+            'itemtype'           => Ticket::class,
+            'actortype'          => 'assign',
+            'returned_itemtypes' => [Supplier::class],
+            'searchText'         => '',
+        ];
+
+        $results = Dropdown::getDropdownActors($assign_post + [
+            'item'        => ['entities_id' => $notif_entity->getID()],
+            '_idor_token' => Session::getNewIDORToken(Ticket::class, $assign_post),
+        ], false);
+        $supplier_result = array_filter($results['results'][0]['children'] ?? [], static fn($r) => $r['id'] === 'Supplier_' . $supplier->getID());
+        $this->assertNotEmpty($supplier_result);
+        $this->assertSame(1, (int) reset($supplier_result)['use_notification']);
+
+        $results = Dropdown::getDropdownActors($assign_post + [
+            'item'        => ['entities_id' => $no_notif_entity->getID()],
+            '_idor_token' => Session::getNewIDORToken(Ticket::class, $assign_post),
+        ], false);
+        $supplier_result = array_filter($results['results'][0]['children'] ?? [], static fn($r) => $r['id'] === 'Supplier_' . $supplier->getID());
+        $this->assertNotEmpty($supplier_result);
+        $this->assertSame(0, (int) reset($supplier_result)['use_notification']);
     }
 
     public function testGetDeviceItemTypes()
