@@ -39,6 +39,7 @@ use CartridgeItem;
 use Cluster;
 use CommonDBTM;
 use CommonDropdown;
+use CommonITILObject;
 use CommonTreeDropdown;
 use ConsumableItem;
 use Datacenter;
@@ -57,12 +58,14 @@ use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use Glpi\Form\ValidationResult;
 use InvalidArgumentException;
 use Line;
 use LogicException;
 use Override;
 use PassiveDCEquipment;
 use PDU;
+use Profile_User;
 use Rack;
 use Safe\Exceptions\JsonException;
 use Session;
@@ -76,7 +79,8 @@ use function Safe\json_encode;
 class QuestionTypeItem extends AbstractQuestionType implements
     FormQuestionDataConverterInterface,
     UsedAsCriteriaInterface,
-    ConditionValueTransformerInterface
+    ConditionValueTransformerInterface,
+    QuestionTypeValidationInterface
 {
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
@@ -485,6 +489,63 @@ TWIG;
                 'is_multiple_items'           => $this->isMultipleItems($question),
             ]
         );
+    }
+
+    #[Override]
+    public function validateAnswer(Question $question, mixed $answer): ValidationResult
+    {
+        $result = new ValidationResult();
+        $itemtype = $this->getDefaultValueItemtype($question);
+        if (!is_array($answer) || $itemtype === null) {
+            return $result;
+        }
+
+        // The itemtype is defined by the question, and the user must be allowed to select the items
+        $items_ids = $answer['items_ids'] ?? [];
+        $default_items_ids = $this->getDefaultValuesItemIds($question);
+        $is_valid = ($answer['itemtype'] ?? $itemtype) === $itemtype;
+        foreach (is_array($items_ids) ? $items_ids : [$items_ids] as $items_id) {
+            $is_valid = $is_valid && $this->canSelectItem($itemtype, (int) $items_id, $default_items_ids);
+        }
+        if (!$is_valid) {
+            $result->addError($question, __('Unexpected value'));
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check that the current user is allowed to select the given item.
+     *
+     * @param int[] $default_items_ids Items defined as default values by the form administrator
+     */
+    private function canSelectItem(string $itemtype, int $items_id, array $default_items_ids): bool
+    {
+        // Empty value, special values (e.g. current user) and default values
+        if ($items_id <= 0 || in_array($items_id, $default_items_ids, true)) {
+            return true;
+        }
+
+        $item = getItemForItemtype($itemtype);
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+        if (!$item->getFromDB($items_id)) {
+            // Nothing to disclose
+            return true;
+        }
+
+        if ($item instanceof User) {
+            // Users are selectable in the entities of their authorizations
+            return $item->can($items_id, READ)
+                || array_intersect(Profile_User::getUserEntities($items_id), Session::getActiveEntities()) !== [];
+        }
+
+        if ($item->isEntityAssign() && !Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive())) {
+            return false;
+        }
+
+        return !$item instanceof CommonITILObject || $item->can($items_id, READ);
     }
 
     #[Override]
