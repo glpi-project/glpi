@@ -3240,4 +3240,41 @@ HTML;
         }
         $this->assertTrue($has_match);
     }
+
+    public function testGetDropdownConnectRespectsAssignedRight(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+        $this->createItem(Monitor::class, [
+            'name'          => 'Connect monitor assigned to me',
+            'entities_id'   => $entities_id,
+            'users_id_tech' => Session::getLoginUserID(),
+        ]);
+        $this->createItem(Monitor::class, [
+            'name'          => 'Connect monitor of someone else',
+            'entities_id'   => $entities_id,
+            'users_id_tech' => getItemByTypeName(User::class, 'tech', true),
+        ]);
+
+        // The user can only see the monitors assigned to him
+        $_SESSION['glpiactiveprofile'][Monitor::$rightname] = READ_ASSIGNED;
+
+        $post = [
+            'fromtype'        => Computer::class,
+            'itemtype'        => Monitor::class,
+            'entity_restrict' => $entities_id,
+            'searchText'      => 'Connect monitor',
+            '_idor_token'     => Session::getNewIDORToken(Monitor::class, ['entity_restrict' => $entities_id]),
+        ];
+        $result = Dropdown::getDropdownConnect($post, false);
+
+        $names = [];
+        foreach ($result['results'] as $entry) {
+            foreach ($entry['children'] ?? [$entry] as $child) {
+                $names[] = $child['text'];
+            }
+        }
+        $this->assertContains('Connect monitor assigned to me', $names);
+        $this->assertNotContains('Connect monitor of someone else', $names);
+    }
 }
