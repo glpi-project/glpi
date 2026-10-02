@@ -18910,7 +18910,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$nb of static method CommonGLPI\\:\\:createTabEntry\\(\\) expects int, int\\<0, max\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
