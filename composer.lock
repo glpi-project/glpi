@@ -14763,16 +14763,16 @@
         },
         {
             "name": "symfony/web-profiler-bundle",
-            "version": "v6.4.46",
+            "version": "v6.4.47",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-profiler-bundle.git",
-                "reference": "bab4798b3d9084431b589cb95772671c66cc6c32"
+                "reference": "df8f3c9f05c08cd7aeab029b4c6af456265c3666"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/bab4798b3d9084431b589cb95772671c66cc6c32",
-                "reference": "bab4798b3d9084431b589cb95772671c66cc6c32",
+                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/df8f3c9f05c08cd7aeab029b4c6af456265c3666",
+                "reference": "df8f3c9f05c08cd7aeab029b4c6af456265c3666",
                 "shasum": ""
             },
             "require": {
@@ -14825,7 +14825,7 @@
                 "dev"
             ],
             "support": {
-                "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.46"
+                "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.47"
             },
             "funding": [
                 {
@@ -14845,7 +14845,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-02T17:01:51+00:00"
+            "time": "2026-09-28T16:09:37+00:00"
         },
         {
             "name": "thecodingmachine/phpstan-safe-rule",
