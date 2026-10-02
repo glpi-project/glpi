@@ -136,6 +136,14 @@ const config = {
     },
     mode: 'none', // Force 'none' mode, as optimizations will be done on release process
     devtool: 'source-map', // Add sourcemap to files
+    cache: {
+        type: 'filesystem', // Persist build cache in `node_modules/.cache/webpack`
+        buildDependencies: {
+            // Invalidate cache when this config or npm patches change (patched packages keep their version)
+            config: [__filename, path.resolve(__dirname, 'tools/patches/npm') + '/'],
+        },
+        maxAge: 1000 * 60 * 60 * 24 * 7, // Drop cache entries unused for 7 days, to limit the cache size
+    },
     stats: {
         // Limit verbosity to only usefull information
         all: false,
