@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.
 
 ### Deprecated
 
