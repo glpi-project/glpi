@@ -148,6 +148,9 @@
     "overrides": {
         "@tabler/icons-webfont": {
             "sharp": "^0.35.0"
+        },
+        "monaco-editor": {
+            "dompurify": "^3.4.16"
         }
     }
 }

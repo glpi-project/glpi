@@ -295,6 +295,11 @@ final class TilesManager
 
         // Set new ranks
         foreach (array_values($order) as $rank => $id) {
+            // Only the tiles of the given item can be ordered
+            if (!in_array($id, $items_tiles_ids)) {
+                continue;
+            }
+
             // Find the associated Profile_Tile
             $item_tile = new Item_Tile();
             $item_tile->update([
