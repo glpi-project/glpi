@@ -758,6 +758,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/rule.common.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method check\\(\\) on Rule\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method delete\\(\\) on Rule\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
