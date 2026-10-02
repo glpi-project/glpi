@@ -369,7 +369,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param int  $users_id User ID
      * @param bool $tech     false = used items, true = managed items
      *
-     * @return array{field_user: string, groups_ids: int[], criteria: array<string, mixed>}
+     * @return array{field_user: 'users_id'|'users_id_tech', groups_ids: int[], criteria: array<string, mixed>}
      */
     private static function getItemsForUserCriteria(int $users_id, bool $tech): array
     {
