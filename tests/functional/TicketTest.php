@@ -7483,12 +7483,14 @@ HTML,
             '_skip_auto_assign' => true,
         ]);
         $ticket_id = $ticket->getID();
+        // GLPI zero-pads the ticket id to at least 7 digits in notification subjects.
+        $padded_ticket_id = sprintf('%07d', $ticket_id);
 
         // Build a raw email from the sender replying to the ticket (linked via subject line)
         $raw = implode("\r\n", [
             "From: {$from_user} <{$sender_email}>",
             "To: helpdesk@glpi.com",
-            "Subject: Re: [GLPI #{$ticket_id}]",
+            "Subject: Re: [GLPI #{$padded_ticket_id}]",
             "Message-ID: <test-{$from_user}-followup@glpi-test.com>",
             "Date: Mon, 01 Jan 2024 12:00:00 +0000",
             "",
