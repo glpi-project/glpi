@@ -45,6 +45,7 @@ use Computer;
 use Contract;
 use CronTask;
 use Entity;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
@@ -12247,5 +12248,50 @@ HTML,
                 );
             }
         }
+    }
+
+    public function testUpdateFormRequiresAccessToTheTicket(): void
+    {
+        $this->login();
+        $entity_1 = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $entity_2 = getItemByTypeName(Entity::class, '_test_child_2', true);
+        $ticket_1 = $this->createItem(Ticket::class, ['name' => 'Ticket 1', 'content' => 'Content', 'entities_id' => $entity_1]);
+        $ticket_2 = $this->createItem(Ticket::class, ['name' => 'Ticket 2', 'content' => 'Content', 'entities_id' => $entity_2]);
+
+        // A technician that can only access the first entity
+        $this->createItem(User::class, [
+            'name'          => 'restricted_technician',
+            'password'      => 'Restricted-Pass-123!',
+            'password2'     => 'Restricted-Pass-123!',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Technician', true),
+            '_entities_id'  => $entity_1,
+            '_is_recursive' => 0,
+        ], skip_fields: ['password', 'password2']);
+        $this->login('restricted_technician', 'Restricted-Pass-123!');
+        $this->assertTrue(Ticket::canUpdate());
+        $this->assertFalse((new Ticket())->can($ticket_2->getID(), READ));
+
+        $submit = function (Ticket $ticket, string $name): ?\Throwable {
+            $_POST = ['update' => 1, 'id' => $ticket->getID(), 'name' => $name];
+            $exception = null;
+            try {
+                include GLPI_ROOT . '/front/ticket.form.php';
+            } catch (\Throwable $e) {
+                $exception = $e;
+            } finally {
+                $_POST = [];
+            }
+            return $exception;
+        };
+
+        // The ticket of the other entity cannot be updated
+        $this->assertInstanceOf(AccessDeniedHttpException::class, $submit($ticket_2, 'Updated'));
+        $this->assertTrue($ticket_2->getFromDB($ticket_2->getID()));
+        $this->assertSame('Ticket 2', $ticket_2->fields['name']);
+
+        // The ticket of the entity of the technician can be updated
+        $this->assertNotInstanceOf(AccessDeniedHttpException::class, $submit($ticket_1, 'Updated'));
+        $this->assertTrue($ticket_1->getFromDB($ticket_1->getID()));
+        $this->assertSame('Updated', $ticket_1->fields['name']);
     }
 }
