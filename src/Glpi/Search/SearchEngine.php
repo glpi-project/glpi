@@ -159,9 +159,6 @@ final class SearchEngine
             if ($key === 'ticket_types' && $item instanceof CommonITILObject) {
                 // Linked are filtered by CommonITILObject::getAllTypesForHelpdesk()
                 $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk()));
-                if (Form::canView()) {
-                    $linked[] = Form::getType();
-                }
                 continue;
             }
 
@@ -187,6 +184,10 @@ final class SearchEngine
                     $linked[] = $config_itemtype::getType();
                 }
             }
+        }
+
+        if ($item instanceof CommonITILObject && Form::canView()) {
+            $linked[] = Form::getType();
         }
 
         // Add entity meta if needed

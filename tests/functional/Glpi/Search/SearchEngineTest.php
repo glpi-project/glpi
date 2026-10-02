@@ -34,14 +34,21 @@
 
 namespace tests\units\Glpi\Search;
 
-use Dropdown;
+use Change;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Search\SearchEngine;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\FormTesterTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Problem;
+use Search;
 use Ticket;
 
 class SearchEngineTest extends DbTestCase
 {
+    use FormTesterTrait;
+
     public function testGetMetaParentItemtypesForTypesConfig(): void
     {
         global $CFG_GLPI;
@@ -131,17 +138,50 @@ class SearchEngineTest extends DbTestCase
         );
     }
 
-    public function testFormCanBeUsedAsMetaCriteriaForTicket(): void
+    public static function itilTypesProvider(): iterable
+    {
+        yield [Ticket::class];
+        yield [Change::class];
+        yield [Problem::class];
+    }
+
+    #[DataProvider('itilTypesProvider')]
+    public function testFormIsMetaItemtypeForItilObjects(string $itil_itemtype): void
     {
         $this->login();
 
-        $linked = SearchEngine::getMetaItemtypeAvailable(Ticket::class);
+        $this->assertContains(Form::class, SearchEngine::getMetaItemtypeAvailable($itil_itemtype));
+    }
 
-        $html = Dropdown::showItemTypes('criteria0itemtype', $linked, [
-            'value'   => Form::class,
-            'display' => false,
+    public function testTicketSearchWithFormMetaCriteria(): void
+    {
+        $this->login();
+
+        $form = $this->createAndGetFormWithFirstAndLastNameQuestions(FormDestinationTicket::class);
+        $linked_ticket = $this->sendFormAndGetCreatedTicket($form, [
+            'First name' => 'John',
+            'Last name'  => 'Doe',
         ]);
 
-        $this->assertStringContainsString("value='" . Form::class . "' selected", $html);
+        $other_ticket = $this->createItem(Ticket::class, [
+            'name'    => 'Ticket not linked to the form',
+            'content' => 'Ticket not linked to the form',
+        ]);
+
+        $criteria = [
+            [
+                'link'       => 'AND',
+                'itemtype'   => Form::class,
+                'meta'       => true,
+                'field'      => Search::getOptionNumber(Form::class, 'id'),
+                'searchtype' => 'equals',
+                'value'      => $form->getID(),
+            ],
+        ];
+        $data = Search::getDatas(Ticket::class, ['criteria' => $criteria]);
+
+        $ids = array_column($data['data']['rows'], 'id');
+        $this->assertContains($linked_ticket->getID(), $ids);
+        $this->assertNotContains($other_ticket->getID(), $ids);
     }
 }
