@@ -42,6 +42,7 @@ $user = new User();
 
 // Manage 2FA
 if (isset($_POST['disable_2fa'])) {
+    Preference::checkReAuthenticationOrRedirect();
     $totp_manager = new TOTPManager();
     $totp_manager->disable2FAForUser(Session::getLoginUserID());
     Html::redirect(Preference::getSearchURL());
@@ -51,6 +52,7 @@ if (
     isset($_POST["update"])
     && ($_POST["id"] == Session::getLoginUserID())
 ) {
+    Preference::checkReAuthenticationOrRedirect();
     $user->update($_POST);
     Event::log(
         $_POST["id"],
