@@ -39,6 +39,8 @@ use Safe\Exceptions\NetworkException;
 
 use function Safe\inet_ntop;
 use function Safe\inet_pton;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
 
 /**
  * @final Only open for extension for use within tests.
@@ -82,28 +84,56 @@ class IPUtilities
         foreach ($proxy_ip_headers as $header) {
             $server_header = 'HTTP_' . str_replace('-', '_', strtoupper($header));
             if (isset($_SERVER[$server_header])) {
-                if ($server_header === 'HTTP_FORWARDED') {
-                    $forwarded_header = $_SERVER[$server_header];
-                    $forwarded_header_parts = explode(';', $forwarded_header);
-                    foreach ($forwarded_header_parts as $part) {
-                        $part = trim($part);
-                        if (str_starts_with($part, 'for=')) {
-                            $ip = substr($part, 4);
-                            // IP may be quoted and IPv6 IPs are supposed to be enclosed in square brackets.
-                            return trim($ip, '"[]');
+                $ip_list = [];
+                foreach (self::splitHeaderValue($_SERVER[$server_header], ',') as $element) {
+                    if ($server_header === 'HTTP_FORWARDED') {
+                        foreach (self::splitHeaderValue($element, ';') as $part) {
+                            $part = trim($part);
+                            if (str_starts_with($part, 'for=')) {
+                                // IP may be quoted, IPv6 IPs are supposed to be enclosed in square brackets and may be followed by a port.
+                                $node = trim(substr($part, 4), '"');
+                                if (preg_match('/^\[([^\]]*)\]/', $node, $matches)) {
+                                    $node = $matches[1];
+                                } elseif (substr_count($node, ':') === 1) {
+                                    $node = explode(':', $node)[0];
+                                }
+                                $ip_list[] = $node;
+                                break;
+                            }
                         }
+                    } else {
+                        // handle standard headers (X-Forwarded-For, etc.)
+                        $ip_list[] = trim($element);
                     }
                 }
-                // handle standard headers (X-Forwarded-For, etc.)
-                $ip_list = explode(',', $_SERVER[$server_header]);
-                $ip_list = array_map('trim', $ip_list);
-                // return the first IP in the list, which should be the original client IP
+                if ($ip_list === []) {
+                    continue;
+                }
+                // The proxies append the address they received the request from, so only the entries added
+                // by the trusted proxies can be relied on: the client IP is the last one that is not a trusted proxy.
+                foreach (array_reverse($ip_list) as $ip) {
+                    if (!static::isTrustedReverseProxy($ip)) {
+                        // An entry that is not a valid IP cannot be relied on, the remote address is used instead
+                        return filter_var($ip, FILTER_VALIDATE_IP) !== false ? $ip : $remote_addr;
+                    }
+                }
                 return $ip_list[0];
             }
         }
 
         // At this point, the remote address is a trusted proxy but none of the expected headers were found, so we return the remote address as a fallback
         return $remote_addr;
+    }
+
+    /**
+     * Split a header value on the given separator, except inside quoted strings.
+     *
+     * @return string[]
+     */
+    private static function splitHeaderValue(string $value, string $separator): array
+    {
+        preg_match_all('/(?:"(?:[^"\\\\]|\\\\.)*"|[^"' . preg_quote($separator, '/') . '])+/', $value, $matches);
+        return $matches[0];
     }
 
     /**
