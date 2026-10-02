@@ -631,8 +631,16 @@ class Webhook extends CommonDBTM implements FilterableInterface
     private function addParentItemData(array &$data, string $itemtype, int $items_id): void
     {
         if (is_subclass_of($itemtype, CommonDBChild::class)) {
-            $parent_itemtype = $data['item']['itemtype'];
-            $parent_id = $data['item']['items_id'];
+            if (str_starts_with($itemtype::$itemtype, 'itemtype')) {
+                // Polymorphic child: the parent is carried by the itemtype/items_id payload fields.
+                $parent_itemtype = $data['item']['itemtype'];
+                $parent_id = $data['item']['items_id'];
+            } else {
+                // Fixed parent (TicketValidation, ChangeValidation, ...): the payload only holds the
+                // parent foreign key, so derive the parent from the child class definition.
+                $parent_itemtype = $itemtype::$itemtype;
+                $parent_id = $data['item'][$itemtype::$items_id] ?? null;
+            }
         } elseif (is_subclass_of($itemtype, CommonITILTask::class)) {
             /** @var class-string<CommonDBTM> $parent_itemtype */
             $parent_itemtype = str_replace('Task', '', $itemtype);
@@ -644,10 +652,15 @@ class Webhook extends CommonDBTM implements FilterableInterface
         if ($parent_schema === null) {
             throw new LogicException("Parent itemtype $parent_itemtype does not have a valid API schema");
         }
-        $parent_result = ResourceAccessor::getOneBySchema($parent_schema, [
+        // Fetch the parent like the item itself (see getAPIResponse()), so the payload does not depend
+        // on the rights of the user who triggered the event, and ignore it if it cannot be retrieved.
+        $parent_result = Session::callAsSystem(static fn() => ResourceAccessor::getOneBySchema($parent_schema, [
             'itemtype' => $parent_itemtype,
             'id' => $parent_id,
-        ], []);
+        ], []));
+        if ($parent_result->getStatusCode() !== 200) {
+            return;
+        }
         $result = json_decode((string) $parent_result->getBody(), true);
         if (is_array($result)) {
             $data['parent_item'] = $result;

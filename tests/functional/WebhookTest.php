@@ -42,6 +42,7 @@ use ITILFollowup;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
 use Ticket;
+use TicketValidation;
 use User;
 use Webhook;
 
@@ -593,6 +594,87 @@ JSON;
             static fn(string $msg) => stripos($msg, 'webhook') !== false
         );
         $this->assertEmpty($webhook_errors);
+    }
+
+    public function testParentItemResolvedForFixedParentChild(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        // TicketValidation is a CommonDBChild with a fixed parent (Ticket), so its payload carries
+        // tickets_id, not itemtype/items_id. The parent must still be resolved for the body.
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test validation webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketValidation::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for validation',
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName('User', TU_USER, true),
+        ]);
+
+        $webhooks = array_values(getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]));
+        $this->assertCount(1, $webhooks);
+        $body = json_decode($webhooks[0]['body'], true);
+        $this->assertIsArray($body);
+        $this->assertArrayHasKey('parent_item', $body);
+        $this->assertSame($ticket->getID(), $body['parent_item']['id']);
+    }
+
+    public function testParentItemResolvedWithoutParentReadRight(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test validation webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketValidation::class,
+            'event'               => 'new',
+            'is_active'           => 0,
+            'use_default_payload' => 1,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for validation',
+            'entities_id' => $entity_id,
+        ]);
+        $validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName('User', TU_USER, true),
+        ]);
+
+        // The user raising the event (an approver for instance) may not be able to read the ticket.
+        // The parent must still be resolved, and never replaced by an API error body.
+        $saved_profile = $_SESSION['glpiactiveprofile'];
+        $_SESSION['glpiactiveprofile']['ticket'] = 0;
+        try {
+            $body = $webhook->getResultForPath(
+                $webhook->getApiPath($validation),
+                'new',
+                TicketValidation::class,
+                $validation->getID(),
+                true
+            );
+        } finally {
+            $_SESSION['glpiactiveprofile'] = $saved_profile;
+        }
+
+        $data = json_decode($body, true);
+        $this->assertIsArray($data);
+        $this->assertSame($ticket->getID(), $data['parent_item']['id'] ?? null);
     }
 
     public function testParentItemResolvedProperly(): void
