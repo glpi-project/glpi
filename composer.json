@@ -90,7 +90,7 @@
         "symfony/mailer": "^7.4",
         "symfony/mime": "^7.4",
         "symfony/polyfill-ctype": "^1.35",
-        "symfony/polyfill-iconv": "^1.37",
+        "symfony/polyfill-iconv": "^1.43",
         "symfony/polyfill-mbstring": "^1.43",
         "symfony/polyfill-php84": "^1.43",
         "symfony/polyfill-php85": "^1.43",
