@@ -133,6 +133,8 @@ class SearchEngineTest extends DbTestCase
 
     public function testFormCanBeUsedAsMetaCriteriaForTicket(): void
     {
+        $this->login();
+
         $linked = SearchEngine::getMetaItemtypeAvailable(Ticket::class);
 
         $html = Dropdown::showItemTypes('criteria0itemtype', $linked, [
