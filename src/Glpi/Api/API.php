@@ -60,6 +60,7 @@ use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\InternalInputKeys;
 use Glpi\Toolbox\MarkdownRenderer;
 use GLPIKey;
 use Html;
@@ -1919,7 +1920,7 @@ abstract class API
             foreach ($input as $object) {
                 // Use a new instance each time to avoid side effects with data from a previous item (See #14490)
                 $item        = \getItemForItemtype($itemtype);
-                $object      = $this->inputObjectToArray($object);
+                $object      = InternalInputKeys::remove($this->inputObjectToArray($object));
                 $current_res = [];
 
                 //check rights
@@ -2082,7 +2083,7 @@ abstract class API
                         //update item
                         $message = '';
                         try {
-                            $object = $this->inputObjectToArray($object);
+                            $object = InternalInputKeys::remove($this->inputObjectToArray($object));
                             $update_return = $item->update($object);
                             $message = $this->getGlpiLastMessage();
                         } catch (RuntimeException $e) {

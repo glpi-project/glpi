@@ -59,6 +59,7 @@ use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
 use Glpi\Kernel\Listener\RequestListener\PluginsRouterListener;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
+use Glpi\Kernel\Listener\RequestListener\RemoveInternalInputKeysListener;
 use Glpi\Kernel\Listener\RequestListener\SessionCheckCookieListener;
 use Glpi\Kernel\Listener\RequestListener\SessionVariables;
 
@@ -102,6 +103,10 @@ final class ListenersPriority
         // prevent the request from being processed when they altered the input data.
         // It must be executed before anything reads the request input.
         CheckStartupErrorsListener::class  => 485,
+
+        // This listener will remove the internal input keys from the request data.
+        // It must be executed before anything reads the request input.
+        RemoveInternalInputKeysListener::class => 480,
 
         // This listener will ensure that the request is made on a secure context (HTTPS) when the
         // cookies are available only on a secure context (`session.cookie_secure=on`).
