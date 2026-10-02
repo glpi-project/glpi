@@ -411,7 +411,12 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 $input['default_value'] = $question_type->formatDefaultValueForDB(null);
             }
 
-            if (isset($input['extra_data']) || $is_creating) {
+            // A clone keeps the extra data stored on the source question, which
+            // may no longer be valid for its type (e.g. the question type was
+            // changed or a custom asset definition was disabled).
+            $is_cloning = $input['clone'] ?? false;
+
+            if (!$is_cloning && (isset($input['extra_data']) || $is_creating)) {
                 $extra_data = $input['extra_data'] ?? [];
                 if (is_string($extra_data)) {
                     if (empty($extra_data)) {
