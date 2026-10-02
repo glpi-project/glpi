@@ -53,6 +53,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Input\SearchInputInterface;
@@ -158,6 +159,7 @@ final class SearchEngine
             if ($key === 'ticket_types' && $item instanceof CommonITILObject) {
                 // Linked are filtered by CommonITILObject::getAllTypesForHelpdesk()
                 $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk()));
+                $linked[] = Form::getType();
                 continue;
             }
 
