@@ -312,7 +312,12 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
         switch ($ma->getAction()) {
             case 'convert':
                 echo __s('Select an itemtype: ') . ' ';
-                Dropdown::showItemType($CFG_GLPI['inventory_types'], [
+                // Allow conversion to any itemtype that can hold network ports, except Unmanaged itself.
+                $convert_types = array_values(array_filter(
+                    $CFG_GLPI['networkport_types'],
+                    static fn($itemtype): bool => $itemtype !== self::class
+                ));
+                Dropdown::showItemType($convert_types, [
                     'display_emptychoice' => false,
                 ]);
                 break;

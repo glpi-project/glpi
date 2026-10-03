@@ -357,4 +357,42 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         unset($ip->fields['id']);
         $this->assertEquals($expected, $ip->fields);
     }
+    
+    public function testConvertMassiveActionSubFormItemtypes()
+    {
+        $this->login();
+
+        $unmanaged = new \Unmanaged();
+        $unmanageds_id = $unmanaged->add([
+            'name'        => 'to convert',
+            'entities_id' => 0,
+            'is_dynamic'  => 1,
+        ]);
+        $this->assertGreaterThan(0, $unmanageds_id);
+
+        $ma = new \MassiveAction(
+            [
+                'action'      => 'convert',
+                'action_name' => 'Convert',
+                'items'       => ['Unmanaged' => [$unmanageds_id => 'on']],
+            ],
+            [],
+            'process'
+        );
+
+        ob_start();
+        \Unmanaged::showMassiveActionsSubForm($ma);
+        $html = ob_get_clean();
+
+        // The conversion targets must include every itemtype that can hold network
+        // ports, not only the ones the native inventory is able to create.
+        $this->assertStringContainsString("value='Computer'", $html);
+        $this->assertStringContainsString("value='NetworkEquipment'", $html);
+        $this->assertStringContainsString("value='Printer'", $html);
+        $this->assertStringContainsString("value='Peripheral'", $html);
+        $this->assertStringContainsString("value='PDU'", $html);
+
+        // Unmanaged itself is not a valid conversion target.
+        $this->assertStringNotContainsString("value='Unmanaged'", $html);
+    }
 }
