@@ -393,6 +393,12 @@ trait InventoryNetworkPort
             $ports += $this->getManagementPorts();
         }
         foreach ($ports as $key => $data) {
+            if (property_exists($data, 'speed')) {
+                $data->ifspeed = (int) $data->speed * 1000000;
+            }
+            if (property_exists($data, 'mtu')) {
+                $data->ifmtu = $data->mtu;
+            }
             foreach ($db_ports as $keydb => $datadb) {
                 $dbdata_copy = [];
                 foreach (array_merge(['instantiation_type'], $np_dyn_props) as $k) {
@@ -734,6 +740,12 @@ trait InventoryNetworkPort
             $ports += $this->getManagementPorts();
         }
         foreach ($ports as $port) {
+            if (property_exists($port, 'speed')) {
+                $port->ifspeed = (int) $port->speed * 1000000;
+            }
+            if (property_exists($port, 'mtu')) {
+                $port->ifmtu = $port->mtu;
+            }
             // force NetworkPortEthernet type if no instantiation_type and mac is set
             if (!property_exists($port, 'instantiation_type') && property_exists($port, 'mac') && !empty($port->mac)) {
                 $port->instantiation_type = 'NetworkPortEthernet';
