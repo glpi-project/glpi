@@ -136,11 +136,10 @@ final class ReAuthManager
     }
 
     /**
-     * Make the user reauthenticated
+     * Mark the current user as reauthenticated.
      *
-     * Consider current user as reauthenticated
      * Set the reauth session validity to now + delay (self::REAUTH_DELAY_SECONDS).
-     * Used to make user reauthenticated just after login.
+     * To be called once the strategy verification succeeded.
      */
     public function authenticate(): void
     {
@@ -256,6 +255,19 @@ final class ReAuthManager
             fn($carry, string $item_type) => $carry || $item_type::isUserReauthenticationNeeded(),
             false
         );
+    }
+
+    /**
+     * Whether the strategy selected for the current user is of the given class.
+     *
+     * An endpoint dedicated to one strategy must check it: being available for the user is not
+     * enough, a higher priority strategy may be the one they have to pass.
+     *
+     * @param class-string<ReAuthStrategyInterface> $strategy_class
+     */
+    public function isSelectedStrategy(string $strategy_class): bool
+    {
+        return $this->getStrategy() instanceof $strategy_class;
     }
 
     /**

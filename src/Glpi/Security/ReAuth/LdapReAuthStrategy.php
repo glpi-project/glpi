@@ -114,7 +114,7 @@ final class LdapReAuthStrategy extends InPlaceReAuthStrategy
     #[Override]
     public function getPromptTemplate(): string
     {
-        return 'pages/reauth/ldap_form.html.twig';
+        return 'pages/reauth/password_form.html.twig';
     }
 
     #[Override]

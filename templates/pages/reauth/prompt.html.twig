@@ -39,13 +39,18 @@
 {% endblock %}
 
 {% block header_block %}
-   <span class="card-title">{{ __('Re-authentication required') }}</span>
+   <span class="card-title">{{ __('Confirmation required') }}</span>
 {% endblock %}
 
 {% block content_block %}
    {% if failed ?? false %}
        <twig:Alert:Danger :heading="__('Authentication failure')" />
    {% endif %}
+
+   <twig:Alert:Warning
+      :heading="__('Sensitive area')"
+      :content="__('The action you requested may change GLPI behavior or display confidential data.')"
+   />
 
   <form method="{{ verify_http_method }}" action="{{ verify_url }}" data-submit-once autocomplete="off">
      <div class="mb-3">

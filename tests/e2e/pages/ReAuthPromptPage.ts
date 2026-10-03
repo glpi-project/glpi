@@ -50,7 +50,7 @@ export class ReAuthPromptPage extends GlpiPage
     public constructor(page: Page)
     {
         super(page);
-        this.heading = page.getByText('Re-authentication required');
+        this.heading = page.getByText('Confirmation required');
         // The password input has no id/label association nor an ARIA role, so
         // getByRole()/getByLabel() cannot target it; fall back to its placeholder.
         this.password_field = page.getByPlaceholder('Password');
