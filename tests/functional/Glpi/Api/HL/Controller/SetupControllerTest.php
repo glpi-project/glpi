@@ -947,6 +947,8 @@ EOT;
                     $this->assertEquals('Car', $content['system_name']);
                     $this->assertEquals('Car', $content['label']);
                     $this->assertNotEmpty($content['picture']);
+                    $reference = substr($content['picture'], strpos($content['picture'], '_pictures%2F') + strlen('_pictures%2F'));
+                    $this->assertFileExists(GLPI_PICTURE_DIR . '/' . urldecode($reference));
                 });
         });
     }
