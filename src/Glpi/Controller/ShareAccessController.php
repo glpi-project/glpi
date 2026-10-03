@@ -57,19 +57,26 @@ final class ShareAccessController extends AbstractController
     {
         $token_manager = new ShareTokenManager();
 
-        $shared_item = $token_manager->grantSessionAccess($token);
+        $shared_item = $token_manager->getSharedItem($token);
         if ($shared_item === null) {
             throw new NotFoundHttpException();
         }
 
-        // Authenticated user: redirect to normal item URL
-        if (Session::isAuthenticated()) {
+        // User who can already read the item: redirect to normal item URL.
+        // `can()` may be true through an earlier share access, and the item
+        // page also requires the itemtype right.
+        if (
+            Session::isAuthenticated()
+            && $shared_item::canView()
+            && $shared_item->can($shared_item->getID(), READ)
+        ) {
             $response = new RedirectResponse($shared_item->getItemUrl());
             $response->headers->set('Referrer-Policy', 'no-referrer');
             return $response;
         }
 
-        // Anonymous user: render the shared item into a sessionless state.
+        // Other users: grant access and render the shared item.
+        $token_manager->grantSessionAccess($token);
         $response = $this->render(
             $shared_item->getShareableViewTemplate(),
             $shared_item->getShareableViewParams(),
