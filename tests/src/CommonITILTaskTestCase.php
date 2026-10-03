@@ -380,6 +380,72 @@ abstract class CommonITILTaskTestCase extends DbTestCase
         $this->assertFalse($tech_task->canUpdateItem());
     }
 
+    public function testCanChangeStateWhenAssigned(): void
+    {
+        global $DB;
+
+        $task_class = static::getTaskClass();
+        $itil_class = $task_class::getItilObjectItemType();
+        $itil_fkey = getForeignKeyFieldForItemType($itil_class);
+
+        $this->login();
+        $itil_item = $this->createItem(
+            $itil_class,
+            [
+                'name' => 'ITIL item',
+                'content' => __FUNCTION__,
+                'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $assigned_task = $this->createItem(
+            $task_class,
+            [
+                'state' => \Planning::TODO,
+                $itil_fkey => $itil_item->getID(),
+                'content' => 'Task assigned to the current user',
+                'users_id_tech' => getItemByTypeName(\User::class, TU_USER, true),
+            ]
+        );
+        $other_task = $this->createItem(
+            $task_class,
+            [
+                'state' => \Planning::TODO,
+                $itil_fkey => $itil_item->getID(),
+                'content' => 'Task assigned to another user',
+                'users_id_tech' => getItemByTypeName(\User::class, 'tech', true),
+            ]
+        );
+        // Tasks authored by another user
+        $DB->update(
+            $task_class::getTable(),
+            ['users_id' => getItemByTypeName(\User::class, 'tech', true)],
+            ['id' => [$assigned_task->getID(), $other_task->getID()]]
+        );
+        $this->assertTrue($assigned_task->getFromDB($assigned_task->getID()));
+        $this->assertTrue($other_task->getFromDB($other_task->getID()));
+
+        // Only UPDATEMY right: cannot update tasks authored by someone else
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => \CommonITILTask::UPDATEMY],
+            [
+                'profiles_id' => getItemByTypeName(\Profile::class, 'Super-Admin', true),
+                'name' => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+
+        $this->assertFalse($assigned_task->canUpdateItem());
+        $this->assertTrue($assigned_task->canChangeState());
+
+        $this->assertFalse($other_task->canUpdateItem());
+        $this->assertFalse($other_task->canChangeState());
+
+        // Cannot change state of a task whose parent is in the trashbin
+        $this->assertTrue($itil_item->delete(['id' => $itil_item->getID()]));
+        $this->assertFalse($assigned_task->canChangeState());
+    }
+
     /**
      * Data provider for testIsParentAlreadyLoaded
      *
