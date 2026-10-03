@@ -3,6 +3,26 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [13.0.0] unreleased
+
+### Added
+
+### Changes
+
+### Deprecated
+
+### Removed
+- `itemtype` criteria for Ticket and Change rules. This has been non-operational since 0.85 (over 11 years ago).
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
 
 ## [12.0.0] unreleased
 
