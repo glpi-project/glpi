@@ -48,11 +48,13 @@ class Item_DeviceHardDrive extends Item_Devices
 
         return [
             'capacity' => [
-                'long name'  => sprintf(__('%1$s (%2$s)'), __('Capacity'), __('Mio')),
-                'short name' => __('Capacity'),
-                'size'       => 10,
-                'id'         => 20,
-                'datatype'   => 'integer',
+                'long name'    => sprintf(__('%1$s (%2$s)'), __('Capacity'), __('Mio')),
+                'short name'   => __('Capacity'),
+                'display_name' => __('Capacity'),
+                'display_unit' => 'binary_size',
+                'size'         => 10,
+                'id'           => 20,
+                'datatype'     => 'integer',
             ],
             'serial'   => parent::getSpecificities('serial'),
             'otherserial' => parent::getSpecificities('otherserial'),
