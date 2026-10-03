@@ -50,15 +50,15 @@ test.describe('Planning View', () => {
         await expect(shared_planning_page.page.locator('div.fc')).toBeVisible();
     });
 
-    /* eslint-disable-next-line playwright/expect-expect -- expects are done in fillNewEventForm */
+    /* eslint-disable-next-line playwright/expect-expect -- expects are done in doFillNewEventForm */
     test('Create event', async () => {
         await shared_planning_page.gotoView('month');
         await shared_planning_page.page.getByRole('gridcell', { name: /1/ }).first().click();
-        await shared_planning_page.fillNewEventForm({
+        await shared_planning_page.doFillNewEventForm({
             name: 'Test event from month view',
             description: 'Test description',
             start_time: '10:00',
-            period: '1h30',
+            end_time: '11:30',
         });
     });
 });
