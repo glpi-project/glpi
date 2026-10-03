@@ -50,6 +50,10 @@ return $config
 
     ->ignoreUnknownClasses(['DB', 'DbTestCase', 'PluginGenericobjectType'])
 
+    // PHPStan rules are only ever loaded by the PHPStan phar, which exposes its own classes
+    // (`PHPStan\*`) and bundles `nikic/php-parser`.
+    ->addPathToExclude(__DIR__ . '/tools/src/PHPStan')
+
     // Ignore errors on extensions that are suggested but not required
     ->ignoreErrorsOnExtensionAndPaths('ext-exif', [
         'src/Document.php',
