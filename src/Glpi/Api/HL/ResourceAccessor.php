@@ -512,9 +512,7 @@ final class ResourceAccessor
         }
 
         $schema = self::applyFieldReadRestrictions($schema);
-        $filters = $request_params['filter'] ?? '';
-        $filters .= ';' . $field . '==' . $shared_item->getID();
-        $request_params['filter'] = $filters;
+        $request_params['filter'] = $field . '==' . $shared_item->getID();
         $request_params['limit'] = 1;
         unset($request_params['start']);
 
