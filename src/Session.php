@@ -41,6 +41,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Kernel\Kernel;
 use Glpi\Locale\LanguageRegistry;
+use Glpi\OAuth\AuthCodeRepository;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\SessionTracker;
 use Glpi\Session\SessionInfo;
@@ -134,6 +135,7 @@ class Session
         $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS',
             'glpiskipMaintenance',
             'glpi_remote_user',
+            AuthCodeRepository::AUTHORIZE_LOGIN_CLIENT_SESSION_KEY,
         ];
         $save = [];
         foreach ($tosave as $t) {

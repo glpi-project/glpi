@@ -85,11 +85,28 @@ final class SessionTrackerController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function revokeAccessToken(Request $request): Response
     {
+        global $DB;
+
+        $uuid = $request->attributes->getString('uuid');
         $repo = new AccessTokenRepository();
+        $login_session_uid = $repo->getLoginSessionUIDByUUID($uuid);
         if (!\OAuthClient::canUpdate()) {
-            $repo->revokeMyAccessTokenByUUID($request->attributes->getString('uuid'));
+            $repo->revokeMyAccessTokenByUUID($uuid);
         } else {
-            $repo->revokeAccessTokenByUUID($request->attributes->getString('uuid'));
+            $repo->revokeAccessTokenByUUID($uuid);
+        }
+
+        if ($login_session_uid !== null) {
+            // The token is shown as the same session as the login session it was authorized from, so revoke both
+            $session = $DB->request([
+                'SELECT' => ['users_id'],
+                'FROM' => 'glpi_users_sessions',
+                'WHERE' => ['login_session_uid' => $login_session_uid],
+                'LIMIT' => 1,
+            ])->current();
+            if ($session !== null && ($session['users_id'] === Session::getLoginUserID() || Config::canUpdate())) {
+                SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_ADMIN);
+            }
         }
 
         return new Response('', Response::HTTP_NO_CONTENT);

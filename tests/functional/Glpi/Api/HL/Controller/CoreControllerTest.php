@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Http\Request;
+use Glpi\Security\SessionTracker;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Transfer;
@@ -419,6 +420,207 @@ class CoreControllerTest extends HLAPITestCase
                     $this->assertStringContainsString('state=', $redirect_target);
                 });
         }, false);
+    }
+
+    public function testAuthorizationCodeGrantLinksLoginSession(): void
+    {
+        global $DB;
+
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['authorization_code', 'refresh_token'],
+            'scopes' => ['api'],
+        ]);
+        $client_secret = (new \GLPIKey())->decrypt($DB->request([
+            'SELECT' => ['secret'],
+            'FROM' => \OAuthClient::getTable(),
+            'WHERE' => ['id' => $client->getID()],
+        ])->current()['secret']);
+
+        $browser_user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36';
+        $previous_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        $_SERVER['HTTP_USER_AGENT'] = $browser_user_agent;
+
+        try {
+            // The user is not logged in yet, so the client authorization starts with the login
+            $this->logOut();
+            $this->api->call($this->getAuthorizeRequest($client), function ($call) {
+                $call->response->status(fn($status) => $this->assertEquals(302, $status));
+            }, false);
+
+            // Logging in keeps track of the client the user logged in for
+            $auth = new \Auth();
+            $auth->user = getItemByTypeName(\User::class, TU_USER);
+            $auth->auth_succeded = true;
+            $auth->setAuthType(\Auth::DB_GLPI);
+            \Session::init($auth);
+            $login_session_uid = \Session::getLoginSessionUID();
+            $this->assertNotNull($login_session_uid);
+
+            $code = $this->acceptAuthorization($client);
+
+            // The client exchanges the code for tokens from its own backend
+            $_SERVER['HTTP_USER_AGENT'] = 'GuzzleHttp/7';
+            $refresh_token = null;
+            $request = new Request('POST', '/token', ['Content-Type' => 'application/json'], json_encode([
+                'grant_type'    => 'authorization_code',
+                'client_id'     => $client->fields['identifier'],
+                'client_secret' => $client_secret,
+                'redirect_uri'  => '/api.php/oauth2/redirection',
+                'code'          => $code,
+            ]));
+            $this->api->call($request, function ($call) use (&$refresh_token) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use (&$refresh_token) {
+                        $refresh_token = $content['refresh_token'];
+                    });
+            }, false);
+
+            $access_tokens = iterator_to_array($DB->request([
+                'SELECT' => ['login_session_uid'],
+                'FROM' => 'glpi_oauth_access_tokens',
+                'WHERE' => ['client' => $client->fields['identifier']],
+            ]));
+            $this->assertCount(1, $access_tokens);
+            $this->assertEquals($login_session_uid, $access_tokens[0]['login_session_uid']);
+
+            // Refreshed tokens stay linked to the same login session
+            $request = new Request('POST', '/token', ['Content-Type' => 'application/json'], json_encode([
+                'grant_type'    => 'refresh_token',
+                'client_id'     => $client->fields['identifier'],
+                'client_secret' => $client_secret,
+                'refresh_token' => $refresh_token,
+            ]));
+            $this->api->call($request, function ($call) {
+                $call->response->isOK();
+            }, false);
+
+            $access_tokens = iterator_to_array($DB->request([
+                'SELECT' => ['login_session_uid'],
+                'FROM' => 'glpi_oauth_access_tokens',
+                'WHERE' => ['client' => $client->fields['identifier']],
+            ]));
+            $this->assertCount(1, $access_tokens);
+            $this->assertEquals($login_session_uid, $access_tokens[0]['login_session_uid']);
+
+            // A single session is listed for the login and the client authorization
+            $sessions = (new SessionTracker())->getSessions(\Session::getLoginUserID());
+            $this->assertCount(1, $sessions);
+            $this->assertEquals('api', $sessions[0]['type_raw']);
+            $this->assertTrue($sessions[0]['current_session']);
+            $this->assertStringContainsString(__FUNCTION__, $sessions[0]['details']);
+            $this->assertStringContainsString('api', $sessions[0]['details']);
+            // The user agent is the one of the browser the client was authorized from, not the one of the client backend
+            $this->assertStringContainsString('Chrome 140.0', $sessions[0]['details']);
+        } finally {
+            if ($previous_user_agent === null) {
+                unset($_SERVER['HTTP_USER_AGENT']);
+            } else {
+                $_SERVER['HTTP_USER_AGENT'] = $previous_user_agent;
+            }
+        }
+    }
+
+    public function testAuthorizationCodeGrantKeepsExistingLoginSessionSeparate(): void
+    {
+        global $DB;
+
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['authorization_code'],
+            'scopes' => ['api'],
+        ]);
+        $client_secret = (new \GLPIKey())->decrypt($DB->request([
+            'SELECT' => ['secret'],
+            'FROM' => \OAuthClient::getTable(),
+            'WHERE' => ['id' => $client->getID()],
+        ])->current()['secret']);
+
+        $previous_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        try {
+            // The user was already logged in from their browser before authorizing the client
+            $this->loginWeb();
+            $login_session_uid = \Session::getLoginSessionUID();
+            $this->assertNotNull($login_session_uid);
+
+            $code = $this->acceptAuthorization($client);
+
+            // The client requests the token from the browser
+            $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0';
+            $request = new Request('POST', '/token', ['Content-Type' => 'application/json'], json_encode([
+                'grant_type'    => 'authorization_code',
+                'client_id'     => $client->fields['identifier'],
+                'client_secret' => $client_secret,
+                'redirect_uri'  => '/api.php/oauth2/redirection',
+                'code'          => $code,
+            ]));
+            $this->api->call($request, function ($call) {
+                $call->response->isOK();
+            }, false);
+
+            $access_tokens = iterator_to_array($DB->request([
+                'SELECT' => ['login_session_uid'],
+                'FROM' => 'glpi_oauth_access_tokens',
+                'WHERE' => ['client' => $client->fields['identifier']],
+            ]));
+            $this->assertCount(1, $access_tokens);
+            $this->assertNull($access_tokens[0]['login_session_uid']);
+
+            // The browser session and the client session are listed separately
+            $sessions = (new SessionTracker())->getSessions(\Session::getLoginUserID());
+            $this->assertCount(2, $sessions);
+            $sessions_by_type = array_column($sessions, null, 'type_raw');
+            $this->assertTrue($sessions_by_type['web']['current_session']);
+            $this->assertEquals($login_session_uid, $sessions_by_type['web']['internal_identifier']);
+            $this->assertFalse($sessions_by_type['api']['current_session']);
+            $this->assertStringContainsString(__FUNCTION__, $sessions_by_type['api']['details']);
+            // Without a linked login session, the user agent of the client that requested the token is used
+            $this->assertStringContainsString('Firefox 140.0', $sessions_by_type['api']['details']);
+        } finally {
+            if ($previous_user_agent === null) {
+                unset($_SERVER['HTTP_USER_AGENT']);
+            } else {
+                $_SERVER['HTTP_USER_AGENT'] = $previous_user_agent;
+            }
+        }
+    }
+
+    private function getAuthorizeRequest(\OAuthClient $client): Request
+    {
+        $request = new Request('GET', '/authorize');
+        return $request->withQueryParams([
+            'response_type' => 'code',
+            'client_id'     => $client->fields['identifier'],
+            'redirect_uri'  => '/api.php/oauth2/redirection',
+            'scope'         => 'api',
+        ]);
+    }
+
+    /**
+     * Accept the authorization of the client by the logged in user.
+     * @return string The authorization code
+     */
+    private function acceptAuthorization(\OAuthClient $client): string
+    {
+        $request = $this->getAuthorizeRequest($client);
+        // The router only fills the request parameters checked for the user's choice from $_REQUEST and the body, not from the query params
+        $request->setParameter('accept', 1);
+        $code = null;
+        $this->api->call($request, function ($call) use (&$code) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(function ($headers) use (&$code) {
+                    parse_str(parse_url($headers['Location'], PHP_URL_QUERY), $query);
+                    $code = $query['code'] ?? null;
+                });
+        }, false);
+        $this->assertNotNull($code);
+        return $code;
     }
 
     public function testStatusScope()

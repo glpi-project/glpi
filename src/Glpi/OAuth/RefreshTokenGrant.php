@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,15 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var DBmysql $DB
- * @var Migration $migration
- */
+namespace Glpi\OAuth;
 
-$ip_tables = ['glpi_oauth_access_tokens', 'glpi_oauth_refresh_tokens', 'glpi_oauth_auth_codes'];
-foreach ($ip_tables as $table) {
-    $migration->addField($table, 'ip_address', 'VARCHAR(45) DEFAULT NULL');
-    $migration->addField($table, 'login_session_uid', 'VARCHAR(64) DEFAULT NULL');
+use Psr\Http\Message\ServerRequestInterface;
+
+final class RefreshTokenGrant extends \League\OAuth2\Server\Grant\RefreshTokenGrant
+{
+    use LinkedLoginSessionTrait;
+
+    protected function validateOldRefreshToken(ServerRequestInterface $request, string $clientId): array
+    {
+        $old_refresh_token = parent::validateOldRefreshToken($request, $clientId);
+        // The new tokens remain linked to the same login session as the old ones
+        $this->linked_login_session_uid = (new RefreshTokenRepository())->getLinkedLoginSessionUID($old_refresh_token['refresh_token_id']);
+        return $old_refresh_token;
+    }
 }
-$migration->addField('glpi_oauth_access_tokens', 'user_agent', 'VARCHAR(512) DEFAULT NULL');
-$migration->addKey('glpi_oauth_access_tokens', 'login_session_uid');

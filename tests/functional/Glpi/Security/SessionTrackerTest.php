@@ -40,6 +40,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Security\SessionTracker;
 use Glpi\Tests\DbTestCase;
 use Log;
+use OAuthClient;
+use Session;
 use User;
 
 class SessionTrackerTest extends DbTestCase
@@ -370,5 +372,94 @@ class SessionTrackerTest extends DbTestCase
         $this->assertCount(5, $session_tracker->getSessions(users_id: 0, filters: [
             'status' => 'all',
         ]));
+    }
+
+    public function testRevokeSessionRevokesLinkedOAuthTokens(): void
+    {
+        global $DB;
+
+        $this->login();
+        $login_session_uid = Session::getLoginSessionUID();
+        $this->assertNotNull($login_session_uid);
+
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'linked_access_token',
+            'uuid' => 'linked_access_token_uuid',
+            'client' => 'client',
+            'date_expiration' => date('Y-m-d H:i:s', strtotime('+1 hour')),
+            'user_identifier' => $_SESSION['glpiID'],
+            'login_session_uid' => $login_session_uid,
+        ]));
+        $this->assertTrue($DB->insert('glpi_oauth_refresh_tokens', [
+            'identifier' => 'linked_refresh_token',
+            'access_token' => 'linked_access_token',
+            'date_expiration' => date('Y-m-d H:i:s', strtotime('+1 hour')),
+            'login_session_uid' => $login_session_uid,
+        ]));
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'unlinked_access_token',
+            'uuid' => 'unlinked_access_token_uuid',
+            'client' => 'client',
+            'date_expiration' => date('Y-m-d H:i:s', strtotime('+1 hour')),
+            'user_identifier' => $_SESSION['glpiID'],
+        ]));
+
+        // Logging out of the web interface does not end the OAuth client sessions
+        SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_USER);
+        $this->assertEquals(1, countElementsInTable('glpi_oauth_access_tokens', ['identifier' => 'linked_access_token']));
+        $this->assertEquals(1, countElementsInTable('glpi_oauth_refresh_tokens', ['identifier' => 'linked_refresh_token']));
+
+        SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_ADMIN);
+        $this->assertEquals(0, countElementsInTable('glpi_oauth_access_tokens', ['identifier' => 'linked_access_token']));
+        $this->assertEquals(0, countElementsInTable('glpi_oauth_refresh_tokens', ['identifier' => 'linked_refresh_token']));
+        $this->assertEquals(1, countElementsInTable('glpi_oauth_access_tokens', ['identifier' => 'unlinked_access_token']));
+    }
+
+    public function testGetSessionsWithLinkedOAuthToken(): void
+    {
+        global $DB;
+
+        $this->login();
+        $login_session_uid = Session::getLoginSessionUID();
+        $this->assertNotNull($login_session_uid);
+
+        $client = $this->createItem(OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+        ]);
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'linked_access_token',
+            'uuid' => 'linked_access_token_uuid',
+            'client' => $client->fields['identifier'],
+            'date_expiration' => date('Y-m-d H:i:s', strtotime('+1 hour')),
+            'user_identifier' => $_SESSION['glpiID'],
+            'scopes' => exportArrayToDB(['api', 'user']),
+            'ip_address' => '::1',
+            'login_session_uid' => $login_session_uid,
+        ]));
+        $user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0';
+        $DB->update('glpi_users_sessions', ['user_agent' => $user_agent], ['login_session_uid' => $login_session_uid]);
+        $DB->update('glpi_users_sessionhistories', ['user_agent' => $user_agent], ['login_session_uid' => $login_session_uid]);
+
+        $sessions = (new SessionTracker())->getSessions($_SESSION['glpiID']);
+        $this->assertCount(1, $sessions);
+        $session = $sessions[0];
+        $this->assertEquals('api', $session['type_raw']);
+        $this->assertTrue($session['current_session']);
+        $this->assertStringContainsString('API', $session['type']);
+        $this->assertStringContainsString(__FUNCTION__, $session['details']);
+        $this->assertStringContainsString('api, user', $session['details']);
+        $this->assertStringContainsString('ti-brand-firefox', $session['details']);
+        $this->assertStringContainsString('Firefox 140.0', $session['details']);
+        // Same as the browser session it was authorized from, it cannot be revoked from itself
+        $this->assertEmpty($session['actions']);
+
+        // The user agent is still known from the history once the browser session ended
+        SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_USER);
+        $sessions = (new SessionTracker())->getSessions($_SESSION['glpiID']);
+        $this->assertCount(1, $sessions);
+        $this->assertEquals('api', $sessions[0]['type_raw']);
+        $this->assertStringContainsString('Firefox 140.0', $sessions[0]['details']);
     }
 }

@@ -50,6 +50,7 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Locale\LanguageRegistry;
+use Glpi\OAuth\AuthCodeRepository;
 use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
@@ -665,6 +666,9 @@ HTML;
 
             $user_id = Session::getLoginUserID();
             if ($user_id === false) {
+                // Remember the login is done to authorize this client, so the new login session is linked to the issued tokens
+                $_SESSION[AuthCodeRepository::AUTHORIZE_LOGIN_CLIENT_SESSION_KEY] = $auth_request->getClient()->getIdentifier();
+
                 // Redirect to login page
                 $redirect_params = [
                     'scope'         => implode(' ', array_map(static fn($s) => $s->getIdentifier(), $auth_request->getScopes())),
@@ -705,6 +709,7 @@ HTML;
             $auth_request->setAuthorizationApproved($request->hasParameter('accept'));
             /** @var Response $response */
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
+            unset($_SESSION[AuthCodeRepository::AUTHORIZE_LOGIN_CLIENT_SESSION_KEY]);
             return $response;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new Response()); // @phpstan-ignore return.type (Response vs ResponseInterface)

@@ -39,9 +39,15 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
+use Session;
 
 class AuthCodeRepository implements AuthCodeRepositoryInterface
 {
+    /**
+     * Session key storing the identifier of the client the user was asked to log in for, during the authorization code flow.
+     */
+    public const AUTHORIZE_LOGIN_CLIENT_SESSION_KEY = 'glpi_oauth_authorize_login_client';
+
     public function getNewAuthCode(): AuthCode
     {
         $code = new AuthCode();
@@ -65,7 +71,50 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
             'user_identifier' => $authCodeEntity->getUserIdentifier(),
             'scopes' => exportArrayToDB($authCodeEntity->getScopes()),
             'ip_address' => IPUtilities::getClientIP(),
+            'login_session_uid' => $this->getLoginSessionUIDToLink($authCodeEntity->getClient()->getIdentifier()),
         ]);
+    }
+
+    /**
+     * Get the UID of the login session the tokens issued for the given client should be linked to.
+     *
+     * Only a login session opened to authorize this client is linked, so it is shown as a single session with the tokens.
+     * A browser session the user already had before starting the authorization stays a separate session.
+     *
+     * @param string $client_identifier
+     *
+     * @return string|null
+     */
+    private function getLoginSessionUIDToLink(string $client_identifier): ?string
+    {
+        if (($_SESSION[self::AUTHORIZE_LOGIN_CLIENT_SESSION_KEY] ?? null) !== $client_identifier) {
+            return null;
+        }
+        return Session::getLoginSessionUID();
+    }
+
+    /**
+     * Get the UID of the login session the given authorization code was granted from.
+     *
+     * @param string $codeId
+     *
+     * @return string|null
+     */
+    public function getLinkedLoginSessionUID(string $codeId): ?string
+    {
+        global $DB;
+
+        $row = $DB->request([
+            'SELECT' => ['login_session_uid'],
+            'FROM' => 'glpi_oauth_auth_codes',
+            'WHERE' => [
+                'identifier' => $codeId,
+                'NOT' => ['login_session_uid' => null],
+            ],
+            'LIMIT' => 1,
+        ])->current();
+
+        return $row['login_session_uid'] ?? null;
     }
 
     /**
