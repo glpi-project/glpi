@@ -51,7 +51,7 @@ trait LinkedLoginSessionTrait
     protected function issueAccessToken(
         DateInterval $accessTokenTTL,
         ClientEntityInterface $client,
-        string|null $userIdentifier,
+        ?string $userIdentifier,
         array $scopes = []
     ): AccessTokenEntityInterface {
         $access_token = parent::issueAccessToken($accessTokenTTL, $client, $userIdentifier, $scopes);
