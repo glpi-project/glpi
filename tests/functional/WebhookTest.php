@@ -35,12 +35,15 @@
 namespace tests\units;
 
 use Change;
+use CommonITILActor;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
+use Supplier;
+use Supplier_Ticket;
 use Ticket;
 use TicketValidation;
 use User;
@@ -439,6 +442,87 @@ JSON;
         ]);
 
         // Assert: one webhook request should have been added to the queue
+        $this->assertEquals(
+            $base_count + 1,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+    }
+
+    public function testWebhookFilterWithMetaCriteria(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: create one ticket assigned to a supplier and one ticket without supplier
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => 'Test supplier',
+            'entities_id' => $entity_id,
+        ]);
+        $ticket_with_supplier = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket with supplier',
+            'content'     => 'Ticket with supplier',
+            'entities_id' => $entity_id,
+        ]);
+        $this->createItem(Supplier_Ticket::class, [
+            'tickets_id'   => $ticket_with_supplier->getID(),
+            'suppliers_id' => $supplier->getID(),
+            'type'         => CommonITILActor::ASSIGN,
+        ]);
+        $ticket_without_supplier = $this->createItem(Ticket::class, [
+            'name'             => 'Ticket without supplier',
+            'content'          => 'Ticket without supplier',
+            'entities_id'      => $entity_id,
+            '_users_id_assign' => getItemByTypeName(User::class, 'tech', true),
+        ]);
+
+        // Arrange: setup a followup webhook filtered on the parent ticket supplier (meta criteria)
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype'        => Webhook::class,
+            'items_id'        => $webhook->getID(),
+            'search_itemtype' => ITILFollowup::class,
+            'search_criteria' => json_encode([
+                [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'meta'       => true,
+                    'field'      => '6', // Assigned to a supplier
+                    'searchtype' => 'equals',
+                    'value'      => $supplier->getID(),
+                ],
+            ]),
+        ], ['search_criteria']);
+
+        // Act: add a followup on the ticket without supplier
+        $base_count = $this->countQueuedRequestForWebhook($webhook);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_without_supplier->getID(),
+            'content'  => 'Followup on ticket without supplier',
+        ]);
+
+        // Assert: the webhook must not be triggered
+        $this->assertEquals(
+            $base_count,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+
+        // Act: add a followup on the ticket with supplier
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_with_supplier->getID(),
+            'content'  => 'Followup on ticket with supplier',
+        ]);
+
+        // Assert: the webhook must be triggered
         $this->assertEquals(
             $base_count + 1,
             $this->countQueuedRequestForWebhook($webhook),
