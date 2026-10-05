@@ -136,6 +136,11 @@ class Router
     private ?Request $final_request = null;
 
     /**
+     * Number of requests currently being handled. Greater than 1 when a request is handled while another one is in progress (e.g. Webhook raised during a HLAPI request).
+     */
+    private int $request_depth = 0;
+
+    /**
      * The last route that was matched and invoked.
      * @var ?RoutePath
      * @internal Only intended to be used by tests
@@ -641,6 +646,11 @@ EOT;
     {
         global $CFG_GLPI;
 
+        // Save state of any outer request in case this is a nested call (e.g. Webhook raised during a HLAPI request)
+        $outer_state = $this->request_depth > 0 ? [
+            $this->original_request, $this->final_request, $this->last_invoked_route, $this->current_client,
+        ] : null;
+
         // Reset client state so each request starts with a clean slate
         $this->current_client = null;
 
@@ -700,6 +710,7 @@ EOT;
 
         $request->setAttribute('_request_output_buffer_level', $current_output_buffer_level);
         $this->original_request = clone $request;
+        $this->request_depth++;
         $matched_route = $this->match($request);
         $routes_allowed_when_disabled = ['/token', '/status/all'];
 
@@ -775,8 +786,12 @@ EOT;
             ob_end_clean();
         }
 
-        // Clear state in case multiple requests are handled in the same process. Also helps reset the `isHLAPI` check.
-        if (Environment::get() !== Environment::TESTING) {
+        $this->request_depth--;
+        if ($outer_state !== null) {
+            // Restore the outer request state so it is not lost after a nested request
+            [$this->original_request, $this->final_request, $this->last_invoked_route, $this->current_client] = $outer_state;
+        } elseif (Environment::get() !== Environment::TESTING) {
+            // Clear state in case multiple requests are handled in the same process. Also helps reset the `isHLAPI` check.
             $this->original_request = null;
             $this->final_request = null;
             $this->last_invoked_route = null;

@@ -316,6 +316,60 @@ EOT;
         });
     }
 
+    public function testCreateDocumentWithFileAndActiveWebhook(): void
+    {
+        $bar_file_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $this->login();
+
+        // The webhook is raised during the item creation and triggers a nested internal API request
+        $this->createItem(\Webhook::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'url' => 'http://localhost',
+            'itemtype' => Document::class,
+            'event' => 'new',
+            'is_active' => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+test_document_with_file_and_webhook
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bar.png"
+Content-Type: image/png
+
+$bar_file_content
+-----boundary--
+EOT;
+        $request = new Request('POST', '/Management/Document', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $doc_id = null;
+        $this->api->call($request, function ($call) use (&$doc_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$doc_id) {
+                    $doc_id = $content['id'];
+                });
+        });
+
+        // The uploaded file must not be lost because of the nested webhook request
+        $doc = new Document();
+        $this->assertTrue($doc->getFromDB($doc_id));
+        $this->assertSame('bar.png', $doc->fields['filename']);
+        $this->assertNotEmpty($doc->fields['filepath']);
+    }
+
     public function testCreateDocumentFileTooBig(): void
     {
         global $CFG_GLPI;
