@@ -10057,12 +10057,10 @@ CREATE TABLE `glpi_oauth_access_tokens` (
    `user_identifier` varchar(255) DEFAULT NULL,
    `scopes` text DEFAULT NULL,
    `ip_address` varchar(45) DEFAULT NULL,
-   `login_session_uid` varchar(64) DEFAULT NULL,
    `user_agent` varchar(512) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    UNIQUE KEY `uuid` (`uuid`),
-   KEY `client` (`client`),
-   KEY `login_session_uid` (`login_session_uid`)
+   KEY `client` (`client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_oauth_refresh_tokens`;
@@ -10071,7 +10069,6 @@ CREATE TABLE `glpi_oauth_refresh_tokens` (
    `access_token` varchar(255) NOT NULL,
    `date_expiration` timestamp NOT NULL,
    `ip_address` varchar(45) DEFAULT NULL,
-   `login_session_uid` varchar(64) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    KEY `access_token` (`access_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -10084,7 +10081,6 @@ CREATE TABLE `glpi_oauth_auth_codes` (
    `user_identifier` varchar(255) DEFAULT NULL,
    `scopes` text DEFAULT NULL,
    `ip_address` varchar(45) DEFAULT NULL,
-   `login_session_uid` varchar(64) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    KEY `client` (`client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

@@ -42,12 +42,10 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
-use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\OAuth\AccessTokenRepository;
 use Glpi\OAuth\Server;
 use Glpi\Toolbox\IPUtilities;
 use JsonException;
@@ -205,7 +203,6 @@ final class SessionTracker
 
     /**
      * Revokes a session by a login session UID. If the reason is 'admin', the current user must have admin rights or be the owner of the session to revoke it.
-     * If the reason is 'admin', the OAuth tokens authorized from this session are revoked as well.
      * @param string $login_session_uid
      * @param string $reason
      * @phpstan-param self::REVOKE_REASON_* $reason
@@ -261,10 +258,6 @@ final class SessionTracker
             } catch (Throwable $e) {
                 ErrorHandler::logCaughtException($e);
             }
-        }
-
-        if ($reason === self::REVOKE_REASON_ADMIN) {
-            (new AccessTokenRepository())->revokeByLoginSession($login_session_uid);
         }
 
         if ($reason === self::REVOKE_REASON_ADMIN && $users_id) {
@@ -389,17 +382,6 @@ final class SessionTracker
                     ],
                 ],
             ],
-        ];
-
-        // Sessions used to authorize OAuth clients are shown along with the OAuth tokens instead
-        $where['NOT'] = [
-            'glpi_users_sessionhistories.login_session_uid' => new QuerySubQuery([
-                'SELECT' => 'glpi_oauth_access_tokens.login_session_uid',
-                'FROM' => 'glpi_oauth_access_tokens',
-                'WHERE' => [
-                    'NOT' => ['glpi_oauth_access_tokens.login_session_uid' => null],
-                ],
-            ]),
         ];
 
         if ($users_id > 0) {
@@ -527,38 +509,17 @@ final class SessionTracker
                 new QueryExpression($DB::quoteValue('api'), '_type'),
                 new QueryExpression('glpi_oauth_access_tokens.uuid', 'id'),
                 'glpi_oauth_access_tokens.user_identifier',
-                'glpi_oauth_access_tokens.login_session_uid',
+                new QueryExpression('NULL', 'login_session_uid'),
                 'glpi_oauth_access_tokens.ip_address',
-                // Use the user agent of the login session the client was authorized from, which is kept in the history once the session ended.
-                // Otherwise, use the user agent of the client that requested the token.
-                QueryFunction::ifnull(
-                    new QueryIdentifier('glpi_users_sessions.user_agent'),
-                    QueryFunction::ifnull(
-                        new QuerySubQuery([
-                            'SELECT' => 'glpi_users_sessionhistories.user_agent',
-                            'FROM' => 'glpi_users_sessionhistories',
-                            'WHERE' => [
-                                'glpi_users_sessionhistories.login_session_uid' => new QueryIdentifier('glpi_oauth_access_tokens.login_session_uid'),
-                            ],
-                            'ORDER' => ['glpi_users_sessionhistories.logged_in_at DESC'],
-                            'LIMIT' => 1,
-                        ]),
-                        new QueryIdentifier('glpi_oauth_access_tokens.user_agent'),
-                    ),
-                    'user_agent'
-                ),
+                'glpi_oauth_access_tokens.user_agent',
                 new QueryExpression('NULL', 'auth_type'),
-                // Use the login date of the session the client was authorized from, if it is still active
-                QueryFunction::ifnull(
-                    new QueryIdentifier('glpi_users_sessions.created_at'),
-                    QueryFunction::dateSub(
-                        date: new QueryIdentifier('glpi_oauth_access_tokens.date_expiration'),
-                        interval: $access_token_lifetime_seconds,
-                        interval_unit: 'SECOND',
-                    ),
-                    'logged_in_at'
+                QueryFunction::dateSub(
+                    date: new QueryIdentifier('glpi_oauth_access_tokens.date_expiration'),
+                    interval: $access_token_lifetime_seconds,
+                    interval_unit: 'SECOND',
+                    alias: 'logged_in_at',
                 ),
-                'glpi_users_sessions.last_activity_at',
+                new QueryExpression('NULL', 'last_activity_at'),
                 new QueryExpression('NULL', 'logged_out_at'),
                 new QueryExpression('NULL', 'logout_reason'),
                 new QueryExpression('NULL', 'users_id_revoked_by'),
@@ -573,12 +534,6 @@ final class SessionTracker
                     'ON' => [
                         'glpi_oauthclients' => 'identifier',
                         'glpi_oauth_access_tokens' => 'client',
-                    ],
-                ],
-                'glpi_users_sessions' => [
-                    'ON' => [
-                        'glpi_users_sessions' => 'login_session_uid',
-                        'glpi_oauth_access_tokens' => 'login_session_uid',
                     ],
                 ],
             ],
@@ -704,8 +659,7 @@ final class SessionTracker
             if (!isset($user_cache[$data['user_identifier']])) {
                 $user_cache[$data['user_identifier']] = getUserLink($data['user_identifier']);
             }
-            // An OAuth token may be linked to the login session it was authorized from
-            $is_current_session = $data['login_session_uid'] !== null && $data['login_session_uid'] === Session::getLoginSessionUID();
+            $is_current_session = $data['_type'] === 'web' && $data['login_session_uid'] === Session::getLoginSessionUID();
 
             $is_real_user = is_numeric($data['user_identifier']) && $data['user_identifier'] !== $data['client'];
             /** @phpstan-ignore-next-line */
@@ -732,9 +686,6 @@ final class SessionTracker
             }
 
             $agent_details = $this->getUserAgentDetails($dd, (string) $data['user_agent']);
-            if ($agent_details !== '' && $is_current_session) {
-                $agent_details .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
-            }
             if ($data['_type'] === 'api') {
                 $session['internal_identifier'] = $data['id'];
                 $session['details'] = '<span class="fw-bold">' . htmlescape($data['client_name']) . '</span>&nbsp;&middot;&nbsp;';
@@ -744,6 +695,9 @@ final class SessionTracker
                 }
             } else {
                 $session['internal_identifier'] = $data['login_session_uid'];
+                if ($agent_details !== '' && $is_current_session) {
+                    $agent_details .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
+                }
                 $session['details'] = '<span>' . $agent_details . '</span>';
             }
 
@@ -771,7 +725,7 @@ final class SessionTracker
             if ($data['_type'] === 'web' && !$data['logged_out_at'] && !$is_current_session) {
                 $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="web" data-identifier="' . htmlescape($data['login_session_uid']) . '">';
                 $session['actions'] .= '<i class="ti ti-logout" aria-hidden="true"></i>' . __s('Revoke') . '</button>';
-            } elseif ($data['_type'] === 'api' && !$is_current_session) {
+            } elseif ($data['_type'] === 'api') {
                 $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="api" data-identifier="' . htmlescape($data['id']) . '">';
                 $session['actions'] .= '<i class="ti ti-logout" aria-hidden="true"></i>' . __s('Revoke') . '</button>';
             }

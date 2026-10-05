@@ -69,47 +69,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     }
 
     /**
-     * Link a refresh token to a login session, so access tokens issued from it stay linked to that session.
-     *
-     * @param string $tokenId
-     * @param string $login_session_uid
-     *
-     * @return void
-     */
-    public function linkLoginSession(string $tokenId, string $login_session_uid): void
-    {
-        global $DB;
-
-        $DB->update('glpi_oauth_refresh_tokens', [
-            'login_session_uid' => $login_session_uid,
-        ], ['identifier' => $tokenId]);
-    }
-
-    /**
-     * Get the UID of the login session the given refresh token is linked to.
-     *
-     * @param string $tokenId
-     *
-     * @return string|null
-     */
-    public function getLinkedLoginSessionUID(string $tokenId): ?string
-    {
-        global $DB;
-
-        $row = $DB->request([
-            'SELECT' => ['login_session_uid'],
-            'FROM' => 'glpi_oauth_refresh_tokens',
-            'WHERE' => [
-                'identifier' => $tokenId,
-                'NOT' => ['login_session_uid' => null],
-            ],
-            'LIMIT' => 1,
-        ])->current();
-
-        return $row['login_session_uid'] ?? null;
-    }
-
-    /**
      * @param string $tokenId
      *
      * @return void
