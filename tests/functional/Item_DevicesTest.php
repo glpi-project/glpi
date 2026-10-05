@@ -45,6 +45,74 @@ use Toolbox;
 
 class Item_DevicesTest extends DbTestCase
 {
+    public function testComponentDates(): void
+    {
+        $this->login();
+        $computer = $this->createItem(\Computer::class, $this->getMinimalCreationInput(\Computer::class));
+        $other_computer = $this->createItem(\Computer::class, $this->getMinimalCreationInput(\Computer::class));
+
+        foreach (Item_Devices::getDeviceTypes() as $itemtype) {
+            $catalog_type = $itemtype::getDeviceType();
+            $catalog = $this->createItem($catalog_type, $this->getMinimalCreationInput($catalog_type));
+            $_SESSION['glpi_currenttime'] = '2026-01-01 10:00:00';
+            $item = $this->createItem($itemtype, [
+                $itemtype::$items_id_2 => $catalog->getID(),
+                'itemtype' => \Computer::class,
+                'items_id' => $computer->getID(),
+            ]);
+            $this->assertSame('2026-01-01 10:00:00', $item->fields['date_creation'], $itemtype);
+            $this->assertSame('2026-01-01 10:00:00', $item->fields['date_mod'], $itemtype);
+
+            $_SESSION['glpi_currenttime'] = '2026-01-02 10:00:00';
+            $this->assertTrue($item->update(['id' => $item->getID(), 'is_dynamic' => 1]));
+            $this->assertTrue($item->getFromDB($item->getID()));
+            $this->assertSame('2026-01-01 10:00:00', $item->fields['date_creation'], $itemtype);
+            $this->assertSame('2026-01-02 10:00:00', $item->fields['date_mod'], $itemtype);
+
+            $_SESSION['glpi_currenttime'] = '2026-01-03 10:00:00';
+            $this->assertTrue($item->update(['id' => $item->getID(), 'is_dynamic' => 1]));
+            $this->assertTrue($item->getFromDB($item->getID()));
+            $this->assertSame('2026-01-02 10:00:00', $item->fields['date_mod'], $itemtype);
+
+            $this->assertTrue($item->update(['id' => $item->getID(), 'items_id' => $other_computer->getID()]));
+            $this->assertTrue($item->getFromDB($item->getID()));
+            $this->assertSame('2026-01-01 10:00:00', $item->fields['date_creation'], $itemtype);
+            $this->assertSame('2026-01-03 10:00:00', $item->fields['date_mod'], $itemtype);
+
+            $options = SearchOption::getOptionsForItemtype($itemtype);
+            foreach ([145 => 'date_mod', 121 => 'date_creation'] as $id => $field) {
+                $this->assertSame($field, $options[$id]['field'], $itemtype);
+                $this->assertSame($itemtype::getTable(), $options[$id]['table'], $itemtype);
+                $this->assertSame('datetime', $options[$id]['datatype'], $itemtype);
+                $this->assertFalse($options[$id]['massiveaction'], $itemtype);
+            }
+        }
+    }
+
+    public function testClonedComponentDates(): void
+    {
+        $this->login();
+        $computer = $this->createItem(\Computer::class, $this->getMinimalCreationInput(\Computer::class));
+        $catalog = $this->createItem(\DeviceMemory::class, $this->getMinimalCreationInput(\DeviceMemory::class));
+        $_SESSION['glpi_currenttime'] = '2026-01-01 10:00:00';
+        $memory = $this->createItem(\Item_DeviceMemory::class, [
+            'devicememories_id' => $catalog->getID(),
+            'itemtype' => \Computer::class,
+            'items_id' => $computer->getID(),
+        ]);
+
+        $_SESSION['glpi_currenttime'] = '2026-01-02 10:00:00';
+        $clone_id = $computer->clone();
+        $this->assertGreaterThan(0, $clone_id);
+        $cloned_memories = $memory->find(['itemtype' => \Computer::class, 'items_id' => $clone_id]);
+        $this->assertCount(1, $cloned_memories);
+        $cloned_memory = reset($cloned_memories);
+        $this->assertSame('2026-01-02 10:00:00', $cloned_memory['date_creation']);
+        $this->assertSame('2026-01-02 10:00:00', $cloned_memory['date_mod']);
+        $this->assertTrue($memory->getFromDB($memory->getID()));
+        $this->assertSame('2026-01-01 10:00:00', $memory->fields['date_creation']);
+    }
+
     public function testRelatedItemHasTab()
     {
         global $CFG_GLPI;
