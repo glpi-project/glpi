@@ -482,10 +482,10 @@ class CoreControllerTest extends HLAPITestCase
             'state'         => 'xyzABC123',
         ];
 
-        $call_authorize = function (string $method, array $request_params, callable $assert) use ($query): void {
+        $call_authorize = function (string $method, array $request_params, callable $assert, array $extra_query = []) use ($query): void {
             $_REQUEST = $request_params;
             try {
-                $request = (new Request($method, '/authorize'))->withQueryParams($query);
+                $request = (new Request($method, '/authorize'))->withQueryParams($query + $extra_query);
                 $this->api->call($request, $assert, false);
             } finally {
                 $_REQUEST = [];
@@ -514,6 +514,21 @@ class CoreControllerTest extends HLAPITestCase
                     ->status(fn($status) => $this->assertEquals(302, $status))
                     ->headers(fn($headers) => $this->assertStringContainsString('code=', $headers['Location']));
             }
+        );
+
+        // A decision in the query string is ignored, the one of the form is used
+        $call_authorize(
+            'POST',
+            $query + ['accept' => '', 'deny' => '', '_glpi_csrf_token' => \Session::getNewCSRFToken()],
+            function ($call) {
+                $call->response
+                    ->status(fn($status) => $this->assertEquals(302, $status))
+                    ->headers(function ($headers) {
+                        $this->assertStringContainsString('error=access_denied', $headers['Location']);
+                        $this->assertStringNotContainsString('code=', $headers['Location']);
+                    });
+            },
+            ['accept' => '']
         );
     }
 }

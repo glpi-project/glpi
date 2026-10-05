@@ -684,9 +684,14 @@ HTML;
             $user->setIdentifier($user_id);
             $auth_request->setUser($user);
             // The decision must come from the authorization form, with a valid CSRF token.
-            // A link or a cross site request must not be able to approve the authorization.
+            // A link or a cross site request must not be able to approve the authorization,
+            // so the decision is not read from the query string.
+            $decision = array_diff_key(
+                array_intersect_key($request->getParameters(), ['accept' => true, 'deny' => true]),
+                $request->getQueryParams()
+            );
             $has_decision = $request->getMethod() === 'POST'
-                && ($request->hasParameter('accept') || $request->hasParameter('deny'))
+                && $decision !== []
                 && Session::validateCSRF($request->getParameters());
             if (!$has_decision) {
                 // Display the authorization page
@@ -701,7 +706,7 @@ HTML;
                 return new Response(200, ['Content-Type' => 'text/html'], $authorize_form);
             }
 
-            $auth_request->setAuthorizationApproved($request->hasParameter('accept'));
+            $auth_request->setAuthorizationApproved(isset($decision['accept']) && !isset($decision['deny']));
             /** @var Response $response */
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
             return $response;
