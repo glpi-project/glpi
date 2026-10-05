@@ -99,10 +99,11 @@ export class LoginPage extends GlpiPage
 
     public async doGetAuthorizationCode(): Promise<string>
     {
-        const current_url = this.page.url();
-        const response = await this.page.request.fetch(`${current_url}&accept=1`, {
-            maxRedirects: 0,
-        });
+        // The authorization is approved by submitting the consent form
+        const [response] = await Promise.all([
+            this.page.waitForResponse((response) => response.request().method() === 'POST' && response.status() === 302),
+            this.oauth_accept_button.click(),
+        ]);
         const location = response.headers()['location'] ?? '';
         const code = new URL(location, this.page.url()).searchParams.get('code');
         if (!code) {
