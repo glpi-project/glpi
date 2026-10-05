@@ -25806,6 +25806,7 @@
                             "enum": {
                                 "AIX": "AIX",
                                 "AND": "Android",
+                                "AGO": "Android Go",
                                 "ADR": "Android TV",
                                 "ALP": "Alpine Linux",
                                 "AMZ": "Amazon Linux",
@@ -25852,6 +25853,7 @@
                                 "FOS": "Firefox OS",
                                 "FIR": "Fire OS",
                                 "FOR": "Foresight Linux",
+                                "FRT": "FortiOS",
                                 "FRE": "Freebox",
                                 "BSD": "FreeBSD",
                                 "FRI": "FRITZ!OS",
@@ -25871,6 +25873,7 @@
                                 "HNX": "HarmonyOS NEXT",
                                 "HAS": "HasCodingOS",
                                 "HEL": "HELIX OS",
+                                "HYP": "HyperOS",
                                 "IRI": "IRIX",
                                 "INF": "Inferno",
                                 "JME": "Java ME",
@@ -25879,6 +25882,7 @@
                                 "KAL": "Kali",
                                 "KAN": "Kanotix",
                                 "KIN": "KIN OS",
+                                "KOB": "KoboOS",
                                 "KOL": "KolibriOS",
                                 "KNO": "Knoppix",
                                 "KTV": "KreaTV",
@@ -25909,6 +25913,7 @@
                                 "MIN": "Mint",
                                 "MLD": "MildWild",
                                 "MOR": "MorphOS",
+                                "MYO": "MyOS",
                                 "NBS": "NetBSD",
                                 "MTK": "MTK / Nucleus",
                                 "MRE": "MRE",
@@ -25969,6 +25974,7 @@
                                 "SMA": "Smartisan OS",
                                 "SOS": "Solaris",
                                 "SBL": "Star-Blade OS",
+                                "STM": "SteamOS",
                                 "SYL": "Syllable",
                                 "SYM": "Symbian",
                                 "SYS": "Symbian OS",
@@ -25976,6 +25982,7 @@
                                 "S60": "Symbian OS Series 60",
                                 "SY3": "Symbian^3",
                                 "TEN": "TencentOS",
+                                "THN": "ThinOS",
                                 "TDX": "ThreadX",
                                 "TIT": "Titan OS",
                                 "TIZ": "Tizen",
@@ -25985,6 +25992,7 @@
                                 "UBT": "Ubuntu",
                                 "ULT": "ULTRIX",
                                 "UOS": "UOS",
+                                "VEG": "Vega OS",
                                 "VID": "VIDAA",
                                 "VIZ": "ViziOS",
                                 "WAS": "watchOS",
@@ -26000,6 +26008,8 @@
                                 "WPO": "WoPhone",
                                 "XBX": "Xbox",
                                 "XBT": "Xubuntu",
+                                "YAS": "YaOS",
+                                "YOD": "YodaOS-Master",
                                 "YNS": "YunOS",
                                 "ZEN": "Zenwalk",
                                 "ZOR": "ZorinOS",
@@ -26040,7 +26050,12 @@
                                     "PUF",
                                     "LEA",
                                     "MET",
-                                    "SMA"
+                                    "SMA",
+                                    "AGO",
+                                    "HYP",
+                                    "MYO",
+                                    "YOD",
+                                    "YAS"
                                 ],
                                 "AmigaOS": [
                                     "AMG",
@@ -26178,7 +26193,9 @@
                                     "COL",
                                     "OSS",
                                     "ELM",
-                                    "LPU"
+                                    "LPU",
+                                    "KOB",
+                                    "FRT"
                                 ],
                                 "Mac": [
                                     "MAC"
@@ -26186,7 +26203,8 @@
                                 "Mobile Gaming Console": [
                                     "PSP",
                                     "NDS",
-                                    "XBX"
+                                    "XBX",
+                                    "STM"
                                 ],
                                 "OpenHarmony": [
                                     "OHS",
@@ -26245,7 +26263,8 @@
                                     "BS1",
                                     "GHO",
                                     "PLN",
-                                    "MNX"
+                                    "MNX",
+                                    "THN"
                                 ],
                                 "WebTV": [
                                     "WTV"
@@ -26264,7 +26283,8 @@
                                 "Other Smart TV": [
                                     "WHS",
                                     "TIT",
-                                    "ORS"
+                                    "ORS",
+                                    "VEG"
                                 ]
                             }
                         },
