@@ -6,15 +6,34 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: "glpi"
     shm_size: '1gb'
+    healthcheck:
+      start_period: 30s
+      start_interval: 1s
   dovecot:
     container_name: "glpi-test-dovecot"
     image: "ghcr.io/glpi-project/githubactions-dovecot"
+    healthcheck:
+      # Faster healthcheck during startup
+      start_period: 30s
+      start_interval: 1s
   memcached:
     container_name: "glpi-test-memcached"
     image: "ghcr.io/glpi-project/githubactions-memcached"
+    healthcheck:
+      # Faster healthcheck during startup
+      start_period: 30s
+      start_interval: 1s
   openldap:
     container_name: "glpi-test-openldap"
     image: "ghcr.io/glpi-project/githubactions-openldap"
+    healthcheck:
+      # Faster healthcheck during startup
+      start_period: 30s
+      start_interval: 1s
   redis:
     container_name: "glpi-test-redis"
     image: "ghcr.io/glpi-project/githubactions-redis"
+    healthcheck:
+      # Faster healthcheck during startup
+      start_period: 30s
+      start_interval: 1s
