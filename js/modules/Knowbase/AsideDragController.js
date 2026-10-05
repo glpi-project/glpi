@@ -662,7 +662,7 @@ export class GlpiKnowbaseAsideDragController
     /**
      * Re-apply the leaf/node contract after a row's children changed, on the rule
      * `_article_row.html.twig` uses: the fold toggle follows the children (never on
-     * the root article), the node markup follows `hasChildren or can_create`. The
+     * the root article), the node markup follows `hasChildren or can_add_child`. The
      * "+" writes into the child list, so a row carrying it stays a node without
      * children.
      *
