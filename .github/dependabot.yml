@@ -8,56 +8,6 @@ updates:
       interval: "weekly"
 
 
-  # 10.0/bugfixes branch
-  # -> no update for production dependencies (old policy applied until now)
-  # -> patch (bugfixes) updates for development dependencies (plugins may use the GLPI toolchain, we want them to be stable)
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "cron"
-      cronjob: "0 9 1 * *"
-      timezone: "Europe/Paris"
-    open-pull-requests-limit: 100
-    rebase-strategy: "disabled"
-    target-branch: "10.0/bugfixes"
-    versioning-strategy: "increase"
-    allow:
-      - dependency-type: "development"
-    ignore:
-      # ignore minor/major versions for all dependencies
-      - dependency-name: "*"
-        update-types:
-          - "version-update:semver-minor"
-          - "version-update:semver-major"
-    groups:
-      dev-dependencies:
-        patterns:
-          - "*"
-
-  - package-ecosystem: "composer"
-    directory: "/"
-    schedule:
-      interval: "cron"
-      cronjob: "0 9 1 * *"
-      timezone: "Europe/Paris"
-    open-pull-requests-limit: 100
-    rebase-strategy: "disabled"
-    target-branch: "10.0/bugfixes"
-    versioning-strategy: "increase"
-    allow:
-      - dependency-type: "development"
-    ignore:
-      # ignore minor/major versions for all dependencies
-      - dependency-name: "*"
-        update-types:
-          - "version-update:semver-minor"
-          - "version-update:semver-major"
-    groups:
-      dev-dependencies:
-        patterns:
-          - "*"
-
-
   # 11.0/bugfixes branch
   # -> patch (bugfixes) updates for both production and developement dependencies (new policy applied since GLPI 11.0)
   - package-ecosystem: "npm"
