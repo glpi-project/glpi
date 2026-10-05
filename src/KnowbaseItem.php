@@ -182,12 +182,28 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return true;
         }
 
+        // Editors keep access to manage a scheduled or expired article.
+        if (!$this->isInPublicationWindow() && !$this->canUpdateItem()) {
+            return false;
+        }
+
         if ($this->fields["is_faq"]) {
             return ((Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
                 && $this->haveVisibilityAccess())
                 || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
         }
         return (Session::haveRight(self::$rightname, READ) && $this->haveVisibilityAccess());
+    }
+
+    /**
+     * Same window as the list requests: `begin_date < NOW() < end_date`, a null bound is open.
+     */
+    private function isInPublicationWindow(): bool
+    {
+        $now = Session::getCurrentTime() ?? date('Y-m-d H:i:s');
+
+        return (empty($this->fields['begin_date']) || $this->fields['begin_date'] < $now)
+            && (empty($this->fields['end_date']) || $this->fields['end_date'] > $now);
     }
 
     public function canUpdateItem(): bool

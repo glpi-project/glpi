@@ -734,8 +734,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $visibilityCriteria = KnowbaseItem::getVisibilityCriteria();
 
         $request = [
+            'SELECT'    => 'glpi_knowbaseitems.id',
+            'DISTINCT'  => true,
             'FROM'      => 'glpi_documents_items',
-            'COUNT'     => 'cpt',
             'INNER JOIN' => [
                 'glpi_knowbaseitems' => [
                     'FKEY' => [
@@ -757,9 +758,15 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             $request['WHERE'] += $visibilityCriteria['WHERE'];
         }
 
-        $result = $DB->request($request)->current();
+        // The criteria have no publication window: `canViewItem()` checks it.
+        $kb = new KnowbaseItem();
+        foreach ($DB->request($request) as $row) {
+            if ($kb->getFromDB($row['id']) && $kb->canViewItem()) {
+                return true;
+            }
+        }
 
-        return $result['cpt'] > 0;
+        return false;
     }
 
     /**

@@ -4270,6 +4270,54 @@ HTML,
         }
     }
 
+    public function testDirectAccessHonoursThePublicationWindow(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $articles = [];
+        foreach (
+            [
+                'expired' => [null, '-1 day'],
+                'future'  => ['+1 day', null],
+                'current' => ['-1 day', '+1 day'],
+            ] as $key => [$begin, $end]
+        ) {
+            $articles[$key] = $this->createItem(KnowbaseItem::class, [
+                'name'       => __FUNCTION__ . '_' . $key,
+                'answer'     => '<p>Text</p>',
+                'is_faq'     => 1,
+                'users_id'   => getItemByTypeName(User::class, 'glpi', true),
+                'begin_date' => $begin === null ? null : date('Y-m-d H:i:s', strtotime($begin)),
+                'end_date'   => $end === null ? null : date('Y-m-d H:i:s', strtotime($end)),
+            ]);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $articles[$key]->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        // Fresh objects: `can()` does not reload the entity links added after `createItem()`.
+        // KB admin keeps access to manage scheduled and expired articles.
+        foreach ($articles as $article) {
+            $this->assertTrue((new KnowbaseItem())->can($article->getID(), READ));
+        }
+
+        $expected = ['expired' => false, 'future' => false, 'current' => true];
+
+        $this->login('post-only', 'postonly');
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = 1;
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+    }
+
     /**
      * Those endpoints all 403 outside the central interface, right or no right.
      */
