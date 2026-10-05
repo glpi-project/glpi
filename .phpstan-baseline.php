@@ -392,12 +392,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/timeline.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method rawSearchOptions\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/treebrowse.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,

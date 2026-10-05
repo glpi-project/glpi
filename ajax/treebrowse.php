@@ -55,15 +55,19 @@ switch ($_REQUEST['action']) {
         ];
 
         $itemtype = $_REQUEST['itemtype'];
-        if (!is_a($itemtype, TreeBrowseInterface::class, true)) {
+        if (
+            !is_string($itemtype)
+            || !is_a($itemtype, CommonDBTM::class, true)
+            || !is_a($itemtype, TreeBrowseInterface::class, true)
+        ) {
             throw new BadRequestHttpException();
         }
         if ($itemtype::canView() === false) {
             throw new AccessDeniedHttpException();
         }
         $category_item = $itemtype::getCategoryItem($itemtype);
-        $category_table = $category_item::getTable();
-        $item = getItemForItemtype($itemtype);
+        $category_table = $category_item?->getTable();
+        $item = new $itemtype();
         $so = $item->rawSearchOptions();
 
         $field = 0;
