@@ -4306,6 +4306,19 @@ HTML,
 
         $expected = ['expired' => false, 'future' => false, 'current' => true];
 
+        // A reader who is neither admin nor author gets the dates.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+
+        // An editor of the FAQ keeps access.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::PUBLISHFAQ;
+        foreach ($articles as $article) {
+            $this->assertTrue((new KnowbaseItem())->can($article->getID(), READ));
+        }
+
         $this->login('post-only', 'postonly');
         foreach ($expected as $key => $can_read) {
             $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
