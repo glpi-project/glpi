@@ -70,12 +70,14 @@ use Glpi\Api\HL\Middleware\DebugResponseMiddleware;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
+use Glpi\Api\HL\Middleware\MultipartFormDataRequestMiddleware;
 use Glpi\Api\HL\Middleware\OAuthRequestMiddleware;
 use Glpi\Api\HL\Middleware\RequestMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResponseMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Middleware\RSQLRequestMiddleware;
 use Glpi\Api\HL\Middleware\SecurityResponseMiddleware;
+use Glpi\Application\Environment;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -132,6 +134,11 @@ class Router
      * @internal Only intended to be used by tests
      */
     private ?Request $final_request = null;
+
+    /**
+     * Number of requests currently being handled. Greater than 1 when a request is handled while another one is in progress (e.g. Webhook raised during a HLAPI request).
+     */
+    private int $request_depth = 0;
 
     /**
      * The last route that was matched and invoked.
@@ -289,6 +296,7 @@ EOT;
             // Cookie middleware shouldn't run by default. Must be explicitly enabled by adding it in a Route attribute.
             self::$instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
+            self::$instance->registerRequestMiddleware(new MultipartFormDataRequestMiddleware());
             self::$instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
             self::$instance->registerRequestMiddleware(new OAuthRequestMiddleware());
             self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path) => Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
@@ -638,6 +646,11 @@ EOT;
     {
         global $CFG_GLPI;
 
+        // Save state of any outer request in case this is a nested call (e.g. Webhook raised during a HLAPI request)
+        $outer_state = $this->request_depth > 0 ? [
+            $this->original_request, $this->final_request, $this->last_invoked_route, $this->current_client,
+        ] : null;
+
         // Reset client state so each request starts with a clean slate
         $this->current_client = null;
 
@@ -695,7 +708,9 @@ EOT;
             }
         }
 
+        $request->setAttribute('_request_output_buffer_level', $current_output_buffer_level);
         $this->original_request = clone $request;
+        $this->request_depth++;
         $matched_route = $this->match($request);
         $routes_allowed_when_disabled = ['/token', '/status/all'];
 
@@ -771,6 +786,17 @@ EOT;
             ob_end_clean();
         }
 
+        $this->request_depth--;
+        if ($outer_state !== null) {
+            // Restore the outer request state so it is not lost after a nested request
+            [$this->original_request, $this->final_request, $this->last_invoked_route, $this->current_client] = $outer_state;
+        } elseif (Environment::get() !== Environment::TESTING) {
+            // Clear state in case multiple requests are handled in the same process. Also helps reset the `isHLAPI` check.
+            $this->original_request = null;
+            $this->final_request = null;
+            $this->last_invoked_route = null;
+            $this->current_client = null;
+        }
         return $response;
     }
 

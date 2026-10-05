@@ -292,6 +292,13 @@ class AdministrationControllerTest extends HLAPITestCase
         ]);
     }
 
+    private function getPicturePathFromUrl(string $picture_url): string
+    {
+        $this->assertStringContainsString('_pictures%2F', $picture_url);
+        $reference = substr($picture_url, strpos($picture_url, '_pictures%2F') + strlen('_pictures%2F'));
+        return GLPI_PICTURE_DIR . '/' . urldecode($reference);
+    }
+
     public function testGetMyPicture()
     {
         $this->login();
@@ -823,5 +830,152 @@ class AdministrationControllerTest extends HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response->status(fn($status) => $this->assertEquals(409, $status));
         });
+    }
+
+    public function testCreateUserWithPicture(): void
+    {
+        $bar_file_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+        $bar_file_content = file_get_contents($bar_file_path);
+
+        $this->login();
+
+        // multipart form data request with the document item's name, the file, and the entity ID
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="username"
+
+userwithpic
+-----boundary
+Content-Disposition: form-data; name="label"
+
+Car
+-----boundary
+Content-Disposition: form-data; name="picture_upload"; filename="bar.png"
+
+$bar_file_content
+-----boundary
+Content-Disposition: form-data; name="password"
+
+testuser
+-----boundary
+Content-Disposition: form-data; name="password2"
+
+testuser
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Administration/User', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertNotEmpty($content['picture']);
+                    $this->assertStringNotContainsString('picture.png', $content['picture']);
+                });
+        });
+
+        $this->api->call(new Request('GET', $new_location . '/Picture'), function ($call) {
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->assertNotEmpty($content);
+                });
+        });
+    }
+
+    public function testUpdateUserPictureDeletesPreviousFile(): void
+    {
+        $first_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
+        $second_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+
+        $this->login();
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="username"
+
+{$this->getUniqueString()}
+-----boundary
+Content-Disposition: form-data; name="label"
+
+Car
+-----boundary
+Content-Disposition: form-data; name="picture_upload"; filename="bar.png"
+
+$first_picture_content
+-----boundary
+Content-Disposition: form-data; name="password"
+
+testuser
+-----boundary
+Content-Disposition: form-data; name="password2"
+
+testuser
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Administration/User', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        $original_picture_path = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$original_picture_path) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$original_picture_path) {
+                    $original_picture_path = $this->getPicturePathFromUrl($content['picture']);
+                });
+        });
+
+        $this->assertNotNull($original_picture_path);
+        $this->assertFileExists($original_picture_path);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="picture_upload"; filename="foo.png"
+
+$second_picture_content
+-----boundary--
+EOT;
+
+        $request = new Request('PATCH', $new_location, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $updated_picture_path = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$updated_picture_path) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$updated_picture_path) {
+                    $updated_picture_path = $this->getPicturePathFromUrl($content['picture']);
+                });
+        });
+
+        $this->assertNotNull($updated_picture_path);
+        $this->assertNotSame($original_picture_path, $updated_picture_path);
+        $this->assertFileDoesNotExist($original_picture_path);
+        $this->assertFileExists($updated_picture_path);
     }
 }

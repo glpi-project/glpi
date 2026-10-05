@@ -266,6 +266,116 @@ class DocumentTest extends DbTestCase
         $this->assertSame('updated name', $doc_after->fields['name']);
     }
 
+    /**
+     * Create a file under GLPI_DOC_DIR and return its path relative to that directory.
+     */
+    private function createDocumentFile(string $content): string
+    {
+        $filepath = 'TXT/' . sha1($content) . '.TXT';
+        $fullpath = GLPI_DOC_DIR . '/' . $filepath;
+        if (!is_dir(dirname($fullpath))) {
+            mkdir(dirname($fullpath), 0o755, true);
+        }
+        file_put_contents($fullpath, $content);
+        $this->assertFileExists($fullpath);
+        return $filepath;
+    }
+
+    /**
+     * Insert a document row pointing at an already existing file, bypassing the input filtering that forbids
+     * setting `filepath` / `sha1sum` directly.
+     */
+    private function insertDocumentRow(string $name, string $filepath, string $sha1sum): int
+    {
+        global $DB;
+
+        $this->assertTrue($DB->insert(\Document::getTable(), [
+            'name' => $name,
+            'filename' => basename($filepath),
+            'filepath' => $filepath,
+            'sha1sum' => $sha1sum,
+            'entities_id' => 0,
+        ]));
+        return (int) $DB->insertId();
+    }
+
+    /**
+     * Identical content is stored only once on disk, so several documents can share the same file.
+     * cleanFile() must only delete the file when no *other* document still points at it.
+     */
+    public function testCleanFileKeepsFileSharedWithAnotherDocument()
+    {
+        $content = 'shared document content';
+        $sha1sum = sha1($content);
+        $filepath = $this->createDocumentFile($content);
+        $fullpath = GLPI_DOC_DIR . '/' . $filepath;
+
+        // A legitimate document that stays in the database and keeps using the file
+        $kept_id = $this->insertDocumentRow('kept document', $filepath, $sha1sum);
+
+        // A second document sharing the same file, whose creation has been rolled back: its row is gone but the
+        // in-memory object still carries its fields, which is how ResourceAccessor cleans up after a failed create.
+        $rolled_back = new \Document();
+        $rolled_back->fields = [
+            'id' => $kept_id + 1000,
+            'filename' => basename($filepath),
+            'filepath' => $filepath,
+            'sha1sum' => $sha1sum,
+        ];
+        $rolled_back->cleanFile();
+
+        $this->assertFileExists($fullpath, 'The file is still used by another document and must not be deleted');
+
+        $kept = new \Document();
+        $this->assertTrue($kept->getFromDB($kept_id));
+        $this->assertSame($filepath, $kept->fields['filepath']);
+
+        @unlink($fullpath);
+    }
+
+    /**
+     * Counterpart of the previous test: when nothing else points at the file, it must actually be deleted.
+     */
+    public function testCleanFileDeletesUnusedFile()
+    {
+        $content = 'unshared document content';
+        $sha1sum = sha1($content);
+        $filepath = $this->createDocumentFile($content);
+        $fullpath = GLPI_DOC_DIR . '/' . $filepath;
+
+        // Rolled back creation: no row left in the database at all
+        $rolled_back = new \Document();
+        $rolled_back->fields = [
+            'id' => 999999,
+            'filename' => basename($filepath),
+            'filepath' => $filepath,
+            'sha1sum' => $sha1sum,
+        ];
+        $rolled_back->cleanFile();
+
+        $this->assertFileDoesNotExist($fullpath);
+    }
+
+    /**
+     * The purge path calls cleanFile() while the row is still in the table. That document must not count as
+     * another user of the file.
+     */
+    public function testCleanFileOnPurgeDeletesFileWhenSoleUser()
+    {
+        $content = 'purged document content';
+        $sha1sum = sha1($content);
+        $filepath = $this->createDocumentFile($content);
+        $fullpath = GLPI_DOC_DIR . '/' . $filepath;
+
+        $doc_id = $this->insertDocumentRow('purged document', $filepath, $sha1sum);
+
+        $doc = new \Document();
+        $this->assertTrue($doc->getFromDB($doc_id));
+        $doc->cleanFile();
+
+        $this->assertFileDoesNotExist($fullpath);
+    }
+
     /** Cannot work without a real document uploaded.
      *  Mock would be a solution but GLPI will try to use
      *  a table based on mocked class name, this is wrong.

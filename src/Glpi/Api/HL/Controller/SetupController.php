@@ -46,6 +46,7 @@ use CronTaskLog;
 use Entity;
 use FieldUnicity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -990,6 +991,14 @@ EOT,
                     'system_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
                     'label' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
                     'icon' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'picture_upload' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-input-field' => 'picture',
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+                        'x-version-introduced' => '2.4.0',
+                    ],
                     'picture' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture',
