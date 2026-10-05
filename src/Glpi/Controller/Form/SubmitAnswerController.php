@@ -35,6 +35,7 @@
 
 namespace Glpi\Controller\Form;
 
+use CommonDBTM;
 use Glpi\Altcha\AltchaManager;
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
@@ -81,7 +82,8 @@ final class SubmitAnswerController extends AbstractController
 
         try {
             $answers = $this->saveSubmittedAnswers($form, $request);
-            $links = $answers->getLinksToCreatedItems();
+            $created_items = $answers->getCreatedItems();
+            $links = $answers->getLinksToCreatedItems($created_items);
 
             if ($is_unauthenticated_user) {
                 AltchaManager::getInstance()->removeChallenge($altcha);
@@ -89,6 +91,7 @@ final class SubmitAnswerController extends AbstractController
 
             return new JsonResponse([
                 'links_to_created_items' => $links,
+                'redirect_url'           => $this->getRedirectUrl($created_items),
             ]);
         } catch (\Throwable $th) {
             $this->logger->error(
@@ -110,6 +113,29 @@ final class SubmitAnswerController extends AbstractController
                 'errors' => $messages,
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Get the URL of the first created item that the current user can view.
+     *
+     * @param CommonDBTM[] $created_items
+     *
+     * @return string|null URL of the item, null if the "backcreated" preference
+     *                     is disabled or if no item can be viewed.
+     */
+    private function getRedirectUrl(array $created_items): ?string
+    {
+        if (!($_SESSION['glpibackcreated'] ?? false)) {
+            return null;
+        }
+
+        foreach ($created_items as $item) {
+            if ($item->canViewItem()) {
+                return $item->getLinkURL();
+            }
+        }
+
+        return null;
     }
 
     private function loadSubmittedForm(Request $request): Form

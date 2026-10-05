@@ -301,6 +301,12 @@ export class GlpiFormRendererController
                 data: $(this.#target).serialize(),
             });
 
+            // Redirect to the created item if requested by the user preferences
+            if (response.redirect_url) {
+                window.location.href = response.redirect_url;
+                return;
+            }
+
             // Show toast with link to answers set
             glpi_toast_info(
                 __("Item successfully created: %s").replace(
