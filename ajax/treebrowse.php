@@ -59,6 +59,7 @@ switch ($_REQUEST['action']) {
             !is_string($itemtype)
             || !is_a($itemtype, CommonDBTM::class, true)
             || !is_a($itemtype, TreeBrowseInterface::class, true)
+            || (new ReflectionClass($itemtype))->isAbstract()
         ) {
             throw new BadRequestHttpException();
         }
@@ -66,7 +67,10 @@ switch ($_REQUEST['action']) {
             throw new AccessDeniedHttpException();
         }
         $category_item = $itemtype::getCategoryItem($itemtype);
-        $category_table = $category_item?->getTable();
+        if ($category_item === null) {
+            throw new BadRequestHttpException();
+        }
+        $category_table = $category_item::getTable();
         $item = new $itemtype();
         $so = $item->rawSearchOptions();
 
