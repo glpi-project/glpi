@@ -4477,11 +4477,9 @@ final class SQLProvider implements SearchProviderInterface
         //// 7 - Manage GROUP BY
         $GROUPBY = "";
         // Meta Search / Search All / Count tickets
-        $criteria_with_meta = array_filter($data['search']['criteria'], fn($criterion) => isset($criterion['meta'])
-            && $criterion['meta']);
         if (
             (count($data['search']['metacriteria']))
-            || count($criteria_with_meta)
+            || self::hasMetaCriteria($data['search']['criteria'])
             || !empty($HAVING)
             || $data['search']['all_search']
         ) {
@@ -7171,5 +7169,25 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         return $suffix;
+    }
+
+    /**
+     * Check whether the given criteria contain a meta criterion, including in nested criteria groups.
+     *
+     * @param array<mixed> $criteria
+     * @return bool
+     */
+    private static function hasMetaCriteria(array $criteria): bool
+    {
+        foreach ($criteria as $criterion) {
+            if (isset($criterion['meta']) && $criterion['meta']) {
+                return true;
+            }
+            if (isset($criterion['criteria']) && is_array($criterion['criteria']) && self::hasMetaCriteria($criterion['criteria'])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
