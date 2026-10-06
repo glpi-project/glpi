@@ -1115,39 +1115,72 @@ final class FormMigrationTest extends DbTestCase
     {
         global $DB;
 
-        $document = $this->addDocumentToItem('image.png', 'content', getItemByTypeName(Computer::class, '_test_pc01'));
-        $docid = $document->getID();
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
+        $docid = $this->addDocumentToItem('image.png', 'content', $computer)->getID();
+        $unrelated_docid = $this->addDocumentToItem('unrelated.png', 'content', $computer)->getID();
+
         // Formcreator data is sanitized, as any GLPI 10 data
-        $legacy_img = static fn(string $itemtype, int $items_id) => sprintf(
+        $legacy_img = static fn(int $documents_id, string $itemtype, int $items_id) => sprintf(
             '&#60;p&#62;&#60;img src="/front/document.send.php?docid=%d&#38;amp;itemtype=%s&#38;amp;items_id=%d" /&#62;&#60;/p&#62;',
-            $docid,
+            $documents_id,
             $itemtype,
             $items_id
         );
+        // Formcreator links inline images to its items
+        $link_legacy_document = function (int $documents_id, string $itemtype, int $items_id) use ($DB): void {
+            $this->assertTrue($DB->insert(\Document_Item::getTable(), [
+                'documents_id' => $documents_id,
+                'itemtype'     => $itemtype,
+                'items_id'     => $items_id,
+            ]));
+        };
 
         $this->assertTrue($DB->insert('glpi_plugin_formcreator_forms', [
             'name'        => 'Test form migration for inline images',
             'entities_id' => $this->getTestRootEntity(true),
             'is_active'   => 1,
-            'content'     => $legacy_img('PluginFormcreatorForm', 999),
         ]));
+        $form_id = $DB->insertId();
+        $this->assertTrue($DB->update(
+            'glpi_plugin_formcreator_forms',
+            ['content' => $legacy_img($docid, 'PluginFormcreatorForm', $form_id)],
+            ['id' => $form_id]
+        ));
+        $link_legacy_document($docid, 'PluginFormcreatorForm', $form_id);
+
         $this->assertTrue($DB->insert('glpi_plugin_formcreator_sections', [
             'name'                        => 'Test form migration for inline images - Section',
-            'plugin_formcreator_forms_id' => $DB->insertId(),
+            'plugin_formcreator_forms_id' => $form_id,
         ]));
         $section_id = $DB->insertId();
+
+        // The question also references a document that is not linked to it
         $this->assertTrue($DB->insert('glpi_plugin_formcreator_questions', [
             'plugin_formcreator_sections_id' => $section_id,
             'name'                           => 'Test form migration for inline images - Question',
             'fieldtype'                      => 'text',
-            'description'                    => $legacy_img('PluginFormcreatorQuestion', 999),
         ]));
+        $question_id = $DB->insertId();
+        $this->assertTrue($DB->update(
+            'glpi_plugin_formcreator_questions',
+            ['description' => $legacy_img($docid, 'PluginFormcreatorQuestion', $question_id)
+                . $legacy_img($unrelated_docid, 'PluginFormcreatorQuestion', $question_id)],
+            ['id' => $question_id]
+        ));
+        $link_legacy_document($docid, 'PluginFormcreatorQuestion', $question_id);
+
         $this->assertTrue($DB->insert('glpi_plugin_formcreator_questions', [
             'plugin_formcreator_sections_id' => $section_id,
             'name'                           => 'Test form migration for inline images - Comment',
             'fieldtype'                      => 'description',
-            'description'                    => $legacy_img('PluginFormcreatorQuestion', 998),
         ]));
+        $comment_id = $DB->insertId();
+        $this->assertTrue($DB->update(
+            'glpi_plugin_formcreator_questions',
+            ['description' => $legacy_img($docid, 'PluginFormcreatorQuestion', $comment_id)],
+            ['id' => $comment_id]
+        ));
+        $link_legacy_document($docid, 'PluginFormcreatorQuestion', $comment_id);
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
@@ -1181,6 +1214,17 @@ final class FormMigrationTest extends DbTestCase
                 'items_id' => $item->getID(),
             ]));
         }
+
+        // The unrelated document must not be exposed through the migrated question
+        [$question] = $items[1];
+        $this->assertSame(0, countElementsInTable(\Document_Item::getTable(), [
+            'documents_id' => $unrelated_docid,
+            'itemtype'     => Question::class,
+        ]));
+        $this->assertFalse(\Document::getById($unrelated_docid)->canViewFile([
+            'itemtype' => Question::class,
+            'items_id' => $question->getID(),
+        ]));
     }
 
     public function testFormMigrationFormContentField(): void

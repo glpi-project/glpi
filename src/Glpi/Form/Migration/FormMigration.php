@@ -40,7 +40,6 @@ use CommonDBTM;
 use CommonITILObject;
 use DBmysql;
 use DBmysqlIterator;
-use Document;
 use Document_Item;
 use Entity;
 use Glpi\DBAL\JsonFieldInterface;
@@ -715,7 +714,7 @@ class FormMigration extends AbstractPluginMigration
                 $reconciliation_criteria
             );
             $this->claimed_form_ids[] = $form->getID();
-            $this->linkInlineDocuments($form, ['header', 'description']);
+            $this->linkInlineDocuments($form, 'PluginFormcreatorForm', $raw_form['id'], ['header', 'description']);
 
             // Store the form for later use
             $this->forms[$raw_form['id']] = $form;
@@ -888,7 +887,7 @@ class FormMigration extends AbstractPluginMigration
                     ]
                 );
 
-                $this->linkInlineDocuments($question, ['description']);
+                $this->linkInlineDocuments($question, 'PluginFormcreatorQuestion', $raw_question['id'], ['description']);
 
                 $this->mapItem(
                     'PluginFormcreatorQuestion',
@@ -965,7 +964,7 @@ class FormMigration extends AbstractPluginMigration
                 ]
             );
 
-            $this->linkInlineDocuments($comment, ['description']);
+            $this->linkInlineDocuments($comment, 'PluginFormcreatorQuestion', $raw_comment['id'], ['description']);
 
             $this->mapItem(
                 'PluginFormcreatorQuestion',
@@ -2180,11 +2179,17 @@ class FormMigration extends AbstractPluginMigration
      * (e.g. `&itemtype=PluginFormcreatorQuestion&items_id=12`) and are not linked to the
      * migrated item, so only users with the document READ right can see them.
      * Rewrite their URL to target the migrated item and link the documents to it.
+     * Only documents that were linked to the source Formcreator item are linked, to
+     * not grant access to unrelated documents referenced in the content.
      *
      * @param string[] $fields Rich text fields to process
      */
-    private function linkInlineDocuments(CommonDBTM $item, array $fields): void
-    {
+    private function linkInlineDocuments(
+        CommonDBTM $item,
+        string $source_itemtype,
+        int $source_items_id,
+        array $fields
+    ): void {
         $documents_ids = [];
         $url_params = sprintf(
             '&amp;itemtype=%s&amp;items_id=%d',
@@ -2217,8 +2222,29 @@ class FormMigration extends AbstractPluginMigration
             $item->updateInDB($updated_fields);
         }
 
+        if ($documents_ids === []) {
+            return;
+        }
+
+        $source_documents_ids = array_column(iterator_to_array($this->db->request([
+            'SELECT' => 'documents_id',
+            'FROM'   => Document_Item::getTable(),
+            'WHERE'  => [
+                'itemtype' => $source_itemtype,
+                'items_id' => $source_items_id,
+            ],
+        ])), 'documents_id');
+
         foreach (array_keys($documents_ids) as $documents_id) {
-            if (Document::getById($documents_id) === false) {
+            if (!in_array($documents_id, $source_documents_ids)) {
+                $this->result->addMessage(
+                    MessageType::Warning,
+                    sprintf(
+                        __('Document %d used in "%s" was not linked to the Formcreator item, it has not been linked to the migrated item.'),
+                        $documents_id,
+                        $item->getFriendlyName()
+                    )
+                );
                 continue;
             }
             $input = [
