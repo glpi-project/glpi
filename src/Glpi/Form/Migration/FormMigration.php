@@ -37,8 +37,11 @@ namespace Glpi\Form\Migration;
 use AbstractRightsDropdown;
 use Change_Item;
 use CommonDBTM;
+use CommonITILObject;
 use DBmysql;
 use DBmysqlIterator;
+use Document;
+use Document_Item;
 use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\DBAL\QueryExpression;
@@ -89,6 +92,7 @@ use Ramsey\Uuid\Uuid;
 use Throwable;
 
 use function Safe\json_decode;
+use function Safe\preg_replace_callback;
 
 class FormMigration extends AbstractPluginMigration
 {
@@ -711,6 +715,7 @@ class FormMigration extends AbstractPluginMigration
                 $reconciliation_criteria
             );
             $this->claimed_form_ids[] = $form->getID();
+            $this->linkInlineDocuments($form, ['header', 'description']);
 
             // Store the form for later use
             $this->forms[$raw_form['id']] = $form;
@@ -883,6 +888,8 @@ class FormMigration extends AbstractPluginMigration
                     ]
                 );
 
+                $this->linkInlineDocuments($question, ['description']);
+
                 $this->mapItem(
                     'PluginFormcreatorQuestion',
                     $raw_question['id'],
@@ -957,6 +964,8 @@ class FormMigration extends AbstractPluginMigration
                     'uuid' => $raw_comment['uuid'],
                 ]
             );
+
+            $this->linkInlineDocuments($comment, ['description']);
 
             $this->mapItem(
                 'PluginFormcreatorQuestion',
@@ -2163,6 +2172,65 @@ class FormMigration extends AbstractPluginMigration
             );
 
             $this->progress_indicator?->advance();
+        }
+    }
+
+    /**
+     * Inline images imported from Formcreator still point to the plugin items
+     * (e.g. `&itemtype=PluginFormcreatorQuestion&items_id=12`) and are not linked to the
+     * migrated item, so only users with the document READ right can see them.
+     * Rewrite their URL to target the migrated item and link the documents to it.
+     *
+     * @param string[] $fields Rich text fields to process
+     */
+    private function linkInlineDocuments(CommonDBTM $item, array $fields): void
+    {
+        $documents_ids = [];
+        $url_params = sprintf(
+            '&amp;itemtype=%s&amp;items_id=%d',
+            rawurlencode($item::class),
+            $item->getID()
+        );
+
+        $updated_fields = [];
+        foreach ($fields as $field) {
+            $content = $item->fields[$field] ?? null;
+            if (!is_string($content) || $content === '') {
+                continue;
+            }
+
+            $new_content = preg_replace_callback(
+                '/document\.send\.php\?docid=(\d+)(?:(?:&amp;|&)(?:itemtype|items_id)=[^&"\'\s<>]*)*/',
+                function (array $matches) use (&$documents_ids, $url_params): string {
+                    $documents_ids[(int) $matches[1]] = true;
+                    return 'document.send.php?docid=' . $matches[1] . $url_params;
+                },
+                $content
+            );
+            if ($new_content !== $content) {
+                $item->fields[$field] = $new_content;
+                $updated_fields[] = $field;
+            }
+        }
+
+        if ($updated_fields !== []) {
+            $item->updateInDB($updated_fields);
+        }
+
+        foreach (array_keys($documents_ids) as $documents_id) {
+            if (Document::getById($documents_id) === false) {
+                continue;
+            }
+            $input = [
+                'documents_id'      => $documents_id,
+                'itemtype'          => $item::class,
+                'items_id'          => $item->getID(),
+                'timeline_position' => CommonITILObject::NO_TIMELINE,
+            ];
+            $document_item = new Document_Item();
+            if (!$document_item->alreadyExists($input)) {
+                $document_item->add($input);
+            }
         }
     }
 
