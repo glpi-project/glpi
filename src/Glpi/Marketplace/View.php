@@ -249,10 +249,10 @@ class View extends CommonGLPI
     /**
      * Build the data used to display an installed plugin card.
      *
-     * @param array $plugin  plugin DB fields (as returned by \Plugin::getList())
-     * @param array $apidata plugin data returned by the marketplace API (if available)
+     * @param array<string, mixed> $plugin  plugin DB fields (as returned by \Plugin::getList())
+     * @param array<string, mixed> $apidata plugin data returned by the marketplace API (if available)
      *
-     * @return array
+     * @return array<string, mixed>
      */
     private static function getInstalledPluginData(array $plugin, array $apidata = []): array
     {
