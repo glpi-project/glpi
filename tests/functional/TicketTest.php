@@ -2579,13 +2579,12 @@ class TicketTest extends DbTestCase
         );
 
         $this->assertCount(
-            9,
+            8,
             $clonedTicket->getTimelineItems(['with_logs' => true])
         );
         //User: Add a link with an item: 5 times
         //Group: Add a link with an item: 2 times
         //Status: Change New to Processing (assigned): once
-        //Template: Change (0) to Default: once, as the fixture ticket has no stored template
 
         //check actors
         $this->assertTrue(
@@ -2659,11 +2658,6 @@ class TicketTest extends DbTestCase
                     break;
                 case 'name':
                     $this->assertEquals("{$ticket->getField($k)} (copy)", $clonedTicket->getField($k));
-                    break;
-                case 'tickettemplates_id':
-                    // Fixture ticket has no stored template, the clone stores it on its first update
-                    $this->assertEquals(0, $ticket->getField($k));
-                    $this->assertEquals(getItemByTypeName(TicketTemplate::class, 'Default', true), $clonedTicket->getField($k));
                     break;
                 default:
                     $this->assertEquals($ticket->getField($k), $clonedTicket->getField($k), "$k");
@@ -10410,6 +10404,11 @@ HTML,
         ], ['_auto_import']);
         $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
         $this->assertEquals(0, $ticket->fields['tickettemplates_id']);
+
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
+            'content' => 'updated content',
+        ]);
+        $this->assertEquals($template->getID(), $ticket->fields['tickettemplates_id']);
     }
 
     /**
