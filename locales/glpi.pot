@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 15:00+0200\n"
+"POT-Creation-Date: 2026-10-06 15:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1086,7 +1086,7 @@ msgstr ""
 #: templates/pages/admin/form/form_editor.html.twig
 #: templates/pages/admin/rules/form.html.twig src/AuthMail.php:160
 #: src/APIClient.php:109 src/Group_User.php:541 src/AuthLDAP.php:1088
-#: src/Glpi/Form/Form.php:279 src/Glpi/Security/SessionTracker.php:729
+#: src/Glpi/Form/Form.php:279 src/Glpi/Security/SessionTracker.php:718
 #: src/Glpi/CustomObject/AbstractDefinition.php:780
 #: src/LevelAgreementLevel.php:145 src/LevelAgreementLevel.php:518
 #: src/RuleCollection.php:588 src/Domain.php:243 src/Rule.php:809
@@ -1467,6 +1467,7 @@ msgid "Send"
 msgstr ""
 
 #: templates/components/tab/addlink_block.html.twig
+#: templates/components/tab/header_block_singledd.html.twig
 #: templates/components/search/displaypreference_config.html.twig
 #: templates/components/dashboard/widget_form.html.twig
 #: templates/components/form/link_existing_or_new.html.twig
@@ -3390,7 +3391,6 @@ msgstr ""
 #: templates/components/form/snmpcredential.html.twig
 #: templates/pages/login.html.twig
 #: templates/pages/reauth/password_form.html.twig
-#: templates/pages/reauth/ldap_form.html.twig
 #: templates/pages/setup/general/systeminfo_form.html.twig
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 #: templates/pages/setup/oauthclient.html.twig
@@ -6281,13 +6281,13 @@ msgid "FAQ"
 msgstr ""
 
 #: templates/pages/reauth/totp_form.html.twig
-#: templates/pages/2fa/macros.html.twig
-#: templates/pages/2fa/2fa_request.html.twig
-msgid "Please enter the code from your authenticator app"
+msgid ""
+"To continue, confirm your identity by entering the code from your "
+"authenticator app."
 msgstr ""
 
 #: templates/pages/reauth/prompt.html.twig
-msgid "Re-authentication required"
+msgid "Confirmation required"
 msgstr ""
 
 #: templates/pages/reauth/prompt.html.twig templates/pages/2fa/macros.html.twig
@@ -6296,12 +6296,17 @@ msgid "Verify"
 msgstr ""
 
 #: templates/pages/reauth/password_form.html.twig
-#: templates/pages/reauth/ldap_form.html.twig
-msgid "Please enter your password to confirm your identity"
+msgid "To continue, confirm your identity by entering your password."
 msgstr ""
 
 #: templates/pages/reauth/fallback_form.html.twig
-msgid "Please confirm that you want to perform this sensitive action."
+msgid "Confirm that you want to continue."
+msgstr ""
+
+#: templates/pages/reauth/cas_form.html.twig
+msgid ""
+"To continue, confirm your identity on the CAS server: you will be redirected "
+"to it to enter your password."
 msgstr ""
 
 #: templates/pages/self-service/service_catalog.html.twig
@@ -6633,8 +6638,8 @@ msgid ""
 msgstr ""
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
-#: src/Glpi/Security/SessionTracker.php:738
-#: src/Glpi/Security/SessionTracker.php:741
+#: src/Glpi/Security/SessionTracker.php:727
+#: src/Glpi/Security/SessionTracker.php:730
 msgid "Revoke"
 msgstr ""
 
@@ -9651,6 +9656,11 @@ msgstr ""
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Please enter a backup code"
+msgstr ""
+
+#: templates/pages/2fa/macros.html.twig
+#: templates/pages/2fa/2fa_request.html.twig
+msgid "Please enter the code from your authenticator app"
 msgstr ""
 
 #: templates/pages/2fa/macros.html.twig
@@ -16578,6 +16588,7 @@ msgid "Version 3+"
 msgstr ""
 
 #: src/Auth.php:1331 src/Auth.php:1347
+#: src/Glpi/Security/ReAuth/CasReAuthStrategy.php:113
 msgid "CAS"
 msgstr ""
 
@@ -21920,30 +21931,30 @@ msgstr ""
 msgid "Too many failed MFA attempts. Please try again later."
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:349
+#: src/Glpi/Security/SessionTracker.php:357
 msgid "Invalid IP address filter"
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:709
+#: src/Glpi/Security/SessionTracker.php:699
 msgid "Current session"
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:717
+#: src/Glpi/Security/SessionTracker.php:706
 msgctxt "logout_reason"
 msgid "User logout"
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:718
+#: src/Glpi/Security/SessionTracker.php:707
 msgctxt "logout_reason"
 msgid "Admin revoked"
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:719
+#: src/Glpi/Security/SessionTracker.php:708
 msgctxt "logout_reason"
 msgid "Session expired"
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:731
+#: src/Glpi/Security/SessionTracker.php:720
 #, php-format
 msgid "Expires at %s"
 msgstr ""
