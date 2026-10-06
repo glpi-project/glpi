@@ -37,7 +37,6 @@ namespace Glpi\Api\HL\Search;
 use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
-use Glpi\Toolbox\ArrayPathAccessor;
 
 /**
  * Utility class to handle the generation of cursor tokens and conversion of tokens to criteria.
@@ -52,11 +51,12 @@ final class CursorPagination
      * @param self::TYPE_* $type The type of token to generate, either 'next' or 'previous'.
      * The cursor type is saved in the token so the API knows how to handle results.
      * With a 'next' token the API retrieves result normally, but with 'previous' tokens the API needs to reverse the criteria to read backwards, then reverse the results back to the normal order.
-     * @param array $edge_result The result from the edge (first or last) of the current page's results
+     * @param array<string, scalar|null> $edge_values The SQL values of the sort properties, keyed by property name, for the record at the edge (first or last) of the current page's results.
+     * These must be the values the database sorted on rather than values from the hydrated results which may be formatted differently or not exist as a scalar value.
      * @param array<string, 'ASC'|'DESC'> $sort_order The sort order used for the current search where the keys are the property names and the values are the sort direction ASC or DESC
      * @return string A URL-safe base64 encoded JSON string token that can be used for pagination in subsequent requests
      */
-    public static function generateCursorToken(string $type, array $edge_result, array $sort_order): string
+    public static function generateCursorToken(string $type, array $edge_values, array $sort_order): string
     {
         $cursor_params = [
             'type' => $type,
@@ -66,7 +66,7 @@ final class CursorPagination
             $cursor_params['sort'][] = [
                 'field' => $property,
                 'direction' => $direction === 'DESC' ? 'DESC' : 'ASC',
-                'value' => ArrayPathAccessor::getElementByArrayPath($edge_result, $property),
+                'value' => $edge_values[$property] ?? null,
             ];
         }
         return rtrim(strtr(base64_encode(json_encode($cursor_params, JSON_THROW_ON_ERROR)), '+/', '-_'), '=');

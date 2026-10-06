@@ -595,4 +595,52 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertSame([], json_decode((string) $response->getBody(), true));
     }
+
+    /**
+     * Properties from one-to-many joins have no single value per record to base a cursor position on
+     */
+    public function testSearchCursorsArrayJoinedSort(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $test_entity_id = $this->getTestRootEntity(true);
+        for ($i = 0; $i < 3; $i++) {
+            $DB->insert('glpi_computers', [
+                'name' => __FUNCTION__ . $i,
+                'entities_id' => $test_entity_id,
+            ]);
+        }
+        $schema = AssetController::getKnownSchemas(Router::API_VERSION)['Computer'];
+
+        foreach (['group.name', 'name,group.id:desc'] as $sort) {
+            // Offset-based pagination still works, but no cursors are given
+            $response = ResourceAccessor::searchBySchema($schema, [
+                'filter' => 'name=like=' . __FUNCTION__ . '*',
+                'sort' => $sort,
+                'limit' => 2,
+            ]);
+            $this->assertEquals(206, $response->getStatusCode());
+            $this->assertCount(2, json_decode((string) $response->getBody(), true));
+            $headers = $response->getHeaders();
+            $this->assertEquals('0-1/3', $headers['Content-Range'][0]);
+            $this->assertArrayNotHasKey('GLPI-Previous-Cursor', $headers);
+            $this->assertArrayNotHasKey('GLPI-Next-Cursor', $headers);
+        }
+
+        // A cursor cannot be used with such a sort
+        $cursor = CursorPagination::generateCursorToken(
+            CursorPagination::TYPE_NEXT,
+            ['group.name' => 'Group', 'id' => 0],
+            ['group.name' => 'ASC', 'id' => 'ASC']
+        );
+        $response = ResourceAccessor::searchBySchema($schema, [
+            'filter' => 'name=like=' . __FUNCTION__ . '*',
+            'sort' => 'group.name',
+            'cursor' => $cursor,
+        ]);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertStringContainsString('group.name', json_decode((string) $response->getBody(), true)['title']);
+    }
 }

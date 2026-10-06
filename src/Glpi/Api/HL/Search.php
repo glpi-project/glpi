@@ -110,6 +110,11 @@ final class Search
      */
     public const MANDATORY_FILTER_PARAM = '_mandatory_filter';
 
+    /**
+     * Prefix for the aliases of the selected sort values used to generate cursors
+     */
+    private const CURSOR_VALUE_ALIAS_PREFIX = '_cursor_value_';
+
     public function __construct(array $schema, array $request_params)
     {
         $this->context = new SearchContext($schema, $request_params);
@@ -117,11 +122,11 @@ final class Search
         $this->db_read = DBConnection::getReadConnection();
 
         if (isset($request_params['cursor']) && $request_params['cursor'] !== '') {
-            if ($this->context->isUnionSearchMode()) {
-                // IDs are not unique across the different tables, so there is no stable sort to base a cursor on
+            $unsupported_reason = $this->getCursorPaginationUnsupportedReason();
+            if ($unsupported_reason !== null) {
                 throw new APIException(
-                    message: 'Cursor-based pagination is not supported for this endpoint',
-                    user_message: 'Cursor-based pagination is not supported for this endpoint',
+                    message: $unsupported_reason,
+                    user_message: $unsupported_reason,
                     code: 400,
                 );
             }
@@ -606,6 +611,83 @@ final class Search
     }
 
     /**
+     * Check if the property's value comes from a one-to-many join, in which case a record may have multiple values for it.
+     * @param string $prop_name The property name
+     * @return bool
+     */
+    private function isArrayJoinedProperty(string $prop_name): bool
+    {
+        $joins = $this->context->getJoins();
+        $path = '';
+        foreach (explode('.', $prop_name) as $part) {
+            $path = $path === '' ? $part : "{$path}.{$part}";
+            if (($joins[$path]['parent_type'] ?? null) === Doc\Schema::TYPE_ARRAY) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return string|null The reason cursor-based pagination cannot be used for this search, or null if it can be used.
+     * @throws APIException If the sort is invalid
+     */
+    private function getCursorPaginationUnsupportedReason(): ?string
+    {
+        if ($this->context->isUnionSearchMode()) {
+            // IDs are not unique across the different tables, so there is no stable sort to base a cursor on
+            return 'Cursor-based pagination is not supported for this endpoint';
+        }
+        foreach (array_keys($this->getSortOrder(true)) as $prop_name) {
+            if ($this->isArrayJoinedProperty($prop_name)) {
+                // There is no single value to compare the position against
+                return 'Cursor-based pagination is not supported when sorting by ' . $prop_name . ' because items may have multiple values for it';
+            }
+        }
+        return null;
+    }
+
+    public function supportsCursorPagination(): bool
+    {
+        return $this->getCursorPaginationUnsupportedReason() === null;
+    }
+
+    /**
+     * Get the SELECT criteria for the SQL values of the sort properties, which are used to generate cursors for the records at the edges of the page.
+     * @return list<QueryExpression>
+     * @throws APIException
+     */
+    private function getCursorValueSelectCriteria(): array
+    {
+        $select = [];
+        foreach (array_keys($this->getSortOrder(true)) as $i => $prop_name) {
+            $computation = $this->context->getFlattenedProperties()[$prop_name]['computation'] ?? null;
+            $expression = $computation ?? new QueryIdentifier($this->getSQLFieldForProperty($prop_name));
+            $select[] = new QueryExpression($expression, self::CURSOR_VALUE_ALIAS_PREFIX . $i);
+        }
+        return $select;
+    }
+
+    /**
+     * Remove the cursor values selected by {@link self::getCursorValueSelectCriteria()} from a row.
+     * @param array $row The row. Will be modified in-place.
+     * @return array<string, mixed> The cursor values keyed by property name
+     * @throws APIException
+     */
+    private function extractCursorValues(array &$row): array
+    {
+        $values = [];
+        foreach (array_keys($this->getSortOrder(true)) as $i => $prop_name) {
+            $alias = self::CURSOR_VALUE_ALIAS_PREFIX . $i;
+            if (array_key_exists($alias, $row)) {
+                $values[$prop_name] = $row[$alias];
+                unset($row[$alias]);
+            }
+        }
+        return $values;
+    }
+
+    /**
      * @param array<string, mixed> $criteria
      * @param bool $include_cursor Whether to include the cursor criteria (if a cursor is used). The cursor criteria shouldn't be used when counting the total number of results.
      * @return void
@@ -772,6 +854,8 @@ final class Search
 
         $page_limit = null;
         $has_more = false;
+        $cursor_values = [];
+        $cursors_supported = !$count_only && $this->supportsCursorPagination();
         if (!$count_only && !$this->context->isUnionSearchMode() && isset($criteria['LIMIT']) && $criteria['LIMIT'] > 0) {
             // Fetch one extra record to know if there are more results after this page without needing another query.
             // The extra record is discarded.
@@ -799,6 +883,10 @@ final class Search
                         if ($s !== null) {
                             $criteria['SELECT'][] = $s;
                         }
+                    }
+                    if ($cursors_supported) {
+                        // The values the records were sorted on. The hydrated values cannot be used for cursors because they may be formatted differently or nested in arrays.
+                        array_push($criteria['SELECT'], ...$this->getCursorValueSelectCriteria());
                     }
                 }
                 $criteria['GROUPBY'] = ['_.id'];
@@ -854,11 +942,15 @@ final class Search
                         $has_more = true;
                         break;
                     }
+                    if ($cursors_supported) {
+                        $cursor_values[$row['id']] = $this->extractCursorValues($row);
+                    }
                     $records[$schema_itemtype][$row['id']] = $row;
                 }
                 if (isset($records[$schema_itemtype]) && $this->getCursorType() === CursorPagination::TYPE_PREVIOUS) {
                     // Records were read backwards, so restore the requested order
                     $records[$schema_itemtype] = array_reverse($records[$schema_itemtype], true);
+                    $cursor_values = array_reverse($cursor_values, true);
                 }
                 Profiler::getInstance()->stop('Organize search results');
             }
@@ -891,6 +983,10 @@ final class Search
                     if (!isset($records[$itemtype])) {
                         $records[$itemtype] = [];
                     }
+                    if ($cursors_supported) {
+                        // Already captured from the first request
+                        $this->extractCursorValues($data);
+                    }
                     $records[$itemtype][$data['id']] = $data;
                 }
             }
@@ -901,7 +997,7 @@ final class Search
             return (int) $row['count'];
         }
 
-        return new RecordSet($this, $records, $has_more);
+        return new RecordSet($this, $records, $has_more, $cursor_values);
     }
 
     public function getItemRecordPath(string $join_name, mixed $id, array $hydrated_record): array
@@ -977,7 +1073,7 @@ final class Search
         Profiler::getInstance()->stop('Get matching records');
         Profiler::getInstance()->start('Hydrate matching records', Profiler::CATEGORY_HLAPI);
         $results = $record_set->hydrate();
-        $cursors = $record_set->getCursors($results);
+        $cursors = $record_set->getCursors();
         Profiler::getInstance()->stop('Hydrate matching records');
 
         $mapped_props = array_filter($search->context->getFlattenedProperties(), static fn($prop) => isset($prop['x-mapper']));
@@ -1039,8 +1135,6 @@ final class Search
 
         if (!$cursor_used) {
             Profiler::getInstance()->start('Query for the total count', Profiler::CATEGORY_HLAPI);
-            // Count the total number of results with the same criteria, but without the offset and limit
-            $criteria = $search->getSearchCriteria(true);
             // We only need the total count, so we don't need to hydrate the records
             $total = $search->getMatchingRecords(true);
             $return_result['total'] = $total;
