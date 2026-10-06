@@ -73,6 +73,14 @@ final class SessionTracker
     public const REVOKE_REASON_ADMIN = 'admin';
     public const REVOKE_REASON_EXPIRED = 'expired';
 
+    private const AGENT_BROWSER_ICONS = [
+        'chrome' => 'ti ti-brand-chrome',
+        'firefox' => 'ti ti-brand-firefox',
+        'edge' => 'ti ti-brand-edge',
+        'safari' => 'ti ti-brand-safari',
+        'opera' => 'ti ti-brand-opera',
+    ];
+
     /**
      * Checks if the given login session UID corresponds to a known active session.
      * @param string $login_session_uid
@@ -147,7 +155,7 @@ final class SessionTracker
                 'users_id' => $_SESSION['glpiID'],
                 'session_file' => 'sess_' . session_id(),
                 'ip_address' => $ip, // Update IP in case it changed (mobile users, VPNs, etc)
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
                 'last_activity_at' => Session::getCurrentTime(),
             ], ['login_session_uid' => Session::getLoginSessionUID()]);
             return true;
@@ -159,7 +167,7 @@ final class SessionTracker
                 'login_session_uid' => Session::getLoginSessionUID(),
                 'session_file' => 'sess_' . session_id(),
                 'ip_address' => $ip,
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
                 'auth_type' => $auth->getAuthType(),
                 'created_at' => Session::getCurrentTime(),
                 'last_activity_at' => Session::getCurrentTime(),
@@ -168,7 +176,7 @@ final class SessionTracker
                 'users_id' => $_SESSION['glpiID'],
                 'login_session_uid' => Session::getLoginSessionUID(),
                 'ip_address' => $ip,
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
                 'auth_type' => $auth->getAuthType(),
                 'logged_in_at' => Session::getCurrentTime(),
             ]);
@@ -503,7 +511,7 @@ final class SessionTracker
                 'glpi_oauth_access_tokens.user_identifier',
                 new QueryExpression('NULL', 'login_session_uid'),
                 'glpi_oauth_access_tokens.ip_address',
-                new QueryExpression('NULL', 'user_agent'),
+                'glpi_oauth_access_tokens.user_agent',
                 new QueryExpression('NULL', 'auth_type'),
                 QueryFunction::dateSub(
                     date: new QueryIdentifier('glpi_oauth_access_tokens.date_expiration'),
@@ -645,17 +653,9 @@ final class SessionTracker
         Profiler::getInstance()->stop('SessionTracker::getSessions - Create DeviceDetector instance');
 
         $user_cache = [];
-        $agent_browser_icons = [
-            'chrome' => 'ti ti-brand-chrome',
-            'firefox' => 'ti ti-brand-firefox',
-            'edge' => 'ti ti-brand-edge',
-            'safari' => 'ti ti-brand-safari',
-            'opera' => 'ti ti-brand-opera',
-        ];
 
         Profiler::getInstance()->start('SessionTracker::getSessions - Loop sessions');
         foreach ($it as $data) {
-            $agent_icon = 'ti ti-help';
             if (!isset($user_cache[$data['user_identifier']])) {
                 $user_cache[$data['user_identifier']] = getUserLink($data['user_identifier']);
             }
@@ -685,31 +685,20 @@ final class SessionTracker
                 $session['type'] = '<span class="d-flex gap-1"><i class="ti ti-world" aria-hidden="true"></i>' . __s('Browser') . '</span>';
             }
 
+            $agent_details = $this->getUserAgentDetails($dd, (string) $data['user_agent']);
             if ($data['_type'] === 'api') {
                 $session['internal_identifier'] = $data['id'];
                 $session['details'] = '<span class="fw-bold">' . htmlescape($data['client_name']) . '</span>&nbsp;&middot;&nbsp;';
                 $session['details'] .= '<span class="text-muted">' . htmlescape(implode(', ', json_decode($data['scopes'], true))) . '</span>';
+                if ($agent_details !== '') {
+                    $session['details'] .= '<br><span>' . $agent_details . '</span>';
+                }
             } else {
                 $session['internal_identifier'] = $data['login_session_uid'];
-                $dd->setUserAgent($data['user_agent']);
-                $dd->parse();
-
-                $client = $dd->getClient();
-                $os = $dd->getOs();
-                if (is_array($client) && is_array($os)) {
-                    if ($client['type'] === 'browser') {
-                        $agent_icon = $agent_browser_icons[strtolower($client['name'])] ?? $agent_icon;
-                        $agent_description = $client['name'] . ' ' . $client['version'] . ' - ' . $os['name'] . ' ' . $os['version'];
-                    } else {
-                        $agent_description = $client['name'] . ' ' . $client['version'];
-                    }
-
-                    $session['details'] = '<i class="' . htmlescape($agent_icon) . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
-                    if ($is_current_session) {
-                        $session['details'] .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
-                    }
+                if ($agent_details !== '' && $is_current_session) {
+                    $agent_details .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
                 }
-                $session['details'] = '<span>' . $session['details'] . '</span>';
+                $session['details'] = '<span>' . $agent_details . '</span>';
             }
 
             if ($data['_type'] === 'web' && $data['logout_reason']) {
@@ -747,6 +736,38 @@ final class SessionTracker
         Profiler::getInstance()->stop('SessionTracker::getSessions - Loop sessions');
         Profiler::getInstance()->stop('SessionTracker::getSessions');
         return $sessions;
+    }
+
+    /**
+     * Get the HTML description of a user agent, including the browser icon if applicable.
+     * @param DeviceDetector $dd
+     * @param string $user_agent
+     * @return string The description, or an empty string if the user agent could not be parsed
+     */
+    private function getUserAgentDetails(DeviceDetector $dd, string $user_agent): string
+    {
+        if ($user_agent === '') {
+            return '';
+        }
+
+        $dd->setUserAgent($user_agent);
+        $dd->parse();
+
+        $client = $dd->getClient();
+        $os = $dd->getOs();
+        if (!is_array($client) || !is_array($os)) {
+            return '';
+        }
+
+        $agent_icon = 'ti ti-help';
+        if ($client['type'] === 'browser') {
+            $agent_icon = self::AGENT_BROWSER_ICONS[strtolower($client['name'])] ?? $agent_icon;
+            $agent_description = $client['name'] . ' ' . $client['version'] . ' - ' . $os['name'] . ' ' . $os['version'];
+        } else {
+            $agent_description = $client['name'] . ' ' . $client['version'];
+        }
+
+        return '<i class="' . htmlescape($agent_icon) . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
     }
 
     /**

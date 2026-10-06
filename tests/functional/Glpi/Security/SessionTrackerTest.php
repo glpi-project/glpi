@@ -371,4 +371,37 @@ class SessionTrackerTest extends DbTestCase
             'status' => 'all',
         ]));
     }
+
+    public function testGetSessionsOAuthDetails(): void
+    {
+        global $DB;
+
+        $this->login();
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+        ]);
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'access_token',
+            'uuid' => 'access_token_uuid',
+            'client' => $client->fields['identifier'],
+            'date_expiration' => date('Y-m-d H:i:s', strtotime('+1 hour')),
+            'user_identifier' => $_SESSION['glpiID'],
+            'scopes' => exportArrayToDB(['api', 'user']),
+            'ip_address' => '::1',
+            'user_agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0',
+        ]));
+
+        $sessions = array_values(array_filter(
+            (new SessionTracker())->getSessions($_SESSION['glpiID']),
+            static fn($session) => $session['type_raw'] === 'api'
+        ));
+        $this->assertCount(1, $sessions);
+        $details = $sessions[0]['details'];
+        $this->assertStringContainsString(__FUNCTION__, $details);
+        $this->assertStringContainsString('api, user', $details);
+        $this->assertStringContainsString('ti-brand-firefox', $details);
+        $this->assertStringContainsString('Firefox 140.0', $details);
+    }
 }
