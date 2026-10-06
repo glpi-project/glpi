@@ -200,6 +200,11 @@ jobs:
       - name: "Build dependencies / translations"
         run: |
           docker compose exec -T app .github/actions/init_build.sh
+      # Done after the build, so the services can initialize during the build
+      - name: "Wait for services"
+        if: "${{ success() || failure() }}"
+        run: |
+          .github/actions/init_containers-wait.sh
       - name: "Install DB tests"
         if: "${{ success() || failure() }}"
         run: |
@@ -292,6 +297,11 @@ jobs:
           docker compose exec -T app .github/actions/init_build.sh
       - name: Install Playwright Browsers
         run: docker compose exec -T --user=root app sudo -E npx playwright install chromium --with-deps
+      # Done after the build, so the services can initialize during the build
+      - name: "Wait for services"
+        if: ${{ !cancelled() }}
+        run: |
+          .github/actions/init_containers-wait.sh
       - name: "Install DB tests"
         if: ${{ !cancelled() }}
         run: |
