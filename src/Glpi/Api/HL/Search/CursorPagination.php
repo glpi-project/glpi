@@ -139,22 +139,38 @@ final class CursorPagination
         }
 
         $db = $search->getDBRead();
-        $tuple_comparison = [[], []];
-        // Build the criteria to start after the specified values
+        // Build a lexicographic comparison: (a > va) OR (a = va AND b > vb) OR (a = va AND b = vb AND c > vc)...
+        // A row value comparison like (a, b) > (va, vb) would be shorter, but it cannot handle mixed directions properly and gives NULL if any value is NULL.
+        // MySQL considers NULL lower than any other value, so NULLs come first in ASC sorts and last in DESC sorts.
+        $or_conditions = [];
+        $equal_conditions = [];
         foreach ($cursor_params['sort'] as $field) {
             $sql_field = $db::quoteName($search->getSQLFieldForProperty($field['field']));
-            $value = $db::quoteValue($field['value']);
-            // Append the criteria as a tuple comparison (key 0 = left, key 1 = right)
-            // Tuple comparison uses a single operator, so DESC fields should put the value on the left side to invert the comparison.
-            if ($field['direction'] === 'ASC') {
-                $tuple_comparison[0][] = $sql_field;
-                $tuple_comparison[1][] = $value;
-            } else {
-                $tuple_comparison[0][] = $value;
-                $tuple_comparison[1][] = $sql_field;
+            $direction = $field['direction'];
+            if ($cursor_type === self::TYPE_PREVIOUS) {
+                // Reading backwards is the same as reading forwards with the reversed sort
+                $direction = $direction === 'ASC' ? 'DESC' : 'ASC';
             }
+            if ($field['value'] === null) {
+                // Only non-NULL values come after NULL in ASC sorts. Nothing comes after NULL in DESC sorts.
+                $after_condition = $direction === 'ASC' ? "{$sql_field} IS NOT NULL" : null;
+                $equal_condition = "{$sql_field} IS NULL";
+            } else {
+                $value = $db::quoteValue($field['value']);
+                $after_condition = $direction === 'ASC'
+                    ? "{$sql_field} > {$value}"
+                    : "({$sql_field} < {$value} OR {$sql_field} IS NULL)";
+                $equal_condition = "{$sql_field} = {$value}";
+            }
+            if ($after_condition !== null) {
+                $or_conditions[] = '(' . implode(' AND ', [...$equal_conditions, $after_condition]) . ')';
+            }
+            $equal_conditions[] = $equal_condition;
         }
-        $operator = $cursor_type === self::TYPE_PREVIOUS ? '<' : '>';
-        return [new QueryExpression('(' . implode(',', $tuple_comparison[0]) . ') ' . $operator . ' (' . implode(',', $tuple_comparison[1]) . ')')];
+        if ($or_conditions === []) {
+            // Nothing can come after the cursor position
+            return [new QueryExpression('0 = 1')];
+        }
+        return [new QueryExpression('(' . implode(' OR ', $or_conditions) . ')')];
     }
 }

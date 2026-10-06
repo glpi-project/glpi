@@ -39,7 +39,9 @@ use Glpi\Api\HL\Controller\AdministrationController;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\Search\CursorPagination;
 use Glpi\Tests\DbTestCase;
+use Manufacturer;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ResourceAccessorTest extends DbTestCase
@@ -301,7 +303,7 @@ class ResourceAccessorTest extends DbTestCase
         }
 
         $prefix = __FUNCTION__;
-        $schema = AssetController::getKnownSchemas(null)['Computer'];
+        $schema = AssetController::getKnownSchemas(Router::API_VERSION)['Computer'];
         $fn_search = static function (array $params) use ($schema, $prefix) {
             $response = ResourceAccessor::searchBySchema($schema, $params + [
                 'filter' => 'name=like=' . $prefix . '*',
@@ -375,5 +377,222 @@ class ResourceAccessorTest extends DbTestCase
             'cursor' => 'not a cursor',
         ]);
         $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    public static function searchCursorsComplexProvider(): iterable
+    {
+        yield 'mixed directions' => ['sort' => 'contact:asc,name:desc', 'limit' => 5];
+        yield 'nullable with duplicates' => ['sort' => 'serial', 'limit' => 5];
+        yield 'nullable desc with secondary sort' => ['sort' => 'serial:desc,contact', 'limit' => 4];
+        yield 'nullable on both sorts in mixed directions' => ['sort' => 'contact:desc,serial:asc', 'limit' => 4];
+        yield 'joined nullable property' => ['sort' => 'manufacturer.name', 'limit' => 5];
+        yield 'joined property with multiple mixed sorts' => ['sort' => 'manufacturer.name:desc,serial:asc,name:desc', 'limit' => 3];
+        yield 'explicit id desc' => ['sort' => 'id:desc', 'limit' => 5];
+        yield 'single item pages' => ['sort' => 'serial:desc,contact:desc', 'limit' => 1];
+        yield 'single page' => ['sort' => 'contact', 'limit' => 100];
+        yield 'page size matching total' => ['sort' => 'serial', 'limit' => 23];
+        yield 'filter on joined property' => ['sort' => 'serial:desc', 'limit' => 3, 'manufacturer_filter' => 'A'];
+        yield 'filter and sort on joined property' => ['sort' => 'manufacturer.name:desc,contact', 'limit' => 4, 'manufacturer_filter' => 'B'];
+    }
+
+    /**
+     * Walk through all pages forwards and then backwards using cursors and compare to the expected order computed independently of the database.
+     */
+    #[DataProvider('searchCursorsComplexProvider')]
+    public function testSearchCursorsComplex(string $sort, int $limit, ?string $manufacturer_filter = null): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $prefix = __FUNCTION__;
+        $test_entity_id = $this->getTestRootEntity(true);
+        $manufacturers = [
+            0 => null,
+            1 => $this->createItem(Manufacturer::class, ['name' => $prefix . 'A']),
+            2 => $this->createItem(Manufacturer::class, ['name' => $prefix . 'B']),
+        ];
+
+        // 23 rows so that pages are uneven, with NULLs and duplicate values in the sorted fields
+        $rows = [];
+        for ($i = 0; $i < 23; $i++) {
+            $manufacturer = $manufacturers[$i % 3];
+            $row = [
+                'name' => $prefix . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'serial' => $i % 4 === 0 ? null : 'S' . ($i % 3),
+                'contact' => $i % 5 === 0 ? null : 'C' . ($i % 2),
+                'manufacturers_id' => $manufacturer?->getID() ?? 0,
+                'entities_id' => $test_entity_id,
+            ];
+            $DB->insert('glpi_computers', $row);
+            $row['id'] = $DB->insertId();
+            $row['manufacturer.name'] = $manufacturer?->fields['name'];
+            $rows[] = $row;
+        }
+
+        // Compute the expected order
+        $sort_order = [];
+        foreach (explode(',', $sort) as $s) {
+            $parts = explode(':', $s);
+            $sort_order[$parts[0]] = strtoupper($parts[1] ?? 'ASC');
+        }
+        $sort_order['id'] ??= 'ASC';
+        if ($manufacturer_filter !== null) {
+            $rows = array_filter($rows, static fn($row) => $row['manufacturer.name'] === $prefix . $manufacturer_filter);
+        }
+        usort($rows, static function ($a, $b) use ($sort_order) {
+            foreach ($sort_order as $field => $direction) {
+                if ($a[$field] === $b[$field]) {
+                    continue;
+                }
+                // MySQL considers NULL lower than any other value
+                if ($a[$field] === null) {
+                    $cmp = -1;
+                } elseif ($b[$field] === null) {
+                    $cmp = 1;
+                } else {
+                    $cmp = $a[$field] <=> $b[$field];
+                }
+                return $direction === 'DESC' ? -$cmp : $cmp;
+            }
+            return 0;
+        });
+        $expected_pages = array_chunk(array_column($rows, 'name'), $limit);
+
+        $filter = 'name=like=' . $prefix . '*';
+        if ($manufacturer_filter !== null) {
+            $filter .= ';manufacturer.name=="' . $prefix . $manufacturer_filter . '"';
+        }
+        $schema = AssetController::getKnownSchemas(Router::API_VERSION)['Computer'];
+        $fn_search = static function (?string $cursor) use ($schema, $filter, $sort, $limit) {
+            $params = [
+                'filter' => $filter,
+                'sort' => $sort,
+                'limit' => $limit,
+            ];
+            if ($cursor !== null) {
+                $params['cursor'] = $cursor;
+            }
+            $response = ResourceAccessor::searchBySchema($schema, $params);
+            return [
+                array_column(json_decode((string) $response->getBody(), true), 'name'),
+                $response->getHeaders(),
+                $response->getStatusCode(),
+            ];
+        };
+
+        // Forwards
+        $pages = [];
+        $cursor = null;
+        do {
+            [$names, $headers, $status] = $fn_search($cursor);
+            $pages[] = $names;
+            $cursor = $headers['GLPI-Next-Cursor'][0] ?? null;
+            $this->assertEquals($cursor !== null ? 206 : 200, $status);
+            if (count($pages) === 1) {
+                $this->assertArrayNotHasKey('GLPI-Previous-Cursor', $headers);
+            } else {
+                $this->assertArrayHasKey('GLPI-Previous-Cursor', $headers);
+            }
+        } while ($cursor !== null && count($pages) <= count($expected_pages));
+        $this->assertEquals($expected_pages, $pages);
+
+        // Backwards from the last page
+        $pages = [array_pop($pages)];
+        $cursor = $headers['GLPI-Previous-Cursor'][0] ?? null;
+        while ($cursor !== null && count($pages) <= count($expected_pages)) {
+            [$names, $headers] = $fn_search($cursor);
+            array_unshift($pages, $names);
+            $this->assertArrayHasKey('GLPI-Next-Cursor', $headers);
+            $cursor = $headers['GLPI-Previous-Cursor'][0] ?? null;
+        }
+        $this->assertEquals($expected_pages, $pages);
+    }
+
+    /**
+     * Cursors should be resilient to data changes between requests, unlike offsets.
+     */
+    public function testSearchCursorsWithDataChanges(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $prefix = __FUNCTION__;
+        $test_entity_id = $this->getTestRootEntity(true);
+        $ids = [];
+        for ($i = 0; $i < 10; $i++) {
+            $DB->insert('glpi_computers', [
+                'name' => $prefix . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'entities_id' => $test_entity_id,
+            ]);
+            $ids[$i] = $DB->insertId();
+        }
+
+        $schema = AssetController::getKnownSchemas(Router::API_VERSION)['Computer'];
+        $fn_search = static function (array $params) use ($schema, $prefix) {
+            $response = ResourceAccessor::searchBySchema($schema, $params + [
+                'filter' => 'name=like=' . $prefix . '*',
+                'sort' => 'name',
+                'limit' => 4,
+            ]);
+            return [
+                array_map(
+                    static fn($name) => substr($name, strlen($prefix)),
+                    array_column(json_decode((string) $response->getBody(), true), 'name')
+                ),
+                $response->getHeaders(),
+            ];
+        };
+
+        [$names, $headers] = $fn_search([]);
+        $this->assertEquals(['000', '001', '002', '003'], $names);
+
+        // Delete the last record of the page (the one the cursor points to) and the first record of the next page, then add a record which sorts between them
+        $DB->delete('glpi_computers', ['id' => [$ids[3], $ids[4]]]);
+        $DB->insert('glpi_computers', [
+            'name' => $prefix . '0035',
+            'entities_id' => $test_entity_id,
+        ]);
+
+        [$names, $headers] = $fn_search(['cursor' => $headers['GLPI-Next-Cursor'][0]]);
+        $this->assertEquals(['0035', '005', '006', '007'], $names);
+
+        // Only 3 records remain before the new one
+        [$names, $headers] = $fn_search(['cursor' => $headers['GLPI-Previous-Cursor'][0]]);
+        $this->assertEquals(['000', '001', '002'], $names);
+        $this->assertArrayNotHasKey('GLPI-Previous-Cursor', $headers);
+        $this->assertArrayHasKey('GLPI-Next-Cursor', $headers);
+    }
+
+    /**
+     * Cursor values are client-controlled so they must be escaped
+     */
+    public function testSearchCursorsTamperedValue(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $test_entity_id = $this->getTestRootEntity(true);
+        for ($i = 0; $i < 3; $i++) {
+            $DB->insert('glpi_computers', [
+                'name' => __FUNCTION__ . $i,
+                'entities_id' => $test_entity_id,
+            ]);
+        }
+
+        $cursor = CursorPagination::generateCursorToken(
+            CursorPagination::TYPE_NEXT,
+            ['name' => "zzz' OR '1'='1", 'id' => 0],
+            ['name' => 'ASC', 'id' => 'ASC']
+        );
+        $response = ResourceAccessor::searchBySchema(AssetController::getKnownSchemas(Router::API_VERSION)['Computer'], [
+            'filter' => 'name=like=' . __FUNCTION__ . '*',
+            'sort' => 'name',
+            'cursor' => $cursor,
+        ]);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame([], json_decode((string) $response->getBody(), true));
     }
 }
