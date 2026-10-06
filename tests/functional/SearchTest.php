@@ -52,11 +52,13 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
+use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
 use Group_User;
+use ITILFollowup;
 use Location;
 use Peripheral;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -64,6 +66,7 @@ use Problem;
 use Psr\Log\LogLevel;
 use Session;
 use Software;
+use Supplier;
 use TaskCategory;
 use Ticket;
 use User;
@@ -282,6 +285,58 @@ class SearchTest extends DbTestCase
             1,
             substr_count($data['sql']['search'], '`ITEM_Software_160`')
         );
+    }
+
+    public function testNestedMetaCriteriaWithoutMatch(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Followup on a ticket that has no supplier assigned
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        // Meta criterion inside a nested group, as built by `FilterableTrait::itemMatchFilter()`
+        $data = SearchEngine::getData(ITILFollowup::class, [
+            'criteria' => [
+                [
+                    'link'     => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'itemtype'   => Ticket::class,
+                            'meta'       => true,
+                            'field'      => 6, // Assigned to a supplier
+                            'searchtype' => 'equals',
+                            'value'      => $supplier->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => 7, // ID
+                    'searchtype' => 'contains',
+                    'value'      => $followup->getID(),
+                ],
+            ],
+        ]);
+
+        // The meta criterion adds an aggregated column, so a GROUP BY is required
+        // to avoid a single row full of NULL values when nothing matches
+        $this->assertStringContainsString('GROUP BY', $data['sql']['search']);
+        $this->assertSame(0, $data['data']['totalcount']);
     }
 
     public function testMetaToviewNotLeakedAcrossIndependentCalls()

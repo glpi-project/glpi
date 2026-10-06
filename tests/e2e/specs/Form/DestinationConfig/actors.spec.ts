@@ -223,8 +223,8 @@ for (const actor_type of actor_types) {
             await form_page.doPreviewForm();
             await form_page.getButton('Submit').click();
 
-            // Click on the created ticket link
-            await page.getByRole('link', { name: `Test ${actor_type.name.toLowerCase()} config` }).click();
+            // Check that the user is redirected to the created ticket
+            await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
             // Verify actor in ticket
             const actors_region = form_page.getRegion('Actors');

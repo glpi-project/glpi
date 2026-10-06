@@ -288,10 +288,8 @@ test.describe('Selectable form question types', () => {
         // Submit the form
         await form.getButton('Submit').click();
 
-        // Check if the success message is displayed
-        const alert = form.getAlert('Item successfully created');
-        await expect(alert).toBeVisible();
-        await alert.getByRole('link').click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         // Check if the option is saved
         await expect(page.getByText(': Option 0').first()).toBeVisible();
@@ -375,10 +373,8 @@ test.describe('Selectable form question types', () => {
         // Submit the form
         await form.getButton('Submit').click();
 
-        // Check if the success message is displayed
-        const alert = form.getAlert('Item successfully created');
-        await expect(alert).toBeVisible();
-        await alert.getByRole('link').click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         // Check if the option is saved
         await expect(page.getByText(': Option 0, Option 1').first())

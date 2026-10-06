@@ -120,7 +120,8 @@ test.describe('Step-by-step layout (default)', () => {
 
         // Can submit without filling optional field
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByText('Form submitted')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 
     test('Works correctly with single section form', async ({ page, profile, formImporter }) => {
@@ -141,7 +142,8 @@ test.describe('Step-by-step layout (default)', () => {
         // Should be able to submit
         await page.getByRole('textbox', { name: 'Only question' }).fill('Answer');
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByText('Form submitted')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 });
 
@@ -187,7 +189,8 @@ test.describe('Single page layout', () => {
 
         // Can submit without filling optional field
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByText('Form submitted')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 
     test('Works correctly with single section form', async ({ page, profile, formImporter }) => {
@@ -209,7 +212,8 @@ test.describe('Single page layout', () => {
         // Should be able to submit
         await page.getByRole('textbox', { name: 'Only question' }).fill('Answer');
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByText('Form submitted')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 
     test('Validates all sections at once with mixed field types', async ({ page, profile, formImporter }) => {
@@ -251,7 +255,8 @@ test.describe('Single page layout', () => {
 
         // Should be able to submit
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByText('Form submitted')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 });
 
@@ -269,6 +274,9 @@ test.describe('Layout consistency and edge cases', () => {
         // Submit button should be disabled after first click
         await expect(page.getByRole('button', { name: 'Submit' })).toHaveClass(/pointer-events-none/);
 
+        // Wait for the redirection to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
+
         // Test single page layout
         const single_info = await formImporter.importForm('rendering_layouts/single-page-one-question.json');
 
@@ -278,6 +286,9 @@ test.describe('Layout consistency and edge cases', () => {
 
         // Submit button should be disabled after first click
         await expect(page.getByRole('button', { name: 'Submit' })).toHaveClass(/pointer-events-none/);
+
+        // Wait for the redirection to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 
     test('Preserves form data when navigating in step-by-step mode', async ({ page, profile, formImporter }) => {
@@ -308,6 +319,7 @@ test.describe('Layout consistency and edge cases', () => {
 
         // Submit form
         await page.getByRole('button', { name: 'Submit' }).click();
-        await expect(page.getByText('Form submitted')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 });

@@ -33,44 +33,28 @@
 import { Locator, Page } from "@playwright/test";
 import { GlpiPage } from "./GlpiPage";
 
-export class TicketPage extends GlpiPage
+export class PreferencePage extends GlpiPage
 {
-    public notes_area: Locator;
+    public backcreated_select: Locator;
 
     public constructor(page: Page)
     {
         super(page);
 
-        this.notes_area = this.getRegion('Notes');
+        this.backcreated_select = page.getByLabel('Go to created item after creation', { exact: true });
     }
 
-    public async gotoCreationPage(): Promise<void>
+    public async gotoPersonalizationTab(): Promise<void>
     {
-        await this.page.goto(`/front/ticket.form.php`);
-    }
-
-    public async goto(id: number, tab?: string): Promise<void>
-    {
-        let url = `/front/ticket.form.php?id=${id}`;
-        if (!tab) {
-            tab = 'Ticket$main';
-        }
-        url += `&forcetab=${tab}`;
-        await this.page.goto(url);
+        await this.page.goto('/front/preference.php?forcetab=Config$1');
     }
 
     /**
-     * Get the answer of a form question, as displayed in the description of a
-     * ticket created from a form.
+     * Get the "Go to created item after creation" preference, as currently
+     * applied to the user (user value or global default).
      */
-    public getFormAnswer(answer: string): Locator
+    public async getBackcreatedValue(): Promise<boolean>
     {
-        return this.page.getByText(`: ${answer}`).first();
-    }
-
-    public async doSetEntityDropdown(value: string): Promise<void>
-    {
-        const dropdown = this.getDropdownByLabel("Entity");
-        await this.doSetDropdownValue(dropdown, value, false);
+        return await this.backcreated_select.inputValue() === '1';
     }
 }
