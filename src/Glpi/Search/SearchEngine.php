@@ -636,7 +636,7 @@ final class SearchEngine
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);
-        echo "<div class='col search-container' data-glpi-search-container tabindex='-1'>";
+        echo "<div class='col search-container' data-glpi-search-container tabindex='-1' autofocus>";
 
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
         if ($output instanceof HTMLSearchOutput) {
