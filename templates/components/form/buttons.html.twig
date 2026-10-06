@@ -41,7 +41,7 @@
      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 
     {% if canedit or item.canEdit(item.fields['id']) %}
-      <div class="form-button-separator card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap  {{ in_modal ? 'p-2' : '' }}">
+      <div class="form-button-separator card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap gap-2 {{ in_modal ? 'p-2' : '' }}">
          {% if withtemplate > 0 or item.isNewID(id) %}
             {% if id <= 0 or withtemplate == 2 %}
                <button
@@ -103,9 +103,9 @@
                     {% set item_devices = call('Item_Devices::getConcernedItems') %}
                     {% set show_keep_devices = item.getType() in item_devices %}
 
-                    {% set span_cls = "" %}
+                    {% set span_cls = "order-last me-auto" %}
                     {% if show_keep_devices %}
-                        {% set span_cls = "border border-danger d-flex align-items-start flex-wrap p-1 px-2 me-2" %}
+                        {% set span_cls = "order-last me-auto border border-danger d-flex align-items-start flex-wrap p-1 px-2" %}
                     {% endif %}
 
                      <span class="{{ span_cls }}">
@@ -136,7 +136,7 @@
                   {% if (not item.maybeDeleted() or item.useDeletedToLockIfDynamic()) %}
                      {% if item.can(id, constant('PURGE')) %}
                         <button
-                           class="btn btn-outline-danger me-2"
+                           class="btn btn-outline-danger order-last me-auto"
                            type="submit"
                            name="purge"
                            onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
@@ -149,7 +149,7 @@
                      {% endif %}
                   {% elseif not item.isDeleted() and item.can(id, constant('DELETE')) %}
                      <button
-                        class="btn btn-outline-warning me-2"
+                        class="btn btn-outline-warning order-last me-auto"
                         type="submit"
                         name="delete"
                         value="1"
