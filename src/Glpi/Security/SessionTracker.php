@@ -155,7 +155,7 @@ final class SessionTracker
                 'users_id' => $_SESSION['glpiID'],
                 'session_file' => 'sess_' . session_id(),
                 'ip_address' => $ip, // Update IP in case it changed (mobile users, VPNs, etc)
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
                 'last_activity_at' => Session::getCurrentTime(),
             ], ['login_session_uid' => Session::getLoginSessionUID()]);
             return true;
@@ -167,7 +167,7 @@ final class SessionTracker
                 'login_session_uid' => Session::getLoginSessionUID(),
                 'session_file' => 'sess_' . session_id(),
                 'ip_address' => $ip,
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
                 'auth_type' => $auth->getAuthType(),
                 'created_at' => Session::getCurrentTime(),
                 'last_activity_at' => Session::getCurrentTime(),
@@ -176,7 +176,7 @@ final class SessionTracker
                 'users_id' => $_SESSION['glpiID'],
                 'login_session_uid' => Session::getLoginSessionUID(),
                 'ip_address' => $ip,
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
                 'auth_type' => $auth->getAuthType(),
                 'logged_in_at' => Session::getCurrentTime(),
             ]);
