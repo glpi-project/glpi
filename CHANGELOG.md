@@ -15,6 +15,7 @@ The present file will list all changes made to the project; according to the
 - New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
 - `supervisor` property added for `User` schema in High-Level API v2.4.
 - Support for `If-Modified-Since` and `If-Unmodified-Since` HTTP headers for some types of requests in High-Level API. This is not controlled by the API version.
+- New schema/endpoints for managing profile authorizations in High-Level API v2.4. New GraphQL-only properties on User, Profile and Entity schemas to link each other via the created profile authorizations.
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
