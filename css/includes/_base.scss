@@ -379,6 +379,11 @@ body.in_modal {
     }
 }
 
+// Remove the "Go to search results" skip link from pages without search results
+body:not(:has(#search-results)) .skip-links .skip-link-search-results {
+    display: none;
+}
+
 table {
     &.table thead th {
         font-size: 0.625rem;

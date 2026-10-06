@@ -102,6 +102,12 @@ use function Safe\preg_match;
 final class SearchEngine
 {
     /**
+     * Indicates whether the search results anchor, targeted by the "Go to search results" skip link,
+     * has already been rendered (it must be unique in the page).
+     */
+    private static bool $is_search_results_anchor_rendered = false;
+
+    /**
      * @param int $output_type
      * @param array $data
      * @return AbstractSearchOutput
@@ -636,7 +642,10 @@ final class SearchEngine
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);
-        echo "<div class='col search-container' data-glpi-search-container tabindex='-1'>";
+        // Only the first search of the page is targeted by the "Go to search results" skip link
+        $anchor_id = self::$is_search_results_anchor_rendered ? '' : " id='search-results'";
+        self::$is_search_results_anchor_rendered = true;
+        echo "<div class='col search-container'{$anchor_id} data-glpi-search-container data-testid='search-container' tabindex='-1'>";
 
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
         if ($output instanceof HTMLSearchOutput) {
