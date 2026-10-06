@@ -191,7 +191,8 @@ test.describe('Form rendering', () => {
             glpi.getDropdownByLabel('Visible question'), 'Very high', false
         );
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('link', { name: 'Form with hidden items' }).click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         await expect(page.getByTestId('form-field-urgency')).toContainText('Very high');
         await expect(page.getByText('Visible section')).toBeVisible();

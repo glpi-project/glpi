@@ -279,6 +279,7 @@ export class GlpiFormRendererController
      */
     async #submitForm() {
         const submit = $(this.#target).find('button[data-glpi-form-renderer-action=submit]');
+        let is_redirecting = false;
 
         // Form will be sumitted using an AJAX request instead
         try {
@@ -303,6 +304,9 @@ export class GlpiFormRendererController
 
             // Redirect to the created item if requested by the user preferences
             if (response.redirect_url) {
+                // Keep actions disabled until the browser leaves the page to
+                // prevent another submission.
+                is_redirecting = true;
                 window.location.href = response.redirect_url;
                 return;
             }
@@ -358,8 +362,10 @@ export class GlpiFormRendererController
 
             glpi_toast_error(errorMessage);
         } finally {
-            this.#enableActions();
-            submit.removeClass('btn-loading');
+            if (!is_redirecting) {
+                this.#enableActions();
+                submit.removeClass('btn-loading');
+            }
         }
     }
 

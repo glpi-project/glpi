@@ -38,6 +38,8 @@ import { CsrfExtractor } from '../../utils/CsrfExtractor';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId, getWorkerUserId } from '../../utils/WorkerEntities';
 import { FormPreviewPage } from '../../pages/FormRenderPage';
+import { PreferencePage } from '../../pages/PreferencePage';
+import { TicketPage } from '../../pages/TicketPage';
 
 async function createFormWithQuestion(api: Api): Promise<number>
 {
@@ -63,6 +65,9 @@ async function createFormWithQuestion(api: Api): Promise<number>
  * Update the "Go to created item after creation" preference of the worker
  * user. The preference page is used (instead of the API) so the value cached
  * in the current session is updated too.
+ *
+ * When the value matches the global default, GLPI stores `NULL` for the user
+ * preference, so restoring the initial value also restores the initial state.
  *
  * The preference form is not an AJAX endpoint, thus GLPI destroys the CSRF
  * token once validated: the shared token of the `CsrfFetcher` service can't be
@@ -106,7 +111,7 @@ test.describe('Redirection after form submission', () => {
         await form.doSubmitForm();
 
         await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
-        await expect(page.getByText(': My answer').first()).toBeVisible();
+        await expect(new TicketPage(page).getFormAnswer('My answer')).toBeVisible();
     });
 
     test('displays the success screen when the preference is disabled', async ({
@@ -119,6 +124,9 @@ test.describe('Redirection after form submission', () => {
         const form_id = await createFormWithQuestion(api);
 
         await profile.set(Profiles.SelfService);
+        const preferences = new PreferencePage(page);
+        await preferences.gotoPersonalizationTab();
+        const initial_backcreated = await preferences.getBackcreatedValue();
         await setBackcreatedPreference(request, false);
         try {
             const form = new FormPreviewPage(page);
@@ -127,12 +135,10 @@ test.describe('Redirection after form submission', () => {
             await form.doSubmitForm();
 
             await expect(form.getAlert('Item successfully created')).toBeVisible();
-            await expect(page.getByText('Your form has been submitted successfully.'))
-                .toBeVisible()
-            ;
+            await expect(form.success_message).toBeVisible();
             await expect(page).toHaveURL(new RegExp(`/Form/Render/${form_id}`));
         } finally {
-            await setBackcreatedPreference(request, true);
+            await setBackcreatedPreference(request, initial_backcreated);
         }
     });
 });
