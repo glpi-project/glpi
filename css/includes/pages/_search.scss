@@ -76,6 +76,11 @@
             }
         }
 
+        // Focusable scroll region (keyboard scrolling), not an interactive control
+        &:focus {
+            outline: none;
+        }
+
         .search-form-container {
             @include media-breakpoint-up(lg) {
                 position: sticky;
