@@ -379,8 +379,9 @@ body.in_modal {
     }
 }
 
-// Remove the "Go to search results" skip link from pages without search results
-body:not(:has(#search-results)) .skip-links .skip-link-search-results {
+// Remove contextual skip links from pages that do not contain their target
+body:not(:has(#search-results)) .skip-links .skip-link-search-results,
+body:not(:has(#itil-timeline)) .skip-links .skip-link-itil-timeline {
     display: none;
 }
 
