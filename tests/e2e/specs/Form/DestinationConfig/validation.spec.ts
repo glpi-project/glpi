@@ -207,7 +207,8 @@ test.describe('Validation configuration', () => {
         );
 
         await form_page.getButton('Submit').click();
-        await page.getByRole('link', { name: 'My test form' }).click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         await expect(page.getByRole('link', { name: user_name })).toBeVisible({ timeout: 15000 });
     });

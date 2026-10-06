@@ -89,6 +89,8 @@ if (isset($_POST["add"])) {
     if (!$track::canUpdate()) {
         throw new AccessDeniedHttpException();
     }
+    // The global right is not enough, the ticket must also be accessible
+    $track->check($_POST['id'], READ);
     $_POST = $track->enforceReadonlyFields($_POST);
     $track->update($_POST);
 

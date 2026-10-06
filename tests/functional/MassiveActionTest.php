@@ -1736,4 +1736,70 @@ class MassiveActionTest extends DbTestCase
             $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_right;
         }
     }
+
+    public static function reservationActionsProvider(): iterable
+    {
+        yield 'enable' => ['enable', false, 1];
+        yield 'disable' => ['disable', true, 0];
+        yield 'available' => ['available', true, 0];
+        yield 'unavailable' => ['unavailable', true, 1];
+    }
+
+    #[DataProvider('reservationActionsProvider')]
+    #[AllowMockObjectsWithoutExpectations()]
+    public function testProcessMassiveActionsForOneItemtype_reservationOutsideActiveEntities(
+        string $action,
+        bool $has_reservation_item,
+        int $is_active
+    ): void {
+        $this->login();
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'Computer outside active entities',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+        if ($has_reservation_item) {
+            $this->createItem(\ReservationItem::class, [
+                'itemtype'  => \Computer::class,
+                'items_id'  => $computer->getID(),
+                'is_active' => $is_active,
+            ]);
+        }
+
+        // The user can manage reservations, but not in the computer entity
+        $this->setEntity('_test_child_2', false);
+        $this->assertFalse($computer->can($computer->getID(), READ));
+
+        $this->processMassiveActionsForOneItemtype(
+            $action,
+            $computer,
+            [$computer->getID()],
+            [],
+            0,
+            1,
+            \Reservation::class
+        );
+
+        // Nothing must have changed on the computer reservation item
+        $reservation_item = new \ReservationItem();
+        $this->assertSame(
+            $has_reservation_item,
+            $reservation_item->getFromDBbyItem(\Computer::class, $computer->getID())
+        );
+        if ($has_reservation_item) {
+            $this->assertSame($is_active, (int) $reservation_item->fields['is_active']);
+        }
+
+        // The same action is done when the user can access the computer entity
+        $this->setEntity('_test_child_1', false);
+        $this->processMassiveActionsForOneItemtype(
+            $action,
+            $computer,
+            [$computer->getID()],
+            [],
+            1,
+            0,
+            \Reservation::class
+        );
+    }
 }

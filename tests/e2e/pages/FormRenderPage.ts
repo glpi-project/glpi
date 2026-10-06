@@ -30,14 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { GlpiPage } from "./GlpiPage";
 
 export class FormPreviewPage extends GlpiPage
 {
+    public success_message: Locator;
+
     public constructor(page: Page)
     {
         super(page);
+
+        this.success_message = page.getByText('Your form has been submitted successfully.');
     }
 
     public async goto(id: Number): Promise<void>

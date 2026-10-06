@@ -51,8 +51,7 @@ If you have a GitHub account, include your username so we can add you as observe
 | Version | Supported |
 | ------- | --------- |
 | 11.0.x  | ✔️        |
-| 10.0.x  | ✔️        |
-| < 10.0  | ❌        |
+| < 11.0  | ❌        |
 
 Only the latest patch release of each supported branch is in scope. Reports against older patch versions are closed without review — please upgrade and verify the issue still exists before reporting.
 

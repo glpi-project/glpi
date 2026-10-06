@@ -3244,6 +3244,78 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
     /**
+     * Ensure a rule combining "global_validation" and a category "under" criteria
+     * still triggers when the update is caused by a validation acceptance, which
+     * only carries the validation status in its input, not the category.
+     *
+     * @return void
+     */
+    public function testGlobalValidationCriteriaWithCategoryUnderOnValidationAcceptance(): void
+    {
+        // no validation for problems
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+
+        $this->login(TU_USER, TU_PASS);
+
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $urgency_if_rule_triggered = 5;
+
+        $parent_category = $this->createItem(ITILCategory::class, [
+            'name'         => 'Business software',
+            'entities_id'  => $entity,
+            'is_recursive' => true,
+        ]);
+        $child_category = $this->createItem(ITILCategory::class, [
+            'name'               => 'ERP',
+            'itilcategories_id'  => $parent_category->getID(),
+            'entities_id'        => $entity,
+            'is_recursive'       => true,
+        ]);
+
+        $builder = new RuleBuilder('Test global_validation + category under criteria', $this->getTestedClass());
+        $builder
+            ->addCriteria('global_validation', Rule::PATTERN_IS, CommonITILValidation::ACCEPTED)
+            ->addCriteria('itilcategories_id', Rule::PATTERN_UNDER, $parent_category->getID())
+            ->addAction('assign', 'urgency', $urgency_if_rule_triggered);
+        $this->createRule($builder);
+
+        // Create ITIL object under the child category, with a pending validation
+        $itil_object = $this->createItem($this->getITILObjectClass(), [
+            'name'                => 'Test ITIL object',
+            'entities_id'         => $entity,
+            'content'             => 'Test ITIL object content',
+            'itilcategories_id'   => $child_category->getID(),
+            'validatortype'       => 'user',
+            '_validation_targets' => [
+                [
+                    'itemtype_target' => User::class,
+                    'items_id_target' => $_SESSION['glpiID'],
+                ],
+            ],
+            '_add_validation'     => false,
+        ], ['validatortype']);
+        $this->assertNotEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
+
+        // Accept the validation: this update only carries 'global_validation',
+        // the rule must still see the ticket's actual (unchanged) category.
+        $validation_instance = $this->getITILObjectInstance()->getValidationClassInstance();
+        $validations = $validation_instance->find([
+            $this->getITILObjectInstance()::getForeignKeyField() => $itil_object->getID(),
+        ]);
+        $this->assertCount(1, $validations);
+        $validation = array_pop($validations);
+
+        $this->updateItem($validation_instance::class, $validation['id'], [
+            'status' => CommonITILValidation::ACCEPTED,
+        ]);
+
+        $itil_object->getFromDB($itil_object->getID());
+        $this->assertEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
+    }
+
+    /**
      * Test that the "Code representing the ticket category" criterion works correctly
      * even when the category has been modified just before.
      *
@@ -3294,6 +3366,63 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->assertEquals($location->getID(), $itil_object->fields['locations_id']);
     }
 
+    public function testCategoryCodeNotReusedAfterCategoryClearedByRule(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $new_priority = 4;
+
+        $category = $this->createItem(ITILCategory::class, [
+            'name' => 'Test category',
+            'code' => 'test_category_cleared',
+            'entities_id' => $entity,
+        ]);
+
+        $location = $this->createItem(Location::class, [
+            'name' => 'Test location for cleared category',
+            'entities_id' => $entity,
+        ]);
+
+        // Rule 1: assign the category when priority changes
+        $builder = new RuleBuilder('Assign category on priority change', $this->getTestedClass());
+        $builder
+            ->addCriteria('priority', Rule::PATTERN_IS, $new_priority)
+            ->addAction('assign', 'itilcategories_id', $category->getID())
+            ->setRanking(1);
+        $this->createRule($builder);
+
+        // Rule 2: clear the category right after, still on priority change
+        $builder = new RuleBuilder('Clear category on priority change', $this->getTestedClass());
+        $builder
+            ->addCriteria('priority', Rule::PATTERN_IS, $new_priority)
+            ->addAction('assign', 'itilcategories_id', 0)
+            ->setRanking(2);
+        $this->createRule($builder);
+
+        // Rule 3: chained on rule 2's output, must not see the stale code
+        $builder = new RuleBuilder('Assign location from stale category code', $this->getTestedClass());
+        $builder
+            ->addCriteria('itilcategories_id_code', Rule::PATTERN_IS, $category->fields['code'])
+            ->addAction('assign', 'locations_id', $location->getID())
+            ->setRanking(3);
+        $this->createRule($builder);
+
+        $itil_object = $this->createItem($this->getITILObjectClass(), [
+            'name' => 'Test ITIL',
+            'content' => 'Test ITIL content',
+            'entities_id' => $entity,
+            'itilcategories_id' => 0,
+        ]);
+
+        $itil_object = $this->updateItem(
+            $itil_object::class,
+            $itil_object->getID(),
+            ['priority' => $new_priority]
+        );
+
+        $this->assertEquals(0, $itil_object->fields['itilcategories_id']);
+        $this->assertEquals(0, $itil_object->fields['locations_id']);
+    }
 
     /**
      * Test that the "Default profile" criterion works correctly

@@ -147,7 +147,8 @@ test('Can delegate', async ({ page, profile, api }) => {
 
     await page.getByRole('button', { name: 'Submit' }).click();
 
-    await page.getByRole('link', { name: `My test form - ${uuid}` }).click();
+    // Check that the user is redirected to the created ticket
+    await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
     const actors = glpi.getRegion('Actors');
     const user_tag = actors.getByRole('listitem', { name: `Test user - ${uuid}` });
@@ -187,9 +188,12 @@ test('Can delegate in self-service', async ({ page, profile, api }) => {
 
     await page.getByRole('button', { name: 'Submit' }).click();
 
-    await profile.set(Profiles.SuperAdmin);
+    // Check that the user is redirected to the created ticket
+    await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
-    await page.getByRole('link', { name: `My test form - ${uuid}` }).click();
+    // Reload the ticket with the central interface
+    await profile.set(Profiles.SuperAdmin);
+    await page.reload();
 
     const actors = glpi.getRegion('Actors');
     const user_tag = actors.getByRole('listitem', { name: `Test user - ${uuid}` });

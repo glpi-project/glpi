@@ -61,7 +61,8 @@ test.describe('Form plugins', () => {
 
         // Sumbmit form with the default value and go to ticket
         await page.getByRole('button', { name: 'Submit' }).click();
-        await page.getByRole('link', { name: 'My test form' }).click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         // Check value was submited
         await expect(page.getByTestId('content')).toContainText(

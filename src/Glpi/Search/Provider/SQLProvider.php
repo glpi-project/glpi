@@ -5039,11 +5039,9 @@ final class SQLProvider implements SearchProviderInterface
         //// 7 - Manage GROUP BY
         $GROUPBY = "";
         // Meta Search / Search All / Count tickets
-        $criteria_with_meta = array_filter($data['search']['criteria'], fn($criterion) => isset($criterion['meta'])
-            && $criterion['meta']);
         if (
             (count($data['search']['metacriteria']))
-            || count($criteria_with_meta)
+            || self::hasMetaCriteria($data['search']['criteria'])
             || !empty($HAVING)
             || $data['search']['all_search']
         ) {
