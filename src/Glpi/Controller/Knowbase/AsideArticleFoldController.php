@@ -58,7 +58,7 @@ final class AsideArticleFoldController extends AbstractController
         ],
         methods: 'POST',
     )]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    #[SecurityStrategy(Firewall::STRATEGY_FAQ_ACCESS)]
     public function __invoke(int $id, Request $request): Response
     {
         $collapsed = $request->getPayload()->get('collapsed');
@@ -69,6 +69,11 @@ final class AsideArticleFoldController extends AbstractController
         if (!Session::isAuthenticated()) {
             // Nothing to be done as the user don't exist in the database, we
             // can't persist any data.
+            return new Response();
+        }
+
+        $kb = new KnowbaseItem();
+        if (!$kb->getFromDB($id) || !$kb->can($id, READ)) {
             return new Response();
         }
 
