@@ -221,8 +221,6 @@ class View extends CommonGLPI
         bool $only_lis = false,
         string $string_filter = ""
     ) {
-        global $CFG_GLPI;
-
         $plugin_inst = new Plugin();
         $plugin_inst->checkStates(true); // force synchronization of the DB data with the filesystem data
         $installed   = $plugin_inst->getList();
@@ -235,9 +233,6 @@ class View extends CommonGLPI
 
         $plugins = [];
         foreach ($installed as $plugin) {
-            $key     = $plugin['directory'];
-            $apidata = $apiplugins[$key] ?? [];
-
             if (
                 strlen($string_filter)
                 && !str_contains(strtolower(json_encode($plugin)), strtolower($string_filter))
@@ -245,32 +240,47 @@ class View extends CommonGLPI
                 continue;
             }
 
-            $logo_url = $apidata['logo_url'] ?? '';
-            if (Document::isImage(\sprintf('%s/logo.png', Plugin::getPhpDir($key)))) {
-                // Use the local logo.png file if it exists.
-                $logo_url = sprintf('%s/Plugin/%s/Logo', $CFG_GLPI['root_doc'], $key);
-            }
-
-            $clean_plugin = [
-                'key'                       => $key,
-                'name'                      => $plugin['name'],
-                'logo_url'                  => $logo_url,
-                'description'               => $apidata['descriptions'][0]['short_description'] ?? "",
-                'authors'                   => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
-                'license'                   => $apidata['license'] ?? $plugin['license'] ?? "",
-                'note'                      => $apidata['note'] ?? -1,
-                'homepage_url'              => $apidata['homepage_url'] ?? "",
-                'issues_url'                => $apidata['issues_url'] ?? "",
-                'readme_url'                => $apidata['readme_url'] ?? "",
-                'version'                   => $plugin['version'] ?? "",
-                'changelog_url'             => $apidata['changelog_url'] ?? "",
-                'highest_available_version' => $plugin['highest_available_version'] ?? "0",
-            ];
-
-            $plugins[] = $clean_plugin;
+            $plugins[] = self::getInstalledPluginData($plugin, $apiplugins[$plugin['directory']] ?? []);
         }
 
         self::displayList($plugins, "installed", $only_lis);
+    }
+
+    /**
+     * Build the data used to display an installed plugin card.
+     *
+     * @param array $plugin  plugin DB fields (as returned by \Plugin::getList())
+     * @param array $apidata plugin data returned by the marketplace API (if available)
+     *
+     * @return array
+     */
+    private static function getInstalledPluginData(array $plugin, array $apidata = []): array
+    {
+        global $CFG_GLPI;
+
+        $key = $plugin['directory'];
+
+        $logo_url = $apidata['logo_url'] ?? '';
+        if (Document::isImage(\sprintf('%s/logo.png', Plugin::getPhpDir($key)))) {
+            // Use the local logo.png file if it exists.
+            $logo_url = sprintf('%s/Plugin/%s/Logo', $CFG_GLPI['root_doc'], $key);
+        }
+
+        return [
+            'key'                       => $key,
+            'name'                      => $plugin['name'],
+            'logo_url'                  => $logo_url,
+            'description'               => $apidata['descriptions'][0]['short_description'] ?? "",
+            'authors'                   => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
+            'license'                   => $apidata['license'] ?? $plugin['license'] ?? "",
+            'note'                      => $apidata['note'] ?? -1,
+            'homepage_url'              => $apidata['homepage_url'] ?? "",
+            'issues_url'                => $apidata['issues_url'] ?? "",
+            'readme_url'                => $apidata['readme_url'] ?? "",
+            'version'                   => $plugin['version'] ?? "",
+            'changelog_url'             => $apidata['changelog_url'] ?? "",
+            'highest_available_version' => $plugin['highest_available_version'] ?? "0",
+        ];
     }
 
     /**
@@ -466,7 +476,7 @@ HTML;
                 <div class='marketplace $tab' data-tab='{$tab}'>
                     {$tags_list}
                     <div class='right-panel'>
-                        {$plugin_message}
+                        <div class='updatable-plugins-alert'>{$plugin_message}</div>
                         {$suspend_banner}
                         <div class='top-panel'>
                             <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
@@ -560,6 +570,44 @@ JS;
             'tab'    => $tab,
             'plugin' => $plugin_info,
         ]);
+    }
+
+    /**
+     * Return HTML part for the card of the given plugin.
+     *
+     * Used to refresh a single plugin card after an action (download, update, install, ...)
+     * has been executed, without having to reload the whole plugins list.
+     *
+     * @param string $plugin_key plugin system name
+     * @param string $tab        current displayed tab (installed or discover)
+     *
+     * @return string the plugin card, or an empty string if the plugin cannot be found
+     */
+    public static function getPluginCardByKey(string $plugin_key, string $tab = "discover"): string
+    {
+        // Registration status check may output warning messages, they must not be part of the card HTML.
+        ob_start();
+        $is_registered = self::checkRegistrationStatus();
+        ob_end_clean();
+
+        $apidata = $is_registered ? self::getAPI()->getPlugin($plugin_key) : [];
+
+        if ($tab === 'installed') {
+            $plugin_inst = new Plugin();
+            if (!$plugin_inst->getFromDBbyDir($plugin_key)) {
+                return '';
+            }
+            $plugin = self::getInstalledPluginData($plugin_inst->fields, $apidata);
+        } else {
+            if ($apidata === []) {
+                return '';
+            }
+            $plugin = $apidata;
+        }
+
+        $plugin['description'] = self::getLocalizedDescription($plugin);
+
+        return self::getPluginCard($plugin, $tab);
     }
 
     /**
