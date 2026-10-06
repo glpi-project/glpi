@@ -957,7 +957,7 @@ final class Search
      * @param array $schema
      * @param array $request_params
      * @return array The search results
-     * @phpstan-return array{results: array, start: int, limit: int, cursor_used: bool, prev_cursor: string|null, next_cursor: string|null, total: int}
+     * @phpstan-return array{results: array, start: int, limit: int, cursor_used: bool, prev_cursor: string|null, next_cursor: string|null, total?: int}
      * @throws RSQLException|APIException
      */
     public static function getSearchResultsBySchema(array $schema, array $request_params): array
@@ -1027,22 +1027,27 @@ final class Search
         Profiler::getInstance()->stop('Map and cast properties');
         unset($result);
 
-        Profiler::getInstance()->start('Query for the total count', Profiler::CATEGORY_HLAPI);
-        // Count the total number of results with the same criteria, but without the offset and limit
-        $criteria = $search->getSearchCriteria(true);
-        // We only need the total count, so we don't need to hydrate the records
-        $total = $search->getMatchingRecords(true);
-        Profiler::getInstance()->stop('Query for the total count');
-        Profiler::getInstance()->stop('Search::getSearchResultsBySchema');
-
-        return [
+        $cursor_used = $search->getCursorType() !== null;
+        $return_result = [
             'results' => array_values($results),
-            'start' => $criteria['START'] ?? 0,
-            'limit' => $criteria['LIMIT'] ?? count($results),
-            'cursor_used' => $search->getCursorType() !== null,
+            'start' => $search->context->getRequestParameter('start') ?? 0,
+            'limit' => $search->context->getRequestParameter('limit') ?? count($results),
+            'cursor_used' => $cursor_used,
             'prev_cursor' => $cursors['prev_cursor'],
             'next_cursor' => $cursors['next_cursor'],
-            'total' => $total,
         ];
+
+        if (!$cursor_used) {
+            Profiler::getInstance()->start('Query for the total count', Profiler::CATEGORY_HLAPI);
+            // Count the total number of results with the same criteria, but without the offset and limit
+            $criteria = $search->getSearchCriteria(true);
+            // We only need the total count, so we don't need to hydrate the records
+            $total = $search->getMatchingRecords(true);
+            $return_result['total'] = $total;
+            Profiler::getInstance()->stop('Query for the total count');
+        }
+        Profiler::getInstance()->stop('Search::getSearchResultsBySchema');
+
+        return $return_result;
     }
 }
