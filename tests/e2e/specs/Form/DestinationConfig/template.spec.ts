@@ -82,7 +82,8 @@ test.describe('Template configuration', () => {
 
         await page.getByRole('textbox', { name: 'My test question' }).fill('My test answer');
         await form_page.getButton('Submit').click();
-        await page.getByRole('link', { name: 'My test form' }).click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         await expect(form_page.getDropdownByLabel('Status')).toBeHidden();
     });

@@ -245,12 +245,14 @@ final class AnswersSet extends CommonDBChild
     /**
      * Get links to created items that are visible for the current user.
      *
+     * @param CommonDBTM[]|null $created_items Items already loaded with getCreatedItems()
+     *
      * @return string[]
      */
-    public function getLinksToCreatedItems(): array
+    public function getLinksToCreatedItems(?array $created_items = null): array
     {
         $links = [];
-        foreach ($this->getCreatedItems() as $item) {
+        foreach ($created_items ?? $this->getCreatedItems() as $item) {
             if ($item->canViewItem()) {
                 $links[] = $item->getLink();
             }
