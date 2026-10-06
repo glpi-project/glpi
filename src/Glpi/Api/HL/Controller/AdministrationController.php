@@ -52,6 +52,7 @@ use Glpi\UI\ThemeManager;
 use Group;
 use Planning;
 use Profile;
+use Profile_User;
 use Session;
 use Toolbox;
 use User;
@@ -275,6 +276,14 @@ EOD,
                         'x-version-introduced' => '2.2.0',
                     ],
                     'supervisor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_supervisor', full_schema: 'User', params: ['x-version-introduced' => '2.4.0']),
+                    'profile_authorizations' => self::getChildrenTypeSchema(
+                        parent_class: User::class,
+                        class: Profile_User::class,
+                        name_field: null,
+                        full_schema: 'ProfileAuthorization',
+                        graphql_only: true,
+                        params: ['x-version-introduced' => '2.4.0']
+                    ),
                 ],
             ],
             'Group' => [
@@ -590,6 +599,30 @@ EOD,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                         'x-version-introduced' => '2.3.0',
                     ],
+                    // Not using getChildrenTypeSchema() as entities are not one of the sides of the Profile_User relation
+                    'profile_authorizations' => [
+                        'x-version-introduced' => '2.4.0',
+                        'x-graphql-only' => true,
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-itemtype' => Profile_User::class,
+                            'x-full-schema' => 'ProfileAuthorization',
+                            'x-join' => [
+                                'table' => Profile_User::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'entities_id',
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'Profile' => [
@@ -645,6 +678,14 @@ EOT,
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is two-factor authentication enforced for this profile',
                     ],
+                    'profile_authorizations' => self::getChildrenTypeSchema(
+                        parent_class: Profile::class,
+                        class: Profile_User::class,
+                        name_field: null,
+                        full_schema: 'ProfileAuthorization',
+                        graphql_only: true,
+                        params: ['x-version-introduced' => '2.4.0']
+                    ),
                 ],
             ],
             'EmailAddress' => [
@@ -669,6 +710,46 @@ EOT,
                     'is_dynamic' => [
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is dynamic',
+                    ],
+                ],
+            ],
+            'ProfileAuthorization' => [
+                'x-version-introduced' => '2.4.0',
+                'x-itemtype' => Profile_User::class,
+                'x-graphql-resolver' => null,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'description' => 'An authorization granting a user a profile in an entity',
+                'x-rights-conditions' => [
+                    'read' => static function () {
+                        if (!Session::canViewAllEntities()) {
+                            return [
+                                'WHERE' => [
+                                    '_.entities_id' => $_SESSION['glpiactiveentities'],
+                                ],
+                            ];
+                        }
+                        return true;
+                    },
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                        'readOnly' => true,
+                    ],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'profile' => self::getDropdownTypeSchema(class: Profile::class, full_schema: 'Profile'),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether the profile is also granted in the child entities',
+                        'default' => true,
+                    ],
+                    'is_dynamic' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether the authorization was added automatically (by rules or synchronization)',
+                        'readOnly' => true,
                     ],
                 ],
             ],
@@ -1387,6 +1468,160 @@ EOT,
         }
         return ResourceAccessor::deleteBySchema(
             schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getAttributes()
+        );
+    }
+
+    /**
+     * Check if the current user may grant or revoke the given profile in the given entity.
+     *
+     * In addition to the checks done by {@link Profile_User::canCreateItem()}, this ensures that, for recursive authorizations,
+     * the current user has access to all the child entities that would be affected.
+     *
+     * @param int $profiles_id The profile ID to check
+     * @param int $entities_id The entity ID to check
+     * @param bool $is_recursive Whether the authorization is recursive
+     * @return bool True if the current user can manage the profile authorization, false otherwise
+     */
+    private function canManageProfileAuthorization(int $profiles_id, int $entities_id, bool $is_recursive): bool
+    {
+        if (!Profile::currentUserHaveMoreRightThan([$profiles_id => $profiles_id])) {
+            return false;
+        }
+        if (!Session::haveAccessToEntity($entities_id)) {
+            return false;
+        }
+        return !$is_recursive || Session::haveAccessToAllOfEntities(getSonsOf(Entity::getTable(), $entities_id));
+    }
+
+    #[Route(path: '/User/{users_id}/ProfileAuthorization', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(schema_name: 'ProfileAuthorization', description: 'List or search the profile authorizations of a user')]
+    public function searchUserProfileAuthorizations(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        if (!(new User())->can($users_id, READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';user.id==' . $users_id;
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('ProfileAuthorization', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/ProfileAuthorization/{id}', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(schema_name: 'ProfileAuthorization', description: 'Get a specific profile authorization of a user')]
+    public function getUserProfileAuthorization(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        if (!(new User())->can($users_id, READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';user.id==' . $users_id;
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('ProfileAuthorization', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/ProfileAuthorization', methods: ['POST'], requirements: [
+        'users_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(
+        schema_name: 'ProfileAuthorization',
+        description: 'Grant a profile to a user in an entity. If no entity is specified, the current active entity is used.'
+    )]
+    public function addUserProfileAuthorization(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        $request->setParameter('user', $users_id);
+        if (!$request->hasParameter('entity') && isset($_SESSION['glpiactive_entity'])) {
+            $request->setParameter('entity', $_SESSION['glpiactive_entity']);
+        }
+
+        // Same check as the web UI for showing the authorization form
+        if (!(new User())->can($users_id, UPDATE)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        $schema = $this->getKnownSchema('ProfileAuthorization', $this->getAPIVersion($request));
+        $input = ResourceAccessor::getInputParamsBySchema($schema, $request->getParameters());
+        $profiles_id = (int) ($input['profiles_id'] ?? 0);
+        $entities_id = (int) ($input['entities_id'] ?? -1);
+        if (Profile::getById($profiles_id) === false) {
+            return new JSONResponse(
+                self::getErrorResponseBody(self::ERROR_INVALID_PARAMETER, 'Invalid or missing profile'),
+                400
+            );
+        }
+        if (Entity::getById($entities_id) === false) {
+            return new JSONResponse(
+                self::getErrorResponseBody(self::ERROR_INVALID_PARAMETER, 'Invalid or missing entity'),
+                400
+            );
+        }
+        if (!$this->canManageProfileAuthorization($profiles_id, $entities_id, (bool) ($input['is_recursive'] ?? true))) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        // The item-level rights (see Profile_User::canCreateItem()) are checked again here
+        return ResourceAccessor::createBySchema(
+            schema: $schema,
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getUserProfileAuthorization'],
+            extra_get_route_params: ['mapped' => ['users_id' => $users_id]]
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/ProfileAuthorization/{id}', methods: ['DELETE'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\DeleteRoute(schema_name: 'ProfileAuthorization', description: 'Remove a profile authorization from a user')]
+    public function deleteUserProfileAuthorization(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        $profile_user = new Profile_User();
+        if (
+            !$profile_user->getFromDB((int) $request->getAttribute('id'))
+            || (int) $profile_user->fields['users_id'] !== $users_id
+        ) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        // Same check as the web UI for showing the authorization list actions
+        if (!(new User())->can($users_id, UPDATE)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        // Users cannot revoke authorizations they would not be allowed to grant
+        if (
+            !$this->canManageProfileAuthorization(
+                (int) $profile_user->fields['profiles_id'],
+                (int) $profile_user->fields['entities_id'],
+                (bool) $profile_user->fields['is_recursive']
+            )
+        ) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        // The item-level rights (see Profile_User::canPurgeItem()) are checked again here
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('ProfileAuthorization', $this->getAPIVersion($request)),
             request_attrs: $request->getAttributes(),
             request_params: $request->getAttributes()
         );
