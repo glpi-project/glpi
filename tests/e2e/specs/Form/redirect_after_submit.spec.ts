@@ -114,6 +114,35 @@ test.describe('Redirection after form submission', () => {
         await expect(new TicketPage(page).getFormAnswer('My answer')).toBeVisible();
     });
 
+    test('displays the success screen when multiple items are created', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const form_id = await createFormWithQuestion(api);
+
+        // The form already has a default ticket destination, add a second one
+        await api.createItem('Glpi\\Form\\Destination\\FormDestination', {
+            'forms_forms_id': form_id,
+            'itemtype': 'Glpi\\Form\\Destination\\FormDestinationTicket',
+            'name': 'Second ticket',
+        });
+
+        await profile.set(Profiles.SelfService);
+        const form = new FormPreviewPage(page);
+        await form.goto(form_id);
+        await form.getTextbox('Question 1').fill('My answer');
+        await form.doSubmitForm();
+
+        // No redirection: the toast lists a link to each created ticket
+        const alert = form.getAlert('Item successfully created');
+        await expect(alert).toBeVisible();
+        await expect(alert.getByRole('link')).toHaveCount(2);
+        await expect(form.success_message).toBeVisible();
+        await expect(page).toHaveURL(new RegExp(`/Form/Render/${form_id}`));
+    });
+
     test('displays the success screen when the preference is disabled', async ({
         page,
         request,

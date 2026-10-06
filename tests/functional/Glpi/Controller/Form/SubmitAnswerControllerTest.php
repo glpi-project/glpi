@@ -38,6 +38,7 @@ use Glpi\Altcha\AltchaManager;
 use Glpi\Controller\Form\SubmitAnswerController;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\DbTestCase;
@@ -89,6 +90,27 @@ final class SubmitAnswerControllerTest extends DbTestCase
 
         // Ticket is created but not viewable by the current user
         $this->assertSame($tickets_count + 1, countElementsInTable(Ticket::getTable()));
+        $this->assertNull($response['redirect_url']);
+    }
+
+    public function testNoRedirectWhenMultipleItemsAreCreated(): void
+    {
+        $this->login();
+        $_SESSION['glpibackcreated'] = 1;
+
+        $builder = new FormBuilder("Test form with multiple destinations");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $builder->setShouldInitDestinations(false);
+        $builder->addDestination(FormDestinationTicket::class, "First ticket");
+        $builder->addDestination(FormDestinationTicket::class, "Second ticket");
+        $form = $this->createForm($builder);
+        $tickets_count = countElementsInTable(Ticket::getTable());
+
+        $response = $this->submitForm($form);
+
+        // Both tickets are created and viewable, but no redirection is made
+        $this->assertSame($tickets_count + 2, countElementsInTable(Ticket::getTable()));
+        $this->assertCount(2, $response['links_to_created_items']);
         $this->assertNull($response['redirect_url']);
     }
 

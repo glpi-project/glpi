@@ -121,11 +121,14 @@ final class SubmitAnswerController extends AbstractController
      * @param CommonDBTM[] $created_items
      *
      * @return string|null URL of the item, null if the "backcreated" preference
-     *                     is disabled or if no item can be viewed.
+     *                     is disabled, multiple items are created, or the user has no right to see the item.
      */
     private function getRedirectUrl(array $created_items): ?string
     {
-        if (!($_SESSION['glpibackcreated'] ?? false)) {
+        if (
+            !($_SESSION['glpibackcreated'] ?? false)
+            || count($created_items) > 1
+        ) {
             return null;
         }
 
