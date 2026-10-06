@@ -107120,17 +107120,17 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/KBArticle"
+                                "$ref": "#/components/schemas/SharedKBArticle"
                             }
                         },
                         "text/csv": {
                             "schema": {
-                                "$ref": "#/components/schemas/KBArticle"
+                                "$ref": "#/components/schemas/SharedKBArticle"
                             }
                         },
                         "application/xml": {
                             "schema": {
-                                "$ref": "#/components/schemas/KBArticle"
+                                "$ref": "#/components/schemas/SharedKBArticle"
                             }
                         }
                     }

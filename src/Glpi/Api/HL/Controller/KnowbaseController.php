@@ -506,6 +506,17 @@ class KnowbaseController extends AbstractController
             ],
         ];
 
+        $shared_kb_article_props = ['id', 'name', 'content', 'parents', 'views', 'illustration', 'date_creation', 'date_mod', 'translations'];
+        $schemas['SharedKBArticle'] = [
+            'x-version-introduced' => '3.0.0',
+            'x-itemtype' => KnowbaseItem::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => array_intersect_key(
+                $schemas['KBArticle']['properties'],
+                array_flip($shared_kb_article_props),
+            ),
+        ];
+
         return $schemas;
     }
 
@@ -891,11 +902,11 @@ class KnowbaseController extends AbstractController
 
     #[Route(path: '/Article/ShareToken/{token}', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '3.0')]
-    #[Doc\GetRoute(schema_name: 'KBArticle')]
+    #[Doc\GetRoute(schema_name: 'SharedKBArticle')]
     public function getKBArticleByShareToken(Request $request): Response
     {
         return ResourceAccessor::getOneByShareToken(
-            $this->getKnownSchema('KBArticle', $this->getAPIVersion($request)),
+            $this->getKnownSchema('SharedKBArticle', $this->getAPIVersion($request)),
             $request->getAttributes(),
             $request->getParameters(),
         );
