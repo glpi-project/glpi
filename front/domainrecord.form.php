@@ -71,9 +71,8 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(DomainRecord::getTypeName(Session::getPluralNumber()), in_modal: true);
-    if (!empty($_GET["id"])) {
-        $record->getFromDB($_GET["id"]);
-    }
+    $id = $_GET["id"] ?: -1;
+    $record->check($id, DomainRecord::isNewID($id) ? CREATE : READ);
     $record->showForm($_GET["id"], ['domains_id' => $_GET['domains_id'] ?? null]);
     Html::popFooter();
 } else {

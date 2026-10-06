@@ -125,9 +125,8 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(ProjectTask::getTypeName(1), in_modal: true);
-    if (!empty($_GET["id"])) {
-        $task->getFromDB($_GET["id"]);
-    }
+    $id = $_GET["id"] ?: -1;
+    $task->check($id, ProjectTask::isNewID($id) ? CREATE : READ);
     $task->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"] ?? null]);
     Html::popFooter();
 } else {
