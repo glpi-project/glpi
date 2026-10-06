@@ -4479,7 +4479,7 @@ final class SQLProvider implements SearchProviderInterface
         // Meta Search / Search All / Count tickets
         if (
             (count($data['search']['metacriteria']))
-            || self::hasMetaCriteria($data['search']['criteria'])
+            || !empty($data['meta_toview'] ?? [])
             || !empty($HAVING)
             || $data['search']['all_search']
         ) {
@@ -7169,25 +7169,5 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         return $suffix;
-    }
-
-    /**
-     * Check whether the given criteria contain a meta criterion, including in nested criteria groups.
-     *
-     * @param array<mixed> $criteria
-     * @return bool
-     */
-    private static function hasMetaCriteria(array $criteria): bool
-    {
-        foreach ($criteria as $criterion) {
-            if (isset($criterion['meta']) && $criterion['meta']) {
-                return true;
-            }
-            if (isset($criterion['criteria']) && is_array($criterion['criteria']) && self::hasMetaCriteria($criterion['criteria'])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

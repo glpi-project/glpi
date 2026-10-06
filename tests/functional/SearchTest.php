@@ -38,6 +38,7 @@ use Appliance;
 use Appliance_Item;
 use Change;
 use CommonDBTM;
+use CommonITILActor;
 use Computer;
 use DBConnection;
 use Document;
@@ -65,6 +66,7 @@ use Psr\Log\LogLevel;
 use Session;
 use Software;
 use Supplier;
+use Supplier_Ticket;
 use TaskCategory;
 use Ticket;
 use User;
@@ -282,29 +284,47 @@ class SearchTest extends DbTestCase
         );
     }
 
-    public function testNestedMetaCriteriaWithoutMatch(): void
+    public function testNestedMetaCriteria(): void
     {
         $this->login();
         $entity_id = $this->getTestRootEntity(only_id: true);
 
-        // Followup on a ticket that has no supplier assigned
         $supplier = $this->createItem(Supplier::class, [
             'name'        => __FUNCTION__,
             'entities_id' => $entity_id,
         ]);
-        $ticket = $this->createItem(Ticket::class, [
+
+        // Followup on a ticket that has the supplier assigned
+        $ticket_with_supplier = $this->createItem(Ticket::class, [
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,
             'entities_id' => $entity_id,
         ]);
-        $followup = $this->createItem(ITILFollowup::class, [
+        $this->createItem(Supplier_Ticket::class, [
+            'tickets_id'   => $ticket_with_supplier->getID(),
+            'suppliers_id' => $supplier->getID(),
+            'type'         => CommonITILActor::ASSIGN,
+        ]);
+        $followup_with_supplier = $this->createItem(ITILFollowup::class, [
             'itemtype' => Ticket::class,
-            'items_id' => $ticket->getID(),
+            'items_id' => $ticket_with_supplier->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        // Followup on a ticket that has no supplier assigned
+        $ticket_without_supplier = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $followup_without_supplier = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_without_supplier->getID(),
             'content'  => __FUNCTION__,
         ]);
 
         // Meta criterion inside a nested group, as built by `FilterableTrait::itemMatchFilter()`
-        $data = SearchEngine::getData(ITILFollowup::class, [
+        $search_followup = static fn(ITILFollowup $followup): array => SearchEngine::getData(ITILFollowup::class, [
             'criteria' => [
                 [
                     'link'     => 'AND',
@@ -330,8 +350,14 @@ class SearchTest extends DbTestCase
 
         // The meta criterion adds an aggregated column, so a GROUP BY is required
         // to avoid a single row full of NULL values when nothing matches
-        $this->assertStringContainsString('GROUP BY', $data['sql']['search']);
+        $data = $search_followup($followup_without_supplier);
+        $this->assertStringContainsString('GROUP BY', $data['sql']['raw']['GROUPBY']);
         $this->assertSame(0, $data['data']['totalcount']);
+
+        $data = $search_followup($followup_with_supplier);
+        $this->assertStringContainsString('GROUP BY', $data['sql']['raw']['GROUPBY']);
+        $this->assertSame(1, $data['data']['totalcount']);
+        $this->assertEquals($followup_with_supplier->getID(), $data['data']['rows'][0]['id']);
     }
 
     public function testMetaToviewNotLeakedAcrossIndependentCalls()
@@ -3429,7 +3455,7 @@ class SearchTest extends DbTestCase
             ]);
             $this->assertGreaterThan(0, $tickets_id);
             $actors = $ticket->getITILActors();
-            $this->assertEquals(\CommonITILActor::OBSERVER, $actors[$params['observer']][0]);
+            $this->assertEquals(CommonITILActor::OBSERVER, $actors[$params['observer']][0]);
         }
 
         return [
