@@ -120,15 +120,11 @@ $(function() {
                return;
             }
 
-            // find the clicked dropdown item, handling clicks on inner elements (icons, spans)
-            var dropdownItem = orig_event.target.closest('.dropdown-item');
-
             // prevent menu links to close menu (waiting the page redirection)
+            var dropdownItem = orig_event.target.closest('.dropdown-item');
             if (dropdownItem) {
-               // only change the active state if it's a normal click (no modifiers, left click)
-               var isModifierClick = orig_event.ctrlKey || orig_event.metaKey || orig_event.shiftKey || orig_event.altKey || orig_event.button === 1;
-
-               if (!isModifierClick) {
+               // open in new tab, no optimistic UI update
+               if (!orig_event.ctrlKey && !orig_event.metaKey && orig_event.button !== 1) {
                   for (var item of document.querySelectorAll('#menu_{{ rand }} .dropdown-item')) {
                      item.classList.remove('active');
                   }
