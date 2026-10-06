@@ -2579,12 +2579,13 @@ class TicketTest extends DbTestCase
         );
 
         $this->assertCount(
-            8,
+            9,
             $clonedTicket->getTimelineItems(['with_logs' => true])
         );
         //User: Add a link with an item: 5 times
         //Group: Add a link with an item: 2 times
         //Status: Change New to Processing (assigned): once
+        //Template: Change (0) to Default: once, as the fixture ticket has no stored template
 
         //check actors
         $this->assertTrue(
@@ -2658,6 +2659,11 @@ class TicketTest extends DbTestCase
                     break;
                 case 'name':
                     $this->assertEquals("{$ticket->getField($k)} (copy)", $clonedTicket->getField($k));
+                    break;
+                case 'tickettemplates_id':
+                    // Fixture ticket has no stored template, the clone stores it on its first update
+                    $this->assertEquals(0, $ticket->getField($k));
+                    $this->assertEquals(getItemByTypeName(TicketTemplate::class, 'Default', true), $clonedTicket->getField($k));
                     break;
                 default:
                     $this->assertEquals($ticket->getField($k), $clonedTicket->getField($k), "$k");
@@ -10352,6 +10358,58 @@ HTML,
                 $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled']);
             }
         }
+    }
+
+    /**
+     * A ticket created without template input (e.g. from mailcollector) must store the template
+     */
+    public function testTemplateIsStoredOnUpdateWhenTicketHasNone(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $template = $this->createItem(TicketTemplate::class, [
+            'name' => 'Dedicated template',
+        ]);
+        $category = $this->createItem(ITILCategory::class, [
+            'name'                        => 'Category with dedicated template',
+            'entities_id'                 => $entity_id,
+            'is_recursive'                => 1,
+            'tickettemplates_id_incident' => $template->getID(),
+            'tickettemplates_id_demand'   => $template->getID(),
+        ]);
+
+        $rule = $this->createItem(Rule::class, [
+            'name'         => 'Set category with dedicated template',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'entities_id'  => $entity_id,
+            'is_recursive' => 1,
+        ]);
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'name',
+            'condition' => Rule::PATTERN_CONTAIN,
+            'pattern'   => 'dedicated template',
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'itilcategories_id',
+            'value'       => $category->getID(),
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'         => 'Ticket with dedicated template',
+            'content'      => 'content',
+            'entities_id'  => $entity_id,
+            '_auto_import' => 1,
+        ], ['_auto_import']);
+        $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
+        $this->assertEquals(0, $ticket->fields['tickettemplates_id']);
     }
 
     /**

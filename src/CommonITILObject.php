@@ -1934,16 +1934,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return $input;
         }
 
+        $tpl_class = static::getTemplateClass();
+
         // If category, entity, or type fields are updated, the template used by the
-        // item may have changed
-        $update_template = !(
-            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
-            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
-            && (empty($input['type']) || $this->fields['type'] == $input['type'])
-        );
+        // item may have changed.
+        $update_template = !isset($this->fields[$tpl_class::getForeignKeyField()]) || $this->fields[$tpl_class::getForeignKeyField()] <= 0
+            || !(
+                (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
+                && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
+                && (empty($input['type']) || $this->fields['type'] == $input['type'])
+            );
 
         if ($update_template) {
-            $tpl_class = static::getTemplateClass();
             $input[$tpl_class::getForeignKeyField()] = $tt->getID();
             $input[static::getTemplateFormFieldName()] = $tt->getID();
         }
