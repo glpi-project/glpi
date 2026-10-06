@@ -782,6 +782,47 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($unrelatedDocument->canViewFile());
     }
 
+    public function testCannotViewFileOfAnExpiredFaqItem(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => '<p>Text</p>',
+            'is_faq'   => 1,
+            'users_id' => getItemByTypeName(User::class, 'glpi', true),
+            'end_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb_item->getID(),
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'     => __FUNCTION__,
+            'filename' => 'doc.xls',
+        ], ['filename']);
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'items_id'     => $kb_item->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse($document->canViewFile());
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = 1;
+        $this->assertFalse($document->canViewFile());
+
+        // Back in the publication window, the file is readable again.
+        $this->login();
+        $this->updateItem(\KnowbaseItem::class, $kb_item->getID(), ['end_date' => null]);
+        $this->logOut();
+        $this->assertTrue($document->canViewFile());
+    }
+
     /**
      * Data provider for self::testCanViewItilFile().
      */
