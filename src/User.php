@@ -1013,6 +1013,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $input["profiles_id"] = 0;
         }
 
+        if (
+            array_key_exists('language', $input)
+            && (!is_string($input['language']) || !LanguageRegistry::has($input['language']))
+        ) {
+            unset($input['language']);
+        }
+
         $glpi_key = new GLPIKey();
         foreach (['api_token', 'password_forget_token', 'personal_token'] as $token_field) {
             if (

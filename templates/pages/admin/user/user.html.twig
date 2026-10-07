@@ -114,6 +114,13 @@
                                 {{ fields.htmlField('', tz_not_config|e, __('Timezone'), field_options) }}
                             {% endif %}
 
+                            {% if item.isNewItem() and not is_preference_form %}
+                                {{ fields.dropdownArrayField('language', '', call('Dropdown::getLanguages'), __('Language'), field_options|merge({
+                                    display_emptychoice: true,
+                                    emptylabel: __('Default value'),
+                                })) }}
+                            {% endif %}
+
                             {% if not is_preference_form %}
                                 {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), {
                                     readonly: not higher_rights,

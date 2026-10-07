@@ -446,6 +446,26 @@ class UserTest extends DbTestCase
         $this->assertSame(null, $user->fields['entities_id']);
     }
 
+    public static function addLanguageProvider(): iterable
+    {
+        yield 'valid language' => ['fr_FR', 'fr_FR'];
+        yield 'empty language' => ['', null];
+        yield 'unknown language' => ['xx_XX', null];
+    }
+
+    #[DataProvider('addLanguageProvider')]
+    public function testAddWithLanguage(string $language, ?string $expected): void
+    {
+        $this->login();
+
+        $user = $this->createItem(User::class, [
+            'name'     => 'user_with_language',
+            'language' => $language,
+        ], ['language']);
+
+        $this->assertSame($expected, $user->fields['language']);
+    }
+
     public function testPrepareInputForAddPdfFont(): void
     {
         global $CFG_GLPI;
