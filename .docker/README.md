@@ -36,6 +36,17 @@ services:
       - "9000:80"
 ```
 
+### HTTPS
+
+GLPI is also served on HTTPS, on the `8443` port, with a self-signed certificate generated when
+building the image (valid for `localhost` and `127.0.0.1`). Your browser will warn you about it
+on first access.
+
+On this virtual host, the `session.cookie_secure` PHP directive is enabled, the session cookie is
+therefore not shared with the HTTP virtual host.
+
+If your containers were built before this feature, rebuild them with `docker compose up -d --build`.
+
 ### PHP version
 
 By default, the container runs on the latest available PHP version for the current GLPI branch.
@@ -68,6 +79,7 @@ services:
 
 By default, the following ports are exposed:
  - `8080` for the GLPI web server,
+ - `8443` for the GLPI web server on HTTPS (self-signed certificate),
  - `8025` for the Mailpit web server,
  - `8090` for the DBGate web server,
  - `9637` for the webpack dev server.
