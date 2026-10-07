@@ -209,6 +209,43 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 && $this->haveVisibilityAccess()));
     }
 
+    public function canCreateItem(): bool
+    {
+        if (!parent::canCreateItem()) {
+            return false;
+        }
+
+        $parents = $this->input['_parents'] ?? [];
+
+        return $this->canLinkToParents(is_array($parents) ? $parents : []);
+    }
+
+    /**
+     * Gaining a child is editing the parent. The root is exempt.
+     *
+     * @param array<mixed> $parent_ids
+     */
+    private function canLinkToParents(array $parent_ids, bool $check_entities = true): bool
+    {
+        foreach ($parent_ids as $parent_id) {
+            $parent_id = (int) $parent_id;
+            if (self::isRootId($parent_id)) {
+                continue;
+            }
+            // An id <= 0 would make can() test CREATE.
+            $parent = new self();
+            if (
+                $parent_id <= 0
+                || !$parent->can($parent_id, UPDATE)
+                || ($check_entities && !KnowbaseItem_KnowbaseItem::areEntitiesCoherent($this, $parent))
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function canAddItem(string $type): bool
     {
         return $this->can($this->getID(), UPDATE);
@@ -1200,6 +1237,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         if (!isset($input['users_id']) || !self::canChooseAuthor()) {
             $input["users_id"] = Session::getLoginUserID();
+        }
+
+        // For add() callers that skip can(), like the clone. Entities are not final yet.
+        if (Session::getLoginUserID() !== false && is_array($input['_parents'] ?? null)) {
+            if (!$this->canLinkToParents($input['_parents'], check_entities: false)) {
+                Session::addMessageAfterRedirect(
+                    __s("You don't have permission to perform this action."),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
         }
 
         return $this->prepareIllustrationInput($input);

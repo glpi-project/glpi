@@ -230,7 +230,7 @@ final class CreateArticleControllerTest extends DbTestCase
             'name'         => 'Parent in a sub-entity',
             'answer'       => '',
             'entities_id'  => $child_entity_id,
-            'is_recursive' => 0,
+            'is_recursive' => 1,
         ]);
 
         $response = (new CreateArticleController())(new Request(content: json_encode([
@@ -242,6 +242,7 @@ final class CreateArticleControllerTest extends DbTestCase
         $item = new KnowbaseItem();
         $this->assertTrue($item->getFromDB($data['id']));
         $this->assertSame($child_entity_id, (int) $item->fields['entities_id']);
+        $this->assertSame(1, (int) $item->fields['is_recursive']);
         $this->assertSame([$parent->getID()], $this->getParentIds((int) $data['id']));
     }
 
