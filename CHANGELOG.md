@@ -4,7 +4,7 @@ The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
 
-## [12.0.0] unreleased
+## [12.0.0] 2026-10-07
 
 ### Added
 - `morethan` and `lessthan` search operators for numeric fields (number, integer, decimal, count, mio).
