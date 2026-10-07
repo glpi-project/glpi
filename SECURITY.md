@@ -50,6 +50,7 @@ If you have a GitHub account, include your username so we can add you as observe
 
 | Version | Supported |
 | ------- | --------- |
+| 12.0.x  | ✔️        |
 | 11.0.x  | ✔️        |
 | < 11.0  | ❌        |
 
