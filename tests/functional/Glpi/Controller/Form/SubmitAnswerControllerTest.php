@@ -34,6 +34,9 @@
 
 namespace tests\units\Glpi\Controller\Form;
 
+use AltchaOrg\Altcha\Algorithm\Pbkdf2;
+use AltchaOrg\Altcha\Altcha;
+use AltchaOrg\Altcha\SolveChallengeOptions;
 use Glpi\Altcha\AltchaManager;
 use Glpi\Controller\Form\SubmitAnswerController;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -148,21 +151,14 @@ final class SubmitAnswerControllerTest extends DbTestCase
     private function solveAltchaChallenge(): string
     {
         $challenge = AltchaManager::getInstance()->generateChallenge();
-
-        $number = null;
-        for ($i = 0; $i <= $challenge->maxNumber; $i++) {
-            if (hash_equals(hash("sha256", $challenge->salt . $i), $challenge->challenge)) {
-                $number = $i;
-                break;
-            }
-        }
+        $solution = (new Altcha())->solveChallenge(new SolveChallengeOptions(
+            challenge: $challenge,
+            algorithm: new Pbkdf2(),
+        ));
 
         return base64_encode(json_encode([
-            'algorithm' => $challenge->algorithm,
-            'challenge' => $challenge->challenge,
-            'number'    => $number,
-            'salt'      => $challenge->salt,
-            'signature' => $challenge->signature,
+            'challenge' => $challenge->toArray(),
+            'solution'  => $solution,
         ]));
     }
 
