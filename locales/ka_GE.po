@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-07 08:19+0200\n"
+"POT-Creation-Date: 2026-10-07 12:44+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2026\n"
 "Language-Team: Georgian (Georgia) (https://app.transifex.com/glpi/teams/1637/ka_GE/)\n"
@@ -134,8 +134,8 @@ msgstr "დამატება"
 #: src/NotificationTargetCommonITILObject.php:2331
 #: src/NotificationTargetCommonITILObject.php:2525
 #: src/NotificationTargetCommonITILObject.php:2585
-#: src/NotificationTargetCommonITILObject.php:2680 src/Document_Item.php:522
-#: src/Document_Item.php:677 src/ReservationItem.php:159
+#: src/NotificationTargetCommonITILObject.php:2680 src/Document_Item.php:559
+#: src/Document_Item.php:714 src/ReservationItem.php:159
 #: src/MassiveAction.php:1214 src/Link.php:239 src/NetworkPort.php:1546
 #: src/SavedSearch_Alert.php:218 src/Blacklist.php:248
 #: src/FieldUnicity.php:319 src/Domain_Item.php:357 src/Domain_Item.php:647
@@ -152,7 +152,7 @@ msgstr "დამატება"
 #: src/LevelAgreement.php:349 src/LevelAgreement.php:487 src/Supplier.php:171
 #: src/Supplier.php:536 src/Item_Line.php:216 src/Item_Line.php:284
 #: src/Item_Line.php:363 src/Item_Line.php:428 src/MailCollector.php:384
-#: src/Document.php:944 src/Plug.php:317 src/NotificationTargetDomain.php:76
+#: src/Document.php:947 src/Plug.php:317 src/NotificationTargetDomain.php:76
 #: src/NotificationTargetDomain.php:95
 #: src/NotificationTargetCertificate.php:120 src/CableStrand.php:148
 #: src/Agent.php:104 src/Agent.php:303 src/Project.php:507 src/Project.php:878
@@ -232,7 +232,7 @@ msgstr "სახელი"
 #: src/ProjectTask.php:1214 src/RSSFeed.php:375 src/ItemVirtualMachine.php:228
 #: src/ItemVirtualMachine.php:324 src/LevelAgreement.php:541
 #: src/Supplier.php:315 src/CartridgeItem.php:358 src/MailCollector.php:427
-#: src/Document.php:1048 src/Enclosure.php:180 src/RuleImportEntity.php:118
+#: src/Document.php:1051 src/Enclosure.php:180 src/RuleImportEntity.php:118
 #: src/Computer.php:523 src/ProjectTaskTemplate.php:103
 #: src/DefaultFilter.php:95 src/Project.php:691 src/Project.php:1092
 #: src/SLM.php:229 src/Notification.php:443 src/Profile.php:1675
@@ -468,7 +468,7 @@ msgstr[1] "კლასტერები"
 #: src/RuleDictionnaryNetworkEquipmentType.php:47
 #: src/RuleDictionnaryNetworkEquipmentType.php:56
 #: src/NotificationTargetCommonITILObject.php:2445 src/Ticket.php:2589
-#: src/Document_Item.php:521 src/DeviceFirmware.php:52
+#: src/Document_Item.php:558 src/DeviceFirmware.php:52
 #: src/DeviceFirmware.php:98 src/DeviceFirmware.php:160
 #: src/DeviceFirmware.php:260 src/Printer.php:391 src/NetworkPort.php:1620
 #: src/Itil_Project.php:215 src/Fieldblacklist.php:66
@@ -826,7 +826,7 @@ msgstr ""
 #: src/SoftwareLicense.php:556 src/SoftwareLicense.php:895
 #: src/SoftwareLicense.php:1083 src/Phone.php:295 src/Appliance.php:295
 #: src/Certificate.php:122 src/Certificate.php:413
-#: src/Item_SoftwareLicense.php:972 src/Document_Item.php:524
+#: src/Item_SoftwareLicense.php:972 src/Document_Item.php:561
 #: src/Printer.php:416 src/Blacklist.php:243 src/Domain_Item.php:363
 #: src/Lock.php:407 src/Lock.php:604 src/Item_Devices.php:401
 #: src/Item_Devices.php:402 src/Contract_Item.php:604 src/User.php:5332
@@ -868,7 +868,7 @@ msgstr ""
 #: src/SoftwareLicense.php:567 src/Unmanaged.php:137 src/Phone.php:303
 #: src/Appliance.php:302 src/Certificate.php:130 src/Certificate.php:424
 #: src/DeviceProcessor.php:328 src/DeviceNetworkCard.php:268
-#: src/Item_SoftwareLicense.php:973 src/Document_Item.php:525
+#: src/Item_SoftwareLicense.php:973 src/Document_Item.php:562
 #: src/ReservationItem.php:199 src/DeviceFirmware.php:233 src/Printer.php:424
 #: src/Domain_Item.php:364 src/Cable.php:188 src/Lock.php:408
 #: src/Item_Devices.php:413 src/Item_Devices.php:414 src/Contract_Item.php:605
@@ -895,7 +895,7 @@ msgstr ""
 #: templates/generic_show_form.html.twig
 #: templates/pages/management/document.html.twig
 #: templates/pages/management/database.html.twig src/Item_DeviceMemory.php:57
-#: src/Item_DeviceMemory.php:58 src/Monitor.php:369 src/Document.php:1070
+#: src/Item_DeviceMemory.php:58 src/Monitor.php:369 src/Document.php:1073
 #: src/Database.php:290 src/Database.php:448
 msgid "Size"
 msgstr "ზომა"
@@ -988,7 +988,7 @@ msgstr[1] "ვერსიები"
 #: src/NotificationTargetCommonITILObject.php:2438
 #: src/NotificationTargetCommonITILObject.php:2518
 #: src/NotificationTargetCommonITILObject.php:2523 src/Ticket.php:4564
-#: src/Ticket.php:4964 src/Document_Item.php:487 src/NetworkPort.php:978
+#: src/Ticket.php:4964 src/Document_Item.php:524 src/NetworkPort.php:978
 #: src/Profile_User.php:173 src/Profile_User.php:221 src/Profile_User.php:404
 #: src/Profile_User.php:597 src/User.php:3759 src/User.php:3817
 #: src/User.php:5267 src/User.php:7190 src/RuleMailCollector.php:191
@@ -997,7 +997,7 @@ msgstr[1] "ვერსიები"
 #: src/Item_DeviceProcessor.php:53 src/ItemVirtualMachine.php:331
 #: src/Supplier.php:591 src/Item_DeviceHardDrive.php:51
 #: src/CartridgeItem.php:589 src/MailCollector.php:1723
-#: src/MailCollector.php:1737 src/Document.php:1039 src/IPNetwork_Vlan.php:188
+#: src/MailCollector.php:1737 src/Document.php:1042 src/IPNetwork_Vlan.php:188
 #: src/Database.php:290 src/Database.php:448 src/GLPIPDF.php:201
 #: src/Session.php:575 src/Session.php:580 src/Session.php:587
 #: src/Session.php:592 src/Item_DeviceGraphicCard.php:52 src/Cartridge.php:880
@@ -1103,7 +1103,7 @@ msgstr "საწყისი თარიღი"
 #: templates/pages/admin/form/form_editor.html.twig
 #: templates/pages/admin/rules/form.html.twig src/AuthMail.php:160
 #: src/APIClient.php:109 src/Group_User.php:541 src/AuthLDAP.php:1088
-#: src/Glpi/Form/Form.php:279 src/Glpi/Security/SessionTracker.php:718
+#: src/Glpi/Form/Form.php:279 src/Glpi/Security/SessionTracker.php:723
 #: src/Glpi/CustomObject/AbstractDefinition.php:780
 #: src/LevelAgreementLevel.php:145 src/LevelAgreementLevel.php:518
 #: src/RuleCollection.php:588 src/Domain.php:243 src/Rule.php:809
@@ -1522,7 +1522,7 @@ msgstr "გაგზავნა"
 #: src/CommonItilObject_Item.php:425 src/CommonItilObject_Item.php:1406
 #: src/CommonDBRelation.php:1343 src/CommonITILObject_CommonITILObject.php:125
 #: src/Ticket_Contract.php:83 src/Appliance_Item_Relation.php:264
-#: src/Item_SoftwareLicense.php:688 src/Document_Item.php:407
+#: src/Item_SoftwareLicense.php:688 src/Document_Item.php:444
 #: src/MassiveAction.php:1243 src/MassiveAction.php:1273 src/Link.php:554
 #: src/NetworkPort.php:731 src/Itil_Project.php:183 src/Itil_Project.php:317
 #: src/Calendar.php:122 src/Domain_Item.php:238 src/Item_Devices.php:792
@@ -1857,7 +1857,7 @@ msgstr ""
 #: src/Infocom.php:705 src/CommonITILCost.php:262 src/Reservation.php:557
 #: src/Reservation.php:845 src/Item_SoftwareLicense.php:963
 #: src/NotificationTargetCommonITILObject.php:1370 src/Ticket.php:4567
-#: src/Ticket.php:4967 src/Document_Item.php:475 src/ReservationItem.php:381
+#: src/Ticket.php:4967 src/Document_Item.php:512 src/ReservationItem.php:381
 #: src/ReservationItem.php:619 src/ReservationItem.php:785 src/State.php:512
 #: src/State.php:530 src/State.php:550 src/State.php:567 src/State.php:584
 #: src/State.php:601 src/State.php:619 src/State.php:640 src/State.php:661
@@ -1904,6 +1904,37 @@ msgstr "%1$s - %2$s"
 #: src/NotificationTargetSavedSearch_Alert.php:107 src/Item_Rack.php:549
 msgid "Item type"
 msgstr "ჩანაწერის ტიპი"
+
+#: templates/components/search/table.html.twig
+#: templates/components/search/display_data.html.twig
+msgid "An error occurred during the search"
+msgstr ""
+
+#: templates/components/search/table.html.twig
+#: templates/components/search/display_data.html.twig
+msgid ""
+"Consider changing the search criteria or adjusting the displayed columns."
+msgstr ""
+
+#: templates/components/search/table.html.twig
+#: templates/components/search/displaypreference_list.html.twig
+#: templates/components/search/display_data.html.twig
+#: templates/components/datatable.html.twig
+#: templates/components/form/item_remotemanagement_list.html.twig
+#: templates/components/illustration/icon_picker_search_results.html.twig
+#: templates/pages/tools/search_knowbaseitem.html.twig
+#: templates/pages/setup/notification/group_notifications.html.twig
+#: templates/pages/helpdesk/search.html.twig
+#: templates/pages/assets/template_list.html.twig src/NetworkAlias.php:392
+#: src/CartridgeItem_PrinterModel.php:194 src/Search.php:949
+#: src/Item_SoftwareLicense.php:585 src/Item_SoftwareLicense.php:713
+#: src/Item_SoftwareLicense.php:1060 src/KnowbaseItem.php:2819
+#: src/CableStrand.php:209 src/ITILCategory.php:531 src/ProjectCost.php:464
+#: src/Item_SoftwareVersion.php:542 src/Item_SoftwareVersion.php:844
+#: src/Item_SoftwareVersion.php:896 src/Item_SoftwareVersion.php:1237
+#: src/Item_SoftwareVersion.php:1382 js/modules/Form/GeolocationField.js:87
+msgid "No results found"
+msgstr "შედეგები ნაპოვნი არაა"
 
 #: templates/components/search/table.html.twig
 #: templates/components/datatable.html.twig src/Lock.php:1190
@@ -1984,28 +2015,11 @@ msgstr ""
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 #: templates/pages/admin/ldap.user_criteria.html.twig
 #: templates/pages/assistance/planning/availability.html.twig
-#: src/Glpi/Search/Input/QueryBuilder.php:95 src/KnowbaseItem.php:2145
+#: src/Glpi/Search/Input/QueryBuilder.php:95 src/KnowbaseItem.php:2151
 #: src/Knowbase.php:66
 msgctxt "button"
 msgid "Search"
 msgstr "ძებნა"
-
-#: templates/components/search/displaypreference_list.html.twig
-#: templates/components/datatable.html.twig
-#: templates/components/illustration/icon_picker_search_results.html.twig
-#: templates/pages/tools/search_knowbaseitem.html.twig
-#: templates/pages/setup/notification/group_notifications.html.twig
-#: templates/pages/helpdesk/search.html.twig
-#: templates/pages/assets/template_list.html.twig src/NetworkAlias.php:392
-#: src/CartridgeItem_PrinterModel.php:194 src/Search.php:949
-#: src/Item_SoftwareLicense.php:585 src/Item_SoftwareLicense.php:713
-#: src/Item_SoftwareLicense.php:1060 src/KnowbaseItem.php:2804
-#: src/CableStrand.php:209 src/ITILCategory.php:531 src/ProjectCost.php:464
-#: src/Item_SoftwareVersion.php:542 src/Item_SoftwareVersion.php:844
-#: src/Item_SoftwareVersion.php:896 src/Item_SoftwareVersion.php:1237
-#: src/Item_SoftwareVersion.php:1382 js/modules/Form/GeolocationField.js:87
-msgid "No results found"
-msgstr "შედეგები ნაპოვნი არაა"
 
 #: templates/components/search/criteria_filter.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -2171,7 +2185,7 @@ msgstr "შენიშვნის დამატება"
 #: src/ITILValidationTemplate.php:88 src/ITILValidationTemplate.php:146
 #: src/RSSFeed.php:429 src/CommonITILObject.php:10368
 #: src/NotificationTargetKnowbaseItem.php:69
-#: src/NotificationTargetKnowbaseItem.php:190 src/KnowbaseItem.php:2977
+#: src/NotificationTargetKnowbaseItem.php:190 src/KnowbaseItem.php:2992
 #: src/Project.php:1985 src/Project.php:2027 src/TaskTemplate.php:70
 #: src/TaskTemplate.php:117 src/BlacklistedMailContent.php:78
 #: src/BlacklistedMailContent.php:96
@@ -2507,7 +2521,7 @@ msgstr "სიმბოლო"
 #: src/NotificationTargetCommonITILObject.php:2703
 #: src/NotificationTargetCommonITILObject.php:2708
 #: src/NotificationTargetCommonITILObject.php:2784 src/Ticket.php:4510
-#: src/Ticket.php:4892 src/Ticket.php:5226 src/Document_Item.php:471
+#: src/Ticket.php:4892 src/Ticket.php:5226 src/Document_Item.php:508
 #: src/ReservationItem.php:810 src/ReservationItem.php:817
 #: src/ReservationItem.php:834 src/DeviceFirmware.php:143
 #: src/DeviceFirmware.php:160 src/DeviceFirmware.php:180
@@ -2525,7 +2539,7 @@ msgstr "სიმბოლო"
 #: src/CommonITILObject.php:11014 src/DevicePowerSupply.php:174
 #: src/DevicePowerSupply.php:186 src/Plugin.php:2949 src/Plugin.php:2986
 #: src/DeviceSoundCard.php:173 src/DeviceSoundCard.php:185
-#: src/Supplier.php:579 src/Supplier.php:601 src/KnowbaseItem.php:2602
+#: src/Supplier.php:579 src/Supplier.php:601 src/KnowbaseItem.php:2617
 #: src/CartridgeItem.php:495 src/CartridgeItem.php:499
 #: src/MailCollector.php:1720 src/MailCollector.php:1734
 #: src/NotificationTarget.php:1122 src/NotificationTarget.php:1153
@@ -2604,7 +2618,7 @@ msgstr "თანამდებობა"
 #: src/NotificationTargetCommonITILObject.php:2303
 #: src/NotificationTargetCommonITILObject.php:2383 src/User.php:3846
 #: src/CommonITILObject.php:4492 src/CommonITILObject.php:6956
-#: src/CommonITILObject.php:6999 src/KnowbaseItem.php:3222
+#: src/CommonITILObject.php:6999 src/KnowbaseItem.php:3237
 #: src/RuleSoftwareCategory.php:84 src/PlanningExternalEventTemplate.php:70
 #: src/DatabaseInstance.php:248 src/Stat.php:1816 src/Stat.php:1838
 #: src/Item_SoftwareVersion.php:1080 src/RuleDictionnarySoftware.php:111
@@ -2679,6 +2693,12 @@ msgid "Update"
 msgstr "განახლება"
 
 #: templates/components/dashboard/reset.html.twig
+msgid ""
+"This will reset all filters, cards, and sharing options in this dashboard "
+"with the one selected!"
+msgstr ""
+
+#: templates/components/dashboard/reset.html.twig
 msgid "Default dashboard to reset to"
 msgstr ""
 
@@ -2686,6 +2706,10 @@ msgstr ""
 #: js/modules/Dashboard/Dashboard.js:849
 msgid "Reset to default"
 msgstr "ნაგულისხმევ მნიშვნელობაზე დაბრუნება"
+
+#: templates/components/dashboard/reset.html.twig
+msgid "Resetting this dashboard is not currently supported."
+msgstr ""
 
 #: templates/components/form/single-action.html.twig
 #: templates/pages/admin/inventory/conf/config_form.html.twig
@@ -2706,7 +2730,7 @@ msgid "Created from the template %s"
 msgstr ""
 
 #: templates/components/form/header_content.html.twig src/CommonDBTM.php:6606
-#: src/KnowbaseItem.php:1201 src/KnowbaseItem.php:1235
+#: src/KnowbaseItem.php:1202 src/KnowbaseItem.php:1236
 msgid "New item"
 msgstr ""
 
@@ -2766,7 +2790,7 @@ msgstr ""
 #: src/Infocom.php:1964 src/Domain.php:227 src/Rule.php:842
 #: src/Appliance.php:326 src/FieldUnicity.php:373 src/Profile_User.php:979
 #: src/ProjectTask.php:1249 src/LevelAgreement.php:558 src/Supplier.php:332
-#: src/Document.php:1013 src/RuleImportEntity.php:231 src/Plug.php:326
+#: src/Document.php:1016 src/RuleImportEntity.php:231 src/Plug.php:326
 #: src/SavedSearch.php:133 src/Agent.php:116 src/Project.php:736
 #: src/SLM.php:246 src/Notification.php:460 src/Database.php:188
 #: src/Contract.php:709 src/Contact.php:422 src/Budget.php:264
@@ -3131,7 +3155,7 @@ msgstr ""
 #: src/NotificationTargetProject.php:710 src/NotificationTargetProject.php:715
 #: src/NotificationTargetProject.php:720 src/NotImportedEmail.php:203
 #: src/NotificationTargetCommonITILObject.php:2535 src/Ticket.php:5578
-#: src/Document_Item.php:684 src/CommonITILObject.php:6941
+#: src/Document_Item.php:721 src/CommonITILObject.php:6941
 #: src/CommonITILObject.php:6988 src/Item_DeviceBattery.php:56
 #: src/Project.php:1134 src/NetworkPortConnectionLog.php:153
 #: src/NotificationTargetTicket.php:727 src/NotificationTargetTicket.php:737
@@ -3339,7 +3363,7 @@ msgstr "გამეორება"
 #: ajax/dropdownMassiveActionAddValidator.php:138 src/NetworkAlias.php:110
 #: src/NetworkAlias.php:403 src/CommonDBTM.php:3698
 #: src/Glpi/ContentTemplates/Parameters/AssetParameters.php:77
-#: src/Lock.php:608 src/KnowbaseItem.php:1838 src/ProjectCost.php:290
+#: src/Lock.php:608 src/KnowbaseItem.php:1844 src/ProjectCost.php:290
 #: src/Item_SoftwareVersion.php:1485 src/Item_SoftwareVersion.php:1573
 msgid "Comments"
 msgstr "კომენტარები"
@@ -3961,7 +3985,7 @@ msgstr "თანამდებობა"
 #: src/NotificationTargetCommonITILObject.php:2685 src/Ticket.php:2259
 #: src/Ticket.php:4495 src/Change.php:1323 src/ProjectTask.php:1088
 #: src/CommonITILObject.php:4370 src/LevelAgreement.php:422
-#: src/KnowbaseItem.php:3214 src/ProjectTaskTemplate.php:107
+#: src/KnowbaseItem.php:3229 src/ProjectTaskTemplate.php:107
 #: src/ProjectTaskTemplate.php:213
 #: src/NotificationTargetPlanningRecall.php:254 src/Project.php:547
 #: src/Project.php:892 src/PlanningExternalEventTemplate.php:87
@@ -4142,8 +4166,8 @@ msgstr "ჩაწერის გაჩერება"
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 #: src/NotificationTargetProjectTask.php:759
 #: src/NotificationTargetProject.php:732
-#: src/NotificationTargetCommonITILObject.php:2565 src/Document_Item.php:681
-#: src/Document.php:996
+#: src/NotificationTargetCommonITILObject.php:2565 src/Document_Item.php:718
+#: src/Document.php:999
 msgid "Heading"
 msgstr "მიმართულება"
 
@@ -4151,8 +4175,8 @@ msgstr "მიმართულება"
 #: src/NotificationTargetProjectTask.php:765
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:110
 #: src/NotificationTargetProject.php:734
-#: src/NotificationTargetCommonITILObject.php:2575 src/Document_Item.php:679
-#: src/Document.php:962
+#: src/NotificationTargetCommonITILObject.php:2575 src/Document_Item.php:716
+#: src/Document.php:965
 msgid "File"
 msgstr "ფაილი"
 
@@ -4733,8 +4757,8 @@ msgstr ""
 #: src/Contract_Item.php:142 src/User.php:3566 src/User.php:6071
 #: src/CommonITILObject.php:4380 src/CommonITILObject.php:6938
 #: src/CommonITILObject.php:6985 src/OAuthClient.php:103
-#: src/LevelAgreement.php:496 src/Supplier.php:180 src/KnowbaseItem.php:2968
-#: src/CartridgeItem.php:220 src/Document.php:953 src/Enclosure.php:136
+#: src/LevelAgreement.php:496 src/Supplier.php:180 src/KnowbaseItem.php:2983
+#: src/CartridgeItem.php:220 src/Document.php:956 src/Enclosure.php:136
 #: src/Computer.php:439 src/Plug.php:335 src/SavedSearch.php:305
 #: src/QueuedWebhook.php:329 src/Notification_NotificationTemplate.php:191
 #: src/Notification_NotificationTemplate.php:267 src/Project.php:517
@@ -5097,6 +5121,16 @@ msgid "Test of the connection at the database"
 msgstr ""
 
 #: templates/install/step3.html.twig
+msgid "Can't connect to the database"
+msgstr ""
+
+#: templates/install/step3.html.twig install/install.php:318
+#: install/install.php:328
+#, php-format
+msgid "The server answered: %s"
+msgstr ""
+
+#: templates/install/step3.html.twig
 #: templates/install/update.invalid_database.html.twig
 #: templates/pages/form_renderer.html.twig
 #: templates/pages/admin/inventory/upload_result.html.twig
@@ -5104,6 +5138,18 @@ msgstr ""
 #: src/Html.php:463
 msgid "Back"
 msgstr "უკან"
+
+#: templates/install/step3.html.twig install/update.php:148
+msgid "Database connection successful"
+msgstr ""
+
+#: templates/install/step3.html.twig
+msgid "Database engine is not supported."
+msgstr ""
+
+#: templates/install/step3.html.twig
+msgid "Database configuration is not supported."
+msgstr ""
 
 #: templates/install/step3.html.twig
 msgid "Please select a database:"
@@ -5177,6 +5223,16 @@ msgstr "შეთავაზებულია"
 #: src/ITILCategory.php:523 js/glpi_dialog.js:86 js/glpi_dialog.js:298
 msgid "OK"
 msgstr "დიახ"
+
+#: templates/install/step0.html.twig
+msgid "Installation or update of GLPI"
+msgstr ""
+
+#: templates/install/step0.html.twig
+msgid ""
+"Choose 'Install' for a completely new installation of GLPI, or select "
+"'Upgrade' to update your version of GLPI from an earlier version."
+msgstr ""
 
 #: templates/install/step0.html.twig src/Plugin.php:2935 src/Plugin.php:3151
 #: src/Computer.php:411 src/Cartridge.php:1094
@@ -5874,8 +5930,8 @@ msgid_plural "%s comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1879
-#: src/KnowbaseItem.php:1885
+#: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1885
+#: src/KnowbaseItem.php:1891
 msgid "Schedule visibility"
 msgstr ""
 
@@ -5988,7 +6044,7 @@ msgid "Add comment"
 msgstr "კომენტარის დამატება"
 
 #: templates/pages/tools/kb/sidepanel/revisions.html.twig
-#: src/KnowbaseItem.php:1822
+#: src/KnowbaseItem.php:1828
 msgid "History"
 msgstr "ისტორია"
 
@@ -6097,7 +6153,7 @@ msgid "New parent"
 msgstr ""
 
 #: templates/pages/tools/kb/modal/move.html.twig src/Rule.php:650
-#: src/KnowbaseItem.php:1957 src/Group.php:816
+#: src/KnowbaseItem.php:1963 src/Group.php:816
 msgid "Move"
 msgstr "გადაადგილება"
 
@@ -6119,7 +6175,7 @@ msgid "No end date"
 msgstr "დასასრულის თარიღის გარეშე"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
-#: src/KnowbaseItem.php:3198
+#: src/KnowbaseItem.php:3213
 msgid "Show in service catalog"
 msgstr ""
 
@@ -6129,7 +6185,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
-#: src/KnowbaseItem.php:3206
+#: src/KnowbaseItem.php:3221
 msgid "Pin to top of the service catalog"
 msgstr ""
 
@@ -6193,8 +6249,8 @@ msgstr ""
 #: src/Certificate.php:358 src/QueuedNotification.php:270 src/Printer.php:502
 #: src/Link.php:274 src/Domain_Item.php:661 src/Cable.php:366
 #: src/User.php:3749 src/ProjectTask.php:1113 src/RSSFeed.php:412
-#: src/Lockedfield.php:165 src/Supplier.php:278 src/KnowbaseItem.php:3028
-#: src/Document.php:1030 src/Enclosure.php:197 src/Computer.php:585
+#: src/Lockedfield.php:165 src/Supplier.php:278 src/KnowbaseItem.php:3043
+#: src/Document.php:1033 src/Enclosure.php:197 src/Computer.php:585
 #: src/Notepad.php:257 src/QueuedWebhook.php:338 src/Project.php:583
 #: src/Project.php:719 src/Project.php:950 src/Datacenter.php:125
 #: src/Profile.php:1639 src/Database.php:159 src/DatabaseInstance.php:282
@@ -6227,8 +6283,8 @@ msgstr "შექმნის თარიღი"
 #: src/Printer.php:493 src/Link.php:265 src/Cable.php:326 src/User.php:3740
 #: src/ProjectTask.php:1122 src/RSSFeed.php:403 src/CommonITILObject.php:4483
 #: src/CommonITILObject.php:6942 src/CommonITILObject.php:6989
-#: src/Supplier.php:269 src/KnowbaseItem.php:3019 src/MailCollector.php:435
-#: src/Document.php:1021 src/Enclosure.php:188 src/Computer.php:576
+#: src/Supplier.php:269 src/KnowbaseItem.php:3034 src/MailCollector.php:435
+#: src/Document.php:1024 src/Enclosure.php:188 src/Computer.php:576
 #: src/Notepad.php:288 src/NotificationTargetPlanningRecall.php:251
 #: src/Project.php:699 src/Project.php:964 src/Project.php:1135
 #: src/Datacenter.php:116 src/Profile.php:1630 src/Database.php:150
@@ -6320,7 +6376,7 @@ msgstr "შესვლა"
 #: front/helpdesk.faq.php:81 front/helpdesk.faq.php:83
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:83
 #: src/NotificationTargetKnowbaseItem.php:71
-#: src/NotificationTargetKnowbaseItem.php:194 src/KnowbaseItem.php:138
+#: src/NotificationTargetKnowbaseItem.php:194 src/KnowbaseItem.php:139
 #: src/Html.php:1123
 msgid "FAQ"
 msgstr "ხ.დ.კ"
@@ -6333,6 +6389,20 @@ msgstr ""
 
 #: templates/pages/reauth/prompt.html.twig
 msgid "Confirmation required"
+msgstr ""
+
+#: templates/pages/reauth/prompt.html.twig
+msgid "Authentication failure"
+msgstr ""
+
+#: templates/pages/reauth/prompt.html.twig
+msgid "Sensitive area"
+msgstr ""
+
+#: templates/pages/reauth/prompt.html.twig
+msgid ""
+"The action you requested may change GLPI behavior or display confidential "
+"data."
 msgstr ""
 
 #: templates/pages/reauth/prompt.html.twig
@@ -6358,8 +6428,8 @@ msgstr ""
 #: templates/pages/self-service/service_catalog.html.twig
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #: src/Glpi/Form/ServiceCatalog/ServiceCatalog.php:50
-#: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:82 src/KnowbaseItem.php:1854
-#: src/KnowbaseItem.php:1860 src/KnowbaseItem.php:3191 src/Html.php:1084
+#: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:82 src/KnowbaseItem.php:1860
+#: src/KnowbaseItem.php:1866 src/KnowbaseItem.php:3206 src/Html.php:1084
 msgid "Service catalog"
 msgstr "სერვისების კატალოგი"
 
@@ -6626,14 +6696,14 @@ msgid "Revoke all active sessions"
 msgstr ""
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
-#: src/Glpi/Security/SessionTracker.php:685
+#: src/Glpi/Security/SessionTracker.php:690
 #: src/Notification_NotificationTemplate.php:389
 msgid "Browser"
 msgstr "ბრაუზერი"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: templates/pages/setup/general/api_setup.html.twig src/Auth.php:1335
-#: src/Glpi/Security/SessionTracker.php:683 src/Config.php:1030
+#: src/Glpi/Security/SessionTracker.php:688 src/Config.php:1030
 msgid "API"
 msgstr "API"
 
@@ -6685,8 +6755,8 @@ msgid ""
 msgstr ""
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
-#: src/Glpi/Security/SessionTracker.php:727
-#: src/Glpi/Security/SessionTracker.php:730
+#: src/Glpi/Security/SessionTracker.php:732
+#: src/Glpi/Security/SessionTracker.php:735
 msgid "Revoke"
 msgstr "გაუქმება"
 
@@ -6803,13 +6873,19 @@ msgid ""
 msgstr ""
 
 #: templates/pages/setup/webhook/webhook.html.twig
+msgid ""
+"This webhook is pinned to a deprecated API version. Move it to a supported "
+"version before it is removed."
+msgstr ""
+
+#: templates/pages/setup/webhook/webhook.html.twig
 msgid "Number of retries"
 msgstr ""
 
 #: templates/pages/setup/webhook/webhook.html.twig src/DomainRecord.php:542
 #: src/Glpi/Console/Database/UpdateCommand.php:190 src/RSSFeed.php:435
-#: src/KnowbaseItem.php:3108 src/KnowbaseItem.php:3126
-#: src/KnowbaseItem.php:3144 src/KnowbaseItem.php:3162 src/Reminder.php:463
+#: src/KnowbaseItem.php:3123 src/KnowbaseItem.php:3141
+#: src/KnowbaseItem.php:3159 src/KnowbaseItem.php:3177 src/Reminder.php:463
 msgid "Target"
 msgid_plural "Targets"
 msgstr[0] "სამიზნე"
@@ -6916,6 +6992,10 @@ msgid ""
 "Challenge–response authentication can be used to validate the identity of "
 "the target server before any data is sent from GLPI. This uses the shared "
 "secret that was generated in the above section."
+msgstr ""
+
+#: templates/pages/setup/webhook/webhook_security.html.twig
+msgid "CRA is mandatory due to GLPI configuration"
 msgstr ""
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -7341,6 +7421,12 @@ msgstr ""
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Legacy API"
+msgstr ""
+
+#: templates/pages/setup/general/api_setup.html.twig
+msgid ""
+"The Legacy API is enabled. It is recommended to only use the new API when "
+"possible."
 msgstr ""
 
 #: templates/pages/setup/general/api_setup.html.twig
@@ -8858,7 +8944,7 @@ msgstr ""
 #: src/Glpi/ContentTemplates/Parameters/KnowbaseItemParameters.php:68
 #: src/NotificationTemplateTranslation.php:273 src/ReminderTranslation.php:178
 #: src/QueuedNotification.php:252 src/NotificationTargetKnowbaseItem.php:191
-#: src/KnowbaseItem.php:2662 src/KnowbaseItem.php:2959
+#: src/KnowbaseItem.php:2677 src/KnowbaseItem.php:2974
 msgid "Subject"
 msgstr "თემა"
 
@@ -9223,7 +9309,7 @@ msgid ""
 msgstr ""
 
 #: templates/pages/setup/oauthclient.html.twig
-#: src/Glpi/Security/SessionTracker.php:666
+#: src/Glpi/Security/SessionTracker.php:671
 msgid "Client credentials"
 msgstr ""
 
@@ -9292,24 +9378,24 @@ msgstr ""
 msgid "Current file"
 msgstr "მიმდინარე ფაილი"
 
-#: templates/pages/management/document.html.twig src/Document.php:1039
+#: templates/pages/management/document.html.twig src/Document.php:1042
 msgid "Checksum"
 msgstr "საკონტროლო ჯამი"
 
-#: templates/pages/management/document.html.twig src/Document.php:1039
+#: templates/pages/management/document.html.twig src/Document.php:1042
 msgid "SHA1"
 msgstr "SHA1"
 
 #: templates/pages/management/document.html.twig
 #: src/NotificationTargetProjectTask.php:770
 #: src/NotificationTargetProject.php:735
-#: src/NotificationTargetCommonITILObject.php:2580 src/Document_Item.php:680
-#: src/Document.php:971
+#: src/NotificationTargetCommonITILObject.php:2580 src/Document_Item.php:717
+#: src/Document.php:974
 msgid "Web link"
 msgstr ""
 
 #: templates/pages/management/document.html.twig src/DocumentType.php:64
-#: src/DocumentType.php:102 src/Document_Item.php:682 src/Document.php:979
+#: src/DocumentType.php:102 src/Document_Item.php:719 src/Document.php:982
 msgid "MIME type"
 msgstr "MIME ტიპი"
 
@@ -9797,6 +9883,11 @@ msgstr "აუცილებელია"
 msgid "Optional"
 msgstr "არასავალდებულო"
 
+#: templates/pages/2fa/2fa_status.html.twig
+#: templates/pages/admin/user/user.html.twig
+msgid "2FA enabled"
+msgstr ""
+
 #: templates/pages/2fa/2fa_status.html.twig src/User.php:3355
 msgid "Disable 2FA"
 msgstr "2FA-ის გამორთვა"
@@ -9869,6 +9960,12 @@ msgstr "გათიშვა"
 #: templates/pages/admin/transfer.html.twig
 msgid "Keep"
 msgstr "შენარჩუნება"
+
+#: templates/pages/admin/transfer.html.twig
+msgid ""
+"Child locations will not be transferred with the parent to avoid visibility "
+"and hierarchy issues."
+msgstr ""
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Empty the location"
@@ -10028,7 +10125,7 @@ msgstr ""
 #: templates/pages/admin/glpi_page_tile_config_fields.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 #: src/Glpi/Form/Category.php:88 src/Glpi/Form/Category.php:112
-#: src/KnowbaseItem.php:3230
+#: src/KnowbaseItem.php:3245
 msgid "Illustration"
 msgstr "ილუსტრაცია"
 
@@ -10222,8 +10319,8 @@ msgid "Device ID"
 msgstr "მოწყობილობის ID"
 
 #: templates/pages/admin/inventory/agent.html.twig
-#: src/NotificationTemplateTranslation.php:382 src/Document_Item.php:683
-#: src/Document.php:987 src/Agent.php:155 src/Agent.php:310
+#: src/NotificationTemplateTranslation.php:382 src/Document_Item.php:720
+#: src/Document.php:990 src/Agent.php:155 src/Agent.php:310
 msgid "Tag"
 msgstr "ჭდე"
 
@@ -10320,6 +10417,10 @@ msgstr "ატვირთვა"
 #: src/Profile.php:1054 src/Profile.php:2758
 msgid "Inventory"
 msgstr "ინვენტარი"
+
+#: templates/pages/admin/inventory/conf/config_form.html.twig
+msgid "The inventory is disabled, remember to activate it if necessary"
+msgstr ""
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory configuration"
@@ -10586,10 +10687,6 @@ msgstr "მომხმარებლის DN"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "User missing in LDAP directory"
-msgstr ""
-
-#: templates/pages/admin/user/user.html.twig
-msgid "2FA enabled"
 msgstr ""
 
 #: templates/pages/admin/user/user.html.twig src/User.php:3383
@@ -11548,6 +11645,11 @@ msgstr ""
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 msgctxt "button"
 msgid "Yes, disable it!"
+msgstr ""
+
+#: templates/pages/admin/customobjects/main.html.twig
+msgid ""
+"There is currently no profile with access to items with current definition."
 msgstr ""
 
 #: templates/pages/admin/customobjects/main.html.twig
@@ -12855,10 +12957,6 @@ msgstr ""
 msgid "Caution! You will update the GLPI database named: %s"
 msgstr ""
 
-#: install/update.php:148
-msgid "Database connection successful"
-msgstr ""
-
 #: install/update.php:163
 msgid "Updating the database..."
 msgstr ""
@@ -12943,11 +13041,6 @@ msgstr ""
 
 #: install/install.php:317
 msgid "Error in creating database!"
-msgstr ""
-
-#: install/install.php:318 install/install.php:328
-#, php-format
-msgid "The server answered: %s"
 msgstr ""
 
 #: install/install.php:327
@@ -15426,7 +15519,7 @@ msgstr ""
 #: front/change_ticket.form.php:45 front/change_ticket.form.php:53
 #: front/contract_item.form.php:50 front/commonitilobject_item.form.php:69
 #: src/CommonDBRelation.php:2187 src/AuthLdapReplicate.php:85
-#: src/Document_Item.php:245 src/CommonITILObject.php:1983
+#: src/Document_Item.php:282 src/CommonITILObject.php:1983
 #: src/CommonITILObject.php:3098 src/MailCollector.php:224
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
@@ -15686,7 +15779,7 @@ msgstr ""
 msgid "Unknown file"
 msgstr ""
 
-#: front/document.send.php:63 src/Document.php:1158 src/Document.php:1277
+#: front/document.send.php:63 src/Document.php:1161 src/Document.php:1280
 #, php-format
 msgid "File %s not found."
 msgstr ""
@@ -15724,7 +15817,7 @@ msgstr ""
 #. TRANS: %s is the user login
 #: front/reminder.form.php:133 front/rssfeed.form.php:133
 #: src/Glpi/Controller/Knowbase/AddPermissionController.php:109
-#: src/KnowbaseItem.php:541
+#: src/KnowbaseItem.php:542
 #, php-format
 msgid "%s adds a target"
 msgstr ""
@@ -16187,7 +16280,7 @@ msgstr ""
 #: src/Ticket.php:2598 src/Ticket.php:4492 src/Change.php:508
 #: src/Item_Devices.php:194 src/CommonITILObject.php:6954
 #: src/CommonITILObject.php:6998 src/Lockedfield.php:191
-#: src/KnowbaseItem.php:2669 src/KnowbaseItem.php:3075 src/NetworkName.php:117
+#: src/KnowbaseItem.php:2684 src/KnowbaseItem.php:3090 src/NetworkName.php:117
 #: src/Stat.php:1661 src/NotificationTargetTicket.php:627
 #: src/NotificationTargetTicket.php:632 src/NotificationTargetTicket.php:637
 #: src/NotificationTargetTicket.php:642 src/NotificationTargetTicket.php:647
@@ -16476,7 +16569,7 @@ msgstr ""
 msgid "Unlock a link with an item"
 msgstr ""
 
-#: src/Log.php:1320 src/Document_Item.php:406 src/Item_Line.php:256
+#: src/Log.php:1320 src/Document_Item.php:443 src/Item_Line.php:256
 #: src/Appliance_Item.php:157
 msgid "Add an item"
 msgstr "ელემენტის დამატება"
@@ -16757,7 +16850,7 @@ msgstr ""
 #: src/User.php:3549 src/ProjectTask.php:1052 src/RSSFeed.php:308
 #: src/CommonITILObject.php:4352 src/ItemVirtualMachine.php:450
 #: src/Plugin.php:2722 src/LevelAgreement.php:480 src/Supplier.php:164
-#: src/KnowbaseItem.php:2952 src/MailCollector.php:377 src/Document.php:937
+#: src/KnowbaseItem.php:2967 src/MailCollector.php:377 src/Document.php:940
 #: src/Plug.php:310 src/QueuedWebhook.php:322 src/Project.php:500
 #: src/SLM.php:196 src/Notification.php:358 src/Datacenter.php:89
 #: src/Profile.php:1605 src/NotificationTemplate.php:148
@@ -16795,7 +16888,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:2296
 #: src/NotificationTargetCommonITILObject.php:2378
 #: src/NotificationTargetCommonITILObject.php:2442
-#: src/CommonITILObject.php:4910 src/KnowbaseItem.php:2665 src/Notepad.php:270
+#: src/CommonITILObject.php:4910 src/KnowbaseItem.php:2680 src/Notepad.php:270
 #: src/NotificationTargetPlanningRecall.php:250 src/Stat.php:1834
 #: src/Reminder.php:335
 msgid "Writer"
@@ -17252,7 +17345,7 @@ msgstr "ცვლილებების რაოდენობა"
 #: src/NotificationTargetReservation.php:183
 #: src/NotificationTargetChange.php:280 src/NotificationTargetProject.php:689
 #: src/Domain.php:177 src/Appliance.php:174 src/Certificate.php:196
-#: src/Document_Item.php:337 src/Domain_Item.php:81 src/Cable.php:208
+#: src/Document_Item.php:374 src/Domain_Item.php:81 src/Cable.php:208
 #: src/Cable.php:230 src/Plug.php:372 src/Plug.php:396
 #: src/NotificationTargetInfocom.php:93 src/CableStrand.php:150
 #: src/CableStrand.php:152 src/Database.php:237
@@ -17794,7 +17887,7 @@ msgstr "ჩანაწერების რაოდენობა"
 
 #: src/NotificationTargetProjectTask.php:710
 #: src/NotificationTargetProject.php:688
-#: src/NotificationTargetCommonITILObject.php:2322 src/Document.php:918
+#: src/NotificationTargetCommonITILObject.php:2322 src/Document.php:921
 msgctxt "quantity"
 msgid "Number of documents"
 msgstr ""
@@ -21707,131 +21800,131 @@ msgstr ""
 msgid "Redis (TLS)"
 msgstr ""
 
-#: src/Glpi/Api/API.php:190
+#: src/Glpi/Api/API.php:191
 msgid "API disabled"
 msgstr ""
 
-#: src/Glpi/Api/API.php:221
+#: src/Glpi/Api/API.php:222
 msgid ""
 "There isn't an active API client matching your IP address in the "
 "configuration"
 msgstr ""
 
-#: src/Glpi/Api/API.php:292
+#: src/Glpi/Api/API.php:293
 msgid "usage of initSession resource with credentials is disabled"
 msgstr ""
 
-#: src/Glpi/Api/API.php:300
+#: src/Glpi/Api/API.php:301
 msgid "usage of initSession resource with user token is disabled"
 msgstr ""
 
-#: src/Glpi/Api/API.php:313
+#: src/Glpi/Api/API.php:314
 msgid "parameter(s) login, password or user_token are missing"
 msgstr ""
 
-#: src/Glpi/Api/API.php:319
+#: src/Glpi/Api/API.php:320
 msgid "parameter(s) login, password are missing"
 msgstr ""
 
-#: src/Glpi/Api/API.php:325
+#: src/Glpi/Api/API.php:326
 msgid "parameter user_token is missing"
 msgstr ""
 
-#: src/Glpi/Api/API.php:344
+#: src/Glpi/Api/API.php:345
 msgid "parameter user_token seems invalid"
 msgstr ""
 
-#: src/Glpi/Api/API.php:1104 src/Glpi/Api/API.php:1922
-#: src/Glpi/Api/API.php:2059 src/Glpi/Api/API.php:2201
-#: src/Glpi/Api/API.php:2813 src/Glpi/Controller/ErrorController.php:73
+#: src/Glpi/Api/API.php:1106 src/Glpi/Api/API.php:1924
+#: src/Glpi/Api/API.php:2061 src/Glpi/Api/API.php:2203
+#: src/Glpi/Api/API.php:2815 src/Glpi/Controller/ErrorController.php:73
 #: src/Glpi/Controller/GenericAjaxCrudController.php:331
 msgid "You don't have permission to perform this action."
 msgstr ""
 
-#: src/Glpi/Api/API.php:1216
+#: src/Glpi/Api/API.php:1218
 msgid "parent itemtype not found or not an instance of CommonDBTM"
 msgstr ""
 
-#: src/Glpi/Api/API.php:1295
+#: src/Glpi/Api/API.php:1297
 #, php-format
 msgid "Field %s is not valid for %s item."
 msgstr ""
 
-#: src/Glpi/Api/API.php:1668
+#: src/Glpi/Api/API.php:1670
 msgid "Malformed search criteria"
 msgstr ""
 
-#: src/Glpi/Api/API.php:1675
+#: src/Glpi/Api/API.php:1677
 msgid "Bad field ID in search criteria"
 msgstr ""
 
-#: src/Glpi/Api/API.php:1683
+#: src/Glpi/Api/API.php:1685
 msgid "Forbidden field ID in search criteria"
 msgstr ""
 
-#: src/Glpi/Api/API.php:1711
+#: src/Glpi/Api/API.php:1713
 msgid "ID is forbidden along with 'forcedisplay' parameter."
 msgstr ""
 
-#: src/Glpi/Api/API.php:2050 src/Glpi/Api/API.php:2172
-#: src/Glpi/Api/API.php:2753 src/Glpi/Controller/ErrorController.php:80
+#: src/Glpi/Api/API.php:2052 src/Glpi/Api/API.php:2174
+#: src/Glpi/Api/API.php:2755 src/Glpi/Controller/ErrorController.php:80
 #: src/Glpi/Controller/GenericAjaxCrudController.php:326
 msgid "Item not found"
 msgstr "ჩანაწერი ვერ ვიპოვე"
 
-#: src/Glpi/Api/API.php:2261
+#: src/Glpi/Api/API.php:2263
 msgid "Email notifications are disabled"
 msgstr ""
 
-#: src/Glpi/Api/API.php:2265
+#: src/Glpi/Api/API.php:2267
 msgid "email parameter missing"
 msgstr ""
 
-#: src/Glpi/Api/API.php:2269
+#: src/Glpi/Api/API.php:2271
 msgid "A session is active"
 msgstr ""
 
-#: src/Glpi/Api/API.php:2280 src/User.php:5852
+#: src/Glpi/Api/API.php:2282 src/User.php:5852
 msgid ""
 "If the given email address corresponds to one and only one GLPI user, you "
 "will receive an email containing the information required to reset your "
 "password. Please contact your administrator if you do not receive an email."
 msgstr ""
 
-#: src/Glpi/Api/API.php:2296 src/Glpi/Console/User/ResetPasswordCommand.php:80
+#: src/Glpi/Api/API.php:2298 src/Glpi/Console/User/ResetPasswordCommand.php:80
 #: src/User.php:5820
 msgid "Reset password successful."
 msgstr ""
 
-#: src/Glpi/Api/API.php:2349
+#: src/Glpi/Api/API.php:2351
 msgid "parameter app_token seems wrong"
 msgstr ""
 
-#: src/Glpi/Api/API.php:2355
+#: src/Glpi/Api/API.php:2357
 msgid "missing parameter app_token"
 msgstr ""
 
-#: src/Glpi/Api/API.php:2528
+#: src/Glpi/Api/API.php:2530
 msgid "API Documentation"
 msgstr "API-ის დოკუმენტაცია"
 
-#: src/Glpi/Api/API.php:2773
+#: src/Glpi/Api/API.php:2775
 msgid "input parameter must be an array of objects"
 msgstr ""
 
-#: src/Glpi/Api/API.php:2793
+#: src/Glpi/Api/API.php:2795
 msgid "Method Not Allowed"
 msgstr "მეთოდი დაშვებული არაა"
 
-#: src/Glpi/Api/API.php:2832
+#: src/Glpi/Api/API.php:2834
 msgid "session_token seems invalid"
 msgstr ""
 
-#: src/Glpi/Api/API.php:2852
+#: src/Glpi/Api/API.php:2854
 msgid "parameter session_token is missing or empty"
 msgstr ""
 
-#: src/Glpi/Api/API.php:2894
+#: src/Glpi/Api/API.php:2896
 #, php-format
 msgid "view documentation in your browser at %s"
 msgstr ""
@@ -21959,7 +22052,7 @@ msgstr[1] "სოკეტები"
 #: src/Glpi/Socket.php:357 src/Problem.php:505
 #: src/CommonItilObject_Item.php:1536 src/Ticket.php:2615 src/Change.php:524
 #: src/Cable.php:197 src/Cable.php:219 src/Item_Devices.php:205
-#: src/KnowbaseItem.php:3092 src/Plug.php:361 src/Plug.php:384
+#: src/KnowbaseItem.php:3107 src/Plug.php:361 src/Plug.php:384
 #: src/Database.php:221
 msgid "Associated item type"
 msgid_plural "Associated item types"
@@ -21997,30 +22090,30 @@ msgstr "პაროლის პოლიტიკა"
 msgid "Too many failed MFA attempts. Please try again later."
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:357
+#: src/Glpi/Security/SessionTracker.php:362
 msgid "Invalid IP address filter"
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:699
+#: src/Glpi/Security/SessionTracker.php:704
 msgid "Current session"
 msgstr "მიმდინარე სესია"
 
-#: src/Glpi/Security/SessionTracker.php:706
+#: src/Glpi/Security/SessionTracker.php:711
 msgctxt "logout_reason"
 msgid "User logout"
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:707
+#: src/Glpi/Security/SessionTracker.php:712
 msgctxt "logout_reason"
 msgid "Admin revoked"
 msgstr ""
 
-#: src/Glpi/Security/SessionTracker.php:708
+#: src/Glpi/Security/SessionTracker.php:713
 msgctxt "logout_reason"
 msgid "Session expired"
 msgstr "სესიის დრო გავიდა"
 
-#: src/Glpi/Security/SessionTracker.php:720
+#: src/Glpi/Security/SessionTracker.php:725
 #, php-format
 msgid "Expires at %s"
 msgstr "ვადა %s"
@@ -25689,13 +25782,13 @@ msgid "Failed to save the article"
 msgstr ""
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:241
-#: src/Glpi/Search/Provider/SQLProvider.php:7659 src/KnowbaseItem.php:2717
-#: src/KnowbaseItem.php:2912
+#: src/Glpi/Search/Provider/SQLProvider.php:7659 src/KnowbaseItem.php:2732
+#: src/KnowbaseItem.php:2927
 msgid "This item is part of the FAQ"
 msgstr ""
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:247
-#: src/Glpi/Search/Provider/SQLProvider.php:7664 src/KnowbaseItem.php:2723
+#: src/Glpi/Search/Provider/SQLProvider.php:7664 src/KnowbaseItem.php:2738
 msgid "This item is not published yet"
 msgstr ""
 
@@ -25785,7 +25878,7 @@ msgid "Search results for %1$s"
 msgstr "%1$s-ის ძებნის შედეგები"
 
 #: src/Glpi/Search/Output/HTMLSearchOutput.php:175 src/Item_Devices.php:1136
-#: src/KnowbaseItem.php:2994
+#: src/KnowbaseItem.php:3009
 msgid "View"
 msgid_plural "Views"
 msgstr[0] "ხედი"
@@ -26586,13 +26679,13 @@ msgstr ""
 
 #: src/Line.php:264 src/Problem.php:441 src/Appliance_Item_Relation.php:273
 #: src/SoftwareLicense.php:841 src/Appliance.php:517 src/Ticket.php:2096
-#: src/Change.php:216 src/Document.php:1649 src/Contract.php:418
+#: src/Change.php:216 src/Document.php:1652 src/Contract.php:418
 msgctxt "button"
 msgid "Add an item"
 msgstr "ელემენტის დამატება"
 
 #: src/Line.php:265 src/Problem.php:446 src/Appliance.php:518
-#: src/Ticket.php:2122 src/Change.php:221 src/Document.php:1650
+#: src/Ticket.php:2122 src/Change.php:221 src/Document.php:1653
 #: src/Contract.php:419
 msgctxt "button"
 msgid "Remove an item"
@@ -27605,7 +27698,7 @@ msgstr ""
 msgid "No file was uploaded"
 msgstr "ფაილები არ ატვირთულა"
 
-#: src/RuleCollection.php:1174 src/Document.php:1364
+#: src/RuleCollection.php:1174 src/Document.php:1367
 msgid "Unauthorized file type"
 msgstr ""
 
@@ -28319,7 +28412,7 @@ msgid_plural "Certificates"
 msgstr[0] "სერტიფიკატი"
 msgstr[1] "სერტიფიკატები"
 
-#: src/Certificate.php:336 src/Document.php:1056
+#: src/Certificate.php:336 src/Document.php:1059
 msgctxt "quantity"
 msgid "Number of associated items"
 msgstr ""
@@ -29400,7 +29493,7 @@ msgid_plural "Document items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Document_Item.php:1090 src/ITILSubItemRights.php:59
+#: src/Document_Item.php:1132 src/ITILSubItemRights.php:59
 msgid "See private ones"
 msgstr ""
 
@@ -31492,7 +31585,7 @@ msgctxt "button"
 msgid "Solution"
 msgstr "ამოხსნა"
 
-#: src/CommonITILObject.php:7450 src/Document.php:1642
+#: src/CommonITILObject.php:7450 src/Document.php:1645
 msgctxt "button"
 msgid "Add a document"
 msgstr ""
@@ -32258,102 +32351,102 @@ msgid_plural "Appliance environments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/KnowbaseItem.php:122 src/ITILCategory.php:300 src/Profile.php:2080
+#: src/KnowbaseItem.php:123 src/ITILCategory.php:300 src/Profile.php:2080
 #: src/Knowbase.php:47 src/KnowbaseItem_Item.php:100 src/TaskCategory.php:89
 msgid "Knowledge base"
 msgstr ""
 
-#: src/KnowbaseItem.php:712
+#: src/KnowbaseItem.php:713
 msgid "The root article of the knowledge base cannot be deleted."
 msgstr ""
 
-#: src/KnowbaseItem.php:764
+#: src/KnowbaseItem.php:765
 msgid ""
 "This article cannot be deleted because it contains sub-articles. They must "
 "be moved or deleted first."
 msgstr ""
 
-#: src/KnowbaseItem.php:1865
+#: src/KnowbaseItem.php:1871
 msgid "Permissions"
 msgstr "უფლებები"
 
-#: src/KnowbaseItem.php:1924
+#: src/KnowbaseItem.php:1930
 msgid "Add to favorites"
 msgstr "რჩეულებში დამატება"
 
-#: src/KnowbaseItem.php:1941
+#: src/KnowbaseItem.php:1947
 msgid "Add to FAQ"
 msgstr ""
 
-#: src/KnowbaseItem.php:1963
+#: src/KnowbaseItem.php:1969
 msgid "Move article"
 msgstr ""
 
-#: src/KnowbaseItem.php:1970 js/modules/Knowbase/AsideController.js:1197
+#: src/KnowbaseItem.php:1976 js/modules/Knowbase/AsideController.js:1197
 #: js/modules/Knowbase/AsideController.js:1210
 #: js/modules/Knowbase/ArticleController.js:684
 #: js/modules/Knowbase/ArticleController.js:697
 msgid "Delete article"
 msgstr ""
 
-#: src/KnowbaseItem.php:2667
+#: src/KnowbaseItem.php:2682
 msgid "Parent articles"
 msgstr ""
 
-#: src/KnowbaseItem.php:2785
+#: src/KnowbaseItem.php:2800
 msgid "Use as a solution"
 msgstr ""
 
-#: src/KnowbaseItem.php:2836
+#: src/KnowbaseItem.php:2851
 msgid "Recent entries"
 msgstr ""
 
-#: src/KnowbaseItem.php:2839
+#: src/KnowbaseItem.php:2854
 msgid "Last updated entries"
 msgstr ""
 
-#: src/KnowbaseItem.php:2842
+#: src/KnowbaseItem.php:2857
 msgid "Most popular questions"
 msgstr ""
 
-#: src/KnowbaseItem.php:2986
+#: src/KnowbaseItem.php:3001
 msgid "FAQ item"
 msgstr ""
 
-#: src/KnowbaseItem.php:3003 src/Reminder.php:365
+#: src/KnowbaseItem.php:3018 src/Reminder.php:365
 msgid "Visibility start date"
 msgstr ""
 
-#: src/KnowbaseItem.php:3011 src/Reminder.php:373
+#: src/KnowbaseItem.php:3026 src/Reminder.php:373
 msgid "Visibility end date"
 msgstr ""
 
-#: src/KnowbaseItem.php:3053
+#: src/KnowbaseItem.php:3068
 msgid "Parent article"
 msgstr ""
 
-#: src/KnowbaseItem.php:3180
+#: src/KnowbaseItem.php:3195
 msgid "Is favorite"
 msgstr ""
 
-#: src/KnowbaseItem.php:3283
+#: src/KnowbaseItem.php:3298
 msgid "Knowledge base administration"
 msgstr ""
 
-#: src/KnowbaseItem.php:3284
+#: src/KnowbaseItem.php:3299
 msgid "Publish in the FAQ"
 msgstr ""
 
-#: src/KnowbaseItem.php:3285
+#: src/KnowbaseItem.php:3300
 msgid "Comment KB entries"
 msgstr ""
 
-#: src/KnowbaseItem.php:3287
+#: src/KnowbaseItem.php:3302
 msgid "Read the FAQ"
 msgstr "ხდკ-ის წაკითხვა"
 
 #. TRANS: %1$s is the user login, %2$s the revision number
-#: src/KnowbaseItem.php:3379
+#: src/KnowbaseItem.php:3394
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
 msgstr ""
@@ -32516,7 +32609,7 @@ msgstr ""
 msgid "%s Mio"
 msgstr ""
 
-#: src/Document.php:204 src/Document.php:1187 src/Document.php:1306
+#: src/Document.php:204 src/Document.php:1190 src/Document.php:1309
 #, php-format
 msgid "Successful deletion of the file %s"
 msgstr ""
@@ -32536,41 +32629,41 @@ msgstr "არასწორი ბმული"
 msgid "%s Mio max"
 msgstr ""
 
-#: src/Document.php:1148
+#: src/Document.php:1151
 msgid "Upload directory doesn't exist"
 msgstr ""
 
-#: src/Document.php:1202 src/Document.php:1321
+#: src/Document.php:1205 src/Document.php:1324
 #, php-format
 msgid "Failed to delete the file %1$s"
 msgstr ""
 
-#: src/Document.php:1219
+#: src/Document.php:1222
 msgid "File move failed."
 msgstr ""
 
-#: src/Document.php:1226 src/Document.php:1337
+#: src/Document.php:1229 src/Document.php:1340
 msgid "File move failed"
 msgstr ""
 
-#: src/Document.php:1267
+#: src/Document.php:1270
 msgid "Temporary directory doesn't exist"
 msgstr ""
 
-#: src/Document.php:1368
+#: src/Document.php:1371
 msgid "Manage document types"
 msgstr ""
 
-#: src/Document.php:1383 src/Document.php:1409
+#: src/Document.php:1386 src/Document.php:1412
 msgid "An unexpected error occured."
 msgstr ""
 
-#: src/Document.php:1644
+#: src/Document.php:1647
 msgctxt "button"
 msgid "Remove a document"
 msgstr ""
 
-#: src/Document.php:1771
+#: src/Document.php:1774
 msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
