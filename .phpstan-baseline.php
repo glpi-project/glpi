@@ -5510,30 +5510,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'field\' might not exist on array\\{operator\\: mixed, value_expected\\?\\: mixed, property\\: mixed, field\\?\\: string\\|null\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Parser.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'operator\' might not exist on array\\{operator\\?\\: mixed, value_expected\\?\\: mixed, property\\: mixed, field\\?\\: string\\|null\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Parser.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'property\' might not exist on array\\{\\}\\|array\\{operator\\?\\: mixed, value_expected\\?\\: mixed, property\\?\\: mixed, field\\?\\: string\\|null\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Parser.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'value_expected\' might not exist on array\\{operator\\: mixed, value_expected\\?\\: mixed, property\\: mixed, field\\: string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Parser.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(string\\|null\\)\\: mixed\\)\\|null, \'stripslashes\' given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
