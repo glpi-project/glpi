@@ -4194,44 +4194,41 @@ class SearchTest extends DbTestCase
                 'expected_values'    => [Computer::class, Computer::class, ''],
             ];
 
+            // datatype=bool
+            yield [
+                'itemtype'          => \AuthLDAP::class,
+                'search_option'     => 30, // is_active
+                'value'             => $null_value,
+                'expected_and'      => "(`glpi_authldaps`.`is_active` IS NULL)",
+                'expected_and_not'  => "(NOT (`glpi_authldaps`.`is_active` IS NULL))",
+            ];
+
             // datatype=integer
             yield [
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 4, // port
                 'value'             => $null_value,
-                'expected_and'      => "(((`glpi_authldaps`.`port` IS NULL)) OR (`glpi_authldaps`.`port` = ?))",
-                'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`port` IS NULL)) OR (`glpi_authldaps`.`port` = ?)))",
-                'expected_values'    => [''],
+                'expected_and'      => "(`glpi_authldaps`.`port` IS NULL)",
+                'expected_and_not'  => "(NOT (`glpi_authldaps`.`port` IS NULL))",
             ];
-            // log for both AND and AND NOT cases
-            /*if ($is_mariadb) {
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            }*/
 
             // datatype=number
             yield [
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 32, // timeout
                 'value'             => $null_value,
-                'expected_and'      => "(((`glpi_authldaps`.`timeout` IS NULL)) OR (`glpi_authldaps`.`timeout` = ?))",
-                'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`timeout` IS NULL)) OR (`glpi_authldaps`.`timeout` = ?)))",
-                'expected_values'    => [''],
+                'expected_and'      => "(`glpi_authldaps`.`timeout` IS NULL)",
+                'expected_and_not'  => "(NOT (`glpi_authldaps`.`timeout` IS NULL))",
             ];
-            // log for both AND and AND NOT cases
-            /*if ($is_mariadb) {
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            }*/
 
             // datatype=number (usehaving=true)
             yield [
                 'itemtype'          => Computer::class,
                 'search_option'     => 115, // harddrive capacity
                 'value'             => $null_value,
-                'expected_and'      => "(((`ITEM_Computer_115` IS NULL)) OR (`ITEM_Computer_115` = ?))",
-                'expected_and_not'  => "(NOT ((((`ITEM_Computer_115` IS NULL)) OR (`ITEM_Computer_115` = ?)))",
-                'expected_values'    => [Computer::class, Computer::class, Computer::class, ''],
+                'expected_and'      => "(`ITEM_Computer_115` IS NULL)",
+                'expected_and_not'  => "(NOT (`ITEM_Computer_115` IS NULL))",
+                'expected_values'    => [Computer::class, Computer::class, Computer::class],
             ];
 
             // datatype=decimal
@@ -4239,22 +4236,18 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Budget::class,
                 'search_option'     => 7, // value
                 'value'             => $null_value,
-                'expected_and'      => "(((`glpi_budgets`.`value` IS NULL)) OR (`glpi_budgets`.`value` = ?))",
-                'expected_and_not'  => "(NOT ((((`glpi_budgets`.`value` IS NULL)) OR (`glpi_budgets`.`value` = ?)))",
-                'expected_values'    => [''],
+                'expected_and'      => "(`glpi_budgets`.`value` IS NULL)",
+                'expected_and_not'  => "(NOT (`glpi_budgets`.`value` IS NULL))",
             ];
-            // log for both AND and AND NOT cases
-            /*$this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);*/
 
             // datatype=decimal (usehaving=true)
             yield [
                 'itemtype'          => \Contract::class,
                 'search_option'     => 11, // totalcost
                 'value'             => $null_value,
-                'expected_and'      => "(((`ITEM_Contract_11` IS NULL)) OR (`ITEM_Contract_11` = ?))",
-                'expected_and_not'  => "(NOT ((((`ITEM_Contract_11` IS NULL)) OR (`ITEM_Contract_11` = ?)))",
-                'expected_values'    => [''],
+                'expected_and'      => "(`ITEM_Contract_11` IS NULL)",
+                'expected_and_not'  => "(NOT (`ITEM_Contract_11` IS NULL))",
+                'expected_values'    => [],
             ];
 
             // datatype=count (usehaving=true)
@@ -4262,24 +4255,19 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 27, // number of followups
                 'value'             => $null_value,
-                'expected_and'      => "(((`ITEM_Ticket_27` IS NULL)) OR (`ITEM_Ticket_27` = ?))",
-                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_27` IS NULL)) OR (`ITEM_Ticket_27` = ?)))",
-                'expected_values'    => ['1', Ticket::class, ''],
+                'expected_and'      => "(`ITEM_Ticket_27` IS NULL)",
+                'expected_and_not'  => "(NOT (`ITEM_Ticket_27` IS NULL))",
+                'expected_values'    => ['1', Ticket::class],
             ];
-            // log for both AND and AND NOT cases
-            /*if ($is_mariadb) {
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            }*/
 
             // datatype=mio (usehaving=true)
             yield [
                 'itemtype'          => Computer::class,
                 'search_option'     => 111, // memory size
                 'value'             => $null_value,
-                'expected_and'      => "(((`ITEM_Computer_111` IS NULL)) OR (`ITEM_Computer_111` = ?))",
-                'expected_and_not'  => "(NOT ((((`ITEM_Computer_111` IS NULL)) OR (`ITEM_Computer_111` = ?)))",
-                'expected_values'    => [Computer::class, Computer::class, Computer::class, ''],
+                'expected_and'      => "(`ITEM_Computer_111` IS NULL)",
+                'expected_and_not'  => "(NOT (`ITEM_Computer_111` IS NULL))",
+                'expected_values'    => [Computer::class, Computer::class, Computer::class],
             ];
 
             // datatype=progressbar (with computation)
@@ -4297,24 +4285,18 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \CronTask::class,
                 'search_option'     => 6, // frequency
                 'value'             => $null_value,
-                'expected_and'      => "(((`glpi_crontasks`.`frequency` IS NULL)) OR (`glpi_crontasks`.`frequency` = ?))",
-                'expected_and_not'  => "(NOT ((((`glpi_crontasks`.`frequency` IS NULL)) OR (`glpi_crontasks`.`frequency` = ?)))",
-                'expected_values'    => [''],
+                'expected_and'      => "(`glpi_crontasks`.`frequency` IS NULL)",
+                'expected_and_not'  => "(NOT (`glpi_crontasks`.`frequency` IS NULL))",
             ];
-            // log for both AND and AND NOT cases
-            /*if ($is_mariadb) {
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            }*/
 
             // datatype=timestamp (usehaving=true)
             yield [
                 'itemtype'          => Ticket::class,
                 'search_option'     => 49, // actiontime
                 'value'             => $null_value,
-                'expected_and'      => "(((`ITEM_Ticket_49` IS NULL)) OR (`ITEM_Ticket_49` = ?))",
-                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_49` IS NULL)) OR (`ITEM_Ticket_49` = ?)))",
-                'expected_values'    => ['1', ''],
+                'expected_and'      => "(`ITEM_Ticket_49` IS NULL)",
+                'expected_and_not'  => "(NOT (`ITEM_Ticket_49` IS NULL))",
+                'expected_values'    => ['1'],
             ];
 
             // datatype=datetime
@@ -4332,9 +4314,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 188, // next_escalation_level
                 'value'             => $null_value,
-                'expected_and'      => "(((`ITEM_Ticket_188` IS NULL)) OR (`ITEM_Ticket_188` = ?))",
-                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_188` IS NULL)) OR (`ITEM_Ticket_188` = ?)))",
-                'expected_values'    => [0, 0, '1', ''],
+                'expected_and'      => "(`ITEM_Ticket_188` IS NULL)",
+                'expected_and_not'  => "(NOT (`ITEM_Ticket_188` IS NULL))",
+                'expected_values'    => [0, 0, '1'],
             ];
 
             // datatype=date
@@ -5115,7 +5097,6 @@ class SearchTest extends DbTestCase
                 'searchtype'       => 'equals',
                 'value'            => $value,
                 'expected_and'     => "{$ticket_date} LIKE ?",
-                // (((`glpi_tickets`.`date` IS NULL)) OR (`glpi_tickets`.`date` = ?))
                 'expected_and_not' => "(((NOT ({$ticket_date} LIKE ?))) OR ({$ticket_date} IS NULL))",
                 'expected_values'    => ['%' . $value . '%'],
             ];
@@ -5125,9 +5106,9 @@ class SearchTest extends DbTestCase
             'search_option'    => 15, // date
             'searchtype'       => 'equals',
             'value'            => 'NULL',
-            'expected_and'     => "((({$ticket_date} IS NULL)) OR ({$ticket_date} = ?))",
-            'expected_and_not' => "NOT (((({$ticket_date} IS NULL)) OR ({$ticket_date} = ?)))",
-            'expected_values'    => [''],
+            'expected_and'     => "AND {$ticket_date} IS NULL GROUP BY",
+            'expected_and_not' => "AND NOT ({$ticket_date} IS NULL) GROUP BY",
+            'expected_values'    => [],
         ];
     }
 
