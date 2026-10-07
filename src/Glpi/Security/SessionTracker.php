@@ -142,6 +142,11 @@ final class SessionTracker
             $ip = '::1';
         }
 
+        if ($ip === null) {
+            // The client IP is required to record the session.
+            return false;
+        }
+
         $it = $DB->request([
             'SELECT' => ['id'],
             'FROM' => 'glpi_users_sessions',

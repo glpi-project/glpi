@@ -10,7 +10,8 @@ The present file will list all changes made to the project; according to the
 - `morethan` and `lessthan` search operators for numeric fields (number, integer, decimal, count, mio).
 - Sessions tab for OAuth Clients to display non-expired sessions associated with the client and allow revoking them.
 - Improved client IP detection.
-  If your GLPI instance is behind a reverse proxy, you should add its IP(s) the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP.
+  If your GLPI instance is behind a reverse proxy, you should add its IP(s) or CIDR range(s) to the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP (`X-Forwarded-For` by default, `Forwarded` and the other `X-Forwarded-*` headers are also supported).
+  When several proxies are chained, all of them must be listed in `GLPI_TRUSTED_REVERSE_PROXIES`.
   Only the required HTTP headers should be listed for better security as any header not handled by the proxy could be spoofed by the client.
 - Remember me support for multiple devices at the same time.
 - `Setup > Data and Privacy` menu item to centralize all data policies and privacy related settings.
@@ -115,6 +116,8 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem::showList()`
 - `KnowbaseItem::showRecentPopular()`
 - `knowbaseitems_id_parent` parameter and `allmy`, `myunpublished`, `allunpublished`, `allpublished` types of `KnowbaseItem::getListRequest()`.
+- `Glpi\Toolbox\IPUtilities::isCidrMatch()`, use `Glpi\Toolbox\IPUtilities::isIPInList()` instead.
+- `Glpi\Toolbox\IPUtilities::isTrustedReverseProxy()`, use `Symfony\Component\HttpFoundation\Request::isFromTrustedProxy()` instead.
 
 #### Removed
 
