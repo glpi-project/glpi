@@ -1,0 +1,148 @@
+{#
+ # Access-control massive action.
+ # One form: full editor with current values.
+ # Multiple forms: choose Add/Remove, then select allow-list entries.
+ #}
+
+{# @var bool is_single_form #}
+{# @var int forms_count #}
+
+{% if is_single_form %}
+    <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+        <i class="ti ti-info-circle me-2"></i>
+        <span>{{ __('Current access permissions for the selected form are shown below.') }}</span>
+    </div>
+
+    <div class="col-12">
+        {% for access_control in access_controls %}
+            {% set strategy = access_control.getStrategy() %}
+
+            <section
+                class="mb-4"
+                data-glpi-access-control-form
+                aria-label="{{ strategy.getLabel() }}"
+            >
+                <h3 class="d-flex align-items-center fs-4">
+                    <i class="{{ strategy.getIcon() }} me-2"></i>
+                    {{ strategy.getLabel() }}
+                    <label class="form-check mb-0 ms-auto form-switch">
+                        <input
+                            type="hidden"
+                            value="0"
+                            name="{{ access_control.getNormalizedInputName('is_active') }}"
+                        >
+                        <input
+                            aria-label="{{ __('Active') }}"
+                            data-glpi-toggle-control
+                            class="form-check-input"
+                            type="checkbox"
+                            name="{{ access_control.getNormalizedInputName('is_active') }}"
+                            value="1"
+                            {{ access_control.fields.is_active == true ? 'checked' : '' }}
+                        >
+                    </label>
+                </h3>
+
+                <div
+                    style="{{ access_control.fields.is_active == false ? 'opacity: 0.5' : '' }}"
+                    data-glpi-toggle-control-target
+                >
+                    {{ strategy.renderConfigForm(access_control)|raw }}
+                </div>
+            </section>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="d-flex flex-column align-items-center mb-3">
+        <label class="form-label mb-2" for="access-control-operation">
+            {{ __('Operation') }}
+        </label>
+        <select
+            id="access-control-operation"
+            name="access_control_operation"
+            class="form-select"
+            data-width="200px"
+        >
+            <option value="">-----</option>
+            <option value="add">{{ _x('button', 'Add') }}</option>
+            <option value="remove">{{ _x('button', 'Remove') }}</option>
+        </select>
+    </div>
+
+    {% set strategy = access_control.getStrategy() %}
+
+    <div id="access-control-operation-fields" class="w-100" style="display: none">
+        <div class="alert alert-info d-flex align-items-center justify-content-center mb-3" role="alert">
+            <i class="ti ti-info-circle me-2"></i>
+            <span>
+                {{ __('The selected entries will be added to or removed from %s selected forms.')|format(forms_count) }}
+                {{ __('Other access permissions will be kept.') }}
+            </span>
+        </div>
+
+        <section class="mb-3 text-center" aria-label="{{ strategy.getLabel() }}">
+            <h3 class="d-flex align-items-center justify-content-center fs-4">
+                <i class="{{ strategy.getIcon() }} me-2"></i>
+                {{ __('Users, groups or profiles') }}
+            </h3>
+
+            <input
+                type="hidden"
+                name="{{ access_control.getNormalizedInputName('is_active') }}"
+                value="1"
+            >
+
+            {{ strategy.renderConfigForm(access_control)|raw }}
+        </section>
+    </div>
+{% endif %}
+
+<style>
+    #access-control-operation + .select2-container
+        .select2-selection__rendered {
+        text-align: left;
+    }
+
+    .select2-container--open
+        .select2-results__option {
+        text-align: left;
+    }
+</style>
+
+<script>
+    $(() => {
+        const $operation = $("#access-control-operation");
+        if ($operation.length && $.fn.select2) {
+            $operation.select2({
+                width: "200px",
+                minimumResultsForSearch: Infinity,
+                dropdownParent: $operation.closest(".modal, form"),
+            });
+        }
+
+        $("[data-glpi-toggle-control]").on("change", function() {
+            $(this).closest("section[data-glpi-access-control-form]")
+                .find("[data-glpi-toggle-control-target]")
+                .css("opacity", this.checked ? 1 : 0.5)
+            ;
+        });
+
+        $("section[data-glpi-access-control-form] :input").on("change", function() {
+            if ($(this).data("glpi-toggle-control") !== undefined) {
+                return;
+            }
+
+            $(this).closest("section")
+                .find("[data-glpi-toggle-control]")
+                .prop("checked", true)
+                .trigger("change")
+            ;
+        });
+
+        $("#access-control-operation").on("change", function() {
+            const has_operation = this.value === "add" || this.value === "remove";
+            $("#access-control-operation-fields").toggle(has_operation);
+            $("#access-control-submit").toggle(has_operation);
+        });
+    });
+</script>
