@@ -2465,13 +2465,13 @@ TWIG, $twig_params);
 
                 // Sort on the title the reader sees: the translation if any, else the original.
                 $criteria['ORDERBY'] = isset($criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'])
-                    ? [new QueryExpression(QueryFunction::ifnull(
+                    ? [QueryFunction::ifnull(
                         QueryFunction::nullif(
                             new QueryIdentifier('glpi_knowbaseitemtranslations.name'),
                             new QueryValue('')
                         ),
                         new QueryIdentifier('glpi_knowbaseitems.name')
-                    ) . ' ASC')]
+                    )]
                     : ['glpi_knowbaseitems.name ASC'];
                 break;
         }
