@@ -277,6 +277,20 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             ];
         }
 
+        // Search option 19 is already used for the SIM card phone line.
+        foreach ([145 => 'date_mod', 121 => 'date_creation'] as $id => $field) {
+            if ($this->isField($field)) {
+                $tab[] = [
+                    'id'            => $id,
+                    'table'         => $this->getTable(),
+                    'field'         => $field,
+                    'name'          => $field === 'date_mod' ? __('Last update') : __('Creation date'),
+                    'datatype'      => 'datetime',
+                    'massiveaction' => false,
+                ];
+            }
+        }
+
         return $tab;
     }
 

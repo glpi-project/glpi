@@ -549,6 +549,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $component = array_values($components[$type]);
             //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
+                $row['date_creation'] = $_SESSION['glpi_currenttime'];
+                $row['date_mod'] = $_SESSION['glpi_currenttime'];
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
                         $row[$key] = $component[$i][$key];

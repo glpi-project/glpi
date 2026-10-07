@@ -48,6 +48,7 @@ class DeviceTest extends AbstractInventoryAsset
         global $DB;
         $item_mem = new \Item_DeviceMemory();
         $info_com = new \Infocom();
+        $_SESSION['glpi_currenttime'] = '2026-01-01 10:00:00';
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -103,6 +104,11 @@ class DeviceTest extends AbstractInventoryAsset
 
         $this->assertCount(2, $memories);
 
+        foreach ($memories as $memory) {
+            $this->assertSame('2026-01-01 10:00:00', $memory['date_creation']);
+            $this->assertSame('2026-01-01 10:00:00', $memory['date_mod']);
+        }
+
         $data_to_check = [];
 
         $infocom_buy_date = '2020-10-21';
@@ -124,6 +130,7 @@ class DeviceTest extends AbstractInventoryAsset
         }
 
         //redo an inventory
+        $_SESSION['glpi_currenttime'] = '2026-01-02 10:00:00';
         $this->doInventory($xml_source, true);
 
         //memory present in the inventory source is still dynamic
@@ -134,12 +141,25 @@ class DeviceTest extends AbstractInventoryAsset
         foreach ($data_to_check as $data_value) {
             $memories = $item_mem->find(['id' => $data_value['items_id'], "itemtype" => \Computer::class, 'is_dynamic' => 1]);
             $this->assertCount(1, $memories);
+            $memory = reset($memories);
+            $this->assertSame('2026-01-01 10:00:00', $memory['date_creation']);
+            $this->assertSame('2026-01-01 10:00:00', $memory['date_mod']);
         }
 
         //check infocom still exists
         foreach ($data_to_check as $data_value) {
             $info_coms = $info_com->find(['id' => $data_value['id'], "buy_date" => $infocom_buy_date, "value" => $infocom_value]);
             $this->assertCount(1, $info_coms);
+        }
+
+        // A small capacity change updates the same instances instead of replacing them.
+        $_SESSION['glpi_currenttime'] = '2026-01-03 10:00:00';
+        $this->doInventory(str_replace('<CAPACITY>8192</CAPACITY>', '<CAPACITY>8190</CAPACITY>', $xml_source), true);
+        foreach ($data_to_check as $data_value) {
+            $this->assertTrue($item_mem->getFromDB($data_value['items_id']));
+            $this->assertSame(8190, $item_mem->fields['size']);
+            $this->assertSame('2026-01-01 10:00:00', $item_mem->fields['date_creation']);
+            $this->assertSame('2026-01-03 10:00:00', $item_mem->fields['date_mod']);
         }
     }
 
