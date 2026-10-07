@@ -37,6 +37,8 @@ namespace tests\units\Glpi\Form\QuestionType;
 use Computer;
 use Contact;
 use DropdownTranslation;
+use Entity;
+use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
@@ -46,6 +48,7 @@ use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use Ticket;
 use User;
 
@@ -327,6 +330,56 @@ final class QuestionTypeItemTest extends DbTestCase
                 ];
             })(),
         ];
+    }
+
+    public function testItemAnswerValidationRequiresAnItemTheUserCanSelect(): void
+    {
+        $this->login();
+        $entity_1 = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $entity_2 = getItemByTypeName(Entity::class, '_test_child_2', true);
+
+        $computer_1 = $this->createItem(Computer::class, ['name' => 'Computer of entity 1', 'entities_id' => $entity_1]);
+        $computer_2 = $this->createItem(Computer::class, ['name' => 'Computer of entity 2', 'entities_id' => $entity_2]);
+        $ticket_2   = $this->createItem(Ticket::class, ['name' => 'Ticket of entity 2', 'content' => 'Content', 'entities_id' => $entity_2]);
+
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: 'Asset',
+            type: QuestionTypeItem::class,
+            extra_data: \Safe\json_encode((new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()),
+        );
+        $form = $this->createForm($builder);
+
+        // A user that can only access the first entity
+        $this->createItem(User::class, [
+            'name'          => 'restricted_user',
+            'password'      => 'Restricted-Pass-123!',
+            'password2'     => 'Restricted-Pass-123!',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Self-Service', true),
+            '_entities_id'  => $entity_1,
+            '_is_recursive' => 0,
+        ], skip_fields: ['password', 'password2']);
+        $this->login('restricted_user', 'Restricted-Pass-123!');
+
+        $is_valid = fn(string $itemtype, int $items_id): bool => AnswersHandler::getInstance()->validateAnswers($form, [
+            $this->getQuestionId($form, 'Asset') => ['itemtype' => $itemtype, 'items_ids' => [$items_id]],
+        ])->isValid();
+
+        // The items of the accessible entities can be selected
+        $this->assertTrue($is_valid(Computer::class, $computer_1->getID()));
+
+        // The items of the other entities cannot, nor the items of another itemtype than the one of the question
+        $this->assertFalse($is_valid(Computer::class, $computer_2->getID()));
+        $this->assertFalse($is_valid(Ticket::class, $ticket_2->getID()));
+
+        // A list of answers is checked item by item
+        $is_valid_list = fn(array $answers): bool => AnswersHandler::getInstance()->validateAnswers($form, [
+            $this->getQuestionId($form, 'Asset') => $answers,
+        ])->isValid();
+        $this->assertTrue($is_valid_list([['itemtype' => Computer::class, 'items_ids' => [$computer_1->getID()]]]));
+        $this->assertFalse($is_valid_list([['itemtype' => Computer::class, 'items_ids' => [$computer_2->getID()]]]));
+        $this->assertFalse($is_valid_list([['itemtype' => Ticket::class, 'items_ids' => [$ticket_2->getID()]]]));
+        $this->assertFalse($is_valid_list(['not an answer']));
     }
 
     #[DataProvider('itemAnswerInTicketProvider')]
