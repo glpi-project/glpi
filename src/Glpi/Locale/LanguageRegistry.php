@@ -157,6 +157,7 @@ final class LanguageRegistry
             'ko' => 'ko_KR',
             'be' => 'be_BY',
             'is' => 'is_IS',
+            'ka' => 'ka_GE',
         ];
     }
 
@@ -293,6 +294,7 @@ final class LanguageRegistry
             new Language('is_IS', 'Íslenska', js_code: 'en', english_name: 'icelandic'),
             new Language('eo', 'Esperanto', js_code: 'en', english_name: 'esperanto'),
             new Language('es_CL', 'Español (Chile)', english_name: 'spanish chilean'),
+            new Language('ka_GE', 'ქართული', english_name: 'georgian'),
         ];
     }
 }

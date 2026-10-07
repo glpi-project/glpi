@@ -224,6 +224,7 @@ final class LanguageRegistryTest extends GLPITestCase
             'is_IS'   => ['Íslenska', 'is_IS.mo', 'is', 'en', 'icelandic', 2],
             'eo'      => ['Esperanto', 'eo.mo', 'eo', 'en', 'esperanto', 2],
             'es_CL'   => ['Español (Chile)', 'es_CL.mo', 'es', 'es', 'spanish chilean', 2],
+            'ka_GE'   => ['ქართული', 'ka_GE.mo', 'ka', 'ka', 'georgian', 2],
         ];
     }
 }
