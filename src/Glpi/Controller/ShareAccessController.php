@@ -63,12 +63,11 @@ final class ShareAccessController extends AbstractController
         }
 
         // User who can already read the item: redirect to normal item URL.
-        // `can()` may be true through an earlier share access, and the item
-        // page also requires the itemtype right.
+        // Not `can()`: it also accepts the session grant of an earlier visit.
         if (
             Session::isAuthenticated()
             && $shared_item::canView()
-            && $shared_item->can($shared_item->getID(), READ)
+            && $shared_item->canViewItem()
         ) {
             $response = new RedirectResponse($shared_item->getItemUrl());
             $response->headers->set('Referrer-Policy', 'no-referrer');

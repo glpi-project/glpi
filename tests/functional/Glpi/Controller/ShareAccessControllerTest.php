@@ -125,6 +125,24 @@ final class ShareAccessControllerTest extends DbTestCase
         $this->assertStringContainsString($kb->fields['name'], (string) $response->getContent());
     }
 
+    public function testAuthenticatedUserWithoutItemVisibilityGetsSharedViewOnEveryVisit(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $this->login('normal', 'normal');
+
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
+        $request = Request::create('/Share/' . $plain, 'GET');
+        foreach ([1, 2] as $visit) {
+            $response = (new ShareAccessController())->__invoke($request, $plain);
+
+            $this->assertNotInstanceOf(RedirectResponse::class, $response, "Visit $visit");
+            $this->assertSame(200, $response->getStatusCode(), "Visit $visit");
+        }
+    }
+
     public function testAuthenticatedUserWithoutKnowbaseRightGetsSharedView(): void
     {
         $this->login();
