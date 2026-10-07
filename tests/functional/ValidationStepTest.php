@@ -39,6 +39,13 @@ use CommonITILValidation;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\ValidationStepTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Rule;
+use RuleAction;
+use RuleCriteria;
+use RuleTicket;
+use Ticket;
+use TicketValidation;
+use User;
 use ValidationStep;
 
 class ValidationStepTest extends DbTestCase
@@ -61,7 +68,7 @@ class ValidationStepTest extends DbTestCase
 
     public function testUsedValidationCannotBeDeleted()
     {
-        $itil_classnames = [\Ticket::class, \Change::class];
+        $itil_classnames = [Ticket::class, \Change::class];
         foreach ($itil_classnames as $itil_classname) {
             // create a validation step + an itil_validationstep
             $vs = $this->createValidationStepTemplate(100);
@@ -173,7 +180,7 @@ class ValidationStepTest extends DbTestCase
     public function testGetValidationStepStatus(int $mininal_required_validation_percent, array $validation_states, int $expected_status)
     {
         $this->login();
-        foreach ([\Ticket::class, \Change::class] as $itil_class) {
+        foreach ([Ticket::class, \Change::class] as $itil_class) {
             $validation_step = $this->createValidationStepTemplate($mininal_required_validation_percent);
             // single itil_validation step with 100% required
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($validation_step, $validation_states, itil_classname: $itil_class);
@@ -186,7 +193,7 @@ class ValidationStepTest extends DbTestCase
     public function testGetITILValidationStepAchievementsOnSingleValidation(): void
     {
         $this->login();
-        foreach ([\Ticket::class, \Change::class] as $itil_class) {
+        foreach ([Ticket::class, \Change::class] as $itil_class) {
             $vs = $this->createValidationStepTemplate(100);
             // accepted
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
@@ -208,7 +215,7 @@ class ValidationStepTest extends DbTestCase
     public function testgetValidationStepAchievementsOnMultipleValidation(): void
     {
         $this->login();
-        foreach ([\Ticket::class, \Change::class] as $itil_class) {
+        foreach ([Ticket::class, \Change::class] as $itil_class) {
             $vs = $this->createValidationStepTemplate(100);
             // 2 validations with same status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
@@ -261,7 +268,7 @@ class ValidationStepTest extends DbTestCase
     public function testItilValidationStepIsRemovedWhenValidationIsDeleted(): void
     {
         $this->login();
-        foreach ([\Ticket::class, \Change::class] as $itil_class) {
+        foreach ([Ticket::class, \Change::class] as $itil_class) {
             // arrange - create a validation (+ an itils_validationstep)
             $vs = $this->createValidationStepTemplate(100);
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
@@ -279,17 +286,64 @@ class ValidationStepTest extends DbTestCase
         }
     }
 
+    public function testRequesterResponsibleValidationIsSentFromUpdateRule(): void
+    {
+        $this->login();
+        $step1 = $this->createValidationStepTemplate(100);
+        $step2 = $this->createValidationStepTemplate(100);
+
+        $manager   = $this->createItem(User::class, ['name' => 'manager' . mt_rand(), '_useremails' => ['manager@example.com']]);
+        $requester = getItemByTypeName(User::class, 'post-only');
+        $this->updateItem(User::class, $requester->getID(), ['users_id_supervisor' => $manager->getID()]);
+
+        $rules = [
+            ['on_add', \RuleCommonITILObject::ONADD,
+                [['name', Rule::PATTERN_CONTAIN, 'two steps']],
+                [['add_validation', 'users_id_validate', getItemByTypeName(User::class, TU_USER, true)], ['add_validation', 'validationsteps_id', $step1->getID()]],
+            ],
+            ['on_update', \RuleCommonITILObject::ONUPDATE,
+                [['global_validation', Rule::PATTERN_IS, CommonITILValidation::ACCEPTED], ['_validationsteps_id', Rule::PATTERN_IS, $step1->getID()]],
+                [['add_validation', 'responsible_id_validate', 1], ['add_validation', 'validationsteps_id', $step2->getID()]],
+            ],
+        ];
+        foreach ($rules as [$name, $condition, $criteria, $actions]) {
+            $rule = $this->createItem(RuleTicket::class, [
+                'name' => $name, 'sub_type' => RuleTicket::class, 'match' => 'AND',
+                'is_active' => 1, 'condition' => $condition, 'entities_id' => 0, 'is_recursive' => 1,
+            ]);
+            foreach ($criteria as [$criterion, $operator, $pattern]) {
+                $this->createItem(RuleCriteria::class, ['rules_id' => $rule->getID(), 'criteria' => $criterion, 'condition' => $operator, 'pattern' => $pattern]);
+            }
+            foreach ($actions as [$type, $field, $value]) {
+                $this->createItem(RuleAction::class, ['rules_id' => $rule->getID(), 'action_type' => $type, 'field' => $field, 'value' => $value]);
+            }
+        }
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'two steps', 'content' => 'two steps', 'entities_id' => 0,
+            '_actors' => ['requester' => [['itemtype' => User::class, 'items_id' => $requester->getID()]]],
+        ]);
+        $validation = new TicketValidation();
+        $this->assertCount(1, $validation->find(['tickets_id' => $ticket->getID()]));
+
+        $first = array_values($validation->find(['tickets_id' => $ticket->getID()]))[0];
+        $this->updateItem(TicketValidation::class, $first['id'], ['status' => CommonITILValidation::ACCEPTED, 'comment_validation' => 'ok']);
+
+        $second = $validation->find(['tickets_id' => $ticket->getID(), 'items_id_target' => $manager->getID()]);
+        $this->assertCount(1, $second, 'The requester supervisor should be asked for the second step');
+    }
+
     public function testGetValidationStepClassName(): void
     {
         $this->assertNull(\Problem::getValidationStepClassName());
-        $this->assertEquals(\TicketValidationStep::class, \Ticket::getValidationStepClassName());
+        $this->assertEquals(\TicketValidationStep::class, Ticket::getValidationStepClassName());
         $this->assertEquals(\ChangeValidationStep::class, \Change::getValidationStepClassName());
     }
 
     public function testGetValidationStepInstance(): void
     {
         $this->assertNull(\Problem::getValidationStepInstance());
-        $this->assertInstanceOf(\TicketValidationStep::class, \Ticket::getValidationStepInstance());
+        $this->assertInstanceOf(\TicketValidationStep::class, Ticket::getValidationStepInstance());
         $this->assertInstanceOf(\ChangeValidationStep::class, \Change::getValidationStepInstance());
     }
 
