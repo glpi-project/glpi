@@ -436,12 +436,11 @@ abstract class CommonDBConnexity extends CommonDBTM
                     $methodNotItem = 'canView';
                     $methodItem    = 'canViewItem';
                 }
-                // For a fixed itemtype, the static check already covers the view right.
-                if (
-                    ($methodNotItem !== 'canView' || preg_match('/^itemtype/', $itemtype))
-                    && !$connexityItem->$methodNotItem()
-                ) {
-                    return false;
+                // here, we can check item's global rights
+                if (preg_match('/^itemtype/', $itemtype)) {
+                    if (!$connexityItem->$methodNotItem()) {
+                        return false;
+                    }
                 }
                 return $connexityItem->$methodItem();
             } else {

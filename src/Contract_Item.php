@@ -78,7 +78,39 @@ class Contract_Item extends CommonDBRelation
             return false;
         }
 
-        return parent::canCreateItem();
+        return $this->canWriteOnOneSide() && parent::canCreateItem();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->canWriteOnOneSide() && parent::canUpdateItem();
+    }
+
+    public function canDeleteItem(): bool
+    {
+        return $this->canWriteOnOneSide() && parent::canDeleteItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canWriteOnOneSide() && parent::canPurgeItem();
+    }
+
+    /**
+     * The parent check skips the global contract right, see `CommonDBConnexity::canConnexityItem()`.
+     */
+    private function canWriteOnOneSide(): bool
+    {
+        if (Contract::canUpdate()) {
+            return true;
+        }
+
+        $item = getItemForItemtype((string) $this->fields['itemtype']);
+        if (!$item instanceof CommonDBTM || !$item->getFromDB($this->fields['items_id'])) {
+            return true;
+        }
+
+        return $item->can($item->getID(), UPDATE);
     }
 
     public static function getTypeName($nb = 0)

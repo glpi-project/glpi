@@ -88,22 +88,47 @@ class Document_Item extends CommonDBRelation
         }
 
         return $this->canEditLinkedKnowbaseItem()
-            && (parent::canCreateItem() || $this->canAddToLinkedItem());
+            && $this->canWriteOnOneSide(true)
+            && parent::canCreateItem();
     }
 
     public function canUpdateItem(): bool
     {
-        return $this->canEditLinkedKnowbaseItem() && parent::canUpdateItem();
+        return $this->canEditLinkedKnowbaseItem()
+            && $this->canWriteOnOneSide(false)
+            && parent::canUpdateItem();
     }
 
     public function canDeleteItem(): bool
     {
-        return $this->canEditLinkedKnowbaseItem() && parent::canDeleteItem();
+        return $this->canEditLinkedKnowbaseItem()
+            && $this->canWriteOnOneSide(false)
+            && parent::canDeleteItem();
     }
 
     public function canPurgeItem(): bool
     {
-        return $this->canEditLinkedKnowbaseItem() && parent::canPurgeItem();
+        return $this->canEditLinkedKnowbaseItem()
+            && $this->canWriteOnOneSide(false)
+            && parent::canPurgeItem();
+    }
+
+    /**
+     * The parent check skips the global document right, see `CommonDBConnexity::canConnexityItem()`.
+     * Linking follows the "Add a document" form rule, see `CommonDBTM::canAddItem()`.
+     */
+    private function canWriteOnOneSide(bool $is_link): bool
+    {
+        if (Document::canUpdate()) {
+            return true;
+        }
+
+        $item = getItemForItemtype((string) $this->fields['itemtype']);
+        if (!$item instanceof CommonDBTM || !$item->getFromDB($this->fields['items_id'])) {
+            return true;
+        }
+
+        return $is_link ? $item->canAddItem(Document::class) : $item->can($item->getID(), UPDATE);
     }
 
     /**
@@ -117,20 +142,6 @@ class Document_Item extends CommonDBRelation
         }
 
         return !$item->getFromDB($this->fields['items_id']) || $item->canAddItem(Document::class);
-    }
-
-    /**
-     * Same rule as the "Add a document" form, see `CommonDBTM::canAddItem()`.
-     */
-    private function canAddToLinkedItem(): bool
-    {
-        $item     = getItemForItemtype((string) $this->fields['itemtype']);
-        $document = new Document();
-
-        return $item instanceof CommonDBTM
-            && $item->getFromDB($this->fields['items_id'])
-            && $item->canAddItem(Document::class)
-            && $document->can($this->fields['documents_id'], READ);
     }
 
     public function canViewItem(): bool
