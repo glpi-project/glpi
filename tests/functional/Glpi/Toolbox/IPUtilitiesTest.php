@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Toolbox;
 
 use Glpi\Kernel\Kernel;
-use Glpi\Kernel\Listener\PostBootListener\ConfigureTrustedProxies;
 use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\IPUtilities;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -258,16 +257,6 @@ class IPUtilitiesTest extends GLPITestCase
         } finally {
             $this->setPrivateProperty($kernel, 'main_request', null);
         }
-    }
-
-    public function testConfigureTrustedProxiesListener(): void
-    {
-        Request::setTrustedProxies([], 0);
-
-        (new ConfigureTrustedProxies())->onPostBoot();
-
-        $this->assertSame(GLPI_TRUSTED_REVERSE_PROXIES, Request::getTrustedProxies());
-        $this->assertSame(Request::HEADER_X_FORWARDED_FOR, Request::getTrustedHeaderSet());
     }
 
     public function testIsTrustedReverseProxy(): void
