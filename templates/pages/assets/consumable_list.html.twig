@@ -44,11 +44,11 @@
                             {% set label %}
                                 <h2>
                                     <span class="me-2">
-                                        {{ __("Total: %s, New: %s, Used: %s"|format(
+                                        {{ __("Total: %s, New: %s, Used: %s")|format(
                                             count_unused + count_used,
                                             count_unused,
                                             count_used
-                                        )) }}
+                                        ) }}
                                     </span>
                                 </h2>
                             {% endset %}
@@ -107,7 +107,7 @@
 
     {% if count_unused > 0 %}
         <div class="unused-consumables mb-4">
-            <h3>{{ __("%s New consumables"|format(count_unused)) }}</h3>
+            <h3>{{ __("%s New consumables")|format(count_unused) }}</h3>
             {% do call('\\Glpi\\Search\\SearchEngine::show', [itemtype, {
                 'criteria'          : criteria_unused,
                 'push_history'      : false,
@@ -120,7 +120,7 @@
 
     {% if count_used > 0 %}
         <div class="used-consumables mb-4">
-            <h3> {{ __("%s Used consumables"|format(count_used)) }} </h3>
+            <h3> {{ __("%s Used consumables")|format(count_used) }} </h3>
             {% do call('\\Glpi\\Search\\SearchEngine::show', [itemtype, {
                 'criteria'          : criteria_used,
                 'push_history'      : false,
