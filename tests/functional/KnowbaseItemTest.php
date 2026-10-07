@@ -44,6 +44,7 @@ use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_User;
+use KnowbaseItemTranslation;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
@@ -3213,6 +3214,37 @@ HTML,
             $ids[] = (int) $row['id'];
         }
         return $ids;
+    }
+
+    /**
+     * Once a translation exists, the browse list is sorted on the title the
+     * reader sees: the translation in their language, else the original name.
+     */
+    public function testBrowseListIsSortedOnTheTranslatedTitle(): void
+    {
+        $this->login();
+
+        $charlie = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' Charlie',
+            'answer' => 'Charlie',
+        ]);
+        $bravo = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' Bravo',
+            'answer' => 'Bravo',
+        ]);
+        $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $charlie->getID(),
+            'language'         => $_SESSION['glpilanguage'],
+            'name'             => __FUNCTION__ . ' Alpha',
+            'answer'           => 'Alpha',
+        ]);
+
+        $ids = array_values(array_intersect(
+            $this->listBrowseIds(),
+            [$charlie->getID(), $bravo->getID()]
+        ));
+
+        $this->assertSame([$charlie->getID(), $bravo->getID()], $ids);
     }
 
     /**
