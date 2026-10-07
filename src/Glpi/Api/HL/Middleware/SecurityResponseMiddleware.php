@@ -46,7 +46,7 @@ class SecurityResponseMiddleware extends AbstractMiddleware implements ResponseM
             $input->response = $input->response->withHeader('Access-Control-Allow-Origin', '*');   // cache for 1 day
         }
         if ($input->request->getMethod() === 'GET' || $input->request->getMethod() === 'OPTIONS') {
-            $input->response = $input->response->withHeader('Access-Control-Expose-Headers', ['Content-Type', 'Content-Range', 'Accept-Ranges']);
+            $input->response = $input->response->withHeader('Access-Control-Expose-Headers', ['Content-Type', 'Content-Range', 'Accept-Ranges', 'GLPI-Previous-Cursor', 'GLPI-Next-Cursor']);
         }
         $next($input);
     }

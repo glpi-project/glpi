@@ -261,6 +261,14 @@ EOT;
                     'minimum' => 0,
                 ],
             ],
+            'cursor' => [
+                'name' => 'cursor',
+                'in' => Doc\Parameter::LOCATION_QUERY,
+                'description' => 'Cursor token for cursor-based pagination taken from the GLPI-Previous-Cursor or GLPI-Next-Cursor response header of a previous request. Replaces the start parameter. The same filter and sort parameters as the request the cursor came from must be used.',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                ],
+            ],
             'sort' => [
                 'name' => 'sort',
                 'in' => Doc\Parameter::LOCATION_QUERY,

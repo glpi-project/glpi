@@ -49,6 +49,7 @@ class SearchRoute extends Route
                 new ParameterReference('filter'),
                 new ParameterReference('start'),
                 new ParameterReference('limit'),
+                new ParameterReference('cursor'),
                 new ParameterReference('sort'),
             ],
             responses: $responses
