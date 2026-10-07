@@ -38,6 +38,7 @@ use Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener;
 use Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener;
 use Glpi\Kernel\Listener\PostBootListener\BootPlugins;
 use Glpi\Kernel\Listener\PostBootListener\CheckPluginsStates;
+use Glpi\Kernel\Listener\PostBootListener\ConfigureTrustedProxies;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsAutoloaderRegistration;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsBoot;
 use Glpi\Kernel\Listener\PostBootListener\InitializeCache;
@@ -69,6 +70,10 @@ final class ListenersPriority
 {
     public const POST_BOOT_LISTENERS_PRIORITIES = [
         ProfilerStart::class =>                       200,
+
+        // Trusted proxies must be configured before anything reads the client IP, host or scheme of the request.
+        ConfigureTrustedProxies::class =>             195,
+
         InitializeDbConnection::class =>              190,
         InitializeCache::class =>                     180,
         LoadLegacyConfiguration::class =>             170,
