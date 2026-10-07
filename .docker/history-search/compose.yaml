@@ -1,0 +1,38 @@
+name: glpi-history-search
+
+services:
+  app:
+    image: glpi-app:latest
+    build:
+      context: ../app
+      args:
+        PHP_VERSION: "8.4"
+    ports:
+      - "127.0.0.1:8082:80"
+    environment:
+      XDEBUG_MODE: "off"
+      GLPI_URI: http://localhost:8082
+      GLPI_HISTORY_SEARCH_DEMO: "1"
+    volumes:
+      - source:/var/www/glpi
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: mariadb:11.8
+    environment:
+      MARIADB_ROOT_PASSWORD: glpi
+      MARIADB_DATABASE: glpi
+      MARIADB_USER: glpi
+      MARIADB_PASSWORD: glpi
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  source:
+  database:
