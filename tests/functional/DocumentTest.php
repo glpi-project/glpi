@@ -2053,7 +2053,7 @@ class DocumentTest extends DbTestCase
             $form,
             [
                 'Attachment' => [$filename],
-                'Entity'     => ['itemtype' => \Entity::class, 'items_id' => $child_2_entities_id],
+                'Entity'     => ['itemtype' => \Entity::class, 'items_ids' => [$child_2_entities_id]],
                 'Requester'  => ["users_id-{$requester->getID()}"],
             ],
             ['filename' => [$filename], 'prefix' => [$prefix], 'tag' => [$tag], 'question_id' => [$question_id]],
