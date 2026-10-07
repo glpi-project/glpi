@@ -1015,8 +1015,12 @@ abstract class API
                     'glpi_changes_items.itemtype' => $itemtype,
                 ] + getEntitiesRestrictCriteria(Change::getTable());
                 $iterator = $DB->request($criteria);
+                $change = new Change();
                 foreach ($iterator as $data) {
-                    $fields['_changes'][] = $data;
+                    // Keep only the changes the user is allowed to see
+                    if ($change->getFromDB($data['id']) && $change->canViewItem()) {
+                        $fields['_changes'][] = $data;
+                    }
                 }
             }
         }
