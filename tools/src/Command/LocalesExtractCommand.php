@@ -45,6 +45,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
+use Symfony\UX\TwigComponent\Twig\ComponentExtension;
+use Symfony\UX\TwigComponent\Twig\ComponentLexer;
 use Twig\Cache\CacheInterface;
 use Twig\Cache\FilesystemCache;
 use Twig\Environment;
@@ -394,6 +396,9 @@ final class LocalesExtractCommand extends AbstractCommand
     {
         $loader = new FilesystemLoader($templates_dir, $root_path);
         $twig = $this->getMockedTwigEnvironment($loader);
+        // Handle Twig components HTML syntax (e.g. `<twig:Alert :heading="__('...')" />`)
+        $twig->setLexer(new ComponentLexer($twig));
+        $twig->addExtension(new ComponentExtension());
         $twig->setCache($this->getTwigCacheHandler($output_dir));
 
         $files = $this->getTwigTemplateFiles($templates_dir);
