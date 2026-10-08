@@ -263,7 +263,7 @@ jobs:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-mariadb:12.3"
-      PHP_IMAGE: "githubactions-php-apache:8.5"
+      PHP_IMAGE: "githubactions-php-apache:8.5-playwright"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
