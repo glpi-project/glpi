@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use DirectoryTree\ImapEngine\MailboxInterface;
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
@@ -42,6 +43,8 @@ use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
+use Glpi\Mail\Imap\ImapProtocol;
+use Glpi\Mail\Imap\Mailbox;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Message\MessageType;
 use Glpi\OAuth\Server;
@@ -51,8 +54,6 @@ use Glpi\Rules\RulesManager;
 use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
-use Laminas\Mail\Protocol\Imap;
-use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
@@ -1486,7 +1487,8 @@ class Toolbox
      * @param bool      $forceport                  force compute port if not set
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return array  parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
+     * @return array{address: string, port: int|string, mailbox: string, type: string, ssl: bool, tls: bool|string, validate-cert: bool|string, norsh: bool|string, secure: bool|string, debug: bool|string}
+     *                parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
      *                norsh, secure and debug) : options are empty if not set
      *                and options have boolean values if set
      **/
@@ -1622,12 +1624,14 @@ class Toolbox
      * For each returned element:
      *  - key is type used in connection string;
      *  - 'label' field is the label to display;
-     *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap);
-     *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap).
+     *  - 'protocol' field is the protocol class or callable used to authenticate users
+     *    (see {@link \Glpi\Mail\Protocol\ProtocolInterface});
+     *  - 'mailbox' field is the mailbox class or callable used by mails receivers
+     *    (see {@link \DirectoryTree\ImapEngine\MailboxInterface}).
      *
      * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return array
+     * @return array<string, array<string, mixed>>
      */
     public static function getMailServerProtocols(bool $allow_plugins_protocols = true): array
     {
@@ -1635,8 +1639,8 @@ class Toolbox
             'imap' => [
                 //TRANS: IMAP mail server protocol
                 'label'    => __('IMAP'),
-                'protocol' => Imap::class,
-                'storage'  => Laminas\Mail\Storage\Imap::class,
+                'protocol' => ImapProtocol::class,
+                'mailbox'  => Mailbox::class,
             ],
         ];
 
@@ -1658,7 +1662,7 @@ class Toolbox
                 if (
                     !array_key_exists('label', $additional_protocol)
                     || !array_key_exists('protocol', $additional_protocol)
-                    || !array_key_exists('storage', $additional_protocol)
+                    || !array_key_exists('mailbox', $additional_protocol)
                 ) {
                     trigger_error(
                         sprintf('Invalid specs for protocol "%s".', $key),
@@ -1681,63 +1685,64 @@ class Toolbox
     /**
      * Returns protocol instance for given mail server type.
      *
-     * Class should implements Glpi\Mail\Protocol\ProtocolInterface
-     * or should be \Laminas\Mail\Protocol\Imap for native protocols.
-     *
      * @param string    $protocol_type
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return null|ProtocolInterface|Imap
+     * @return null|ProtocolInterface
      */
-    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true)
+    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true): ?ProtocolInterface
     {
         $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
             $protocol = $protocols[$protocol_type]['protocol'];
+            $instance = null;
             if (is_callable($protocol)) {
-                return call_user_func($protocol);
-            } elseif (
-                class_exists($protocol)
-                && (is_a($protocol, ProtocolInterface::class, true)
-                 || is_a($protocol, Imap::class, true))
-            ) {
-                return new $protocol();
-            } else {
-                trigger_error(
-                    sprintf('Invalid specs for protocol "%s".', $protocol_type),
-                    E_USER_WARNING
-                );
+                $instance = call_user_func($protocol);
+            } elseif (is_string($protocol) && class_exists($protocol) && is_a($protocol, ProtocolInterface::class, true)) {
+                $instance = new $protocol();
             }
+
+            if ($instance instanceof ProtocolInterface) {
+                return $instance;
+            }
+
+            trigger_error(
+                sprintf('Invalid specs for protocol "%s".', $protocol_type),
+                E_USER_WARNING
+            );
         }
         return null;
     }
 
     /**
-     * Returns storage instance for given mail server type.
-     *
-     * Class should extends \Laminas\Mail\Storage\AbstractStorage.
+     * Returns mailbox instance for given mail server type.
      *
      * @param string    $protocol_type
-     * @param array     $params                     Storage constructor params, as defined in AbstractStorage
+     * @param array<string, mixed> $config        Mailbox configuration, see {@link Mailbox::buildConfig()}
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return null|AbstractStorage
+     * @return null|MailboxInterface
      */
-    public static function getMailServerStorageInstance(string $protocol_type, array $params, bool $allow_plugins_protocols = true): ?AbstractStorage
+    public static function getMailServerMailboxInstance(string $protocol_type, array $config, bool $allow_plugins_protocols = true): ?MailboxInterface
     {
         $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
-            $storage = $protocols[$protocol_type]['storage'];
-            if (is_callable($storage)) {
-                return call_user_func($storage, $params);
-            } elseif (class_exists($storage) && is_a($storage, AbstractStorage::class, true)) {
-                return new $storage($params);
-            } else {
-                trigger_error(
-                    sprintf('Invalid specs for protocol "%s".', $protocol_type),
-                    E_USER_WARNING
-                );
+            $mailbox = $protocols[$protocol_type]['mailbox'];
+            $instance = null;
+            if (is_callable($mailbox)) {
+                $instance = call_user_func($mailbox, $config);
+            } elseif (is_string($mailbox) && class_exists($mailbox) && is_a($mailbox, MailboxInterface::class, true)) {
+                $instance = new $mailbox($config);
             }
+
+            if ($instance instanceof MailboxInterface) {
+                return $instance;
+            }
+
+            trigger_error(
+                sprintf('Invalid specs for protocol "%s".', $protocol_type),
+                E_USER_WARNING
+            );
         }
         return null;
     }
