@@ -49,7 +49,6 @@ foreach ($pop_tables as $table => $connect_string_field) {
         'SELECT' => ['id', 'name', $connect_string_field],
         'FROM'   => $table,
         'WHERE'  => [
-            'is_active'           => 1,
             $connect_string_field => ['LIKE', '%/pop%'],
         ],
     ]);
