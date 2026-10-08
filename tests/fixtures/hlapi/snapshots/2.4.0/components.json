@@ -7095,6 +7095,51 @@
                 }
             }
         },
+        "DropdownDefinition": {
+            "x-itemtype": "Glpi\\Dropdown\\DropdownDefinition",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "system_name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "label": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "icon": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "profiles": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "translations": {
+                    "type": "string"
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
         "EmailAddress": {
             "x-itemtype": "UserEmail",
             "type": "object",

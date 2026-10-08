@@ -73,6 +73,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -120,6 +121,7 @@ use Stencil;
 use SupplierType;
 use TaskCategory;
 use TaskTemplate;
+use Throwable;
 use TicketTemplate;
 use Toolbox;
 use USBVendor;
@@ -129,6 +131,8 @@ use VirtualMachineState;
 use VirtualMachineSystem;
 use VirtualMachineType;
 use WifiNetwork;
+
+use function Safe\json_decode;
 
 #[Route(path: '/Dropdowns', priority: 1, tags: ['Dropdowns'])]
 #[Doc\Route(
@@ -2179,6 +2183,35 @@ EOT,
             ],
         ];
 
+        $schemas['DropdownDefinition'] = [
+            'x-version-introduced' => '2.4',
+            'x-itemtype' => DropdownDefinition::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'system_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'label' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'icon' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'profiles' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'JSON encoded object where the keys are profile IDs and the values are the raw numeric right values.',
+                    'readOnly' => true,
+                ],
+                'translations' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'JSON encoded object of translations for the dropdown type label where the keys are the language and the values are objects with properties for "one", "many" and "other".',
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -2561,5 +2594,93 @@ EOT,
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    /**
+     * Decode JSON-encoded string parameters so they can be validated and stored by the definition.
+     * @param Request $request
+     * @param string[] $params
+     */
+    private static function decodeJSONStringParameters(Request $request, array $params): void
+    {
+        foreach ($params as $param) {
+            if ($request->hasParameter($param)) {
+                $value = $request->getParameter($param);
+                if (!empty($value) && is_string($value)) {
+                    try {
+                        $request->setParameter($param, json_decode($value, true));
+                    } catch (Throwable) {
+                        // Will be handled when trying to save the definition
+                    }
+                }
+            }
+        }
+    }
+
+    #[Route(path: '/CustomDefinition', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(schema_name: 'DropdownDefinition')]
+    public function searchDropdownDefinitions(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('DropdownDefinition', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/CustomDefinition', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(schema_name: 'DropdownDefinition')]
+    public function createDropdownDefinition(Request $request): Response
+    {
+        self::decodeJSONStringParameters($request, ['translations']);
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema('DropdownDefinition', $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getDropdownDefinition'],
+        );
+    }
+
+    #[Route(path: '/CustomDefinition/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(schema_name: 'DropdownDefinition')]
+    public function getDropdownDefinition(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('DropdownDefinition', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/CustomDefinition/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\UpdateRoute(schema_name: 'DropdownDefinition')]
+    public function updateDropdownDefinition(Request $request): Response
+    {
+        self::decodeJSONStringParameters($request, ['translations']);
+        return ResourceAccessor::updateBySchema(
+            schema: $this->getKnownSchema('DropdownDefinition', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/CustomDefinition/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\DeleteRoute(schema_name: 'DropdownDefinition')]
+    public function deleteDropdownDefinition(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('DropdownDefinition', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
     }
 }
