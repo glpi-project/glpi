@@ -268,7 +268,7 @@ class Auth extends CommonGLPI
             }
             $protocol->connect(
                 $config['address'],
-                $config['port'],
+                $config['port'] !== '' ? (int) $config['port'] : null,
                 $ssl
             );
 
