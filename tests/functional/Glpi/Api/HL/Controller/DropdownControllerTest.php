@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Blacklist;
 use BlacklistedMailContent;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Holiday;
@@ -272,6 +273,165 @@ class DropdownControllerTest extends HLAPITestCase
                     $this->assertTrue($content['visibilities']['monitor']);
                     $this->assertFalse($content['visibilities']['phone']);
                     $this->assertFalse($content['visibilities']['printer']);
+                });
+        });
+    }
+
+    public function testCRUDDropdownDefinition()
+    {
+        $create_input = [
+            'system_name' => 'Color',
+            'label' => 'Color',
+            'icon' => 'ti-palette',
+            'comment' => 'Test comment',
+            'is_active' => true,
+            'translations' => '{"fr_FR":{"one":"Couleur","many":"Couleurs","other":"Couleurs"}}',
+        ];
+
+        $this->login();
+
+        // Create
+        $request = new Request('POST', '/Dropdowns/CustomDefinition');
+        foreach ($create_input as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+        $definition_location = null;
+        $this->api->call($request, function ($call) use (&$definition_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$definition_location) {
+                    $this->assertNotEmpty($headers['Location']);
+                    $definition_location = $headers['Location'];
+                });
+        });
+
+        $check_content = function (array $content) use ($create_input) {
+            foreach ($create_input as $key => $value) {
+                if ($key === 'translations') {
+                    $this->assertEquals(json_decode($value, true), json_decode($content[$key], true));
+                } else {
+                    $this->assertEquals($value, $content[$key]);
+                }
+            }
+        };
+
+        // Get
+        $this->api->call(new Request('GET', $definition_location), function ($call) use ($check_content) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($check_content) {
+                    $check_content($content);
+                });
+        });
+
+        // Search
+        $request = new Request('GET', '/Dropdowns/CustomDefinition');
+        $request->setParameter('filter', 'system_name==Color');
+        $this->api->call($request, function ($call) use ($check_content) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($check_content) {
+                    $this->assertCount(1, $content);
+                    $check_content($content[0]);
+                });
+        });
+
+        // Update
+        $update_input = [
+            'label' => 'Updated Color',
+            'is_active' => false,
+        ];
+        $request = new Request('PATCH', $definition_location);
+        foreach ($update_input as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        // Get after update
+        $this->api->call(new Request('GET', $definition_location), function ($call) use ($update_input) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($update_input) {
+                    $this->assertEquals($update_input['label'], $content['label']);
+                    $this->assertEquals($update_input['is_active'], $content['is_active']);
+                });
+        });
+
+        // Cannot change system name
+        $request = new Request('PATCH', $definition_location);
+        $request->setParameter('system_name', 'NewColor');
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isNotOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('Failed to update item(s)', $content['title']);
+                    $this->assertStringContainsString('The system name cannot be changed', $content['additional_messages'][0]['message']);
+                });
+        });
+
+        // Delete
+        $this->api->call(new Request('DELETE', $definition_location), function ($call) {
+            $call->response->isOK();
+        });
+
+        // Ensure deleted
+        $this->api->call(new Request('GET', $definition_location), function ($call) {
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testDropdownDefinitionRejectsScalarTranslationLanguageValue()
+    {
+        $this->login();
+
+        // Create
+        $request = new Request('POST', '/Dropdowns/CustomDefinition');
+        $request->setParameter('system_name', 'ScalarTranslation');
+        $request->setParameter('translations', '{"fr_FR":"Couleur"}');
+        $this->api->call($request, function ($call) {
+            $call->response->isNotOK();
+        });
+        $this->assertFalse((new DropdownDefinition())->getFromDBByCrit(['system_name' => 'ScalarTranslation']));
+
+        // Update
+        $definition = $this->initDropdownDefinition();
+        $request = new Request('PATCH', '/Dropdowns/CustomDefinition/' . $definition->getID());
+        $request->setParameter('translations', '{"fr_FR":"Couleur"}');
+        $this->api->call($request, function ($call) {
+            $call->response->isNotOK();
+        });
+        $this->assertTrue($definition->getFromDB($definition->getID()));
+        $this->assertNotEquals(['fr_FR' => 'Couleur'], json_decode($definition->fields['translations'], true));
+    }
+
+    public function testCRUDNoRightsDropdownDefinition()
+    {
+        $definition = $this->initDropdownDefinition();
+
+        $this->api->autoTestCRUDNoRights(
+            endpoint: '/Dropdowns/CustomDefinition',
+            itemtype: DropdownDefinition::class,
+            items_id: $definition->getID(),
+            deny_create: static function () {
+                $_SESSION['glpiactiveprofile'][DropdownDefinition::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            deny_purge: static function () {
+                $_SESSION['glpiactiveprofile'][DropdownDefinition::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            create_params: ['system_name' => 'NoRightsDefinition'],
+        );
+    }
+
+    public function testDropdownDefinitionNotInIndex()
+    {
+        $this->login();
+        $this->api->call(new Request('GET', '/Dropdowns'), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertNotContains(DropdownDefinition::class, array_column($content, 'itemtype'));
                 });
         });
     }
