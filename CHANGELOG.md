@@ -23,6 +23,8 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `Glpi\Application\Environment::shouldAddExtraCypressDataDuringInstallation()`
+- `Glpi\Application\Environment::shouldAddExtraE2EDataDuringInstallation()`
 
 #### Removed
 
