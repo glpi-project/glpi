@@ -349,7 +349,7 @@ abstract class CommonDropdown extends CommonDBTM
             $this->check($ID, READ);
         } else {
             // Create item
-            $this->check(-1, CREATE);
+            $this->checkGlobal(CREATE);
         }
 
         // Specific code for templates classes, can't be run in lower classes

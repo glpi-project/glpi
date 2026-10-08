@@ -2273,7 +2273,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if (!is_a($itemtype, CommonDBTM::class, true)) {
-            throw new RuntimeException('Unable to get itemtype from relation input.');
+            // If the polymorphic relation does not provide a valid value,
+            // then we consider the relation field value is empty.
+            return true;
         }
 
         return $itemtype::isNewID($value);

@@ -1171,7 +1171,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
 
         if ($notif->isNewItem()) {
-            $notif->check(-1, CREATE);
+            $notif->checkGlobal(CREATE);
             $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
                 // Fall back to the saved search entity when there is no default
                 // entity, so the insertion does not fail on the NOT NULL column.

@@ -1497,7 +1497,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $this->check($ID, READ);
         } else {
             // Create item
-            $this->check(-1, CREATE);
+            $this->checkGlobal(CREATE);
         }
 
         $item1   = $this->getOnePeer(0);

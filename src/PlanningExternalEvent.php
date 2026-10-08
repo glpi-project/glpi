@@ -166,7 +166,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         if ($is_ajax && $is_rrule) {
             $options['candel'] = false;
             $options['addbuttons'] = [];
-            if ($this->can(-1, CREATE)) {
+            if (self::canCreate()) {
                 $options['addbuttons']['save_instance'] = [
                     'text'  => __("Detach instance"),
                     'icon'  => 'ti ti-unlink',
