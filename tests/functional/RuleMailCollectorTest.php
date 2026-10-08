@@ -37,7 +37,6 @@ namespace tests\units;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_User;
-use Laminas\Mail\Storage\Message as MailMessage;
 use MailCollector;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
@@ -532,7 +531,7 @@ class RuleMailCollectorTest extends DbTestCase
             'Test body.',
             '',
         ]);
-        $message = new MailMessage(['raw' => $raw]);
+        $message = MailCollector::parseMessage($raw);
         $headers = (new MailCollector())->getHeaders($message);
 
         $rulecollection = new RuleMailCollectorCollection();
@@ -608,7 +607,7 @@ class RuleMailCollectorTest extends DbTestCase
             'Test body.',
             '',
         ]);
-        $message = new MailMessage(['raw' => $raw]);
+        $message = MailCollector::parseMessage($raw);
         $headers = (new MailCollector())->getHeaders($message);
 
         $rulecollection = new RuleMailCollectorCollection();
@@ -686,7 +685,7 @@ class RuleMailCollectorTest extends DbTestCase
             'Test body.',
             '',
         ]);
-        $message = new MailMessage(['raw' => $raw]);
+        $message = MailCollector::parseMessage($raw);
         $headers = (new MailCollector())->getHeaders($message);
 
         $rulecollection = new RuleMailCollectorCollection();

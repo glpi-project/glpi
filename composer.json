@@ -34,6 +34,7 @@
         "altcha-org/altcha": "^2.2.0",
         "apereo/phpcas": "^1.6",
         "bacon/bacon-qr-code": "^3.1",
+        "directorytree/imapengine": "^1.25",
         "donatj/phpuseragentparser": "^1.12",
         "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^5.2",
@@ -42,8 +43,6 @@
         "guzzlehttp/psr7": "^2.13",
         "html2text/html2text": "^4.3",
         "laminas/laminas-i18n": "^2.33",
-        "laminas/laminas-mail": "^2.25",
-        "laminas/laminas-mime": "^2.12",
         "league/commonmark": "^2.10",
         "league/html-to-markdown": "^5.1",
         "league/oauth2-client": "^2.9",
@@ -110,7 +109,8 @@
         "twig/string-extra": "^3.24",
         "twig/twig": "^3.27",
         "wapmorgan/unified-archive": "^1.3",
-        "webonyx/graphql-php": "^15.37"
+        "webonyx/graphql-php": "^15.37",
+        "zbateson/mail-mime-parser": "^4.0"
     },
     "require-dev": {
         "ext-xml": "*",
@@ -168,12 +168,7 @@
         "sort-packages": true,
         "audit": {
             "block-abandoned": false,
-            "block-insecure": false,
-            "ignore-abandoned": {
-                "laminas/laminas-loader": "Used by `laminas/laminas-mail`",
-                "laminas/laminas-mail": "No replacement package found yet",
-                "laminas/laminas-mime": "Used by `laminas/laminas-mail`"
-            }
+            "block-insecure": false
         }
     },
     "autoload": {
@@ -214,8 +209,7 @@
             "bin/console dependencies install --allow-superuser"
         ],
         "patch": [
-            "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
-            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
+            "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
         ]
     }
 }
