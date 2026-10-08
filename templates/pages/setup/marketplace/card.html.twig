@@ -83,8 +83,6 @@
     </span>
 {% endmacro %}
 
-{% import _self as card_macros %}
-
 {% if tab == 'discover' %}
     <li class="plugin" data-key="{{ plugin['key'] }}" data-state="{{ plugin['state'] }}">
         <div class="main {% if plugin['updatable'] == true %} bg-warning-subtle{% endif %}">
@@ -97,8 +95,8 @@
             <span class="buttons">{{ plugin['buttons']|raw }}</span>
         </div>
         <div class="footer">
-            {{ card_macros.misc_left(plugin, tab) }}
-            {{ card_macros.misc_right(plugin) }}
+            {{ _self.misc_left(plugin, tab) }}
+            {{ _self.misc_right(plugin) }}
         </div>
     </li>
 {% else %}
@@ -107,12 +105,12 @@
             <span class="icon">{{ plugin['icon']|raw }}</span>
             <span class="details">
                 <span class="title fs-3 fw-bold">{{ plugin['name'] }}</span>
-                {{ card_macros.misc_right(plugin) }}
+                {{ _self.misc_right(plugin) }}
             </span>
             <span class="buttons">{{ plugin['buttons']|raw }}</span>
         </div>
         <div class="footer">
-            {{ card_macros.misc_left(plugin, tab) }}
+            {{ _self.misc_left(plugin, tab) }}
         </div>
     </li>
 {% endif %}
