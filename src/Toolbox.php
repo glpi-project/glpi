@@ -52,7 +52,6 @@ use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
 use Laminas\Mail\Protocol\Imap;
-use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
@@ -1510,7 +1509,7 @@ class Toolbox
 
         // type follows first found "/" and ends on next "/" (or end of server string)
         // server string is surrounded by "{}" and can be followed by a folder name
-        // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
+        // i.e. "{mail.domain.org/imap/ssl}INBOX"
         $type = preg_replace('/^\{[^\/]+\/([^\/]+)(?:\/.+)*\}.*/', '$1', $value);
         $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols($allow_plugins_protocols))) ? $type : '';
 
@@ -1520,13 +1519,6 @@ class Toolbox
         }
 
         if ($forceport && empty($tab['port'])) {
-            if ($tab['type'] == 'pop') {
-                if ($tab['ssl']) {
-                    $tab['port'] = 995;
-                } else {
-                    $tab['port'] = 110;
-                }
-            }
             if ($tab['type'] == 'imap') {
                 if ($tab['ssl']) {
                     $tab['port'] = 993;
@@ -1618,8 +1610,8 @@ class Toolbox
      * For each returned element:
      *  - key is type used in connection string;
      *  - 'label' field is the label to display;
-     *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap | Laminas\Mail\Protocol\Pop3);
-     *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap | Laminas\Mail\Storage\Pop3).
+     *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap);
+     *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap).
      *
      * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
@@ -1633,12 +1625,6 @@ class Toolbox
                 'label'    => __('IMAP'),
                 'protocol' => Imap::class,
                 'storage'  => Laminas\Mail\Storage\Imap::class,
-            ],
-            'pop'  => [
-                //TRANS: POP3 mail server protocol
-                'label'    => __('POP'),
-                'protocol' => Pop3::class,
-                'storage'  => Laminas\Mail\Storage\Pop3::class,
             ],
         ];
 
@@ -1684,12 +1670,12 @@ class Toolbox
      * Returns protocol instance for given mail server type.
      *
      * Class should implements Glpi\Mail\Protocol\ProtocolInterface
-     * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
+     * or should be \Laminas\Mail\Protocol\Imap for native protocols.
      *
      * @param string    $protocol_type
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return null|ProtocolInterface|Imap|Pop3
+     * @return null|ProtocolInterface|Imap
      */
     public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true)
     {
@@ -1701,8 +1687,7 @@ class Toolbox
             } elseif (
                 class_exists($protocol)
                 && (is_a($protocol, ProtocolInterface::class, true)
-                 || is_a($protocol, Imap::class, true)
-                 || is_a($protocol, Pop3::class, true))
+                 || is_a($protocol, Imap::class, true))
             ) {
                 return new $protocol();
             } else {

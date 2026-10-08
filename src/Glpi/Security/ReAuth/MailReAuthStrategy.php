@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
 use User;
 
 /**
- * Mail server (IMAP/POP) re-authentication strategy.
+ * Mail server (IMAP) re-authentication strategy.
  *
  * Verifies the user identity by logging in to the mail server with the password
  * provided in the prompt, reusing the same mail server configuration as the

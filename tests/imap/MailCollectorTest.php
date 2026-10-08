@@ -39,7 +39,6 @@ use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use Laminas\Mail\Protocol\Imap;
-use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
@@ -1305,17 +1304,12 @@ HTML,
                 'expected_protocol' => Imap::class,
                 'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
             ],
+            // POP protocol is not supported anymore
             [
                 'cnx_string'        => '{mail.domain.org/pop}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
-            ],
-            [
-                'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
+                'expected_type'     => '',
+                'expected_protocol' => null,
+                'expected_storage'  => null,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/unknown-type/ssl}',
@@ -1382,22 +1376,6 @@ HTML,
             'expected_warning'          => 'Protocol "imap" is already defined and cannot be overwritten.',
             'expected_protocol'         => Imap::class,
             'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
-        ];
-
-        // Check that hook cannot alter core POP3 protocol
-        yield [
-            'allow_plugins_protocols'   => true,
-            'hook_result'               => [
-                'pop' => [
-                    'label'    => 'Override test',
-                    'protocol' => 'SomeClass',
-                    'storage'  => 'SomeClass',
-                ],
-            ],
-            'type'                      => 'pop',
-            'expected_warning'          => 'Protocol "pop" is already defined and cannot be overwritten.',
-            'expected_protocol'         => Pop3::class,
-            'expected_storage'          => \Laminas\Mail\Storage\Pop3::class,
         ];
 
         // Check that class must exist

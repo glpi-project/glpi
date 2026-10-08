@@ -74,7 +74,7 @@ class MailCollector extends CommonDBTM
 {
     // Specific one
     /**
-     * IMAP / POP connection
+     * IMAP connection
      */
     private ?AbstractStorage $storage = null;
     /**
@@ -1937,12 +1937,6 @@ class MailCollector extends CommonDBTM
      **/
     public function deleteMails($uid, $folder = '')
     {
-
-        // Disable move support, POP protocol only has the INBOX folder
-        if (strstr($this->fields['host'], "/pop")) {
-            $folder = '';
-        }
-
         if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
             $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
             try {

@@ -292,7 +292,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Test a connexion to the IMAP/POP server
+     * Test a connexion to the IMAP server
      *
      * @param string $connect_string mail server
      * @param string $login          user login
