@@ -323,6 +323,13 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             return $default_values;
         }
 
+        // A single actor default may be a group or a supplier, not only a user
+        foreach ($default_values as $fkey => $ids) {
+            if ($ids !== []) {
+                return [$fkey => $ids];
+            }
+        }
+
         return [key($default_values) => current($default_values)];
     }
 
