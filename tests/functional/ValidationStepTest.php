@@ -331,6 +331,10 @@ class ValidationStepTest extends DbTestCase
 
         $second = $validation->find(['tickets_id' => $ticket->getID(), 'items_id_target' => $manager->getID()]);
         $this->assertCount(1, $second, 'The requester supervisor should be asked for the second step');
+
+        $itil_validationstep = new \TicketValidationStep();
+        $this->assertTrue($itil_validationstep->getFromDB(array_values($second)[0]['itils_validationsteps_id']));
+        $this->assertEquals($step2->getID(), $itil_validationstep->fields['validationsteps_id']);
     }
 
     public function testGetValidationStepClassName(): void
