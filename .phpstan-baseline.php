@@ -1862,30 +1862,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$itemtype of static method CommonDBConnexity\\:\\:canConnexity\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$items_id of static method CommonDBConnexity\\:\\:canConnexity\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$itemtype of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$items_id of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type list\\<list\\<string\\>\\|string\\>\\|string supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 3,
