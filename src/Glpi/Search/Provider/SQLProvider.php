@@ -5397,7 +5397,8 @@ final class SQLProvider implements SearchProviderInterface
                     $newrow[$val['itemtype'] . '_' . $val['id']]['displayname'] = self::giveItem(
                         $val['itemtype'],
                         $val['id'],
-                        $newrow
+                        $newrow,
+                        (bool) $val['meta']
                     );
                     Profiler::getInstance()->pause('SQLProvider::constructData - giveItem');
                 }
@@ -5749,7 +5750,8 @@ final class SQLProvider implements SearchProviderInterface
                                             && $orig_id == 5 // -> Assigned user
                                             && !empty($anon_name = User::getAnonymizedNameForUser(
                                                 $data[$ID][$k]['name'],
-                                                $itemtype::getById($data['id'])->getEntityId()
+                                                // For a meta column, `$data['id']` is the main item ID
+                                                $meta ? Session::getActiveEntity() : $itemtype::getById($data['id'])->getEntityId()
                                             ))
                                         ) {
                                             $out .= \htmlescape($anon_name);
@@ -6693,7 +6695,8 @@ final class SQLProvider implements SearchProviderInterface
             && Session::getCurrentInterface() == 'helpdesk'
             && $orig_id == 8
             && !empty($anon_name = Group::getAnonymizedName(
-                $itemtype::getById($data['id'])->getEntityId()
+                // For a meta column, `$data['id']` is the main item ID
+                $meta ? Session::getActiveEntity() : $itemtype::getById($data['id'])->getEntityId()
             ))
         ) {
             // Assigned groups

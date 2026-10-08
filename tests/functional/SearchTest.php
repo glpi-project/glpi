@@ -7508,6 +7508,41 @@ class SearchTest extends DbTestCase
         $this->assertArrayHasKey('data', $result);
         $this->assertEquals(0, $result['data']['totalcount'], 'Should find no computer for a non-existing asset URL');
     }
+
+    public function testMetaColumnOnSimplifiedInterface(): void
+    {
+        $this->login();
+        $tech_id = getItemByTypeName(User::class, 'tech', true);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __FUNCTION__,
+            'content'             => __FUNCTION__,
+            'entities_id'         => $this->getTestRootEntity(true),
+            '_users_id_requester' => getItemByTypeName(User::class, 'post-only', true),
+            '_users_id_assign'    => $tech_id,
+        ]);
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        // Followups whose ticket is assigned to "tech", searched from the simplified interface
+        $this->login('post-only', 'postonly');
+        $data = SearchEngine::getData(ITILFollowup::class, [
+            'criteria' => [
+                [
+                    'link'       => 'AND',
+                    'meta'       => true,
+                    'itemtype'   => Ticket::class,
+                    'field'      => 5, // Assigned to technician
+                    'searchtype' => 'equals',
+                    'value'      => $tech_id,
+                ],
+            ],
+        ]);
+
+        $this->assertArrayHasKey($followup->getID(), $data['data']['items']);
+    }
 }
 
 // @codingStandardsIgnoreStart
