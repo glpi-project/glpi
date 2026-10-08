@@ -950,14 +950,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             );
         }
 
+        $item_type_name = $this->obj instanceof CommonITILObject
+            ? $this->obj->getTypeName(1)
+            : _n('Item', 'Items', 1);
+
         if ($event == 'satisfaction') {
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
             $this->addTarget(Notification::RECIPIENT, __('Writer'));
-        } elseif ($event != 'alertnotclosed') {
-            $item_type_name = $this->obj instanceof CommonITILObject
-                ? $this->obj->getTypeName(1)
-                : _n('Item', 'Items', 1);
-
+        } elseif ($event == 'alertnotclosed') {
+            $this->addTarget(Notification::ASSIGN_TECH, sprintf(__('Technician in charge of the %s'), $item_type_name));
+            $this->addTarget(Notification::ASSIGN_GROUP, sprintf(__('Group in charge of the %s'), $item_type_name));
+        } else {
             $this->addTarget(Notification::RECIPIENT, __('Writer'));
             $this->addTarget(Notification::SUPPLIER, Supplier::getTypeName(1));
             $this->addTarget(
@@ -1019,6 +1022,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      **/
     public function addSpecificTargets($data, $options)
     {
+        if ($this->raiseevent === 'alertnotclosed') {
+            // No single item on this event, actors are resolved for each alerted item
+            if ($data['type'] == Notification::USER_TYPE) {
+                $this->addAssignedActorsOfAlertedItems((int) $data['items_id'], $options);
+            }
+            return;
+        }
 
         //Look for all targets whose type is Notification::ITEM_USER
         switch ($data['type']) {
@@ -1137,6 +1147,59 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     /**
+     * Add actors in charge of the alerted items, each one for its own items only.
+     *
+     * @param int                  $target_type Notification::ASSIGN_TECH or Notification::ASSIGN_GROUP
+     * @param array<string, mixed> $options
+     *
+     * @return void
+     */
+    private function addAssignedActorsOfAlertedItems(int $target_type, array $options): void
+    {
+        if (
+            !in_array($target_type, [Notification::ASSIGN_TECH, Notification::ASSIGN_GROUP], true)
+            || !($this->obj instanceof CommonITILObject)
+        ) {
+            return;
+        }
+
+        $obj        = $this->obj;
+        $targets    = $this->target;
+        $recipients = [];
+        $items_ids  = [];
+
+        try {
+            foreach ($options['items'] ?? [] as $fields) {
+                $item = new ($obj::class)();
+                if (!$item->getFromDB($fields['id'])) {
+                    continue;
+                }
+
+                $this->obj    = $item;
+                $this->target = [];
+                if ($target_type === Notification::ASSIGN_TECH) {
+                    $this->addLinkedUserByType(CommonITILActor::ASSIGN);
+                } else {
+                    $this->addLinkedGroupByType(CommonITILActor::ASSIGN);
+                }
+
+                foreach ($this->target as $key => $recipient) {
+                    $recipients[$key]  = $recipient;
+                    $items_ids[$key][] = $item->getID();
+                }
+            }
+        } finally {
+            $this->obj    = $obj;
+            $this->target = $targets;
+        }
+
+        foreach ($recipients as $key => $recipient) {
+            $recipient['additionnaloption']['items_ids'] = $items_ids[$key];
+            $this->target[$key] = $recipient;
+        }
+    }
+
+    /**
      * Add mentionned user to recipients.
      *
      * @param array $options
@@ -1179,7 +1242,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 if ($item instanceof CommonITILObject) {
                     $objettypes = Toolbox::strtolower(getPlural($objettype));
                     $items      = [];
+                    // Set when the recipient must only be notified for its own items
+                    $items_ids  = $options['additionnaloption']['items_ids'] ?? null;
                     foreach ($options['items'] as $object) {
+                        if ($items_ids !== null && !in_array((int) $object['id'], $items_ids, true)) {
+                            continue;
+                        }
                         $item->getFromDB($object['id']);
                         $tmp = $this->getDataForObject($item, $options, true);
                         $this->data[$objettypes][] = $tmp;
