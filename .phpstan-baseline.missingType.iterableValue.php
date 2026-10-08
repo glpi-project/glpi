@@ -20882,12 +20882,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method MailCollector\\:\\:extractFolderData\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method MailCollector\\:\\:extractValuesFromRefHeader\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -29318,18 +29312,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Toolbox\\:\\:getMailServerProtocols\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Toolbox\\:\\:getMailServerStorageInstance\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Toolbox\\:\\:getTimestampTimeUnits\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -29367,12 +29349,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Toolbox\\:\\:manageBeginAndEndPlanDates\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Toolbox\\:\\:parseMailServerConnectString\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
