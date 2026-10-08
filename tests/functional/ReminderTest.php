@@ -42,15 +42,12 @@ class ReminderTest extends DbTestCase
 {
     public function testAddVisibilityRestrict()
     {
-        $e2e_root        = getItemByTypeName('Entity', 'E2ETestEntity', true);
-        $e2e_test_child1 = getItemByTypeName('Entity', 'E2ETestSubEntity1', true);
-        $e2e_test_child2 = getItemByTypeName('Entity', 'E2ETestSubEntity2', true);
         $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
         $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
         $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
         $test_child_3    = getItemByTypeName('Entity', '_test_child_3', true);
 
-        $all_entities = "'0', '$test_root', '$e2e_root', '$e2e_test_child1', '$e2e_test_child2', '$test_child_1', '$test_child_2', '$test_child_3'";
+        $all_entities = "'0', '$test_root', '$test_child_1', '$test_child_2', '$test_child_3'";
 
         //first, as a super-admin
         $this->login();
