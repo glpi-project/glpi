@@ -239,8 +239,35 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
         $form = $this->createForm($builder);
         $question = Question::getById($this->getQuestionId($form, "Question"));
 
+        $question_type = new (static::getQuestionType())();
         $this->assertEquals(
-            [$fkey => [$id]],
+            in_array($itemtype, $question_type->getAllowedActorTypes(), true) ? [$fkey => [$id]] : [],
+            $question_type->getDefaultValue($question, false),
+        );
+    }
+
+    public function testSingleActorDefaultValueSkipsDisabledActorType(): void
+    {
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
+        $group_id = getItemByTypeName(Group::class, '_test_group_1', true);
+
+        $builder = (new FormBuilder())->addQuestion(
+            "Question",
+            static::getQuestionType(),
+            ["users_id-$user_id", "groups_id-$group_id"],
+            json_encode([
+                QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => false,
+                QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [
+                    User::class => 0,
+                    Group::class => 1,
+                ],
+            ])
+        );
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Question"));
+
+        $this->assertEquals(
+            ['groups_id' => [$group_id]],
             (new (static::getQuestionType())())->getDefaultValue($question, false),
         );
     }
