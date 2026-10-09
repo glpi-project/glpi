@@ -385,6 +385,244 @@ class CoreControllerTest extends HLAPITestCase
         });
     }
 
+    private const PKCE_REDIRECT_URI = 'https://spa.example.com/callback';
+
+    /**
+     * Create an OAuth client and return its identifier.
+     * @param string[] $grants
+     */
+    private function createOAuthClient(string $name, bool $is_confidential, array $grants): string
+    {
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => $name,
+            'is_active' => 1,
+            'is_confidential' => (int) $is_confidential,
+            'grants' => $grants,
+            'scopes' => ['api'],
+            'redirect_uri' => [self::PKCE_REDIRECT_URI],
+        ], ['grants', 'scopes', 'redirect_uri']);
+        return $client->fields['identifier'];
+    }
+
+    private static function getPKCEChallenge(string $verifier): string
+    {
+        return rtrim(strtr(base64_encode(hash('sha256', $verifier, true)), '+/', '-_'), '=');
+    }
+
+    /**
+     * Call the authorize endpoint with the given query parameters, accepting the authorization request.
+     * @param array<string, string> $query
+     */
+    private function callAuthorize(array $query, callable $fn): void
+    {
+        $request = (new Request('GET', '/Authorize?' . http_build_query($query)))->withQueryParams($query);
+        $request->setParameter('accept', '');
+        $this->api->call($request, $fn, false);
+    }
+
+    /**
+     * Accept an authorization request and return the query parameters of the redirection to the client.
+     * @param array<string, string> $query
+     * @return array<string, string>
+     */
+    private function getAuthorizationRedirectParams(array $query): array
+    {
+        $location = null;
+        $this->callAuthorize($query, function ($call) use (&$location) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(function ($headers) use (&$location) {
+                    $location = $headers['Location'];
+                });
+        });
+        $this->assertStringStartsWith(self::PKCE_REDIRECT_URI . '?', $location);
+        parse_str(parse_url($location, PHP_URL_QUERY), $params);
+        return $params;
+    }
+
+    public function testOAuthAuthCodePKCEPublicClient(): void
+    {
+        $client_id = $this->createOAuthClient(__FUNCTION__, false, ['authorization_code']);
+        $this->loginWeb();
+
+        $verifier = bin2hex(random_bytes(32));
+        $query = [
+            'response_type' => 'code',
+            'client_id' => $client_id,
+            'redirect_uri' => self::PKCE_REDIRECT_URI,
+            'scope' => 'api',
+            'state' => 'test_state',
+            'code_challenge' => self::getPKCEChallenge($verifier),
+            'code_challenge_method' => 'S256',
+        ];
+        $params = $this->getAuthorizationRedirectParams($query);
+        $this->assertEquals('test_state', $params['state']);
+        $this->assertNotEmpty($params['code']);
+
+        $token_request_data = [
+            'grant_type' => 'authorization_code',
+            'client_id' => $client_id,
+            'redirect_uri' => self::PKCE_REDIRECT_URI,
+            'code' => $params['code'],
+        ];
+
+        // Invalid code verifier
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($token_request_data + [
+            'code_verifier' => bin2hex(random_bytes(32)),
+        ]));
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(fn($content) => $this->assertEquals('invalid_grant', $content['error']));
+        }, false);
+
+        // Request a new authorization code
+        $params = $this->getAuthorizationRedirectParams($query);
+        $token_request_data['code'] = $params['code'];
+
+        // Valid code verifier without any client secret
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($token_request_data + [
+            'code_verifier' => $verifier,
+        ]));
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('Bearer', $content['token_type']);
+                    $this->assertNotEmpty($content['access_token']);
+                    $this->assertNotEmpty($content['refresh_token']);
+                });
+        }, false);
+    }
+
+    public function testOAuthAuthCodePublicClientRequiresS256PKCE(): void
+    {
+        $client_id = $this->createOAuthClient(__FUNCTION__, false, ['authorization_code']);
+        $this->loginWeb();
+
+        $query = [
+            'response_type' => 'code',
+            'client_id' => $client_id,
+            'redirect_uri' => self::PKCE_REDIRECT_URI,
+            'scope' => 'api',
+        ];
+
+        // No code challenge
+        $this->callAuthorize($query, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('invalid_request', $content['error']);
+                    $this->assertEquals('Code challenge must be provided for public clients', $content['hint']);
+                });
+        });
+
+        // Plain code challenge method
+        $this->callAuthorize($query + [
+            'code_challenge' => bin2hex(random_bytes(32)),
+            'code_challenge_method' => 'plain',
+        ], function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('invalid_request', $content['error']);
+                    $this->assertEquals('Public clients must use the S256 code challenge method', $content['hint']);
+                });
+        });
+    }
+
+    public function testOAuthPublicClientGrantRestrictions(): void
+    {
+        $client_id = $this->createOAuthClient(__FUNCTION__, false, ['authorization_code']);
+
+        // Grants not allowed for the client are rejected even without a secret to validate
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode([
+            'grant_type' => 'password',
+            'client_id' => $client_id,
+            'username' => TU_USER,
+            'password' => TU_PASS,
+            'scope' => 'api',
+        ]));
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(fn($content) => $this->assertEquals('unauthorized_client', $content['error']));
+        }, false);
+    }
+
+    public function testOAuthAuthCodeConfidentialClientWithoutPKCE(): void
+    {
+        global $DB;
+
+        $client_id = $this->createOAuthClient(__FUNCTION__, true, ['authorization_code']);
+        $secret = (new \GLPIKey())->decrypt($DB->request([
+            'SELECT' => ['secret'],
+            'FROM' => \OAuthClient::getTable(),
+            'WHERE' => ['identifier' => $client_id],
+        ])->current()['secret']);
+        $this->loginWeb();
+
+        $params = $this->getAuthorizationRedirectParams([
+            'response_type' => 'code',
+            'client_id' => $client_id,
+            'redirect_uri' => self::PKCE_REDIRECT_URI,
+            'scope' => 'api',
+        ]);
+
+        $token_request_data = [
+            'grant_type' => 'authorization_code',
+            'client_id' => $client_id,
+            'redirect_uri' => self::PKCE_REDIRECT_URI,
+            'code' => $params['code'],
+        ];
+
+        // Confidential clients still need their secret
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($token_request_data));
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(fn($content) => $this->assertEquals('invalid_request', $content['error']));
+        }, false);
+
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($token_request_data + [
+            'client_secret' => $secret,
+        ]));
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(fn($content) => $this->assertNotEmpty($content['access_token']));
+        }, false);
+    }
+
+    public function testOAuthAuthorizeLoginRedirectKeepsPKCEParams(): void
+    {
+        $client_id = $this->createOAuthClient(__FUNCTION__, false, ['authorization_code']);
+        $challenge = self::getPKCEChallenge(bin2hex(random_bytes(32)));
+
+        $location = null;
+        $this->callAuthorize([
+            'response_type' => 'code',
+            'client_id' => $client_id,
+            'redirect_uri' => self::PKCE_REDIRECT_URI,
+            'scope' => 'api',
+            'state' => 'test_state',
+            'code_challenge' => $challenge,
+            'code_challenge_method' => 'S256',
+        ], function ($call) use (&$location) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(function ($headers) use (&$location) {
+                    $location = $headers['Location'];
+                });
+        });
+
+        parse_str(parse_url($location, PHP_URL_QUERY), $login_params);
+        parse_str(parse_url($login_params['redirect'], PHP_URL_QUERY), $authorize_params);
+        $this->assertEquals('test_state', $authorize_params['state']);
+        $this->assertEquals($challenge, $authorize_params['code_challenge']);
+        $this->assertEquals('S256', $authorize_params['code_challenge_method']);
+    }
+
     public function testStatusScope()
     {
         $this->login(api_options: ['scope' => 'api']);
