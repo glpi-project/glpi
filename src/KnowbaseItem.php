@@ -1500,6 +1500,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
+        // Anonymous visitors of the public FAQ count once per session, not on every reload.
+        $is_anonymous = Session::getLoginUserID() === false;
+        if ($is_anonymous && isset($_SESSION['glpi_kb_viewed_ids'][$this->getID()])) {
+            return;
+        }
+
         // update counter view
         $DB->update(
             'glpi_knowbaseitems',
@@ -1510,6 +1516,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'id' => $this->getID(),
             ]
         );
+
+        if ($is_anonymous) {
+            $_SESSION['glpi_kb_viewed_ids'][$this->getID()] = true;
+        }
     }
 
     /**
