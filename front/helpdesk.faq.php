@@ -63,14 +63,15 @@ if (!isset($_GET["id"])) {
     Html::redirect($CFG_GLPI['root_doc'] . '/front/helpdesk.faq.php?id=' . $root_id);
 }
 
-// Checked before any output so the error page can be rendered (same codes as the central knowledge base).
+// Checked before any output so the error page can be rendered.
 $id = (int) $_GET["id"];
 $kb = new KnowbaseItem();
 if (!$kb->getFromDB($id)) {
     throw new NotFoundHttpException();
 }
 if (!$kb->can($id, READ)) {
-    throw new AccessDeniedHttpException();
+    // An anonymous visitor must not tell a private article from a missing one.
+    throw Session::getLoginUserID() === false ? new NotFoundHttpException() : new AccessDeniedHttpException();
 }
 
 if (Session::getLoginUserID()) {

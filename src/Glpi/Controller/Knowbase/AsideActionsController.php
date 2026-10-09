@@ -40,6 +40,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use KnowbaseItem;
+use Session;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -69,7 +70,8 @@ final class AsideActionsController extends AbstractController
         }
 
         if (!$item->can($id, READ)) {
-            throw new AccessDeniedHttpException();
+            // An anonymous visitor must not tell a private article from a missing one.
+            throw Session::getLoginUserID() === false ? new NotFoundHttpException() : new AccessDeniedHttpException();
         }
 
         return $this->render('pages/tools/kb/aside_actions.html.twig', [
