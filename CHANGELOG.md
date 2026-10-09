@@ -13,6 +13,7 @@ The present file will list all changes made to the project; according to the
 
 ### Removed
 - `itemtype` criteria for Ticket and Change rules. This has been non-operational since 0.85 (over 11 years ago).
+- POP protocol support for mails receivers and mail authentication servers. Existing mails receivers and authentication servers using it are disabled during the update.
 
 ### API changes
 

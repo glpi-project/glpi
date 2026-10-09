@@ -113,44 +113,42 @@
         }
     ) }}
 
-    {% if connect_opts['type'] != 'pop' %}
-        {{ fields.smallTitle(__('Folders setup')) }}
-        {% set get_imap_folder_btn %}
-            <div class="btn btn-outline-secondary get-imap-folder cursor-pointer{% if item.isNewItem() %} disabled{% endif %}"
-                 {% if item.isNewItem() %}style="pointer-events: none;"{% endif %}>
-                <i class="ti ti-list" aria-hidden="true"></i>
-            </div>
-        {% endset %}
-        {# warning message when config is changed, choosing imap/folder is disabled #}
-        <div class="alert alert-warning{% if not item.isNewItem() %} d-none{% endif %}" id="server-changed-warning">
-            <i class="ti ti-info-circle" aria-hidden="true"></i>
-            {{ __('Server configuration has changed. Please save the collector before browsing folders.') }}
+    {{ fields.smallTitle(__('Folders setup')) }}
+    {% set get_imap_folder_btn %}
+        <div class="btn btn-outline-secondary get-imap-folder cursor-pointer{% if item.isNewItem() %} disabled{% endif %}"
+             {% if item.isNewItem() %}style="pointer-events: none;"{% endif %}>
+            <i class="ti ti-list" aria-hidden="true"></i>
         </div>
-        {{ fields.textField(
-            'server_mailbox',
-            connect_opts['mailbox'],
-            __('Incoming mail folder (optional, often INBOX)'), {
-                add_field_html: get_imap_folder_btn,
-                input_class: 'col-xxl-7 d-flex'
-            }
-        ) }}
-        {{ fields.textField(
-            'accepted',
-            item.fields['accepted'],
-            __('Accepted mail archive folder (optional)'), {
-                add_field_html: get_imap_folder_btn,
-                input_class: 'col-xxl-7 d-flex'
-            }
-        ) }}
-        {{ fields.textField(
-            'refused',
-            item.fields['refused'],
-            __('Refused mail archive folder (optional)'), {
-                add_field_html: get_imap_folder_btn,
-                input_class: 'col-xxl-7 d-flex'
-            }
-        ) }}
-    {% endif %}
+    {% endset %}
+    {# warning message when config is changed, choosing imap/folder is disabled #}
+    <div class="alert alert-warning{% if not item.isNewItem() %} d-none{% endif %}" id="server-changed-warning">
+        <i class="ti ti-info-circle" aria-hidden="true"></i>
+        {{ __('Server configuration has changed. Please save the collector before browsing folders.') }}
+    </div>
+    {{ fields.textField(
+        'server_mailbox',
+        connect_opts['mailbox'],
+        __('Incoming mail folder (optional, often INBOX)'), {
+            add_field_html: get_imap_folder_btn,
+            input_class: 'col-xxl-7 d-flex'
+        }
+    ) }}
+    {{ fields.textField(
+        'accepted',
+        item.fields['accepted'],
+        __('Accepted mail archive folder (optional)'), {
+            add_field_html: get_imap_folder_btn,
+            input_class: 'col-xxl-7 d-flex'
+        }
+    ) }}
+    {{ fields.textField(
+        'refused',
+        item.fields['refused'],
+        __('Refused mail archive folder (optional)'), {
+            add_field_html: get_imap_folder_btn,
+            input_class: 'col-xxl-7 d-flex'
+        }
+    ) }}
 
     {{ fields.smallTitle(__('Collection options')) }}
     {% set max_filesize_dropdown %}
@@ -205,86 +203,84 @@
         }
     ) }}
 
-    {% if connect_opts['type'] != 'pop' %}
-        <script>
-            $(function() {
-                // Track all fields used to establish the IMAP connection
-                const connectionFields = [
-                    // Server configuration
-                    'mail_server', 'server_port', 'server_type', 'server_ssl',
-                    'server_tls', 'server_cert', 'server_rsh', 'server_secure', 'server_debug',
-                    // Authentication
-                    'login', 'passwd'
-                ];
-                const form = $('.get-imap-folder').closest('form');
-            {% if item.isNewItem() %}
-                // New collector: always disabled until first save
-                {% else %}
-                const savedValues = {};
+    <script>
+        $(function() {
+            // Track all fields used to establish the IMAP connection
+            const connectionFields = [
+                // Server configuration
+                'mail_server', 'server_port', 'server_type', 'server_ssl',
+                'server_tls', 'server_cert', 'server_rsh', 'server_secure', 'server_debug',
+                // Authentication
+                'login', 'passwd'
+            ];
+            const form = $('.get-imap-folder').closest('form');
+        {% if item.isNewItem() %}
+            // New collector: always disabled until first save
+            {% else %}
+            const savedValues = {};
+            connectionFields.forEach(function(name) {
+                const field = form.find('[name="' + name + '"]');
+                if (field.length) {
+                    savedValues[name] = field.val();
+                }
+            });
+
+            function checkConnectionChanged() {
+                let changed = false;
                 connectionFields.forEach(function(name) {
                     const field = form.find('[name="' + name + '"]');
-                    if (field.length) {
-                        savedValues[name] = field.val();
+                    if (field.length && field.val() !== savedValues[name]) {
+                        changed = true;
                     }
                 });
-
-                function checkConnectionChanged() {
-                    let changed = false;
-                    connectionFields.forEach(function(name) {
-                        const field = form.find('[name="' + name + '"]');
-                        if (field.length && field.val() !== savedValues[name]) {
-                            changed = true;
-                        }
-                    });
-                    const warning = $('#server-changed-warning');
-                    const buttons = form.find('.get-imap-folder');
-                    if (changed) {
-                        warning.removeClass('d-none');
-                        buttons.addClass('disabled').css('pointer-events', 'none');
-                    } else {
-                        warning.addClass('d-none');
-                        buttons.removeClass('disabled').css('pointer-events', '');
-                    }
+                const warning = $('#server-changed-warning');
+                const buttons = form.find('.get-imap-folder');
+                if (changed) {
+                    warning.removeClass('d-none');
+                    buttons.addClass('disabled').css('pointer-events', 'none');
+                } else {
+                    warning.addClass('d-none');
+                    buttons.removeClass('disabled').css('pointer-events', '');
                 }
+            }
 
-                form.on(
-                    'change input',
-                    connectionFields.map(n => '[name="' + n + '"]').join(', '),
-                    checkConnectionChanged
-                );
-                {% endif %}
+            form.on(
+                'change input',
+                connectionFields.map(n => '[name="' + n + '"]').join(', '),
+                checkConnectionChanged
+            );
+            {% endif %}
 
-            $(document).on('click', '.get-imap-folder', function() {
-                const input = $(this).prev('input');
+        $(document).on('click', '.get-imap-folder', function() {
+            const input = $(this).prev('input');
 
-                const data = {
-                    action: 'getFoldersList',
-                    id: '{{ item.fields['id']|default(0)|e('js') }}',
-                        input_id: input.attr('id')
-                    };
+            const data = {
+                action: 'getFoldersList',
+                id: '{{ item.fields['id']|default(0)|e('js') }}',
+                    input_id: input.attr('id')
+                };
 
-                    glpi_ajax_dialog({
-                        title: __('Select a folder'),
-                        url: '{{ path('/ajax/mailcollector.php') }}',
-                        params: data,
-                        id: input.attr('id') + '_modal'
-                    });
+                glpi_ajax_dialog({
+                    title: __('Select a folder'),
+                    url: '{{ path('/ajax/mailcollector.php') }}',
+                    params: data,
+                    id: input.attr('id') + '_modal'
                 });
-
-                $(document).on('click', '.select_folder li', function(event) {
-                    event.stopPropagation();
-
-                    const li       = $(this);
-                    const input_id = li.data('input-id');
-                    const folder   = li.children('.folder-name').data('globalname');
-
-                    $('#'+input_id).val(folder);
-
-                    const modalEl = $('#'+input_id+'_modal')[0];
-                    const modal = bootstrap.Modal.getInstance(modalEl);
-                    modal.hide();
-                })
             });
-        </script>
-    {% endif %}
+
+            $(document).on('click', '.select_folder li', function(event) {
+                event.stopPropagation();
+
+                const li       = $(this);
+                const input_id = li.data('input-id');
+                const folder   = li.children('.folder-name').data('globalname');
+
+                $('#'+input_id).val(folder);
+
+                const modalEl = $('#'+input_id+'_modal')[0];
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                modal.hide();
+            })
+        });
+    </script>
 {% endblock %}
