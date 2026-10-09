@@ -50,6 +50,7 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\UI\ThemeManager;
 use Group;
+use Group_User;
 use Planning;
 use Profile;
 use Session;
@@ -275,6 +276,14 @@ EOD,
                         'x-version-introduced' => '2.2.0',
                     ],
                     'supervisor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_supervisor', full_schema: 'User', params: ['x-version-introduced' => '2.4.0']),
+                    'groups' => self::getChildrenTypeSchema(
+                        parent_class: User::class,
+                        class: Group_User::class,
+                        name_field: null,
+                        full_schema: 'Group_User',
+                        graphql_only: true,
+                        params: ['x-version-introduced' => '2.4.0']
+                    ),
                 ],
             ],
             'Group' => [
@@ -398,6 +407,43 @@ EOD,
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                         'x-version-introduced' => '2.3.0',
+                    ],
+                    'users' => self::getChildrenTypeSchema(
+                        parent_class: Group::class,
+                        class: Group_User::class,
+                        name_field: null,
+                        full_schema: 'Group_User',
+                        graphql_only: true,
+                        params: ['x-version-introduced' => '2.4.0']
+                    ),
+                ],
+            ],
+            'Group_User' => [
+                'x-version-introduced' => '2.4.0',
+                'x-itemtype' => Group_User::class,
+                'x-graphql-resolver' => null,
+                'x-unicity' => ['user', 'group'],
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                        'readOnly' => true,
+                    ],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                    'is_dynamic' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Is dynamic (added by LDAP synchronization)',
+                    ],
+                    'is_manager' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Is the user a manager of the group',
+                    ],
+                    'is_userdelegate' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Is the user a delegatee of the group',
                     ],
                 ],
             ],
@@ -650,6 +696,7 @@ EOT,
             'EmailAddress' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => UserEmail::class,
+                'x-unicity' => ['user', 'email'],
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
@@ -1341,7 +1388,6 @@ EOT,
     #[Doc\CreateRoute(schema_name: 'EmailAddress')]
     public function addUserEmail(Request $request): Response
     {
-        global $DB;
         $users_id = (int) $request->getAttribute('users_id');
         $request->setParameter('user', $users_id);
 
@@ -1350,20 +1396,7 @@ EOT,
             return self::getAccessDeniedErrorResponse();
         }
 
-        // Do our own unicity check since UserEmail doesn't and it will result in a SQL error
-        $it = $DB->request([
-            'SELECT' => ['id'],
-            'FROM' => UserEmail::getTable(),
-            'WHERE' => [
-                'users_id' => $users_id,
-                'email' => $request->getParameter('email'),
-            ],
-            'LIMIT' => 1,
-        ]);
-        if (count($it)) {
-            return new Response(409);
-        }
-
+        // Unicity of the user/email pair is handled by the schema 'x-unicity' since UserEmail doesn't check it and it will result in a SQL error
         return ResourceAccessor::createBySchema(
             schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
             request_params: $request->getParameters(),
@@ -1637,6 +1670,145 @@ EOT,
     public function deleteGroupByID(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Group', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    /**
+     * Check if the specified group/user link belongs to the specified group
+     * @param int $id The ID of the Group_User link
+     * @param int $groups_id The ID of the group
+     * @return bool
+     */
+    private function isGroupUserInGroup(int $id, int $groups_id): bool
+    {
+        return countElementsInTable(Group_User::getTable(), [
+            'id' => $id,
+            'groups_id' => $groups_id,
+        ]) > 0;
+    }
+
+    #[Route(path: '/Group/{groups_id}/User', methods: ['GET'], requirements: [
+        'groups_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(
+        schema_name: 'Group_User',
+        description: 'List or search the users in a group'
+    )]
+    public function searchGroupUsers(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';group.id==' . (int) $request->getAttribute('groups_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Group_User', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Group/{groups_id}/User/{id}', methods: ['GET'], requirements: [
+        'groups_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(
+        schema_name: 'Group_User',
+        description: 'Get a specific user link for a group'
+    )]
+    public function getGroupUser(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';group.id==' . (int) $request->getAttribute('groups_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Group_User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Group/{groups_id}/User', methods: ['POST'], requirements: [
+        'groups_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(
+        schema_name: 'Group_User',
+        description: 'Add a user to a group'
+    )]
+    public function createGroupUser(Request $request): Response
+    {
+        $groups_id = (int) $request->getAttribute('groups_id');
+        $request->setParameter('group', $groups_id);
+
+        // Unicity of the user/group pair is handled by the schema 'x-unicity' since Group_User doesn't check it and it will result in a SQL error
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema('Group_User', $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getGroupUser'],
+            extra_get_route_params: ['mapped' => ['groups_id' => $groups_id]]
+        );
+    }
+
+    #[Route(path: '/Group/{groups_id}/User/{id}', methods: ['PATCH'], requirements: [
+        'groups_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Group_User',
+        description: 'Update a specific user link for a group'
+    )]
+    public function updateGroupUser(Request $request): Response
+    {
+        if (!$this->isGroupUserInGroup((int) $request->getAttribute('id'), (int) $request->getAttribute('groups_id'))) {
+            return self::getNotFoundErrorResponse();
+        }
+        // Moving the link to a different group or user is not allowed
+        $params = $request->getParameters();
+        unset($params['group'], $params['user']);
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Group_User', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+    }
+
+    #[Route(path: '/Group/{groups_id}/User/{id}', methods: ['DELETE'], requirements: [
+        'groups_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Group_User',
+        description: 'Remove a user from a group'
+    )]
+    public function deleteGroupUser(Request $request): Response
+    {
+        if (!$this->isGroupUserInGroup((int) $request->getAttribute('id'), (int) $request->getAttribute('groups_id'))) {
+            return self::getNotFoundErrorResponse();
+        }
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Group_User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/User/{users_id}/Group', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(
+        schema_name: 'Group_User',
+        description: 'List or search the groups of a user'
+    )]
+    public function searchUserGroups(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';user.id==' . (int) $request->getAttribute('users_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Group_User', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/User/{users_id}/Group/{id}', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(
+        schema_name: 'Group_User',
+        description: 'Get a specific group link for a user'
+    )]
+    public function getUserGroup(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';user.id==' . (int) $request->getAttribute('users_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Group_User', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Entity', methods: ['POST'])]

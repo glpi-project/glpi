@@ -148,16 +148,7 @@ final class ResourceAccessor
                 }
             }
 
-            // Field resolution priority: x-field -> x-join.fkey -> property name
-            if (isset($prop['x-input-field'])) {
-                $internal_name = $prop['x-input-field'];
-            } elseif (isset($prop['x-field'])) {
-                $internal_name = $prop['x-field'];
-            } elseif (isset($prop['x-join']['fkey'])) {
-                $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
-            } else {
-                $internal_name = $prop_name;
-            }
+            $internal_name = self::getInputFieldForProperty($prop_name, $prop);
 
             if (array_key_exists('format', $prop) && $prop['format'] === Doc\Schema::FORMAT_STRING_DATE_TIME) {
                 // convert RFC 3339 to YYYY-MM-DD HH:MM:SS
@@ -180,6 +171,82 @@ final class ResourceAccessor
             }
         }
         return $params;
+    }
+
+    /**
+     * Get the internal field name used as input for the given top-level schema property.
+     * Field resolution priority: x-input-field -> x-field -> x-join.fkey -> property name
+     * @param string $prop_name The property name
+     * @param array<string, mixed> $prop The property schema
+     * @return string
+     */
+    private static function getInputFieldForProperty(string $prop_name, array $prop): string
+    {
+        return $prop['x-input-field'] ?? $prop['x-field'] ?? $prop['x-join']['fkey'] ?? $prop_name;
+    }
+
+    /**
+     * Find an existing item which conflicts with the unicity constraint (x-unicity) of the given schema.
+     * @param array<string, mixed> $schema The schema
+     * @param CommonDBTM $item The item the schema represents
+     * @param array<string, mixed> $values The mapped input values (internal field names)
+     * @param int|null $exclude_id ID of an item to exclude from the check (the item being updated)
+     * @return int|null The ID of the conflicting item or null if there is no conflict
+     */
+    private static function findUnicityConflict(array $schema, CommonDBTM $item, array $values, ?int $exclude_id = null): ?int
+    {
+        global $DB;
+
+        if (empty($schema['x-unicity'])) {
+            return null;
+        }
+        $where = [];
+        foreach ($schema['x-unicity'] as $prop_name) {
+            if (!isset($schema['properties'][$prop_name])) {
+                // Property doesn't exist in this version of the schema or isn't readable
+                return null;
+            }
+            $field = self::getInputFieldForProperty($prop_name, $schema['properties'][$prop_name]);
+            if (!isset($values[$field]) || is_array($values[$field])) {
+                return null;
+            }
+            $where[$field] = $values[$field];
+        }
+        if ($exclude_id !== null) {
+            $where[] = ['NOT' => ['id' => $exclude_id]];
+        }
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => $item::getTable(),
+            'WHERE' => $where,
+            'LIMIT' => 1,
+        ]);
+        return count($it) ? (int) $it->current()['id'] : null;
+    }
+
+    /**
+     * Get the response for a unicity constraint conflict.
+     * @param array<string, mixed> $schema The schema
+     * @param CommonDBTM $item The item the schema represents
+     * @param int $conflict_id The ID of the conflicting item
+     * @param string|null $location The API path of the conflicting item. Only exposed if the user can view the conflicting item.
+     * @return Response
+     */
+    private static function getUnicityConflictResponse(array $schema, CommonDBTM $item, int $conflict_id, ?string $location): Response
+    {
+        $headers = [];
+        $existing = new ($item::class)();
+        if ($location !== null && $existing->can($conflict_id, READ)) {
+            $headers['Location'] = $location;
+        }
+        return new JSONResponse(
+            AbstractController::getErrorResponseBody(
+                AbstractController::ERROR_ALREADY_EXISTS,
+                'An item with the same values for the following properties already exists: ' . implode(', ', $schema['x-unicity'])
+            ),
+            409,
+            $headers
+        );
     }
 
     /**
@@ -400,6 +467,11 @@ final class ResourceAccessor
             }
         }
 
+        $conflict_id = self::findUnicityConflict($schema, $item, $input + $item->fields, (int) $items_id);
+        if ($conflict_id !== null) {
+            return self::getUnicityConflictResponse($schema, $item, $conflict_id, null);
+        }
+
         $result = $item->update($input);
 
         if ($result === false) {
@@ -446,20 +518,28 @@ final class ResourceAccessor
         if (!$item->can($item->getID(), CREATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
-        $items_id = $item->add($input);
-        [$controller, $method] = $get_route;
 
-        $id_field = $extra_get_route_params['id'] ?? 'id';
-        if ($items_id !== false) {
-            $request_params[$id_field] = $items_id;
-        }
-        if (array_key_exists('mapped', $extra_get_route_params)) {
-            foreach ($extra_get_route_params['mapped'] as $key => $value) {
+        [$controller, $method] = $get_route;
+        $get_item_path = static function (int $items_id) use ($controller, $method, $request_params, $extra_get_route_params): string {
+            $request_params[$extra_get_route_params['id'] ?? 'id'] = $items_id;
+            foreach ($extra_get_route_params['mapped'] ?? [] as $key => $value) {
                 $request_params[$key] = $value;
             }
+            return $controller::getAPIPathForRouteFunction($controller, $method, $request_params);
+        };
+
+        // Only checked after the input validation and rights checks to avoid disclosing the existence of items
+        $conflict_id = self::findUnicityConflict($schema, $item, $input);
+        if ($conflict_id !== null) {
+            return self::getUnicityConflictResponse($schema, $item, $conflict_id, $get_item_path($conflict_id));
         }
 
-        return AbstractController::getCRUDCreateResponse($items_id, $controller::getAPIPathForRouteFunction($controller, $method, $request_params));
+        $items_id = $item->add($input);
+        if ($items_id === false) {
+            return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_CREATE);
+        }
+
+        return AbstractController::getCRUDCreateResponse($items_id, $get_item_path($items_id));
     }
 
     /**

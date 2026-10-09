@@ -3645,6 +3645,7 @@
         },
         "EmailAddress": {
             "x-itemtype": "UserEmail",
+            "x-unicity": ["user", "email"],
             "type": "object",
             "properties": {
                 "id": {
