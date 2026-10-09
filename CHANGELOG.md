@@ -12,6 +12,7 @@ The present file will list all changes made to the project; according to the
 - New endpoints for viewing, adding and deleting emails for other users in High-Level API v2.4.
 - Endpoints to add or remove relations for links between assets and appliances in High-Level API v2.4.
 - New schemas/endpoints for custom asset definitions and fields in High-Level API v2.4.
+- New schemas/endpoints for custom dropdown definitions in High-Level API v2.4.
 - New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
 - `supervisor` property added for `User` schema in High-Level API v2.4.
 - Support for `If-Modified-Since` and `If-Unmodified-Since` HTTP headers for some types of requests in High-Level API. This is not controlled by the API version.
