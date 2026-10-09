@@ -4644,4 +4644,99 @@ HTML,
             'knowbaseitems_id_parent' => $parent->getID(),
         ]));
     }
+
+    /**
+     * A FAQ article with an illustration, readable by anonymous visitors when
+     * the public FAQ is enabled.
+     */
+    private function createPublicFaqArticle(string $name): int
+    {
+        $this->login();
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'         => $name,
+            'answer'       => '<p>Public</p>',
+            'is_faq'       => 1,
+            'users_id'     => getItemByTypeName(User::class, 'glpi', true),
+            'entities_id'  => $this->getTestRootEntity(only_id: true),
+            'illustration' => 'antivirus',
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+        ]);
+
+        return $article->getID();
+    }
+
+    private function renderArticle(int $id): string
+    {
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($id));
+        $html = $item->showFull(['display' => false]);
+        $this->assertIsString($html);
+
+        return $html;
+    }
+
+    public function testShowFullSendsNoEditorMarkupToReaders(): void
+    {
+        global $CFG_GLPI;
+
+        $id = $this->createPublicFaqArticle(__FUNCTION__);
+
+        $this->login();
+        $html = $this->renderArticle($id);
+        $this->assertStringContainsString('data-glpi-kb-translation-alert', $html);
+        $this->assertStringContainsString('data-testid="illustration-picker-modal"', $html);
+        $this->assertStringContainsString('documenttypelist_', $html);
+
+        $this->login('post-only', 'postonly');
+        $readers = ['post-only' => $this->renderArticle($id)];
+
+        $this->resetSession();
+        $CFG_GLPI['use_public_faq'] = true;
+        try {
+            $readers['anonymous'] = $this->renderArticle($id);
+        } finally {
+            $CFG_GLPI['use_public_faq'] = false;
+        }
+
+        foreach ($readers as $reader => $html) {
+            $this->assertStringNotContainsString('data-glpi-kb-translation-alert', $html, $reader);
+            $this->assertStringNotContainsString('data-glpi-illustration-picker', $html, $reader);
+            $this->assertStringNotContainsString('documenttypelist_', $html, $reader);
+            // The illustration itself is still shown.
+            $this->assertStringContainsString('#antivirus"', $html, $reader);
+        }
+    }
+
+    public function testAnonymousViewIsCountedOncePerSession(): void
+    {
+        global $CFG_GLPI;
+
+        $id = $this->createPublicFaqArticle(__FUNCTION__);
+        $views = function () use ($id): int {
+            $item = new KnowbaseItem();
+            $this->assertTrue($item->getFromDB($id));
+            return (int) $item->fields['view'];
+        };
+        $initial = $views();
+
+        $this->resetSession();
+        $CFG_GLPI['use_public_faq'] = true;
+        try {
+            $this->renderArticle($id);
+            $this->renderArticle($id);
+        } finally {
+            $CFG_GLPI['use_public_faq'] = false;
+        }
+        $this->assertSame($initial + 1, $views());
+
+        // Logged-in readers still count on every view.
+        $this->login('post-only', 'postonly');
+        $this->renderArticle($id);
+        $this->renderArticle($id);
+        $this->assertSame($initial + 3, $views());
+    }
 }
