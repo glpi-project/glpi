@@ -963,7 +963,7 @@ EOT,
                     ],
                     'grants' => [
                         'type' => Doc\Schema::TYPE_STRING,
-                        'description' => 'JSON encoded array of allowed grant types for this client. Allowed values are "authorization_code", "password", and "client_credentials".',
+                        'description' => 'JSON encoded array of allowed grant types for this client. Allowed values are "authorization_code", "password", and "client_credentials". Public (non-confidential) clients may only use "authorization_code".',
                     ],
                     'scopes' => [
                         'type' => Doc\Schema::TYPE_STRING,

@@ -202,17 +202,28 @@ final class OAuthClient extends CommonDBTM
     /**
      * Ensure public (non-confidential) clients only use grants that do not rely on a client secret.
      * Public clients must use the authorization code grant with PKCE.
+     * Malformed grants input is considered invalid.
      * @param bool $is_confidential
-     * @param string[]|string $grants Grants array or JSON-encoded grants array
+     * @param mixed $grants Grants array or JSON-encoded grants array
      * @return bool
      */
-    private function validateGrantsForClientType(bool $is_confidential, array|string $grants): bool
+    private function validateGrantsForClientType(bool $is_confidential, mixed $grants): bool
     {
         if ($is_confidential) {
             return true;
         }
-        if (is_string($grants)) {
-            $grants = json_decode($grants, true) ?? [];
+        if ($grants === null || $grants === '') {
+            // An empty multiple select is submitted as an empty string
+            $grants = [];
+        } elseif (is_string($grants)) {
+            try {
+                $grants = json_decode($grants, true);
+            } catch (JsonException) {
+                return false;
+            }
+        }
+        if (!is_array($grants) || !array_is_list($grants) || array_filter($grants, static fn($grant) => !is_string($grant)) !== []) {
+            return false;
         }
         return array_diff($grants, ['authorization_code']) === [];
     }
