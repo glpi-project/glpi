@@ -315,6 +315,11 @@ class Session
         // Define current time for sync of action timing
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
 
+        // No login refreshes an anonymous session, so an entity added meanwhile must be seen.
+        if (!isset($_SESSION['glpiID'])) {
+            unset($_SESSION['glpi_multientitiesmode']);
+        }
+
         // Define session default mode
         if (!isset($_SESSION['glpi_use_mode'])) {
             $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
