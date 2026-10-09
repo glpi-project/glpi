@@ -362,11 +362,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     private static function canReadRoot(): bool
     {
+        // No setting restricts the root, so the public FAQ must not expose it.
+        if (Session::getLoginUserID() === false) {
+            return false;
+        }
+
         return self::canView() || Session::haveRight(self::$rightname, self::KNOWBASEADMIN);
     }
 
     /**
-     * `$where`, widened to admit the root article outside the inheritance seed.
+     * `$where`, widened to admit the root article outside the inheritance seed
+     * when the current user can read it.
      *
      * @param array<mixed> $where
      *
@@ -375,7 +381,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     private static function withRootArm(array $where): array
     {
         $root_id = self::getConfiguredRootId();
-        if ($root_id <= 0) {
+        if ($root_id <= 0 || !self::canReadRoot()) {
             return $where;
         }
 
@@ -1031,7 +1037,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $where[self::getTable() . '.is_faq'] = 1;
         }
 
-        return self::canReadRoot() ? self::withRootArm($where) : $where;
+        return self::withRootArm($where);
     }
 
     /**

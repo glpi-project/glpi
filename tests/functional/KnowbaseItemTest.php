@@ -4421,8 +4421,8 @@ HTML,
     }
 
     /**
-     * A FAQ reader opens the root, and so does an anonymous reader when the
-     * public FAQ is enabled.
+     * A FAQ reader opens the root, an anonymous reader never does: no setting
+     * restricts the root, so the public FAQ must not expose it.
      */
     public function testRootArticleIsReadableByFaqReaders(): void
     {
@@ -4441,7 +4441,7 @@ HTML,
         // An anonymous reader, public FAQ enabled.
         $CFG_GLPI['use_public_faq'] = true;
         try {
-            $this->assertTrue($root->can($root_id, READ));
+            $this->assertFalse($root->can($root_id, READ));
         } finally {
             $CFG_GLPI['use_public_faq'] = false;
         }
@@ -4526,9 +4526,9 @@ HTML,
     }
 
     /**
-     * An anonymous reader on a public FAQ gets the root, single and multi entity.
+     * An anonymous reader on a public FAQ does not get the root, single and multi entity.
      */
-    public function testRootArticleIsListedForAnonymousFaqReaders(): void
+    public function testRootArticleIsNotListedForAnonymousFaqReaders(): void
     {
         global $CFG_GLPI;
 
@@ -4540,10 +4540,10 @@ HTML,
 
         try {
             $_SESSION['glpi_multientitiesmode'] = 1;
-            $this->assertContains($root_id, $this->getBrowseListRequestIds());
+            $this->assertNotContains($root_id, $this->getBrowseListRequestIds());
 
             $_SESSION['glpi_multientitiesmode'] = 0;
-            $this->assertContains($root_id, $this->getBrowseListRequestIds());
+            $this->assertNotContains($root_id, $this->getBrowseListRequestIds());
         } finally {
             $_SESSION['glpi_multientitiesmode'] = $multi_entities_mode;
             $CFG_GLPI['use_public_faq'] = false;
