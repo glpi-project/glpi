@@ -56,6 +56,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public array $central_profiles = [];
 
+    private const ALERT_ASSIGNED_TARGETS = [Notification::ASSIGN_TECH, Notification::ASSIGN_GROUP];
+
+    /** @var array<string, true> Notifications (per mode) whose assigned actors are already resolved */
+    private array $alert_assigned_done = [];
+
     public function __construct($entity = null, $event = '', $object = null, $options = [])
     {
         parent::__construct($entity, $event, $object, $options);
@@ -1091,14 +1096,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $this->addTarget(Notification::OLD_ASSIGN_SUPPLIER, __('Former supplier in charge of the ticket'));
         }
 
+        $item_type_name = $this->obj instanceof CommonITILObject
+            ? $this->obj->getTypeName(1)
+            : _n('Item', 'Items', 1);
+
         if ($event == 'satisfaction') {
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
             $this->addTarget(Notification::RECIPIENT, __('Writer'));
-        } elseif ($event != 'alertnotclosed') {
-            $item_type_name = $this->obj instanceof CommonITILObject
-                ? $this->obj->getTypeName(1)
-                : _n('Item', 'Items', 1);
-
+        } elseif ($event == 'alertnotclosed') {
+            $this->addTarget(Notification::ASSIGN_TECH, sprintf(__('Technician in charge of the %s'), $item_type_name));
+            $this->addTarget(Notification::ASSIGN_GROUP, sprintf(__('Group in charge of the %s'), $item_type_name));
+        } else {
             $this->addTarget(Notification::RECIPIENT, __('Writer'));
             $this->addTarget(Notification::SUPPLIER, Supplier::getTypeName(1));
             $this->addTarget(
@@ -1160,6 +1168,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      **/
     public function addSpecificTargets($data, $options)
     {
+        if (
+            $this->raiseevent === 'alertnotclosed'
+            && $data['type'] == Notification::USER_TYPE
+            && in_array((int) $data['items_id'], self::ALERT_ASSIGNED_TARGETS, true)
+        ) {
+            $this->addAssignedActorsOfAlertedItems($data, $options);
+            return;
+        }
 
         //Look for all targets whose type is Notification::ITEM_USER
         switch ($data['type']) {
@@ -1308,6 +1324,143 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     /**
+     * Add actors in charge of the alerted items, each one for its own items only.
+     *
+     * @param array<string, mixed> $data    Notification target
+     * @param array<string, mixed> $options
+     *
+     * @return void
+     */
+    private function addAssignedActorsOfAlertedItems(array $data, array $options): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $done_key  = $data['notifications_id'] . '_' . $this->getMode();
+        $items_ids = array_map(intval(...), array_column($options['items'] ?? [], 'id'));
+        if (
+            isset($this->alert_assigned_done[$done_key])
+            || $items_ids === []
+            || !($this->obj instanceof CommonITILObject)
+        ) {
+            return;
+        }
+        // A recipient is notified only once: all targets are resolved on first call
+        $this->alert_assigned_done[$done_key] = true;
+
+        $collector = clone $this;
+        $collector->clearAddressesList();
+        $assigned_types = [];
+        $targets = getAllDataFromTable('glpi_notificationtargets', ['notifications_id' => $data['notifications_id']]);
+        foreach ($targets as $target) {
+            if (
+                $target['type'] == Notification::USER_TYPE
+                && in_array((int) $target['items_id'], self::ALERT_ASSIGNED_TARGETS, true)
+            ) {
+                $assigned_types[] = (int) $target['items_id'];
+            } else {
+                $collector->addForTarget($target, $options);
+            }
+        }
+        // Recipients of other targets are notified for all items
+        $unrestricted = $collector->target;
+
+        // One entry per actor, to resolve each of them only once
+        $fkfield = $this->obj->getForeignKeyField();
+        $adders  = [];
+        $actors  = [];
+
+        if (in_array(Notification::ASSIGN_TECH, $assigned_types, true)) {
+            $linktable = getTableForItemType($this->obj->userlinkclass);
+            $criteria  = [
+                'LEFT JOIN' => [
+                    User::getTable() => ['ON' => [$linktable => 'users_id', User::getTable() => 'id']],
+                ],
+            ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+            $criteria['FROM']     = $linktable;
+            $criteria['FIELDS'][] = "$linktable.alternative_email AS altemail";
+            $criteria['FIELDS'][] = "$linktable.$fkfield AS items_id";
+            $criteria['WHERE']["$linktable.$fkfield"]         = $items_ids;
+            $criteria['WHERE']["$linktable.type"]             = CommonITILActor::ASSIGN;
+            $criteria['WHERE']["$linktable.use_notification"] = 1;
+
+            foreach ($DB->request($criteria) as $row) {
+                $user = ['language' => $row['language'], 'users_id' => $row['users_id']];
+                if (
+                    $this->isMailMode()
+                    && !empty($row['altemail'])
+                    && NotificationMailing::isUserAddressValid($row['altemail'])
+                ) {
+                    $user['email'] = $row['altemail'];
+                }
+                $actor = 'user_' . implode('_', $user);
+                $adders[$actor]   = static fn(self $collector) => $collector->addToRecipientsList($user);
+                $actors[$actor][] = (int) $row['items_id'];
+            }
+
+            // Anonymous actors are only known by their email
+            $iterator = $this->isMailMode() ? $DB->request([
+                'SELECT' => ['alternative_email', $fkfield],
+                'FROM'   => $linktable,
+                'WHERE'  => [
+                    $fkfield           => $items_ids,
+                    'users_id'         => 0,
+                    'use_notification' => 1,
+                    'type'             => CommonITILActor::ASSIGN,
+                ],
+            ]) : [];
+            foreach ($iterator as $row) {
+                if (!NotificationMailing::isUserAddressValid($row['alternative_email'])) {
+                    continue;
+                }
+                $user = [
+                    'email'    => $row['alternative_email'],
+                    'language' => $CFG_GLPI['language'],
+                    'users_id' => -1,
+                ];
+                $actor = 'anonymous_' . $row['alternative_email'];
+                $adders[$actor]   = static fn(self $collector) => $collector->addToRecipientsList($user);
+                $actors[$actor][] = (int) $row[$fkfield];
+            }
+        }
+
+        if (in_array(Notification::ASSIGN_GROUP, $assigned_types, true)) {
+            $iterator = $DB->request([
+                'SELECT' => ['groups_id', $fkfield],
+                'FROM'   => getTableForItemType($this->obj->grouplinkclass),
+                'WHERE'  => [$fkfield => $items_ids, 'type' => CommonITILActor::ASSIGN],
+            ]);
+            foreach ($iterator as $row) {
+                $actor = 'group_' . $row['groups_id'];
+                $adders[$actor]   = static fn(self $collector) => $collector->addForGroup(0, $row['groups_id']);
+                $actors[$actor][] = (int) $row[$fkfield];
+            }
+        }
+
+        $recipients = [];
+        $items_of   = [];
+        foreach ($actors as $actor => $actor_items_ids) {
+            $collector = clone $this;
+            $collector->clearAddressesList();
+            $adders[$actor]($collector);
+            foreach ($collector->target as $key => $recipient) {
+                $recipients[$key] = $recipient;
+                $items_of[$key]   = array_merge($items_of[$key] ?? [], $actor_items_ids);
+            }
+        }
+
+        foreach ($recipients as $key => $recipient) {
+            if (isset($unrestricted[$key])) {
+                continue;
+            }
+            // Sorted to share the rendered template between identical lists
+            $ids = array_values(array_unique($items_of[$key]));
+            sort($ids);
+            $recipient['additionnaloption']['items_ids'] = $ids;
+            $this->target[$key] = $recipient;
+        }
+    }
+
+    /**
      * Add mentionned user to recipients.
      *
      * @param array $options
@@ -1351,8 +1504,15 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     /** @var T $item */
                     $objettypes = Toolbox::strtolower(getPlural($objettype));
                     $items      = [];
+                    // Set when the recipient must only be notified for its own items
+                    $items_ids  = $options['additionnaloption']['items_ids'] ?? null;
                     foreach ($options['items'] as $object) {
-                        $item->getFromDB($object['id']);
+                        if ($items_ids !== null && !in_array((int) $object['id'], $items_ids, true)) {
+                            continue;
+                        }
+                        if (!$item->getFromDB($object['id'])) {
+                            continue;
+                        }
                         $tmp = $this->getDataForObject($item, $options, true);
                         $this->data[$objettypes][] = $tmp;
                     }
