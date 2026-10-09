@@ -56,6 +56,11 @@ class QueuedWebhook extends CommonDBChild
         return __('Webhook queue');
     }
 
+    public static function normalizeHttpMethod(string $method): string
+    {
+        return strtoupper($method);
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', Webhook::class];
@@ -249,12 +254,13 @@ class QueuedWebhook extends CommonDBChild
 
         $response = null;
         if ($process_request) {
-            $request_url   = (string) $queued_webhook->fields['url'];
-            $request_error = null;
+            $request_url    = (string) $queued_webhook->fields['url'];
+            $request_error  = null;
+            $request_method = self::normalizeHttpMethod((string) $queued_webhook->fields['http_method']);
 
             try {
                 $response = $client->request(
-                    $queued_webhook->fields['http_method'],
+                    $request_method,
                     $request_url,
                     [
                         'headers' => $headers,

@@ -240,6 +240,13 @@ JSON;
         $this->assertEquals('new-ext1234-' . $fup->getID(), $headers['X-Test-Mixed']);
     }
 
+    public function testQueuedWebhookLowercaseMethodIsNormalizedBeforeRequest()
+    {
+        $this->assertSame('POST', QueuedWebhook::normalizeHttpMethod('post'));
+        $this->assertSame('POST', QueuedWebhook::normalizeHttpMethod('POST'));
+        $this->assertSame('GET', QueuedWebhook::normalizeHttpMethod('get'));
+    }
+
     public function testGetResultForPath()
     {
         $this->login();
