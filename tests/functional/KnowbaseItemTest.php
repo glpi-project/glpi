@@ -36,6 +36,7 @@ namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
 use Glpi\Tests\DbTestCase;
@@ -1319,6 +1320,47 @@ HTML,
         $ids = array_column($children, 'id');
         $this->assertContains($mid->getID(), $ids);
         $this->assertNotContains($grandchild->getID(), $ids);
+    }
+
+    /**
+     * The aside already loads every visible article: the tab must only check its candidates.
+     */
+    public function testSubArticlesTabDoesNotLoadEveryVisibleArticle(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . '_parent',
+            'answer' => __FUNCTION__ . '_parent',
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_child',
+            'answer'   => __FUNCTION__ . '_child',
+            '_parents' => [$parent->getID()],
+        ]);
+
+        // SQL queries are only recorded in debug mode.
+        $use_mode = $_SESSION['glpi_use_mode'];
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+        try {
+            $before   = count(DebugProfile::getCurrent()->getDebugInfo()['sql']['queries']);
+            $children = $this->callPrivateMethod($parent, 'getChildArticlesInfo');
+            $queries  = array_slice(DebugProfile::getCurrent()->getDebugInfo()['sql']['queries'], $before);
+        } finally {
+            $_SESSION['glpi_use_mode'] = $use_mode;
+        }
+
+        $this->assertSame([$child->getID()], array_column($children, 'id'));
+
+        // The browse list request is the only one grouped by article.
+        $list_queries = array_filter(
+            array_column($queries, 'raw_query'),
+            static fn(string $query): bool => str_contains($query, 'GROUP BY `glpi_knowbaseitems`.`id`')
+        );
+        $this->assertNotEmpty($list_queries);
+        foreach ($list_queries as $query) {
+            $this->assertMatchesRegularExpression('/`glpi_knowbaseitems`\.`id` IN \(\?/', $query);
+        }
     }
 
     public static function helpdeskHiddenKnowbaseRightsProvider(): iterable
