@@ -367,4 +367,45 @@ class Document_ItemTest extends DbTestCase
         ];
         $this->assertFalse($doc2->can(-1, CREATE, $input2));
     }
+
+    public function testCannotUnlinkDocumentWithOnlyReadRights(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'content'     => 'x',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $link_id = $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ])->getID();
+
+        // Can view both items, but can update neither
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $this->assertTrue($ticket->can($ticket->getID(), READ));
+        $this->assertFalse($ticket->can($ticket->getID(), UPDATE));
+
+        $link = new Document_Item();
+        $this->assertFalse($link->can($link_id, DELETE));
+        $this->assertFalse($link->can($link_id, PURGE));
+
+        // Update right on the document side is enough
+        $_SESSION['glpiactiveprofile']['document'] = READ | UPDATE;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $this->assertTrue($link->can($link_id, DELETE));
+        $this->assertTrue($link->can($link_id, PURGE));
+
+        // Update right on the ticket side is enough
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ | UPDATE;
+        $this->assertTrue($link->can($link_id, DELETE));
+        $this->assertTrue($link->can($link_id, PURGE));
+    }
 }

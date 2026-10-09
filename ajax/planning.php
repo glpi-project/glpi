@@ -66,7 +66,7 @@ if (($_POST["action"] ?? null) == "view_changed") {
 }
 
 if (($_POST["action"] ?? null) == "clone_event") {
-    $extevent->check(-1, CREATE);
+    $extevent->checkGlobal(CREATE);
     echo Planning::cloneEvent($_POST['event']);
     return;
 }

@@ -78,9 +78,16 @@ if ($item = getItemForItemtype($_GET['_itemtype'])) {
                 return;
             }
         } elseif (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
-            if (!$item->can(-1, CREATE, $_GET)) {
+            if (!$item::canCreate()) {
                 return;
             }
+            // This call was initially triggered by a call to `$item->can($ID, CREATE, $input)`
+            // but checking the input at display time was blocking legitiame form displays (mainly for `CommonDBRelation`).
+            // This call should not be mandatory if `$this->initForm($ID, $options)` was made in every `showForm()`
+            // method, but it is not always true, including in plugins, and we cannot refactor this in a bugfixes version.
+            // Therefore, the current call prevent introducing `Undefined array key` warning when accessing `$this->fields`.
+            // FIXME: Try to move `initForm()` call outside the `showForm()` method in a future GLPI version.
+            $item->initObjectOnCreation($_GET);
         } elseif (!$item->can($_GET["id"], READ)) {
             return;
         }
