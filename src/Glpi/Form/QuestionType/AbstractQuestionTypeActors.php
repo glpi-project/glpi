@@ -323,7 +323,14 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             return $default_values;
         }
 
-        return [key($default_values) => current($default_values)];
+        // Single actor: keep the first defined actor, whatever its type
+        foreach ($default_values as $fkey => $ids) {
+            if ($ids !== []) {
+                return [$fkey => [reset($ids)]];
+            }
+        }
+
+        return [];
     }
 
     #[Override]

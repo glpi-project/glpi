@@ -215,6 +215,36 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
         );
     }
 
+    public static function singleActorDefaultValueProvider(): iterable
+    {
+        yield 'user' => [User::class, 'glpi'];
+        yield 'group' => [Group::class, '_test_group_1'];
+        yield 'supplier' => [Supplier::class, '_suplier01_name'];
+    }
+
+    #[DataProvider("singleActorDefaultValueProvider")]
+    public function testSingleActorDefaultValueKeepsAnyActorType(
+        string $itemtype,
+        string $name,
+    ): void {
+        $id = getItemByTypeName($itemtype, $name, true);
+        $fkey = $itemtype::getForeignKeyField();
+
+        $builder = (new FormBuilder())->addQuestion(
+            "Question",
+            static::getQuestionType(),
+            ["$fkey-$id"],
+            json_encode((new QuestionTypeActorsExtraDataConfig(false))->jsonSerialize())
+        );
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Question"));
+
+        $this->assertEquals(
+            [$fkey => [$id]],
+            (new (static::getQuestionType())())->getDefaultValue($question, false),
+        );
+    }
+
     public function testIsTypeEnabledWithNullQuestion(): void
     {
         $question_type = new (static::getQuestionType())();
