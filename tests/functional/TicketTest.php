@@ -10355,6 +10355,63 @@ HTML,
     }
 
     /**
+     * A ticket created without template input (e.g. from mailcollector) must store the template
+     */
+    public function testTemplateIsStoredOnUpdateWhenTicketHasNone(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $template = $this->createItem(TicketTemplate::class, [
+            'name' => 'Dedicated template',
+        ]);
+        $category = $this->createItem(ITILCategory::class, [
+            'name'                        => 'Category with dedicated template',
+            'entities_id'                 => $entity_id,
+            'is_recursive'                => 1,
+            'tickettemplates_id_incident' => $template->getID(),
+            'tickettemplates_id_demand'   => $template->getID(),
+        ]);
+
+        $rule = $this->createItem(Rule::class, [
+            'name'         => 'Set category with dedicated template',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'entities_id'  => $entity_id,
+            'is_recursive' => 1,
+        ]);
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'name',
+            'condition' => Rule::PATTERN_CONTAIN,
+            'pattern'   => 'dedicated template',
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'itilcategories_id',
+            'value'       => $category->getID(),
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'         => 'Ticket with dedicated template',
+            'content'      => 'content',
+            'entities_id'  => $entity_id,
+            '_auto_import' => 1,
+        ], ['_auto_import']);
+        $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
+        $this->assertEquals(0, $ticket->fields['tickettemplates_id']);
+
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
+            'content' => 'updated content',
+        ]);
+        $this->assertEquals($template->getID(), $ticket->fields['tickettemplates_id']);
+    }
+
+    /**
      * A mandatory template field added to a ticket after a solution was already submitted
      * must not prevent that solution from being validated, nor the ticket from being closed.
      */
