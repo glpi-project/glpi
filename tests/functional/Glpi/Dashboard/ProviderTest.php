@@ -1205,6 +1205,85 @@ class ProviderTest extends DbTestCase
         $this->assertSame(2, $result['data']['series'][1]['data'][$group2_index], 'group2: 2 closed tickets expected');
     }
 
+    public function testTicketsByCategoryAndType(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $category = $this->createItem(\ITILCategory::class, [
+            'name' => 'test dashboard category for tickets by category and type',
+        ]);
+
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard opened incident',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::INCIDENT_TYPE,
+            'status'            => \Ticket::ASSIGNED,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard opened request',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::DEMAND_TYPE,
+            'status'            => \Ticket::INCOMING,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard closed incident',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::INCIDENT_TYPE,
+            'status'            => \Ticket::CLOSED,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard solved request',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::DEMAND_TYPE,
+            'status'            => \Ticket::SOLVED,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard opened incident without category',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => 0,
+            'type'              => \Ticket::INCIDENT_TYPE,
+            'status'            => \Ticket::ASSIGNED,
+        ]);
+
+        $opened = Provider::ticketsByCategoryAndType('open');
+        $this->assertArrayHasKey('data', $opened);
+        $category_index = array_search($category->fields['completename'], $opened['data']['labels'], true);
+        $this->assertNotFalse($category_index, 'category must appear in the opened report labels');
+
+        $opened_series_by_name = [];
+        foreach ($opened['data']['series'] as $serie) {
+            $opened_series_by_name[$serie['name']] = $serie['data'];
+        }
+        $this->assertSame(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$category_index], '1 opened incident expected');
+        $this->assertSame(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$category_index], '1 opened request expected');
+
+        $none_index = array_search(__('None'), $opened['data']['labels'], true);
+        $this->assertNotFalse($none_index, 'a "None" label is expected for the uncategorized ticket');
+        $this->assertGreaterThanOrEqual(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$none_index], 'at least 1 opened uncategorized incident expected');
+
+        $closed = Provider::ticketsByCategoryAndType('close');
+        $this->assertArrayHasKey('data', $closed);
+        $category_index_closed = array_search($category->fields['completename'], $closed['data']['labels'], true);
+        $this->assertNotFalse($category_index_closed, 'category must appear in the closed report labels');
+
+        $closed_series_by_name = [];
+        foreach ($closed['data']['series'] as $serie) {
+            $closed_series_by_name[$serie['name']] = $serie['data'];
+        }
+        $this->assertSame(1, $closed_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$category_index_closed], '1 closed incident expected');
+        $this->assertSame(1, $closed_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$category_index_closed], '1 solved request expected');
+    }
+
     private function attachTicketToGroup(string $name, int $status, \Group $group): \Ticket
     {
         $ticket = $this->createItem(\Ticket::class, [
