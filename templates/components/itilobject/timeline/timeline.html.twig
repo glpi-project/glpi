@@ -34,6 +34,10 @@
 {% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 
 <div class="itil-timeline d-flex flex-column align-items-start mb-auto {{ is_helpdesk ? "px-3 py-2" : '' }}">
+    {% if is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/satisfaction_survey.html.twig') }}
+    {% endif %}
+
     {% if not is_timeline_reversed %}
         {{ include('components/itilobject/timeline/main_description.html.twig') }}
     {% else %}
@@ -240,22 +244,11 @@
     {% if not is_timeline_reversed %}
         {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
         {{ include('components/itilobject/answer.html.twig') }}
+        {{ include('components/itilobject/timeline/satisfaction_survey.html.twig') }}
     {% endif %}
+    </div>
 
-    {% if survey is defined and survey %}
-    <form
-        data-testid="survey"
-        class="mt-5 w-100 hide-form-button-separator"
-        method="POST"
-        action="{{ get_class(survey)|itemtype_form_path }}"
-    >
-        <div>
-            {{ survey.showSatisactionForm(item, false) }}
-            {# showSatisactionForm closes the extra div and form tag by itself... #}
-            {% endif %}
-        </div>
-
-        <script type="text/javascript">
+    <script type="text/javascript">
             $(function() {
                 $(document).on("click", ".edit-timeline-item", function() {
                     var timeline_item = $(this).closest(".timeline-item");
