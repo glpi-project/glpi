@@ -56,21 +56,32 @@ if (!isset($_GET["id"])) {
     if (!$root->getFromDB($root_id)) {
         throw new NotFoundHttpException();
     }
-    if (!$root->can($root_id, READ)) {
+    if ($root->can($root_id, READ)) {
+        // Not getFormURLWithID(): it leaves the helpdesk in a central session.
+        Html::redirect($CFG_GLPI['root_doc'] . '/front/helpdesk.faq.php?id=' . $root_id);
+    }
+    // The public FAQ cannot read the root: it opens on the aside alone.
+    if (!KnowbaseItem::canView()) {
         throw new AccessDeniedHttpException();
     }
-    // Not getFormURLWithID(): it leaves the helpdesk in a central session.
-    Html::redirect($CFG_GLPI['root_doc'] . '/front/helpdesk.faq.php?id=' . $root_id);
 }
 
 // Checked before any output so the error page can be rendered (same codes as the central knowledge base).
-$id = (int) $_GET["id"];
 $kb = new KnowbaseItem();
-if (!$kb->getFromDB($id)) {
-    throw new NotFoundHttpException();
+if (isset($_GET["id"])) {
+    $id = (int) $_GET["id"];
+    if (!$kb->getFromDB($id)) {
+        throw new NotFoundHttpException();
+    }
+    if (!$kb->can($id, READ)) {
+        throw new AccessDeniedHttpException();
+    }
 }
-if (!$kb->can($id, READ)) {
-    throw new AccessDeniedHttpException();
+
+$aside = $kb->getAsideContent();
+// No article and no visible FAQ article: nothing to show.
+if ($kb->isNewItem() && $aside === null) {
+    throw new NotFoundHttpException();
 }
 
 if (Session::getLoginUserID()) {
@@ -86,9 +97,9 @@ if (Session::getLoginUserID()) {
 
 // Same two-column layout as the central knowledge base (see CommonGLPI::display()).
 echo TemplateRenderer::getInstance()->render('pages/tools/kb/faq_article.html.twig', [
-    'aside'   => $kb->getAsideContent(),
+    'aside'   => $aside,
     'slug'    => Toolbox::slugify(KnowbaseItem::class),
-    'article' => $kb->showFull(['display' => false]),
+    'article' => $kb->isNewItem() ? null : $kb->showFull(['display' => false]),
 ]);
 
 Html::helpFooter();

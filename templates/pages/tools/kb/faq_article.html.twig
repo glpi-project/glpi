@@ -36,7 +36,7 @@
  #
  # - `aside`   pre-rendered aside HTML (`KnowbaseItem::getAsideContent()`), or null.
  # - `slug`    itemtype slug for the `data-main-page-aside` styling hook.
- # - `article` pre-rendered article HTML (`KnowbaseItem::showFull()`).
+ # - `article` pre-rendered article HTML (`KnowbaseItem::showFull()`), or null.
  #}
 <div class="row">
     {% if aside is not null %}
@@ -44,11 +44,13 @@
             {{ aside|raw }}
         </aside>
     {% endif %}
-    <div class="col">
-        {# `card p-2` mirrors the central tab container: the article template
-         # compensates its padding with `mx-n2 my-n2`. #}
-        <div class="card p-2">
-            {{ article|raw }}
+    {% if article is not null %}
+        <div class="col">
+            {# `card p-2` mirrors the central tab container: the article template
+             # compensates its padding with `mx-n2 my-n2`. #}
+            <div class="card p-2">
+                {{ article|raw }}
+            </div>
         </div>
-    </div>
+    {% endif %}
 </div>
