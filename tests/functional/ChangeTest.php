@@ -37,6 +37,7 @@ namespace tests\units;
 use Change;
 use Change_Item;
 use Change_User;
+use ChangeValidation;
 use CommonITILActor;
 use CommonITILObject;
 use Computer;
@@ -984,5 +985,104 @@ class ChangeTest extends DbTestCase
 
         $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY | Change::READALL;
         $this->assertEqualsCanonicalizing(array_values($ids), $get_listed_ids());
+    }
+
+    private function createChangesForApproverTests(): array
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(only_id: true);
+        $approver    = getItemByTypeName(User::class, 'tech', true);
+        $other       = getItemByTypeName(User::class, 'normal', true);
+
+        $ids = [];
+        foreach (['approver' => $approver, 'other' => $other, 'none' => null] as $case => $target) {
+            $change = $this->createItem(Change::class, [
+                'name'              => __FUNCTION__ . ' ' . $case,
+                'content'           => __FUNCTION__,
+                'entities_id'       => $entities_id,
+                '_skip_auto_assign' => true,
+            ], ['content']);
+            if ($target !== null) {
+                $this->createItem(ChangeValidation::class, [
+                    'changes_id'      => $change->getID(),
+                    'itemtype_target' => User::class,
+                    'items_id_target' => $target,
+                ]);
+            }
+            $ids[$case] = $change->getID();
+        }
+
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY;
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = ChangeValidation::VALIDATE;
+        Session::changeActiveEntities($entities_id, true);
+
+        return $ids;
+    }
+
+    public function testApproverCanViewChange(): void
+    {
+        $ids = $this->createChangesForApproverTests();
+
+        $this->assertTrue(Change::canView());
+        $this->assertTrue($this->getChange($ids['approver'])->canViewItem());
+        $this->assertFalse($this->getChange($ids['other'])->canViewItem());
+        $this->assertFalse($this->getChange($ids['none'])->canViewItem());
+
+        // Without the approve right, being a target is not enough
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = CREATE;
+        $this->assertFalse($this->getChange($ids['approver'])->canViewItem());
+    }
+
+    public function testApproverOnlyCanView(): void
+    {
+        $this->createChangesForApproverTests();
+
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = 0;
+        $this->assertTrue(Change::canView());
+
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = 0;
+        $this->assertFalse(Change::canView());
+    }
+
+    public function testApproverSearchListsPendingChange(): void
+    {
+        $ids = $this->createChangesForApproverTests();
+
+        $search = function (): array {
+            $data = \Search::getDatas(Change::class, [
+                'criteria' => [
+                    ['field' => 1, 'searchtype' => 'contains', 'value' => 'createChangesForApproverTests'],
+                ],
+            ]);
+            return array_map(static fn($row) => (int) $row['raw']['id'], $data['data']['rows']);
+        };
+
+        $this->assertSame([$ids['approver']], $search());
+
+        // Actor visibility still applies in addition to the approval
+        $change = $this->getChange($ids['none']);
+        $this->login();
+        $this->createItem(Change_User::class, [
+            'changes_id' => $change->getID(),
+            'users_id'   => getItemByTypeName(User::class, 'tech', true),
+            'type'       => CommonITILActor::OBSERVER,
+        ]);
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY;
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = ChangeValidation::VALIDATE;
+        Session::changeActiveEntities($this->getTestRootEntity(only_id: true), true);
+        $this->assertEqualsCanonicalizing([$ids['approver'], $ids['none']], $search());
+
+        // Without any approve right, only actor visibility remains
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = 0;
+        $this->assertSame([$ids['none']], $search());
+    }
+
+    private function getChange(int $id): Change
+    {
+        $change = new Change();
+        $this->assertTrue($change->getFromDB($id));
+        return $change;
     }
 }
