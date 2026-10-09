@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,45 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Relation between item and devices
- **/
-class Item_DevicePowerSupply extends Item_Devices
-{
-    public static ?string $itemtype_2 = DevicePowerSupply::class;
-    public static ?string $items_id_2 = 'devicepowersupplies_id';
+header('Content-Type: text/html; charset=UTF-8');
+Html::header_nocache();
 
-    protected static bool $notable = false;
+Session::checkCentralAccess();
 
-    public static function getSpecificities($specif = '')
-    {
+$itemtype = $_POST['itemtype'] ?? '';
+$items_id = (int) ($_POST['items_id'] ?? 0);
+$rand = (int) ($_POST['rand'] ?? mt_rand());
+$choices = [];
 
-        return ['serial' => parent::getSpecificities('serial'),
-            'otherserial' => parent::getSpecificities('otherserial'),
-            'locations_id' => parent::getSpecificities('locations_id'),
-            'states_id' => parent::getSpecificities('states_id'),
-        ];
-    }
-
-    public function getImportCriteria(): array
-    {
-        return [
-            'serial' => 'equal',
-        ];
-    }
-
-    public function cleanDBonPurge()
-    {
-        global $DB;
-
-        $DB->update(
-            Plug::getTable(),
-            [
-                Plug::POWER_SUPPLY_FIELD => 0,
-            ],
-            [Plug::POWER_SUPPLY_FIELD => $this->getID()]
-        );
-
-        parent::cleanDBonPurge();
+if (is_string($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
+    $asset = new $itemtype();
+    if ($items_id > 0 && $asset->getFromDB($items_id) && $asset->can($items_id, READ)) {
+        $choices = Plug::getPowerSupplyChoices($itemtype, $items_id);
     }
 }
+
+Dropdown::showFromArray(Plug::POWER_SUPPLY_FIELD, $choices, [
+    'value'               => 0,
+    'display_emptychoice' => true,
+    'required'            => $choices !== [],
+    'rand'                => $rand,
+    'width'               => '100%',
+]);
