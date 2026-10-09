@@ -2443,6 +2443,48 @@ TWIG, $twig_params);
                         }
                     }
 
+                    $search1 = [/* 1 */
+                        '/\\\"/',
+                        /* 2 */
+                        "/\+/",
+                        /* 3 */
+                        "/\*/",
+                        /* 4 */
+                        "/~/",
+                        /* 5 */
+                        "/</",
+                        /* 6 */
+                        "/>/",
+                        /* 7 */
+                        "/\(/",
+                        /* 8 */
+                        "/\)/",
+                        /* 9 */
+                        "/\-/",
+                    ];
+                    $contains = preg_replace($search1, "", $params["contains"]);
+                    $like_ors = [
+                        ["glpi_knowbaseitems.name"     => ['LIKE', Search::makeTextSearchValue($contains)]],
+                        ["glpi_knowbaseitems.answer"   => ['LIKE', Search::makeTextSearchValue($contains)]],
+                    ];
+                    if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
+                        $like_ors[] = ["glpi_knowbaseitemtranslations.name"   => ['LIKE', Search::makeTextSearchValue($contains)]];
+                        $like_ors[] = ["glpi_knowbaseitemtranslations.answer" => ['LIKE', Search::makeTextSearchValue($contains)]];
+                    }
+                    // Words shorter than the fulltext minimum token size are not indexed.
+                    // LIKE would ignore boolean operators (e.g. `-word`), so only add it to plain searches.
+                    if (!preg_match('/[+\-<>~()"]/', $search_wilcard)) {
+                        /** @var mysqli_result $token_size_res */
+                        $token_size_res = $DB->doQuery('SELECT @@innodb_ft_min_token_size');
+                        $min_token_size = (int) ($token_size_res->fetch_row()[0] ?? 3);
+                        foreach (explode(' ', str_replace('*', '', $search_wilcard)) as $word) {
+                            if ($word !== '' && mb_strlen($word) < $min_token_size) {
+                                $ors = array_merge($ors, $like_ors);
+                                break;
+                            }
+                        }
+                    }
+
                     $search_where =  $criteria['WHERE']; // Visibility restrict criteria
 
                     $search_where[] = ['OR' => $ors];
@@ -2460,35 +2502,7 @@ TWIG, $twig_params);
                     $numrows_search = $search_iterator->current()['cpt'];
 
                     if ($numrows_search <= 0) { // not result this fulltext try with alternate search
-                        $search1 = [/* 1 */
-                            '/\\\"/',
-                            /* 2 */
-                            "/\+/",
-                            /* 3 */
-                            "/\*/",
-                            /* 4 */
-                            "/~/",
-                            /* 5 */
-                            "/</",
-                            /* 6 */
-                            "/>/",
-                            /* 7 */
-                            "/\(/",
-                            /* 8 */
-                            "/\)/",
-                            /* 9 */
-                            "/\-/",
-                        ];
-                        $contains = preg_replace($search1, "", $params["contains"]);
-                        $ors = [
-                            ["glpi_knowbaseitems.name"     => ['LIKE', Search::makeTextSearchValue($contains)]],
-                            ["glpi_knowbaseitems.answer"   => ['LIKE', Search::makeTextSearchValue($contains)]],
-                        ];
-                        if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
-                            $ors[] = ["glpi_knowbaseitemtranslations.name"   => ['LIKE', Search::makeTextSearchValue($contains)]];
-                            $ors[] = ["glpi_knowbaseitemtranslations.answer" => ['LIKE', Search::makeTextSearchValue($contains)]];
-                        }
-                        $criteria['WHERE'][] = ['OR' => $ors];
+                        $criteria['WHERE'][] = ['OR' => $like_ors];
                     } else {
                         $criteria['WHERE'] = $search_where;
                     }

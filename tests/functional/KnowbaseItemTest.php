@@ -878,6 +878,33 @@ HTML,
         $this->assertNotContains($articles['future']->fields['name'], $names);
     }
 
+    public function testSearchFindsTermShorterThanFulltextMinimumTokenSize(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        // "TU" is too short to be indexed, but `TU*` matches the committed
+        // "turnover" of `_knowbaseitem01`, so the fulltext search is not empty.
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'TU checklist',
+            'answer'      => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        $criteria = KnowbaseItem::getListRequest(['contains' => 'TU'], 'search');
+        $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
+
+        $this->assertContains('_knowbaseitem01', $names);
+        $this->assertContains('TU checklist', $names);
+    }
+
     public function testGetAnswerAnchors(): void
     {
         // Create test KB with multiple headers
