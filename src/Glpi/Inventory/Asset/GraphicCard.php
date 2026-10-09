@@ -38,9 +38,12 @@ namespace Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Item_DeviceGraphicCard;
 
+use function Safe\preg_match;
+
 class GraphicCard extends Device
 {
     protected array $ignored = ['controllers' => null];
+    protected array $extra_data = ['controllers' => null];
 
     public function prepare(): array
     {
@@ -49,6 +52,7 @@ class GraphicCard extends Device
         ];
 
         foreach ($this->data as $k => &$val) {
+            /** @var \stdClass $val */
             if (property_exists($val, 'name')) {
                 foreach ($mapping as $origin => $dest) {
                     if (property_exists($val, $origin)) {
@@ -56,12 +60,42 @@ class GraphicCard extends Device
                     }
                 }
 
-                $this->ignored['controllers'][$val->name] = $val->name;
-                if (isset($val->chipset)) {
-                    $this->ignored['controllers'][$val->chipset] = $val->chipset;
-                }
-
                 $val->is_dynamic = 1;
+
+                if (isset($this->extra_data['controllers'])) {
+                    $found_controller = false;
+                    $controllers = is_array($this->extra_data['controllers']) ? $this->extra_data['controllers'] : [$this->extra_data['controllers']];
+                    foreach ($controllers as $controller) {
+                        /** @var \stdClass $controller */
+                        if (
+                            (property_exists($controller, 'pcislot') && property_exists($val, 'pcislot') && $controller->pcislot === $val->pcislot)
+                            || (property_exists($controller, 'type') && $controller->type === $val->name)
+                            || (property_exists($controller, 'name') && isset($val->chipset) && $controller->name === $val->chipset)
+                        ) {
+                            $found_controller = $controller;
+                            break;
+                        }
+                    }
+
+                    if ($found_controller) {
+                        if (property_exists($found_controller, 'name')) {
+                            $this->ignored['controllers'][$found_controller->name] = $found_controller->name;
+                            $val->name = $found_controller->name;
+                        } elseif (property_exists($found_controller, 'caption')) {
+                            $val->name = $found_controller->caption;
+                        }
+
+                        if ($this->applyPciInfoFromController($val, $found_controller)) {
+                            $val->devicegraphiccardmodels_id = $val->designation;
+                            $val->name = $val->designation;
+                        }
+
+                        if (preg_match('/^(.*)\s+\[(.*)\]$/', $val->name, $matches)) {
+                            $val->name = trim($matches[1]);
+                            $val->chipset = trim($matches[2]);
+                        }
+                    }
+                }
             } else {
                 unset($this->data[$k]);
             }
