@@ -55,7 +55,7 @@ if (Session::getLoginUserID()) {
 
 if (isset($_GET["id"])) {
     $kb = new KnowbaseItem();
-    if (is_scalar($_GET["id"]) && $kb->getFromDB($_GET["id"])) {
+    if (is_scalar($_GET["id"]) && $kb->getFromDB((int) $_GET["id"])) {
         $kb->showFull();
     }
 } else {
