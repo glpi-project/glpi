@@ -86,6 +86,23 @@ class SessionTest extends DbTestCase
         parent::tearDown();
     }
 
+    public function testAnonymousSessionRereadsMultiEntitiesModeOnEachRequest(): void
+    {
+        $this->assertGreaterThan(1, countElementsInTable(\Entity::getTable()));
+
+        // Mode cached while the instance had a single entity.
+        $this->logOut();
+        $_SESSION['glpi_multientitiesmode'] = 0;
+        \Session::start();
+        $this->assertEquals(1, \Session::isMultiEntitiesMode());
+
+        // A logged-in session keeps its cached mode.
+        $this->login();
+        $_SESSION['glpi_multientitiesmode'] = 0;
+        \Session::start();
+        $this->assertEquals(0, \Session::isMultiEntitiesMode());
+    }
+
     public function testAddMessageAfterRedirect()
     {
         $err_msg = 'Something is broken. Weird.';
