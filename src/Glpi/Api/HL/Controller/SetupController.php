@@ -970,7 +970,11 @@ EOT,
                         'description' => 'JSON encoded array of allowed scopes for this client. Allowed values are "email", "user", "api", "inventory", "status" and "graphql".',
                     ],
                     'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
-                    'is_confidential' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'is_confidential' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'default' => true,
+                        'description' => 'Whether the client can keep its secret confidential. Public clients (single-page or native applications) do not authenticate with a secret, may only use the "authorization_code" grant and must use PKCE with the S256 method.',
+                    ],
                     'allowed_ips' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Comma-separated list of allowed IPs or CIDR blocks. If empty, there is no restriction.',

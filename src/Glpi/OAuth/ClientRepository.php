@@ -62,10 +62,13 @@ class ClientRepository implements ClientRepositoryInterface
         ]);
 
         if (count($iterator) === 1) {
+            $data = $iterator->current();
             $client = new Client();
             $client->setIdentifier($clientIdentifier);
-            $client->setName($iterator->current()['name']);
-            $client->setRedirectUri(json_decode($iterator->current()['redirect_uri'], true) ?? []);
+            $client->setName($data['name']);
+            $client->setRedirectUri(json_decode($data['redirect_uri'], true) ?? []);
+            $client->setConfidential((bool) $data['is_confidential']);
+            $client->setGrants(json_decode($data['grants'], true) ?? []);
             return $client;
         }
 
