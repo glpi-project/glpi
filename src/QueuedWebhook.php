@@ -249,32 +249,72 @@ class QueuedWebhook extends CommonDBChild
 
         $response = null;
         if ($process_request) {
-            $request_url    = (string) $queued_webhook->fields['url'];
-            $request_error  = null;
-            $request_method = strtoupper((string) $queued_webhook->fields['http_method']);
+            $request_url   = (string) $queued_webhook->fields['url'];
+            $request_error = null;
+            $http_method   = $queued_webhook->fields['http_method'];
 
-            try {
-                $response = $client->request(
-                    $request_method,
-                    $request_url,
-                    [
-                        'headers' => $headers,
-                        'body'    => $queued_webhook->fields['body'],
-                    ]
+            if (!is_string($http_method)) {
+                $request_error = sprintf(
+                    "Unsupported HTTP method value for webhook %s (%s)",
+                    $webhook->fields['name'],
+                    $webhook->getID()
                 );
-            } catch (ExceptionInterface $e) {
-                if ($e instanceof HttpExceptionInterface) {
-                    $response = $e->getResponse();
-                }
-
-                $request_error = $e->getMessage();
-            }
-
-            if ($request_error !== null) {
                 Toolbox::logInFile(
                     "webhook",
                     "Error sending webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $request_error
                 );
+            } else {
+                $request_method = match (strtoupper($http_method)) {
+                    'CONNECT' => 'CONNECT',
+                    'DELETE' => 'DELETE',
+                    'GET' => 'GET',
+                    'HEAD' => 'HEAD',
+                    'OPTIONS' => 'OPTIONS',
+                    'PATCH' => 'PATCH',
+                    'POST' => 'POST',
+                    'PURGE' => 'PURGE',
+                    'PUT' => 'PUT',
+                    'QUERY' => 'QUERY',
+                    'TRACE' => 'TRACE',
+                    default => null,
+                };
+
+                if ($request_method === null) {
+                    $request_error = sprintf(
+                        "Unsupported HTTP method '%s' for webhook %s (%s)",
+                        strtoupper($http_method),
+                        $webhook->fields['name'],
+                        $webhook->getID()
+                    );
+                    Toolbox::logInFile(
+                        "webhook",
+                        "Error sending webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $request_error
+                    );
+                } else {
+                    try {
+                        $response = $client->request(
+                            $request_method,
+                            $request_url,
+                            [
+                                'headers' => $headers,
+                                'body'    => $queued_webhook->fields['body'],
+                            ]
+                        );
+                    } catch (ExceptionInterface $e) {
+                        if ($e instanceof HttpExceptionInterface) {
+                            $response = $e->getResponse();
+                        }
+
+                        $request_error = $e->getMessage();
+                    }
+
+                    if ($request_error !== null) {
+                        Toolbox::logInFile(
+                            "webhook",
+                            "Error sending webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $request_error
+                        );
+                    }
+                }
             }
         }
 
