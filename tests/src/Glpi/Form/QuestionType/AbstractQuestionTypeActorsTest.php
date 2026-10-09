@@ -215,6 +215,63 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
         );
     }
 
+    public static function singleActorDefaultValueProvider(): iterable
+    {
+        yield 'user' => [User::class, 'glpi'];
+        yield 'group' => [Group::class, '_test_group_1'];
+        yield 'supplier' => [Supplier::class, '_suplier01_name'];
+    }
+
+    #[DataProvider("singleActorDefaultValueProvider")]
+    public function testSingleActorDefaultValueKeepsAnyActorType(
+        string $itemtype,
+        string $name,
+    ): void {
+        $id = getItemByTypeName($itemtype, $name, true);
+        $fkey = $itemtype::getForeignKeyField();
+
+        $builder = (new FormBuilder())->addQuestion(
+            "Question",
+            static::getQuestionType(),
+            ["$fkey-$id"],
+            json_encode((new QuestionTypeActorsExtraDataConfig(false))->jsonSerialize())
+        );
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Question"));
+
+        $question_type = new (static::getQuestionType())();
+        $this->assertEquals(
+            in_array($itemtype, $question_type->getAllowedActorTypes(), true) ? [$fkey => [$id]] : [],
+            $question_type->getDefaultValue($question, false),
+        );
+    }
+
+    public function testSingleActorDefaultValueSkipsDisabledActorType(): void
+    {
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
+        $group_id = getItemByTypeName(Group::class, '_test_group_1', true);
+
+        $builder = (new FormBuilder())->addQuestion(
+            "Question",
+            static::getQuestionType(),
+            ["users_id-$user_id", "groups_id-$group_id"],
+            json_encode([
+                QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => false,
+                QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [
+                    User::class => 0,
+                    Group::class => 1,
+                ],
+            ])
+        );
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Question"));
+
+        $this->assertEquals(
+            ['groups_id' => [$group_id]],
+            (new (static::getQuestionType())())->getDefaultValue($question, false),
+        );
+    }
+
     public function testIsTypeEnabledWithNullQuestion(): void
     {
         $question_type = new (static::getQuestionType())();
