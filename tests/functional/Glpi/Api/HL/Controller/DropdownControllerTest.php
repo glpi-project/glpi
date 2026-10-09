@@ -382,6 +382,30 @@ class DropdownControllerTest extends HLAPITestCase
         });
     }
 
+    public function testDropdownDefinitionRejectsScalarTranslationLanguageValue()
+    {
+        $this->login();
+
+        // Create
+        $request = new Request('POST', '/Dropdowns/CustomDefinition');
+        $request->setParameter('system_name', 'ScalarTranslation');
+        $request->setParameter('translations', '{"fr_FR":"Couleur"}');
+        $this->api->call($request, function ($call) {
+            $call->response->isNotOK();
+        });
+        $this->assertFalse((new DropdownDefinition())->getFromDBByCrit(['system_name' => 'ScalarTranslation']));
+
+        // Update
+        $definition = $this->initDropdownDefinition();
+        $request = new Request('PATCH', '/Dropdowns/CustomDefinition/' . $definition->getID());
+        $request->setParameter('translations', '{"fr_FR":"Couleur"}');
+        $this->api->call($request, function ($call) {
+            $call->response->isNotOK();
+        });
+        $this->assertTrue($definition->getFromDB($definition->getID()));
+        $this->assertNotEquals(['fr_FR' => 'Couleur'], json_decode($definition->fields['translations'], true));
+    }
+
     public function testCRUDNoRightsDropdownDefinition()
     {
         $definition = $this->initDropdownDefinition();

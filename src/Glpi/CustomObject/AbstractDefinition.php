@@ -926,6 +926,11 @@ TWIG, ['name' => $name, 'value' => $value]);
                 break;
             }
 
+            if (!is_array($values)) {
+                $is_valid = false;
+                break;
+            }
+
             $available_categories = array_map(
                 fn(Language_Category $category) => $category->id,
                 self::getPluralFormsForLanguage($language)
