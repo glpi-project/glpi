@@ -324,13 +324,10 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
         }
 
         // Single actor: keep the first defined actor among the allowed and enabled types
-        foreach ($default_values as $fkey => $ids) {
-            $itemtype = getItemtypeForForeignKeyField($fkey);
-            if (
-                $ids !== []
-                && in_array($itemtype, $this->getAllowedActorTypes(), true)
-                && $this->isTypeEnabled($question, $itemtype)
-            ) {
+        foreach ($this->getAllowedActorTypes() as $itemtype) {
+            $fkey = getForeignKeyFieldForItemType($itemtype);
+            $ids = $default_values[$fkey] ?? [];
+            if ($ids !== [] && $this->isTypeEnabled($question, $itemtype)) {
                 return [$fkey => [reset($ids)]];
             }
         }
