@@ -4592,4 +4592,56 @@ HTML,
         $this->assertTrue($kb->getFromDB($id));
         $this->assertSame(0, $kb->fields['is_faq']);
     }
+
+    public function testCreateUnderUneditableParentIsDenied(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Readable, not editable',
+            'answer'      => '',
+            'entities_id' => Session::getActiveEntity(),
+        ]);
+        $input = [
+            'name'        => 'Child',
+            'entities_id' => Session::getActiveEntity(),
+            '_parents'    => [$parent->getID()],
+        ];
+        $this->assertTrue((new KnowbaseItem())->can(-1, CREATE, $input));
+
+        // can() with the input is what the legacy API calls.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE;
+        $this->assertFalse((new KnowbaseItem())->can(-1, CREATE, $input));
+
+        $input['_parents'] = [KnowbaseItem::getRootId()];
+        $this->assertTrue((new KnowbaseItem())->can(-1, CREATE, $input));
+    }
+
+    public function testCloneUnderUneditableParentIsDenied(): void
+    {
+        $this->login();
+        // A FAQ article by someone else: not editable without PUBLISHFAQ.
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'FAQ parent',
+            'answer'      => '',
+            'is_faq'      => 1,
+            'users_id'    => getItemByTypeName(User::class, 'tech', true),
+            'entities_id' => Session::getActiveEntity(),
+        ]);
+        $source = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Source',
+            'answer'      => '',
+            'entities_id' => Session::getActiveEntity(),
+            '_parents'    => [$parent->getID()],
+        ]);
+
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE | UPDATE;
+        $this->assertFalse((new KnowbaseItem())->can($parent->getID(), UPDATE));
+
+        $this->assertTrue($source->getFromDB($source->getID()));
+        $this->assertFalse($source->clone());
+        $this->hasSessionMessages(ERROR, ["You don&#039;t have permission to perform this action."]);
+        $this->assertSame(1, countElementsInTable(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id_parent' => $parent->getID(),
+        ]));
+    }
 }

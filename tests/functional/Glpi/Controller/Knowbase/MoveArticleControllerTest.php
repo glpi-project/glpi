@@ -259,7 +259,12 @@ class MoveArticleControllerTest extends DbTestCase
     {
         $this->login();
         $source = $this->makeUneditableArticle();
-        $child  = $this->makeArticle([$source]);
+        $child  = $this->makeArticle();
+        // The rights are already dropped, and add() would refuse this parent.
+        $this->createItem(KnowbaseItem_KnowbaseItem::class, [
+            'knowbaseitems_id'        => $child,
+            'knowbaseitems_id_parent' => $source,
+        ]);
         $target = $this->makeArticle();
         $this->assertEditable($child);
         $this->assertEditable($target);
