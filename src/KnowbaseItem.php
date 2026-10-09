@@ -1783,13 +1783,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
-        // One query, instead of a `can()` call per candidate.
+        // One query per level instead of a `can()` call per candidate, restricted to
+        // the candidates: the aside already loads the whole visible list.
         $visible_criteria = self::getListRequest([], 'browse');
         $visible_criteria['SELECT'] = self::getTableField('id');
-        $visible = [];
-        foreach ($DB->request($visible_criteria) as $row) {
-            $visible[(int) $row['id']] = true;
-        }
 
         $children = [];
         $visited  = [$this->fields['id'] => true];
@@ -1797,13 +1794,27 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $child    = new self();
 
         while ($frontier !== []) {
-            $next_frontier = [];
+            $candidates = [];
             foreach ($this->getDirectChildIds($frontier) as $child_id) {
                 if (isset($visited[$child_id])) {
                     continue; // already resolved through another branch
                 }
                 $visited[$child_id] = true;
+                $candidates[] = $child_id;
+            }
+            if ($candidates === []) {
+                break;
+            }
 
+            $level_criteria = $visible_criteria;
+            $level_criteria['WHERE'][] = [self::getTableField('id') => $candidates];
+            $visible = [];
+            foreach ($DB->request($level_criteria) as $row) {
+                $visible[(int) $row['id']] = true;
+            }
+
+            $next_frontier = [];
+            foreach ($candidates as $child_id) {
                 if (isset($visible[$child_id]) && $child->can($child_id, READ)) {
                     $children[] = [
                         'id'           => $child_id,
