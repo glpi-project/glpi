@@ -835,14 +835,18 @@ class NotificationTargetTicketTest extends DbTestCase
         $_SESSION["glpidate_format"] = 0;
     }
 
-    public function testAlertNotClosedAssignTargets(): void
+    #[TestWith([true])]
+    #[TestWith([false])]
+    public function testAlertNotClosedAssignTargets(bool $watchers_first): void
     {
+        global $CFG_GLPI;
+
         $this->login();
 
         $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $users_ids = [];
-        foreach (['tech_a', 'tech_b', 'tech_c'] as $name) {
+        foreach (['tech_a', 'tech_b', 'tech_c', 'tech_d'] as $name) {
             $user = $this->createItem(\User::class, [
                 'name'          => __FUNCTION__ . $name,
                 '_profiles_id'  => getItemByTypeName('Profile', 'Technician', true),
@@ -857,21 +861,27 @@ class NotificationTargetTicketTest extends DbTestCase
             $users_ids[$name] = $user->getID();
         }
 
-        $group = $this->createItem(\Group::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
-        $this->createItem(\Group_User::class, [
-            'groups_id' => $group->getID(),
-            'users_id'  => $users_ids['tech_c'],
-        ]);
+        $groups_ids = [];
+        foreach (['assigned' => 'tech_c', 'watchers' => 'tech_d'] as $name => $member) {
+            $group = $this->createItem(Group::class, ['name' => __FUNCTION__ . $name, 'entities_id' => $entities_id]);
+            $this->createItem(\Group_User::class, [
+                'groups_id' => $group->getID(),
+                'users_id'  => $users_ids[$member],
+            ]);
+            $groups_ids[$name] = $group->getID();
+        }
 
         $tickets = [];
         $assignments = [
             ['_users_id_assign' => $users_ids['tech_a']],
-            ['_users_id_assign' => $users_ids['tech_b'], '_groups_id_assign' => $group->getID()],
+            ['_users_id_assign' => $users_ids['tech_b'], '_groups_id_assign' => $groups_ids['assigned']],
             ['_users_id_assign' => $users_ids['tech_a']],
+            ['_users_id_assign' => $users_ids['tech_c']],
+            ['_users_id_assign' => $users_ids['tech_d']],
             [],
         ];
         foreach ($assignments as $i => $assignment) {
-            $ticket = $this->createItem(\Ticket::class, [
+            $ticket = $this->createItem(Ticket::class, [
                 'name'        => __FUNCTION__ . $i,
                 'content'     => __FUNCTION__,
                 'entities_id' => $entities_id,
@@ -880,31 +890,18 @@ class NotificationTargetTicketTest extends DbTestCase
         }
         $tickets_ids = array_column($tickets, 'id');
 
+        $this->createItem(\Ticket_User::class, [
+            'tickets_id'        => $tickets_ids[5],
+            'users_id'          => 0,
+            'type'              => \CommonITILActor::ASSIGN,
+            'use_notification'  => 1,
+            'alternative_email' => 'anonymous@localhost',
+        ]);
+
         $options = ['entities_id' => $entities_id, 'items' => $tickets];
 
-        $get_recipients = function (int $target_type) use ($entities_id, $options): array {
-            $target = new \NotificationTargetTicket($entities_id, 'alertnotclosed', new \Ticket(), $options);
-            $target->setMode(\Notification_NotificationTemplate::MODE_MAIL);
-            $target->setEvent(\NotificationEventMailing::class);
-            $target->addForTarget([
-                'notifications_id' => getItemByTypeName(\Notification::class, 'Alert Tickets not closed', true),
-                'type'             => \Notification::USER_TYPE,
-                'items_id'         => $target_type,
-            ], $options);
-
-            $recipients = [];
-            foreach ($target->getTargets() as $email => $infos) {
-                $data = $target->getForTemplate('alertnotclosed', $options + [
-                    'additionnaloption' => $infos['additionnaloption'],
-                ]);
-                $recipients[$email] = array_column($data['tickets'], '##ticket.id##');
-            }
-            ksort($recipients);
-            return $recipients;
-        };
-
         // Both targets are proposed for this event
-        $target = new \NotificationTargetTicket($entities_id, 'alertnotclosed', new \Ticket(), $options);
+        $target = new NotificationTargetTicket($entities_id, 'alertnotclosed', new Ticket(), $options);
         $this->assertArrayHasKey(
             \Notification::USER_TYPE . '_' . \Notification::ASSIGN_TECH,
             $target->notification_targets
@@ -914,26 +911,70 @@ class NotificationTargetTicketTest extends DbTestCase
             $target->notification_targets
         );
 
-        // Each technician is only notified for its own tickets
+        $this->updateItem(\Notification::class, getItemByTypeName(\Notification::class, 'Alert Tickets not closed', true), [
+            'is_active' => 0,
+        ]);
+        $notification = $this->createItem(\Notification::class, [
+            'name'         => __FUNCTION__,
+            'entities_id'  => $entities_id,
+            'is_recursive' => 1,
+            'is_active'    => 1,
+            'itemtype'     => Ticket::class,
+            'event'        => 'alertnotclosed',
+        ]);
+        $template = $this->createItem(\NotificationTemplate::class, [
+            'name'     => __FUNCTION__,
+            'itemtype' => Ticket::class,
+        ]);
+        $this->createItem(\NotificationTemplateTranslation::class, [
+            'notificationtemplates_id' => $template->getID(),
+            'language'                 => '',
+            'subject'                  => __FUNCTION__,
+            'content_text'             => '##FOREACHtickets##[##ticket.id##]##ENDFOREACHtickets##',
+            'content_html'             => '##FOREACHtickets##[##ticket.id##]##ENDFOREACHtickets##',
+        ]);
+        $this->createItem(\Notification_NotificationTemplate::class, [
+            'notifications_id'         => $notification->getID(),
+            'mode'                     => \Notification_NotificationTemplate::MODE_MAIL,
+            'notificationtemplates_id' => $template->getID(),
+        ]);
+        $targets = [
+            [\Notification::USER_TYPE, \Notification::ASSIGN_TECH],
+            [\Notification::USER_TYPE, \Notification::ASSIGN_GROUP],
+        ];
+        $watchers = [\Notification::GROUP_TYPE, $groups_ids['watchers']];
+        $targets  = $watchers_first ? [$watchers, ...$targets] : [...$targets, $watchers];
+        foreach ($targets as [$type, $items_id]) {
+            $this->createItem(NotificationTarget::class, [
+                'notifications_id' => $notification->getID(),
+                'type'             => $type,
+                'items_id'         => $items_id,
+            ]);
+        }
+
+        $CFG_GLPI['use_notifications']     = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+        \NotificationEvent::raiseEvent('alertnotclosed', new Ticket(), $options);
+
+        $recipients = [];
+        foreach ((new \QueuedNotification())->find(['event' => 'alertnotclosed']) as $queued) {
+            preg_match_all('/\[(\d+)\]/', $queued['body_text'], $matches);
+            $recipients[$queued['recipient']] = array_map(intval(...), $matches[1]);
+        }
+        ksort($recipients);
+
         $this->assertEquals(
             [
+                'anonymous@localhost' => [$tickets_ids[5]],
+                // Only its own tickets
                 'tech_a@localhost' => [$tickets_ids[0], $tickets_ids[2]],
                 'tech_b@localhost' => [$tickets_ids[1]],
+                // Its own tickets and the ones of its group
+                'tech_c@localhost' => [$tickets_ids[1], $tickets_ids[3]],
+                // Also targeted by a group: all tickets
+                'tech_d@localhost' => $tickets_ids,
             ],
-            $get_recipients(\Notification::ASSIGN_TECH)
+            $recipients
         );
-
-        // Each group member is only notified for the tickets of its group
-        $this->assertEquals(
-            ['tech_c@localhost' => [$tickets_ids[1]]],
-            $get_recipients(\Notification::ASSIGN_GROUP)
-        );
-
-        // Other recipients are still notified for all tickets
-        $target->setMode(\Notification_NotificationTemplate::MODE_MAIL);
-        $data = $target->getForTemplate('alertnotclosed', $options + [
-            'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
-        ]);
-        $this->assertEquals($tickets_ids, array_column($data['tickets'], '##ticket.id##'));
     }
 }
