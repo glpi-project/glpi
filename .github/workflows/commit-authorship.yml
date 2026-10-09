@@ -50,7 +50,8 @@ jobs:
           FAIL=0
           while IFS=$'\t' read -r sha name email message; do
             MESS=0
-            [ -z "${message%%*Co-authored-by:*}" ] && MESS=1
+            MESSLOOP=0
+            echo "$message" | grep -iqE "Co-authored-by:" && MESS=1
             echo "${sha:0:12} - $name <$email>"
             for pattern in "${DENY[@]}"; do
               if echo "$name" | grep -iqE "$pattern" || echo "$email" | grep -iqE "$pattern"; then
@@ -60,12 +61,14 @@ jobs:
               fi
               if [ "$MESS" -ne 0 ]; then
                 while IFS=$'\t' read name email; do
+                    [ "$MESSLOOP" -eq 0 ] && echo "${sha:0:12} - $name <$email>"
                     if echo "$name" | grep -iqE "$pattern" || echo "$email" | grep -iqE "$pattern"; then
                         echo "::error title=AI-authored commit::${sha:0:12} — '$name <$email>' matches '$pattern'"
                         FAIL=1
                         break 3
                     fi
                 done < <(echo -e "$message" | perl -ne 'print "$1\t$2\n" if /Co-authored-by:\s+(.+)\s+<(.+)>/i')
+                MESSLOOP=1
               fi
             done
           done < <(gh api --paginate "/repos/$REPO/pulls/$PR_NUMBER/commits" \
