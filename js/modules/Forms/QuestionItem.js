@@ -67,20 +67,21 @@ export class GlpiFormQuestionTypeItem {
             // Add a flag to all children to mark them as to be removed
             container.children().attr('data-to-remove', 'true');
 
+            // Entity: 0 is the root entity, use -1 as empty value
+            const empty_choice_params = sub_type === 'Entity'
+                ? {'display_emptychoice': 0, 'value': -1, 'toadd': {'-1': empty_label}}
+                : {'display_emptychoice': 1, 'value': 0};
+
             // Load the new dropdown
             container.load(
                 `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
                 {
-                    'idtable'            : sub_type,
-                    'width'              : '100%',
-                    'name'               : select.data('glpi-form-editor-original-name') || select.attr('name'),
-                    'aria_label'         : select.attr('aria-label'),
-                    'display_emptychoice': 0,
-                    'value'              : -1,
-                    'valuename'          : empty_label,
-                    'toadd'              : {
-                        '-1': empty_label
-                    },
+                    'idtable'   : sub_type,
+                    'width'     : '100%',
+                    'name'      : select.data('glpi-form-editor-original-name') || select.attr('name'),
+                    'aria_label': select.attr('aria-label'),
+                    'valuename' : empty_label,
+                    ...empty_choice_params,
                 },
                 () => container.find('[data-to-remove]').remove()
             );
