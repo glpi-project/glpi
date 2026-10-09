@@ -640,7 +640,7 @@ TWIG,
         global $CFG_GLPI;
 
         // complete title with id if exist
-        if ($add_id && isset($_GET['id']) && $_GET['id']) {
+        if ($add_id && isset($_GET['id']) && is_scalar($_GET['id']) && $_GET['id']) {
             $title = sprintf(__('%1$s - %2$s'), $title, $_GET['id']);
         }
 
