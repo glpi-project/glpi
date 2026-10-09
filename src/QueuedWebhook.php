@@ -251,6 +251,8 @@ class QueuedWebhook extends CommonDBChild
         if ($process_request) {
             $request_url   = (string) $queued_webhook->fields['url'];
             $request_error = null;
+            /** @var \Symfony\Component\HttpFoundation\Request::METHOD_* $method */
+            $method = strtoupper($queued_webhook->fields['http_method']);
             $http_method   = $queued_webhook->fields['http_method'];
 
             if (!is_string($http_method)) {
@@ -293,7 +295,7 @@ class QueuedWebhook extends CommonDBChild
                 } else {
                     try {
                         $response = $client->request(
-                            $request_method,
+                            $method,
                             $request_url,
                             [
                                 'headers' => $headers,
