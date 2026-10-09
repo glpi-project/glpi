@@ -1216,6 +1216,22 @@ class ProviderTest extends DbTestCase
             'type'              => \Ticket::INCIDENT_TYPE,
             'status'            => \Ticket::CLOSED,
         ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard solved request',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::DEMAND_TYPE,
+            'status'            => \Ticket::SOLVED,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard opened incident without category',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => 0,
+            'type'              => \Ticket::INCIDENT_TYPE,
+            'status'            => \Ticket::ASSIGNED,
+        ]);
 
         $opened = Provider::ticketsByCategoryAndType('open');
         $this->assertArrayHasKey('data', $opened);
@@ -1229,6 +1245,10 @@ class ProviderTest extends DbTestCase
         $this->assertSame(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$category_index], '1 opened incident expected');
         $this->assertSame(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$category_index], '1 opened request expected');
 
+        $none_index = array_search(__('None'), $opened['data']['labels'], true);
+        $this->assertNotFalse($none_index, 'a "None" label is expected for the uncategorized ticket');
+        $this->assertGreaterThanOrEqual(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$none_index], 'at least 1 opened uncategorized incident expected');
+
         $closed = Provider::ticketsByCategoryAndType('close');
         $this->assertArrayHasKey('data', $closed);
         $category_index_closed = array_search($category->fields['completename'], $closed['data']['labels'], true);
@@ -1239,7 +1259,7 @@ class ProviderTest extends DbTestCase
             $closed_series_by_name[$serie['name']] = $serie['data'];
         }
         $this->assertSame(1, $closed_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$category_index_closed], '1 closed incident expected');
-        $this->assertArrayNotHasKey(\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE), $closed_series_by_name, 'no closed request expected');
+        $this->assertSame(1, $closed_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$category_index_closed], '1 solved request expected');
     }
 
     private function attachTicketToGroup(string $name, int $status, \Group $group): \Ticket

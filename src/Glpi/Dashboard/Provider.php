@@ -1199,7 +1199,9 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT'    => [
+                    "$entity_table.id AS entity_id",
                     "$entity_table.completename AS entity_name",
+                    "$category_table.id AS category_id",
                     "$category_table.completename AS category_name",
                     'COUNT DISTINCT' => "$ticket_table.id AS cpt",
                 ],
@@ -1286,8 +1288,8 @@ class Provider
         $params = array_merge($default_params, $params);
 
         $statuses = $case === 'close'
-            ? [Ticket::SOLVED, Ticket::CLOSED]
-            : [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING];
+            ? [...Ticket::getSolvedStatusArray(), ...Ticket::getClosedStatusArray()]
+            : Ticket::getNotSolvedStatusArray();
 
         $ticket_table   = Ticket::getTable();
         $category_table = \ITILCategory::getTable();
@@ -1296,6 +1298,7 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT'    => [
+                    "$category_table.id AS category_id",
                     "$category_table.completename AS category_name",
                     "$ticket_table.type AS ticket_type",
                     'COUNT DISTINCT' => "$ticket_table.id AS cpt",
@@ -1322,29 +1325,30 @@ class Provider
         $iterator = $DB->request($criteria);
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 
-        $matrix = [];
-        $types  = [];
+        $matrix         = [];
+        $category_names = [];
+        $types          = [];
         foreach ($iterator as $result) {
-            $category_name = $result['category_name'] ?? __('None');
-            $type_name     = (int) $result['ticket_type'] > 0
+            $category_id = $result['category_id'] ?? 0;
+            $type_name   = (int) $result['ticket_type'] > 0
                 ? Ticket::getTicketTypeName((int) $result['ticket_type'])
                 : __('Undefined');
 
-            $matrix[$category_name][$type_name] = (int) $result['cpt'];
-            $types[$type_name]                  = true;
+            $category_names[$category_id]     = $result['category_name'] ?? __('None');
+            $matrix[$category_id][$type_name] = (int) $result['cpt'];
+            $types[$type_name]                = true;
         }
 
-        $categories = array_keys($matrix);
-        $types      = array_keys($types);
+        $types = array_keys($types);
 
         $data = [
-            'labels' => $categories,
+            'labels' => array_values($category_names),
             'series' => [],
         ];
         foreach ($types as $type_name) {
             $series_data = [];
-            foreach ($categories as $category_name) {
-                $series_data[] = $matrix[$category_name][$type_name] ?? 0;
+            foreach (array_keys($category_names) as $category_id) {
+                $series_data[] = $matrix[$category_id][$type_name] ?? 0;
             }
             $data['series'][] = [
                 'name' => $type_name,
