@@ -3058,8 +3058,10 @@ EOT,
                 ];
             }
         }
+        $result_count = count($results);
+        $end = $result_count > 0 ? $result_count - 1 : 0;
         return new JSONResponse($results, 200, [
-            'Content-Range' => '0-' . (count($results) - 1) . '/' . count($results),
+            'Content-Range' => '0-' . $end . '/' . $result_count,
         ]);
     }
 
