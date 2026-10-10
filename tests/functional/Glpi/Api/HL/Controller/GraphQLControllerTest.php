@@ -38,6 +38,8 @@ use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Group;
+use Group_User;
 use Project;
 use ProjectTask;
 
@@ -507,6 +509,47 @@ class GraphQLControllerTest extends HLAPITestCase
                 ->data('Ticket', function ($tickets) {
                     $ticket = $tickets[0];
                     $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/', $ticket['date']);
+                });
+        });
+    }
+
+    public function testGroupUserMemberships(): void
+    {
+        $this->login();
+
+        $users_id = getItemByTypeName('User', 'tech', true);
+        $groups_id = $this->createItem(Group::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $group_user = $this->createItem(Group_User::class, [
+            'users_id' => $users_id,
+            'groups_id' => $groups_id,
+            'is_manager' => 1,
+        ]);
+
+        $this->graphql->call('query { Group(filter: "id==' . $groups_id . '") { id users { id is_manager user { id username } } } }', function ($call) use ($users_id, $group_user) {
+            $call->response
+                ->isOK()
+                ->data('Group', function ($groups) use ($users_id, $group_user) {
+                    $this->assertCount(1, $groups);
+                    $this->assertCount(1, $groups[0]['users']);
+                    $this->assertEquals($group_user->getID(), $groups[0]['users'][0]['id']);
+                    $this->assertTrue($groups[0]['users'][0]['is_manager']);
+                    $this->assertEquals($users_id, $groups[0]['users'][0]['user']['id']);
+                    $this->assertEquals('tech', $groups[0]['users'][0]['user']['username']);
+                });
+        });
+
+        $group_name = __FUNCTION__;
+        $this->graphql->call('query { User(filter: "id==' . $users_id . '") { id groups { id group { id name } } } }', function ($call) use ($groups_id, $group_name) {
+            $call->response
+                ->isOK()
+                ->data('User', function ($users) use ($groups_id, $group_name) {
+                    $this->assertCount(1, $users);
+                    $groups = array_column($users[0]['groups'], 'group');
+                    $this->assertContains($groups_id, array_column($groups, 'id'));
+                    $this->assertContains($group_name, array_column($groups, 'name'));
                 });
         });
     }

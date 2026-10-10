@@ -103,8 +103,8 @@ final class OpenAPIGenerator
     private function getPublicVendorExtensions(): array
     {
         return [
-            'writeOnly', 'readOnly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed', 'x-itemtype',
-            'x-supports-mentions', 'x-label', 'x-right-scope',
+            'writeOnly', 'readOnly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed',
+            'x-itemtype', 'x-supports-mentions', 'x-label', 'x-right-scope', 'x-unicity',
         ];
     }
 

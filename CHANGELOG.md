@@ -14,6 +14,7 @@ The present file will list all changes made to the project; according to the
 - New schemas/endpoints for custom asset definitions and fields in High-Level API v2.4.
 - New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
 - `supervisor` property added for `User` schema in High-Level API v2.4.
+- New schema/properties/endpoints for group memberships (`Group_User`) in High-Level API v2.4.
 - Support for `If-Modified-Since` and `If-Unmodified-Since` HTTP headers for some types of requests in High-Level API. This is not controlled by the API version.
 
 ### Changed
@@ -143,6 +144,7 @@ If you have anything pinned to specific v2 versions, please try to pin to the la
 - Some `string` properties in High-Level API schemas have been updated use the `html` format to indicate the context should be treated as HTML/Rich text.
 - Some `string` properties in High-Level API schemas have been updated to include an `x-supports-mentions` to indicate that user mentions are supported.
 - Fixed issue where OAuth tokens were not removed after expiring. This cleanup is now done automatically when a new token is requested.
+- High-Level API now has a standard mechanism for defining unique constraints for resources. As a result, the `title` returned in an "ERROR_ALREADY_EXISTS" error response for `UserEmail` has changed.
 
 ### Deprecated
 
@@ -151,6 +153,7 @@ If you have anything pinned to specific v2 versions, please try to pin to the la
 ### API changes
 
 #### Added
+- `x-unicity` HLAPI extension property to define which properties of a schema must be unique for a resource. For example, the `UserEmail` schema has a unique constraint on the `user` and `email` properties.
 
 #### Changes
 
