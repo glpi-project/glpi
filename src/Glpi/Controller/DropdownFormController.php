@@ -158,7 +158,7 @@ class DropdownFormController extends AbstractController
         }
 
         if (isset($input["update"])) {
-            $dropdown->check($input["id"], UPDATE);
+            $dropdown->check($input["id"], UPDATE, $input);
             $dropdown->update($input);
 
             Event::log(
