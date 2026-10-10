@@ -35,8 +35,11 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Appliance;
 use Budget;
+use Cable;
 use Calendar;
+use Certificate;
 use Change;
 use Change_Change;
 use Change_Item;
@@ -47,12 +50,20 @@ use ChangeSatisfaction;
 use ChangeTask;
 use ChangeTemplate;
 use ChangeValidation;
+use Cluster;
 use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
+use Computer;
+use Database;
+use DatabaseInstance;
+use DCRoom;
 use Document_Item;
+use Domain;
+use DomainRecord;
+use Enclosure;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Doc\SchemaReference;
@@ -69,6 +80,7 @@ use GraphQL\Deferred;
 use GraphQL\Type\Definition\ResolveInfo;
 use Group;
 use InvalidArgumentException;
+use Item_DeviceSimcard;
 use Item_Problem;
 use Item_Ticket;
 use ITILCategory;
@@ -76,16 +88,24 @@ use ITILFollowup;
 use ITILFollowupTemplate;
 use ITILReminder;
 use ITILSolution;
+use Line;
 use Location;
+use Monitor;
+use NetworkEquipment;
 use OLA;
 use OlaLevel;
+use PassiveDCEquipment;
+use PDU;
 use PendingReason;
 use PendingReason_Item;
+use Peripheral;
+use Phone;
 use Planning;
 use PlanningEventCategory;
 use PlanningExternalEvent;
 use PlanningExternalEventTemplate;
 use PlanningRecall;
+use Printer;
 use Problem;
 use Problem_Problem;
 use Problem_Ticket;
@@ -93,6 +113,7 @@ use ProblemCost;
 use ProblemTask;
 use ProblemTemplate;
 use Profile;
+use Rack;
 use RecurrentChange;
 use RequestType;
 use RuntimeException;
@@ -100,6 +121,8 @@ use Safe\Exceptions\JsonException;
 use Session;
 use SLA;
 use SlaLevel;
+use Software;
+use SoftwareLicense;
 use SolutionTemplate;
 use SolutionType;
 use stdClass;
@@ -1617,6 +1640,32 @@ EOT,
     {
         $associable_types = array_keys(Profile::getHelpdeskItemtypes());
 
+        $associable_type_schema_map = [
+            Computer::class => 'Computer',
+            Monitor::class => 'Monitor',
+            NetworkEquipment::class => 'NetworkEquipment',
+            Peripheral::class => 'Peripheral',
+            Phone::class => 'Phone',
+            Printer::class => 'Printer',
+            Software::class => 'Software',
+            SoftwareLicense::class => 'License',
+            Certificate::class => 'Certificate',
+            Line::class => 'Line',
+            DCRoom::class => 'DCRoom',
+            Rack::class => 'Rack',
+            Enclosure::class => 'Enclosure',
+            Cluster::class => 'Cluster',
+            PDU::class => 'PDU',
+            Domain::class => 'Domain',
+            DomainRecord::class => 'DomainRecord',
+            Appliance::class => 'Appliance',
+            Item_DeviceSimcard::class => 'SIMCardItem',
+            PassiveDCEquipment::class => 'PassiveDCEquipment',
+            DatabaseInstance::class => 'DatabaseInstance',
+            Database::class => 'Database',
+            Cable::class => 'Cable'
+        ];
+
         if ($restrict_by_profile) {
             $profile_allowed = $_SESSION['glpiactiveprofile']['helpdesk_item_type'];
             $associable_types = array_filter($associable_types, static function ($type) use ($profile_allowed) {
@@ -1625,9 +1674,11 @@ EOT,
         }
 
         // map associable types to their schema names and remove any that do not have a schema defined
-        return array_values(array_filter(array_map(static function ($type) use ($api_version) {
-            return Schemas::getInstance($api_version)->getSchemaNameForItemtype($type);
+        $schemas = array_values(array_filter(array_map(static function ($type) use ($associable_type_schema_map) {
+            return $associable_type_schema_map[$type] ?? null;
         }, $associable_types)));
+        sort($schemas, SORT_STRING);
+        return $schemas;
     }
 
     /**

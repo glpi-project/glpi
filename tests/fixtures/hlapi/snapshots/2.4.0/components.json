@@ -950,36 +950,84 @@
                 "_type": {
                     "type": "string",
                     "enum": [
+                        "Appliance",
+                        "Cable",
+                        "Certificate",
+                        "Cluster",
                         "Computer",
+                        "DCRoom",
+                        "Database",
+                        "DatabaseInstance",
+                        "Domain",
+                        "DomainRecord",
+                        "Enclosure",
+                        "License",
+                        "Line",
                         "Monitor",
                         "NetworkEquipment",
+                        "PDU",
+                        "PassiveDCEquipment",
                         "Peripheral",
                         "Phone",
                         "Printer",
-                        "Software",
-                        "SoftwareLicense",
-                        "Certificate",
-                        "DCRoom",
                         "Rack",
-                        "Enclosure",
-                        "PDU",
-                        "Appliance",
                         "SIMCardItem",
-                        "PassiveDCEquipment",
-                        "Cable"
+                        "Software"
                     ]
                 },
                 "data": {
                     "type": "object",
                     "oneOf": [
                         {
+                            "$ref": "#/components/schemas/Appliance"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Cable"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Certificate"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Cluster"
+                        },
+                        {
                             "$ref": "#/components/schemas/Computer"
+                        },
+                        {
+                            "$ref": "#/components/schemas/DCRoom"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Database"
+                        },
+                        {
+                            "$ref": "#/components/schemas/DatabaseInstance"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Domain"
+                        },
+                        {
+                            "$ref": "#/components/schemas/DomainRecord"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Enclosure"
+                        },
+                        {
+                            "$ref": "#/components/schemas/License"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Line"
                         },
                         {
                             "$ref": "#/components/schemas/Monitor"
                         },
                         {
                             "$ref": "#/components/schemas/NetworkEquipment"
+                        },
+                        {
+                            "$ref": "#/components/schemas/PDU"
+                        },
+                        {
+                            "$ref": "#/components/schemas/PassiveDCEquipment"
                         },
                         {
                             "$ref": "#/components/schemas/Peripheral"
@@ -991,37 +1039,13 @@
                             "$ref": "#/components/schemas/Printer"
                         },
                         {
-                            "$ref": "#/components/schemas/Software"
-                        },
-                        {
-                            "$ref": "#/components/schemas/SoftwareLicense"
-                        },
-                        {
-                            "$ref": "#/components/schemas/Certificate"
-                        },
-                        {
-                            "$ref": "#/components/schemas/DCRoom"
-                        },
-                        {
                             "$ref": "#/components/schemas/Rack"
-                        },
-                        {
-                            "$ref": "#/components/schemas/Enclosure"
-                        },
-                        {
-                            "$ref": "#/components/schemas/PDU"
-                        },
-                        {
-                            "$ref": "#/components/schemas/Appliance"
                         },
                         {
                             "$ref": "#/components/schemas/SIMCardItem"
                         },
                         {
-                            "$ref": "#/components/schemas/PassiveDCEquipment"
-                        },
-                        {
-                            "$ref": "#/components/schemas/Cable"
+                            "$ref": "#/components/schemas/Software"
                         }
                     ]
                 }
@@ -1029,23 +1053,29 @@
             "discriminator": {
                 "propertyName": "_type",
                 "mapping": {
+                    "Appliance": "#/components/schemas/Appliance",
+                    "Cable": "#/components/schemas/Cable",
+                    "Certificate": "#/components/schemas/Certificate",
+                    "Cluster": "#/components/schemas/Cluster",
                     "Computer": "#/components/schemas/Computer",
+                    "DCRoom": "#/components/schemas/DCRoom",
+                    "Database": "#/components/schemas/Database",
+                    "DatabaseInstance": "#/components/schemas/DatabaseInstance",
+                    "Domain": "#/components/schemas/Domain",
+                    "DomainRecord": "#/components/schemas/DomainRecord",
+                    "Enclosure": "#/components/schemas/Enclosure",
+                    "License": "#/components/schemas/License",
+                    "Line": "#/components/schemas/Line",
                     "Monitor": "#/components/schemas/Monitor",
                     "NetworkEquipment": "#/components/schemas/NetworkEquipment",
+                    "PDU": "#/components/schemas/PDU",
+                    "PassiveDCEquipment": "#/components/schemas/PassiveDCEquipment",
                     "Peripheral": "#/components/schemas/Peripheral",
                     "Phone": "#/components/schemas/Phone",
                     "Printer": "#/components/schemas/Printer",
-                    "Software": "#/components/schemas/Software",
-                    "SoftwareLicense": "#/components/schemas/SoftwareLicense",
-                    "Certificate": "#/components/schemas/Certificate",
-                    "DCRoom": "#/components/schemas/DCRoom",
                     "Rack": "#/components/schemas/Rack",
-                    "Enclosure": "#/components/schemas/Enclosure",
-                    "PDU": "#/components/schemas/PDU",
-                    "Appliance": "#/components/schemas/Appliance",
                     "SIMCardItem": "#/components/schemas/SIMCardItem",
-                    "PassiveDCEquipment": "#/components/schemas/PassiveDCEquipment",
-                    "Cable": "#/components/schemas/Cable"
+                    "Software": "#/components/schemas/Software"
                 }
             }
         },
