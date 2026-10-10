@@ -563,4 +563,32 @@ class NetworkPortTest extends DbTestCase
 
         $_SESSION['glpiactiveprofile']['networking'] = $old_networking_right;
     }
+
+    public function testConnexityMassiveActionsItemtypes()
+    {
+        global $CFG_GLPI;
+
+        // Register a custom asset with the network port capability so it is
+        // dynamically added to $CFG_GLPI['networkport_types'].
+        $definition      = $this->initAssetDefinition(capacities: [new Capacity(name: HasNetworkPortCapacity::class)]);
+        $custom_itemtype = $definition->getAssetClassName();
+
+        $specificities = NetworkPort::getConnexityMassiveActionsSpecificities();
+
+        // The "Move" action must be able to reaffect a port to any itemtype
+        // that can hold network ports.
+        $this->assertTrue($specificities['reaffect']);
+        $this->assertSame($CFG_GLPI['networkport_types'], $specificities['itemtypes']);
+
+        // Regression: types that were already allowed are still present.
+        $this->assertContains(\Computer::class, $specificities['itemtypes']);
+        $this->assertContains(\NetworkEquipment::class, $specificities['itemtypes']);
+
+        // Fix: types that were previously excluded are now allowed, including
+        // capability-enabled custom assets.
+        $this->assertContains(\Printer::class, $specificities['itemtypes']);
+        $this->assertContains(\Peripheral::class, $specificities['itemtypes']);
+        $this->assertContains(\PDU::class, $specificities['itemtypes']);
+        $this->assertContains($custom_itemtype, $specificities['itemtypes']);
+    }
 }
