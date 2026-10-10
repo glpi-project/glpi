@@ -48,6 +48,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use GraphQL\Deferred;
 use GraphQL\Error\Error;
+use GraphQL\Executor\Promise\Adapter\SyncPromise;
 use GraphQL\Type\Definition\ResolveInfo;
 use stdClass;
 
@@ -151,6 +152,73 @@ class DefaultResolvers
         if ($schema === null) {
             throw new Error('Unable to resolve field "' . $field_name . '": schema not found');
         }
+        return $this->resolveObjectById($schema_name, $schema, $id, $fields_requested, $args);
+    }
+
+    /**
+     * Resolve a field whose type is a union of several schemas.
+     * The concrete schema is determined by the discriminator property of the source object or of the union property.
+     *
+     * @param mixed $source
+     * @param array<string, mixed> $args
+     * @param object $context
+     * @param ResolveInfo $info
+     * @return array<string, mixed>|SyncPromise|null
+     */
+    public function resolveUnionField(mixed $source, array $args, object $context, ResolveInfo $info): array|SyncPromise|null
+    {
+        $field_name = $info->fieldName;
+        $parent_schema = $this->getSchemaForObjectName($info->parentType->name);
+        $discriminator = $parent_schema['properties'][$field_name]['discriminator']['propertyName']
+            ?? $parent_schema['discriminator']['propertyName']
+            ?? '_type';
+
+        if (is_array($source[$field_name] ?? null)) {
+            // Already resolved
+            return $source[$field_name] + [$discriminator => $source[$discriminator] ?? null];
+        }
+
+        $member_schema_name = $source[$discriminator] ?? null;
+        $id = $source[$field_name . chr(0x1F) . 'id'] ?? null;
+        if (!is_string($member_schema_name) || !is_numeric($id)) {
+            return null;
+        }
+        $member_schema = $this->getSchemaForObjectName($member_schema_name);
+        if ($member_schema === null) {
+            return null;
+        }
+        if (
+            isset($member_schema['x-itemtype'])
+            && is_subclass_of($member_schema['x-itemtype'], CommonDBTM::class)
+            && !$member_schema['x-itemtype']::canView()
+        ) {
+            return null;
+        }
+
+        $add_discriminator = static fn(?array $data) => $data === null ? null : $data + [$discriminator => $member_schema_name];
+        $resolved = $this->resolveObjectById(
+            $member_schema_name,
+            $member_schema,
+            (int) $id,
+            array_keys($info->getFieldSelection(1)),
+            $args
+        );
+        if ($resolved instanceof Deferred) {
+            return $resolved->then($add_discriminator);
+        }
+        return $add_discriminator($resolved);
+    }
+
+    /**
+     * @param string $schema_name
+     * @param array<string, mixed> $schema
+     * @param int $id
+     * @param string[] $fields_requested
+     * @param array<string, mixed> $args
+     * @return array<string, mixed>|Deferred|null
+     */
+    private function resolveObjectById(string $schema_name, array $schema, int $id, array $fields_requested, array $args): array|Deferred|null
+    {
         $needed = $this->object_cache->getNeeded($schema_name, [$id], $fields_requested);
         if ($needed === []) {
             // Object is already cached with all requested fields

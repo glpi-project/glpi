@@ -35,12 +35,20 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Change;
+use Change_Item;
 use ChangeValidation;
 use CommonITILObject;
+use Computer;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Item_Problem;
+use Item_Ticket;
+use Monitor;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Printer;
 use Problem;
+use Profile;
 use Ticket;
 use TicketValidation;
 
@@ -736,6 +744,71 @@ class ITILControllerTest extends HLAPITestCase
                 });
             }
         }
+    }
+
+    public static function graphQLAssociatedItemsProvider(): iterable
+    {
+        yield [Ticket::class, Item_Ticket::class];
+        yield [Change::class, Change_Item::class];
+        yield [Problem::class, Item_Problem::class];
+    }
+
+    #[DataProvider('graphQLAssociatedItemsProvider')]
+    public function testGraphQLAssociatedItems(string $itil_type, string $link_type)
+    {
+        $this->login();
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $itil = $this->createItem($itil_type, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $entities_id,
+        ]);
+        $computer = $this->createItem(Computer::class, ['name' => __FUNCTION__ . ' computer', 'entities_id' => $entities_id]);
+        $monitor = $this->createItem(Monitor::class, ['name' => __FUNCTION__ . ' monitor', 'entities_id' => $entities_id]);
+        $printer = $this->createItem(Printer::class, ['name' => __FUNCTION__ . ' printer', 'entities_id' => $entities_id]);
+        foreach ([$computer, $monitor, $printer] as $item) {
+            $this->createItem($link_type, [
+                $itil_type::getForeignKeyField() => $itil->getID(),
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ]);
+        }
+
+        // Printers are not allowed to be associated with ITIL items for this profile
+        $this->assertTrue((new Profile())->update([
+            'id' => getItemByTypeName(Profile::class, 'Super-Admin', true),
+            'helpdesk_item_type' => [Computer::class, Monitor::class],
+        ]));
+
+        $schema_name = $itil_type;
+        $query = <<<GRAPHQL
+            query {
+                {$schema_name}(id: {$itil->getID()}) {
+                    id
+                    associated_items {
+                        _type
+                        data {
+                            ... on Computer { id name }
+                            ... on Monitor { id name }
+                        }
+                    }
+                }
+            }
+        GRAPHQL;
+        $this->graphql->call($query, function ($call) use ($schema_name, $computer, $monitor) {
+            $call->response
+                ->isOK()
+                ->data($schema_name, function ($items) use ($computer, $monitor) {
+                    $this->assertCount(1, $items);
+                    $associated_items = $items[0]['associated_items'];
+                    usort($associated_items, static fn($a, $b) => strcmp($a['_type'], $b['_type']));
+                    $this->assertEquals([
+                        ['_type' => 'Computer', 'data' => ['id' => $computer->getID(), 'name' => $computer->fields['name']]],
+                        ['_type' => 'Monitor', 'data' => ['id' => $monitor->getID(), 'name' => $monitor->fields['name']]],
+                    ], $associated_items);
+                });
+        });
     }
 
     public function testCRUDTeamMembers()
