@@ -39,6 +39,11 @@ use CommonITILActor;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Tests\DbTestCase;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use ITILFollowup;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
@@ -823,5 +828,50 @@ JSON;
         $this->assertSame('observer', $team_1['role']);
         $this->assertSame('post-only', $team_2['name']);
         $this->assertSame('observer', $team_2['role']);
+    }
+
+    public function testSafeRedirectOptionsRefuseNotAllowedUrls(): void
+    {
+        // A redirection to a port that is not allowed by the server side URL allowlist
+        $mock = new MockHandler([
+            new Response(302, ['Location' => 'http://127.0.0.1:6379/']),
+            new Response(200, [], 'internal service'),
+        ]);
+        $client = new Client([
+            'handler'         => HandlerStack::create($mock),
+            'allow_redirects' => Webhook::getSafeRedirectOptions(),
+        ]);
+
+        $exception = null;
+        try {
+            $client->request('GET', 'https://example.com/hook');
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+        $this->assertInstanceOf(RequestException::class, $exception);
+        $this->assertNull($exception->getResponse(), 'The redirect response must not be reported as a delivery');
+        $this->assertSame(1, $mock->count(), 'The redirected request must not be sent');
+
+        // A redirection to an allowed URL is still followed
+        $mock = new MockHandler([
+            new Response(302, ['Location' => 'https://example.org/hook']),
+            new Response(200, [], 'ok'),
+        ]);
+        $client = new Client([
+            'handler'         => HandlerStack::create($mock),
+            'allow_redirects' => Webhook::getSafeRedirectOptions(),
+        ]);
+        $this->assertSame('ok', (string) $client->request('GET', 'https://example.com/hook')->getBody());
+
+        // The fragment of an allowed redirection is ignored
+        $mock = new MockHandler([
+            new Response(302, ['Location' => 'https://example.org/hook#status']),
+            new Response(200, [], 'ok'),
+        ]);
+        $client = new Client([
+            'handler'         => HandlerStack::create($mock),
+            'allow_redirects' => Webhook::getSafeRedirectOptions(),
+        ]);
+        $this->assertSame('ok', (string) $client->request('GET', 'https://example.com/hook')->getBody());
     }
 }

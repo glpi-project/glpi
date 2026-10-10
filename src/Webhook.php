@@ -56,6 +56,9 @@ use Glpi\Search\FilterableTrait;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 use Twig\Extra\Markdown\MarkdownExtension;
 
 use function Safe\json_decode;
@@ -1088,6 +1091,24 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
+     * Guzzle redirect options that only follow redirections to URLs allowed by the administrator.
+     *
+     * @return array<string, mixed>
+     */
+    public static function getSafeRedirectOptions(): array
+    {
+        return [
+            'on_redirect' => static function (RequestInterface $request, ResponseInterface $response, UriInterface $uri): void {
+                // The fragment is not sent to the server, so it must not be matched by the allowlist
+                if (!Toolbox::isUrlSafe((string) $uri->withFragment(''))) {
+                    // Do not attach the redirect response, the queued webhook must stay retryable
+                    throw new RequestException(sprintf('Redirection to "%s" is not allowed.', $uri), $request);
+                }
+            },
+        ];
+    }
+
+    /**
      * Validate Challenge Response Answer
      * @param string $url The URL to send the challenge to
      * @param string $body The body to use for the challenge (used to generate the signature)
@@ -1112,6 +1133,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $options = [
             'base_uri'        => $url,
             'connect_timeout' => 1,
+            'allow_redirects' => self::getSafeRedirectOptions(),
         ];
         if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
             $options['proxy_excluded'] = true;

@@ -180,7 +180,8 @@ class QueuedWebhook extends CommonDBChild
         }
 
         $guzzle_options = [
-            'timeout' => 5,
+            'timeout'         => 5,
+            'allow_redirects' => Webhook::getSafeRedirectOptions(),
         ];
         if (in_array(Webhook::class, $CFG_GLPI['proxy_exclusions'])) {
             $guzzle_options['proxy_excluded'] = true;
