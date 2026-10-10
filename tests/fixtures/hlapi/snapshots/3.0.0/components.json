@@ -22622,6 +22622,314 @@
                 }
             }
         },
+        "ShareToken": {
+            "type": "object",
+            "x-itemtype": "Glpi\\ShareToken",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "itemtype": {
+                    "type": "string"
+                },
+                "items_id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "token": {
+                    "type": "string",
+                    "readOnly": true,
+                    "maxLength": 255
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "user": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "username": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User",
+                    "readOnly": true
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "date_expiration": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "SharedKBArticle": {
+            "x-itemtype": "KnowbaseItem",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "parents": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-full-schema": "KBArticle",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            },
+                            "name": {
+                                "type": "string",
+                                "maxLength": 255
+                            }
+                        }
+                    }
+                },
+                "views": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "illustration": {
+                    "type": "string",
+                    "enum": [
+                        "advanced-dashboards",
+                        "advanced-forms",
+                        "agent-config",
+                        "alert",
+                        "anonymise",
+                        "anonymize-alt",
+                        "ansible",
+                        "antivirus",
+                        "application",
+                        "application-altenative",
+                        "application-edit",
+                        "approval-by-mail",
+                        "approve-requests",
+                        "asset-cartridge",
+                        "asset-desktop-1",
+                        "asset-desktop-2",
+                        "asset-laptop",
+                        "asset-lost",
+                        "asset-network-equipment",
+                        "asset-peripheral",
+                        "asset-phone",
+                        "asset-printer",
+                        "asset-server",
+                        "asset-smartphone",
+                        "backup-restoration-1",
+                        "backup-restoration-2",
+                        "bank",
+                        "bi-reporting-1",
+                        "bi-reporting-2",
+                        "bi-reporting-3",
+                        "bi-reporting-4",
+                        "bookmark",
+                        "branding",
+                        "browse-kb",
+                        "building",
+                        "calendar",
+                        "car",
+                        "carbon",
+                        "centreon",
+                        "chart-area",
+                        "chart-bar",
+                        "chart-donut",
+                        "chart-line",
+                        "chart-multiple",
+                        "chart-pie",
+                        "chart-search",
+                        "chat-1",
+                        "chat-2",
+                        "cloud",
+                        "cloud-instance",
+                        "cloud-inventory",
+                        "cloud-network-1",
+                        "cloud-network-2",
+                        "cloud-usage",
+                        "collaborative-tools",
+                        "connectivity-issue",
+                        "container",
+                        "containers",
+                        "contract-signing-1",
+                        "contract-signing-2",
+                        "credit",
+                        "data-export",
+                        "data-injection",
+                        "database",
+                        "database-add",
+                        "delivery",
+                        "diagnostic",
+                        "doc-developer",
+                        "documentation",
+                        "download",
+                        "error-404",
+                        "escalade",
+                        "factory",
+                        "faq",
+                        "fields",
+                        "file-sheet",
+                        "firewall",
+                        "fixing-bug",
+                        "fixing-bug-2",
+                        "folder",
+                        "formcreator",
+                        "gantt",
+                        "gdpr-tools",
+                        "gear",
+                        "gear-hand",
+                        "generic-objects",
+                        "glpi-ai",
+                        "glpi-cloud-support-1",
+                        "glpi-cloud-support-2",
+                        "group",
+                        "group-alternative-1",
+                        "group-alternative-2",
+                        "group-web",
+                        "helpdesk",
+                        "hierarchy",
+                        "holiday",
+                        "inbox",
+                        "inventory",
+                        "inventory-numbers",
+                        "items-export",
+                        "kb-faq",
+                        "ldap-diagnostic",
+                        "ldap-inventory",
+                        "ldap-manage",
+                        "legal",
+                        "license",
+                        "location-1",
+                        "location-2",
+                        "locations",
+                        "lock",
+                        "mobility",
+                        "monitoring",
+                        "more-options",
+                        "more-satisfaction",
+                        "network-inventory",
+                        "new-user-1",
+                        "new-user-2",
+                        "new-user-3",
+                        "new-user-4",
+                        "newspaper",
+                        "notes",
+                        "oauth-imap",
+                        "oauth-sso",
+                        "on-premise",
+                        "order-management",
+                        "order-supplies",
+                        "partner",
+                        "pdf-export",
+                        "phone-inventory",
+                        "presentation",
+                        "print-job",
+                        "printer-inventory",
+                        "question",
+                        "rename-glpi-strings",
+                        "report-issue",
+                        "request-service",
+                        "request-support",
+                        "reservation",
+                        "reset-password-1",
+                        "reset-password-2",
+                        "reset-password-3",
+                        "rss-feeds",
+                        "scim",
+                        "security",
+                        "settings",
+                        "settings-search",
+                        "shaking-hands",
+                        "shared-folder",
+                        "shared-inbox",
+                        "software-deployment",
+                        "splitcat",
+                        "tag",
+                        "technical-assistance-1",
+                        "technical-assistance-2",
+                        "ticket",
+                        "tickets",
+                        "time",
+                        "training",
+                        "translation",
+                        "tutorial",
+                        "uninstall",
+                        "unread-messages",
+                        "update-1",
+                        "update-2",
+                        "user-laptop",
+                        "user-offboarding",
+                        "virus",
+                        "vpn",
+                        "web",
+                        "webinar",
+                        "wharehouse",
+                        "world",
+                        "youtube"
+                    ]
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "translations": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-full-schema": "KBArticleTranslation",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            },
+                            "language": {
+                                "type": "string",
+                                "description": "Language code (POSIX compliant format e.g. en_US or fr_FR)"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "Socket": {
             "x-itemtype": "Glpi\\Socket",
             "type": "object",

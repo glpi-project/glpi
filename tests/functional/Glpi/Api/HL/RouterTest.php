@@ -198,6 +198,10 @@ class RouterTest extends GLPITestCase
                 if ($schema_name === 'SoftwareLicense') {
                     continue;
                 }
+                // SharedKBArticle is an expected case for a duplicate
+                if ($schema_name === 'SharedKBArticle') {
+                    continue;
+                }
                 if (isset($schema['x-itemtype'])) {
                     $itemtype = $schema['x-itemtype'];
                     if (isset($seen_itemtypes[$itemtype])) {
