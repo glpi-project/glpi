@@ -714,6 +714,7 @@ class UserTest extends DbTestCase
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
             '_emails'               => ['test1@example.com', 'test2@example.com'],
             'is_active'             => false,
+            'name'                  => 'renamed_user',
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {
@@ -808,6 +809,75 @@ class UserTest extends DbTestCase
         $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
         $this->assertArrayNotHasKey('authtype', $output);
     }
+
+    public function testPrepareInputForUpdateAuthLinkFields(): void
+    {
+
+        $this->login();
+
+
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        $input = [
+
+            'id'           => $target_user->getID(),
+
+            'auths_id'     => 3,
+
+            'sync_field'   => 'abcdef',
+
+            'user_dn'      => 'cn=someone,dc=example,dc=org',
+
+            'user_dn_hash' => md5('cn=someone,dc=example,dc=org'),
+
+        ];
+
+
+
+        // Check with right to update the authentication
+
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+
+        $output = $target_user->prepareInputForUpdate($input);
+
+        foreach (['auths_id', 'sync_field', 'user_dn'] as $field) {
+
+            $this->assertSame($input[$field], $output[$field]);
+
+        }
+
+
+
+        // Check without right to update the authentication
+
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+
+        $output = $target_user->prepareInputForUpdate($input);
+
+        foreach (['auths_id', 'sync_field', 'user_dn', 'user_dn_hash'] as $field) {
+
+            $this->assertArrayNotHasKey($field, $output);
+
+        }
+
+
+
+        // Backend routines (no session) can still update them
+
+        $this->logout();
+
+        $output = $target_user->prepareInputForUpdate($input);
+
+        foreach (['auths_id', 'sync_field', 'user_dn'] as $field) {
+
+            $this->assertSame($input[$field], $output[$field]);
+
+        }
+
+    }
+
+
 
     public function testPrepareInputForUpdateAuthTypeAsSystemRoutine(): void
     {
