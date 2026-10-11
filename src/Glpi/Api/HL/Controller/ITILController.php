@@ -74,6 +74,7 @@ use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Schemas;
 use Glpi\Api\HL\Search;
+use Glpi\Asset\Asset;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -1677,7 +1678,13 @@ EOT,
 
         // map associable types to their schema names and remove any that do not have a schema defined
         $schemas = array_values(array_filter(array_map(static function ($type) use ($associable_type_schema_map) {
-            return $associable_type_schema_map[$type] ?? null;
+            if (array_key_exists($type, $associable_type_schema_map)) {
+                return $associable_type_schema_map[$type];
+            }
+            if (is_subclass_of($type, Asset::class)) {
+                return 'CustomAsset_' . $type::getDefinition()->fields['system_name'];
+            }
+            return null;
         }, $associable_types)));
         sort($schemas, SORT_STRING);
         return $schemas;
