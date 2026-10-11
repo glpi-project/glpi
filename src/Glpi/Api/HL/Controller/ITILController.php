@@ -69,9 +69,11 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Doc\SchemaReference;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
+use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Schemas;
+use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -1729,12 +1731,28 @@ EOT,
                         'itemtype' => $allowed_types,
                     ],
                 ]);
+                $links_by_schema = [];
                 foreach ($iterator as $row) {
                     $schema_name = $schemas->getSchemaNameForItemtype($row['itemtype']);
-                    $cache['loaded'][$row['id']] = in_array($schema_name, $allowed_schemas, true) ? [
-                        '_type' => $schema_name,
-                        'data' . chr(0x1F) . 'id' => $row['items_id'],
-                    ] : null;
+                    if (in_array($schema_name, $allowed_schemas, true)) {
+                        $links_by_schema[$schema_name][$row['id']] = (int) $row['items_id'];
+                    }
+                }
+                // Only expose links to items the user can read, so the "_type" of hidden items is not leaked
+                foreach ($links_by_schema as $schema_name => $links) {
+                    $schema = $schemas->getSchema($schema_name);
+                    if ($schema === null) {
+                        continue;
+                    }
+                    $readable_ids = self::getReadableItemIds($schema, array_values(array_unique($links)));
+                    foreach ($links as $link_id => $items_id) {
+                        if (in_array($items_id, $readable_ids, true)) {
+                            $cache['loaded'][$link_id] = [
+                                '_type' => $schema_name,
+                                'data' . chr(0x1F) . 'id' => $items_id,
+                            ];
+                        }
+                    }
                 }
             }
 
@@ -1746,6 +1764,49 @@ EOT,
             }
             return $results;
         });
+    }
+
+    /**
+     * Filter a list of item IDs down to those the current user can read, using the same visibility and read restrictions as the schema itself.
+     * @param array<string, mixed> $schema
+     * @param int[] $ids
+     * @return int[]
+     */
+    private static function getReadableItemIds(array $schema, array $ids): array
+    {
+        global $DB;
+
+        if ($ids === []) {
+            return [];
+        }
+        $itemtype = $schema['x-itemtype'] ?? null;
+        if ($itemtype !== null && is_subclass_of($itemtype, CommonDBTM::class) && !$itemtype::canView()) {
+            return [];
+        }
+        $table = $schema['x-table'] ?? ($itemtype !== null ? $itemtype::getTable() : null);
+        if ($table === null) {
+            return [];
+        }
+
+        $criteria = [
+            'SELECT' => ['_.id'],
+            'FROM' => "$table AS _",
+            'WHERE' => [['_.id' => $ids]],
+            'GROUPBY' => ['_.id'],
+        ];
+        $search = new Search($schema, []);
+        try {
+            $search->addVisibilityCriteria($criteria);
+            $search->addReadRestrictCriteria($criteria);
+        } catch (RightConditionNotMetException) {
+            return [];
+        }
+
+        $readable_ids = [];
+        foreach ($DB->request($criteria) as $row) {
+            $readable_ids[] = (int) $row['id'];
+        }
+        return $readable_ids;
     }
 
     /**

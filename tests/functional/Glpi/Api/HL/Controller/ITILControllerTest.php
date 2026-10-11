@@ -49,6 +49,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Printer;
 use Problem;
 use Profile;
+use ProfileRight;
 use Ticket;
 use TicketValidation;
 
@@ -658,6 +659,59 @@ class ITILControllerTest extends HLAPITestCase
                     ], $associated_items);
                 });
         });
+    }
+
+    #[DataProvider('graphQLAssociatedItemsProvider')]
+    public function testGraphQLAssociatedItemsHidesUnreadableItems(string $itil_type, string $link_type)
+    {
+        $this->login();
+        $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $itil = $this->createItem($itil_type, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $child_1,
+        ]);
+        $visible_computer = $this->createItem(Computer::class, ['name' => __FUNCTION__ . ' visible', 'entities_id' => $child_1]);
+        $hidden_computer = $this->createItem(Computer::class, ['name' => __FUNCTION__ . ' hidden', 'entities_id' => $child_2]);
+        $monitor = $this->createItem(Monitor::class, ['name' => __FUNCTION__ . ' monitor', 'entities_id' => $child_1]);
+        foreach ([$visible_computer, $hidden_computer, $monitor] as $item) {
+            $this->createItem($link_type, [
+                $itil_type::getForeignKeyField() => $itil->getID(),
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ]);
+        }
+
+        // Cannot read monitors at all
+        ProfileRight::updateProfileRights(getItemByTypeName(Profile::class, 'Super-Admin', true), ['monitor' => 0]);
+
+        $schema_name = $itil_type;
+        $query = <<<GRAPHQL
+            query {
+                {$schema_name}(id: {$itil->getID()}) {
+                    id
+                    associated_items {
+                        _type
+                        data {
+                            ... on Computer { id name }
+                        }
+                    }
+                }
+            }
+        GRAPHQL;
+        // Only the child 1 entity is active, so the computer in child 2 cannot be read
+        $this->graphql->call($query, function ($call) use ($schema_name, $visible_computer) {
+            $call->response
+                ->isOK()
+                ->data($schema_name, function ($items) use ($visible_computer) {
+                    $this->assertCount(1, $items);
+                    $this->assertEquals([
+                        ['_type' => 'Computer', 'data' => ['id' => $visible_computer->getID(), 'name' => $visible_computer->fields['name']]],
+                    ], $items[0]['associated_items']);
+                });
+        }, headers: ['GLPI-Entity' => (string) $child_1]);
     }
 
     public function testCRUDTeamMembers()
