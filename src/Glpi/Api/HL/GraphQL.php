@@ -43,6 +43,7 @@ use GraphQL\Executor\ExecutionResult;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\UnionType;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\QueryComplexity;
 use GraphQL\Validator\Rules\QueryDepth;
@@ -77,6 +78,7 @@ final class GraphQL
             $schema = $schema_generator->getSchema();
             Profiler::getInstance()->stop('GraphQL::getSchema');
             $context = new stdClass();
+            $context->api_version = $api_version;
             $result = \GraphQL\GraphQL::executeQuery(
                 schema: $schema,
                 source: $query,
@@ -108,10 +110,12 @@ final class GraphQL
                 return $source[$info->fieldName] ?? null;
             }
             $field_type = $info->returnType;
-            $is_scalar = !($field_type instanceof ObjectType || $field_type instanceof ListOfType);
+            $is_scalar = !($field_type instanceof ObjectType || $field_type instanceof ListOfType || $field_type instanceof UnionType);
 
             if ($is_scalar) {
                 $resolved = $default_resolvers->resolveScalarField($source, $args, $context, $info);
+            } elseif ($field_type instanceof UnionType) {
+                $resolved = $default_resolvers->resolveUnionField($source, $args, $context, $info);
             } elseif ($field_type instanceof ListOfType) {
                 $resolved = $default_resolvers->resolveListField($source, $args, $context, $info);
             } else {

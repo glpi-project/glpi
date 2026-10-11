@@ -359,7 +359,15 @@ class GraphQLControllerTest extends HLAPITestCase
                 $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['properties']) . ' } ';
             } elseif ($property_info['type'] === 'array') {
                 // Array of objects, recurse
-                if (isset($property_info['items']['anyOf']) || !isset($property_info['items']['properties'])) {
+                // Properties with a custom resolver may not match the generic structure, so they are tested separately
+                if (isset($property_info['items']['anyOf']) || isset($property_info['x-graphql-resolver'])) {
+                    continue;
+                }
+                if (!isset($property_info['items']['properties'])) {
+                    if (!in_array($property_info['items']['type'] ?? null, ['object', 'array'], true)) {
+                        // Array of scalars
+                        $fields_query_part .= $property_name . ' ';
+                    }
                     continue;
                 }
                 $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['items']['properties']) . ' } ';
@@ -388,9 +396,6 @@ class GraphQLControllerTest extends HLAPITestCase
         foreach ($controllers as $controller) {
             $schemas = $controller::getKnownSchemas(null);
             foreach ($schemas as $schema_name => $schema) {
-                if ($schema_name !== 'ServiceCatalogInfo') {
-                    continue;
-                }
                 $has_custom_resolver = array_key_exists('x-graphql-resolver', $schema);
                 $should_have_query = (
                     !str_starts_with($schema_name, '_')
@@ -400,9 +405,9 @@ class GraphQLControllerTest extends HLAPITestCase
                     )
                 );
                 if ($schema['x-singleton'] ?? false) {
-                    $query = "query { $schema_name { " . $this->getCompleteFieldsRequestForSchema($schema['properties']) . '} }';
+                    $query = "query { $schema_name { " . $this->getCompleteFieldsRequestForSchema($schema['properties'] ?? $schema['items']['properties'] ?? []) . '} }';
                 } else {
-                    $query = "query { $schema_name(limit: 1) { " . $this->getCompleteFieldsRequestForSchema($schema['properties']) . '} }';
+                    $query = "query { $schema_name(limit: 1) { " . $this->getCompleteFieldsRequestForSchema($schema['properties'] ?? $schema['items']['properties'] ?? []) . '} }';
                 }
                 $request = new Request('POST', '/GraphQL', [
                     'X-Debug-Mode' => '1', // Debug mode allows seeing more information in errors

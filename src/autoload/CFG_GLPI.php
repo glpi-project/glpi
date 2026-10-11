@@ -298,6 +298,7 @@ $CFG_GLPI['location_types']               = [Budget::class, CartridgeItem::class
     DCRoom::class, Rack::class, Enclosure::class, PDU::class,
 ];
 
+// Keep Glpi\Api\HL\Controller\ITILController::getAssociatedItemSchemas updated when this array changes
 $CFG_GLPI['ticket_types']                 = [Computer::class, Monitor::class, NetworkEquipment::class,
     Peripheral::class, Phone::class, Printer::class, Software::class,
     SoftwareLicense::class, Certificate::class,
