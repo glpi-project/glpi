@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
+use Entity;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
@@ -1749,16 +1750,22 @@ HTML,
         yield ['articles' => []];
 
         // Second FAQ test case: public FAQ enabled + multi entities
-        $_SESSION['glpi_multientitiesmode'] = 1;
         $CFG_GLPI['use_public_faq'] = true;
         yield ['articles' => ['FAQ 2']];
 
         // Third FAQ test case: public FAQ enabled + single entity
-        $_SESSION['glpi_multientitiesmode'] = 0;
+        // The anonymous mode is read from the DB, so remove the child entities for this case.
+        $entities = iterator_to_array($DB->request([
+            'FROM'  => Entity::getTable(),
+            'WHERE' => ['id' => ['>', 0]],
+        ]));
+        $DB->delete(Entity::getTable(), ['id' => ['>', 0]]);
         yield ['articles' => ['FAQ 1', 'FAQ 2']];
 
-        // Revert session / config
-        $_SESSION['glpi_multientitiesmode'] = 1;
+        // Revert entities / config
+        foreach ($entities as $entity) {
+            $DB->insert(Entity::getTable(), $entity);
+        }
         $CFG_GLPI['use_public_faq'] = false;
     }
 
@@ -4530,22 +4537,19 @@ HTML,
      */
     public function testRootArticleIsListedForAnonymousFaqReaders(): void
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         $root_id = KnowbaseItem::getRootId();
-        $multi_entities_mode = $_SESSION['glpi_multientitiesmode'] ?? 1;
 
         $this->logOut();
         $CFG_GLPI['use_public_faq'] = true;
 
         try {
-            $_SESSION['glpi_multientitiesmode'] = 1;
             $this->assertContains($root_id, $this->getBrowseListRequestIds());
 
-            $_SESSION['glpi_multientitiesmode'] = 0;
+            $DB->delete(Entity::getTable(), ['id' => ['>', 0]]);
             $this->assertContains($root_id, $this->getBrowseListRequestIds());
         } finally {
-            $_SESSION['glpi_multientitiesmode'] = $multi_entities_mode;
             $CFG_GLPI['use_public_faq'] = false;
         }
     }
