@@ -2423,6 +2423,29 @@ TWIG, $twig_params);
                     $expr .= " ) AS SCORE ";
                     $criteria['SELECT'][] = new QueryExpression($expr);
 
+                    // Words shorter than the fulltext minimum token size are not indexed.
+                    // LIKE would ignore boolean operators (e.g. `-word`), so only fall back for a single plain word.
+                    $short_word = null;
+                    $word = str_replace('*', '', $search_wilcard);
+                    if ($word !== '' && !preg_match('/[\s+\-<>~()"]/', $word)) {
+                        /** @var mysqli_result $token_size_res */
+                        $token_size_res = $DB->doQuery('SELECT @@innodb_ft_min_token_size');
+                        $min_token_size = (int) ($token_size_res->fetch_row()[0] ?? 3);
+                        if (mb_strlen($word) < $min_token_size) {
+                            $short_word = $word;
+                        }
+                    }
+
+                    if ($short_word !== null) {
+                        // Their fulltext score is 0, so rank titles containing the whole word first.
+                        $word_regexp = $DB->quote('\\b' . $short_word . '\\b');
+                        $name_match = $DB->quoteName('glpi_knowbaseitems.name') . " REGEXP $word_regexp";
+                        if ($addscore !== []) {
+                            $name_match .= " OR " . $DB->quoteName('glpi_knowbaseitemtranslations.name') . " REGEXP $word_regexp";
+                        }
+                        $criteria['SELECT'][] = new QueryExpression("($name_match) AS NAME_MATCH");
+                    }
+
                     $ors = [
                         new QueryExpression(
                             "MATCH(" . $DB->quoteName('glpi_knowbaseitems.name') . ",
@@ -2447,7 +2470,7 @@ TWIG, $twig_params);
 
                     $search_where[] = ['OR' => $ors];
 
-                    $criteria['ORDERBY'] = ['SCORE DESC'];
+                    $criteria['ORDERBY'] = $short_word !== null ? ['NAME_MATCH DESC', 'SCORE DESC'] : ['SCORE DESC'];
 
                     // preliminar query to allow alternate search if no result with fulltext
                     $search_criteria = [
@@ -2459,22 +2482,7 @@ TWIG, $twig_params);
                     $search_iterator = $DB->request($search_criteria);
                     $numrows_search = $search_iterator->current()['cpt'];
 
-                    // Words shorter than the fulltext minimum token size are not indexed.
-                    // LIKE would ignore boolean operators (e.g. `-word`), so only add it to plain searches.
-                    $has_short_word = false;
-                    if (!preg_match('/[+\-<>~()"]/', $search_wilcard)) {
-                        /** @var mysqli_result $token_size_res */
-                        $token_size_res = $DB->doQuery('SELECT @@innodb_ft_min_token_size');
-                        $min_token_size = (int) ($token_size_res->fetch_row()[0] ?? 3);
-                        foreach (explode(' ', str_replace('*', '', $search_wilcard)) as $word) {
-                            if ($word !== '' && mb_strlen($word) < $min_token_size) {
-                                $has_short_word = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if ($numrows_search <= 0 || $has_short_word) { // not result this fulltext try with alternate search
+                    if ($numrows_search <= 0 || $short_word !== null) { // not result this fulltext try with alternate search
                         $search1 = [/* 1 */
                             '/\\\"/',
                             /* 2 */

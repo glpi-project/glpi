@@ -902,7 +902,7 @@ HTML,
         $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
 
         $this->assertContains('_knowbaseitem01', $names);
-        $this->assertContains('TU checklist', $names);
+        $this->assertSame('TU checklist', $names[0]);
     }
 
     public function testGetAnswerAnchors(): void
