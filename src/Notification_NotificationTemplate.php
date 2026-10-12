@@ -47,7 +47,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public static $items_id_1       = 'notifications_id';
     public static $itemtype_2 = NotificationTemplate::class;
     public static $items_id_2       = 'notificationtemplates_id';
-    public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
     public $no_form_page    = false;
     protected $displaylist  = false;
