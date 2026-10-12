@@ -1803,4 +1803,3 @@ foreach ($CFG_GLPI['device_types'] as $device_itemtype) {
         );
     }
 }
-
