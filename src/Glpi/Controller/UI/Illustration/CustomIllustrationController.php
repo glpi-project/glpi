@@ -39,6 +39,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\UI\IllustrationManager;
+use Session;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +53,7 @@ final class CustomIllustrationController extends AbstractController
         private IllustrationManager $illustration_manager
     ) {}
 
-    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     #[Route(
         "/UI/Illustration/CustomIllustration/{id}",
         name: "glpi_ui_illustration_custom_illustration",
@@ -60,6 +61,13 @@ final class CustomIllustrationController extends AbstractController
     )]
     public function __invoke(string $id, Request $request): Response
     {
+        global $CFG_GLPI;
+
+        // The public FAQ shows custom illustrations to anonymous visitors.
+        if (!$CFG_GLPI['use_public_faq']) {
+            Session::checkLoginUser();
+        }
+
         $file = $this->illustration_manager->getCustomIllustrationFile($id);
         if (!$file) {
             throw new BadRequestHttpException();
