@@ -48,6 +48,7 @@ use ExtraVisibilityCriteria;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     GroupTechFilter,
+    TicketStatusFilter,
     UserTechFilter,
 };
 use Glpi\DBAL\QueryExpression;
@@ -1287,6 +1288,9 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
+        // Status is fixed by $case, a dashboard status filter would be merged into the IN() list
+        unset($params['apply_filters'][TicketStatusFilter::getId()]);
+
         $statuses = $case === 'close'
             ? [...Ticket::getSolvedStatusArray(), ...Ticket::getClosedStatusArray()]
             : Ticket::getNotSolvedStatusArray();
@@ -1330,25 +1334,24 @@ class Provider
         $types          = [];
         foreach ($iterator as $result) {
             $category_id = $result['category_id'] ?? 0;
-            $type_name   = (int) $result['ticket_type'] > 0
-                ? Ticket::getTicketTypeName((int) $result['ticket_type'])
-                : __('Undefined');
+            $type_id     = (int) $result['ticket_type'];
 
-            $category_names[$category_id]     = $result['category_name'] ?? __('None');
-            $matrix[$category_id][$type_name] = (int) $result['cpt'];
-            $types[$type_name]                = true;
+            $category_names[$category_id]   = $result['category_name'] ?? __('None');
+            $matrix[$category_id][$type_id] = (int) $result['cpt'];
+            $types[$type_id]                = $type_id > 0 ? Ticket::getTicketTypeName($type_id) : __('Undefined');
         }
 
-        $types = array_keys($types);
+        // Keep a stable series order (and therefore colors) across cards
+        ksort($types);
 
         $data = [
             'labels' => array_values($category_names),
             'series' => [],
         ];
-        foreach ($types as $type_name) {
+        foreach ($types as $type_id => $type_name) {
             $series_data = [];
             foreach (array_keys($category_names) as $category_id) {
-                $series_data[] = $matrix[$category_id][$type_name] ?? 0;
+                $series_data[] = $matrix[$category_id][$type_id] ?? 0;
             }
             $data['series'][] = [
                 'name' => $type_name,

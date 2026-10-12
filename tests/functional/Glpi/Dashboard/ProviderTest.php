@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
 use Item_DeviceSimcard;
@@ -1260,6 +1261,24 @@ class ProviderTest extends DbTestCase
         }
         $this->assertSame(1, $closed_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$category_index_closed], '1 closed incident expected');
         $this->assertSame(1, $closed_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$category_index_closed], '1 solved request expected');
+
+        // Series are ordered by type id so colors stay consistent between cards
+        $expected_order = [
+            \Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE),
+            \Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE),
+        ];
+        $this->assertSame($expected_order, array_column($opened['data']['series'], 'name'));
+        $this->assertSame($expected_order, array_column($closed['data']['series'], 'name'));
+
+        // A dashboard status filter must not leak tickets outside the requested case
+        $opened_filtered = Provider::ticketsByCategoryAndType('open', [
+            'apply_filters' => [TicketStatusFilter::getId() => \Ticket::CLOSED],
+        ]);
+        $filtered_index = array_search($category->fields['completename'], $opened_filtered['data']['labels'], true);
+        $this->assertNotFalse($filtered_index);
+        $filtered_series_by_name = array_column($opened_filtered['data']['series'], 'data', 'name');
+        $this->assertSame(1, $filtered_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$filtered_index], 'closed incident must not leak into the opened report');
+        $this->assertSame(1, $filtered_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$filtered_index], 'solved request must not leak into the opened report');
     }
 
     private function attachTicketToGroup(string $name, int $status, \Group $group): \Ticket
