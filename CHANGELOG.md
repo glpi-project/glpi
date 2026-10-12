@@ -15,6 +15,7 @@ The present file will list all changes made to the project; according to the
 - New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
 - `supervisor` property added for `User` schema in High-Level API v2.4.
 - Support for `If-Modified-Since` and `If-Unmodified-Since` HTTP headers for some types of requests in High-Level API. This is not controlled by the API version.
+- `team` property can be set when creating `Ticket`, `Change` and `Problem` items in High-Level API v2.4. **If you are specifying the `team` property for updates, note that it will replace all team members with the new list of users. If you want to add or remove a single team member, use the dedicated endpoints for adding or removing team members instead.**
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.

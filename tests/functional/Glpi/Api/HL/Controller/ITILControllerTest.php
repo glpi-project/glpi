@@ -36,13 +36,18 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Change;
 use ChangeValidation;
+use CommonITILActor;
 use CommonITILObject;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Supplier_Ticket;
 use Ticket;
 use TicketValidation;
+use User;
 
 class ITILControllerTest extends HLAPITestCase
 {
@@ -861,6 +866,505 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(0, $content);
+                });
+        });
+    }
+
+    /**
+     * @param array $team
+     * @return string[] Sorted list of "type_id_role" keys which can be used to compare teams
+     */
+    private static function getTeamKeys(array $team): array
+    {
+        $keys = array_map(static fn($member) => "{$member['type']}_{$member['id']}_{$member['role']}", $team);
+        sort($keys);
+        return $keys;
+    }
+
+    public function testCreateWithTeam(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $team = [
+            ['type' => 'User', 'id' => 3, 'role' => 'requester'],
+            ['type' => 'User', 'id' => 2, 'role' => 'observer'],
+            ['type' => 'User', 'id' => 4, 'role' => 'assigned'],
+            ['type' => 'Group', 'id' => getItemByTypeName(Group::class, '_test_group_1', true), 'role' => 'assigned'],
+        ];
+
+        foreach (['Ticket', 'Change', 'Problem'] as $itil_type) {
+            $request = new Request('POST', '/Assistance/' . $itil_type);
+            $request->setParameter('name', __FUNCTION__);
+            $request->setParameter('content', 'test');
+            $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+            $request->setParameter('team', $team);
+
+            $location = null;
+            $this->api->call($request, function ($call) use (&$location) {
+                $call->response
+                    ->isOK()
+                    ->headers(function ($headers) use (&$location) {
+                        $location = $headers['Location'];
+                    });
+            });
+
+            $this->api->call(new Request('GET', $location), function ($call) use ($team) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($team) {
+                        $this->assertEquals(self::getTeamKeys($team), self::getTeamKeys($content['team']));
+                    });
+            });
+        }
+    }
+
+    public function testUpdateTeam(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $group_id = getItemByTypeName(Group::class, '_test_group_1', true);
+
+        foreach ([Ticket::class, Change::class, Problem::class] as $itil_type) {
+            $item = $this->createItem($itil_type, [
+                'name' => __FUNCTION__,
+                'content' => 'test',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                '_actors' => [
+                    'requester' => [['itemtype' => 'User', 'items_id' => 3]],
+                    'observer' => [['itemtype' => 'User', 'items_id' => 2]],
+                    'assign' => [['itemtype' => 'User', 'items_id' => 4]],
+                ],
+            ]);
+            $item_path = "/Assistance/{$itil_type}/{$item->getID()}";
+
+            // Updating without a team must not change the team
+            $request = new Request('PATCH', $item_path);
+            $request->setParameter('name', __FUNCTION__ . '_updated');
+            $this->api->call($request, function ($call) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) {
+                        $this->assertEquals(['User_2_observer', 'User_3_requester', 'User_4_assigned'], self::getTeamKeys($content['team']));
+                    });
+            });
+
+            // The given team replaces the whole team
+            $new_team = [
+                ['type' => 'User', 'id' => 3, 'role' => 'requester'],
+                ['type' => 'User', 'id' => 5, 'role' => 'observer'],
+                ['type' => 'Group', 'id' => $group_id, 'role' => 'assigned'],
+            ];
+            $request = new Request('PATCH', $item_path);
+            $request->setParameter('team', $new_team);
+            $this->api->call($request, function ($call) use ($new_team) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($new_team) {
+                        $this->assertEquals(self::getTeamKeys($new_team), self::getTeamKeys($content['team']));
+                    });
+            });
+
+            // Sending the team returned by a GET request must not change the team
+            $current_team = null;
+            $this->api->call(new Request('GET', $item_path), function ($call) use (&$current_team) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use (&$current_team) {
+                        $current_team = $content['team'];
+                    });
+            });
+            $request = new Request('PATCH', $item_path);
+            $request->setParameter('team', $current_team);
+            $this->api->call($request, function ($call) use ($new_team) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($new_team) {
+                        $this->assertEquals(self::getTeamKeys($new_team), self::getTeamKeys($content['team']));
+                    });
+            });
+
+            // An empty team removes all members
+            $request = new Request('PATCH', $item_path);
+            $request->setParameter('team', []);
+            $this->api->call($request, function ($call) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) {
+                        $this->assertCount(0, $content['team']);
+                    });
+            });
+        }
+    }
+
+    public static function invalidTeamProvider(): iterable
+    {
+        yield 'not a list' => [['type' => 'User', 'id' => 2, 'role' => 'requester']];
+        yield 'not an array' => ['User'];
+        yield 'missing role' => [[['type' => 'User', 'id' => 2]]];
+        yield 'missing type' => [[['id' => 2, 'role' => 'requester']]];
+        yield 'missing id' => [[['type' => 'User', 'role' => 'requester']]];
+        yield 'invalid type' => [[['type' => 'Computer', 'id' => 1, 'role' => 'requester']]];
+        yield 'invalid id' => [[['type' => 'User', 'id' => 'abc', 'role' => 'requester']]];
+        yield 'invalid role' => [[['type' => 'User', 'id' => 2, 'role' => 'owner']]];
+        yield 'nonexistent member' => [[['type' => 'User', 'id' => 999999, 'role' => 'requester']]];
+    }
+
+    #[DataProvider('invalidTeamProvider')]
+    public function testInvalidTeam(mixed $team): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_actors' => [
+                'requester' => [['itemtype' => 'User', 'items_id' => 3]],
+            ],
+        ]);
+
+        $fn_assert_invalid = function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('ERROR_INVALID_PARAMETER', $content['status']);
+                    $this->assertArrayHasKey('team', $content['detail']);
+                    $this->assertEquals('invalid', $content['detail']['team'][0]['error']);
+                });
+        };
+
+        $request = new Request('POST', '/Assistance/Ticket');
+        $request->setParameter('name', __FUNCTION__);
+        $request->setParameter('content', 'test');
+        $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+        $request->setParameter('team', $team);
+        $this->api->call($request, $fn_assert_invalid);
+
+        $request = new Request('PATCH', "/Assistance/Ticket/{$ticket->getID()}");
+        $request->setParameter('team', $team);
+        $this->api->call($request, $fn_assert_invalid);
+
+        // The existing team must not be changed
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}"), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(['User_3_requester'], self::getTeamKeys($content['team']));
+                });
+        });
+    }
+
+    public function testUpdateTeamWithoutAssignRight(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_actors' => [
+                'requester' => [['itemtype' => 'User', 'items_id' => 3]],
+                'assign' => [['itemtype' => 'User', 'items_id' => 4]],
+            ],
+        ]);
+        $ticket_path = "/Assistance/Ticket/{$ticket->getID()}";
+
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] &= ~Ticket::ASSIGN;
+
+        // Changing the assigned members is not allowed
+        $request = new Request('PATCH', $ticket_path);
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => 3, 'role' => 'requester'],
+            ['type' => 'User', 'id' => 2, 'role' => 'assigned'],
+        ]);
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('ERROR_INVALID_PARAMETER', $content['status']);
+                    $this->assertArrayHasKey('team', $content['detail']);
+                });
+        });
+
+        // Removing the assigned members is not allowed
+        $request = new Request('PATCH', $ticket_path);
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => 3, 'role' => 'requester'],
+        ]);
+        $this->api->call($request, function ($call) {
+            $call->response->status(fn($status) => $this->assertEquals(400, $status));
+        });
+
+        // Changing other members while keeping the same assigned members is allowed
+        $request = new Request('PATCH', $ticket_path);
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => 3, 'role' => 'requester'],
+            ['type' => 'User', 'id' => 5, 'role' => 'observer'],
+            ['type' => 'User', 'id' => 4, 'role' => 'assigned'],
+        ]);
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(['User_3_requester', 'User_4_assigned', 'User_5_observer'], self::getTeamKeys($content['team']));
+                });
+        });
+
+        // Creating an item with assigned members is not allowed
+        $request = new Request('POST', '/Assistance/Ticket');
+        $request->setParameter('name', __FUNCTION__);
+        $request->setParameter('content', 'test');
+        $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => 4, 'role' => 'assigned'],
+        ]);
+        $this->api->call($request, function ($call) {
+            $call->response->status(fn($status) => $this->assertEquals(400, $status));
+        });
+    }
+
+    public function testUpdateTeamRequesterObserverWithoutAssignRight(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_actors' => [
+                'requester' => [['itemtype' => 'User', 'items_id' => 3]],
+                'observer' => [['itemtype' => 'User', 'items_id' => 2]],
+                'assign' => [['itemtype' => 'User', 'items_id' => 4]],
+            ],
+        ]);
+
+        // Like the core, requesters and observers only need the update right, not the assign right
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] &= ~Ticket::ASSIGN;
+
+        $request = new Request('PATCH', "/Assistance/Ticket/{$ticket->getID()}");
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => 5, 'role' => 'requester'],
+            ['type' => 'User', 'id' => 3, 'role' => 'observer'],
+            ['type' => 'User', 'id' => 4, 'role' => 'assigned'],
+        ]);
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(
+                        ['User_3_observer', 'User_4_assigned', 'User_5_requester'],
+                        self::getTeamKeys($content['team'])
+                    );
+                });
+        });
+    }
+
+    public function testUpdateTeamKeepsAnonymousSupplier(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_actors' => [
+                'requester' => [['itemtype' => 'User', 'items_id' => 3]],
+            ],
+        ]);
+        // Anonymous suppliers (identified only by an email address) cannot be represented in the API team
+        $this->createItem(Supplier_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => 0,
+            'type' => CommonITILActor::ASSIGN,
+            'alternative_email' => 'supplier@example.com',
+            'use_notification' => 1,
+        ]);
+        $criteria = [
+            'tickets_id' => $ticket->getID(),
+            'suppliers_id' => 0,
+            'type' => CommonITILActor::ASSIGN,
+            'alternative_email' => 'supplier@example.com',
+        ];
+        $this->assertEquals(1, countElementsInTable(Supplier_Ticket::getTable(), $criteria));
+
+        $request = new Request('PATCH', "/Assistance/Ticket/{$ticket->getID()}");
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => 5, 'role' => 'requester'],
+        ]);
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertContains('User_5_requester', self::getTeamKeys($content['team']));
+                    $this->assertNotContains('User_3_requester', self::getTeamKeys($content['team']));
+                });
+        });
+
+        $this->assertEquals(1, countElementsInTable(Supplier_Ticket::getTable(), $criteria));
+    }
+
+    public function testTeamMemberEndpointsPermissionsByRole(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_actors' => [
+                'requester' => [['itemtype' => 'User', 'items_id' => 3]],
+                'observer' => [['itemtype' => 'User', 'items_id' => 2]],
+                'assign' => [['itemtype' => 'User', 'items_id' => 4]],
+            ],
+        ]);
+        $team_path = "/Assistance/Ticket/{$ticket->getID()}/TeamMember";
+
+        // Like the core, the assign right is only needed for the assigned role
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] &= ~Ticket::ASSIGN;
+
+        // Adding an assigned member is denied
+        $request = new Request('POST', $team_path);
+        $request->setParameter('type', 'User');
+        $request->setParameter('id', 5);
+        $request->setParameter('role', 'assigned');
+        $this->api->call($request, function ($call) {
+            $call->response->status(fn($status) => $this->assertEquals(403, $status));
+        });
+
+        // Removing an assigned member is denied
+        $request = new Request('DELETE', $team_path);
+        $request->setParameter('type', 'User');
+        $request->setParameter('id', 4);
+        $request->setParameter('role', 'assigned');
+        $this->api->call($request, function ($call) {
+            $call->response->status(fn($status) => $this->assertEquals(403, $status));
+        });
+
+        // Adding a requester or an observer is allowed
+        foreach (['requester', 'observer'] as $role) {
+            $request = new Request('POST', $team_path);
+            $request->setParameter('type', 'User');
+            $request->setParameter('id', 5);
+            $request->setParameter('role', $role);
+            $this->api->call($request, function ($call) {
+                $call->response->status(fn($status) => $this->assertEquals(201, $status));
+            });
+        }
+
+        // Removing a requester or an observer is allowed
+        foreach (['requester' => 3, 'observer' => 2] as $role => $users_id) {
+            $request = new Request('DELETE', $team_path);
+            $request->setParameter('type', 'User');
+            $request->setParameter('id', $users_id);
+            $request->setParameter('role', $role);
+            $this->api->call($request, function ($call) {
+                $call->response->status(fn($status) => $this->assertEquals(200, $status));
+            });
+        }
+
+        $this->api->call(new Request('GET', $team_path), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(
+                        ['User_4_assigned', 'User_5_observer', 'User_5_requester'],
+                        self::getTeamKeys($content)
+                    );
+                });
+        });
+    }
+
+    public function testUpdateTeamWithInvalidUser(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $inactive_user = $this->createItem(User::class, [
+            'name' => __FUNCTION__ . '_inactive',
+            'is_active' => 0,
+            'entities_id' => $entity_id,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $entity_id,
+            '_actors' => [
+                'requester' => [['itemtype' => 'User', 'items_id' => 3]],
+                'observer' => [['itemtype' => 'User', 'items_id' => 2]],
+            ],
+        ]);
+        $ticket_path = "/Assistance/Ticket/{$ticket->getID()}";
+
+        // A new member that is not valid for the entity is rejected and the existing team is left untouched
+        $request = new Request('PATCH', $ticket_path);
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => $inactive_user->getID(), 'role' => 'requester'],
+        ]);
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('ERROR_INVALID_PARAMETER', $content['status']);
+                    $this->assertArrayHasKey('team', $content['detail']);
+                });
+        });
+        $this->api->call(new Request('GET', $ticket_path), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(['User_2_observer', 'User_3_requester'], self::getTeamKeys($content['team']));
+                });
+        });
+
+        // An existing member that became invalid can still be sent back unchanged
+        $this->updateItem(User::class, 3, ['is_active' => 0]);
+        $request = new Request('PATCH', $ticket_path);
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => 3, 'role' => 'requester'],
+            ['type' => 'User', 'id' => 2, 'role' => 'observer'],
+        ]);
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(['User_2_observer', 'User_3_requester'], self::getTeamKeys($content['team']));
+                });
+        });
+        $this->updateItem(User::class, 3, ['is_active' => 1]);
+    }
+
+    public function testTeamNotWritableBeforeV24(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_actors' => [
+                'requester' => [['itemtype' => 'User', 'items_id' => 3]],
+            ],
+        ]);
+
+        $request = new Request('PATCH', "/Assistance/Ticket/{$ticket->getID()}");
+        $request->setParameter('team', [
+            ['type' => 'User', 'id' => 4, 'role' => 'assigned'],
+        ]);
+        $this->api->withVersion('2.3.0')->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(['User_3_requester'], self::getTeamKeys($content['team']));
                 });
         });
     }
