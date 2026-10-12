@@ -848,7 +848,7 @@ HTML,
 
         // "TU" is too short to be indexed, but `TU*` matches the committed
         // "turnover" of `_knowbaseitem01`, so the fulltext search is not empty.
-        $article = $this->createItem(KnowbaseItem::class, [
+        $article = $this->createItem(\KnowbaseItem::class, [
             'name'        => 'TU checklist',
             'answer'      => __FUNCTION__,
             'entities_id' => $entity,
@@ -859,11 +859,11 @@ HTML,
             'is_recursive'     => 1,
         ]);
 
-        $criteria = KnowbaseItem::getListRequest(['contains' => 'TU'], 'search');
+        $criteria = \KnowbaseItem::getListRequest(['contains' => 'TU'], 'search');
         $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
 
         $this->assertContains('_knowbaseitem01', $names);
-        $this->assertContains('TU checklist', $names);
+        $this->assertSame('TU checklist', $names[0]);
     }
 
     public function testGetAnswerAnchors(): void
