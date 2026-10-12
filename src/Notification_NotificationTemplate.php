@@ -326,7 +326,7 @@ TWIG, $twig_params);
             $this->check($ID, READ);
             $notif->getFromDB($this->fields['notifications_id']);
         } else {
-            $this->check(-1, CREATE, $options);
+            $this->checkGlobal(CREATE);
             $notif->getFromDB($options['notifications_id']);
         }
 
