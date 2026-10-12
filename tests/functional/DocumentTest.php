@@ -1087,6 +1087,19 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($document_2->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
     }
 
+    public function testGetDownloadLinkEncodesNamespacedItemtype(): void
+    {
+        $this->login();
+
+        $form = $this->createForm(new FormBuilder());
+        $document = $this->addDocumentToItem('doc.txt', 'content', $form);
+
+        $link = $document->getDownloadLink($form);
+
+        $this->assertStringContainsString('itemtype=Glpi%5CForm%5CForm&amp;items_id=' . $form->getID(), $link);
+        $this->assertStringNotContainsString('\\', $link);
+    }
+
     public function testCronCleanOrphansDocument()
     {
 

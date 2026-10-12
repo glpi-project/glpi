@@ -453,7 +453,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         } elseif ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
             throw new InvalidArgumentException();
         } elseif ($linked_item !== null) {
-            $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item::class, $linked_item->getID());
+            $link_params = sprintf('&itemtype=%s&items_id=%s', rawurlencode($linked_item::class), $linked_item->getID());
         }
 
         $splitter = $this->fields['filename'] !== null ? explode("/", $this->fields['filename']) : [];
