@@ -83,7 +83,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /// Users by type
     /**
-     * @var array|null
+     * Rows of the user link table (e.g. `glpi_tickets_users`), by actor type.
+     * A type key is only set if the object has at least one actor of this type.
+     * Only one of `tickets_id`, `changes_id`, `problems_id` is set, depending on the ITIL object.
+     * `users_id` is 0 for an "email" actor, identified by `alternative_email`.
+     * `null` until loaded by `loadUsers()`.
+     *
+     * @var array{
+     *     CommonITILActor::REQUESTER?: array,
+     *     CommonITILActor::ASSIGN?: array,
+     *     CommonITILActor::OBSERVER?: array
+     * }|null
      */
     protected $lazy_loaded_users = null;
     /** @var class-string<CommonITILActor>  */
@@ -9535,6 +9545,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 'items_id' => $actor_id,
                                 'type'     => $actor_type_value,
                             ];
+                            // complete notification information
                             if ($actor_itemtype !== Group::class && array_key_exists($actors_notif_input_key, $this->input)) {
                                 // Expected format
                                 // '_users_id_requester_notif' => [
@@ -9781,11 +9792,34 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($actor_itemtypes as $actor_itemtype) {
                 $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
                 $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
+                $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
 
                 $deleted = array_key_exists($actors_deleted_input_key, $this->input)
                     ? $this->input[$actors_deleted_input_key]
                     : [];
                 foreach ($deleted as $actor) {
+                    // check that the actor_obj references the current itil, only links with current item can be deleted
+                    $actor_obj_check = $this->getActorObjectForItem($actor['itemtype']); // $actor['itemtype'] = User, Group, etc
+                    if (!$actor_obj_check->getFromDBByCrit(
+                        [
+                            'id' => $actor['id'],
+                            $actor_obj_check::getItilObjectForeignKey() => $this->getID(),
+                            'type' => $actor_type_value,
+                        ]
+                    )) {
+                        trigger_error(
+                            sprintf(
+                                'Invalid value "%s" found for actor in "%s".',
+                                $actor['id'],
+                                $actors_deleted_input_key
+                            ),
+                            E_USER_WARNING
+                        );
+
+                        continue;
+                    }
+
+                    // process delete
                     $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
                     $actor_obj->delete(['id' => $actor['id']]);
                 }

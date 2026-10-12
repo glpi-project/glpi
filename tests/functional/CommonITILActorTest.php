@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Change;
 use CommonDBTM;
+use CommonITILActor;
 use CommonITILObject;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
@@ -43,6 +44,7 @@ use Group;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Psr\Log\LogLevel;
 use Supplier;
 use Ticket;
 use User;
@@ -163,6 +165,92 @@ class CommonITILActorTest extends DbTestCase
         $this->assertTrue($obj->update($input));
         $this->assertEquals(0, $obj->countActors());
         $this->checkLog($obj, $actor, Log::HISTORY_DEL_RELATION, $expected);
+    }
+
+    public static function deletedActorKeysProvider(): iterable
+    {
+        $fixtures = [
+            Ticket::class  => '_ticket01',
+            Change::class  => '_change01',
+            Problem::class => '_problem01',
+        ];
+        $actors = [
+            [User::class, 'post-only', 'requester', CommonITILActor::REQUESTER],
+            [Group::class, '_test_group_1', 'observer', CommonITILActor::OBSERVER],
+            [Supplier::class, '_suplier01_name', 'assign', CommonITILActor::ASSIGN],
+        ];
+
+        foreach ($fixtures as $itil_classname => $obj_name) {
+            foreach ($actors as [$actor_itemtype, $actor_name, $actor_type_key, $actor_type]) {
+                yield "$itil_classname $actor_itemtype $actor_type_key" => [
+                    'itil_classname' => $itil_classname,
+                    'obj_name'       => $obj_name,
+                    'actor_itemtype' => $actor_itemtype,
+                    'actor_name'     => $actor_name,
+                    'actor_type_key' => $actor_type_key,
+                    'actor_type'     => $actor_type,
+                ];
+            }
+        }
+    }
+
+    #[DataProvider(methodName: 'deletedActorKeysProvider')]
+    public function testUpdateCannotDeleteActorOfAnotherItem(
+        string $itil_classname,
+        string $obj_name,
+        string $actor_itemtype,
+        string $actor_name,
+        string $actor_type_key,
+        int    $actor_type
+    ): void {
+        // --- arrange ---
+        $this->login();
+
+        $tested_itil_object = getItemByTypeName($itil_classname, $obj_name);
+        $actor              = getItemByTypeName($actor_itemtype, $actor_name);
+        // `_users_id_requester`, `_groups_id_observer`, `_suppliers_id_assign`
+        // (sent as `<key>_deleted` below, e.g. `_users_id_requester_deleted`)
+        $input_key          = sprintf(
+            '_%s_%s',
+            getForeignKeyFieldForItemType($actor_itemtype),
+            $actor_type_key
+        );
+
+        // create another itil object associated with an actor
+        $other_itil_object = $this->createItem(
+            $itil_classname,
+            [
+                'name'        => __FUNCTION__,
+                'content'     => __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+                $input_key    => $actor->getID(),
+            ]
+        );
+
+        $link  = $other_itil_object->getActorObjectForItem($actor_itemtype);
+        $found = $link->getFromDBByCrit([
+            $link::getItilObjectForeignKey() => $other_itil_object->getID(),
+            $link->getActorForeignKey()      => $actor->getID(),
+            'type'                           => $actor_type,
+        ]);
+        assert($found);
+
+        // --- act ---
+        // While updating $tested_itil_object, glpi should not be able to unlink actor of another itil object
+        $this->updateItem($itil_classname, $tested_itil_object->getID(), [
+            $input_key . '_deleted' => [['itemtype' => $actor_itemtype, 'id' => $link->getID()]], // bug was here, any linked object could be removed
+        ]);
+
+        // --- assert ---
+        $this->assertTrue(
+            $link->getFromDB($link->getID()),
+            'Actor link of another item must not be deleted'
+        );
+        // the forged entry is reported
+        $this->hasPhpLogRecordThatContains(
+            sprintf('Invalid value "%d" found for actor in "%s_deleted"', $link->getID(), $input_key),
+            LogLevel::WARNING
+        );
     }
 
     private function checkLog(CommonITILObject $obj, CommonDBTM $actor, int $expected_action, string $expected_text)
