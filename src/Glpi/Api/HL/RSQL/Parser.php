@@ -306,6 +306,7 @@ final class Parser
 
         $flat_props = $this->search->getContext()->getFlattenedProperties();
         $invalid_filters = [];
+        $used_properties = [];
 
         $buffer = [];
         while ($position < $token_count) {
@@ -319,8 +320,8 @@ final class Parser
                         'property' => null,
                         'field' => null,
                     ];
-                } elseif (isset($flat_props[$value]['x-mapped-from'])) {
-                    // Mapped properties cannot be used in RSQL currently since they are calculated after the query is executed
+                } elseif (isset($flat_props[$value]['x-mapped-from']) || isset($flat_props[$value]['x-mapped-property'])) {
+                    // Mapped properties (and properties of mapped objects) cannot be used in RSQL currently since they are calculated after the query is executed
                     $invalid_filters[$value] = Error::MAPPED_PROPERTY;
                     $buffer = [
                         'property' => null,
@@ -331,6 +332,7 @@ final class Parser
                         'property' => $value,
                         'field' => $this->search->getSQLFieldForProperty($value),
                     ];
+                    $used_properties[$value] = true;
                 }
             } elseif ($type === Lexer::T_OPERATOR) {
                 if (!isset($operators[$value])) {
@@ -398,6 +400,6 @@ final class Parser
         $sql_where = new QueryExpression($sql_where_string, values: $sql_where_values);
         $sql_having = new QueryExpression($sql_having_string, values: $sql_having_values);
 
-        return new Result($sql_where, $sql_having, $invalid_filters);
+        return new Result($sql_where, $sql_having, $invalid_filters, array_keys($used_properties));
     }
 }

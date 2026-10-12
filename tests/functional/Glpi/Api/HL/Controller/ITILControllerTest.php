@@ -37,12 +37,20 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Change;
 use ChangeValidation;
 use CommonITILObject;
+use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use ReflectionClass;
+use ReflectionMethod;
+use Supplier;
 use Ticket;
 use TicketValidation;
+use User;
 
 class ITILControllerTest extends HLAPITestCase
 {
@@ -729,6 +737,293 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(0, $content);
+                });
+        });
+    }
+
+    public static function itilTypeProvider(): iterable
+    {
+        yield [Ticket::class];
+        yield [Change::class];
+        yield [Problem::class];
+    }
+
+    /**
+     * @param class-string<CommonITILObject> $itil_type
+     * @param string $name
+     * @param array<string, array{itemtype: string, items_id: int}[]> $actors
+     * @return CommonITILObject
+     */
+    private function createITILItemWithTeam(string $itil_type, string $name, array $actors): CommonITILObject
+    {
+        $input = [
+            'name' => $name,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ];
+        if ($actors !== []) {
+            $input['_actors'] = $actors;
+        }
+        /** @var CommonITILObject */
+        return $this->createItem($itil_type, $input);
+    }
+
+    /**
+     * @param array $team Team members in the API v3 format
+     * @return string[] Sorted list of "type_id_role" keys that can be used to compare teams regardless of the order
+     */
+    private static function getTeamKeys(array $team): array
+    {
+        $keys = array_map(static function ($member) {
+            $member_id = $member['user']['id'] ?? $member['group']['id'] ?? $member['supplier']['id'];
+            return "{$member['_type']}_{$member_id}_{$member['role']}";
+        }, $team);
+        sort($keys);
+        return $keys;
+    }
+
+    /**
+     * @param class-string<CommonITILObject> $itil_type
+     */
+    #[DataProvider('itilTypeProvider')]
+    public function testTeamMatchesTeamMembers(string $itil_type): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $item = $this->createITILItemWithTeam($itil_type, __FUNCTION__, [
+            'requester' => [['itemtype' => User::class, 'items_id' => 3]],
+            'observer' => [['itemtype' => Group::class, 'items_id' => getItemByTypeName(Group::class, '_test_group_1', true)]],
+            'assign' => [
+                ['itemtype' => User::class, 'items_id' => 4],
+                ['itemtype' => Supplier::class, 'items_id' => getItemByTypeName(Supplier::class, '_suplier01_name', true)],
+            ],
+        ]);
+
+        $get_clean_team = new ReflectionMethod(ITILController::class, 'getCleanTeam');
+        $expected_team = $get_clean_team->invoke(null, $item, Router::API_VERSION);
+        $fn_sort_team = static function (array $team): array {
+            usort($team, static fn($a, $b) => strcmp($a['_type'] . $a['id'], $b['_type'] . $b['id']));
+            return $team;
+        };
+        $this->assertCount(4, $expected_team);
+
+        $fn_check_team = function ($team) use ($expected_team, $fn_sort_team) {
+            // Same members, with only the member object matching the type of each member
+            $this->assertEquals($fn_sort_team($expected_team), $fn_sort_team($team));
+        };
+
+        $itil_name = (new ReflectionClass($itil_type))->getShortName();
+        $this->api->call(new Request('GET', "/Assistance/{$itil_name}/{$item->getID()}"), function ($call) use ($fn_check_team) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($fn_check_team) {
+                    $fn_check_team($content['team']);
+                });
+        });
+
+        $request = new Request('GET', "/Assistance/{$itil_name}");
+        $request->setParameter('filter', 'id==' . $item->getID());
+        $this->api->call($request, function ($call) use ($fn_check_team) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($fn_check_team) {
+                    $this->assertCount(1, $content);
+                    $fn_check_team($content[0]['team']);
+                });
+        });
+
+        // Item without team members
+        $item = $this->createITILItemWithTeam($itil_type, __FUNCTION__ . '_empty', []);
+        $this->api->call(new Request('GET', "/Assistance/{$itil_name}/{$item->getID()}"), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertSame([], $content['team']);
+                });
+        });
+    }
+
+    /**
+     * @param class-string<CommonITILObject> $itil_type
+     */
+    #[DataProvider('itilTypeProvider')]
+    public function testFilterByTeam(string $itil_type): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $group_id = getItemByTypeName(Group::class, '_test_group_1', true);
+        $supplier_id = getItemByTypeName(Supplier::class, '_suplier01_name', true);
+        $prefix = __FUNCTION__ . '_' . $itil_type;
+        $item_a = $this->createITILItemWithTeam($itil_type, $prefix . '_a', [
+            'requester' => [['itemtype' => User::class, 'items_id' => 3]],
+            'assign' => [
+                ['itemtype' => User::class, 'items_id' => 4],
+                ['itemtype' => Supplier::class, 'items_id' => $supplier_id],
+            ],
+        ]);
+        $item_b = $this->createITILItemWithTeam($itil_type, $prefix . '_b', [
+            'observer' => [['itemtype' => User::class, 'items_id' => 3]],
+            'assign' => [['itemtype' => Group::class, 'items_id' => $group_id]],
+        ]);
+        $item_c = $this->createITILItemWithTeam($itil_type, $prefix . '_c', []);
+
+        $filters = [
+            'team.user.id==4' => [$item_a],
+            'team.user.id==3' => [$item_a, $item_b],
+            // Conditions must match the same member
+            'team.user.id==3;team.role==assigned' => [],
+            'team.user.id==3;team.role==observer' => [$item_b],
+            'team._type==GroupTeamMember;team.group.name==_test_group_1' => [$item_b],
+            'team.group.id==' . $group_id => [$item_b],
+            'team.supplier.id==' . $supplier_id => [$item_a],
+            'team.user.username==tech' => [$item_a],
+            '(team.user.id==4,team.group.id==' . $group_id . ')' => [$item_a, $item_b],
+            'team.id=isnull=' => [$item_c],
+        ];
+        $itil_name = (new ReflectionClass($itil_type))->getShortName();
+        foreach ($filters as $filter => $expected_items) {
+            $request = new Request('GET', "/Assistance/{$itil_name}");
+            $request->setParameter('filter', 'name=like="' . $prefix . '*";' . $filter);
+            $this->api->call($request, function ($call) use ($filter, $expected_items) {
+                $call->response
+                    ->isOK()
+                    ->headers(function ($headers) use ($filter, $expected_items) {
+                        $this->assertStringEndsWith('/' . count($expected_items), $headers['Content-Range'], $filter);
+                    })
+                    ->jsonContent(function ($content) use ($filter, $expected_items) {
+                        $expected_ids = array_map(static fn($item) => $item->getID(), $expected_items);
+                        $ids = array_column($content, 'id');
+                        sort($expected_ids);
+                        sort($ids);
+                        $this->assertSame($expected_ids, $ids, $filter);
+                    });
+            });
+        }
+
+        // The full team is returned even if the filter only matches some members
+        $request = new Request('GET', "/Assistance/{$itil_name}");
+        $request->setParameter('filter', 'name=like="' . $prefix . '*";team.user.id==4');
+        $this->api->call($request, function ($call) use ($supplier_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($supplier_id) {
+                    $this->assertCount(1, $content);
+                    $this->assertSame([
+                        'SupplierTeamMember_' . $supplier_id . '_assigned',
+                        'UserTeamMember_3_requester',
+                        'UserTeamMember_4_assigned',
+                    ], self::getTeamKeys($content[0]['team']));
+                });
+        });
+    }
+
+    public function testSortByTeam(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $prefix = __FUNCTION__;
+        // glpi (2) and tech (4)
+        $item_glpi = $this->createITILItemWithTeam(Ticket::class, $prefix . '_1', [
+            'assign' => [['itemtype' => User::class, 'items_id' => 2]],
+        ]);
+        $item_tech = $this->createITILItemWithTeam(Ticket::class, $prefix . '_2', [
+            'assign' => [['itemtype' => User::class, 'items_id' => 4]],
+        ]);
+
+        foreach (['ASC' => [$item_glpi, $item_tech], 'DESC' => [$item_tech, $item_glpi]] as $direction => $expected_items) {
+            $request = new Request('GET', '/Assistance/Ticket');
+            $request->setParameter('filter', 'name=like="' . $prefix . '*"');
+            $request->setParameter('sort', 'team.user.username:' . $direction);
+            $this->api->call($request, function ($call) use ($expected_items) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($expected_items) {
+                        $this->assertSame(
+                            array_map(static fn($item) => $item->getID(), $expected_items),
+                            array_column($content, 'id')
+                        );
+                    });
+            });
+        }
+    }
+
+    public function testTeamNotWritable(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $func_name = __FUNCTION__;
+        $ticket = $this->createITILItemWithTeam(Ticket::class, $func_name, [
+            'requester' => [['itemtype' => User::class, 'items_id' => 3]],
+        ]);
+
+        // Team members are managed using the TeamMember endpoints
+        $request = new Request('PATCH', "/Assistance/Ticket/{$ticket->getID()}");
+        $request->setParameter('name', $func_name . '_updated');
+        $request->setParameter('team', [
+            ['_type' => 'UserTeamMember', 'id' => 1, 'role' => 'assigned', 'user' => ['id' => 4]],
+        ]);
+        $this->api->call($request, function ($call) use ($func_name, $ticket) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($ticket, $func_name) {
+                    $this->assertSame($ticket->getID(), $content['id']);
+                    $this->assertSame($func_name . '_updated', $content['name']);
+                    $this->assertSame(['UserTeamMember_3_requester'], self::getTeamKeys($content['team']));
+                });
+        });
+    }
+
+    public function testFilterByTeamV2(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $ticket = $this->createITILItemWithTeam(Ticket::class, __FUNCTION__, [
+            'requester' => [['itemtype' => User::class, 'items_id' => 3]],
+        ]);
+
+        // The team is still a mapped property in v2, so it cannot be used in filters
+        $request = new Request('GET', '/Assistance/Ticket');
+        $request->setParameter('filter', 'team.role==requester');
+        $this->api->withVersion('2.3.0')->call($request, function ($call) {
+            $call->response->status(fn($status) => $this->assertSame(400, $status));
+        });
+
+        // But the team is unchanged
+        $this->api->withVersion('2.3.0')->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}"), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['team']);
+                    $this->assertEquals(3, $content['team'][0]['id']);
+                    $this->assertSame('User', $content['team'][0]['type']);
+                    $this->assertSame('requester', $content['team'][0]['role']);
+                });
+        });
+    }
+
+    public function testGraphQLFilterByTeam(): void
+    {
+        $this->login();
+        $this->loginWeb();
+
+        $prefix = __FUNCTION__;
+        $item_a = $this->createITILItemWithTeam(Ticket::class, $prefix . '_a', [
+            'assign' => [['itemtype' => User::class, 'items_id' => 4]],
+        ]);
+        $this->createITILItemWithTeam(Ticket::class, $prefix . '_b', [
+            'assign' => [['itemtype' => User::class, 'items_id' => 2]],
+        ]);
+
+        $this->graphql->call('query { Ticket(filter: "name=like=\'' . $prefix . '*\';team.user.id==4;team.role==assigned") { id } }', function ($call) use ($item_a) {
+            $call->response
+                ->isOK()
+                ->data('Ticket', function ($tickets) use ($item_a) {
+                    $this->assertEquals([$item_a->getID()], array_column($tickets, 'id'));
                 });
         });
     }

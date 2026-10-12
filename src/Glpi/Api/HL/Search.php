@@ -48,6 +48,7 @@ use Glpi\Api\HL\RSQL\Error;
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
+use Glpi\Api\HL\Search\PolymorphicJoin;
 use Glpi\Api\HL\Search\RecordSet;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Application\Environment;
@@ -148,6 +149,13 @@ final class Search
     {
         if (!isset($this->sql_field_cache[$prop_name]) || Environment::get() === Environment::TESTING) {
             $prop = $this->context->getFlattenedProperties()[$prop_name];
+            $polymorphic_join = $this->context->getPolymorphicJoinNameForProperty($prop_name);
+            if ($polymorphic_join !== null) {
+                // All properties of the items (including nested objects) are columns of the union of the join branches
+                $leaf_name = substr($prop_name, strrpos($prop_name, '.') + 1);
+                $this->sql_field_cache[$prop_name] = str_replace('.', chr(0x1F), $polymorphic_join) . '.' . ($prop['x-field'] ?? $leaf_name);
+                return $this->sql_field_cache[$prop_name];
+            }
             $is_scalar_join = false;
             $is_join = $this->context->isJoinedProperty($prop_name);
             if (isset($this->context->getJoins()[$prop_name])) {
@@ -199,6 +207,10 @@ final class Search
         $prop = $this->context->getFlattenedProperties()[$prop_name];
         if ($prop['writeOnly'] ?? false) {
             // Do not expose write-only fields
+            return null;
+        }
+        if ($this->context->getPolymorphicJoinNameForProperty($prop_name) !== null) {
+            // Data for polymorphic joins is fetched when hydrating the results
             return null;
         }
 
@@ -400,6 +412,10 @@ final class Search
     public function addJoinsCriteria(array &$criteria): void
     {
         foreach ($this->context->getJoins() as $join_alias => $join_definition) {
+            if (PolymorphicJoin::isPolymorphicJoin($join_definition)) {
+                // Only joined when needed to filter or sort. See addPolymorphicJoinCriteria().
+                continue;
+            }
             $join_clauses = $this->getJoins($join_alias, $join_definition);
             foreach ($join_clauses as $join_type => $join_tables) {
                 if (!isset($criteria[$join_type])) {
@@ -407,6 +423,34 @@ final class Search
                 }
                 $criteria[$join_type] = array_merge($criteria[$join_type], $join_tables);
             }
+        }
+    }
+
+    /**
+     * Join the union of the branches of the polymorphic joins used by the given properties.
+     * This is only needed to filter or sort by the properties of the items of polymorphic joins as their data is fetched when hydrating the results.
+     * @param array<string, mixed> $criteria
+     * @param string[] $properties The properties used to filter or sort
+     * @return void
+     * @see PolymorphicJoin
+     */
+    public function addPolymorphicJoinCriteria(array &$criteria, array $properties): void
+    {
+        foreach ($properties as $property) {
+            $join_name = $this->context->getPolymorphicJoinNameForProperty($property);
+            if ($join_name === null) {
+                continue;
+            }
+            $join = $this->context->getJoins()[$join_name];
+            $join_alias = str_replace('.', chr(0x1F), $join_name);
+            // Keyed by the alias so the join is only added once
+            $criteria['LEFT JOIN']['_polymorphic_' . $join_alias] = [
+                'TABLE' => new QuerySubQuery(['FROM' => PolymorphicJoin::build($join, alias: $join_alias . '_union')], $join_alias),
+                'FKEY' => [
+                    $join_alias => PolymorphicJoin::PARENT_ID_COLUMN,
+                    '_' => $join['fkey'],
+                ],
+            ];
         }
     }
 
@@ -456,6 +500,7 @@ final class Search
 
             $add_expression($where, $filter_result->getSQLWhereCriteria());
             $add_expression($having, $filter_result->getSQLHavingCriteria());
+            $this->addPolymorphicJoinCriteria($criteria, $filter_result->getUsedProperties());
         }
 
         $mandatory_filter = $this->context->getRequestParameter(self::MANDATORY_FILTER_PARAM);
@@ -465,6 +510,7 @@ final class Search
             $scope_result = $this->rsql_parser->parse(Lexer::tokenize($mandatory_filter));
             $add_expression($where, $scope_result->getSQLWhereCriteria());
             $add_expression($having, $scope_result->getSQLHavingCriteria());
+            $this->addPolymorphicJoinCriteria($criteria, $scope_result->getUsedProperties());
         }
 
         if ($where !== []) {
@@ -623,6 +669,7 @@ final class Search
                 }
                 $sql_field = $this->getSQLFieldForProperty($property);
                 $orderby[] = "{$sql_field} {$direction}";
+                $this->addPolymorphicJoinCriteria($criteria, [$property]);
             }
             $criteria['ORDERBY'] = $orderby;
         }
@@ -724,6 +771,10 @@ final class Search
             } else {
                 if (!$count_only) {
                     foreach (array_keys($this->context->getJoins()) as $join_alias) {
+                        if ($this->context->isPolymorphicJoin($join_alias)) {
+                            // Fetched when hydrating the results
+                            continue;
+                        }
                         $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
                         if ($s !== null) {
                             $criteria['SELECT'][] = $s;
