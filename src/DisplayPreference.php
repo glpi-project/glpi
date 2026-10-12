@@ -208,6 +208,13 @@ class DisplayPreference extends CommonDBTM
                 return;
             case 'reset_to_default':
                 $input = $ma->getInput();
+
+                if (!Session::haveRight(static::$rightname, DisplayPreference::GENERAL)) {
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    return;
+                }
+
                 if (!isset($input['users_id']) || $input['users_id'] <= 0) {
                     foreach ($ids as $itemtype) {
                         if (self::resetToDefaultOptions($itemtype)) {
@@ -301,10 +308,29 @@ class DisplayPreference extends CommonDBTM
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
+                $existing_crit = [
+                    'itemtype'  => $data['itemtype'],
+                    'users_id'  => $input['users_id'],
+                    'num'       => $data['num'],
+                    'interface' => $data['interface'],
+                ];
+                if (countElementsInTable(self::getTable(), $existing_crit)) {
+                    // The display preference is already set for the user.
+                    continue;
+                }
+
                 unset($data["id"]);
                 $data["users_id"] = $input["users_id"];
-                $this->fields     = $data;
-                $this->addToDB();
+                $DB->updateOrInsert(
+                    self::getTable(),
+                    $data,
+                    [
+                        'itemtype'  => $data['itemtype'],
+                        'users_id'  => $data['users_id'],
+                        'num'       => $data['num'],
+                        'interface' => $data['interface'],
+                    ]
+                );
             }
         } else {
             // No items in the global config
@@ -319,12 +345,21 @@ class DisplayPreference extends CommonDBTM
                         && ($key != 1)
                         && !$done
                     ) {
-                        $data["users_id"] = $input["users_id"];
-                        $data["itemtype"] = $input["itemtype"];
-                        $data["rank"]     = 1;
-                        $data["num"]      = $key;
-                        $this->fields     = $data;
-                        $this->addToDB();
+                        $data["users_id"]  = $input["users_id"];
+                        $data["itemtype"]  = $input["itemtype"];
+                        $data["rank"]      = 1;
+                        $data["num"]       = $key;
+                        $data["interface"] = $input["interface"] ?? 'central';
+                        $DB->updateOrInsert(
+                            self::getTable(),
+                            $data,
+                            [
+                                'itemtype'  => $data['itemtype'],
+                                'users_id'  => $data['users_id'],
+                                'num'       => $data['num'],
+                                'interface' => $data['interface'],
+                            ]
+                        );
                         $done = true;
                     }
                 }
@@ -646,6 +681,24 @@ class DisplayPreference extends CommonDBTM
             'GROUPBY' => 'itemtype',
         ]);
 
+        // Sort by display name rather than by itemtype
+        $sorted_preferences = iterator_to_array($iterator);
+        $collator = collator_create($_SESSION['glpilanguage']);
+        if ($collator) {
+            $collator->setStrength(Collator::PRIMARY);
+        }
+        usort($sorted_preferences, function ($a, $b) use ($collator) {
+            $name_a = is_a($a['itemtype'], CommonGLPI::class, true) ? $a['itemtype']::getTypeName(1) : $a['itemtype'];
+            $name_b = is_a($b['itemtype'], CommonGLPI::class, true) ? $b['itemtype']::getTypeName(1) : $b['itemtype'];
+            // Alternatively use strcasecmp if collator fails
+            // strcasecmp is ASCII based and will sort special characters like é, Ã, etc. at the end of the list
+            if ($collator === null) {
+                return strcasecmp($name_a, $name_b);
+            }
+            $result = collator_compare($collator, $name_a, $name_b);
+            return $result === false ? 0 : $result;
+        });
+
         $specific_actions = [];
         if ($users_id > 0) {
             $specific_actions[ self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_for_user'] = _x('button', 'Delete permanently');
@@ -664,7 +717,7 @@ class DisplayPreference extends CommonDBTM
         TemplateRenderer::getInstance()->display('components/search/displaypreference_list.html.twig', [
             'massiveactionparams' => $massiveactionparams,
             'users_id' => $users_id,
-            'preferences' => $iterator,
+            'preferences' => $sorted_preferences,
             'rand' => $rand,
         ]);
     }

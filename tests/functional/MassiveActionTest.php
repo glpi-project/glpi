@@ -240,6 +240,8 @@ class MassiveActionTest extends DbTestCase
         bool $itemtype_is_compatible,
         bool $has_right
     ) {
+        $this->login();
+
         $base_comment = "test comment";
         $amendment = "test amendment";
         $old_session = $_SESSION['glpiactiveentities'] ?? [];
@@ -250,12 +252,16 @@ class MassiveActionTest extends DbTestCase
             $_SESSION['glpiactiveentities'] = [
                 $item->getEntityID(),
             ];
+        } else {
+            $_SESSION['glpiactiveentities'] = [
+                $item->getEntityID() + 1, // session is outside of scope
+            ];
         }
 
         // Check supplied params match the data
         $comment_exist = array_key_exists('comment', $item->fields);
         $this->assertSame($itemtype_is_compatible, $comment_exist);
-        $this->assertSame($has_right, $item->canUpdateItem());
+        $this->assertSame($has_right, $item->can($item->getID(), UPDATE));
 
         if ($itemtype_is_compatible && $has_right) {
             $expected_ok = 1;
@@ -274,7 +280,7 @@ class MassiveActionTest extends DbTestCase
         } else {
             // No update right, the action will run and fail
             $expected_ok = 0;
-            $expected_ko = 0; // no items set KO, action canceled before the foreach loop.
+            $expected_ko = 1;
         }
 
         // Execute action
@@ -447,13 +453,18 @@ class MassiveActionTest extends DbTestCase
         ];
 
         if ($has_right) {
-            $_SESSION['glpiactiveprofile'][$item::$rightname] = UPDATENOTE;
+            $_SESSION['glpiactiveprofile'][$item::$rightname] = READ | UPDATENOTE;
+        } else {
+            $_SESSION['glpiactiveprofile'][$item::$rightname] = READ;
         }
 
         // Check expected rights
         $this->assertSame(
             $has_right,
             (bool) Session::haveRight($item::$rightname, UPDATENOTE)
+        );
+        $this->assertTrue(
+            $item->can($item->getID(), READ)
         );
 
         if ($has_right) {
@@ -589,6 +600,7 @@ class MassiveActionTest extends DbTestCase
         $id = $ticket->add([
             'name'    => 'test',
             'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $ticket->getFromDB($id);
         $this->assertGreaterThan(0, $id);
@@ -648,7 +660,7 @@ class MassiveActionTest extends DbTestCase
 
             // Set up session rights
             if ($has_right) {
-                $this->login('tech', 'tech');
+                $this->login();
             } else {
                 $this->login('post-only', 'postonly');
             }
@@ -780,7 +792,7 @@ class MassiveActionTest extends DbTestCase
             0,
             $computer->add([
                 'name' => 'test',
-                'entities_id' => 1,
+                'entities_id' => $this->getTestRootEntity(true),
             ])
         );
 
@@ -790,7 +802,7 @@ class MassiveActionTest extends DbTestCase
             0,
             $manual_domain->add([
                 'name' => 'manual_domain',
-                'entities_id' => 1,
+                'entities_id' => $this->getTestRootEntity(true),
             ])
         );
 
@@ -840,7 +852,6 @@ class MassiveActionTest extends DbTestCase
                 'is_deleted'            => false,
             ])
         );
-
 
         // Execute action to remove link between Computer and Manual Domain
         $this->processMassiveActionsForOneItemtype(
@@ -1662,5 +1673,67 @@ class MassiveActionTest extends DbTestCase
             $source_itemtype::getForeignKeyField() => $source->getID(),
             $target_itemtype::getForeignKeyField() => $target->getID(),
         ]));
+    }
+
+    /**
+     * Multi-value fields (e.g. a plugin's "multiple" dropdown) submit an
+     * array as their value. A field matching the foreign-key naming pattern
+     * (isForeignKeyField(), e.g. "locations_id") must not be treated as a
+     * single scalar foreign key in that case, or PHP emits
+     * "Array to string conversion" warnings (which fail the test, as
+     * GLPITestCase asserts there are no unexpected log entries).
+     */
+    #[AllowMockObjectsWithoutExpectations()]
+    public function testProcessMassiveActionsForOneItemtypeDoesNotWarnOnArrayValueForForeignKeyNamedField(): void
+    {
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'test',
+                'content'     => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        $location_id = $this->createItem(
+            Location::class,
+            [
+                'name'        => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        $location_so_id = null;
+        foreach (SearchOption::getOptionsForItemtype($ticket->getType()) as $so_id => $so) {
+            if (($so['table'] ?? null) === Location::getTable() && ($so['linkfield'] ?? null) === 'locations_id') {
+                $location_so_id = $so_id;
+                break;
+            }
+        }
+        $this->assertNotNull($location_so_id);
+
+        // Deny update rights so processing stops before reaching update():
+        // this isolates the code path under test (the entity-validation
+        // branch, where the warnings originated) from the actual field
+        // write, which is not what is being tested here.
+        $old_right = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+
+        try {
+            $this->processMassiveActionsForOneItemtype(
+                'update',
+                $ticket,
+                [$ticket->fields['id']],
+                [
+                    'locations_id'   => [$location_id], // array, as a "multiple" field would submit
+                    'search_options' => [$ticket->getType() => $location_so_id],
+                    'field'          => 'locations_id',
+                ],
+                0,
+                1,
+            );
+        } finally {
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_right;
+        }
     }
 }

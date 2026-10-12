@@ -42,6 +42,7 @@ use Glpi\Toolbox\ArrayPathAccessor;
 use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
+use function Safe\preg_replace;
 use function Safe\strtotime;
 
 /**
@@ -401,15 +402,6 @@ class Schema implements ArrayAccess
                 continue;
             }
             $filtered_prop = $prop;
-            // A property may become read-only starting from a specific API version.
-            // Older versions keep their original (writable) shape so existing snapshots stay frozen.
-            if (
-                isset($prop['x-version-readonly'])
-                && version_compare($api_version, $prop['x-version-readonly']) >= 0
-            ) {
-                $filtered_prop['readOnly'] = true;
-            }
-            unset($filtered_prop['x-version-readonly']);
             if ($prop['type'] === self::TYPE_OBJECT) {
                 if (!empty($prop['properties'])) {
                     $filtered_prop['properties'] = self::filterPropertiesByAPIVersion($prop['properties'], $prop_versions, $api_version);
@@ -512,7 +504,7 @@ class Schema implements ArrayAccess
             self::TYPE_STRING => (string) $value,
             self::TYPE_INTEGER => (int) $value,
             self::TYPE_NUMBER => (float) $value,
-            self::TYPE_BOOLEAN => (bool) $value,
+            self::TYPE_BOOLEAN => (bool) (is_string($value) ? trim(preg_replace('/[[:cntrl:]]/', '', $value)) : $value),
             default => $value
         };
 

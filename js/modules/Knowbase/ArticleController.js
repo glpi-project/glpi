@@ -119,6 +119,9 @@ export class GlpiKnowbaseArticleController
     /** @type {Array<{id: string, text: string}>} */
     #resolved_anchors = [];
 
+    /** @type {string|null} */
+    #hovered_comment_id = null;
+
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -526,6 +529,9 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
+     * Mirror the favorite state in the aside; same visibility rule as the
+     * aside's own `#refreshFavoritesVisibility()`.
+     *
      * @param {boolean} is_favorited
      */
     #updateFavoritesAside(is_favorited)
@@ -573,7 +579,7 @@ export class GlpiKnowbaseArticleController
 
         const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
         const entries = aside.querySelectorAll(
-            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] [data-glpi-kb-article-title]`
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] > .article-line [data-glpi-kb-article-title]`
         );
         for (const entry of entries) {
             entry.textContent = title;
@@ -592,7 +598,7 @@ export class GlpiKnowbaseArticleController
 
         const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
         const containers = aside.querySelectorAll(
-            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] [data-glpi-kb-article-illustration]`
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] > .article-line [data-glpi-kb-article-illustration]`
         );
 
         // The illustration picker preview already holds a freshly rendered node
@@ -685,6 +691,15 @@ export class GlpiKnowbaseArticleController
 
         const response = await deleteArticle(id);
         const body = await response.json();
+
+        if (!response.ok) {
+            glpi_alert({
+                title: __('Delete article'),
+                message: body.message,
+            });
+            return;
+        }
+
         window.location.href = body.redirect;
     }
 
@@ -1092,6 +1107,16 @@ export class GlpiKnowbaseArticleController
             e.preventDefault();
             this.#onHighlightClick(mark.dataset.commentId);
         });
+
+        // CSS :hover would reach only the fragment under the cursor.
+        content_el.addEventListener('mouseover', (e) => {
+            const mark = e.target.closest('.kb-comment-highlight');
+            this.#setHoveredComment(mark?.dataset.commentId ?? null);
+        });
+
+        content_el.addEventListener('mouseleave', () => {
+            this.#setHoveredComment(null);
+        });
     }
 
     /**
@@ -1136,6 +1161,8 @@ export class GlpiKnowbaseArticleController
             this.#resolved_anchors = content_el
                 ? highlightComments(content_el, this.#comment_anchors)
                 : [];
+            // Marks are rebuilt from scratch, losing the hovered tag.
+            this.#applyHoveredComment();
         }
 
         this.#syncAnchorQuotes();
@@ -1187,6 +1214,36 @@ export class GlpiKnowbaseArticleController
                 .querySelector(`.kb-comment-highlight[data-comment-id="${CSS.escape(comment_id)}"]`)
                 ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+    }
+
+    /**
+     * @param {string|null} comment_id
+     */
+    #setHoveredComment(comment_id)
+    {
+        if (this.#hovered_comment_id === comment_id) {
+            return;
+        }
+
+        this.#hovered_comment_id = comment_id;
+        this.#applyHoveredComment();
+    }
+
+    #applyHoveredComment()
+    {
+        // Edit-mode decorations would wipe a hand-set class on the next redraw.
+        if (this.#editor) {
+            this.#editor.setCommentHighlightHover(this.#hovered_comment_id);
+            return;
+        }
+
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        content_el?.querySelectorAll('.kb-comment-highlight').forEach((mark) => {
+            mark.classList.toggle(
+                'kb-comment-highlight--hovered',
+                mark.dataset.commentId === this.#hovered_comment_id
+            );
+        });
     }
 
     #initScheduleVisibilityDialog(modal)
@@ -1285,6 +1342,8 @@ export class GlpiKnowbaseArticleController
                     this.#syncAnchorQuotes();
                 },
             });
+            // The pointer may already sit on a passage, edit mode being keyboard-reachable.
+            this.#applyHoveredComment();
         } else {
             this.#editor.setEditable(true);
         }

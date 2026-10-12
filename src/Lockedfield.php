@@ -476,7 +476,10 @@ class Lockedfield extends CommonDBTM
             'uuid',
             'comment',
         ];
-        $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
+        $itemtypes = array_values(array_unique(array_merge(
+            $CFG_GLPI['inventory_types'],
+            $CFG_GLPI['inventory_lockable_objects']
+        )));
 
         if ($specific_itemtype !== null && in_array($specific_itemtype, $itemtypes)) {
             $itemtypes = [$specific_itemtype];

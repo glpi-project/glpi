@@ -16,8 +16,11 @@ concurrency:
 
 jobs:
   security-scan:
+    # Let tier repositories opt out of running the scan on a push event
+    # (e.g. a private mirror branch)
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'
     name: "Security scan"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ vars.CI_RUNNER_LABEL || 'ubuntu-latest' }}"
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"

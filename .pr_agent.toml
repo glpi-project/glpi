@@ -1,0 +1,51 @@
+# Qodo Review. Read only from the root of the default branch, so a pull request
+# cannot alter the rules that apply to itself.
+# https://docs.qodo.ai/install-and-configure/configuration-overview/configuration-and-command-reference
+
+[config]
+ignore_pr_authors = ["\\[bot\\]$"] # GitHub reserves the suffix for apps
+ignore_pr_labels = ["no-ai-review"]
+
+[github_app]
+pr_commands = ["/agentic_review"] # default also runs /agentic_describe
+
+[review_agent]
+publish_in_progress_comment = false
+persistent_comment_notification = false
+
+issues_user_guidelines = """\
+Read as much of the repository as you need in order to understand this pull \
+request: callers, callees, subclasses, templates and tests that depend on the \
+modified code are all legitimate context, and you are expected to follow them.
+Report only what this pull request causes. A finding qualifies when the change \
+introduces it, breaks it, or makes an existing weakness reachable where it was \
+not before, and it must name the changed line responsible. A problem that is \
+identical before and after the change does not qualify, however real it is: \
+sharing a file or a repository with the change is not a connection to it.
+If the pull request changes no logic, expect to report nothing.
+Do not report anything the project tooling already enforces: PHP CS Fixer, \
+PHPStan, Psalm, Rector, ESLint, Stylelint. The .phpstan-baseline*.php files \
+record known pre-existing violations that are deliberately accepted; never \
+report those, and never suggest reducing the baselines.
+Skip stylistic and naming preferences.\
+"""
+
+[review_agent_ux]
+finding_overflow_count = 1
+resolved_overflow_count = 0
+use_images_and_animations = false
+show_context_used = false
+show_persistent_review_section = false
+show_daily_tips = false
+show_dividers = false
+show_comment_footer = false
+
+[ignore]
+# Documented for v1 only: check on the first review that these are skipped.
+glob = [
+    "vendor/**",
+    "lib/**",                            # vendored third-party JavaScript
+    "locales/**",
+    ".phpstan-baseline*.php",
+    "tests/fixtures/hlapi/snapshots/**",
+]

@@ -153,6 +153,7 @@
                                 for="show_as_table"
                                 data-bs-toggle="tooltip" data-bs-placement="top">
                                 <i class="ti ti-table" aria-hidden="true"></i>
+                                <span class="visually-hidden">{{ __('Show as table') }}</span>
                             </label >
 
                         {% set located_class = (data['search']['as_map'] == 1 ? "btn-ghost-info" : "") %}
@@ -170,6 +171,7 @@
                             for="show_as_map"
                             data-bs-toggle="tooltip" data-bs-placement="top">
                             <i class="ti ti-map-2" aria-hidden="true"></i>
+                            <span class="visually-hidden">{{ __('Show as map') }}</span>
                         </label >
                     </div>
                 {% endif %}

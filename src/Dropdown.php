@@ -38,6 +38,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
@@ -113,6 +114,7 @@ class Dropdown
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *    - readonly             : boolean / return self::getDropdownValue if true (default false)
      *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
+     *    - templateSelection    : name of a JS function used by select2 to render a selected value (default null)
      *
      * @return string|false|int
      *
@@ -161,6 +163,7 @@ class Dropdown
         $params['init']                 = true;
         $params['aria_label']           = '';
         $params['required']             = false;
+        $params['templateSelection']    = null;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -309,6 +312,10 @@ class Dropdown
             'aria_label'           => $params['aria_label'],
             'required'             => $params['required'],
         ];
+
+        if ($params['templateSelection'] !== null) {
+            $p['templateSelection'] = $params['templateSelection'];
+        }
 
         if ($params['multiple']) {
             $p['values'] = $params['values'];
@@ -1285,6 +1292,9 @@ HTML;
                     'DeviceGenericType' => null,
                     'DeviceSensorType' => null,
                     'DeviceMemoryType' => null,
+                    'DeviceHardDriveType' => null,
+                    'DeviceBatteryType' => null,
+                    'DeviceFirmwareType' => null,
                     'SupplierType' => null,
                     'InterfaceType' => null,
                     'DeviceCaseType' => null,
@@ -1296,6 +1306,7 @@ HTML;
                     'LineType' => null,
                     'RackType' => null,
                     'PDUType' => null,
+                    'PlugType' => null,
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null,
@@ -1310,10 +1321,12 @@ HTML;
                     'PhoneModel' => null,
 
                     // Devices models :
+                    'DeviceBatteryModel' => null,
                     'DeviceCameraModel' => null,
                     'DeviceCaseModel' => null,
                     'DeviceControlModel' => null,
                     'DeviceDriveModel' => null,
+                    'DeviceFirmwareModel' => null,
                     'DeviceGenericModel' => null,
                     'DeviceGraphicCardModel' => null,
                     'DeviceHardDriveModel' => null,
@@ -1875,6 +1888,7 @@ HTML;
             'width'                           => $params['width'],
             'container_css_class'             => $params['container_css_class'],
             'specific_tags_items_id_dropdown' => $params['specific_tags_items_id_dropdown'],
+            'display_emptychoice'             => $params['display_emptychoice'],
         ];
 
         // manage condition
@@ -2982,12 +2996,15 @@ HTML;
             if (isset($condition['WHERE'])) {
                 $where = array_merge($where, $condition['WHERE']);
             } else {
+                $or_where = [];
                 foreach ($condition as $key => $value) {
                     if (is_array($value) && isset($value['LEFT JOIN'])) {
-                        $ljoin = $value['LEFT JOIN'];
+                        $ljoin = array_merge($ljoin, $value['LEFT JOIN']);
                     }
                     if (is_array($value) && isset($value['WHERE'])) {
-                        $where = array_merge($where, $value['WHERE']);
+                        // Combine with OR: sub-conditions target different types but must match any one of them,
+                        // and array_merge would silently produce AND instead of the required OR.
+                        $or_where[] = $value['WHERE'];
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
                         $where["$table.$key"] = $value;
@@ -2999,6 +3016,9 @@ HTML;
                         // e.g. to override the default `is_template` / `is_deleted` filtering.
                         $where[$key] = $value;
                     }
+                }
+                if ($or_where !== []) {
+                    $where[] = ['OR' => $or_where];
                 }
             }
         }
@@ -3501,9 +3521,9 @@ HTML;
                             "$table.entities_id",
                             QueryFunction::concat(
                                 params: [
-                                    QueryFunction::ifnull('name', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull(new QueryIdentifier('name'), new QueryExpression($DB::quoteValue(''))),
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull(new QueryIdentifier('firstname'), new QueryExpression($DB::quoteValue(''))),
                                 ],
                                 alias: $field
                             ),
@@ -3519,7 +3539,7 @@ HTML;
                         'SELECT' => [
                             "$table.*",
                             QueryFunction::concat(
-                                params: ['glpi_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'glpi_softwarelicenses.name'],
+                                params: [new QueryIdentifier('glpi_softwares.name'), new QueryExpression($DB::quoteValue(' - ')), new QueryIdentifier('glpi_softwarelicenses.name')],
                                 alias: $field
                             ),
                         ],
@@ -3626,6 +3646,11 @@ HTML;
             );
 
             $order_field = "$table.$field";
+            if (in_array($post['itemtype'], [Ticket::class, Change::class, Problem::class], true)) {
+                // Ordering by `name` forces a filesort over the whole (unindexable, `LIKE`-filtered)
+                // matching set; ordering by the primary key lets MySQL stop scanning early instead.
+                $order_field = "$table.id DESC";
+            }
             if (isset($post['order']) && !empty($post['order'])) {
                 $order_field = $post['order'];
             }

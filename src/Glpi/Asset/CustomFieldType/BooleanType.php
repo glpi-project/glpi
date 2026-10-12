@@ -38,6 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use InvalidArgumentException;
 
 class BooleanType extends AbstractType
@@ -87,7 +88,7 @@ TWIG, $twig_params);
         $opt['computation'] = new QueryExpression(QueryFunction::coalesce([
             QueryFunction::jsonUnquote(
                 expression: QueryFunction::jsonExtract([
-                    'glpi_assets_assets.custom_fields',
+                    new QueryIdentifier('glpi_assets_assets.custom_fields'),
                     new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                 ])
             ),

@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * ProjectTask_Ticket Class
@@ -130,7 +131,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: 'glpi_tickets.actiontime',
+                    expression: new QueryIdentifier('glpi_tickets.actiontime'),
                     alias: 'duration'
                 ),
             ],

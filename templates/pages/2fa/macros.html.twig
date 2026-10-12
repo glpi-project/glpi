@@ -30,7 +30,42 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro tfa_setup(secret, qrcode, enforced = false, in_grace_period = false, grace_period_days_left = 0) %}
+{#
+ # Pairs with <twig:Mfa:CodeInput />.
+ # Should be wrap in an element with data-code-type="code",
+ # which is toggled to "backup_code" and used to show/hide the right input.
+ #
+ # @param update_card_title bool Also swap the closest .card-title text when toggling (used by the full-page MFA prompt).
+ #}
+{% macro tfa_backup_code_toggle(update_card_title = false) %}
+   <input type="text" name="backup_code" class="form-control d-none" disabled="disabled" placeholder="{{ __('Backup code') }}"/>
+   <button type="button" class="btn btn-link px-1 js-tfa-switch-code-type">{{ __('Use a backup code') }}</button>
+   <script>
+       $(document).ready(function() {
+           $('.js-tfa-switch-code-type').on('click', function(e) {
+               const btn = $(e.currentTarget);
+               const wrapper = btn.closest('[data-code-type]');
+               const card_title = {{ update_card_title ? 'true' : 'false' }} ? btn.closest('.card').find('.card-title') : $();
+
+               if (wrapper.attr('data-code-type') === 'code') {
+                   wrapper.attr('data-code-type', 'backup_code');
+                   $('input[name="totp_code[]"]').attr('disabled', 'disabled').addClass('d-none');
+                   $('input[name="backup_code"]').removeAttr('disabled').removeClass('d-none');
+                   btn.text('{{ __('Use a code from your authenticator app')|e('js') }}');
+                   card_title.text('{{ __('Please enter a backup code')|e('js') }}');
+               } else {
+                   wrapper.attr('data-code-type', 'code');
+                   $('input[name="backup_code"]').attr('disabled', 'disabled').addClass('d-none');
+                   $('input[name="totp_code[]"]').removeAttr('disabled').removeClass('d-none');
+                   btn.text('{{ __('Use a backup code')|e('js') }}');
+                   card_title.text('{{ __('Please enter the code from your authenticator app')|e('js') }}');
+               }
+           });
+       });
+   </script>
+{% endmacro %}
+
+{% macro tfa_setup(user_id, secret, qrcode, enforced = false, in_grace_period = false, grace_period_days_left = 0) %}
    <form method="post" action="{{ path('MFA/Verify') }}" autocomplete="off" class="{{ enforced ? 'm-n5' : '' }}">
       <div class="card mx-auto" style="width: fit-content">
          <div class="card-header">
@@ -67,7 +102,7 @@
                            </script>
                         </div>
                         <input type="hidden" name="secret" value="{{ secret }}" />
-                        <input type="hidden" name="_idor_token" value="{{ idor_token('', {'secret': secret}) }}" />
+                        <input type="hidden" name="_idor_token" value="{{ idor_token('', {'user_id': user_id, 'secret': secret}) }}" />
                      </div>
                   </div>
                </li>
@@ -112,7 +147,7 @@
 
             btn.find('i').removeClass('ti ti-copy').addClass('ti ti-check');
             btn.removeClass('btn-outline-secondary').addClass('btn-success');
-            btn.text('{{ __('Copied') }}');
+            btn.text('{{ __('Copied')|e('js') }}');
         });
 
         function showCodes(codes) {

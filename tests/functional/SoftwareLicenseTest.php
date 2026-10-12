@@ -205,6 +205,48 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertEquals(0, \SoftwareLicense::computeValidityIndicator($lic_id, 1));
     }
 
+    public function testCronSoftwareAlertsLicenseWithoutSoftware()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $license_id = $this->createItem(\SoftwareLicense::class, [
+            'name'        => 'license_without_software_' . $this->getUniqueString(),
+            'entities_id' => 0,
+            'expire'      => date('Y-m-d', time() - MONTH_TIMESTAMP),
+        ])->getID();
+
+        $entity = new \Entity();
+        $this->assertTrue(
+            $entity->update([
+                'id'                               => 0,
+                'use_licenses_alert'                => true,
+                'send_licenses_alert_before_delay'  => true,
+            ])
+        );
+
+        $CFG_GLPI['use_notifications']            = 1;
+        $CFG_GLPI['notifications_' . \Notification_NotificationTemplate::MODE_MAIL] = 1;
+
+        $this->assertEquals(1, \SoftwareLicense::cronSoftware());
+
+        $alert = new \Alert();
+        $this->assertTrue($alert->getFromDBByCrit([
+            'itemtype' => 'SoftwareLicense',
+            'items_id' => $license_id,
+        ]));
+
+        // The queued notification must not show a blank software name for an unlinked license
+        $queued = (new \QueuedNotification())->find([
+            'event'    => 'alert',
+            'itemtype' => 'SoftwareLicense',
+        ]);
+        $this->assertCount(1, $queued);
+        $notification = reset($queued);
+        $this->assertStringContainsString(__('Not linked to any software'), $notification['body_html']);
+    }
+
     public function testPrepareInputForUpdate()
     {
         $this->login();
@@ -681,4 +723,46 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertFalse($non_recursive_license->isRecursive());
     }
 
+    public function testShowChildrenHidesDeletedLicenses(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $software_id = $this->createItem(\Software::class, [
+            'name'        => 'Software with child licenses',
+            'entities_id' => $entities_id,
+        ])->getID();
+        $parent = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'Parent license',
+            'softwares_id' => $software_id,
+            'entities_id'  => $entities_id,
+        ]);
+        $this->createItem(\SoftwareLicense::class, [
+            'name'                => 'Active child license',
+            'softwares_id'        => $software_id,
+            'softwarelicenses_id' => $parent->getID(),
+            'entities_id'         => $entities_id,
+        ]);
+        $deleted_child = $this->createItem(\SoftwareLicense::class, [
+            'name'                => 'Deleted child license',
+            'softwares_id'        => $software_id,
+            'softwarelicenses_id' => $parent->getID(),
+            'entities_id'         => $entities_id,
+        ]);
+        $this->assertTrue($deleted_child->delete(['id' => $deleted_child->getID()]));
+
+        ob_start();
+        $parent->showChildren();
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Active child license', $output);
+        $this->assertStringNotContainsString('Deleted child license', $output);
+
+        // The tab count must match the listed children
+        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $this->assertStringContainsString(
+            'data-testid="tab-count-badge">1<',
+            (new \SoftwareLicense())->getTabNameForItem($parent)
+        );
+    }
 }

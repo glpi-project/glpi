@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 
 use function Safe\preg_match;
@@ -160,6 +161,8 @@ class QueuedNotification extends CommonDBTM
     #[Override]
     public function prepareInputForAdd($input)
     {
+        $input = $this->prepareInput($input);
+
         if (empty($input['create_time'])) {
             $input['create_time'] = $_SESSION["glpi_currenttime"];
         }
@@ -194,6 +197,39 @@ class QueuedNotification extends CommonDBTM
         // Force items_id to integer
         if (empty($input['items_id'])) {
             $input['items_id'] = 0;
+        }
+
+        return $input;
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->prepareInput($input);
+
+        return $input;
+    }
+
+    /**
+     * @param array<mixed> $input
+     * @return array<mixed>
+     */
+    private function prepareInput(array $input): array
+    {
+        // Encrypt sensitive notifications body
+        $itemtype = (string) ($input['itemtype'] ?? null);
+        if (
+            is_a($itemtype, CommonGLPI::class, true)
+            && ($target = NotificationTarget::getInstanceByType($itemtype)) instanceof NotificationTarget
+            && !$target->canNotificationContentBeDisclosed((string) ($input['event'] ?? null))
+        ) {
+            $glpi_key = new GLPIKey();
+            foreach (['body_text', 'body_html'] as $field) {
+                if (!empty($input[$field])) {
+                    $input[$field] = $glpi_key->encrypt($input[$field]);
+                }
+            }
+            $input['is_body_encrypted'] = true;
         }
 
         return $input;
@@ -323,7 +359,6 @@ class QueuedNotification extends CommonDBTM
             'field'              => 'body_html',
             'name'               => __('Email HTML body'),
             'datatype'           => 'specific',
-            'nosearch'           => true, // can contain sensitive data, fine-grain filtering would be too complex
             'additionalfields'   => ['itemtype', 'event'],
             'massiveaction'      => false,
         ];
@@ -334,7 +369,6 @@ class QueuedNotification extends CommonDBTM
             'field'              => 'body_text',
             'name'               => __('Email text body'),
             'datatype'           => 'specific',
-            'nosearch'           => true, // can contain sensitive data, fine-grain filtering would be too complex
             'additionalfields'   => ['itemtype', 'event'],
             'massiveaction'      => false,
         ];
@@ -572,7 +606,9 @@ class QueuedNotification extends CommonDBTM
                 'mode'         => 'TOFILL',
                 'send_time'    => ['<=', $send_time],
             ] +  $extra_where,
-            'ORDER'  => 'send_time ASC',
+            // `id` breaks ties so notifications queued in the same second are
+            // still sent in the order they were created (oldest first).
+            'ORDER'  => ['send_time ASC', 'id ASC'],
             'START'  => 0,
             'LIMIT'  => $limit,
         ];
@@ -678,7 +714,7 @@ class QueuedNotification extends CommonDBTM
                 self::getTable(),
                 [
                     'is_deleted'   => 1,
-                    new QueryExpression(QueryFunction::unixTimestamp('send_time') . ' < ' . $DB::quoteValue($send_time)),
+                    new QueryExpression(QueryFunction::unixTimestamp(new QueryIdentifier('send_time')) . ' < ' . $DB::quoteValue($send_time)),
                 ]
             );
             $vol = $DB->getAffectedRows();
@@ -714,7 +750,7 @@ class QueuedNotification extends CommonDBTM
                     'is_deleted'   => 0,
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs
+                        QueryFunction::unixTimestamp(new QueryIdentifier('send_time')) . ' + ' . $secs
                             . ' < ' . QueryFunction::unixTimestamp()
                     ),
                 ]

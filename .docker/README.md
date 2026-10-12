@@ -7,6 +7,23 @@ from the GLPI root directory.
 
 You can customize the docker services by creating a `docker-compose.override.yaml` file in the GLPI root directory.
 
+### Podman (rootless)
+
+If you use rootless [Podman](https://podman.io/) instead of Docker, you will likely hit two issues:
+
+- Apache fails to bind to port 80 in the container (`Permission denied: AH00072: make_sock`)
+- Files written by the container (sessions, logs, plugin caches, etc.) fail with `Permission denied` on the host
+
+Both can be fixed by adding `userns_mode: "keep-id"` to the `app` service in your `docker-compose.override.yaml`, which tells Podman to map the container's uid/gid to your real host uid/gid instead of a subordinate range.
+
+```yaml
+services:
+  app:
+    userns_mode: "keep-id"
+```
+
+> **Note:** `userns_mode: keep-id` is a Podman-specific value and is not understood by Docker. Only set it in your local, untracked `docker-compose.override.yaml`.
+
 ### HTTP server
 
 By default, the HTTP port is published to on the `8080` port on the host machine.
@@ -18,6 +35,17 @@ services:
     ports: !override
       - "9000:80"
 ```
+
+### HTTPS
+
+GLPI is also served on HTTPS, on the `8443` port, with a self-signed certificate generated when
+building the image (valid for `localhost` and `127.0.0.1`). Your browser will warn you about it
+on first access.
+
+On this virtual host, the `session.cookie_secure` PHP directive is enabled, the session cookie is
+therefore not shared with the HTTP virtual host.
+
+If your containers were built before this feature, rebuild them with `docker compose up -d --build`.
 
 ### PHP version
 
@@ -51,6 +79,7 @@ services:
 
 By default, the following ports are exposed:
  - `8080` for the GLPI web server,
+ - `8443` for the GLPI web server on HTTPS (self-signed certificate),
  - `8025` for the Mailpit web server,
  - `8090` for the DBGate web server,
  - `9637` for the webpack dev server.

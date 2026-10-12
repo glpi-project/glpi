@@ -512,8 +512,8 @@ class NotificationTemplate extends CommonDBTM
                             $condition_value = __($condition_value);
                         }
 
-                        // Compare data value and condition value
-                        $condition_ok = $condition_value == $data_value;
+                        $condition_ok = html_entity_decode($condition_value, ENT_QUOTES)
+                            == html_entity_decode($data_value, ENT_QUOTES);
                     }
                 }
 

@@ -51,7 +51,7 @@ use function Safe\json_decode;
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface, PredefinedValueValidationInterface
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
@@ -150,6 +150,41 @@ TWIG;
     }
 
     #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        $uuids = array_filter(
+            array_map('trim', explode(',', $value)),
+            fn($uuid) => $uuid !== ''
+        );
+
+        if ($uuids === []) {
+            return null;
+        }
+
+        return implode(',', $uuids);
+    }
+
+    #[Override]
+    public function isValidPredefinedValue(string $value, Question $question): bool
+    {
+        // A question that only accepts a single option can not decide which
+        // value to keep, the whole parameter is therefore rejected.
+        return $this->allowsMultipleDefaultValues($question)
+            || count(explode(',', $value)) === 1;
+    }
+
+    /**
+     * Check if the question allows several options to be selected by default
+     *
+     * @param ?Question $question
+     * @return bool
+     */
+    public function allowsMultipleDefaultValues(?Question $question): bool
+    {
+        return true;
+    }
+
+    #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
         if (is_array($value)) {
@@ -203,8 +238,8 @@ TWIG;
             return [];
         }
 
-        $options = json_decode($rawData['values']);
-        if (empty($options)) {
+        $options = $this->convertExtraData($rawData)[QuestionTypeSelectableExtraDataConfig::OPTIONS] ?? [];
+        if (!is_array($options) || $options === []) {
             return [];
         }
 
@@ -222,8 +257,17 @@ TWIG;
             $default_values = [$rawData['default_values']];
         }
 
-        // Return the indexes of the default values
-        return array_map(fn($value) => array_search($value, $options) + 1, $default_values);
+        // Skip unmatched values: `array_search` returning false would
+        // otherwise wrongly resolve to the first option's index (false + 1).
+        $indexes = [];
+        foreach ($default_values as $value) {
+            $index = array_search($value, $options);
+            if ($index !== false) {
+                $indexes[] = (int) $index;
+            }
+        }
+
+        return $indexes;
     }
 
     #[Override]
@@ -288,7 +332,7 @@ TWIG;
         }
 
         /** @var ?QuestionTypeSelectableExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
         if ($config === null) {
             return [];
         }
@@ -397,6 +441,16 @@ TWIG;
                 >
                 <button
                     type="button"
+                    class="btn btn-sm btn-action px-1 text-nowrap {{ value ? '' : 'd-none' }}"
+                    data-glpi-form-editor-question-extra-details
+                    data-glpi-form-editor-question-option-copy-uuid
+                    data-glpi-clipboard-text="{{ uuid }}"
+                >
+                    <i class="ti ti-copy me-1" aria-hidden="true"></i>
+                    <span>{{ translations.copy_uuid }}</span>
+                </button>
+                <button
+                    type="button"
                     class="btn btn-sm btn-icon btn-ghost-secondary {{ value ? '' : 'd-none' }}"
                     aria-label="{{ translations.remove_option }}"
                     data-glpi-form-editor-question-extra-details
@@ -450,6 +504,7 @@ TWIG;
                 'remove_option'     => __('Remove option'),
                 'selectable_option' => __('Selectable option'),
                 'enter_option'      => __('Enter an option'),
+                'copy_uuid'         => __('Copy UUID'),
             ],
         ]);
     }

@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -916,6 +917,36 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $it = $this->it->execute(['FROM' => 'foo', 'GROUP' => ['id', 'name']]);
         $this->assertSame('SELECT * FROM `foo` GROUP BY `id`, `name`', $it->getSql());
+
+        // the values bound by a grouped expression must be collected too, otherwise the
+        // statement ends up with more placeholders than values
+        $it = $this->it->execute([
+            'FROM'    => 'foo',
+            'GROUPBY' => [new QueryExpression('CASE WHEN `bar` = ? THEN 1 END', values: [42])],
+        ]);
+        $this->assertSame('SELECT * FROM `foo` GROUP BY CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
+        $this->assertEquals([42], $it->getValues());
+
+        $it = $this->it->execute([
+            'FROM'    => 'foo',
+            'GROUPBY' => ['id', new QueryExpression('CASE WHEN `bar` = ? THEN 1 END', values: [42])],
+        ]);
+        $this->assertSame('SELECT * FROM `foo` GROUP BY `id`, CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
+        $this->assertEquals([42], $it->getValues());
+
+        $it = $this->it->execute([
+            'FROM'    => 'foo',
+            'GROUPBY' => new QueryExpression('CASE WHEN `bar` = ? THEN 1 END', values: [7]),
+        ]);
+        $this->assertSame('SELECT * FROM `foo` GROUP BY CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
+        $this->assertEquals([7], $it->getValues());
+
+        $it = $this->it->execute([
+            'FROM'    => 'foo',
+            'GROUPBY' => ['id', new QueryExpression('CASE WHEN `bar` = ? THEN 1 END', values: [42], alias: 'broken')],
+        ]);
+        $this->assertSame('SELECT * FROM `foo` GROUP BY `id`, CASE WHEN `bar` = ? THEN 1 END', $it->getSql());
+        $this->assertEquals([42], $it->getValues());
     }
 
     public function testNoFieldGroup()
@@ -1949,5 +1980,36 @@ class DBmysqlIteratorTest extends DbTestCase
         ]);
         $this->assertSame($expected_sql, $it->getSql());
         $this->assertEquals($expected_values, $it->getValues());
+    }
+
+    public function testExecuteWithQuestionMarkInLiteral(): void
+    {
+        global $DB;
+
+        $it = $DB->request([
+            'SELECT' => [new QueryExpression("'a?b'", 'literal')],
+            'FROM'   => 'glpi_configs',
+            'WHERE'  => ['context' => 'core', 'name' => 'version'],
+        ]);
+        $this->assertSame(['literal' => 'a?b'], $it->current());
+    }
+
+    public static function placeholderMismatchProvider(): iterable
+    {
+        yield 'placeholder only' => ['`name` = ?'];
+        yield 'placeholder and a literal containing a question mark' => ["`name` = ? OR `name` = 'a?b'"];
+    }
+
+    #[DataProvider('placeholderMismatchProvider')]
+    public function testExecuteWithPlaceholderValueMismatch(string $criterion): void
+    {
+        global $DB;
+
+        $this->expectException(StatementException::class);
+        $this->expectExceptionMessage('Number of placeholders (1) in SQL statement does not match number of values (0).');
+        $DB->request([
+            'FROM'  => 'glpi_configs',
+            'WHERE' => [new QueryExpression($criterion)],
+        ]);
     }
 }

@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Security\ReAuth;
 
 use Auth;
-use AuthLDAP;
 use Glpi\Security\ReAuth\PasswordReAuthStrategy;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
@@ -54,6 +53,7 @@ class PasswordReAuthStrategyTest extends DbTestCase
         // --- arrange ---
         $strategy = new PasswordReAuthStrategy();
         $users_id = getItemByTypeName(User::class, TU_USER, true);
+        $_SESSION['glpiauthtype'] = Auth::DB_GLPI;
 
         // --- act + assert ---
         $this->assertTrue($strategy->isAvailable($users_id));
@@ -70,23 +70,27 @@ class PasswordReAuthStrategyTest extends DbTestCase
         $this->assertFalse((new PasswordReAuthStrategy())->isAvailable($non_existing_user_id));
     }
 
-    /** Returns false when the user is authenticated through an external LDAP directory. */
-    public function testIsAvailableIsFalseForNonDbGlpiAuthType(): void
+    public static function nonDbGlpiSessionProvider(): iterable
     {
-        global $DB;
+        yield 'unknown' => [Auth::NOT_YET_AUTHENTIFIED];
+        yield 'mail server' => [Auth::MAIL];
+        yield 'ldap directory' => [Auth::LDAP];
+        yield 'sso' => [Auth::EXTERNAL];
+        yield 'cas' => [Auth::CAS];
+        yield 'x509' => [Auth::X509];
+        yield 'api token' => [Auth::API];
+        yield 'remember me cookie' => [Auth::COOKIE];
+        yield 'oauth' => [Auth::OAUTH];
+    }
 
-        // --- arrange : create a real LDAP auth entry and switch the test user to it ---
+    /** Returns false when the session was not opened on the GLPI database, even for a local account. */
+    #[DataProvider('nonDbGlpiSessionProvider')]
+    public function testIsAvailableIsFalseForNonDbGlpiSession(int $session_authtype): void
+    {
+        // --- arrange : local account with a password, session opened by another method ---
         $strategy = new PasswordReAuthStrategy();
         $users_id = getItemByTypeName(User::class, TU_USER, true);
-        $ldap = $this->createItem(AuthLDAP::class, [
-            'name'   => $this->getUniqueString(),
-            'host'   => '127.0.0.1',
-            'basedn' => 'dc=example,dc=com',
-        ]);
-        $DB->update('glpi_users', [
-            'authtype' => Auth::LDAP,
-            'auths_id' => $ldap->getID(),
-        ], ['id' => $users_id]);
+        $_SESSION['glpiauthtype'] = $session_authtype;
 
         // --- act + assert ---
         $this->assertFalse($strategy->isAvailable($users_id));
@@ -101,6 +105,7 @@ class PasswordReAuthStrategyTest extends DbTestCase
         $strategy = new PasswordReAuthStrategy();
         $users_id = getItemByTypeName(User::class, TU_USER, true);
         $DB->update('glpi_users', ['password' => ''], ['id' => $users_id]);
+        $_SESSION['glpiauthtype'] = Auth::DB_GLPI;
 
         // --- act + assert ---
         $this->assertFalse($strategy->isAvailable($users_id));

@@ -60,13 +60,13 @@ export class IllustrationPickerPage extends GlpiPage
     {
         await this.select_illustration_button.click();
         await expect(this.picker_modal).toBeVisible();
-        await expect(this.picker_modal).toHaveAttribute('data-cy-shown', 'true');
+        await expect(this.picker_modal).toHaveAttribute('data-glpi-modal-shown', 'true');
     }
 
     public async doSelectIllustration(name: string): Promise<void>
     {
         await this.picker_modal.getByRole('button', { name }).click();
-        await expect(this.picker_modal).toHaveAttribute('data-cy-shown', 'false');
+        await expect(this.picker_modal).toHaveAttribute('data-glpi-modal-shown', 'false');
     }
 
     public async doGoToPage(page_number: number): Promise<void>
@@ -87,7 +87,7 @@ export class IllustrationPickerPage extends GlpiPage
         await this.picker_modal.getByRole('tab', { name: 'Upload your own illustration' }).click();
         await this.doAddFileToUploadArea(file, this.picker_modal);
         await this.picker_modal.getByRole('button', { name: 'Use selected file' }).click();
-        await expect(this.picker_modal).toHaveAttribute('data-cy-shown', 'false');
+        await expect(this.picker_modal).toHaveAttribute('data-glpi-modal-shown', 'false');
     }
 
     /**

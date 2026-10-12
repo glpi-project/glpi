@@ -41,7 +41,7 @@ use Glpi\Csv\PlanningCsv;
 Session::checkRight(Planning::$rightname, READ);
 
 $users_id = null;
-$groups_id = (isset($_GET["gID"]) ? (int) $_GET['uID'] : 0);
+$groups_id = (isset($_GET["gID"]) ? (int) $_GET['gID'] : 0);
 $limititemtype = ($_GET['limititemtype'] ?? '');
 
 if (!isset($_GET["uID"])) {

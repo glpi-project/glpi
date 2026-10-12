@@ -84,7 +84,6 @@ dev_nodes=(
     "docker-compose.yaml"
     "eslint.config.mjs"
     "js"
-    "jsconfig.json"
     "locales/glpi.pot"
     "Makefile"
     "node_modules"
@@ -94,7 +93,9 @@ dev_nodes=(
     "phpstan.neon.dist"
     "phpunit.xml.dist"
     "playwright.config.ts"
+    "playwright.isolated.config.ts"
     "PluginsMakefile.mk"
+    "PluginsPhpCsFixer.php"
     "PluginsRector.php"
     "psalm.xml"
     "rector.php"
@@ -104,6 +105,7 @@ dev_nodes=(
     "tsconfig.json"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
+    "vitest.config.ts"
 )
 for node in "${dev_nodes[@]}"
 do

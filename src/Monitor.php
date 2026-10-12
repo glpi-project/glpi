@@ -368,6 +368,9 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
             'field'              => 'size',
             'name'               => __('Size'),
             'datatype'           => 'decimal',
+            'min'                => 0,
+            'max'                => 999.99,
+            'step'               => 0.01,
         ];
 
         $tab[] = [

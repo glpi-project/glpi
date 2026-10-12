@@ -59,6 +59,11 @@
    }
 }
 
+#page:focus-visible {
+   outline: 2px solid var(--tblr-primary-fg);
+   outline-offset: 2px;
+}
+
 /* Apply legacy styles to main content (#page) and elements that are inserted directly in body (modals, tooltips, ...) */
 #page, .qtip, .modal .modal-body {
    img {
@@ -872,7 +877,7 @@
       }
    }
 
-   .fa {
+   .fa, .ti {
       &.bookmark_record, &.reset-search {
          font-size: 1.5em;
          color: #ccc !important;

@@ -31,7 +31,7 @@
  */
 
 import { expect } from '@playwright/test';
-import { authenticator } from 'otplib';
+import { generateSync } from 'otplib';
 import { test } from '../../fixtures/glpi_fixture';
 import { LoginPage } from '../../pages/LoginPage';
 import { Profiles } from '../../utils/Profiles';
@@ -94,7 +94,7 @@ test.describe('Anonymous help link', () => {
 
         // Complete the setup so 2FA is required on the next login.
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
-        await login_page.doFillTotpCode(authenticator.generate(secret));
+        await login_page.doFillTotpCode(generateSync({ secret }));
         await expect(anonymousPage).toHaveURL(/\/MFA\/ShowBackupCodes/);
         await anonymousPage.getByRole('button', { name: 'Continue' }).click();
 

@@ -40,6 +40,22 @@
     {{ fields.dropdownField('WebhookCategory', 'webhookcategories_id', item.fields['webhookcategories_id'], 'WebhookCategory'|itemtype_name) }}
 
     {{ fields.dropdownArrayField(
+        'pinned_version',
+        item.fields['pinned_version'],
+        item.getPinnableAPIVersions(),
+        __('API version'),
+        field_options|merge({
+            helper: __('The payload is built using this version of the API. Existing integrations keep working as long as the webhook stays on the version they were built for.'),
+        })
+    ) }}
+
+    {% if not item.isNewItem() and item.isPinnedAPIVersionDeprecated() %}
+        <twig:Alert:Warning
+            :heading="__('This webhook is pinned to a deprecated API version. Move it to a supported version before it is removed.')"
+        />
+    {% endif %}
+
+    {{ fields.dropdownArrayField(
         'itemtype',
         item.fields['itemtype'],
         item.getItemtypesDropdownValues(),

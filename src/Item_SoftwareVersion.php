@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QueryUnion;
 
 class Item_SoftwareVersion extends CommonDBRelation
@@ -101,6 +102,15 @@ class Item_SoftwareVersion extends CommonDBRelation
             'field'              => 'itemtype',
             'name'               => _x('software', 'Request source'),
             'datatype'           => 'dropdown',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => '6',
+            'table'              => static::getTable(),
+            'field'              => 'date_install',
+            'name'               => __('Installation date'),
+            'datatype'           => 'date',
         ];
 
         return $tab;
@@ -130,6 +140,21 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
+        if (
+            isset($input['itemtype'], $input['items_id'], $input['softwareversions_id'])
+            && countElementsInTable(
+                static::getTable(),
+                [
+                    'itemtype'            => $input['itemtype'],
+                    'items_id'            => $input['items_id'],
+                    'softwareversions_id' => $input['softwareversions_id'],
+                ]
+            ) > 0
+        ) {
+            Session::addMessageAfterRedirect(__s('This software version is already installed on this item.'), false, ERROR);
+            return false;
+        }
+
         $input = $this->prepareInputForAddAndUpdate($input, true);
         if ($input === false) {
             return false;
@@ -212,14 +237,16 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $itemtoadd = new Item_SoftwareVersion();
                 if (isset($_POST['peer_softwareversions_id'])) {
                     foreach ($ids as $id) {
-                        if ($item->can($id, UPDATE)) {
+                        $add_input = [
+                            'items_id'              => $id,
+                            'itemtype'              => $item::class,
+                            'softwareversions_id'   => $_POST['peer_softwareversions_id'],
+                        ];
+
+                        if ($itemtoadd->can(-1, CREATE, $add_input)) {
                             //Process rules
                             if (
-                                $itemtoadd->add([
-                                    'items_id'              => $id,
-                                    'itemtype'              => $item::class,
-                                    'softwareversions_id'   => $_POST['peer_softwareversions_id'],
-                                ])
+                                $itemtoadd->add($add_input)
                             ) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
@@ -1278,7 +1305,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                         [
                             'AND' => [
                                 'glpi_softwarelicenses.softwareversions_id_use' => 0,
-                                'glpi_softwarelicenses.softwareversions_id_buy' => new QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
+                                'glpi_softwarelicenses.softwareversions_id_buy' => new QueryIdentifier('glpi_softwareversions.id'),
                             ],
                         ],
                     ],

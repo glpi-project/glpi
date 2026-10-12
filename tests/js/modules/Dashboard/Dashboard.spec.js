@@ -94,6 +94,16 @@ describe('Dashboard', () => {
         expect(window.GLPIDashboard).toBeDefined();
     });
 
+    test('current_name reads the actually selected dashboard from the DOM on init', () => {
+        // The select's selected option ('current_dashboard') differs from the PHP-provided
+        // 'current' option, reproducing the case where the two can get out of sync on first load.
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'stale_dashboard_from_php',
+        });
+        expect(dashboard.current_name).toBe('current_dashboard');
+    });
+
     test('saveMarkdown', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);

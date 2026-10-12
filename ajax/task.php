@@ -37,6 +37,7 @@
  * @since 9.1
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 use function Safe\json_encode;
@@ -84,6 +85,9 @@ if ($parents_itemtype !== '') {
                     $parents_id
                 )
             );
+        }
+        if (!$parent->can($parents_id, READ)) {
+            throw new AccessDeniedHttpException();
         }
         $template->fields['content'] = $template->getRenderedContent($parent);
     }

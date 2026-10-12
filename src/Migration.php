@@ -36,6 +36,7 @@
 use Glpi\DBAL\Parts\BasePart;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
 
@@ -892,7 +893,7 @@ class Migration
                 foreach ($iterator as $data) {
                     $max_rank = $this->db->request([
                         'SELECT' => [
-                            QueryFunction::max('rank', 'max_rank'),
+                            QueryFunction::max(new QueryIdentifier('rank'), 'max_rank'),
                         ],
                         'FROM'   => 'glpi_displaypreferences',
                         'WHERE'  => [
@@ -1670,7 +1671,7 @@ class Migration
                                     'old' => 'itemtype',
                                     [
                                         'AND' => [
-                                            'new.users_id' => new QueryExpression($this->db::quoteName('old.users_id')),
+                                            'new.users_id' => new QueryIdentifier('old.users_id'),
                                             'new.itemtype' => $itemtype,
                                             'new.num' => $new_search_opt,
                                             'old.num' => $old_search_opt,

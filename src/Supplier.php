@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\AssetImage;
 use Glpi\Features\Clonable;
 use Glpi\Toolbox\URL;
@@ -295,7 +296,7 @@ class Supplier extends CommonDBTM
             'forcegroupby'       => true,
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
-            'computation'        => QueryFunction::concat(["TABLE.{$name1}", new QueryExpression($DB::quoteValue(' ')), "TABLE.{$name2}"]),
+            'computation'        => QueryFunction::concat([new QueryIdentifier("TABLE.{$name1}"), new QueryExpression($DB::quoteValue(' ')), new QueryIdentifier("TABLE.{$name2}")]),
             'computationgroupby' => true,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -455,16 +456,19 @@ class Supplier extends CommonDBTM
             $linkfield = 'consumableitems_id';
         }
 
-        if ($itemtype === Item_DeviceControl::class) {
-            $criteria['INNER JOIN']['glpi_devicecontrols'] = [
+        if (is_a($itemtype, Item_Devices::class, true) && !$item->isField($itemtype::getNameField())) {
+            $devicetype  = $itemtype::getDeviceType();
+            $devicetable = getTableForItemType($devicetype);
+
+            $criteria['INNER JOIN'][$devicetable] = [
                 'ON' => [
-                    'glpi_items_devicecontrols'   => 'devicecontrols_id',
-                    'glpi_devicecontrols'         => 'id',
+                    $itemtable   => $itemtype::$items_id_2,
+                    $devicetable => 'id',
                 ],
             ];
 
-            $linktype = 'DeviceControl';
-            $linkfield = 'devicecontrols_id';
+            $linktype  = $devicetype;
+            $linkfield = $itemtype::$items_id_2;
         }
 
         $linktable = getTableForItemType($linktype);

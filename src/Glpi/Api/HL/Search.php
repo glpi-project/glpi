@@ -53,6 +53,7 @@ use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profiler;
@@ -94,6 +95,14 @@ final class Search
     private DBmysql $db_read;
     /** @var array<string, string> */
     private array $sql_field_cache = [];
+
+    /**
+     * Request parameter holding a mandatory RSQL scope. It is set by the controllers to restrict a
+     * sub-resource listing (e.g. the items of a given rack) and is parsed on its own, then ANDed as
+     * a separate criteria, so a user `filter` cannot escape it through operator precedence. Being
+     * ANDed, it can only ever narrow the results, so an end user setting it cannot widen their access.
+     */
+    public const MANDATORY_FILTER_PARAM = '_mandatory_filter';
 
     public function __construct(array $schema, array $request_params)
     {
@@ -228,7 +237,7 @@ final class Search
 
 
                                     $parent_keys[] = QueryFunction::ifnull(
-                                        expression: $primary_key,
+                                        expression: new QueryIdentifier($primary_key),
                                         value: new QueryExpression('0x0')
                                     );
                                     $current_join_parent = $current_join_def['join_parent'] ?? null;
@@ -236,16 +245,16 @@ final class Search
                                 }
                                 $parent_keys = array_reverse($parent_keys);
                                 $expression = QueryFunction::groupConcat(
-                                    expression: QueryFunction::concat([...$parent_keys, QueryFunction::ifnull($sql_field, new QueryExpression('0x0'))]),
+                                    expression: QueryFunction::concat([...$parent_keys, QueryFunction::ifnull(new QueryIdentifier($sql_field), new QueryExpression('0x0'))]),
                                     separator: new QueryExpression(chr(0x1D)),
                                 );
                             } else {
                                 // Probably a nested property
-                                $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
+                                $expression = QueryFunction::ifnull(new QueryIdentifier($sql_field), new QueryExpression('0x0'));
                                 $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
                             }
                         } else {
-                            $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
+                            $expression = QueryFunction::ifnull(new QueryIdentifier($sql_field), new QueryExpression('0x0'));
                             $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
                         }
                     }
@@ -312,6 +321,9 @@ final class Search
                 // recursively inject the join alias into the condition keys in the cases where they don't contain a '.'
                 $fn_update_keys = static function ($condition) use (&$fn_update_keys, $join_alias) {
                     $new_condition = [];
+                    if (is_callable($condition)) {
+                        $condition = $condition();
+                    }
                     foreach ($condition as $key => $value) {
                         if (is_array($value)) {
                             $value = $fn_update_keys($value);
@@ -405,6 +417,21 @@ final class Search
      */
     public function addRSQLCriteria(array &$criteria, ?callable $schema_resolver = null): void
     {
+        $where = [];
+        $having = [];
+
+        // Wrap each parsed filter in its own parentheses before ANDing it in. The RSQL parser
+        // only parenthesizes individual comparisons, not the whole expression, so a top-level OR
+        // would otherwise escape anything ANDed after it (a mandatory scope, the visibility
+        // restriction, ...). A trivial always-true expression ("1") is skipped.
+        $add_expression = static function (array &$list, QueryExpression $expression): void {
+            $sql = $expression->getValue();
+            if ($sql === '' || $sql === '1') {
+                return;
+            }
+            $list[] = new QueryExpression('(' . $sql . ')', values: $expression->getParams());
+        };
+
         if (!empty($this->context->getRequestParameter('filter'))) {
             $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->context->getRequestParameter('filter')));
             $unknown_properties = array_keys(
@@ -427,8 +454,24 @@ final class Search
                 return;
             }
 
-            $criteria['WHERE'] = [$filter_result->getSQLWhereCriteria()];
-            $criteria['HAVING'] = [$filter_result->getSQLHavingCriteria()];
+            $add_expression($where, $filter_result->getSQLWhereCriteria());
+            $add_expression($having, $filter_result->getSQLHavingCriteria());
+        }
+
+        $mandatory_filter = $this->context->getRequestParameter(self::MANDATORY_FILTER_PARAM);
+        if (!empty($mandatory_filter)) {
+            // The mandatory scope is parsed on its own and ANDed as a separate (parenthesized)
+            // element so the user `filter` cannot widen it back through operator precedence.
+            $scope_result = $this->rsql_parser->parse(Lexer::tokenize($mandatory_filter));
+            $add_expression($where, $scope_result->getSQLWhereCriteria());
+            $add_expression($having, $scope_result->getSQLHavingCriteria());
+        }
+
+        if ($where !== []) {
+            $criteria['WHERE'] = $where;
+        }
+        if ($having !== []) {
+            $criteria['HAVING'] = $having;
         }
     }
 
@@ -703,9 +746,9 @@ final class Search
                     ];
                 }
                 if ($this->context->isUnionSearchMode()) {
-                    $count_select = [QueryFunction::count(QueryFunction::concat(['_itemtype', new QueryExpression('0x1E'), "$table_alias.id",]), true, 'count')];
+                    $count_select = [QueryFunction::count(QueryFunction::concat([new QueryIdentifier('_itemtype'), new QueryExpression('0x1E'), new QueryIdentifier("$table_alias.id"),]), true, 'count')];
                 } else {
-                    $count_select = [QueryFunction::count("$table_alias.id", true, 'count')];
+                    $count_select = [QueryFunction::count(new QueryIdentifier("$table_alias.id"), true, 'count')];
                 }
                 $criteria['SELECT'] = $count_select;
             }

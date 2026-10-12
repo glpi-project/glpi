@@ -331,7 +331,10 @@ class NetworkPort extends CommonDBChild
     public function post_clone($source, $history)
     {
         $instantiation = $source->getInstantiation();
-        if ($instantiation !== false) {
+        // `getInstantiation()` also returns an empty instance when the source port has no
+        // instantiation row; there is nothing to clone in that case, and its blank fields
+        // would not fit the instantiation table columns.
+        if ($instantiation !== false && !$instantiation->isNewItem()) {
             $instantiation->fields[$instantiation->getIndexName()] = $this->getID();
             $instantiation->clone([], $history);
         }
@@ -957,6 +960,12 @@ class NetworkPort extends CommonDBChild
                     switch ($dpref) {
                         case 6:
                             $output .= htmlescape(Dropdown::getYesNo($port['is_deleted']));
+                            break;
+                        case 9:
+                            $socket = new Socket();
+                            if ($socket->getFromDBByCrit(['networkports_id' => $port['id']])) {
+                                $output .= $socket->getLink();
+                            }
                             break;
                         case 1:
                             if ($agg === true) {
@@ -1584,15 +1593,17 @@ class NetworkPort extends CommonDBChild
             'massiveaction'      => false,
         ];
 
-        if ($this->isField('sockets_id')) {
-            $tab[] = [
-                'id'                 => '9',
-                'table'              => 'glpi_sockets',
-                'field'              => 'name',
-                'name'               => Socket::getTypeName(1),
-                'datatype'           => 'dropdown',
-            ];
-        }
+        $tab[] = [
+            'id'                 => '9',
+            'table'              => 'glpi_sockets',
+            'field'              => 'name',
+            'name'               => Socket::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'  => 'child',
+                'linkfield' => 'networkports_id',
+            ],
+        ];
 
         $tab[] = [
             'id'                 => '16',

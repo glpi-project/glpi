@@ -31,8 +31,7 @@
  #}
 
 {#
- # The aside tree body. Rendered inside the aside on page load, and on its
- # own by `AsideSearchController` to replace the tree with search results.
+ # The aside tree body, rendered inside the aside on page load.
  #}
 {% import "pages/tools/kb/_article_row.html.twig" as macros %}
 {{ macros.render_tree(tree.getArticles, can_create, show_actions) }}

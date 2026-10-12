@@ -37,6 +37,8 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -57,6 +59,8 @@ final class AsideActionsController extends AbstractController
         ],
         methods: 'GET',
     )]
+    // Also served to the helpdesk FAQ aside, which lists the same articles.
+    #[SecurityStrategy(Firewall::STRATEGY_FAQ_ACCESS)]
     public function __invoke(int $id): Response
     {
         $item = new KnowbaseItem();
@@ -69,7 +73,7 @@ final class AsideActionsController extends AbstractController
         }
 
         return $this->render('pages/tools/kb/aside_actions.html.twig', [
-            'actions' => $item->getAsideActions(),
+            'actions' => $item->getAsideActions(with_move: true),
         ]);
     }
 }

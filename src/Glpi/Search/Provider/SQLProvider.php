@@ -48,6 +48,9 @@ use CommonITILValidation;
 use Config;
 use Consumable;
 use CronTask;
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeZone;
 use DBConnection;
 use DBmysqlIterator;
 use Document;
@@ -65,6 +68,7 @@ use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\Parts\Where;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Features\AssignableItemInterface;
@@ -275,7 +279,7 @@ final class SQLProvider implements SearchProviderInterface
 
         $tocompute      = "$table$addtable.$field";
         $tocomputeid    = "$table$addtable.id";
-        $tocomputetrans = QueryFunction::ifnull("{$table}{$addtable}_trans_{$field}.value", new QueryExpression($DB::quoteValue(Search::NULLVALUE)));
+        $tocomputetrans = QueryFunction::ifnull(new QueryIdentifier("{$table}{$addtable}_trans_{$field}.value"), new QueryExpression($DB::quoteValue(Search::NULLVALUE)));
 
         $ADDITONALFIELDS = [];
         if (
@@ -294,11 +298,11 @@ final class SQLProvider implements SearchProviderInterface
                         expression: QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
                                 QueryFunction::ifnull(
-                                    expression: $additionalfield_field,
+                                    expression: new QueryIdentifier($additionalfield_field),
                                     value: new QueryExpression($DB::quoteValue(Search::NULLVALUE))
                                 ),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                $tocomputeid,
+                                new QueryIdentifier($tocomputeid),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -332,9 +336,9 @@ final class SQLProvider implements SearchProviderInterface
                             $ticket_user_table = $before_join['table'] . "_" . Search::computeComplexJoinID($before_join['joinparams']) . $addmeta;
                             $addaltemail = QueryFunction::groupConcat(
                                 expression: QueryFunction::concat([
-                                    "{$ticket_user_table}.users_id",
+                                    new QueryIdentifier("{$ticket_user_table}.users_id"),
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    "{$ticket_user_table}.alternative_email",
+                                    new QueryIdentifier("{$ticket_user_table}.alternative_email"),
                                 ]),
                                 separator: Search::LONGSEP,
                                 distinct: true,
@@ -343,7 +347,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $SELECT = [
                             QueryFunction::groupConcat(
-                                expression: "{$table}{$addtable}.id",
+                                expression: new QueryIdentifier("{$table}{$addtable}.id"),
                                 separator: Search::LONGSEP,
                                 distinct: true,
                                 alias: $NAME
@@ -368,12 +372,12 @@ final class SQLProvider implements SearchProviderInterface
                 $_table_add_table = $table . ($meta ? $addtable2 : $addtable);
                 $SELECT = [
                     QueryFunction::floor(
-                        expression: new QueryExpression(QueryFunction::sum("{$_table_add_table}.{$field}") . ' * '
-                            . QueryFunction::count("{$_table_add_table}.id", true) . ' / '
-                            . QueryFunction::count("{$_table_add_table}.id")),
+                        expression: new QueryExpression(QueryFunction::sum(new QueryIdentifier("{$_table_add_table}.{$field}")) . ' * '
+                            . QueryFunction::count(new QueryIdentifier("{$_table_add_table}.id"), true) . ' / '
+                            . QueryFunction::count(new QueryIdentifier("{$_table_add_table}.id"))),
                         alias: $NAME
                     ),
-                    QueryFunction::min("{$_table_add_table}.{$field}", "{$NAME}_min"),
+                    QueryFunction::min(new QueryIdentifier("{$_table_add_table}.{$field}"), "{$NAME}_min"),
                 ];
                 return array_merge($SELECT, $ADDITONALFIELDS);
 
@@ -386,13 +390,13 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "{$table}{$addtable}.{$field}",
+                                new QueryIdentifier("{$table}{$addtable}.{$field}"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.entities_id",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.entities_id"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_recursive",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.is_recursive"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_dynamic",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.is_dynamic"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -412,13 +416,13 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "{$table}{$addtable}.completename",
+                                new QueryIdentifier("{$table}{$addtable}.completename"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.profiles_id",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.profiles_id"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_recursive",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.is_recursive"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.is_dynamic",
+                                new QueryIdentifier("glpi_profiles_users{$addtable2}.is_dynamic"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -434,11 +438,11 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "glpi_softwares.name",
+                                new QueryIdentifier("glpi_softwares.name"),
                                 new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable2}.{$field}",
+                                new QueryIdentifier("{$table}{$addtable2}.{$field}"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "{$table}{$addtable2}.id",
+                                new QueryIdentifier("{$table}{$addtable2}.id"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -455,11 +459,11 @@ final class SQLProvider implements SearchProviderInterface
                 $SELECT = [
                     QueryFunction::groupConcat(
                         expression: QueryFunction::concat([
-                            "{$_table}.name",
+                            new QueryIdentifier("{$_table}.name"),
                             new QueryExpression($DB::quoteValue(" - ")),
-                            "{$_table_add_table}.{$field}",
+                            new QueryIdentifier("{$_table_add_table}.{$field}"),
                             new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                            "{$_table_add_table}.id",
+                            new QueryIdentifier("{$_table_add_table}.id"),
                         ]),
                         separator: Search::LONGSEP,
                         distinct: true,
@@ -473,13 +477,13 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "glpi_softwares.name",
+                                new QueryIdentifier("glpi_softwares.name"),
                                 new QueryExpression($DB::quoteValue(" - ")),
-                                "glpi_softwareversions{$addtable}.name",
+                                new QueryIdentifier("glpi_softwareversions{$addtable}.name"),
                                 new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable2}.{$field}",
+                                new QueryIdentifier("{$table}{$addtable2}.{$field}"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "{$table}{$addtable2}.id",
+                                new QueryIdentifier("{$table}{$addtable2}.id"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -491,11 +495,11 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                "glpi_softwareversions.name",
+                                new QueryIdentifier("glpi_softwareversions.name"),
                                 new QueryExpression($DB::quoteValue(" - ")),
-                                "{$table}{$addtable}.{$field}",
+                                new QueryIdentifier("{$table}{$addtable}.{$field}"),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "{$table}{$addtable}.id",
+                                new QueryIdentifier("{$table}{$addtable}.id"),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -530,9 +534,9 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
+                                QueryFunction::ifnull(new QueryIdentifier($tocompute), new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                $tocomputeid,
+                                new QueryIdentifier($tocomputeid),
                             ]),
                             separator: Search::LONGSEP,
                             distinct: true,
@@ -580,7 +584,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     return array_merge([
                         QueryFunction::count(
-                            expression: "$table$addtable.$field",
+                            expression: new QueryIdentifier("$table$addtable.$field"),
                             distinct: true,
                             alias: $NAME
                         ),
@@ -597,7 +601,7 @@ final class SQLProvider implements SearchProviderInterface
                         return array_merge([
                             QueryFunction::groupConcat(
                                 expression: QueryFunction::dateAdd(
-                                    date: "{$table}{$addtable}.{$opt['datafields'][1]}",
+                                    date: new QueryIdentifier("{$table}{$addtable}.{$opt['datafields'][1]}"),
                                     interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus),
                                     interval_unit: $interval
                                 ),
@@ -609,7 +613,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     return array_merge([
                         QueryFunction::dateAdd(
-                            date: "{$table}{$addtable}.{$opt['datafields'][1]}",
+                            date: new QueryIdentifier("{$table}{$addtable}.{$opt['datafields'][1]}"),
                             interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus),
                             interval_unit: $interval,
                             alias: $NAME
@@ -624,7 +628,7 @@ final class SQLProvider implements SearchProviderInterface
                                 expression: QueryFunction::concat([
                                     QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
                                     new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                    $tocomputeid,
+                                    new QueryIdentifier($tocomputeid),
                                 ]),
                                 separator: Search::LONGSEP,
                                 distinct: true,
@@ -637,7 +641,7 @@ final class SQLProvider implements SearchProviderInterface
                                 expression: QueryFunction::concat([
                                     $tocompute,
                                     new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                    "{$table}{$addtable}.id",
+                                    new QueryIdentifier("{$table}{$addtable}.id"),
                                 ])->setParams($tocompute->getParams()),
                                 separator: Search::LONGSEP,
                                 distinct: true,
@@ -674,7 +678,7 @@ final class SQLProvider implements SearchProviderInterface
                     expression: QueryFunction::concat([
                         QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
                         new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                        $tocomputeid,
+                        new QueryIdentifier($tocomputeid),
                     ]),
                     separator: $DB::quoteValue(Search::LONGSEP),
                     distinct: true,
@@ -687,7 +691,7 @@ final class SQLProvider implements SearchProviderInterface
                     expression: QueryFunction::concat([
                         QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(Search::NULLVALUE))),
                         new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                        $tocomputeid,
+                        new QueryIdentifier($tocomputeid),
                     ]),
                     separator: Search::LONGSEP,
                     distinct: true,
@@ -1201,21 +1205,20 @@ final class SQLProvider implements SearchProviderInterface
         $is_fkey_composite_on_self = getTableNameForForeignKeyField($opt["linkfield"]) === $table
             && $opt["linkfield"] !== getForeignKeyFieldForTable($table);
         $orig_table = SearchEngine::getOrigTableName($itemtype);
+        $complexjoin = isset($opt['joinparams']) ? Search::computeComplexJoinID($opt['joinparams']) : '';
         if (
-            ($table !== 'asset_types')
-            && ($is_fkey_composite_on_self || $table !== $orig_table)
+            (
+                (($table !== 'asset_types') && ($is_fkey_composite_on_self || $table !== $orig_table))
+                || !empty($complexjoin)
+            )
             && ($opt["linkfield"] !== getForeignKeyFieldForTable($table))
         ) {
             $addtable = "_" . $opt["linkfield"];
             $table   .= $addtable;
         }
 
-        if (isset($opt['joinparams'])) {
-            $complexjoin = Search::computeComplexJoinID($opt['joinparams']);
-
-            if (!empty($complexjoin)) {
-                $table .= "_" . $complexjoin;
-            }
+        if (!empty($complexjoin)) {
+            $table .= "_" . $complexjoin;
         }
 
         $addmeta = "";
@@ -1898,10 +1901,19 @@ final class SQLProvider implements SearchProviderInterface
                         // Specific search for datetime
                         if (in_array($searchtype, ['equals', 'notequals'])) {
                             $val = preg_replace("/:00$/", '', $val);
-                            $val = '^' . $val;
                             if ($searchtype === 'notequals') {
                                 $nott = !$nott;
                             }
+
+                            // Search the range matching the value precision (e.g. the whole day for
+                            // `2024-07-28`), as a `LIKE` pattern would not use the column index.
+                            $boundaries = isset($opt["computation"])
+                                ? null // not supported on computed fields
+                                : self::getDateTimeRangeBoundaries((string) $val);
+                            if ($boundaries !== null) {
+                                return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
+                            }
+
                             return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
                         }
                     }
@@ -1919,7 +1931,7 @@ final class SQLProvider implements SearchProviderInterface
                         // FIXME Maybe address the existing fixme instead of bypassing it when the field is computed (uses a function)
                         // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = DBConnection::getDefaultCharset();
-                        $date_computation = QueryFunction::convert($date_computation, $default_charset);
+                        $date_computation = QueryFunction::convert(new QueryIdentifier($date_computation), $default_charset);
                     }
                     $search_unit = $opt['searchunit'] ?? 'MONTH';
                     if ($opt["datatype"] === "date_delay") {
@@ -1929,7 +1941,7 @@ final class SQLProvider implements SearchProviderInterface
                             $add_minus = '-' . $DB::quoteName($table . '.' . $opt["datafields"][3]);
                         }
                         $date_computation = QueryFunction::dateAdd(
-                            date: "$table." . $opt["datafields"][1],
+                            date: new QueryIdentifier("$table." . $opt["datafields"][1]),
                             interval: new QueryExpression($DB::quoteName("$table." . $opt["datafields"][2]) . $add_minus),
                             interval_unit: $delay_unit
                         );
@@ -1994,6 +2006,25 @@ final class SQLProvider implements SearchProviderInterface
                     // ELSE standard search
                     // Date format modification if needed
                     $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
+
+                    // The column string representation has a fixed width, so a partial date can only
+                    // be found at its beginning. It can therefore be searched as a range, which,
+                    // unlike the `LIKE` pattern used below, is able to use the column index.
+                    if (
+                        in_array($searchtype, ['contains', 'notcontains'], true)
+                        && in_array($opt["datatype"], ['date', 'datetime'], true)
+                        && !isset($opt["computation"])
+                        && preg_match('/\$$/', (string) $val) !== 1 // a trailing `$` is not a prefix search
+                    ) {
+                        $boundaries = self::getDateTimeRangeBoundaries(
+                            preg_replace('/^\^/', '', (string) $val),
+                            $opt["datatype"] === 'datetime'
+                        );
+                        if ($boundaries !== null) {
+                            return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
+                        }
+                    }
+
                     if ($date_computation) {
                         return self::getTextCriteria($date_computation, $val, $nott, Operator::NONE);
                     }
@@ -4330,19 +4361,18 @@ final class SQLProvider implements SearchProviderInterface
             $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
                 && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
             $orig_table = SearchEngine::getOrigTableName($itemtype);
+            $complexjoin = isset($searchopt[$ID]['joinparams'])
+                ? self::computeComplexJoinID($searchopt[$ID]['joinparams'])
+                : '';
             if (
-                ($is_fkey_composite_on_self || $table != $orig_table)
+                (($is_fkey_composite_on_self || $table != $orig_table) || !empty($complexjoin))
                 && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))
             ) {
                 $addtable .= "_" . $searchopt[$ID]["linkfield"];
             }
 
-            if (isset($searchopt[$ID]['joinparams'])) {
-                $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-
-                if (!empty($complexjoin)) {
-                    $addtable .= "_" . $complexjoin;
-                }
+            if (!empty($complexjoin)) {
+                $addtable .= "_" . $complexjoin;
             }
 
             if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
@@ -4456,7 +4486,7 @@ final class SQLProvider implements SearchProviderInterface
                         );
                     }
                     $criterion = QueryFunction::dateAdd(
-                        date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
+                        date: new QueryIdentifier("{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}"),
                         interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
                         interval_unit: $interval,
                     ) . " $order";
@@ -5338,6 +5368,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (
                         empty($ORDER) // No sort clause is defined
                         && $data['search']['start'] == 0 // First page of results
+                        && !$data['search']['export_all'] // Full export needs every row
                     ) {
                         $tmpquery .= " LIMIT " . (int) $data['search']['list_limit'];
                     }
@@ -5700,10 +5731,15 @@ final class SQLProvider implements SearchProviderInterface
         &$SELECT = "",
         &$FROM = "",
         &$already_link_tables = [],
-        &$data = []
+        &$data = [],
+        bool $is_recursive_call = false
     ) {
         Toolbox::deprecated('Use getAdditionalSqlForMetacriteria instead', true, '12.0');
-        $data['meta_toview'] = [];
+
+        if (!$is_recursive_call) {
+            $data['meta_toview'] = [];
+        }
+
         foreach ($criteria as $criterion) {
             // manage sub criteria
             if (isset($criterion['criteria'])) {
@@ -5712,7 +5748,8 @@ final class SQLProvider implements SearchProviderInterface
                     $SELECT,
                     $FROM,
                     $already_link_tables,
-                    $data
+                    $data,
+                    true
                 );
                 continue;
             }
@@ -5729,6 +5766,15 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $m_itemtype = $criterion['itemtype'];
+
+            // If a column for this itemtype's field is already loaded, we go directly to the next iteration.
+            if (
+                isset($data["meta_toview"][$m_itemtype])
+                && in_array($criterion['field'], $data["meta_toview"][$m_itemtype])
+            ) {
+                continue;
+            }
+
             $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
@@ -5749,7 +5795,7 @@ final class SQLProvider implements SearchProviderInterface
                 $sopt["joinparams"]
             );
             $FROM .= $ljoin->getQuery();
-            $data['sql']['values'] = array_merge($data['sql']['values'], $ljoin->getParams());
+            $data['sql']['values'] = array_merge($data['sql']['values'] ?? [], $ljoin->getParams());
 
             $ref_table = $m_itemtype::getTable() . self::getMetaTableUniqueSuffix($m_itemtype::getTable(), $m_itemtype);
             $ljoin = Search::addLeftJoin(
@@ -5765,7 +5811,7 @@ final class SQLProvider implements SearchProviderInterface
                 $sopt['use_join_subquery'] ?? false
             );
             $FROM .= $ljoin->getQuery() . ' ';
-            $data['sql']['values'] = array_merge($data['sql']['values'], $ljoin->getParams());
+            $data['sql']['values'] = array_merge($data['sql']['values'] ?? [], $ljoin->getParams());
         }
     }
 
@@ -5774,14 +5820,16 @@ final class SQLProvider implements SearchProviderInterface
      **
      * @param  array<int|string, mixed> $criteria             list of search criterion
      * @param  array<int, string>       &$already_link_tables
-     * @param  array<int|string, mixed> &$data
+     * @param  array<int|string, mixed> $data
+     * @param  array                    &$already_added_fields
      *
      * @return array{SELECT: Select[], FROM: LeftJoin[], meta_toview: array<class-string<CommonDBTM>, string[]>}
      */
     public static function getAdditionalSqlForMetacriteria(
         array $criteria = [],
         array &$already_link_tables = [],
-        array $data = []
+        array $data = [],
+        array &$already_added_fields = []
     ): array {
         $result = [
             'SELECT' => [],
@@ -5795,8 +5843,10 @@ final class SQLProvider implements SearchProviderInterface
                 $sub_result = self::getAdditionalSqlForMetacriteria(
                     $criterion['criteria'],
                     $already_link_tables,
-                    $data
+                    $data,
+                    $already_added_fields
                 );
+
                 $result['SELECT'] = array_merge($result['SELECT'], $sub_result['SELECT']);
                 $result['FROM'] = array_merge($result['FROM'], $sub_result['FROM']);
                 $result['meta_toview'] = array_merge($result['meta_toview'], $sub_result['meta_toview']);
@@ -5816,6 +5866,15 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $m_itemtype = $criterion['itemtype'];
+
+            // If a column for this itemtype's field is already loaded, we go directly to the next iteration.
+            if (
+                isset($already_added_fields[$m_itemtype])
+                && in_array($criterion['field'], $already_added_fields[$m_itemtype], true)
+            ) {
+                continue;
+            }
+
             $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
@@ -5851,6 +5910,11 @@ final class SQLProvider implements SearchProviderInterface
                 $sopt['use_join_subquery'] ?? false
             );
             $result['FROM'][] = $ljoin;
+
+            if (!\array_key_exists($m_itemtype, $already_added_fields)) {
+                $already_added_fields[$m_itemtype] = [];
+            }
+            $already_added_fields[$m_itemtype][] = (int) $criterion['field'];
         }
 
         return $result;
@@ -6305,6 +6369,92 @@ final class SQLProvider implements SearchProviderInterface
             $sql = "($sql OR $field IS NULL)";
         }
         return " $link ($sql)";
+    }
+
+    /**
+     * Compute the range matching a partial date/time value, e.g. the whole day for `2024-07-28`.
+     *
+     * @param string $val       Partial date/time value, from `YYYY` to `YYYY-MM-DD HH:mm:ss`
+     * @param bool   $with_time Whether the compared column holds a time part
+     *
+     * @return array{0: string, 1: string}|null Lower (included) and upper (excluded) bounds,
+     *                                          or `null` if the value cannot be interpreted.
+     */
+    private static function getDateTimeRangeBoundaries(string $val, bool $with_time = true): ?array
+    {
+        $precisions = [
+            '/^\d{4}$/'                               => ['Y',           'P1Y',  false],
+            '/^\d{4}-\d{2}$/'                         => ['Y-m',         'P1M',  false],
+            '/^\d{4}-\d{2}-\d{2}$/'                   => ['Y-m-d',       'P1D',  false],
+            '/^\d{4}-\d{2}-\d{2} \d{2}$/'             => ['Y-m-d H',     'PT1H', true],
+            '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/'       => ['Y-m-d H:i',   'PT1M', true],
+            '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/' => ['Y-m-d H:i:s', 'PT1S', true],
+        ];
+
+        $val = trim($val);
+
+        foreach ($precisions as $pattern => [$format, $interval, $has_time]) {
+            if (preg_match($pattern, $val) !== 1) {
+                continue;
+            }
+
+            if ($has_time && !$with_time) {
+                // A column without time part cannot match such a value.
+                return null;
+            }
+
+            if (str_starts_with($val, '0000')) {
+                // The legacy `0000-00-00` value would be out of the computed range.
+                return null;
+            }
+
+            // `!` resets unspecified fields to their "zero" value; force UTC as the value has no time offset.
+            $lower_bound = DateTimeImmutable::createFromFormat('!' . $format, $val, new DateTimeZone('UTC'));
+            $errors      = DateTimeImmutable::getLastErrors();
+            if ($lower_bound === false || ($errors !== false && ($errors['warning_count'] + $errors['error_count']) > 0)) {
+                // Out of range value, e.g. `2024-02-30`
+                return null;
+            }
+
+            $output_format = $with_time ? 'Y-m-d H:i:s' : 'Y-m-d';
+
+            return [
+                $lower_bound->format($output_format),
+                $lower_bound->add(new DateInterval($interval))->format($output_format),
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Build a criterion matching the given date/time range.
+     *
+     * @param string                      $column     Column to compare, as `table.field`
+     * @param array{0: string, 1: string} $boundaries Lower (included) and upper (excluded) bounds
+     * @param bool                        $nott       Is a negative search?
+     *
+     * @return array<int|string, mixed>
+     */
+    private static function getDateTimeRangeCriteria(string $column, array $boundaries, bool $nott): array
+    {
+        [$lower_bound, $upper_bound] = $boundaries;
+
+        if ($nott) {
+            // `NULL` values are part of a negative search results
+            return [
+                'OR' => [
+                    [$column => ['<', $lower_bound]],
+                    [$column => ['>=', $upper_bound]],
+                    [$column => null],
+                ],
+            ];
+        }
+
+        return [
+            [$column => ['>=', $lower_bound]],
+            [$column => ['<', $upper_bound]],
+        ];
     }
 
     /**
@@ -6941,7 +7091,7 @@ final class SQLProvider implements SearchProviderInterface
                             ));
                             $currenttime = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
-                                date('Y-m-d H:i:s')
+                                $_SESSION['glpi_currenttime']
                             );
                             $totaltime   = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
@@ -6959,14 +7109,14 @@ final class SQLProvider implements SearchProviderInterface
                             if ($calendars_id > 0 && $calendar->getFromDB($calendars_id)) { // Ticket entity have calendar
                                 $currenttime = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
-                                    date('Y-m-d H:i:s')
+                                    $_SESSION['glpi_currenttime']
                                 );
                                 $totaltime   = $calendar->getActiveTimeBetween(
                                     $item->fields['date'],
                                     $data[$ID][0]['name']
                                 );
                             } else { // No calendar
-                                $currenttime = strtotime(date('Y-m-d H:i:s'))
+                                $currenttime = strtotime($_SESSION['glpi_currenttime'])
                                     - strtotime($item->fields['date']);
                                 $totaltime   = strtotime($data[$ID][0]['name'])
                                     - strtotime($item->fields['date']);

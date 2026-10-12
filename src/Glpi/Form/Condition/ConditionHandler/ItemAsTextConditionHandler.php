@@ -85,7 +85,7 @@ final class ItemAsTextConditionHandler implements ConditionHandlerInterface
         foreach ((array) $a['items_ids'] as $items_id) {
             $item = $this->itemtype::getById((int) $items_id);
             if ($item) {
-                $names[] = $item->getName();
+                $names[] = $item->getName(['complete' => true]);
             }
         }
 

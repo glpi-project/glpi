@@ -37,10 +37,12 @@ namespace tests\units;
 use AuthLDAP;
 use DateInterval;
 use DateTime;
+use DBmysql;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Tests\DbTestCase;
 use Group;
+use Group_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
@@ -710,7 +712,7 @@ class UserTest extends DbTestCase
             '_reset_personal_token' => true,
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
             '_emails'               => ['test1@example.com', 'test2@example.com'],
-            'is_active'              => false,
+            'is_active'             => false,
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {
@@ -747,6 +749,45 @@ class UserTest extends DbTestCase
                 $this->assertEquals(true, \array_key_exists($key, $output));
             }
         }
+    }
+
+    public function testPrepareInputForUpdate2fa(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $target_user = \getItemByTypeName(User::class, 'tech');
+        $update_input = ['id' => $target_user->getID(), '2fa' => \bin2hex(\random_bytes(16)), '2fa_unenforced' => 1];
+
+        // Admin with `User::UPDATEAUTHENT` right can change `2fa`/`2fa_unenforced` fields
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate($update_input);
+        $this->assertArrayHasKey('2fa', $update_input);
+        $this->assertArrayHasKey('2fa_unenforced', $update_input);
+        $this->assertSame($update_input['2fa'], $output['2fa']);
+        $this->assertSame($update_input['2fa_unenforced'], $output['2fa_unenforced']);
+
+        // Admin without `User::UPDATEAUTHENT` right cannot change `2fa`/`2fa_unenforced` fields
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate($update_input);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa']);
+
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa_unenforced' => 1]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa_unenforced']);
+
+        // User with lower privileges cannot change the `2fa`/`2fa_unenforced` fields,
+        // even when having the `User::UPDATEAUTHENT` right
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa' => \bin2hex(\random_bytes(16))]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa']);
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa_unenforced' => 1]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa_unenforced']);
     }
 
     public function testPrepareInputForUpdateAuthTypeWithSession(): void
@@ -946,6 +987,138 @@ class UserTest extends DbTestCase
                 'is_dynamic'    => $row['is_dynamic'],
             ]));
         }
+    }
+
+    public function testCloneDoesNotEscalatePrivileges(): void
+    {
+        // A Technician cloning a Super-Admin user must not inherit Super-Admin rights
+        $this->login('tech', 'tech');
+
+        $source = getItemByTypeName('User', 'glpi');
+        $this->assertInstanceOf(User::class, $source);
+
+        $puser = new Profile_User();
+        $this->assertTrue($puser->getFromDBByCrit([
+            'users_id'    => $source->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited the Super-Admin authorization,
+        // since the Technician performing the clone could not grant it directly.
+        $this->assertFalse($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+    }
+
+    public function testCloneStillCopiesAuthorizedProfiles(): void
+    {
+        $this->login();
+
+        $user = $this->createItem(User::class, ['name' => 'clone_source_technician']);
+
+        $puser = $this->createItem(Profile_User::class, [
+            'users_id'    => $user->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $this->assertTrue($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+        ]));
+    }
+
+    public function testCloneDoesNotEscalateAuthorizationAcrossEntities(): void
+    {
+        $this->login();
+
+        // A technician authorized only (non-recursively) on _test_root_entity.
+        $this->createItem(User::class, [
+            'name'         => 'clone_restricted_technician',
+            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        // The user to clone is authorized in a child entity the technician has no access to.
+        $source = $this->createItem(User::class, ['name' => 'clone_source_other_entity']);
+        $puser = $this->createItem(Profile_User::class, [
+            'users_id'    => $source->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+
+        $this->login('clone_restricted_technician');
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited the authorization on an entity
+        // the technician performing the clone had no access to.
+        $this->assertFalse($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]));
+    }
+
+    public function testCloneStillCopiesAuthorizedGroupMembership(): void
+    {
+        $this->login();
+
+        $user = $this->createItem(User::class, ['name' => 'clone_source_with_group']);
+
+        $group = $this->createItem(Group::class, [
+            'name'        => 'clone_group_in_scope',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $gu = $this->createItem(Group_User::class, [
+            'users_id'  => $user->getID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $this->assertTrue($gu->getFromDBByCrit(['users_id' => $cloned_id, 'groups_id' => $group->getID()]));
+    }
+
+    public function testCloneDoesNotEscalateGroupMembership(): void
+    {
+        $this->login();
+
+        // A technician authorized only (non-recursively) on _test_root_entity.
+        $this->createItem(User::class, [
+            'name'         => 'clone_restricted_technician_group',
+            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        // The user to clone belongs to a group defined in a child entity the technician has no access to.
+        $source = $this->createItem(User::class, ['name' => 'clone_source_group_other_entity']);
+        $group = $this->createItem(Group::class, [
+            'name'        => 'clone_group_other_entity',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+        $gu = $this->createItem(Group_User::class, [
+            'users_id'  => $source->getID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        $this->login('clone_restricted_technician_group');
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited membership in a group defined
+        // in an entity the technician performing the clone had no access to.
+        $this->assertFalse($gu->getFromDBByCrit(['users_id' => $cloned_id, 'groups_id' => $group->getID()]));
     }
 
     public function testCloneDoesNotCopyLdapFields(): void
@@ -1888,6 +2061,24 @@ class UserTest extends DbTestCase
         $this->assertTrue($glpi->delete(['id' => $glpi->getID()]));
     }
 
+    public function testCannotDeleteUserWithMoreRights(): void
+    {
+        // Technician profile has DELETE and PURGE rights on users
+        $this->login('tech', 'tech');
+
+        // Super-Admin user: more rights than the current user
+        $jsmith123 = getItemByTypeName('User', 'jsmith123');
+        $this->assertFalse($jsmith123->canDeleteItem());
+        $this->assertFalse($jsmith123->canPurgeItem());
+        $this->assertFalse($jsmith123->can($jsmith123->getID(), DELETE));
+        $this->assertFalse($jsmith123->can($jsmith123->getID(), PURGE));
+
+        // Self-Service user: less rights than the current user
+        $post_only = getItemByTypeName('User', 'post-only');
+        $this->assertTrue($post_only->canDeleteItem());
+        $this->assertTrue($post_only->canPurgeItem());
+    }
+
     public function testUserPreferences()
     {
         if (version_compare(PHP_VERSION, '8.0', '<')) {
@@ -2250,7 +2441,7 @@ class UserTest extends DbTestCase
 
         $this->assertNotContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
 
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $group_user_id = $group_user->add([
             'groups_id' => $groups_id,
             'users_id' => $user->getID(),
@@ -2809,6 +3000,104 @@ class UserTest extends DbTestCase
         );
         $this->assertTrue($result);
         $this->assertEmpty($user2->fields['_groups'] ?? []);
+    }
+
+    public static function ldapImportLocationEntityProvider(): iterable
+    {
+        // No entity assigned by the LDAP rules -> root entity.
+        yield 'no rules' => [
+            'ldap_rules' => [],
+            'expected'   => 0,
+        ];
+
+        // A single entity assigned through the rights rules -> that entity.
+        yield 'single entity (rights)' => [
+            'ldap_rules' => ['rules_entities_rights' => [[5, 4]]],
+            'expected'   => 5,
+        ];
+
+        // A single entity assigned through the entities rules -> that entity.
+        yield 'single entity (entities)' => [
+            'ldap_rules' => ['rules_entities' => [[7]]],
+            'expected'   => 7,
+        ];
+
+        // The same entity assigned by both rule sets -> that entity.
+        yield 'same entity twice' => [
+            'ldap_rules' => [
+                'rules_entities_rights' => [[5, 4]],
+                'rules_entities'        => [[5]],
+            ],
+            'expected'   => 5,
+        ];
+
+        // Several different entities -> ambiguous, fall back to root.
+        yield 'two different entities' => [
+            'ldap_rules' => ['rules_entities_rights' => [[5, 4], [6, 4]]],
+            'expected'   => 0,
+        ];
+
+        // A single rule assigning one entity as an array -> that entity.
+        yield 'entity given as array' => [
+            'ldap_rules' => ['rules_entities_rights' => [[[5], 4]]],
+            'expected'   => 5,
+        ];
+
+        // A single rule assigning several entities at once -> ambiguous, root.
+        yield 'multiple entities in one rule' => [
+            'ldap_rules' => ['rules_entities_rights' => [[[5, 6], 4]]],
+            'expected'   => 0,
+        ];
+    }
+
+    #[DataProvider('ldapImportLocationEntityProvider')]
+    public function testGetLdapImportLocationEntity(array $ldap_rules, int $expected): void
+    {
+        $user = new User();
+        $user->fields['_ldap_rules'] = $ldap_rules;
+
+        $this->assertSame(
+            $expected,
+            $this->callPrivateMethod($user, 'getLdapImportLocationEntity')
+        );
+    }
+
+    public function testKeepDbConnectionAliveSkipsQueryWhenRecentActivity(): void
+    {
+        global $DB;
+
+        $db_mock = $this->createMock(DBmysql::class);
+        $db_mock->expects($this->never())->method('getVersion');
+
+        $original_db = $DB;
+        $DB = $db_mock;
+        try {
+            $last_db_activity = time();
+            $result = $this->callPrivateMethod(new User(), 'keepDbConnectionAlive', $last_db_activity);
+        } finally {
+            $DB = $original_db;
+        }
+
+        $this->assertSame($last_db_activity, $result);
+    }
+
+    public function testKeepDbConnectionAlivePingsDbWhenIdleTooLong(): void
+    {
+        global $DB;
+
+        $db_mock = $this->createMock(DBmysql::class);
+        $db_mock->expects($this->once())->method('getVersion');
+
+        $original_db = $DB;
+        $DB = $db_mock;
+        try {
+            $before_call = time();
+            $result = $this->callPrivateMethod(new User(), 'keepDbConnectionAlive', $before_call - 3600);
+        } finally {
+            $DB = $original_db;
+        }
+
+        $this->assertGreaterThanOrEqual($before_call, $result);
     }
 
     public function testIsValidUserForEntity(): void

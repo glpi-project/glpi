@@ -76,7 +76,8 @@ class Notepad extends CommonDBChild
             isset($this->fields['itemtype'])
             && ($item = getItemForItemtype($this->fields['itemtype']))
         ) {
-            return Session::haveRight($item::$rightname, UPDATENOTE);
+            return Session::haveRight($item::$rightname, UPDATENOTE)
+                && $item->can($this->fields['items_id'], READ);
         }
         return false;
     }
@@ -89,7 +90,8 @@ class Notepad extends CommonDBChild
             isset($this->fields['itemtype'])
             && ($item = getItemForItemtype($this->fields['itemtype']))
         ) {
-            return Session::haveRight($item::$rightname, UPDATENOTE);
+            return Session::haveRight($item::$rightname, UPDATENOTE)
+                && $item->can($this->fields['items_id'], READ);
         }
         return false;
     }

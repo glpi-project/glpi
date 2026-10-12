@@ -715,4 +715,164 @@ class Document_ItemTest extends DbTestCase
 
         $this->login();
     }
+
+    public function testGetTypeItemsForKnowbaseItemDoesNotLeakUnrelatedArticles()
+    {
+        $this->login();
+
+        $document = $this->createItem(\Document::class, [
+            'name' => __FUNCTION__,
+        ]);
+
+        $linked_kb = $this->createItem(\KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' linked',
+            'answer' => 'linked',
+            'is_faq' => 0,
+        ]);
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $linked_kb->getID(),
+        ]);
+
+        // Visible to the "tech" user but linked to another document, not this one
+        $other_document = $this->createItem(\Document::class, [
+            'name' => __FUNCTION__ . ' other',
+        ]);
+        $unrelated_kb = $this->createItem(\KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' unrelated',
+            'answer' => 'unrelated',
+            'is_faq' => 0,
+        ]);
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $other_document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $unrelated_kb->getID(),
+        ]);
+
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->createItems('KnowbaseItem_User', [
+            ['knowbaseitems_id' => $linked_kb->getID(), 'users_id' => $tech_user],
+            ['knowbaseitems_id' => $unrelated_kb->getID(), 'users_id' => $tech_user],
+        ]);
+
+        // "tech" is not a KB admin, so visibility is checked through the OR
+        // criteria merged in Document_Item::getTypeItemsQueryParams()
+        $this->login('tech', 'tech');
+
+        $iterator = Document_Item::getTypeItems($document->getID(), \KnowbaseItem::class);
+        $ids = array_column(iterator_to_array($iterator), 'id');
+
+        $this->assertContains($linked_kb->getID(), $ids);
+        $this->assertNotContains($unrelated_kb->getID(), $ids);
+    }
+
+    public function testCanAttachDocumentToItemUserCanOnlyView()
+    {
+        // "One write is enough": a user who can view (but not edit) an entity-assigned
+        // item and who is allowed to create documents may still attach a document to it.
+        $this->login();
+        $child_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $computer = $this->createItem('Computer', ['name' => 'doc_link_computer', 'entities_id' => $child_id]);
+
+        $this->addRightToProfile('Technician', 'document', READ | CREATE | UPDATE);
+        $this->removeRightFromProfile('Technician', 'computer', CREATE | UPDATE);
+
+        $actor = $this->createItem('User', ['name' => 'doc_actor_' . mt_rand()]);
+        $this->createItem('Profile_User', [
+            'users_id'     => $actor->getID(),
+            'profiles_id'  => getItemByTypeName('Profile', 'Technician', true),
+            'entities_id'  => $child_id,
+            'is_recursive' => 0,
+        ]);
+
+        $this->login($actor->fields['name']);
+        \Session::changeProfile(getItemByTypeName('Profile', 'Technician', true));
+        $this->setEntity('_test_child_1', false);
+
+        // The item is visible but not editable for this user.
+        $this->assertTrue($computer->can($computer->getID(), READ));
+        $this->assertFalse($computer->can($computer->getID(), UPDATE));
+
+        // "Add a new file" path (front/document.form.php) is now allowed.
+        $doc = new \Document();
+        $input = [
+            'name'        => 'linked doc',
+            'itemtype'    => 'Computer',
+            'items_id'    => $computer->getID(),
+            'entities_id' => $child_id,
+        ];
+        $this->assertTrue($doc->can(-1, CREATE, $input));
+
+        // The add form is offered on the item's "Documents" tab.
+        ob_start();
+        Document_Item::showForItem($computer);
+        $html = ob_get_clean();
+        $this->assertStringContainsString('Add a document', $html);
+
+        // The document entity is still enforced: creating it outside the user's entities is refused.
+        $doc2 = new \Document();
+        $input2 = [
+            'name'        => 'linked doc 2',
+            'itemtype'    => 'Computer',
+            'items_id'    => $computer->getID(),
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ];
+        $this->assertFalse($doc2->can(-1, CREATE, $input2));
+    }
+
+    public function testLinkAndUnlinkKnowbaseItemRequireArticleUpdateRight(): void
+    {
+        $this->login();
+
+        // Create a FAQ article authored by someone else
+        $kb_id = $this->createItem(\KnowbaseItem::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'answer'      => '<p>x</p>',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id'    => getItemByTypeName('User', 'normal', true),
+            'is_faq'      => 1,
+        ])->getID();
+        $this->createItem(\KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb_id,
+            'users_id'         => \Session::getLoginUserID(),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $link_id = $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb_id,
+        ])->getID();
+
+        $this->setEntity('_test_root_entity', true);
+        $link = new Document_Item();
+
+        // We are a KB admin so we can edit the articles (and thus unlink the doc).
+        $this->assertTrue($link->can($link_id, PURGE));
+
+        // No longer kb admin but still has the document update right
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+        $this->assertTrue($document->can($document->getID(), UPDATE));
+
+        // Load article using ID and confirm expected rights
+        $kb = new \KnowbaseItem();
+        $this->assertTrue($kb->getFromDB($kb_id));
+        $this->assertTrue($kb->can($kb_id, READ));
+        $this->assertFalse($kb->can($kb_id, UPDATE));
+
+        // Should not be able to unlink the doc
+        $this->assertFalse($link->can($link_id, DELETE));
+        $this->assertFalse($link->can($link_id, PURGE));
+
+        // Should not be able to link another document either
+        $input = [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb_id,
+        ];
+        $this->assertFalse((new Document_Item())->can(-1, CREATE, $input));
+    }
 }

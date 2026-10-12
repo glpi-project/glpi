@@ -54,7 +54,7 @@ class SavedSearch_User extends CommonDBRelation
                 if (!empty($values[$field])) {
                     return "<span class='ti ti-star-filled bookmark_default'><span class='visually-hidden'>" . __s('Yes') . "</span></span>";
                 } else {
-                    return "<span class='ti ti-star-filled bookmark_record'><span class='visually-hidden'>" . __s('No') . "</span></span>";
+                    return "<span class='ti ti-star bookmark_record'><span class='visually-hidden'>" . __s('No') . "</span></span>";
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);

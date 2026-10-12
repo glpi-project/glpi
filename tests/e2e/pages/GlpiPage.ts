@@ -114,10 +114,12 @@ export class GlpiPage
         const simple_dropdown_with_prefix = this.page
             .getByRole('listbox')
             .getByRole('option', {'name': `»${value}`, exact: exact})
+            .first()
         ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
             .getByRole('listitem', {'name': value, exact: exact})
+            .first()
         ;
 
         await simple_dropdown
@@ -299,11 +301,14 @@ export class GlpiPage
      * Select2's container is the span right after the select.
      * The interactive element is the combobox inside the container.
      */
-    public getDropdownByLabel(label: string, base?: Locator): Locator
-    {
+    public getDropdownByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = true,
+    ): Locator {
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
-            .getByLabel(label, {exact: true})
+            .getByLabel(label, {exact: exact})
             .locator('+ span')
             .getByRole('combobox')
         ;
@@ -330,11 +335,14 @@ export class GlpiPage
      * TinyMCE's container is the div right after the textarea.
      * The interactive element is the body of the iframe.
      */
-    public getRichTextByLabel(label: string, base?: Locator): Locator
-    {
+    public getRichTextByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = false,
+    ): Locator {
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
-            .getByLabel(label)
+            .getByLabel(label, {exact: exact})
             .locator('+ div')
             .locator('iframe:visible')
             .contentFrame()
@@ -345,11 +353,18 @@ export class GlpiPage
     /**
      * Initialize a rich text editor by clicking on it, then return its body locator.
      */
-    public async initRichTextByLabel(label: string, base?: Locator): Promise<Locator>
-    {
+    public async initRichTextByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = false,
+    ): Promise<Locator> {
         // eslint-disable-next-line playwright/no-raw-locators
-        await (base ?? this.page).getByLabel(label).locator('+ div').click();
-        return this.getRichTextByLabel(label, base);
+        await (base ?? this.page)
+            .getByLabel(label, {exact: exact})
+            .locator('+ div')
+            .click()
+        ;
+        return this.getRichTextByLabel(label, base, exact);
     }
 
     /**

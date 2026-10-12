@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Security\SessionTracker;
@@ -138,10 +139,12 @@ class CronTask extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-        // Delete related CronTaskLog.
-        // It cannot be done with `deleteChildrenAndRelationsFromDb` because `CronTaskLog` does not extend CommonDBConnexity.
-        $ctl = new CronTaskLog();
-        $ctl->deleteByCriteria(['crontasks_id' => $this->fields['id']]);
+        global $DB;
+
+        // Bulk delete (not deleteByCriteria()): a frequent task can accumulate huge log volumes,
+        // and CronTaskLog has no children/history/delete() so skipping per-row lifecycle event.
+        // `CronTaskLog::cleanOld()` do the same.
+        $DB->delete(CronTaskLog::getTable(), ['crontasks_id' => $this->fields['id']]);
     }
 
     /**
@@ -408,7 +411,7 @@ class CronTask extends CommonDBTM
 
         if ($this->fields['error_count'] >= self::MAX_ERROR_COUNT) {
             $this->fields['state'] = self::STATE_ERROR;
-        } else {
+        } elseif ($this->fields['state'] !== self::STATE_DISABLE) {
             $this->fields['state'] = self::STATE_WAITING;
         }
 
@@ -576,13 +579,13 @@ class CronTask extends CommonDBTM
             // Build query for next_run and allowed hour
             $WHERE[] = ['OR' => [
                 ['AND' => [
-                    ['hourmin'   => ['<', new QueryExpression($DB::quoteName('hourmax'))]],
+                    ['hourmin'   => ['<', new QueryIdentifier('hourmax')]],
                     'hourmin'   => ['<=', $hour_criteria],
                     'hourmax'   => ['>', $hour_criteria],
                 ],
                 ],
                 ['AND' => [
-                    'hourmin'   => ['>', new QueryExpression($DB::quoteName('hourmax'))],
+                    'hourmin'   => ['>', new QueryIdentifier('hourmax')],
                     'OR'        => [
                         'hourmin'   => ['<=', $hour_criteria],
                         'hourmax'   => ['>', $hour_criteria],
@@ -594,7 +597,7 @@ class CronTask extends CommonDBTM
             $WHERE[] = [
                 'OR' => [
                     'lastrun'   => null,
-                    new QueryExpression(QueryFunction::ifnull(QueryFunction::unixTimestamp('next_run'), new QueryExpression('0')) . ' <= ' . QueryFunction::unixTimestamp()),
+                    new QueryExpression(QueryFunction::ifnull(QueryFunction::unixTimestamp(new QueryIdentifier('next_run')), new QueryExpression('0')) . ' <= ' . QueryFunction::unixTimestamp()),
                 ],
             ];
         }
@@ -604,7 +607,7 @@ class CronTask extends CommonDBTM
                 '*',
                 QueryFunction::locate(
                     substring: 'Plugin',
-                    expression: $DB::quoteName('itemtype'),
+                    expression: new QueryIdentifier('itemtype'),
                     alias: 'ISPLUGIN'
                 ),
             ],
@@ -613,7 +616,7 @@ class CronTask extends CommonDBTM
             // Core task before plugins
             'ORDER'  => [
                 'ISPLUGIN',
-                QueryFunction::unixTimestamp('next_run'),
+                QueryFunction::unixTimestamp(new QueryIdentifier('next_run')),
             ],
         ]);
 
@@ -708,7 +711,7 @@ class CronTask extends CommonDBTM
         if (empty($this->fields['lastrun'])) {
             $next_run_display = __('As soon as possible');
         } else {
-            $next = strtotime($this->fields['next_run']);
+            $next = strtotime($this->fields['next_run'] ?? $this->fields['lastrun']);
             $h    = date('H', $next);
             $deb  = ($this->fields['hourmin'] < 10 ? "0" . $this->fields['hourmin']
                                                 : $this->fields['hourmin']);
@@ -1924,9 +1927,9 @@ TWIG, ['msg' => __('Last run list')]);
             'WHERE'  => [
                 'state'  => self::STATE_RUNNING,
                 'OR'     => [
-                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * '
+                    new QueryExpression(QueryFunction::unixTimestamp(new QueryIdentifier('lastrun')) . ' + 2 * '
                         . $DB::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp()),
-                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * '
+                    new QueryExpression(QueryFunction::unixTimestamp(new QueryIdentifier('lastrun')) . ' + 2 * '
                         . HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp()),
                 ],
             ],

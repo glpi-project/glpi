@@ -132,6 +132,53 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
         return $article_id;
     }
 
+    /**
+     * The article and every article below it, walked breadth-first over the raw
+     * edges: a visibility-filtered tree promotes an article to root when its
+     * parent is invisible, which would hide a genuine descendant.
+     *
+     * Not visibility-filtered on purpose: subtract these ids, never display them.
+     *
+     * @return array<int, true> keyed by id, for O(1) membership tests
+     */
+    public static function getDescendantIds(int $article_id): array
+    {
+        global $DB;
+
+        $descendants = [$article_id => true];
+        $frontier    = [$article_id];
+        while ($frontier !== []) {
+            $next = [];
+            foreach ($DB->request([
+                'SELECT' => 'knowbaseitems_id',
+                'FROM'   => self::getTable(),
+                'WHERE'  => ['knowbaseitems_id_parent' => $frontier],
+            ]) as $row) {
+                $child_id = (int) $row['knowbaseitems_id'];
+                if (isset($descendants[$child_id])) {
+                    continue;
+                }
+                $descendants[$child_id] = true;
+                $next[] = $child_id;
+            }
+            $frontier = $next;
+        }
+        return $descendants;
+    }
+
+    /** True if $parent_id is a direct parent of $child_id. */
+    public static function isParentOf(int $parent_id, int $child_id): bool
+    {
+        if ($parent_id <= 0 || $child_id <= 0) {
+            return false;
+        }
+
+        return countElementsInTable(self::getTable(), [
+            'knowbaseitems_id'        => $child_id,
+            'knowbaseitems_id_parent' => $parent_id,
+        ]) > 0;
+    }
+
     /** True if $ancestor_id is an ancestor of $node_id. */
     private static function isAncestor(int $ancestor_id, int $node_id): bool
     {
@@ -151,6 +198,32 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
                 $queue[] = $p;
             }
         }
+        return false;
+    }
+
+    /**
+     * Same rule as CommonDBRelation::canRelationItem(): entities must match, or the
+     * more specific side must be recursive over the other one's entity.
+     */
+    public static function areEntitiesCoherent(KnowbaseItem $child, KnowbaseItem $parent): bool
+    {
+        if (!$child->isEntityAssign() || !$parent->isEntityAssign()) {
+            return true;
+        }
+
+        $child_entity  = $child->getEntityID();
+        $parent_entity = $parent->getEntityID();
+
+        if ($child_entity == $parent_entity) {
+            return true;
+        }
+        if ($child->isRecursive() && in_array($child_entity, getAncestorsOf('glpi_entities', $parent_entity))) {
+            return true;
+        }
+        if ($parent->isRecursive() && in_array($parent_entity, getAncestorsOf('glpi_entities', $child_entity))) {
+            return true;
+        }
+
         return false;
     }
 }

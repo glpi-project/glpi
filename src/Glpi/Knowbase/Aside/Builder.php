@@ -41,12 +41,8 @@ use KnowbaseItem_KnowbaseItem;
  * Builds the aside article tree from the set of articles the current user
  * may see.
  *
- * The hierarchy is NOT a naive `knowbaseitems_id_parent` walk: an article
- * visible to the user may have all of its parents invisible to them (e.g. a
- * closed-by-default migrated category). Such an article must still surface
- * somewhere in the tree, so it is "promoted" to the root level whenever none
- * of its parents are themselves visible. An article with several visible
- * parents appears under each of them.
+ * An article attaches to its nearest visible ancestor, or becomes a root.
+ * Ties each get a copy.
  */
 final class Builder
 {
@@ -59,13 +55,13 @@ final class Builder
     /** @var array<int, array<string, mixed>> Visible articles, id => row */
     private array $data = [];
 
-    /** @var array<int, int[]> parent_id => visible child ids */
+    /** @var array<int, int[]> ancestor_id => visible article ids attached to it */
     private array $children_of = [];
 
-    /** @var array<int, int[]> child_id => visible parent ids */
+    /** @var array<int, int[]> child_id => nearest visible ancestor ids */
     private array $parents_of = [];
 
-    /** @var array<int, true> Visible articles with no visible parent */
+    /** @var array<int, true> Visible articles with no visible ancestor at all */
     private array $roots = [];
 
     /**
@@ -79,14 +75,6 @@ final class Builder
      */
     private array $folded_ids_lookup_map = [];
 
-    /**
-     * Articles to render, when the tree is restricted to a subset (search).
-     * Null renders the whole tree.
-     *
-     * @var array<int, true>|null
-     */
-    private ?array $rendered_ids = null;
-
     private bool $hierarchy_loaded = false;
 
     public function __construct(private readonly int $current_id = 0) {}
@@ -94,42 +82,31 @@ final class Builder
     public function buildTree(): Tree
     {
         $this->loadHierarchy();
-        $this->rendered_ids = null;
-        $this->folded_ids_lookup_map = $this->computeFoldedIds();
+
+        return $this->buildTreeWith($this->computeFoldedIds());
+    }
+
+    /**
+     * The whole visible tree, folding ignored: a consumer that walks the
+     * hierarchy instead of rendering it needs every descendant loaded.
+     */
+    public function buildUnfoldedTree(): Tree
+    {
+        $this->loadHierarchy();
+
+        return $this->buildTreeWith([]);
+    }
+
+    /**
+     * @param array<int, true> $folded_ids_lookup_map
+     */
+    private function buildTreeWith(array $folded_ids_lookup_map): Tree
+    {
+        $this->folded_ids_lookup_map = $folded_ids_lookup_map;
 
         $tree = new Tree();
         foreach (array_keys($this->roots) as $id) {
             $tree->addArticle($this->buildArticle($id, []));
-        }
-
-        return $tree;
-    }
-
-    /**
-     * Tree restricted to the given articles and to the branches leading to
-     * them, as used by the aside search.
-     *
-     * Ancestors are included so a match is never orphaned, and nothing is
-     * folded: a match has to be visible without the reader unfolding its
-     * ancestors first. Descendants of a match are left out unless they match
-     * too, which is what the search filter it replaces did.
-     *
-     * @param int[] $matching_ids
-     */
-    public function buildSearchTree(array $matching_ids): Tree
-    {
-        $this->loadHierarchy();
-        $this->rendered_ids = $this->withAncestors(array_intersect_key(
-            array_fill_keys(array_map('intval', $matching_ids), true),
-            $this->data
-        ));
-        $this->folded_ids_lookup_map = [];
-
-        $tree = new Tree();
-        foreach (array_keys($this->roots) as $id) {
-            if ($this->isRendered($id)) {
-                $tree->addArticle($this->buildArticle($id, []));
-            }
         }
 
         return $tree;
@@ -147,7 +124,6 @@ final class Builder
         if (!isset($this->data[$parent_id])) {
             return [];
         }
-        $this->rendered_ids = null;
         $this->folded_ids_lookup_map = $this->computeFoldedIds();
 
         $children = [];
@@ -181,23 +157,130 @@ final class Builder
             return;
         }
 
-        // 2) Visible parent-> [visible children] adjacency, and the reverse.
-        $has_visible_parent = [];
-        foreach ($DB->request(['FROM' => KnowbaseItem_KnowbaseItem::getTable()]) as $link) {
+        // 2) The full parent graph: the walk needs the invisible links too.
+        $raw_parents_of = [];
+        $link_criteria = [
+            'SELECT' => ['knowbaseitems_id', 'knowbaseitems_id_parent'],
+            'FROM'   => KnowbaseItem_KnowbaseItem::getTable(),
+        ];
+        foreach ($DB->request($link_criteria) as $link) {
             $child  = (int) $link['knowbaseitems_id'];
             $parent = (int) $link['knowbaseitems_id_parent'];
-            if (!isset($this->data[$child], $this->data[$parent])) {
-                continue; // one of the ends is not visible to the current user
-            }
-            $this->children_of[$parent][] = $child;
-            $this->parents_of[$child][] = $parent;
-            $has_visible_parent[$child] = true;
+            $raw_parents_of[$child][] = $parent;
         }
 
-        // 3) Roots = visible articles with no visible parent (promote-to-root).
+        // 3) Attach each article to its nearest visible ancestor, or make it a root.
         foreach (array_keys($this->data) as $id) {
-            if (!isset($has_visible_parent[$id])) {
+            $ancestors = $this->findNearestVisibleAncestors($id, $raw_parents_of);
+            if ($ancestors === []) {
                 $this->roots[$id] = true;
+                continue;
+            }
+            foreach ($ancestors as $ancestor_id) {
+                $this->children_of[$ancestor_id][] = $id;
+                $this->parents_of[$id][] = $ancestor_id;
+            }
+        }
+
+        // 4) A cycle reaches no root: promote what the walk left out.
+        $reached = [];
+        self::walk(array_keys($this->roots), $this->children_of, $reached);
+        foreach (array_keys($this->data) as $id) {
+            if (isset($reached[$id])) {
+                continue;
+            }
+            $entry = $this->climbToCycle($id, $reached);
+            $this->roots[$entry] = true;
+            self::walk([$entry], $this->children_of, $reached);
+        }
+    }
+
+    /**
+     * The cycle node that holds `$id`, climbing the unreached parents.
+     *
+     * `$this->data` is ordered by name, so the promotion pass can meet an
+     * article hanging below a cycle before it meets the cycle itself.
+     * Promoting that article renders it twice: once as a root, once below the
+     * cycle node that lists it as a child. Promote the cycle instead.
+     *
+     * @param array<int, true> $reached
+     */
+    private function climbToCycle(int $id, array $reached): int
+    {
+        $entry   = $id;
+        $visited = [$id => true];
+
+        while (true) {
+            $parent = null;
+            foreach ($this->parents_of[$entry] ?? [] as $candidate) {
+                if (!isset($reached[$candidate])) {
+                    $parent = $candidate;
+                    break;
+                }
+            }
+            if ($parent === null || isset($visited[$parent])) {
+                return $entry;
+            }
+            $visited[$parent] = true;
+            $entry = $parent;
+        }
+    }
+
+    /**
+     * The visible ancestors of `$id` with the fewest hops up, ties included.
+     *
+     * @param array<int, int[]> $raw_parents_of child_id => every parent id, visible or not
+     *
+     * @return int[]
+     */
+    private function findNearestVisibleAncestors(int $id, array $raw_parents_of): array
+    {
+        $visited  = [$id => true]; // a cycle must not make it its own ancestor
+        $frontier = [$id];
+
+        while ($frontier !== []) {
+            $next_frontier = [];
+            $visible       = [];
+            foreach ($frontier as $current) {
+                foreach ($raw_parents_of[$current] ?? [] as $parent_id) {
+                    if (isset($visited[$parent_id])) {
+                        continue;
+                    }
+                    $visited[$parent_id] = true;
+                    if (isset($this->data[$parent_id])) {
+                        $visible[] = $parent_id;
+                    } else {
+                        $next_frontier[] = $parent_id;
+                    }
+                }
+            }
+            if ($visible !== []) {
+                return $visible;
+            }
+            $frontier = $next_frontier;
+        }
+
+        return [];
+    }
+
+    /**
+     * Every id reachable from `$starts` through `$adjacency`, `$starts` included.
+     *
+     * @param int[] $starts
+     * @param array<int, int[]> $adjacency
+     * @param array<int, true> $reached
+     */
+    private static function walk(array $starts, array $adjacency, array &$reached): void
+    {
+        $stack = $starts;
+        while ($stack !== []) {
+            $id = array_pop($stack);
+            if (isset($reached[$id])) {
+                continue;
+            }
+            $reached[$id] = true;
+            foreach ($adjacency[$id] ?? [] as $next_id) {
+                $stack[] = $next_id;
             }
         }
     }
@@ -208,12 +291,12 @@ final class Builder
     private function buildArticle(int $id, array $ancestors): Article
     {
         $row = $this->data[$id];
-        $folded = $this->rendered_ids === null && isset($this->folded_ids_lookup_map[$id]);
+        $folded = isset($this->folded_ids_lookup_map[$id]);
 
         $ancestors[$id] = true;
         $children = [];
         foreach ($this->children_of[$id] ?? [] as $child_id) {
-            if (isset($ancestors[$child_id]) || !$this->isRendered($child_id)) {
+            if (isset($ancestors[$child_id])) {
                 continue; // cycles are forbidden by writes; guard defensively
             }
             $children[] = $child_id;
@@ -228,6 +311,7 @@ final class Builder
             collapsed: $folded,
             has_children: $children !== [],
             children_loaded: !$folded,
+            is_root: KnowbaseItem::isRootId($id),
         );
 
         if (!$folded) {
@@ -267,14 +351,8 @@ final class Builder
         return $folded;
     }
 
-    private function isRendered(int $id): bool
-    {
-        return $this->rendered_ids === null || isset($this->rendered_ids[$id]);
-    }
-
     /**
-     * The given articles plus every ancestor leading to them, so a restricted
-     * tree stays attached to its roots.
+     * The given articles plus every ancestor leading to them.
      *
      * @param array<int, true> $ids
      *
@@ -283,17 +361,7 @@ final class Builder
     private function withAncestors(array $ids): array
     {
         $kept = [];
-        $to_walk = array_keys($ids);
-        while ($to_walk !== []) {
-            $id = array_pop($to_walk);
-            if (isset($kept[$id])) {
-                continue;
-            }
-            $kept[$id] = true;
-            foreach ($this->parents_of[$id] ?? [] as $parent) {
-                $to_walk[] = $parent;
-            }
-        }
+        self::walk(array_keys($ids), $this->parents_of, $kept);
 
         return $kept;
     }

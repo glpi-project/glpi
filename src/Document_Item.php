@@ -87,7 +87,35 @@ class Document_Item extends CommonDBRelation
             }
         }
 
-        return parent::canCreateItem();
+        return $this->canEditLinkedKnowbaseItem() && parent::canCreateItem();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canUpdateItem();
+    }
+
+    public function canDeleteItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canDeleteItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canPurgeItem();
+    }
+
+    /**
+     * Linking to or unlinking from an article requires the right to edit it, see `KnowbaseItem::canAddItem()`.
+     */
+    private function canEditLinkedKnowbaseItem(): bool
+    {
+        $item = getItemForItemtype((string) $this->fields['itemtype']);
+        if (!$item instanceof KnowbaseItem) {
+            return true;
+        }
+
+        return !$item->getFromDB($this->fields['items_id']) || $item->canAddItem(Document::class);
     }
 
     public function canViewItem(): bool
@@ -591,8 +619,8 @@ TWIG, $twig_params);
             $entity   = $_SESSION["glpiactive_entity"];
 
             if ($item->isEntityAssign()) {
-                // Case of personal items : entity = -1 : create on active entity (Reminder case))
-                if ($item->getEntityID() >= 0) {
+                // Item's entity when the user may write there, otherwise their active entity.
+                if ($item->getEntityID() >= 0 && Session::haveAccessToEntity($item->getEntityID())) {
                     $entity = $item->getEntityID();
                 }
 
@@ -833,6 +861,14 @@ TWIG, $twig_params);
                 continue;
             }
             $doc_id = (int) $item->fields['documents_id'];
+
+            $document = new Document();
+            if (!$document->can($doc_id, UPDATE)) {
+                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                continue;
+            }
+
             $_SESSION['glpitransfer_list'][Document::class][$doc_id] = $doc_id;
             $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
         }

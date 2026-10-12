@@ -37,6 +37,8 @@ namespace tests\units;
 use Auth;
 use AuthLDAP;
 use AuthMail;
+use Config;
+use Glpi\Config\ConfigContainer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
@@ -79,6 +81,36 @@ class AuthTest extends DbTestCase
             'local'     => 'GLPI internal database',
         ];
         $this->assertSame($expected, $methods);
+    }
+
+    public function testGetMenuContentRequiresConfigReadRight()
+    {
+        $this->login('tech', 'tech');
+        $this->removeRightFromProfile('Technician', Config::$rightname, READ | UPDATE);
+        \Session::reloadCurrentProfile();
+        $this->assertFalse(Auth::getMenuContent());
+
+        // Update right alone must not expose the menu, as the target page only checks READ
+        $this->addRightToProfile('Technician', Config::$rightname, UPDATE);
+        \Session::reloadCurrentProfile();
+        $this->assertFalse(Auth::getMenuContent());
+
+        $this->removeRightFromProfile('Technician', Config::$rightname, UPDATE);
+        $this->addRightToProfile('Technician', Config::$rightname, READ);
+        \Session::reloadCurrentProfile();
+        $menu = Auth::getMenuContent();
+        $this->assertIsArray($menu);
+        $this->assertArrayNotHasKey('add', $menu['options'][AuthLDAP::class]['links']);
+        $this->assertArrayNotHasKey('add', $menu['options'][AuthMail::class]['links']);
+        $this->assertArrayNotHasKey('others', $menu['options']);
+        $this->assertArrayNotHasKey('settings', $menu['options']);
+
+        $this->addRightToProfile('Technician', Config::$rightname, UPDATE);
+        \Session::reloadCurrentProfile();
+        $menu = Auth::getMenuContent();
+        $this->assertArrayHasKey('add', $menu['options'][AuthLDAP::class]['links']);
+        $this->assertArrayHasKey('others', $menu['options']);
+        $this->assertArrayHasKey('settings', $menu['options']);
     }
 
     /**
@@ -277,37 +309,83 @@ class AuthTest extends DbTestCase
         $auth = new Auth();
         $_SESSION["glpiextauth"] = false; //required to prevent undefined array index
 
-        //create a user - with a md5 password
-        $user = $this->createItem(User::class, ['name' => 'MD5 Passwd test', 'password' => md5('dapass')]);
-        $user->getFromDB($user->getID());
-        $this->assertSame('6902587896395f6b27f5aa550f69008a', $user->fields['password']);
-
-        //log in should update password to default PHP (BCRYPT currently)
-        $this->assertTrue($auth->login('MD5 Passwd test', 'dapass'));
-        $user->getFromDB($user->getID());
-        $this->assertStringStartsWith('$2y$', $user->fields['password']);
-
-        //create a user - with a sha1 password
-        $user = $this->createItem(User::class, ['name' => 'SHA1 Passwd test', 'password' => sha1('dapass')]);
-        $user->getFromDB($user->getID());
-        $this->assertSame('a5c805c5e55c0ce85e515e34ff9ae0b6a94d142a', $user->fields['password']);
-
-        //log in should update password to default PHP (BCRYPT currently)
-        $this->assertTrue($auth->login('SHA1 Passwd test', 'dapass'));
-        $user->getFromDB($user->getID());
-        $this->assertStringStartsWith('$2y$', $user->fields['password']);
-
         //create a user - with a low cost password
         $user = $this->createItem(User::class, ['name' => 'BCRYPT low cost Passwd test', 'password' => password_hash('dapass', PASSWORD_DEFAULT, ['cost' => 5])]);
         $user->getFromDB($user->getID());
         $this->assertStringStartsWith('$2y$05$', $user->fields['password']);
 
-        //log in should update password to default PHP (BCRYPT currently, with a higher default than 5)
+        //log in should update password to use the cost of the current environment (4 in the testing environment)
         $this->assertTrue($auth->login('BCRYPT low cost Passwd test', 'dapass'));
         $user->getFromDB($user->getID());
-        $new_cost = null;
-        preg_match('/\$2y\$(\d+)\$.+/', $user->fields['password'], $new_cost);
-        $this->assertGreaterThan(5, (int) $new_cost[1]);
+        $this->assertStringStartsWith('$2y$04$', $user->fields['password']);
+        $this->assertFalse(Auth::needRehash($user->fields['password']));
+    }
+
+    public function testCheckPasswordWithCurrentHash(): void
+    {
+        $hash = Auth::getPasswordHash('mypassword');
+
+        $this->assertTrue(Auth::checkPassword('mypassword', $hash));
+        $this->assertFalse(Auth::checkPassword('wrongpassword', $hash));
+    }
+
+    public function testCheckPasswordNeverValidatesLegacyHashes(): void
+    {
+        $this->assertFalse(Auth::checkPassword('mypassword', md5('mypassword')));
+        $this->assertFalse(Auth::checkPassword('mypassword', sha1('mypassword')));
+    }
+
+    public static function outdatedPasswordHashProvider(): iterable
+    {
+        // Legacy
+        yield 'md5' => [md5('mypassword')];
+        yield 'sha1' => [sha1('mypassword')];
+        // Legacy salted sha1
+        yield 'salted sha1' => ['abcdefgh' . sha1('abcdefgh' . 'mypassword')];
+    }
+
+    /**
+     * A user password has never been migrated from the 0.85 hashing scheme
+     */
+    #[DataProvider('outdatedPasswordHashProvider')]
+    public function testLoginWithOutdatedPasswordHashIsRejected(string $hash): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+
+        $username = 'test_outdated_password_' . mt_rand();
+        $user = new User();
+        $user_id = (int) $user->add([
+            'name'         => $username,
+            'password'     => 'mypassword',
+            'password2'    => 'mypassword',
+            '_profiles_id' => 1,
+        ]);
+        $this->assertGreaterThan(0, $user_id);
+
+        // Write the legacy hash directly in DB, as User::update() would rehash it.
+        $this->assertTrue(
+            $DB->update(
+                User::getTable(),
+                ['password' => $hash],
+                ['id' => $user_id]
+            )
+        );
+
+        $this->logOut();
+
+        $auth = new Auth();
+        $this->assertFalse($auth->login($username, 'mypassword', true));
+        $this->assertContains(
+            __('For security reasons, your password has expired. Please contact your administrator to reset it.'),
+            $auth->getErrors()
+        );
+
+        // The stored hash must remain untouched (not silently rehashed).
+        $this->assertTrue($user->getFromDB($user_id));
+        $this->assertSame($hash, $user->fields['password']);
     }
 
     public function testRememberMeLastLogin(): void
@@ -336,6 +414,9 @@ class AuthTest extends DbTestCase
         // Restore the first cookie value to ensure it is still valid
         $_COOKIE[$cookie_name] = $first_cookie_value;
         $this->assertTrue((new Auth())->login('', ''));
+
+        //Clean cookie
+        unset($_COOKIE[$cookie_name]);
     }
 
     /**
@@ -395,5 +476,210 @@ class AuthTest extends DbTestCase
             ),
             "Event log must contain the resolved login name '{$username}', not an empty string"
         );
+    }
+
+    /**
+     * Sets up a SSO server variable based external authentication for the given login name,
+     * and returns the backup of $CFG_GLPI that the caller has to restore.
+     *
+     * @param string $username Login name that the SSO server will report
+     * @param bool   $auto_add Value to set for the `is_users_auto_add` configuration entry
+     *
+     * @return ConfigContainer Backup of $CFG_GLPI
+     */
+    private function setUpSsoAuth(string $username, bool $auto_add): ConfigContainer
+    {
+        global $CFG_GLPI, $DB;
+
+        $ssovariable_row = $DB->request([
+            'FROM'  => 'glpi_ssovariables',
+            'WHERE' => ['name' => 'HTTP_AUTH_USER'],
+        ])->current();
+        $this->assertNotEmpty($ssovariable_row);
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['ssovariables_id'] = $ssovariable_row['id'];
+        $CFG_GLPI['existing_auth_server_field_clean_domain'] = 0;
+        $CFG_GLPI['is_users_auto_add'] = $auto_add ? 1 : 0;
+
+        $_SERVER['HTTP_AUTH_USER'] = $username;
+
+        return $cfg_backup;
+    }
+
+    /**
+     * `validateLogin()` only validates the credentials: an externally authenticated user that is
+     * not known by GLPI yet has no `id` once it returns. Creating the user is the job of
+     * `applyValidatedLogin()`, which callers that do not use `login()` (OAuth, CalDAV) must call.
+     */
+    public function testApplyValidatedLoginAddsUnknownExternalUser(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $username = 'sso_autoadd_' . mt_rand();
+        $this->assertFalse(User::getIdByName($username));
+
+        $cfg_backup = $this->setUpSsoAuth($username, true);
+
+        $auth = new Auth();
+        $validated = $auth->validateLogin('', '', false);
+        // The credentials are valid, but nothing has been written to the database yet.
+        $user_id_after_validation = $auth->user->fields['id'] ?? null;
+
+        $applied = $auth->applyValidatedLogin();
+
+        $CFG_GLPI = $cfg_backup;
+        unset($_SERVER['HTTP_AUTH_USER']);
+
+        $this->assertTrue($validated, implode(' ', $auth->getErrors()));
+        $this->assertNull($user_id_after_validation, 'validateLogin() must not create the user');
+
+        $this->assertTrue($applied, implode(' ', $auth->getErrors()));
+        $this->assertGreaterThan(0, $auth->user->fields['id'] ?? 0);
+
+        $user = new User();
+        $this->assertTrue($user->getFromDB($auth->user->fields['id']));
+        $this->assertSame($username, $user->fields['name']);
+        $this->assertEquals(Auth::EXTERNAL, $user->fields['authtype']);
+    }
+
+    /**
+     * When the auto add feature is disabled, an unknown externally authenticated user must be
+     * rejected rather than left half-authenticated without a database row.
+     */
+    public function testApplyValidatedLoginFailsForUnknownUserWhenAutoAddIsDisabled(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $username = 'sso_noautoadd_' . mt_rand();
+        $cfg_backup = $this->setUpSsoAuth($username, false);
+
+        $auth = new Auth();
+        $validated = $auth->validateLogin('', '', false);
+        $applied = $auth->applyValidatedLogin();
+
+        $CFG_GLPI = $cfg_backup;
+        unset($_SERVER['HTTP_AUTH_USER']);
+
+        $this->assertTrue($validated);
+        $this->assertFalse($applied);
+        $this->assertContains(__('User not authorized to connect in GLPI'), $auth->getErrors());
+        $this->assertFalse(User::getIdByName($username));
+    }
+
+    /**
+     * x509 detection must trust SSL_CLIENT_S_DN only when SSL_CLIENT_VERIFY is
+     * exactly 'SUCCESS', not merely present. A TLS-terminating server can
+     * legitimately report several other values for a presented-but-unverifiable
+     * certificate — nginx's 'FAILED:<reason>' and Apache mod_ssl's 'GENEROUS'
+     * (under `SSLVerifyClient optional_no_ca`) — both must be rejected the same
+     * way as an absent variable.
+     */
+    public function testCheckAlternateAuthSystemsIgnoresUnverifiedX509(): void
+    {
+        global $CFG_GLPI;
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['x509_email_field'] = 'Email';
+
+        // Attacker-controlled subject DN, as a web server would export it.
+        $_SERVER['SSL_CLIENT_S_DN'] = 'CN=Forged/Email=attacker@example.com/';
+
+        try {
+            unset($_COOKIE[session_name() . '_rememberme']);
+
+            // No verification performed at all: forged DN must not select X509.
+            unset($_SERVER['SSL_CLIENT_VERIFY']);
+            $this->assertFalse(Auth::checkAlternateAuthSystems());
+
+            // nginx-style rejection (ssl_verify_client optional, invalid cert).
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'FAILED:self signed certificate';
+            $this->assertFalse(Auth::checkAlternateAuthSystems());
+
+            // Apache mod_ssl's actual value for optional_no_ca with an
+            // unverifiable certificate — not a boolean failure, still not SUCCESS.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'GENEROUS';
+            $this->assertFalse(Auth::checkAlternateAuthSystems());
+
+            // Genuinely verified client certificate: X509 is selected.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'SUCCESS';
+            $this->assertSame(Auth::X509, Auth::checkAlternateAuthSystems());
+        } finally {
+            $CFG_GLPI = $cfg_backup;
+            unset($_SERVER['SSL_CLIENT_S_DN'], $_SERVER['SSL_CLIENT_VERIFY']);
+        }
+    }
+
+    /**
+     * End-to-end proof: Auth::login() must reject a forged SSL_CLIENT_S_DN
+     * unless SSL_CLIENT_VERIFY is exactly 'SUCCESS' — covering both nginx's
+     * 'FAILED:<reason>' and Apache mod_ssl's 'GENEROUS' (observed for
+     * `SSLVerifyClient optional_no_ca` with an unverifiable certificate).
+     */
+    public function testX509LoginRequiresVerifiedClientCertificate(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $email = 'x509_' . mt_rand() . '@example.com';
+        $this->createItem(
+            User::class,
+            [
+                'name'         => $email,
+                '_profiles_id' => 1,
+                'authtype'     => Auth::X509,
+            ]
+        );
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['x509_email_field'] = 'Email';
+        $CFG_GLPI['x509_ou_restrict'] = '';
+        $CFG_GLPI['x509_o_restrict']  = '';
+        $CFG_GLPI['x509_cn_restrict'] = '';
+
+        // Attacker forges the subject DN of a legitimate user.
+        $_SERVER['SSL_CLIENT_S_DN'] = "CN=Forged/OU=Dept/O=Comp/Email={$email}/";
+
+        try {
+            // Bypass attempt: forged DN without a verified certificate is rejected.
+            unset($_SERVER['SSL_CLIENT_VERIFY']);
+            $this->assertFalse(
+                (new Auth())->login('', '', false),
+                'A forged SSL_CLIENT_S_DN must not authenticate without a verified client certificate'
+            );
+
+            // nginx-style failed verification is rejected too.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'FAILED:self signed certificate';
+            $this->assertFalse(
+                (new Auth())->login('', '', false),
+                'A failed client certificate verification must not authenticate'
+            );
+
+            // Apache mod_ssl's GENEROUS (optional_no_ca, unverifiable cert) is
+            // rejected too — this is the value a real mTLS PoC against Apache
+            // actually produces, not FAILED.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'GENEROUS';
+            $this->assertFalse(
+                (new Auth())->login('', '', false),
+                'An unverifiable client certificate (GENEROUS) must not authenticate'
+            );
+
+            // Only a genuinely verified client certificate authenticates.
+            $_SERVER['SSL_CLIENT_VERIFY'] = 'SUCCESS';
+            $auth = new Auth();
+            $this->assertTrue(
+                $auth->login('', '', false),
+                'A verified client certificate must authenticate the matching user'
+            );
+            $this->assertSame($email, $auth->user->fields['name']);
+        } finally {
+            $CFG_GLPI = $cfg_backup;
+            unset($_SERVER['SSL_CLIENT_S_DN'], $_SERVER['SSL_CLIENT_VERIFY']);
+        }
     }
 }

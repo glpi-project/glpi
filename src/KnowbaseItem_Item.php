@@ -106,7 +106,8 @@ class KnowbaseItem_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (!$item instanceof CommonDBTM) {
+        // KB articles show their linked items in the main article view, not in a tab
+        if (!$item instanceof CommonDBTM || $item::class === KnowbaseItem::class) {
             return false;
         }
         self::showForItem($item, $withtemplate);
@@ -234,6 +235,15 @@ class KnowbaseItem_Item extends CommonDBRelation
         $onlyglobal = 0;
         $entity_restrict = -1;
         $checkright = true;
+
+        if ($item instanceof KnowbaseItem && isset($item->fields['entities_id'])) {
+            $is_recursive = $item->fields['is_recursive'] ?? 0;
+            if ($is_recursive) {
+                $entity_restrict = getSonsOf('glpi_entities', $item->fields['entities_id']);
+            } else {
+                $entity_restrict = $item->fields['entities_id'];
+            }
+        }
 
         return Dropdown::showSelectItemFromItemtypes([
             'items_id_name'   => $name,

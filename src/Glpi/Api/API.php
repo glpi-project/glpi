@@ -57,6 +57,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Config\ConfigContainer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Search\Provider\SQLProvider;
@@ -1805,6 +1806,10 @@ abstract class API
                     $tmp_fields = [$col_ref_field => $current_values];
                     if (array_key_exists('additionalfields', $col['searchopt'])) {
                         foreach ($col['searchopt']['additionalfields'] as $field_name) {
+                            // The search engine removes the `TABLE.` prefix from the column alias
+                            if (str_starts_with($field_name, 'TABLE.')) {
+                                $field_name = substr($field_name, strlen('TABLE.'));
+                            }
                             $field_value_key = 'ITEM_' . $col['itemtype'] . '_' . $col['id'] . '_' . $field_name;
                             $tmp_fields[$field_name] = $raw[$field_value_key];
                         }
@@ -3033,9 +3038,9 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                         // append network name
                         $concat_expr = QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                'ipadr.id',
+                                new QueryIdentifier('ipadr.id'),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                'ipadr.name',
+                                new QueryIdentifier('ipadr.name'),
                             ]),
                             separator: Search::LONGSEP,
                             alias: 'ipadresses'

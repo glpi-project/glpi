@@ -616,7 +616,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await kb.getComment('First plain comment').click();
 
         await expect(first).toHaveCSS('opacity', '1');
-        await expect(second).toHaveCSS('opacity', '0.65');
+        await expect(second).toHaveCSS('opacity', '0.35');
     });
 
     test('Escape clears the comment focus', async ({ page, profile, api }) => {
@@ -642,7 +642,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         const other = kb.getCommentThreadByContent('The other one');
 
         await kb.getComment('Focused then released').click();
-        await expect(other).toHaveCSS('opacity', '0.65');
+        await expect(other).toHaveCSS('opacity', '0.35');
 
         await page.keyboard.press('Escape');
         await expect(other).toHaveCSS('opacity', '1');
@@ -678,7 +678,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
 
         // Persistent, unlike the former 2s flash.
         await expect(anchored).toHaveCSS('opacity', '1');
-        await expect(unrelated).toHaveCSS('opacity', '0.65');
+        await expect(unrelated).toHaveCSS('opacity', '0.35');
     });
 
     test('Focusing an anchored thread emphasises its passage in the article', async ({ page, profile, api }) => {
@@ -734,9 +734,179 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         const neighbour = kb.getCommentThreadByContent('Neighbour comment');
 
         await kb.getComment('Comment to be released').click();
-        await expect(neighbour).toHaveCSS('opacity', '0.65');
+        await expect(neighbour).toHaveCSS('opacity', '0.35');
 
         await page.getByText('Plain body text with nothing anchored').click();
         await expect(neighbour).toHaveCSS('opacity', '1');
+    });
+
+    test('Hovering one fragment of a passage spanning two blocks emphasises all of them', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test hover across blocks',
+            entities_id: getWorkerEntityId(),
+            answer: '<h3>Section title</h3><p>Body sentence here</p><p>Untouched trailing text</p>',
+        });
+        // Across the heading/paragraph boundary: the indexed text has no separator.
+        await api.createItem('KnowbaseItem_Comment', {
+            knowbaseitems_id: id,
+            comment: 'Comment on a two-block passage',
+            anchor_prefix: 'Section ',
+            anchor_exact: 'titleBody sentence',
+            anchor_suffix: ' here',
+            anchor_occurrence: 0,
+        });
+
+        await kb.goto(id);
+        await kb.waitForArticleReady();
+
+        // One element per text node crossed.
+        await expect(kb.getCommentHighlights()).toHaveCount(2);
+        expect(await kb.getCommentHighlightThicknesses()).toEqual(['2px', '2px']);
+
+        await kb.getCommentHighlights().nth(1).hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['3px', '3px']);
+
+        await page.getByText('Untouched trailing text').hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['2px', '2px']);
+
+        // And symmetrically, from the heading fragment.
+        await kb.getCommentHighlights().nth(0).hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['3px', '3px']);
+    });
+
+    test('Hovering a passage split by inline markup emphasises all of it', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test hover across inline markup',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Hello <strong>brave</strong> new world</p>',
+        });
+        // A <strong> inside a single paragraph splits the passage just like a block boundary.
+        await api.createItem('KnowbaseItem_Comment', {
+            knowbaseitems_id: id,
+            comment: 'Comment on a bold-split passage',
+            anchor_prefix: 'Hello ',
+            anchor_exact: 'brave new',
+            anchor_suffix: ' world',
+            anchor_occurrence: 0,
+        });
+
+        await kb.goto(id);
+        await kb.waitForArticleReady();
+
+        await expect(kb.getCommentHighlights()).toHaveCount(2);
+
+        await kb.getCommentHighlights().nth(0).hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['3px', '3px']);
+    });
+
+    test('Hovering one fragment emphasises the whole passage in edit mode too', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test hover across blocks while editing',
+            entities_id: getWorkerEntityId(),
+            answer: '<h3>Section title</h3><p>Body sentence here</p><p>Untouched trailing text</p>',
+        });
+        await api.createItem('KnowbaseItem_Comment', {
+            knowbaseitems_id: id,
+            comment: 'Comment on a two-block passage',
+            anchor_prefix: 'Section ',
+            anchor_exact: 'titleBody sentence',
+            anchor_suffix: ' here',
+            anchor_occurrence: 0,
+        });
+
+        await kb.goto(id);
+        await kb.waitForArticleReady();
+        // Highlights become ProseMirror decorations, still one per text node.
+        await kb.editor.enterEditMode();
+
+        await expect(kb.getCommentHighlights()).toHaveCount(2);
+        expect(await kb.getCommentHighlightThicknesses()).toEqual(['2px', '2px']);
+
+        await kb.getCommentHighlights().nth(1).hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['3px', '3px']);
+
+        await page.getByText('Untouched trailing text').hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['2px', '2px']);
+    });
+
+    test.describe('Keyboard accessibility', () => {
+
+        test('Tab from a read-mode selection focuses the comment button', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test read mode comment bubble tab entry',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Some text to comment on</p>',
+            });
+
+            await kb.goto(id);
+            await kb.selectTextInReadMode('Some text to comment on');
+
+            const bubble = await kb.readModeCommentBubble.assertVisible();
+            await page.keyboard.press('Tab');
+            await expect(bubble).toBeFocused();
+        });
+
+        test('Enter activates the comment button once focused', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test read mode comment bubble enter activation',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Some text to comment on</p>',
+            });
+
+            await kb.goto(id);
+            await kb.selectTextInReadMode('Some text to comment on');
+
+            await page.keyboard.press('Tab');
+            await page.keyboard.press('Enter');
+
+            await expect(kb.getPendingAnchorQuote()).toBeVisible();
+        });
+
+        test('Escape hides the comment bubble', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test read mode comment bubble escape',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Some text to comment on</p>',
+            });
+
+            await kb.goto(id);
+            await kb.selectTextInReadMode('Some text to comment on');
+
+            await page.keyboard.press('Tab');
+            await expect(await kb.readModeCommentBubble.assertVisible()).toBeFocused();
+
+            await page.keyboard.press('Escape');
+            await kb.readModeCommentBubble.assertHidden();
+        });
     });
 });

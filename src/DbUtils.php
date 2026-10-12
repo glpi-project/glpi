@@ -36,6 +36,7 @@
 use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Exception\Database\QueryException;
@@ -204,12 +205,19 @@ final class DbUtils
         global $CFG_GLPI;
 
         if (!isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
+            $expected_table = $this->getExpectedTableNameForClass($itemtype);
+
             $table = is_a($itemtype, CommonDBTM::class, true)
                 ? $itemtype::getTable()
-                : $this->getExpectedTableNameForClass($itemtype);
+                : $expected_table;
 
             $CFG_GLPI['glpitablesitemtype'][$itemtype] = $table;
-            $CFG_GLPI['glpiitemtypetables'][$table]    = $itemtype;
+
+            if ($table === $expected_table) {
+                // Do not cache result if the found table does not match the expected one, for instance
+                // if the target classname is a specific implementation of an abstract class (e.g. `RuleTicket` -> `glpi_rules`).
+                $CFG_GLPI['glpiitemtypetables'][$table] = $itemtype;
+            }
         }
 
         return $CFG_GLPI['glpitablesitemtype'][$itemtype];
@@ -268,6 +276,44 @@ final class DbUtils
 
 
     /**
+     * Check whether a class is declared by GLPI or by one of its plugins.
+     * Classes declared elsewhere, i.e. by a PHP extension, are not valid itemtypes.
+     *
+     * @param string $class_file
+     * @param string $root_dir
+     * @param string[] $plugins_dirs
+     *
+     * @return bool
+     */
+    public function isGlpiClassFile(
+        string $class_file,
+        $root_dir = GLPI_ROOT,
+        array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES
+    ): bool {
+        if (!is_file($class_file)) {
+            return false;
+        }
+        $real_class_file = realpath($class_file);
+
+        $allowed_dirs = array_merge(
+            [$root_dir, GLPI_PLUGIN_DOC_DIR],
+            $plugins_dirs
+        );
+
+        foreach ($allowed_dirs as $allowed_dir) {
+            if (!is_dir($allowed_dir)) {
+                continue;
+            }
+            if (str_starts_with($real_class_file, realpath($allowed_dir) . DIRECTORY_SEPARATOR)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
      * Return ItemType  for a table
      *
      * @param string $table table name
@@ -313,12 +359,7 @@ final class DbUtils
             $itemtype = null;
             if (class_exists($base_itemtype)) {
                 $class_file = (new ReflectionClass($base_itemtype))->getFileName();
-                $is_glpi_class = $class_file !== false && (
-                    str_starts_with(realpath($class_file), realpath(GLPI_ROOT))
-                    || str_starts_with(realpath($class_file), realpath(GLPI_MARKETPLACE_DIR))
-                    || str_starts_with(realpath($class_file), realpath(GLPI_PLUGIN_DOC_DIR))
-                );
-                if ($is_glpi_class) {
+                if ($class_file !== false && $this->isGlpiClassFile($class_file)) {
                     $itemtype = $base_itemtype;
                 }
             }
@@ -360,7 +401,12 @@ final class DbUtils
             }
 
             if ($itemtype !== null && ($classname = $this->getClassForItemtype($itemtype)) !== null) {
-                $CFG_GLPI['glpiitemtypetables'][$inittable] = $classname;
+                if ($this->getExpectedTableNameForClass($classname) === $inittable) {
+                    // Do not cache result if the found table does not match the expected one, for instance
+                    // if the target classname is a specific implementation of an abstract class (e.g. `RuleTicket` -> `glpi_rules`).
+                    $CFG_GLPI['glpiitemtypetables'][$inittable] = $classname;
+                }
+
                 $CFG_GLPI['glpitablesitemtype'][$classname] = $inittable;
                 return $itemtype;
             }
@@ -1121,10 +1167,10 @@ final class DbUtils
         } elseif ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
             $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
-            foreach ($ids_needed_to_fetch as $id) {
+            foreach ($ids_needed_to_fetch as $key => $id) {
                 if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;
-                    unset($ids_needed_to_fetch[$id]);
+                    unset($ids_needed_to_fetch[$key]);
                 }
             }
             // If we got everything from the cache, we can return the results now
@@ -1695,7 +1741,7 @@ final class DbUtils
             $formatted = (string) $realname;
 
             if (((string) $firstname) !== '') {
-                if ($order === User::FIRSTNAME_BEFORE) {
+                if ((int) $order === User::FIRSTNAME_BEFORE) {
                     $formatted = $firstname . " " . $formatted;
                 } else {
                     $formatted .= " " . $firstname;
@@ -1928,7 +1974,7 @@ final class DbUtils
             $criteria = [
                 'SELECT' => [
                     QueryFunction::cast(
-                        expression: QueryFunction::substring('code', $pos, $len),
+                        expression: QueryFunction::substring(new QueryIdentifier('code'), $pos, $len),
                         type: 'UNSIGNED',
                         alias: 'no'
                     ),
@@ -1940,7 +1986,7 @@ final class DbUtils
             $criteria = [
                 'SELECT' => [
                     QueryFunction::cast(
-                        expression: QueryFunction::substring($field, $pos, $len),
+                        expression: QueryFunction::substring(new QueryIdentifier($field), $pos, $len),
                         type: 'UNSIGNED',
                         alias: 'no'
                     ),

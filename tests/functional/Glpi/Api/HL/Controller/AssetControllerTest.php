@@ -39,11 +39,13 @@ use Computer;
 use DatabaseInstance;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
-use Glpi\Asset\Asset;
+use Glpi\Api\HL\Search;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Group;
 use Group_Item;
+use Infocom;
 use Item_RemoteManagement;
 use OperatingSystem;
 use OperatingSystemArchitecture;
@@ -59,18 +61,11 @@ class AssetControllerTest extends HLAPITestCase
 {
     public function testIndex()
     {
-        global $CFG_GLPI;
-        $types = $CFG_GLPI['asset_types'];
-
-        // Ignore custom assets
-        $types = array_filter($types, static fn($t) => !is_subclass_of($t, Asset::class));
-
         $this->login();
-        $this->api->call(new Request('GET', '/Assets'), function ($call) use ($types) {
+        $this->api->call(new Request('GET', '/Assets'), function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use ($types) {
-                    $this->assertGreaterThanOrEqual(count($types), count($content));
+                ->jsonContent(function ($content) {
                     foreach ($content as $asset) {
                         $this->assertNotEmpty($asset['itemtype']);
                         $this->assertNotEmpty($asset['name']);
@@ -108,7 +103,6 @@ class AssetControllerTest extends HLAPITestCase
             ['schema' => 'Peripheral', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
             ['schema' => 'Phone', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
             ['schema' => 'Printer', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
-            ['schema' => 'SoftwareLicense', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
         ];
     }
     #[DataProvider('searchProvider')]
@@ -150,7 +144,7 @@ class AssetControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) use ($dataset) {
                     $this->assertGreaterThanOrEqual(1, count($content));
                     foreach ($content as $asset) {
-                        $to_skip = ['SoftwareLicense', 'Unmanaged'];
+                        $to_skip = ['Unmanaged'];
                         if (in_array($asset['itemtype'], $to_skip, true)) {
                             continue;
                         }
@@ -169,7 +163,6 @@ class AssetControllerTest extends HLAPITestCase
             ['schema' => 'Peripheral', 'id' => getItemByTypeName('Peripheral', '_test_peripheral_1', true), 'expected' => ['fields' => ['name' => '_test_peripheral_1']]],
             ['schema' => 'Phone', 'id' => getItemByTypeName('Phone', '_test_phone_1', true), 'expected' => ['fields' => ['name' => '_test_phone_1']]],
             ['schema' => 'Printer', 'id' => getItemByTypeName('Printer', '_test_printer_all', true), 'expected' => ['fields' => ['name' => '_test_printer_all']]],
-            ['schema' => 'SoftwareLicense', 'id' => getItemByTypeName('SoftwareLicense', '_test_softlic_1', true), 'expected' => ['fields' => ['name' => '_test_softlic_1']]],
         ];
     }
 
@@ -212,6 +205,89 @@ class AssetControllerTest extends HLAPITestCase
     public function testCreateUpdateDeleteItem(string $schema, array $fields)
     {
         $this->api->autoTestCRUD('/Assets/' . $schema, $fields);
+    }
+
+    public function testRackItemListingScopeIsEnforcedRegardlessOfFilter()
+    {
+        $this->loginWeb();
+        $root = $this->getTestRootEntity(true);
+
+        $rack_a = (new \Rack())->add(['name' => __FUNCTION__ . '_a', 'entities_id' => $root, 'number_units' => 10]);
+        $rack_b = (new \Rack())->add(['name' => __FUNCTION__ . '_b', 'entities_id' => $root, 'number_units' => 10]);
+        $this->assertGreaterThan(0, $rack_a);
+        $this->assertGreaterThan(0, $rack_b);
+
+        $comp_a = (new Computer())->add(['name' => __FUNCTION__ . '_ca', 'entities_id' => $root]);
+        $comp_b = (new Computer())->add(['name' => __FUNCTION__ . '_cb', 'entities_id' => $root]);
+        $this->assertGreaterThan(0, $comp_a);
+        $this->assertGreaterThan(0, $comp_b);
+
+        $this->assertGreaterThan(0, (new \Item_Rack())->add([
+            'racks_id' => $rack_a, 'itemtype' => 'Computer', 'items_id' => $comp_a, 'position' => 1,
+        ]));
+        $this->assertGreaterThan(0, (new \Item_Rack())->add([
+            'racks_id' => $rack_b, 'itemtype' => 'Computer', 'items_id' => $comp_b, 'position' => 2,
+        ]));
+
+        $this->login();
+
+        // The endpoint lists items of rack A only. A filter that ORs a broadly true
+        // clause must not let rack B's item leak into the response: the mandatory rack
+        // scope has to hold whatever the filter is.
+        $request = new Request('GET', '/Assets/Rack/' . $rack_a . '/Item');
+        $request->setParameter('filter', 'position=ge=0,position=ge=0');
+        $this->api->call($request, function ($call) use ($comp_a, $comp_b) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($comp_a, $comp_b) {
+                    $items_id = array_column($content, 'items_id');
+                    $this->assertContains($comp_a, $items_id);
+                    $this->assertNotContains($comp_b, $items_id);
+                });
+        });
+    }
+
+    public function testRackItemListingScopeCannotBeSeededByCaller()
+    {
+        $this->loginWeb();
+        $root = $this->getTestRootEntity(true);
+
+        $rack_a = (new \Rack())->add(['name' => __FUNCTION__ . '_a', 'entities_id' => $root, 'number_units' => 10]);
+        $rack_b = (new \Rack())->add(['name' => __FUNCTION__ . '_b', 'entities_id' => $root, 'number_units' => 10]);
+        $comp_a = (new Computer())->add(['name' => __FUNCTION__ . '_ca', 'entities_id' => $root]);
+        $comp_b = (new Computer())->add(['name' => __FUNCTION__ . '_cb', 'entities_id' => $root]);
+        $this->assertGreaterThan(0, (new \Item_Rack())->add([
+            'racks_id' => $rack_a, 'itemtype' => 'Computer', 'items_id' => $comp_a, 'position' => 1,
+        ]));
+        $this->assertGreaterThan(0, (new \Item_Rack())->add([
+            'racks_id' => $rack_b, 'itemtype' => 'Computer', 'items_id' => $comp_b, 'position' => 2,
+        ]));
+
+        $this->login();
+
+        // A caller must not be able to pre-seed the reserved mandatory-scope parameter through the
+        // request to weaken the scope enforced by the route. It is stripped from external input at
+        // ingress, so rack B's item still cannot leak into rack A's listing.
+        $previous = $_REQUEST[Search::MANDATORY_FILTER_PARAM] ?? null;
+        $_REQUEST[Search::MANDATORY_FILTER_PARAM] = 'position=ge=0,position=ge=0';
+        try {
+            $request = new Request('GET', '/Assets/Rack/' . $rack_a . '/Item');
+            $this->api->call($request, function ($call) use ($comp_a, $comp_b) {
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($comp_a, $comp_b) {
+                        $items_id = array_column($content, 'items_id');
+                        $this->assertContains($comp_a, $items_id);
+                        $this->assertNotContains($comp_b, $items_id);
+                    });
+            });
+        } finally {
+            if ($previous === null) {
+                unset($_REQUEST[Search::MANDATORY_FILTER_PARAM]);
+            } else {
+                $_REQUEST[Search::MANDATORY_FILTER_PARAM] = $previous;
+            }
+        }
     }
 
     public function testCRUDRackItem()
@@ -845,5 +921,166 @@ class AssetControllerTest extends HLAPITestCase
         ], [
             'date_creation' => '2026-03-01T10:00:00+00:00',
         ]);
+    }
+
+    public function testComputerGroupUpdate(): void
+    {
+        $this->login();
+        $computers_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $groups_id_1 = getItemByTypeName(Group::class, '_test_group_1', true);
+        $groups_id_2 = getItemByTypeName(Group::class, '_test_group_2', true);
+
+        // Test setting groups by an array of IDs
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', [$groups_id_1]);
+        $request->setParameter('group_tech', [$groups_id_1]);
+        $this->api->call($request, function ($call) use ($groups_id_1) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_1) {
+                    $this->assertEquals([$groups_id_1], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_1], array_column($content['group_tech'], 'id'));
+                });
+        });
+
+        // Test setting groups by a single ID (not in array)
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', $groups_id_2);
+        $request->setParameter('group_tech', $groups_id_2);
+        $this->api->call($request, function ($call) use ($groups_id_2) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_2) {
+                    $this->assertEquals([$groups_id_2], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_2], array_column($content['group_tech'], 'id'));
+                });
+        });
+
+        // Test setting multiple groups
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', [$groups_id_1, $groups_id_2]);
+        $request->setParameter('group_tech', [$groups_id_1, $groups_id_2]);
+        $this->api->call($request, function ($call) use ($groups_id_1, $groups_id_2) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_1, $groups_id_2) {
+                    $this->assertEquals([$groups_id_1, $groups_id_2], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_1, $groups_id_2], array_column($content['group_tech'], 'id'));
+                });
+        });
+    }
+
+    public function testCartridgeItemShowsCreatedCartridges()
+    {
+        $cartridge_item_id = getItemByTypeName('CartridgeItem', '_test_cartridgeitem01', true);
+        $this->assertIsInt($cartridge_item_id);
+        $this->assertGreaterThan(0, $cartridge_item_id);
+
+        $created = $this->createItems('Cartridge', [
+            ['cartridgeitems_id' => $cartridge_item_id],
+            ['cartridgeitems_id' => $cartridge_item_id],
+            ['cartridgeitems_id' => $cartridge_item_id],
+        ]);
+
+        $created_ids = array_map(static fn($it) => $it->getID(), $created);
+        $this->assertCount(3, $created_ids);
+
+        $this->login();
+        $request = new Request('GET', '/Assets/Cartridge');
+        $request->setParameter('filter', ['id==' . $cartridge_item_id]);
+
+        $this->api->call($request, function ($call) use ($created_ids) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($created_ids) {
+                    $this->assertCount(1, $content);
+                    $ci = $content[0];
+
+                    $this->assertEquals('_test_cartridgeitem01', $ci['name']);
+                    $returned_ids = array_column($ci['cartridges'], 'id');
+
+                    foreach ($created_ids as $id) {
+                        $this->assertContains($id, $returned_ids);
+                    }
+                });
+        });
+    }
+
+    public function testConsumableItemShowsCreatedConsumables()
+    {
+        $consumable_item_id = getItemByTypeName('ConsumableItem', '_test_consumableitem01', true);
+        $this->assertIsInt($consumable_item_id);
+        $this->assertGreaterThan(0, $consumable_item_id);
+
+        $created = $this->createItems('Consumable', [
+            ['consumableitems_id' => $consumable_item_id],
+            ['consumableitems_id' => $consumable_item_id],
+            ['consumableitems_id' => $consumable_item_id],
+        ]);
+
+        $created_ids = array_map(static fn($it) => $it->getID(), $created);
+        $this->assertCount(3, $created_ids);
+
+        $this->login();
+        $request = new Request('GET', '/Assets/Consumable');
+        $request->setParameter('filter', ['id==' . $consumable_item_id]);
+
+        $this->api->call($request, function ($call) use ($created_ids) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($created_ids) {
+                    $this->assertCount(1, $content);
+                    $ci = $content[0];
+
+                    $this->assertEquals('_test_consumableitem01', $ci['name']);
+                    $returned_ids = array_column($ci['consumables'], 'id');
+
+                    foreach ($created_ids as $id) {
+                        $this->assertContains($id, $returned_ids);
+                    }
+                });
+        });
+    }
+
+    public function testTicketTCOFieldRights(): void
+    {
+        $this->loginWeb('tech', 'tech');
+        $_SESSION['glpiactiveprofile'][Infocom::$rightname] |= READ;
+        $this->graphql->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $this->graphql->call(<<<GRAPHQL
+            query {
+                Computer { id ticket_tco }
+                Monitor { id ticket_tco }
+                NetworkEquipment { id ticket_tco }
+                Peripheral { id ticket_tco }
+                Phone { id ticket_tco }
+                Printer { id ticket_tco }
+                Software { id ticket_tco }
+            }
+GRAPHQL, function ($call) {
+            $call->response->isOK();
+        });
+        $_SESSION['glpiactiveprofile'][Infocom::$rightname] &= ~READ;
+        $this->graphql->call(<<<GRAPHQL
+            query {
+                Computer { id ticket_tco }
+                Monitor { id ticket_tco }
+                NetworkEquipment { id ticket_tco }
+                Peripheral { id ticket_tco }
+                Phone { id ticket_tco }
+                Printer { id ticket_tco }
+                Software { id ticket_tco }
+            }
+GRAPHQL, function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('Computer.ticket_tco')
+                ->hasFieldAccessDenied('Monitor.ticket_tco')
+                ->hasFieldAccessDenied('NetworkEquipment.ticket_tco')
+                ->hasFieldAccessDenied('Peripheral.ticket_tco')
+                ->hasFieldAccessDenied('Phone.ticket_tco')
+                ->hasFieldAccessDenied('Printer.ticket_tco')
+                ->hasFieldAccessDenied('Software.ticket_tco');
+        });
     }
 }

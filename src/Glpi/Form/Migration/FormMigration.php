@@ -85,6 +85,7 @@ use Item_Problem;
 use Item_Ticket;
 use LogicException;
 use Override;
+use Ramsey\Uuid\Uuid;
 use Throwable;
 
 use function Safe\json_decode;
@@ -104,6 +105,18 @@ class FormMigration extends AbstractPluginMigration
      * @var array<int, array>
      */
     private array $formcreator_raw_forms = [];
+
+    /**
+     * Source UUIDs already used in this run, to detect Formcreator duplicates.
+     * @var array<string, true>
+     */
+    private array $seen_form_uuids = [];
+
+    /**
+     * Form IDs already reconciled in this run, excluded from the legacy fallback.
+     * @var int[]
+     */
+    private array $claimed_form_ids = [];
 
     public function __construct(
         DBmysql $db,
@@ -190,6 +203,40 @@ class FormMigration extends AbstractPluginMigration
     }
 
     /**
+     * Add a warning message about a condition that could not be migrated,
+     * resolving the target item and its form for context.
+     *
+     * @param array{itemtype: class-string<CommonDBTM>, items_id: int} $target_item
+     * @param string $message Message template with 3 sprintf placeholders:
+     *                        item type name, item name, form name.
+     */
+    private function addUnresolvedConditionWarning(
+        array $target_item,
+        string $message,
+        mixed ...$extra_args,
+    ): void {
+        /** @var Form|Question|Comment|Section|FormDestination $item */
+        $item = getItemForItemtype($target_item['itemtype']);
+        if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
+            $form = $item instanceof Form ? $item : $item->getForm();
+        } else {
+            $item = null;
+            $form = null;
+        }
+
+        $this->result->addMessage(
+            MessageType::Warning,
+            sprintf(
+                $message,
+                $item->getTypeName(1) ?? $target_item['itemtype'],
+                $item->getName() ?? $target_item['items_id'],
+                $form->getName() ?? NOT_AVAILABLE,
+                ...$extra_args,
+            )
+        );
+    }
+
+    /**
      * Build the condition entry array for a single raw condition, resolving the
      * conditioning item (Question or Comment). Returns null if the condition
      * must be skipped.
@@ -265,24 +312,10 @@ class FormMigration extends AbstractPluginMigration
             ));
 
             if ($condition_handler === false) {
-                /** @var Form|Question|Comment|Section|FormDestination $item */
-                $item = getItemForItemtype($target_item['itemtype']);
-                if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
-                    $form = $item instanceof Form ? $item : $item->getForm();
-                } else {
-                    $item = null;
-                    $form = null;
-                }
-
-                $this->result->addMessage(
-                    MessageType::Warning,
-                    sprintf(
-                        __('A visibility condition used in "%s" "%s" (Form "%s") with value operator "%s" is not supported by the question type. It will be ignored.'),
-                        $item->getTypeName(1) ?? $target_item['itemtype'],
-                        $item->getName() ?? $target_item['items_id'],
-                        $form->getName() ?? NOT_AVAILABLE,
-                        $value_operator->getLabel()
-                    )
+                $this->addUnresolvedConditionWarning(
+                    $target_item,
+                    __('A visibility condition used in "%1$s" "%2$s" (Form "%3$s") with value operator "%4$s" is not supported by the question type. It will be ignored.'),
+                    $value_operator->getLabel()
                 );
                 return null;
             }
@@ -293,6 +326,14 @@ class FormMigration extends AbstractPluginMigration
                 } catch (FallbackToAnotherOperatorException $e) {
                     $value_operator = $e->getOperator();
                     $value = $e->getValue();
+                } catch (UnresolvedConditionValueException) {
+                    // Legacy value has no matching option: drop the condition
+                    // instead of silently binding it to a non-existent one.
+                    $this->addUnresolvedConditionWarning(
+                        $target_item,
+                        __('A visibility condition used in "%1$s" "%2$s" (Form "%3$s") references a value that no longer matches any option. It will be ignored.')
+                    );
+                    return null;
                 }
             }
         }
@@ -453,7 +494,7 @@ class FormMigration extends AbstractPluginMigration
                 'id', 'name', 'plugin_formcreator_categories_id', 'level',
             ],
             'glpi_plugin_formcreator_forms' => [
-                'id', 'name', 'description', 'plugin_formcreator_categories_id', 'entities_id',
+                'id', 'uuid', 'name', 'description', 'plugin_formcreator_categories_id', 'entities_id',
                 'is_recursive', 'is_visible',
             ],
             'glpi_plugin_formcreator_sections' => [
@@ -621,6 +662,7 @@ class FormMigration extends AbstractPluginMigration
         $raw_forms = $this->db->request([
             'SELECT' => [
                 'id',
+                'uuid',
                 'description',
                 'content AS header',
                 'name',
@@ -636,16 +678,57 @@ class FormMigration extends AbstractPluginMigration
         ]);
 
         foreach ($raw_forms as $raw_form) {
+            $uuid = $raw_form['uuid'];
+
+            // No unique constraint on Formcreator's side: an empty or duplicate value
+            // must not merge unrelated forms.
+            if (empty($uuid) || isset($this->seen_form_uuids[$uuid])) {
+                if (!empty($uuid)) {
+                    $this->result->addMessage(
+                        MessageType::Warning,
+                        sprintf(
+                            __('Form "%s" has a UUID ("%s") already used by another form in the Formcreator data. A new UUID has been generated to avoid merging them.'),
+                            $raw_form['name'],
+                            $uuid
+                        )
+                    );
+                }
+                // Deterministic, not random: a replay must regenerate the same UUID.
+                $uuid = (string) Uuid::uuid5(Uuid::NAMESPACE_URL, 'formcreator-form-' . $raw_form['id']);
+            }
+            $this->seen_form_uuids[$uuid] = true;
+
+            $forms_categories_id = $this->getMappedItemTarget(
+                'PluginFormcreatorCategory',
+                $raw_form['plugin_formcreator_categories_id']
+            )['items_id'] ?? 0;
+
+            $reconciliation_criteria = ['uuid' => $uuid];
+            $existing_form = new Form();
+            if (!$existing_form->getFromDBByCrit($reconciliation_criteria)) {
+                // Fallback for forms migrated before reconciliation switched from name to uuid.
+                $legacy_criteria = [
+                    'name'                => $raw_form['name'],
+                    'entities_id'         => $raw_form['entities_id'],
+                    'forms_categories_id' => $forms_categories_id,
+                ];
+                if ($this->claimed_form_ids !== []) {
+                    // Skip forms already claimed this run, to avoid re-merging them.
+                    $legacy_criteria['id'] = ['NOT IN', $this->claimed_form_ids];
+                }
+                if ($existing_form->getFromDBByCrit($legacy_criteria)) {
+                    $reconciliation_criteria = ['id' => $existing_form->getID()];
+                }
+            }
+
             $form = $this->importItem(
                 Form::class,
                 [
+                    'uuid'                  => $uuid,
                     'name'                  => $raw_form['name'],
                     'header'                => $raw_form['header'],
                     'description'           => $raw_form['description'],
-                    'forms_categories_id'   => $this->getMappedItemTarget(
-                        'PluginFormcreatorCategory',
-                        $raw_form['plugin_formcreator_categories_id']
-                    )['items_id'] ?? 0,
+                    'forms_categories_id'   => $forms_categories_id,
                     'entities_id'           => $raw_form['entities_id'],
                     'is_recursive'          => $raw_form['is_recursive'],
                     'is_active'             => $raw_form['is_active'],
@@ -653,15 +736,9 @@ class FormMigration extends AbstractPluginMigration
                     'render_layout'         => 'single_page',
                     '_from_migration'       =>  true,
                 ],
-                [
-                    'name'                => $raw_form['name'],
-                    'entities_id'         => $raw_form['entities_id'],
-                    'forms_categories_id' => $this->getMappedItemTarget(
-                        'PluginFormcreatorCategory',
-                        $raw_form['plugin_formcreator_categories_id']
-                    )['items_id'] ?? 0,
-                ]
+                $reconciliation_criteria
             );
+            $this->claimed_form_ids[] = $form->getID();
 
             // Store the form for later use
             $this->forms[$raw_form['id']] = $form;

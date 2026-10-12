@@ -90,8 +90,19 @@ final class LdapReAuthStrategy extends InPlaceReAuthStrategy
             return false;
         }
 
-        return $user->fields['authtype'] === Auth::LDAP
-            && (int) $user->fields['auths_id'] > 0;
+        $session_authtype = $_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED;
+        // An SSO account backed by a directory still knows its directory password
+        $is_sso_backed_by_ldap = $session_authtype === Auth::EXTERNAL
+            && $user->fields['authtype'] === Auth::LDAP;
+
+        if ($session_authtype !== Auth::LDAP && !$is_sso_backed_by_ldap) {
+            return false;
+        }
+
+        // A missing server or an empty host can never be verified: let a weaker strategy
+        // take over. An unreachable server, on the other hand, fails closed in verify().
+        $method = Auth::getMethodsByID(Auth::LDAP, (int) $user->fields['auths_id']);
+        return !empty($method['host']);
     }
 
     #[Override]

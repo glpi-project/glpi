@@ -884,6 +884,8 @@ class Toolbox
             $new_width  = $max_size;
             $new_height = ceil($max_size / $source_aspect_ratio);
         }
+        $new_width = max((int) $new_width, 1);
+        $new_height = max((int) $new_height, 1);
 
         $img_type = $img_infos[2];
 
@@ -2667,7 +2669,7 @@ class Toolbox
             return false;
         }
 
-        $filename     = uniqid($uniq_prefix);
+        $filename     = uniqid(preg_replace('/[^\w]+/', '_', $uniq_prefix));
         $ext          = pathinfo($src, PATHINFO_EXTENSION);
         $subdirectory = substr($filename, -2); // subdirectory based on last 2 hex digit
 

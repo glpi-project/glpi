@@ -133,6 +133,12 @@ class NotificationEventMailing extends NotificationEventAbstract
         $transport = Transport::fromDsn(GLPIMailer::buildDsn(true));
 
         foreach ($data as $row) {
+            if ((bool) $row['is_body_encrypted']) {
+                $glpi_key = new GLPIKey();
+                $row['body_text'] = $glpi_key->decrypt($row['body_text']);
+                $row['body_html'] = $glpi_key->decrypt($row['body_html']);
+            }
+
             //make sure mailer is reset on each mail
             $mmail = self::$mailer ?? new GLPIMailer($transport);
             $mail = $mmail->getEmail();
@@ -302,9 +308,12 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
 
                     // manage inline images (and not added as documents in object)
+                    // The str_contains() check avoids running the regex on the
+                    // whole body when there is no inline document reference.
                     $matches = [];
                     if (
-                        preg_match_all(
+                        str_contains($current->fields['body_html'], 'document.send.php')
+                        && preg_match_all(
                             "/<img[^>]*src=(\"|')[^\"']*document\.send\.php\?docid(?:=|&#61;)([0-9]+)[^\"']*(\"|')[^<]*>/",
                             $current->fields['body_html'],
                             $matches
@@ -437,6 +446,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 }
             } catch (Throwable $e) {
                 self::handleFailedSend($current, $e->getMessage());
+                continue;
             }
 
             if (!$mmail->send()) {

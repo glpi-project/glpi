@@ -264,6 +264,8 @@ class ITILControllerTest extends HLAPITestCase
      */
     public function testBlockOverridingParentItem()
     {
+        $this->loginWeb();
+
         $ticket = new Ticket();
         $this->assertGreaterThan(0, $tickets_id = $ticket->add([
             'name' => __FUNCTION__,
@@ -638,9 +640,26 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) use ($members) {
                     $this->assertCount(count($members), $content);
-                    $member_ids = array_column($members, 'id');
-                    foreach ($content as $member) {
-                        $this->assertContains($member['id'], $member_ids);
+                    foreach ($members as $m) {
+                        $found = false;
+                        foreach ($content as $member_data) {
+                            $type = match ($member_data['_type']) {
+                                'UserTeamMember' => 'User',
+                                'GroupTeamMember' => 'Group',
+                                'SupplierTeamMember' => 'Supplier'
+                            };
+                            if ($type === 'User' && $member_data['user']['id'] === $m['id'] && $member_data['role'] === $m['role']) {
+                                $found = true;
+                                break;
+                            } elseif ($type === 'Group'  && $member_data[$type]['id']  !==  $m['id']) {
+                                $found = true;
+                                break;
+                            } elseif ($type === 'Supplier'  && $member_data[$type]['id']  !==  $m['id']) {
+                                $found = true;
+                                break;
+                            }
+                        }
+                        $this->assertTrue($found);
                     }
                 });
         });
@@ -663,7 +682,7 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content);
-                    $this->assertEquals(3, array_values($content)[0]['id']);
+                    $this->assertEquals(3, array_values($content)[0]['user']['id']);
                 });
         });
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/observer"), function ($call) {
@@ -671,7 +690,7 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content);
-                    $this->assertEquals(2, array_values($content)[0]['id']);
+                    $this->assertEquals(2, array_values($content)[0]['user']['id']);
                 });
         });
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/assigned"), function ($call) {
@@ -679,7 +698,7 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content);
-                    $this->assertEquals(4, array_values($content)[0]['id']);
+                    $this->assertEquals(4, array_values($content)[0]['user']['id']);
                 });
         });
 
@@ -742,6 +761,24 @@ class ITILControllerTest extends HLAPITestCase
         ], [
             'name' => __FUNCTION__ . '2',
             'cost_fixed' => 150,
+        ]);
+    }
+
+    public function testCRUDExternalEvent(): void
+    {
+        $entities_id = $this->getTestRootEntity(true);
+
+        $this->api->autoTestCRUD('/Assistance/ExternalEvent', [
+            'name' => __FUNCTION__,
+            'text' => 'test',
+            'entity' => $entities_id,
+            'user' => 2,
+            'date_begin' => date(\DateTimeInterface::RFC3339, strtotime('+1 day')),
+            'date_end' => date(\DateTimeInterface::RFC3339, strtotime('+2 days')),
+        ], [
+            'name' => __FUNCTION__ . '2',
+            'date_begin' => date(\DateTimeInterface::RFC3339, strtotime('+3 days')),
+            'date_end' => date(\DateTimeInterface::RFC3339, strtotime('+4 days')),
         ]);
     }
 }

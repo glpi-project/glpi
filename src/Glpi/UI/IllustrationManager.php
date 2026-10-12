@@ -88,11 +88,7 @@ final class IllustrationManager
             ?? '/lib/glpi-project/illustrations/glpi-illustrations-scenes-gradient.svg'
         ;
 
-        $this->checkIconFile($this->icons_definition_file);
-        $this->checkIconFile(GLPI_ROOT . "/public/$this->scenes_gradient_sprites_path");
-        $this->checkIconFile(GLPI_ROOT . "/public/$this->icons_sprites_path");
-        $this->validateOrInitCustomContentDir(self::CUSTOM_ILLUSTRATION_DIR);
-        $this->validateOrInitCustomContentDir(self::CUSTOM_SCENES_DIR);
+        // Nothing else to do here: files and custom content are checked lazily
     }
 
     public function getCustomIconIdFromPrefixedString(string $prefixed_id): string
@@ -261,6 +257,8 @@ final class IllustrationManager
 
     public function saveCustomIllustration(string $id, string $path): void
     {
+        $this->validateOrInitCustomContentDir(self::CUSTOM_ILLUSTRATION_DIR);
+
         $dest = self::CUSTOM_ILLUSTRATION_DIR . "/$id";
         $real_dest = realpath(dirname($dest)) . DIRECTORY_SEPARATOR . basename($dest);
         if (!str_starts_with($real_dest, realpath(self::CUSTOM_ILLUSTRATION_DIR) . DIRECTORY_SEPARATOR)) {
@@ -271,6 +269,8 @@ final class IllustrationManager
 
     public function saveCustomScene(string $id, string $path): void
     {
+        $this->validateOrInitCustomContentDir(self::CUSTOM_SCENES_DIR);
+
         $dest = self::CUSTOM_SCENES_DIR . "/$id";
         $real_dest = realpath(dirname($dest)) . DIRECTORY_SEPARATOR . basename($dest);
         if (!str_starts_with($real_dest, realpath(self::CUSTOM_SCENES_DIR) . DIRECTORY_SEPARATOR)) {
@@ -281,6 +281,8 @@ final class IllustrationManager
 
     public function getCustomIllustrationFile(string $id): ?string
     {
+        $this->validateOrInitCustomContentDir(self::CUSTOM_ILLUSTRATION_DIR);
+
         try {
             $file_path = realpath(self::CUSTOM_ILLUSTRATION_DIR . "/$id");
         } catch (FilesystemException) {
@@ -310,6 +312,8 @@ final class IllustrationManager
 
     public function getCustomSceneFile(string $id): ?string
     {
+        $this->validateOrInitCustomContentDir(self::CUSTOM_SCENES_DIR);
+
         $file_path = realpath(self::CUSTOM_SCENES_DIR . "/$id");
         $custom_dir_path = realpath(self::CUSTOM_SCENES_DIR);
 
@@ -342,6 +346,8 @@ final class IllustrationManager
 
     private function renderNativeIcon(string $icon_id, ?int $size = null): string
     {
+        $this->checkIconFile(GLPI_ROOT . "/public/$this->icons_sprites_path");
+
         $size = $this->computeSize($size);
 
         $twig = TemplateRenderer::getInstance();
@@ -371,6 +377,8 @@ final class IllustrationManager
         ?int $height = null,
         ?int $width = null,
     ): string {
+        $this->checkIconFile(GLPI_ROOT . "/public/$this->scenes_gradient_sprites_path");
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
             'file_path' => $this->scenes_gradient_sprites_path,
@@ -397,6 +405,7 @@ final class IllustrationManager
     private function getIconsDefinitions(): array
     {
         if ($this->icons_definitions === null) {
+            $this->checkIconFile($this->icons_definition_file);
             $json = file_get_contents($this->icons_definition_file);
             $this->icons_definitions = json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR);
         }

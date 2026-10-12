@@ -57,7 +57,7 @@ class ITILSolutionTest extends DbTestCase
             (int) $itilobject->add([
                 'name'         => "$itemtype title",
                 'description'  => 'a description',
-                'content'      => '',
+                'content'      => 'content',
                 'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
             ])
         );
@@ -78,7 +78,7 @@ class ITILSolutionTest extends DbTestCase
             (int) $ticket->add([
                 'name'               => 'ticket title',
                 'description'        => 'a description',
-                'content'            => '',
+                'content'            => 'content',
                 '_users_id_assign'   => $uid,
             ])
         );
@@ -536,7 +536,7 @@ HTML,
         $ticket_id = (int) $ticket->add([
             'name'               => 'ticket title',
             'description'        => 'a description',
-            'content'            => '',
+            'content'            => 'content',
             '_users_id_requester' => $postonly_id,
             '_users_id_assign'    => $tech_id,
         ]);

@@ -37,6 +37,7 @@ use Com\Tecnick\Barcode\Barcode;
 use Com\Tecnick\Barcode\Model;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 class BarcodeManager
 {
@@ -93,7 +94,7 @@ class BarcodeManager
                 'datatype'      => 'string',
                 'computation'   => QueryFunction::concat([
                     new QueryExpression('?', null, [$url_prefix]),
-                    'TABLE.id',
+                    new QueryIdentifier('TABLE.id'),
                 ]),
             ],
         ];

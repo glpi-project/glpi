@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 use function Safe\preg_replace;
 use function Safe\strtotime;
@@ -481,7 +482,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'computation'        => QueryFunction::if(
                 condition: new QueryExpression("EXISTS (SELECT 1 FROM $subquery WHERE durations.entity_id = $parent_table.entities_id AND durations.inquest_duration > 0)"),
                 true_expression: QueryFunction::dateAdd(
-                    date: "$table.date_begin",
+                    date: new QueryIdentifier("$table.date_begin"),
                     interval: new QueryExpression("(SELECT durations.inquest_duration FROM $subquery WHERE durations.entity_id = $parent_table.entities_id)"),
                     interval_unit: 'DAY',
                 ),

@@ -43,6 +43,7 @@ import { EntitySwitcher } from '../utils/EntitySwitcher';
 import { FormImporter } from '../utils/FormImporter';
 import { DebugModeSwitcher } from '../utils/DebugModeSwitcher';
 import { ReAuthenticator } from '../utils/ReAuthenticator';
+import { GeneralConfig } from '../utils/GeneralConfig';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -55,6 +56,7 @@ export const test = baseTest.extend<{
     debug: DebugModeSwitcher,
     reauth: ReAuthenticator,
     ensureReauthenticated: void,
+    general_config: GeneralConfig,
     retryTimeout: void,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
@@ -86,8 +88,23 @@ export const test = baseTest.extend<{
 
         // Render the login page in order to find the
         // login and password fields names
-        const response = await context.get(Config.getBaseUrl());
-        const body = await response.text();
+        let response = await context.get(Config.getBaseUrl());
+        let body = await response.text();
+
+        if (body.includes('MAINTENANCE MODE')) {
+            // An isolated test that enables the maintenance mode is supposed to
+            // disable it again, even when it fails (see
+            // `playwright.isolated.config.ts`). If it did not, no session could
+            // be created anymore and the whole suite would fail with a
+            // confusing error.
+            // GLPI's own backdoor puts a flag in the session that lets this
+            // request go through, see `CheckMaintenanceListener`.
+            response = await context.get(
+                `${Config.getBaseUrl()}/index.php?skipMaintenance=1`
+            );
+            body = await response.text();
+        }
+
         const document = new JSDOM(body).window.document;
 
         // Extract login field name
@@ -162,6 +179,13 @@ export const test = baseTest.extend<{
     // Service used to grant/revoke reauth (sudo mode) on the current session.
     reauth: [async ({ request }, use) => {
         await use(new ReAuthenticator(request));
+    }, { scope: 'test' }],
+
+    // Service used to update GLPI's general configuration.
+    // This configuration is global to the whole application, thus only the
+    // isolated tests (`*.spec.isolated.ts`) may use it.
+    general_config: [async ({ request }, use) => {
+        await use(new GeneralConfig(request));
     }, { scope: 'test' }],
 
     // Store the state of the current session.

@@ -34,6 +34,8 @@
 
 namespace Glpi\Kernel;
 
+use Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener;
+use Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener;
 use Glpi\Kernel\Listener\PostBootListener\BootPlugins;
 use Glpi\Kernel\Listener\PostBootListener\CheckPluginsStates;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsAutoloaderRegistration;
@@ -50,6 +52,7 @@ use Glpi\Kernel\Listener\PostBootListener\SetDbSessionVars;
 use Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener;
 use Glpi\Kernel\Listener\RequestListener\CheckDatabaseStatusListener;
 use Glpi\Kernel\Listener\RequestListener\CheckMaintenanceListener;
+use Glpi\Kernel\Listener\RequestListener\CheckStartupErrorsListener;
 use Glpi\Kernel\Listener\RequestListener\ErrorHandlerRequestListener;
 use Glpi\Kernel\Listener\RequestListener\FlushBootErrors;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
@@ -99,6 +102,11 @@ final class ListenersPriority
         // must be served in this case.
         CheckMaintenanceListener::class    => 490,
 
+        // This listener will report the PHP errors that occurred during the request startup, and will
+        // prevent the request from being processed when they altered the input data.
+        // It must be executed before anything reads the request input.
+        CheckStartupErrorsListener::class  => 485,
+
         // This listener will ensure that the request is made on a secure context (HTTPS) when the
         // cookies are available only on a secure context (`session.cookie_secure=on`).
         // It must be executed before trying to serve any statefull endpoint.
@@ -143,6 +151,14 @@ final class ListenersPriority
         // Update session variables according to request parameters.
         // Must be called as late as possible, just before controllers execution.
         SessionVariables::class            => 0,
+    ];
+
+    public const CONTROLLER_LISTENERS_PRIORITIES = [
+        // Block unsafe requests subject to CSRF.
+        CheckCsrfListener::class        => 20,
+
+        // Applies the security strategy of the controller (authentication, profile rights, ...).
+        FirewallStrategyListener::class => 10,
     ];
 
     private function __construct() {}

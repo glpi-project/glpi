@@ -48,6 +48,7 @@ use Glpi\Exception\RedirectException;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use Group;
+use Lockedfield;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareVersion;
@@ -1389,6 +1390,202 @@ class CommonDBTMTest extends DbTestCase
         $this->hasSessionMessages(ERROR, [$err_msg]);
     }
 
+    public function testCheckUnicityIgnoresLockedFields()
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $field_unicity = new FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => Computer::class,
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => $entities_id,
+            ])
+        );
+
+        $computer = new Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id1 = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $computers_id2 = $computer->add([
+                'name' => __FUNCTION__ . '02',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        // manual rename (no is_dynamic) locks the name field on computer 2
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '02-locked',
+            ])
+        );
+        $lockedfield = new Lockedfield();
+        $this->assertSame(['name'], $lockedfield->getLockedNames(Computer::class, $computers_id2));
+
+        // a later inventory reporting computer 1's name for computer 2 must not be
+        // flagged as a duplicate: the locked name field is discarded, never persisted
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '01',
+                'is_dynamic' => 1,
+            ])
+        );
+        $this->hasNoSessionMessages([ERROR]);
+
+        $this->assertTrue($computer->getFromDB($computers_id2));
+        $this->assertSame(__FUNCTION__ . '02-locked', $computer->fields['name']);
+    }
+
+    public function testCheckUnicityIgnoresLockedFieldsOnReactivation()
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $field_unicity = new FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => Computer::class,
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => $entities_id,
+            ])
+        );
+
+        $computer = new Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id1 = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $computers_id2 = $computer->add([
+                'name' => __FUNCTION__ . '02',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        // manual rename (no is_dynamic) locks the name field on computer 2
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '02-locked',
+            ])
+        );
+        $lockedfield = new Lockedfield();
+        $this->assertSame(['name'], $lockedfield->getLockedNames(Computer::class, $computers_id2));
+
+        // computer 2 goes non-dynamic (e.g. inventory agent removed), the lock stays
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'is_dynamic' => 0,
+            ])
+        );
+        $this->assertTrue($computer->getFromDB($computers_id2));
+        $this->assertSame(0, (int) $computer->fields['is_dynamic']);
+
+        // reactivation: an inventory update turns is_dynamic back on and reports
+        // computer 1's name; the locked name field must still be discarded, not checked
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '01',
+                'is_dynamic' => 1,
+            ])
+        );
+        $this->hasNoSessionMessages([ERROR]);
+
+        $this->assertTrue($computer->getFromDB($computers_id2));
+        $this->assertSame(__FUNCTION__ . '02-locked', $computer->fields['name']);
+    }
+
+    public function testCheckUnicityChecksIncomingValueOnManualEditMissingIsDynamic()
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $field_unicity = new FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => Computer::class,
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => $entities_id,
+            ])
+        );
+
+        $computer = new Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id1 = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $computers_id2 = $computer->add([
+                'name' => __FUNCTION__ . '02',
+                'entities_id' => $entities_id,
+                'is_dynamic' => 1,
+            ])
+        );
+
+        // manual rename (no is_dynamic) locks the name field on computer 2
+        $this->assertTrue(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '02-locked',
+            ])
+        );
+        $lockedfield = new Lockedfield();
+        $this->assertSame(['name'], $lockedfield->getLockedNames(Computer::class, $computers_id2));
+
+        // another manual edit, still no is_dynamic: cleanLockeds() won't strip the
+        // locked name field, so the duplicate value actually gets persisted and
+        // must be reported
+        $this->assertFalse(
+            $computer->update([
+                'id' => $computers_id2,
+                'name' => __FUNCTION__ . '01',
+            ])
+        );
+        $this->hasSessionMessageThatContains(__FUNCTION__ . '01', ERROR);
+    }
+
     public function testSkipCheckUnicityWithTemplate()
     {
         $this->login();
@@ -2619,6 +2816,71 @@ class CommonDBTMTest extends DbTestCase
         $this->assertEquals("Computer A2", $items[1]->getName());
         $this->assertEquals("Computer A3", $items[2]->getName());
         $this->assertEquals("Computer A4", $items[3]->getName());
+    }
+
+    public function testCleanRelationDataOnSharedTable(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $manufacturer = $this->createItem(\Manufacturer::class, ['name' => __FUNCTION__]);
+        $phone = $this->createItem(\Phone::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $antivirus = $this->createItem(\ItemAntivirus::class, [
+            'name'             => __FUNCTION__,
+            'itemtype'         => \Phone::class,
+            'items_id'         => $phone->getID(),
+            'manufacturers_id' => $manufacturer->getID(),
+        ]);
+
+        // Emulate a runtime state in which the `glpi_itemantiviruses` table has been attached to the
+        // deprecated `ComputerAntivirus` class, i.e. any code path resolving its table.
+        getTableForItemType(\ComputerAntivirus::class);
+
+        $this->assertTrue($manufacturer->delete(['id' => $manufacturer->getID()], true));
+
+        $this->assertTrue($antivirus->getFromDB($antivirus->getID()));
+        $this->assertSame(0, $antivirus->fields['manufacturers_id']);
+        $this->assertSame(\Phone::class, $antivirus->fields['itemtype']);
+        $this->assertSame($phone->getID(), $antivirus->fields['items_id']);
+    }
+
+    public function testCleanRelationDataOnTableOwnedByAbstractItemtypeWithGetById(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+
+        $validation_step = $this->createItem(\ValidationStep::class, [
+            'name'                                => __FUNCTION__,
+            'minimal_required_validation_percent' => 100,
+        ]);
+        $ticket = $this->createItem(\Ticket::class, ['name' => __FUNCTION__, 'content' => __FUNCTION__]);
+
+        // `glpi_itils_validationsteps` is expected to be owned by the abstract `ITIL_ValidationStep`
+        // class. Insert the row directly to not depend on the ITIL validation logic.
+        $DB->insert('glpi_itils_validationsteps', [
+            'validationsteps_id'                  => $validation_step->getID(),
+            'itemtype'                            => \Ticket::class,
+            'items_id'                            => $ticket->getID(),
+            'minimal_required_validation_percent' => 100,
+        ]);
+
+        $validation_step->cleanRelationData();
+
+        // The row is correctly deleted.
+        $this->assertSame(
+            0,
+            countElementsInTable(
+                'glpi_itils_validationsteps',
+                ['validationsteps_id' => $validation_step->getID()]
+            )
+        );
     }
 
     public static function getTemplateProvider(): iterable

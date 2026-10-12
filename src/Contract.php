@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\Clonable;
 use Glpi\Features\StateInterface;
 
@@ -354,9 +355,9 @@ class Contract extends CommonDBTM implements StateInterface
             'datatype'           => 'decimal',
             'massiveaction'      => false,
             'joinparams'         => $joinparamscost,
-            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / '
-                . QueryFunction::count('TABLE.id') . ') * '
-                . QueryFunction::count('TABLE.id', distinct: true),
+            'computation'        => '(' . QueryFunction::sum(new QueryIdentifier('TABLE.cost')) . ' / '
+                . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                . QueryFunction::count(new QueryIdentifier('TABLE.id'), distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -778,9 +779,9 @@ class Contract extends CommonDBTM implements StateInterface
             'joinparams'         => [
                 'jointype'           => 'child',
             ],
-            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / '
-                . QueryFunction::count('TABLE.id') . ') * '
-                . QueryFunction::count('TABLE.id', distinct: true),
+            'computation'        => '(' . QueryFunction::sum(new QueryIdentifier('TABLE.cost')) . ' / '
+                . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                . QueryFunction::count(new QueryIdentifier('TABLE.id'), distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -874,8 +875,8 @@ class Contract extends CommonDBTM implements StateInterface
         }
 
         $end_date = QueryFunction::dateAdd(
-            date: 'begin_date',
-            interval: new QueryExpression($DB::quoteName('duration')),
+            date: new QueryIdentifier('begin_date'),
+            interval: new QueryIdentifier('duration'),
             interval_unit: 'MONTH'
         );
 
@@ -923,7 +924,7 @@ class Contract extends CommonDBTM implements StateInterface
         $contract30 = $result['cpt'];
 
         $notice_date = QueryFunction::dateAdd(
-            date: 'begin_date',
+            date: new QueryIdentifier('begin_date'),
             interval: new QueryExpression($DB::quoteName('duration') . ' - ' . $DB::quoteName('notice')),
             interval_unit: 'MONTH'
         );
@@ -1107,8 +1108,8 @@ class Contract extends CommonDBTM implements StateInterface
         $contract_messages = [];
 
         $end_date = QueryFunction::dateAdd(
-            date: 'glpi_contracts.begin_date',
-            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration')),
+            date: new QueryIdentifier('glpi_contracts.begin_date'),
+            interval: new QueryIdentifier('glpi_contracts.duration'),
             interval_unit: 'MONTH'
         );
 
@@ -1118,7 +1119,7 @@ class Contract extends CommonDBTM implements StateInterface
         );
 
         $notice_date = QueryFunction::dateAdd(
-            date: 'glpi_contracts.begin_date',
+            date: new QueryIdentifier('glpi_contracts.begin_date'),
             interval: new QueryExpression($DB::quoteName('glpi_contracts.duration') . ' - ' . $DB::quoteName('glpi_contracts.notice')),
             interval_unit: 'MONTH'
         );
@@ -1153,7 +1154,7 @@ class Contract extends CommonDBTM implements StateInterface
                 'WHERE'     => [
                     [
                         'RAW' => [
-                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . 2 ** Alert::NOTICE => ['>', 0],
+                            new QueryIdentifier('glpi_contracts.alert') . ' & ' . 2 ** Alert::NOTICE => ['>', 0],
                         ],
                     ],
                     'glpi_alerts.date'           => null,
@@ -1191,7 +1192,7 @@ class Contract extends CommonDBTM implements StateInterface
                 'WHERE'     => [
                     [
                         'RAW' => [
-                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . 2 ** Alert::END => ['>', 0],
+                            new QueryIdentifier('glpi_contracts.alert') . ' & ' . 2 ** Alert::END => ['>', 0],
                         ],
                     ],
                     'glpi_alerts.date'           => null,
@@ -1671,8 +1672,8 @@ class Contract extends CommonDBTM implements StateInterface
                 new QueryExpression(
                     QueryFunction::dateDiff(
                         expression1: QueryFunction::dateAdd(
-                            date: 'glpi_contracts.begin_date',
-                            interval: new QueryExpression($DB::quoteName('glpi_contracts.duration')),
+                            date: new QueryIdentifier('glpi_contracts.begin_date'),
+                            interval: new QueryIdentifier('glpi_contracts.duration'),
                             interval_unit: 'MONTH'
                         ),
                         expression2: QueryFunction::curDate()

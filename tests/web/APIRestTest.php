@@ -487,6 +487,29 @@ class APIRestTest extends TestCase
         $this->checkEmptyContentRange($data, $data['headers']);
     }
 
+    public function testSearchWithTableAdditionalField()
+    {
+        // Search option 62 of tickets (satisfaction) has `TABLE.entities_id` as additional field.
+        // No warning should be logged on the server, see `tearDown()`.
+        $data = $this->query(
+            'search',
+            [
+                'itemtype' => 'Ticket',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => [
+                    'forcedisplay' => [62],
+                ],
+            ]
+        );
+
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('data', $data);
+        $this->assertNotEmpty($data['data']);
+        foreach ($data['data'] as $row) {
+            $this->assertArrayHasKey(62, $row);
+        }
+    }
+
     public function testSearchAllAssets()
     {
         // Test that searching AllAssets (itemtype without database table) doesn't crash

@@ -101,10 +101,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    $this->getTable(),
-                    [$this->getForeignKeyField() => $item->getID()]
-                );
+                $criteria = [$this->getForeignKeyField() => $item->getID()];
+                if ($this->maybeDeleted()) {
+                    $criteria['is_deleted'] = 0;
+                }
+                $nb = countElementsInTable($this->getTable(), $criteria);
             }
             return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
@@ -570,10 +571,15 @@ TWIG, $twig_params);
         }
 
         $fk   = static::getForeignKeyField();
+        $where = [$fk => $ID];
+        if ($this->maybeDeleted()) {
+            // Children moved to the trash must not be listed with the active ones
+            $where['is_deleted'] = 0;
+        }
         $result = $DB->request(
             [
                 'FROM'  => static::getTable(),
-                'WHERE' => [$fk => $ID],
+                'WHERE' => $where,
                 'ORDER' => 'name',
             ]
         );
@@ -938,7 +944,7 @@ TWIG, $twig_params);
                     'completename' => $input['completename'],
                 ],
             ];
-            if ($this->isEntityAssign()) {
+            if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',
@@ -963,7 +969,7 @@ TWIG, $twig_params);
                     $fk      => ($input[$fk] ?? 0),
                 ],
             ];
-            if ($this->isEntityAssign()) {
+            if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',

@@ -62,6 +62,10 @@
                     {{ fields.sliderField('enabled_inventory', config['enabled_inventory'], __('Inventory enabled'),
                         field_options|merge({
                             id: 'enabled_inventory_header',
+                            additional_attributes: {
+                                'aria-controls': 'bloc_enabled',
+                                'aria-expanded': config['enabled_inventory'] ? 'true' : 'false',
+                            },
                         })) }}
                     </div>
                 </div>
@@ -294,6 +298,7 @@
             function toggleEnabled() {
                 const enabled = $('[name="enabled_inventory"]').is(':checked');
                 $('#bloc_enabled').toggle(enabled);
+                $('#enabled_inventory_header').attr('aria-expanded', enabled ? 'true' : 'false');
             }
 
             function toggleStaleAgentStatus() {

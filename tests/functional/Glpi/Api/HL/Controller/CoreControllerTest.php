@@ -385,6 +385,42 @@ class CoreControllerTest extends HLAPITestCase
         });
     }
 
+    public function testAuthorizePreservesPkceParamsOnLoginRedirect(): void
+    {
+        // Create an OAuth client using the authorization code grant
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+            'grants' => ['authorization_code'],
+        ]);
+
+        // No session is authenticated
+        $request = new Request('GET', '/authorize');
+        $request = $request->withQueryParams([
+            'response_type'         => 'code',
+            'client_id'             => $client->fields['identifier'],
+            'redirect_uri'          => '/api.php/oauth2/redirection',
+            'scope'                 => 'user',
+            'state'                 => 'xyzABC123',
+            'code_challenge'        => 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cU',
+            'code_challenge_method' => 'S256',
+        ]);
+
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->status(fn($status) => $this->assertEquals(302, $status))
+                ->headers(function ($headers) {
+                    $location = $headers['Location'];
+                    $this->assertStringContainsString('redirect=', $location);
+                    $redirect_target = urldecode(explode('redirect=', $location, 2)[1]);
+                    $this->assertStringContainsString('code_challenge=', $redirect_target);
+                    $this->assertStringContainsString('code_challenge_method=', $redirect_target);
+                    $this->assertStringContainsString('state=', $redirect_target);
+                });
+        }, false);
+    }
+
     public function testStatusScope()
     {
         $this->login(api_options: ['scope' => 'api']);

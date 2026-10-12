@@ -41,6 +41,7 @@ use Glpi\Asset\CustomFieldType\RawType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Locale\LanguageRegistry;
 use InvalidArgumentException;
 use RuntimeException;
@@ -122,7 +123,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
         $DB->update('glpi_assets_assets', [
             'custom_fields' => QueryFunction::jsonRemove([
-                'custom_fields',
+                new QueryIdentifier('custom_fields'),
                 new QueryExpression($DB::quoteValue('$."' . $this->fields['id'] . '"')),
             ]),
         ], [

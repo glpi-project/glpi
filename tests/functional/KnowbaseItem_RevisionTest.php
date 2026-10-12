@@ -37,6 +37,8 @@ namespace tests\units;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use KnowbaseItem_Revision;
+use Session;
 
 final class KnowbaseItem_RevisionTest extends DbTestCase
 {
@@ -50,12 +52,12 @@ final class KnowbaseItem_RevisionTest extends DbTestCase
     public function testGetTypeName()
     {
         $expected = 'Revision';
-        $this->assertSame($expected, \KnowbaseItem_Revision::getTypeName(1));
+        $this->assertSame($expected, KnowbaseItem_Revision::getTypeName(1));
 
         $expected = 'Revisions';
-        $this->assertSame($expected, \KnowbaseItem_Revision::getTypeName(0));
-        $this->assertSame($expected, \KnowbaseItem_Revision::getTypeName(2));
-        $this->assertSame($expected, \KnowbaseItem_Revision::getTypeName(10));
+        $this->assertSame($expected, KnowbaseItem_Revision::getTypeName(0));
+        $this->assertSame($expected, KnowbaseItem_Revision::getTypeName(2));
+        $this->assertSame($expected, KnowbaseItem_Revision::getTypeName(10));
     }
 
     public function testNewRevision()
@@ -147,6 +149,81 @@ final class KnowbaseItem_RevisionTest extends DbTestCase
         //reset
         $this->assertTrue($kb1->getFromDB($kb1->getID()));
         $this->assertTrue($kb1->revertTo($rev_id));
+    }
+
+    public function testWriteActionsAreForbidden(): void
+    {
+        // A super-admin session has every knowbase right, yet direct writes stay refused.
+        $this->login();
+        $this->assertFalse(KnowbaseItem_Revision::canCreate());
+        $this->assertFalse(KnowbaseItem_Revision::canUpdate());
+        $this->assertFalse(KnowbaseItem_Revision::canPurge());
+        $this->assertFalse(KnowbaseItem_Revision::canDelete());
+    }
+
+    public function testCanViewItemFollowsEditableParent(): void
+    {
+        $this->login();
+        $kb = $this->getNewKbItem();
+        $this->assertTrue(
+            $kb->update(['id' => $kb->getID(), 'answer' => 'v2'])
+        );
+
+        $revision = new KnowbaseItem_Revision();
+        $this->assertTrue($revision->getFromDBByCrit(['knowbaseitems_id' => $kb->getID()]));
+
+        $this->assertTrue($revision->canViewItem());
+    }
+
+    public function testCanViewItemDeniedForReadOnlyParent(): void
+    {
+        $this->login();
+
+        // Own article: always readable, editable only with UPDATE.
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'read only ' . $this->getUniqueString(),
+            'answer'   => '<p>v1</p>',
+            'users_id' => Session::getLoginUserID(),
+            'is_faq'   => 0,
+        ]);
+        $this->assertTrue(
+            $kb->update(['id' => $kb->getID(), 'answer' => '<p>v2</p>'])
+        );
+
+        $revision = new KnowbaseItem_Revision();
+        $this->assertTrue($revision->getFromDBByCrit(['knowbaseitems_id' => $kb->getID()]));
+
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+
+        $this->assertTrue($kb->can($kb->getID(), READ)); // guard: parent still readable
+        $this->assertFalse($kb->can($kb->getID(), UPDATE));
+        $this->assertFalse($revision->canViewItem());
+    }
+
+    public function testCanViewItemDeniedForRestrictedParent(): void
+    {
+        $this->login();
+
+        // Authored by another user, no visibility grant: unreadable without KNOWBASEADMIN.
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'restricted ' . $this->getUniqueString(),
+            'answer'   => '<p>secret</p>',
+            'users_id' => getItemByTypeName('User', 'normal', true),
+            'is_faq'   => 0,
+        ]);
+        $this->assertTrue(
+            $kb->update(['id' => $kb->getID(), 'answer' => '<p>secret v2</p>'])
+        );
+
+        $revision = new KnowbaseItem_Revision();
+        $this->assertTrue($revision->getFromDBByCrit(['knowbaseitems_id' => $kb->getID()]));
+
+        // Drop to a plain writer with no visibility on the article.
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | CREATE | PURGE;
+
+        $this->assertFalse($kb->can($kb->getID(), READ)); // guard: parent now unreadable
+        $this->assertFalse($revision->canViewItem());
     }
 
     private function getNewKbItem(): KnowbaseItem

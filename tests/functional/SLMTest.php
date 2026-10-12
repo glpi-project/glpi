@@ -2309,8 +2309,8 @@ class SLMTest extends DbTestCase
         $levels_todo = (new OlaLevel_Ticket())->find(['tickets_id' => $ticket->getID()]);
         $map_level_to_olalevels_id = fn(array $levels) => array_map(fn($l) => $l['olalevels_id'], $levels);
         $this->assertEqualsCanonicalizing(
-            $levels,
-            $map_level_to_olalevels_id($levels_todo)
+            array_values($levels),
+            array_values($map_level_to_olalevels_id($levels_todo))
         );
     }
 

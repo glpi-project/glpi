@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
@@ -608,7 +609,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
                         'items_id'        => $id,
                         'itemtype'        => $item::class,
                     ];
-                    if ($certif_item->can(-1, UPDATE, $input)) {
+                    if ($certif_item->can(-1, CREATE, $input)) {
                         if ($certif_item->add($input)) {
                             $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
@@ -629,6 +630,13 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
                             'items_id' => $input["item_item"],
                             'itemtype' => $input['typeitem'],
                         ];
+
+                        if (!$certif_item->can(-1, CREATE, $values)) {
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         if ($certif_item->add($values)) {
                             $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                         } else {
@@ -644,7 +652,19 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
             case self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall':
                 $input = $ma->getInput();
                 foreach ($ids as $key) {
-                    if ($certif_item->deleteItemByCertificatesAndItem($key, $input['item_item'], $input['typeitem'])) {
+                    if (!$certif_item->getFromDBbyCertificatesAndItem($key, $input['item_item'], $input['typeitem'])) {
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                        continue;
+                    }
+
+                    if (!$certif_item->can($certif_item->getID(), DELETE)) {
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    if ($certif_item->delete(['id' => $certif_item->getID()])) {
                         $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } else {
                         $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
@@ -759,7 +779,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
                         ],
                         [
                             'RAW' => [
-                                'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before],
+                                'DATEDIFF(' . new QueryIdentifier('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before],
                             ],
                         ],
                         'glpi_certificates.entities_id' => $entity,

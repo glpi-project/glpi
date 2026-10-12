@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
@@ -613,6 +614,34 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Resolve the entity to use for a new item created from an asset (via the
+     * "_add_fromitem"/"itemtype"/"items_id" form options), provided the
+     * current user has access to that entity.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return int|null The asset entity, or null if it cannot be determined or is not accessible.
+     */
+    protected function getEntitiesIdFromAddFromItemOptions(array $options): ?int
+    {
+        if (
+            !isset($options['_add_fromitem'], $options['itemtype'])
+            || !is_a($options['itemtype'], CommonDBTM::class, true)
+        ) {
+            return null;
+        }
+
+        $item = new $options['itemtype']();
+        $item->getFromDB($options['items_id'][$options['itemtype']][0]);
+
+        if (!Session::haveAccessToEntity($item->fields['entities_id'])) {
+            return null;
+        }
+
+        return $item->fields['entities_id'];
+    }
+
+    /**
      * @param $ID
      * @param $options   array
      **/
@@ -620,6 +649,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         if (!static::canView()) {
             return false;
+        }
+
+        $entities_id = $this->getEntitiesIdFromAddFromItemOptions($options);
+        if ($entities_id !== null) {
+            $options['entities_id'] = $entities_id;
         }
 
         $this->restoreInputAndDefaults($ID, $options);
@@ -1567,7 +1601,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return countElementsInTable(
             [$itemtable, $linktable],
             [
-                "$linktable.$itemfk"    => new QueryExpression(DBmysql::quoteName("$itemtable.id")),
+                "$linktable.$itemfk"    => new QueryIdentifier("$itemtable.id"),
                 "$linktable.$field"     => $id,
                 "$linktable.type"       => $role,
                 "$itemtable.is_deleted" => 0,
@@ -1762,7 +1796,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'NOT' => [$this->getTable() . '.solvedate' => null],
                         new QueryExpression(
                             QueryFunction::dateAdd(
-                                date: static::getTable() . '.solvedate',
+                                date: new QueryIdentifier(static::getTable() . '.solvedate'),
                                 interval: $days,
                                 interval_unit: 'DAY'
                             ) . ' > ' . QueryFunction::now()
@@ -1904,15 +1938,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        // If category, entity, or type fields are not updated, the template is not changed.
-        if (
-            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
-            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
-            && (empty($input['type']) || $this->fields['type'] == $input['type'])
-        ) {
-            return $input;
-        }
-
         [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
 
         // First get ticket template associated: entity and type/category
@@ -1923,9 +1948,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return $input;
         }
 
-        $tpl_class = static::getTemplateClass();
-        $input[$tpl_class::getForeignKeyField()] = $tt->getID();
-        $input[static::getTemplateFormFieldName()] = $tt->getID();
+        // If category, entity, or type fields are updated, the template used by the
+        // item may have changed
+        $update_template = !(
+            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
+            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
+            && (empty($input['type']) || $this->fields['type'] == $input['type'])
+        );
+
+        if ($update_template) {
+            $tpl_class = static::getTemplateClass();
+            $input[$tpl_class::getForeignKeyField()] = $tt->getID();
+            $input[static::getTemplateFormFieldName()] = $tt->getID();
+        }
 
         if (count($tt->mandatory)) {
             $mandatory_missing = [];
@@ -2394,9 +2429,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             (
                 isset($this->input["status"])
                 && $this->input["status"] != self::WAITING
+                && !in_array($this->input["status"], $solvedclosed)
             ) || (
                 isset($input["status"])
                 && $input["status"] != self::WAITING
+                && !in_array($input["status"], $solvedclosed)
             )
         ) {
             PendingReason_Item::deleteForItem($this);
@@ -4676,7 +4713,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'SELECT' => 'id',
             'FROM'   => ITILSolution::getTable(),
             'WHERE'  => [
-                ITILSolution::getTable() . '.items_id' => new QueryExpression($DB::quoteName('REFTABLE.id')),
+                ITILSolution::getTable() . '.items_id' => new QueryIdentifier('REFTABLE.id'),
                 ITILSolution::getTable() . '.itemtype' => static::class,
             ],
             'ORDER'  => ITILSolution::getTable() . '.id DESC',
@@ -4712,7 +4749,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
-            'computation'        => QueryFunction::max('TABLE.date_creation'),
+            'computation'        => QueryFunction::max(new QueryIdentifier('TABLE.date_creation')),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
         ];
 
@@ -5118,7 +5155,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             [
                                 'AND' => [
                                     'NOT' => ["$table.takeintoaccountdate" => null],
-                                    "$table.takeintoaccountdate" => ['>', new QueryExpression($DB::quoteName("{$table}.{$type}"))],
+                                    "$table.takeintoaccountdate" => ['>', new QueryIdentifier("{$table}.{$type}")],
                                 ],
                             ],
                             [
@@ -5127,8 +5164,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                     "$table.takeintoaccount_delay_stat" => ['>',
                                         QueryFunction::timestampdiff(
                                             unit: 'SECOND',
-                                            expression1: "$table.date",
-                                            expression2: "{$table}.{$type}"
+                                            expression1: new QueryIdentifier("$table.date"),
+                                            expression2: new QueryIdentifier("{$table}.{$type}")
                                         ),
                                     ],
                                 ],
@@ -5151,7 +5188,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'NOT' => ["{$table}.{$type}" => null],
                         "$table.status" => ['<>', self::WAITING],
                         'OR' => [
-                            "$table.solvedate" => ['>', new QueryExpression($DB::quoteName("$table.$type"))],
+                            "$table.solvedate" => ['>', new QueryIdentifier("$table.$type")],
                             'AND' => [
                                 "$table.solvedate" => null,
                                 "$table.$type" => ['<', QueryFunction::now()],
@@ -5683,11 +5720,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ? Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false)
                 : null,
             'is_solved'           => $is_solved,
-            'resolution'          => $is_solved && $this->fields['solve_delay_stat'] > 0
+            'resolution'          => $is_solved
                 ? Html::timestampToString($this->fields['solve_delay_stat'], false, false)
                 : null,
             'is_closed'           => $is_closed,
-            'closure'             => $is_closed && $this->fields['close_delay_stat'] > 0
+            'closure'             => $is_closed
                 ? Html::timestampToString($this->fields['close_delay_stat'], true, false)
                 : null,
             'pending'             => $this->fields['waiting_duration'] > 0
@@ -6854,7 +6891,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 $solvedelay_column = "";
                 // Show only for solved tickets
-                if ($item->fields['solve_delay_stat'] > 0) {
+                if (!empty($item->fields['solvedate'])) {
                     $solvedelay_column = htmlescape(Html::timestampToString($item->fields['solve_delay_stat']));
                 }
                 echo $output::showItem($solvedelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
@@ -7657,10 +7694,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             foreach ($tasks as $tasks_id => $task_row) {
                 // Safer to use a clean object to load our data
+                /** @var CommonITILTask $tltask */
                 $tltask = getItemForItemtype($taskClass);
                 if (($tltask === false)) {
                     continue;
                 }
+
+                $tltask->setParentItem($this);
                 $tltask->fields = $task_row;
                 $tltask->post_getFromDB();
 
@@ -7741,11 +7781,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Safer to use a clean object to load our data
                 /** @var CommonITILValidation $validation */
                 $validation = getItemForItemtype($validation_class);
+                $validation->setParentItem($this);
                 $validation->fields = $validation_row;
                 $validation->post_getFromDB();
 
-                $canedit = $validation_obj->can($validations_id, UPDATE);
-                $cananswer = $validation_obj->canAnswer()
+                // Use $validation (already loaded with this row's data) instead of $validation_obj,
+                // so that can() does not reload it from the DB.
+                $canedit = $validation->can($validations_id, UPDATE);
+                $cananswer = $validation->canAnswer()
                     && $validation_row['status'] == CommonITILValidation::WAITING
                     && !$this->isSolved(true);
                 $user = new User();
@@ -8752,10 +8795,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             'users_id' => $user_id,
                             'users_id_tech' => $user_id,
                         ];
+
+                        if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
+                            $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
+                        }
                     }
-                }
-                if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
-                    $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
                 }
                 if (!empty($private_task_crit)) {
                     $tasks_crit[] = ['OR' => $private_task_crit];
@@ -9500,7 +9544,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         } else {
                             $actor_id = $actor;
                         }
-                        if (!is_numeric($actor_id)) {
+                        if (!is_numeric($actor_id) && $actor_id !== 'requester_manager') {
                             trigger_error(
                                 sprintf(
                                     'Invalid value "%s" found for additional actor in "%s".',
@@ -10497,10 +10541,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             $select = [];
             if ($itemtype === User::class) {
-                $select = [$link_class::getTable() . '.' . $itemtype::getForeignKeyField(), 'type', 'name', 'realname', 'firstname'];
+                $select = [
+                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(),
+                    $link_class::getTable() . '.id AS linkid',
+                    'type', 'name', 'realname', 'firstname'];
             } else {
                 $select = [
-                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(), 'type', 'name',
+                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(),
+                    $link_class::getTable() . '.id AS linkid',
+                    'type', 'name',
                     new QueryExpression('NULL as realname'),
                     new QueryExpression('NULL as firstname'),
                 ];
@@ -10522,6 +10571,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($it as $data) {
                 $items_id = $data[$itemtype::getForeignKeyField()];
                 $member = [
+                    'linkid'       => $data['linkid'],
                     'itemtype'     => $itemtype,
                     'items_id'     => $items_id,
                     'role'         => $data['type'],
@@ -10814,18 +10864,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @param string $name
-     * @return array{description: string, parameter?: string}
-     */
-    public static function cronInfo($name)
-    {
-        return match ($name) {
-            'createinquest' => ['description' => __('Generation of satisfaction surveys')],
-            default => [],
-        };
-    }
-
-    /**
      * Cron for automatically creating surveys for ITIL Objects
      *
      * @param CronTask $task
@@ -10902,14 +10940,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     "$table.closedate"            => ['>', $max_closedate],
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: "$table.closedate",
+                            date: new QueryIdentifier("$table.closedate"),
                             interval: $delay,
                             interval_unit: 'DAY'
                         ) . ' <= ' . QueryFunction::now()
                     ),
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: "glpi_entities.max_closedate$config_suffix",
+                            date: new QueryIdentifier("glpi_entities.max_closedate$config_suffix"),
                             interval: $duration,
                             interval_unit: 'DAY'
                         ) . ' <= ' . QueryFunction::now()

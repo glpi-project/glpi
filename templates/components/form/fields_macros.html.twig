@@ -1053,6 +1053,7 @@
     {% set options = {
         extra_css_classes: "",
         backdrop: true,
+        allow_empty: false,
     }|merge(options) %}
     {% set field %}
         {{ include('components/illustration/icon_picker.html.twig', {
@@ -1061,6 +1062,7 @@
             'size': 100,
             'preview_css_classes': "illustration-selector d-flex align-items-center card border-1 " ~ options.extra_css_classes,
             'backdrop': options.backdrop,
+            'allow_empty': options.allow_empty,
         }, with_context: false) }}
     {% endset %}
 

@@ -280,6 +280,9 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             unset($output[$action->fields["field"] . '_notif']);
 
                             if ($action->fields["value"] === 'requester_manager') {
+                                if (!is_array($input['_users_id_requester'])) {
+                                    $input['_users_id_requester'] = [$input['_users_id_requester']];
+                                }
                                 foreach ($input['_users_id_requester'] as $user_id) {
                                     $user = new User();
                                     $user->getFromDB($user_id);
@@ -360,6 +363,9 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             )
                             && $action->fields["value"] === 'requester_manager'
                         ) {
+                            if (!is_array($input['_users_id_requester'])) {
+                                $input['_users_id_requester'] = [$input['_users_id_requester']];
+                            }
                             foreach ($input['_users_id_requester'] as $user_id) {
                                 $user = new User();
                                 $user->getFromDB($user_id);
@@ -780,12 +786,6 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $criterias['requesttypes_id']['name']                 = RequestType::getTypeName(1);
         $criterias['requesttypes_id']['linkfield']            = 'requesttypes_id';
         $criterias['requesttypes_id']['type']                 = 'dropdown';
-
-        $criterias['itemtype']['table']                       = $itil_table;
-        $criterias['itemtype']['field']                       = 'itemtype';
-        $criterias['itemtype']['name']                        = __('Item type');
-        $criterias['itemtype']['linkfield']                   = 'itemtype';
-        $criterias['itemtype']['type']                        = 'dropdown_tracking_itemtype';
 
         $criterias['entities_id']['table']                    = 'glpi_entities';
         $criterias['entities_id']['field']                    = 'name';

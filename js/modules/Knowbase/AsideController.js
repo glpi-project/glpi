@@ -30,9 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, glpi_confirm_danger, glpi_toast_error */
+/* global _, glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error */
 
 import { get, post } from "/js/modules/Ajax.js";
+import { GlpiKnowbaseMoveModalController } from "/js/modules/Knowbase/MoveModalController.js";
+import { parentIdOf } from "/js/modules/Knowbase/AsideTree.js";
 import {
     EditorActionType,
     extractParamsFromDataset,
@@ -58,6 +60,12 @@ export class GlpiKnowbaseAsideController
     #search_request_id = 0;
 
     /**
+     * Watches the "load more" marker at the end of the search results.
+     * @type {IntersectionObserver|null}
+     */
+    #search_load_more_observer = null;
+
+    /**
      * Children requests by article id, so a branch is only fetched once even if
      * the reader folds and unfolds it repeatedly.
      *
@@ -66,19 +74,19 @@ export class GlpiKnowbaseAsideController
     #children_cache = new Map();
 
     /**
-     * Whether the favorites section was hidden on initial server render.
-     * Used to restore the correct state after clearing the search.
-     * @type {boolean}
-     */
-    #favorites_originally_hidden = false;
-
-    /**
      * In-flight/resolved dots menu content, keyed by article id. The tree
      * renders only the dots trigger; the menu items are fetched on demand
      * (prefetched on hover) so we never build every article's actions up-front.
      * @type {Map<number, Promise<string>>}
      */
     #actions_cache = new Map();
+
+    /**
+     * Pending prefetch timers, keyed by row: a row left before its delay
+     * elapses never fetches at all.
+     * @type {Map<HTMLElement, number>}
+     */
+    #prefetch_timers = new Map();
 
     /**
      * Viewport width (px) under which the aside becomes a sliding overlay.
@@ -91,6 +99,18 @@ export class GlpiKnowbaseAsideController
      * @type {string}
      */
     static #STORAGE_KEY = 'glpi-kb-aside-collapsed';
+
+    /**
+     * localStorage key persisting the desktop aside width (px), applied before paint by aside.html.twig.
+     * @type {string}
+     */
+    static #WIDTH_STORAGE_KEY = 'glpi-kb-aside-width';
+
+    /** Keyboard resize step (px). */
+    static #WIDTH_STEP = 16;
+
+    /** Dwell delay (ms) before a hovered/focused row prefetches its actions menu. @type {number} */
+    static #PREFETCH_DELAY_MS = 150;
 
     /** @type {HTMLElement|null} */
     #collapse_btn = null;
@@ -115,6 +135,7 @@ export class GlpiKnowbaseAsideController
         this.#initCreateArticle();
         this.#initActions();
         this.#initToggle();
+        this.#initResize();
     }
 
     #initCategoryToggle()
@@ -152,10 +173,9 @@ export class GlpiKnowbaseAsideController
     {
         const id = node.dataset.glpiKbArticleId;
 
-        // The same article can be rendered more than once: under each of its
-        // parents, and again in the search results while the rendered tree is
-        // kept hidden. They all share one fold state, so every copy gets the
-        // very same treatment.
+        // The same article can be rendered more than once, under each of its
+        // parents. They all share one fold state, so every copy gets the very
+        // same treatment.
         const nodes = id ? this.#aside.querySelectorAll(
             `[data-glpi-kb-aside-category][data-glpi-kb-article-id="${CSS.escape(id)}"]`,
         ) : [node];
@@ -205,7 +225,7 @@ export class GlpiKnowbaseAsideController
         if (!this.#children_cache.has(id)) {
             const current_id = this.#aside
                 .querySelector('[data-glpi-kb-aside-tree] [data-glpi-kb-article-current]')
-                ?.dataset.glpiKbArticleId ?? '';
+                ?.dataset.glpiKbArticleId ?? '0';
             this.#children_cache.set(
                 id,
                 get(
@@ -287,6 +307,119 @@ export class GlpiKnowbaseAsideController
     {
         try {
             window.localStorage.setItem(GlpiKnowbaseAsideController.#STORAGE_KEY, collapsed ? '1' : '0');
+        } catch { /* storage unavailable */ }
+    }
+
+    #initResize()
+    {
+        const handle = this.#aside.querySelector('[data-glpi-kb-aside-resizer]');
+        if (!handle) {
+            return;
+        }
+        // Bounds mirror the CSS: min from the handle markup, max is half of the row.
+        const min = Number(handle.getAttribute('aria-valuemin'));
+        const step = GlpiKnowbaseAsideController.#WIDTH_STEP;
+        const max_width = () => Math.max(min, this.#aside.parentElement.clientWidth / 2);
+        const clamp = (w, max = max_width()) => Math.round(Math.min(Math.max(w, min), max));
+
+        // Last set width; re-clamped on read since the row may have shrunk since (CSS clamps the render).
+        // The pre-paint script in aside.html.twig already applied the stored value.
+        let width = parseInt(this.#aside.style.getPropertyValue('--kb-aside-width'), 10) || min;
+        const sync_aria = (max = max_width()) => {
+            handle.setAttribute('aria-valuenow', String(clamp(width, max)));
+            handle.setAttribute('aria-valuemax', String(clamp(Infinity, max)));
+        };
+        // Pass max when known, to avoid reading layout right after the width write.
+        // `width` updates synchronously (callers store it right away); the DOM write
+        // is batched into one animation frame however many pointer moves arrive.
+        let frame = 0;
+        let frame_max;
+        const set_width = (w, max = max_width()) => {
+            width = clamp(w, max);
+            frame_max = max;
+            frame ||= requestAnimationFrame(() => {
+                frame = 0;
+                this.#aside.style.setProperty('--kb-aside-width', `${width}px`);
+                sync_aria(frame_max);
+            });
+        };
+        sync_aria();
+        window.addEventListener('resize', () => sync_aria());
+
+        // Layout values fixed for the whole drag, read once so moves only write.
+        let drag = null;
+        handle.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0) {
+                return;
+            }
+            e.preventDefault(); // no text selection while dragging
+            handle.setPointerCapture(e.pointerId);
+            this.#aside.setAttribute('data-glpi-kb-aside-resizing', '');
+            const rect = this.#aside.getBoundingClientRect();
+            const rtl = getComputedStyle(this.#aside).direction === 'rtl';
+            drag = { pointer_id: e.pointerId, edge: rtl ? rect.right : rect.left, sign: rtl ? -1 : 1, max: max_width() };
+        });
+        handle.addEventListener('pointermove', (e) => {
+            if (drag?.pointer_id === e.pointerId) {
+                set_width((e.clientX - drag.edge) * drag.sign, drag.max);
+            }
+        });
+        // Fires on release and on any capture loss, so the drag always ends cleanly.
+        handle.addEventListener('lostpointercapture', (e) => {
+            if (drag?.pointer_id !== e.pointerId) {
+                return;
+            }
+            drag = null;
+            this.#aside.removeAttribute('data-glpi-kb-aside-resizing');
+            this.#storeWidth(width);
+        });
+
+        // Keyboard steps must not glide behind the keys. Released one frame after the batched write.
+        let settle = 0;
+        const suspend_transition = () => {
+            this.#aside.setAttribute('data-glpi-kb-aside-resizing', '');
+            cancelAnimationFrame(settle);
+            settle = requestAnimationFrame(() => {
+                settle = requestAnimationFrame(() => {
+                    if (!drag) {
+                        this.#aside.removeAttribute('data-glpi-kb-aside-resizing');
+                    }
+                });
+            });
+        };
+
+        handle.addEventListener('keydown', (e) => {
+            // A modified arrow belongs to the browser: alt + arrow moves in the history.
+            if (e.altKey || e.ctrlKey || e.metaKey) {
+                return;
+            }
+            const grow = getComputedStyle(this.#aside).direction === 'rtl' ? -step : step;
+            const next = {
+                ArrowLeft: clamp(width) - grow,
+                ArrowRight: clamp(width) + grow,
+                Home: min,
+                End: Infinity,
+            }[e.key];
+            if (next === undefined) {
+                return;
+            }
+            e.preventDefault();
+            suspend_transition();
+            set_width(next);
+            this.#storeWidth(width);
+        });
+
+        handle.addEventListener('dblclick', () => {
+            suspend_transition();
+            set_width(min);
+            this.#storeWidth(width);
+        });
+    }
+
+    #storeWidth(width)
+    {
+        try {
+            window.localStorage.setItem(GlpiKnowbaseAsideController.#WIDTH_STORAGE_KEY, String(width));
         } catch { /* storage unavailable */ }
     }
 
@@ -485,10 +618,6 @@ export class GlpiKnowbaseAsideController
         const search_input  = this.#aside.querySelector('[data-glpi-kb-aside-search-input]');
         const search_icon   = this.#aside.querySelector('[data-glpi-kb-aside-search-icon]');
         const clear_button  = this.#aside.querySelector('[data-glpi-kb-aside-search-clear]');
-        const favorites     = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
-
-        // Record the initial server-rendered state so we can restore it on clear.
-        this.#favorites_originally_hidden = favorites.hasAttribute('data-glpi-kb-aside-favorites-hidden');
 
         // Debounce the search method to avoid hitting the server with too many
         // requests.
@@ -529,33 +658,30 @@ export class GlpiKnowbaseAsideController
 
     async #performSearch(value)
     {
-        const tree      = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
-        const favorites = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
+        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
 
         const request_id = ++this.#search_request_id;
 
         // Search criteria was removed, show all items again
         if (value.trim() === '') {
             this.#showAllTreeItems(tree);
-            this.#restoreFavorites(favorites);
+            this.#setFavoritesSearchHidden(false);
             return;
         }
 
         // Send request to backend
-        const current_id = this.#aside
-            .querySelector('[data-glpi-kb-article-current]')?.dataset.glpiKbArticleId ?? '';
         const response = await get(
             `Knowbase/Aside/Search?contains=${encodeURIComponent(value)}`
-            + `&current_id=${encodeURIComponent(current_id)}`,
+            + `&current_id=${encodeURIComponent(this.#currentArticleId())}`,
         );
-        const { ids, html } = await response.json();
+        const html = await response.text();
         if (request_id !== this.#search_request_id) {
             return;
         }
 
-        // Apply results
+        // Apply results.
         this.#showTreeResults(tree, html);
-        this.#filterFavorites(favorites, new Set(ids));
+        this.#setFavoritesSearchHidden(true);
     }
 
     /**
@@ -573,14 +699,114 @@ export class GlpiKnowbaseAsideController
 
         let results = tree.querySelector(':scope > [data-glpi-kb-aside-tree-results]');
         if (!results) {
-            results = document.createElement('div');
+            results = document.createElement('ul');
+            results.className = 'kb-search-results ps-0';
             results.setAttribute('data-glpi-kb-aside-tree-results', '');
+            results.dataset.testid = 'kb-search-results';
             rendered ? rendered.after(results) : tree.prepend(results);
         }
         results.innerHTML = html;
 
+        // Back to the first result
+        tree.scrollTop = 0;
+
+        this.#watchSearchLoadMore(results);
+
         const no_results = tree.querySelector('[data-glpi-kb-aside-no-results]');
         no_results.hidden = results.querySelector('[data-glpi-kb-article-id]') !== null;
+    }
+
+    /**
+     * The results are loaded 50 at a time. The server puts a marker after the
+     * last one, watched here to append the next page as it comes into view.
+     *
+     * @param {HTMLElement} list
+     */
+    #watchSearchLoadMore(list)
+    {
+        // The list is replaced on each search, so the observer is always reset.
+        this.#search_load_more_observer?.disconnect();
+        this.#search_load_more_observer = null;
+
+        const marker = list.querySelector('[data-glpi-kb-aside-search-load-more]');
+        if (!marker) {
+            return;
+        }
+
+        this.#search_load_more_observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        this.#loadNextSearchPage(entry.target);
+                    }
+                }
+            },
+            // The results scroll with the pane holding them, and the next page
+            // is loaded slightly before the marker is actually reached.
+            { root: list.closest('[data-glpi-kb-aside-tree]'), rootMargin: '200px' },
+        );
+        this.#search_load_more_observer.observe(marker);
+    }
+
+    /**
+     * @param {HTMLElement} marker
+     */
+    async #loadNextSearchPage(marker)
+    {
+        // Both the observer and a fast scroll may ask for the same page.
+        if (marker.dataset.glpiLoading !== undefined) {
+            return;
+        }
+        marker.dataset.glpiLoading = '';
+
+        // The marker is a live region: it says what is happening now, and the
+        // reader may come back to it after a failure.
+        const loading = marker.querySelector('[data-glpi-kb-aside-search-load-more-loading]');
+        const error = marker.querySelector('[data-glpi-kb-aside-search-load-more-error]');
+        loading.hidden = false;
+        error.hidden = true;
+
+        // The marker carries the search it belongs to.
+        const contains = marker.dataset.glpiKbAsideSearchContains;
+        const offset = marker.dataset.glpiKbAsideSearchNextOffset;
+
+        let page;
+        try {
+            const response = await get(
+                `Knowbase/Aside/Search?contains=${encodeURIComponent(contains)}`
+                + `&offset=${encodeURIComponent(offset)}`
+                + `&current_id=${encodeURIComponent(this.#currentArticleId())}`,
+            );
+            page = await response.text();
+        } catch {
+            // The marker stays watched, so scrolling it out of view and back
+            // in asks for the page again.
+            delete marker.dataset.glpiLoading;
+            loading.hidden = true;
+            error.hidden = false;
+            return;
+        }
+
+        // The marker left the document: its search is over.
+        if (!marker.isConnected) {
+            return;
+        }
+
+        // The page ends with the marker of the following one, if any.
+        const list = marker.parentElement;
+        marker.insertAdjacentHTML('beforebegin', page);
+        marker.remove();
+
+        this.#watchSearchLoadMore(list);
+    }
+
+    /**
+     * @returns {string} `0` when no article is being read
+     */
+    #currentArticleId()
+    {
+        return this.#aside.querySelector('[data-glpi-kb-article-current]')
+            ?.dataset.glpiKbArticleId ?? '0';
     }
 
     /**
@@ -590,6 +816,9 @@ export class GlpiKnowbaseAsideController
      */
     #showAllTreeItems(tree)
     {
+        this.#search_load_more_observer?.disconnect();
+        this.#search_load_more_observer = null;
+
         tree.querySelector(':scope > [data-glpi-kb-aside-tree-results]')?.remove();
 
         for (const el of tree.querySelectorAll('[data-glpi-kb-search-hidden]')) {
@@ -601,69 +830,24 @@ export class GlpiKnowbaseAsideController
     }
 
     /**
-     * Restore the favorites section to its original server-rendered state.
+     * Hide the favorites section (and the header border going with it) for as
+     * long as the results stand in for the tree. This is a reason of its own,
+     * kept apart from the "no favorites to show" state the section owns.
      *
-     * @param {HTMLElement} favorites_el
+     * @param {boolean} hidden
      */
-    #restoreFavorites(favorites_el)
+    #setFavoritesSearchHidden(hidden)
     {
-        for (const el of favorites_el.querySelectorAll('[data-glpi-kb-search-hidden]')) {
-            el.removeAttribute('data-glpi-kb-search-hidden');
-        }
-
-        this.#setFavoritesVisible(favorites_el, !this.#favorites_originally_hidden);
-    }
-
-    /**
-     * Filter the favorites section to only show articles whose IDs are in matching_ids.
-     * Hides the entire section (and the header border) when nothing matches.
-     *
-     * @param {HTMLElement} favorites_el
-     * @param {Set<number>} matching_ids
-     */
-    #filterFavorites(favorites_el, matching_ids)
-    {
-        if (this.#favorites_originally_hidden) {
-            return;
-        }
-
-        let any_visible = false;
-
-        for (const article of favorites_el.querySelectorAll('[data-glpi-kb-article-id]')) {
-            // Skip pending entries — they are already hidden by CSS and should not
-            // count as visible regardless of whether they match the search.
-            if (article.dataset.glpiKbFavoriteCurrent === 'pending') {
-                continue;
-            }
-
-            const id = parseInt(article.dataset.glpiKbArticleId);
-            if (matching_ids.has(id)) {
-                article.removeAttribute('data-glpi-kb-search-hidden');
-                any_visible = true;
-            } else {
-                article.setAttribute('data-glpi-kb-search-hidden', '');
-            }
-        }
-
-        this.#setFavoritesVisible(favorites_el, any_visible);
-    }
-
-    /**
-     * Toggle the favorites section visibility and the matching header border.
-     *
-     * @param {HTMLElement} favorites_el
-     * @param {boolean}     visible
-     */
-    #setFavoritesVisible(favorites_el, visible)
-    {
+        const favorites = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
         const header = this.#aside.querySelector('[data-glpi-kb-aside-header]');
 
-        if (visible) {
-            favorites_el.removeAttribute('data-glpi-kb-aside-favorites-hidden');
-            header.removeAttribute('data-glpi-kb-aside-header-no-border');
+        // The header holds the search input, so it only loses its border.
+        if (hidden) {
+            favorites.setAttribute('data-glpi-kb-search-hidden', '');
+            header.setAttribute('data-glpi-kb-aside-header-search-no-border', '');
         } else {
-            favorites_el.setAttribute('data-glpi-kb-aside-favorites-hidden', '');
-            header.setAttribute('data-glpi-kb-aside-header-no-border', '');
+            favorites.removeAttribute('data-glpi-kb-search-hidden');
+            header.removeAttribute('data-glpi-kb-aside-header-search-no-border');
         }
     }
 
@@ -692,32 +876,73 @@ export class GlpiKnowbaseAsideController
             }
         });
 
-        // Create the row's menu and prefetch its content as soon as the row is
-        // hovered or focused, so both are ready by the time the user opens the
-        // kebab (no visible latency).
-        const prepare = (e) => {
-            const line = e.target.closest('.article[data-glpi-kb-article-id]');
+        const lineOf = (e) => e.target.closest('.article[data-glpi-kb-article-id]');
+
+        const schedulePrepare = (e) => {
+            const line = lineOf(e);
             if (line && this.#aside.contains(line)) {
+                this.#ensureActionsMenu(line);
+                this.#schedulePrefetch(line);
+            }
+        };
+        const cancelPrepare = (e) => {
+            const line = lineOf(e);
+            if (line && !line.contains(e.relatedTarget)) {
+                this.#cancelPrefetch(line);
+            }
+        };
+        this.#aside.addEventListener('mouseover', schedulePrepare);
+        this.#aside.addEventListener('mouseout', cancelPrepare);
+        this.#aside.addEventListener('focusin', schedulePrepare);
+        this.#aside.addEventListener('focusout', cancelPrepare);
+
+        // Immediate: opens that skip hover/focus (touch, synthetic clicks) need the menu ready before Bootstrap looks it up.
+        const prepareNow = (e) => {
+            const line = lineOf(e);
+            if (line && this.#aside.contains(line)) {
+                this.#cancelPrefetch(line);
                 this.#ensureActionsMenu(line);
                 this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
             }
         };
-        this.#aside.addEventListener('mouseover', prepare);
-        this.#aside.addEventListener('focusin', prepare);
-        // Safety net for opens that skip hover and focus (touch, synthetic
-        // clicks): the menu has to exist before Bootstrap looks it up, and the
-        // capture phase runs before its own delegated click handler.
-        this.#aside.addEventListener('pointerdown', prepare);
-        this.#aside.addEventListener('click', prepare, true);
+        this.#aside.addEventListener('pointerdown', prepareNow);
+        this.#aside.addEventListener('click', prepareNow, true);
 
         // Fallback for opens that outran the prefetch (touch, instant clicks,
         // keyboard): make sure the content is loaded when the menu opens.
         this.#aside.addEventListener('show.bs.dropdown', (e) => {
-            const line = e.target.closest('.article[data-glpi-kb-article-id]');
+            const line = lineOf(e);
             if (line) {
+                this.#cancelPrefetch(line);
                 this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
             }
         });
+    }
+
+    /**
+     * @param {HTMLElement} line
+     */
+    #schedulePrefetch(line)
+    {
+        this.#cancelPrefetch(line);
+        const timer = window.setTimeout(() => {
+            this.#prefetch_timers.delete(line);
+            // Quiet: nothing here is a request the reader is waiting on.
+            this.#populateMenus(parseInt(line.dataset.glpiKbArticleId), { quiet: true });
+        }, GlpiKnowbaseAsideController.#PREFETCH_DELAY_MS);
+        this.#prefetch_timers.set(line, timer);
+    }
+
+    /**
+     * @param {HTMLElement} line
+     */
+    #cancelPrefetch(line)
+    {
+        const timer = this.#prefetch_timers.get(line);
+        if (timer !== undefined) {
+            window.clearTimeout(timer);
+            this.#prefetch_timers.delete(line);
+        }
     }
 
     /**
@@ -750,8 +975,10 @@ export class GlpiKnowbaseAsideController
      * not-yet-populated menu bearing that id (tree + favorites).
      *
      * @param {number} id
+     * @param {Object} [options]
+     * @param {boolean} [options.quiet=false] Suppress the error toast on failure.
      */
-    async #populateMenus(id)
+    async #populateMenus(id, { quiet = false } = {})
     {
         if (!Number.isInteger(id)) {
             return;
@@ -767,13 +994,41 @@ export class GlpiKnowbaseAsideController
         } catch {
             // Drop the cached rejection so a later hover/open can retry.
             this.#actions_cache.delete(id);
+            if (!quiet) {
+                glpi_toast_error(__("An unexpected error occurred."));
+            }
             return;
         }
 
         for (const menu of this.#findEmptyMenus(id)) {
             menu.innerHTML = html;
             menu.setAttribute('data-glpi-kb-actions-loaded', '');
+
+            // Favorites rows are flat, so Move could not tell which parent to leave.
+            if (menu.closest('[data-glpi-kb-aside-favorites]')) {
+                this.#stripMoveFromFavoritesMenu(menu);
+            }
         }
+    }
+
+    /**
+     * Remove the "Move" entry from a kebab menu bound for the favorites
+     * section: favorites rows are flat (never nested in their real parent),
+     * so Move could not tell which parent to leave (see #openModal).
+     *
+     * @param {HTMLElement} menu
+     */
+    #stripMoveFromFavoritesMenu(menu)
+    {
+        // Keyed on the modal, not on OPEN_MODAL: that type carries other actions.
+        const move_item = menu
+            .querySelector('button[data-glpi-kb-action-param-key="MoveModal"]')
+            ?.closest('li');
+        // The group separator rides on the first item after it: hand it over.
+        if (move_item?.classList.contains('border-top')) {
+            move_item.nextElementSibling?.classList.add('border-top');
+        }
+        move_item?.remove();
     }
 
     /**
@@ -801,7 +1056,8 @@ export class GlpiKnowbaseAsideController
         if (!this.#actions_cache.has(id)) {
             this.#actions_cache.set(
                 id,
-                get(`Knowbase/${id}/AsideActions`).then((response) => response.text()),
+                // Always quiet: #populateMenus decides whether to toast, per call.
+                get(`Knowbase/${id}/AsideActions`, { quiet: true }).then((response) => response.text()),
             );
         }
         return this.#actions_cache.get(id);
@@ -855,7 +1111,40 @@ export class GlpiKnowbaseAsideController
             case EditorActionType.DELETE_ARTICLE:
                 this.#onDelete(id);
                 break;
+            case EditorActionType.OPEN_MODAL:
+                this.#openModal(button, id, params.key, params.title, params.icon ?? null);
+                break;
         }
+    }
+
+    /**
+     * Unlike the article header, an aside row knows which occurrence was acted
+     * on, so the origin parent is read from the row and passed along.
+     *
+     * @param {HTMLElement} button
+     * @param {number} id
+     * @param {string} key
+     * @param {string} title
+     * @param {string|null} icon
+     */
+    #openModal(button, id, key, title, icon = null)
+    {
+        const row = button.closest('li[data-glpi-kb-article-id]');
+        const from_parent_id = row === null ? 0 : parentIdOf(row);
+
+        glpi_ajax_dialog({
+            url: `${CFG_GLPI.root_doc}/Knowbase/${id}/${key}`
+                + `?from_parent_id=${encodeURIComponent(from_parent_id)}`,
+            // The helper posts by default; this route only renders, so it is GET-only.
+            method: 'get',
+            title: icon ? `<i class="${icon} me-2" aria-hidden="true"></i>${title}` : title,
+            dialogclass: 'modal-lg',
+            show: (e) => {
+                if (key === 'MoveModal') {
+                    new GlpiKnowbaseMoveModalController(e.target.closest('.modal'));
+                }
+            },
+        });
     }
 
     /**
@@ -916,6 +1205,14 @@ export class GlpiKnowbaseAsideController
         const response = await deleteArticle(id);
         const body = await response.json();
 
+        if (!response.ok) {
+            glpi_alert({
+                title: __('Delete article'),
+                message: body.message,
+            });
+            return;
+        }
+
         // Deleting the article currently being viewed: leave the page.
         const current = this.#aside.querySelector('[data-glpi-kb-article-current]');
         if (current && parseInt(current.dataset.glpiKbArticleId) === id) {
@@ -924,31 +1221,8 @@ export class GlpiKnowbaseAsideController
         }
 
         // Otherwise remove every entry for this article (tree + favorites) in
-        // place. A tree entry may nest child articles inside its own <li>
-        // (recursive tree), and those children are NOT deleted server-side:
-        // on reload the Builder promotes any article left without a visible
-        // parent up to the root. Mirror that here so children don't vanish
-        // until reload — reparent them to the root <ul> before removing the
-        // deleted node, unless they remain reachable under another parent.
-        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
-        const root_list = tree ? tree.querySelector(':scope > ul') : null;
-
+        // place.
         for (const entry of this.#aside.querySelectorAll(`[data-glpi-kb-article-id="${CSS.escape(id)}"]`)) {
-            const child_list = entry.querySelector(':scope > ul');
-            if (child_list && root_list) {
-                for (const child of [...child_list.querySelectorAll(':scope > [data-glpi-kb-article-id]')]) {
-                    const child_id = child.dataset.glpiKbArticleId;
-                    // Still reachable under another (non-deleted) parent
-                    // elsewhere in the tree? Then it stays there; promoting it
-                    // would duplicate it, and on reload it would not be a root.
-                    const still_reachable = [...this.#aside.querySelectorAll(
-                        `[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${CSS.escape(child_id)}"]`
-                    )].some(el => !entry.contains(el));
-                    if (!still_reachable) {
-                        root_list.appendChild(child);
-                    }
-                }
-            }
             entry.remove();
         }
 
@@ -988,17 +1262,24 @@ export class GlpiKnowbaseAsideController
         if (is_favorited) {
             const already_listed = list.querySelector(`:scope > [data-glpi-kb-article-id="${CSS.escape(id)}"]`);
             if (!already_listed) {
+                // Scoped to the tree list: the search results hold rows of
+                // the same articles, in a shape of their own.
                 const source = this.#aside.querySelector(
-                    `[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${CSS.escape(id)}"]`
+                    `[data-glpi-kb-aside-tree] > ul.kb-tree [data-glpi-kb-article-id="${CSS.escape(id)}"]`
                 );
                 if (source) {
                     const clone = source.cloneNode(true);
                     clone.classList.add('mb-2');
-                    clone.removeAttribute('data-glpi-kb-search-hidden');
                     this.#flattenClonedFavorite(clone);
                     // The source row's dots menu is still open (the user just
                     // clicked a toggle inside it); close it in the clone.
                     this.#resetClonedDropdown(clone);
+                    // The clone can carry an already-populated menu — its own, or a
+                    // nested child's (a favorited node's children are cloned too) —
+                    // so #populateMenus's loaded-guard would never revisit it.
+                    for (const menu of clone.querySelectorAll('[data-glpi-kb-actions-menu][data-glpi-kb-actions-loaded]')) {
+                        this.#stripMoveFromFavoritesMenu(menu);
+                    }
                     list.appendChild(clone);
                 }
             }
@@ -1040,6 +1321,7 @@ export class GlpiKnowbaseAsideController
         if (line) {
             line.removeAttribute('data-glpi-kb-aside-category-header');
             line.classList.remove('mb-2');
+            line.querySelector(':scope > a')?.classList.remove('fw-bold');
         }
     }
 
@@ -1071,6 +1353,9 @@ export class GlpiKnowbaseAsideController
      * Show or hide the favorites section (and matching header border) depending
      * on whether it still holds any visible entry.
      *
+     * `ArticleController.#updateFavoritesAside()` applies the same rule from the
+     * article side.
+     *
      * @param {HTMLElement} favorites_el
      */
     #refreshFavoritesVisibility(favorites_el)
@@ -1087,8 +1372,5 @@ export class GlpiKnowbaseAsideController
             favorites_el.setAttribute('data-glpi-kb-aside-favorites-hidden', '');
             header?.setAttribute('data-glpi-kb-aside-header-no-border', '');
         }
-
-        // Keep the "restore after search" baseline in sync with the live state.
-        this.#favorites_originally_hidden = !has_visible;
     }
 }

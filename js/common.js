@@ -508,9 +508,6 @@ if ($(window).width() <= 700) {
     };
 }
 
-/**
- * @todo Remove? The 'fold_menu' field/$_SESSION['glpifold_menu'] seem unused.
- */
 var switchFoldMenu = function() {
     $.ajax({
         url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
@@ -532,6 +529,15 @@ var switchFoldMenu = function() {
                         $('#navbar-menu .nav-link.active + .dropdown-menu').addClass('show');
                     }
                 }
+
+                // Once collapsed the button only shows a chevron, a CSS pseudo-element that is not
+                // exposed to assistive technologies: its hidden label is the only name it has, and
+                // both that label and its state have to be maintained here.
+                var reduce_menu = $('.reduce-menu');
+                reduce_menu.attr('aria-expanded', collapsed ? 'false' : 'true');
+                reduce_menu.find('.visually-hidden').text(
+                    reduce_menu.attr(collapsed ? 'data-expand-label' : 'data-collapse-label')
+                );
             }
         }
     });
@@ -561,7 +567,6 @@ $(function() {
         }
     });
 
-    //TODO remove? See comment for switchFoldMenu()
     $('.reduce-menu').on('click', function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -911,6 +916,26 @@ var templateSelection = function (selection) {
     return _elt;
 };
 
+window.glpiGroupCommentPopovers = window.glpiGroupCommentPopovers || {};
+var templateGroupSelection = function (selection) {
+    var _elt = templateSelection(selection);
+
+    if (selection.element && selection.id) {
+        var select_id = selection.element.parentElement.id;
+        import('/js/modules/Form/ItemtypeCommentPopover.js').then((m) => {
+            if (!window.glpiGroupCommentPopovers[select_id]) {
+                window.glpiGroupCommentPopovers[select_id] = new m.default(
+                    $('#' + CSS.escape(select_id)).parent(),
+                    ['.group-info-card']
+                );
+            }
+            window.glpiGroupCommentPopovers[select_id].attachTo(_elt, 'Group', selection.id);
+        });
+    }
+
+    return _elt;
+};
+
 var templateItilStatus = function(option) {
     if (option === false) {
         // Option is false when element does not match searched terms
@@ -1241,6 +1266,9 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
                             resolved_params[k] = v;
                         }
                     });
+                    if ($.fn.select2) {
+                        $(target).find('.select2-hidden-accessible').select2('destroy');
+                    }
                     $(target).load(url, resolved_params);
                 };
                 if (conditional && (min_size_condition || force_load_condition)) {
@@ -1512,7 +1540,10 @@ $(() => {
     // General "copy to clipboard" handler.
     // TODO: refactorate existing code to use this unique handler.
     $(document).on('click', '[data-glpi-clipboard-text]', function() {
-        const text = $(this).data('glpi-clipboard-text');
+        // Read the attribute instead of `.data()`: the value may be updated
+        // dynamically (jQuery caches its data store on first read) and must not
+        // be type-casted (`.data()` would turn a numeric value into a Number).
+        const text = $(this).attr('data-glpi-clipboard-text');
         if (navigator.clipboard === undefined) {
             // The clipboard is not available in non secure environements.
             // See: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
@@ -1762,7 +1793,7 @@ function setupAjaxDropdown(config) {
             url: config.url,
             dataType: 'json',
             type: 'POST',
-            delay: 250,
+            delay: 500,
             data: function (params) {
                 query = params;
                 var data = $.extend({}, config.params, {
@@ -1845,6 +1876,16 @@ function setupAjaxDropdown(config) {
         const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${CSS.escape(e.target.id)}-results']`);
         if (search_input) {
             search_input.focus();
+        }
+    });
+
+    $('#' + field_id).on('select2:selecting', function (e) {
+        if (e?.params?.args?.data) {
+            const data = e.params.args.data;
+            const option = this.querySelector(`option[value="${CSS.escape(String(data.id))}"]`);
+            if (option) {
+                option.text = data.text;
+            }
         }
     });
 
@@ -2082,19 +2123,17 @@ window.displaySessionMessages = () => {
 
 // Add/remove a special data attribute to bootstrap's modals when they are
 // displayed/hidden.
-// This is needed for e2e testing as bootstrap have some compatibility issues
-// with cypress.
-// See https://github.com/cypress-io/cypress/issues/25202.
+// This is used by the e2e tests to wait for the end of the modal animations.
 document.addEventListener('shown.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'true');
+        modal.setAttribute('data-glpi-modal-shown', 'true');
     }
 });
 document.addEventListener('hidden.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'false');
+        modal.setAttribute('data-glpi-modal-shown', 'false');
     }
 });
 

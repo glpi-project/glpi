@@ -43,7 +43,7 @@ test('Can create a new form category', async ({ page, profile }) => {
     const illustration_picker = new IllustrationPickerPage(page);
 
     await category_page.gotoList();
-    await page.getByRole('link', { name: 'Add' }).click();
+    await page.getByRole('link', { name: /Add$/ }).click();
 
     await category_page.name_input.fill('Test category');
     await category_page.description_input.fill('This is a test category');

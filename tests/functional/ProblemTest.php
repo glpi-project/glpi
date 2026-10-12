@@ -36,10 +36,13 @@ namespace tests\units;
 
 use CommonITILActor;
 use CommonITILObject;
+use Computer;
 use Glpi\Tests\DbTestCase;
+use Item_Problem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Problem_User;
+use Session;
 use User;
 
 /* Test for inc/problem.class.php */
@@ -63,7 +66,7 @@ class ProblemTest extends DbTestCase
 
         // Login again to access the new entity
         $this->login('glpi', 'glpi');
-        $success = \Session::changeActiveEntities($entity->getID(), true);
+        $success = Session::changeActiveEntities($entity->getID(), true);
         $this->assertTrue($success);
 
         $group = new \Group();
@@ -309,6 +312,76 @@ class ProblemTest extends DbTestCase
         $this->assertNotEmpty($html);
     }
 
+    public function testShowFormFromItemUsesItemEntity(): void
+    {
+        // Arrange: an asset in a sub-entity, while the current (default)
+        // session entity is its parent entity
+        $this->login('glpi', 'glpi');
+
+        $root_entity = $this->getTestRootEntity(only_id: true);
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer used to create a problem from item',
+            'entities_id' => $item_entity,
+        ]);
+
+        // Active entity is the parent entity (with access to its sub-entities),
+        // which is not the same as the asset's own entity
+        $this->assertTrue(Session::changeActiveEntities($root_entity, true));
+
+        $problem = new Problem();
+        $problem->getEmpty();
+
+        // Act: render form for a new problem created from the asset
+        ob_start();
+        $problem->showForm($problem->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the problem entity follows the asset entity, not the
+        // currently active session entity
+        $this->assertEquals($item_entity, (int) $problem->fields['entities_id']);
+        $this->assertNotEquals($root_entity, (int) $problem->fields['entities_id']);
+    }
+
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $problem = new Problem();
+        $problem->getEmpty();
+
+        // Act: render form for a new problem created from the (inaccessible) asset
+        ob_start();
+        $problem->showForm($problem->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the problem falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $problem->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $problem->fields['entities_id']);
+    }
+
     public function testShowFormClosedItem(): void
     {
         // Arrange: prepare an empty change
@@ -420,7 +493,7 @@ class ProblemTest extends DbTestCase
                 'requester' => [
                     [
                         'itemtype'  => 'User',
-                        'items_id'  => \Session::getLoginUserID(),
+                        'items_id'  => Session::getLoginUserID(),
                     ],
                 ],
             ],
@@ -600,5 +673,58 @@ class ProblemTest extends DbTestCase
         ], ['name']);
 
         $this->assertSame(255, mb_strlen($problem->fields['name']));
+    }
+
+    public function testGetListForItemRestrictWithoutReadAll(): void
+    {
+        global $DB;
+
+        $this->login();
+        $users_id = Session::getLoginUserID();
+        $other_users_id = getItemByTypeName(User::class, 'normal', true);
+        $entities_id = $this->getTestRootEntity(true);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+
+        $cases = [
+            'requester' => ['_users_id_requester' => $users_id, 'users_id_recipient' => $other_users_id],
+            'observer'  => ['_users_id_observer' => $users_id, 'users_id_recipient' => $other_users_id],
+            'assigned'  => ['_users_id_assign' => $users_id, 'users_id_recipient' => $other_users_id],
+            'recipient' => ['users_id_recipient' => $users_id],
+            'other'     => ['_users_id_observer' => $other_users_id, 'users_id_recipient' => $other_users_id],
+        ];
+        $ids = [];
+        foreach ($cases as $case => $input) {
+            $item = $this->createItem(Problem::class, $input + [
+                'name'              => __FUNCTION__ . ' ' . $case,
+                'content'           => __FUNCTION__,
+                'entities_id'       => $entities_id,
+                '_skip_auto_assign' => true,
+            ], ['content']);
+            $this->createItem(Item_Problem::class, [
+                'problems_id' => $item->getID(),
+                'itemtype'    => Computer::class,
+                'items_id'    => $computer->getID(),
+            ]);
+            $ids[$case] = $item->getID();
+        }
+
+        $get_listed_ids = static function () use ($DB, $computer): array {
+            $criteria = Problem::getCommonCriteria();
+            $criteria['WHERE'] = Problem::getListForItemRestrict($computer) + getEntitiesRestrictCriteria(Problem::getTable());
+            return array_column(iterator_to_array($DB->request($criteria), false), 'id');
+        };
+
+        $_SESSION['glpiactiveprofile'][Problem::$rightname] = Problem::READMY;
+        $this->assertEqualsCanonicalizing(
+            [$ids['requester'], $ids['observer'], $ids['assigned'], $ids['recipient']],
+            $get_listed_ids()
+        );
+
+        $_SESSION['glpiactiveprofile'][Problem::$rightname] = Problem::READMY | Problem::READALL;
+        $this->assertEqualsCanonicalizing(array_values($ids), $get_listed_ids());
     }
 }

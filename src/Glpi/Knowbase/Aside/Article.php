@@ -45,6 +45,8 @@ final class Article
      * @param bool $children_loaded Whether `getChildren()` holds them. A folded
      *                              article renders without its children, which
      *                              the aside fetches when the reader unfolds it.
+     * @param bool $is_root         Whether this is the root article, which the
+     *                              aside renders as the label of its children.
      */
     public function __construct(
         public readonly int $id,
@@ -55,6 +57,7 @@ final class Article
         public readonly bool $collapsed = false,
         public readonly bool $has_children = false,
         public readonly bool $children_loaded = true,
+        public readonly bool $is_root = false,
     ) {}
 
     public function addChild(self $child): void

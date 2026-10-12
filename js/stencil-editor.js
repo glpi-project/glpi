@@ -60,6 +60,20 @@ const StencilEditor = function (container, rand, zones_definition) {
             const cropper = new window.Cropper(img);
             croppers.push(cropper);
             img.cropper = cropper;
+
+            // a zone is stored on a single side, so only one cropper may hold a selection
+            cropper.getCropperSelection().addEventListener('change', (e) => {
+                if (e.detail.width <= 0 || e.detail.height <= 0) {
+                    // ignore empty selections, else clearing a cropper would clear the others back
+                    return;
+                }
+
+                croppers.forEach((other_cropper) => {
+                    if (other_cropper !== cropper) {
+                        other_cropper.getCropperSelection().$clear();
+                    }
+                });
+            });
         });
 
         // set default state of croppers objects
@@ -224,6 +238,10 @@ const StencilEditor = function (container, rand, zones_definition) {
                 && cropper.getCropperSelection().height > 0
                 && cropper.getCropperSelection().width > 0;
         })[0];
+
+        if (cropper === undefined) {
+            return;
+        }
 
         // get the different dom object
         const cr_canvas = cropper.getCropperCanvas();
@@ -404,9 +422,23 @@ const StencilEditor = function (container, rand, zones_definition) {
             success: function () {
                 // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
                 $(`form#stencil-editor-form-${rand} button[name="remove-zone"][data-bs-toggle="tooltip"]`).tooltip('hide');
-                $(`form#stencil-editor-form-${rand} button.set-zone-data`).sort((a, b) => {
+                const lastBtn = $(`form#stencil-editor-form-${rand} button.set-zone-data`).sort((a, b) => {
                     return $(a).data('zone-index') - $(b).data('zone-index');
-                }).last().remove();
+                }).last();
+                
+                const removedZoneIndex = lastBtn.data('zone-index');
+                lastBtn.remove();
+                
+                if (zones[removedZoneIndex] !== undefined) {
+                    delete zones[removedZoneIndex];
+                }
+                
+                const currentZoneIndex = $(container).find(`#zone_number-${rand}`).data('zone-index');
+                if (_this.isEditorActive() && currentZoneIndex == removedZoneIndex) {
+                    _this.editorDisable();
+                } else {
+                    _this.redoZones();
+                }
             },
         });
     };
@@ -446,3 +478,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
     };
 };
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = StencilEditor;
+}

@@ -109,10 +109,22 @@ final class MFAController extends AbstractController
         if (!$users_id) {
             return new RedirectResponse($request->getBasePath() . '/MFA/Prompt');
         }
+
+        $secret = $request->request->get('secret');
+        if ($secret !== null) {
+            $idor_data = [
+                '_idor_token'   => $request->request->getString('_idor_token'),
+                'user_id'       => $users_id,
+                'secret'        => $secret,
+            ];
+            if (!Session::validateIDOR($idor_data)) {
+                throw new \Glpi\Exception\Http\AccessDeniedHttpException();
+            }
+        }
+
         $totp = new TOTPManager();
         $backup_code = $request->request->get('backup_code');
         $totp_code = implode('', $request->request->all('totp_code'));
-        $secret = $request->request->get('secret');
         $algorithm = null;
 
         $in_grace_period = $totp->get2FAEnforcement($users_id) === TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD && !$totp->is2FAEnabled($users_id);
@@ -138,8 +150,7 @@ final class MFAController extends AbstractController
 
             if (
                 isset($secret)
-                && !(Session::validateIDOR($request->request->all())
-                    && $totp->setSecretForUser($users_id, $request->request->getString('secret'), $algorithm))
+                && !$totp->setSecretForUser($users_id, $request->request->getString('secret'), $algorithm)
             ) {
                 Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
                 return new RedirectResponse($from_login ? ($request->getBasePath() . '/MFA/Prompt') : Html::getBackUrl());

@@ -139,7 +139,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'add_document'      => __('New document'),
             'pendingreason_add' => __('Pending reason added'),
             'pendingreason_del' => __('Pending reason removed'),
-            'pendingreason_close' => __('Pending reason auto close'),
+            'pendingreason_resolve' => __('Pending reason auto resolve'),
             'remove_requester_user' => __('Deletion of a user in requesters'),
             'remove_requester_group' => __('Deletion of a group in requesters'),
             'remove_observer_user' => __('Deletion of a user in observers'),
@@ -1629,9 +1629,22 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 'itemtype'  => $objettype,
                 'items_id'  => $item->fields['id'],
             ],
-            'ORDER'  => 'date_creation DESC',
+            'ORDER'  => ['date_creation DESC', 'id DESC'],
             'LIMIT'  => 1,
         ]);
+
+        // A refused solution is not the solution of the object. It must remain
+        // available for the solution rejection notification, but be ignored for
+        // any other event: otherwise a resolution notification sent after the
+        // object was resolved without a new solution would still display the
+        // previously refused solution.
+        if (
+            $solution
+            && (int) $itilsolution->fields['status'] === CommonITILValidation::REFUSED
+            && $this->raiseevent !== 'rejectsolution'
+        ) {
+            $solution = false;
+        }
 
         if ($solution) {
             $data["##$objettype.solution.type##"] = '';

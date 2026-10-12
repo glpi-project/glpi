@@ -289,6 +289,113 @@ class RuleTicketTest extends RuleCommonITILObjectTest
     }
 
     /**
+     * "To email header" business rule "is" condition must match a recipient
+     * even when it is not the only (nor the first) one, since the criterion is
+     * evaluated against every recipient individually rather than against the
+     * flattened, comma-joined "to" string.
+     */
+    public function testMailToHeaderCriteriaIsWithMultipleRecipients()
+    {
+        // clean right singleton
+        \SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+
+        $this->login();
+
+        $ruleticket = $this->getRuleInstance();
+
+        $rule = $this->createItem(get_class($ruleticket), [
+            'name'         => __FUNCTION__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => $ruleticket::getType(),
+            'condition'    => RuleCommonITILObject::ONADD,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => '_to',
+            'condition' => Rule::PATTERN_IS,
+            'pattern'   => 'support@glpi-project.org',
+        ]);
+
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'priority',
+            'value'       => 5,
+        ]);
+
+        $itil = $this->getITILObjectInstance();
+        $itil_id = $itil->add([
+            'name'              => __FUNCTION__,
+            'content'           => __FUNCTION__,
+            '_head'             => [
+                'to'  => 'jane.roe@glpi-project.org, support@glpi-project.org',
+                'tos' => ['jane.roe@glpi-project.org', 'support@glpi-project.org'],
+            ],
+        ]);
+
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertEquals(5, $itil->fields['priority']);
+    }
+
+    /**
+     * "To email header" business rule "is not" condition must NOT match as
+     * soon as the pattern equals any recipient, even when other recipients
+     * are also present. Regression test: matching against the flattened "to"
+     * string made this condition always true (false positive) once there was
+     * more than one recipient.
+     */
+    public function testMailToHeaderCriteriaIsNotWithMultipleRecipients()
+    {
+        // clean right singleton
+        \SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+
+        $this->login();
+
+        $ruleticket = $this->getRuleInstance();
+
+        $rule = $this->createItem(get_class($ruleticket), [
+            'name'         => __FUNCTION__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => $ruleticket::getType(),
+            'condition'    => RuleCommonITILObject::ONADD,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => '_to',
+            'condition' => Rule::PATTERN_IS_NOT,
+            'pattern'   => 'support@glpi-project.org',
+        ]);
+
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'priority',
+            'value'       => 5,
+        ]);
+
+        $itil = $this->getITILObjectInstance();
+        $itil_id = $itil->add([
+            'name'              => __FUNCTION__,
+            'content'           => __FUNCTION__,
+            '_head'             => [
+                'to'  => 'jane.roe@glpi-project.org, support@glpi-project.org',
+                'tos' => ['jane.roe@glpi-project.org', 'support@glpi-project.org'],
+            ],
+        ]);
+
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertNotEquals(5, $itil->fields['priority']);
+    }
+
+    /**
      * Test contract type criteria
      */
     public function testContractType()
@@ -739,11 +846,68 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
+        //Must ensure the rule will be applied with _users_id_requester being both an int and an array
+        $tickets_id_2 = $ticket->add([
+            'name'    => 'test manager number 2',
+            'content' => 'test manager number 2',
+            '_users_id_requester' => $user_id,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_2);
+
         // check manager
         $ticket_user = new \Ticket_User();
         $this->assertTrue(
             $ticket_user->getFromDBByCrit([
                 'tickets_id'    => $tickets_id,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_2,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        // Now check with add action type
+        $ruleaction->delete(['id' => $action_id]);
+        $action_id_2 = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'append',
+            'field'       => '_users_id_observer',
+            'value'       => 'requester_manager',
+        ]);
+        $this->checkInput($ruleaction, $action_id_2, $action_input);
+
+        $tickets_id_3 = $ticket->add([
+            'name'    => 'test manager number 3',
+            'content' => 'test manager number 3',
+            '_users_id_requester' => $user_id,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_3);
+
+        $tickets_id_4 = $ticket->add([
+            'name'    => 'test manager number 4',
+            'content' => 'test manager number 4',
+            '_users_id_requester' => [$user_id],
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_4);
+
+        // check manager
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_3,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_4,
                 'users_id'      => $manager_id,
                 'type'          => \CommonITILActor::OBSERVER,
             ])

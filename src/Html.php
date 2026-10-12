@@ -98,7 +98,7 @@ class Html
     public static function convDate($time, $format = null)
     {
 
-        if (is_null($time) || trim($time) == '' || in_array($time, ['NULL', '0000-00-00', '0000-00-00 00:00:00'])) {
+        if (is_null($time) || trim($time) == '' || in_array($time, ['null', 'NULL', '0000-00-00', '0000-00-00 00:00:00'])) {
             return null;
         }
 
@@ -144,7 +144,7 @@ class Html
      **/
     public static function convDateTime($time, $format = null, bool $with_seconds = false)
     {
-        if (is_null($time) || ($time === 'NULL')) {
+        if (is_null($time) || $time === 'NULL' || $time === 'null') {
             return null;
         }
 
@@ -2060,20 +2060,15 @@ TWIG,
             && ($max > 0)
             && ($max < ($p['num_displayed'] + 10))
         ) {
-            if (
-                !$p['ontop']
-                || (isset($p['forcecreate']) && $p['forcecreate'])
-            ) {
-                $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
-                            <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;' aria-hidden='true'></i>"
-                            . __s('Selection too large, massive action disabled.')
-                        . "</span>";
-                if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                    $out .= Html::showToolTip(
-                        __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
-                        ['display' => false, 'link_class' => 'btn btn-sm border-danger text-danger me-1']
-                    );
-                }
+            $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
+                        <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;' aria-hidden='true'></i>"
+                        . __s('Selection too large, massive action disabled.')
+                    . "</span>";
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                $out .= Html::showToolTip(
+                    __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
+                    ['display' => false, 'link_class' => 'btn btn-sm border-danger text-danger me-1']
+                );
             }
         } else {
             // Create Modal window on top
@@ -4913,6 +4908,22 @@ HTML;
             // manage file upload without tinymce editor
             $display .= "<span class='b'>" . __s('Drag and drop your file here, or') . '</span><br>';
         }
+
+        if ($p['onlyimages']) {
+            $accept = sprintf(
+                ' accept="%s"',
+                implode(
+                    ',',
+                    array_map(
+                        fn($ext) => '.' . $ext,
+                        Document::ALLOWED_IMAGE_EXTENSIONS
+                    )
+                )
+            );
+        } else {
+            $accept = ''; // no accept attribute when all types are allowed
+        }
+
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
@@ -4921,7 +4932,7 @@ HTML;
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
+                      . $accept . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
@@ -4933,7 +4944,7 @@ HTML;
             ? "$('#" . jsescape($p['dropZone']) . "')"
             : "false";
         $acceptFileTypes = $p['onlyimages']
-            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
+            ? "/(\.|\/)(" . implode('|', Document::ALLOWED_IMAGE_EXTENSIONS) . ")$/i"
             : DocumentType::getUploadableFilePattern();
         $messages = json_encode([
             'acceptFileTypes' => __('Filetype not allowed'),

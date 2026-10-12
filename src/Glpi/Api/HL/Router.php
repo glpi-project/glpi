@@ -57,6 +57,7 @@ use Glpi\Api\HL\Controller\NotificationController;
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Controller\ReportController;
 use Glpi\Api\HL\Controller\RuleController;
+use Glpi\Api\HL\Controller\SecurityController;
 use Glpi\Api\HL\Controller\SetupController;
 use Glpi\Api\HL\Controller\ToolController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
@@ -95,7 +96,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.4.0';
+    public const API_VERSION = '3.0.0';
 
     /**
      * @var AbstractController[]
@@ -144,7 +145,7 @@ class Router
 
     /**
      * Get information about all API versions available.
-     * @return array{api_version: string, version: string, description?: string, endpoint: string}[]
+     * @return non-empty-array{api_version: string, version: string, description?: string, endpoint: string}[]
      */
     public static function getAPIVersions(): array
     {
@@ -164,33 +165,38 @@ EOT;
             ],
             [
                 'api_version' => '2',
-                'version' => '2.0.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.0',
-                'deprecated' => true,
-            ],
-            [
-                'api_version' => '2',
-                'version' => '2.1.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
-                'deprecated' => true,
-            ],
-            [
-                'api_version' => '2',
-                'version' => '2.2.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.2',
-                'deprecated' => true,
-            ],
-            [
-                'api_version' => '2',
                 'version' => '2.3.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
             ],
             [
-                'api_version' => '2',
-                'version' => '2.4.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.4',
+                'api_version' => '3',
+                'version' => '3.0.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v3.0',
             ],
         ];
+    }
+
+    /**
+     * Get the distinct major API versions and whether each of them is deprecated.
+     *
+     * A major version is only considered deprecated once all of its minor versions are.
+     *
+     * @return array<int|string, array{deprecated: bool}> Indexed by major version, sorted ascending.
+     */
+    final public static function getAPIMajorVersions(): array
+    {
+        $majors = [];
+        foreach (static::getAPIVersions() as $version) {
+            $major = $version['api_version'];
+            if (!array_key_exists($major, $majors)) {
+                $majors[$major] = ['deprecated' => true];
+            }
+            $majors[$major]['deprecated'] = $majors[$major]['deprecated'] && ($version['deprecated'] ?? false);
+        }
+        // PHP normalizes numeric string keys to int, so this closure may receive either type.
+        uksort($majors, static fn(int|string $a, int|string $b): int => version_compare((string) $a, (string) $b));
+
+        return $majors;
     }
 
     /**
@@ -263,6 +269,7 @@ EOT;
             self::$instance->registerController(new KnowbaseController());
             self::$instance->registerController(new InventoryController());
             self::$instance->registerController(new NotificationController());
+            self::$instance->registerController(new SecurityController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
@@ -317,6 +324,22 @@ EOT;
             }
         }
         return self::$instance;
+    }
+
+    /**
+     * @template T of AbstractController
+     * @param class-string<T> $controller_class
+     * @return T|null
+     */
+    public function getRegisteredController(string $controller_class): ?AbstractController
+    {
+        foreach ($this->controllers as $controller) {
+            if ($controller::class === $controller_class) {
+                /** @var T $controller */
+                return $controller;
+            }
+        }
+        return null;
     }
 
     /**
@@ -581,7 +604,7 @@ EOT;
             }
             $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        $action($input); // @phpstan-ignore expr.resultUnused (phpstan doens't understand this, TODO rewrite with listeners instead of callbacks)
+        $action($input);
     }
 
     private function doRequestMiddleware(MiddlewareInput $input): ?Response
@@ -613,7 +636,7 @@ EOT;
             }
             $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        $action($input); // @phpstan-ignore expr.resultUnused (phpstan doens't understand this, TODO rewrite with listeners instead of callbacks)
+        $action($input);
     }
 
     public function handleRequest(Request $request): Response
@@ -634,6 +657,11 @@ EOT;
 
         // Fill parameters from $_REQUEST
         foreach ($_REQUEST as $key => $value) {
+            // Reserved parameters that carry trusted internal scopes must never be seeded by a
+            // caller, otherwise the scope enforced by sub-resource routes could be bypassed.
+            if ($key === Search::MANDATORY_FILTER_PARAM) {
+                continue;
+            }
             $request->setParameter($key, $value);
         }
 
@@ -648,6 +676,10 @@ EOT;
                 $body = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
                 if (is_array($body)) {
                     foreach ($body as $key => $value) {
+                        // See above: a reserved internal scope parameter cannot be seeded by a caller.
+                        if ((string) $key === Search::MANDATORY_FILTER_PARAM) {
+                            continue;
+                        }
                         $request->setParameter((string) $key, $value);
                     }
                 } else {
@@ -791,12 +823,17 @@ EOT;
      */
     public function startTemporarySession(Request $request): void
     {
+        global $DB;
+
         $this->current_client = Server::validateAccessToken($request);
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = new User();
         $auth->user->getFromDB($this->current_client['user_id']);
-        Session::init($auth);
+        if ($this->current_client['user_id']) {
+            $DB->setTimezoneForUser($auth->user);
+        }
+        Session::init($auth, true);
         if ($request->getHeaderLine('Accept-Language')) {
             // Make sure language header is set in SERVER superglobal so that Session::getPreferredLanguage() works
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $request->getHeaderLine('Accept-Language');

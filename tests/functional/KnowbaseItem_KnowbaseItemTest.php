@@ -375,4 +375,40 @@ final class KnowbaseItem_KnowbaseItemTest extends DbTestCase
 
         return $input;
     }
+
+    public function testIsParentOfRecognisesOnlyDirectEdges(): void
+    {
+        $this->login();
+
+        $grand_parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Grand parent ' . $this->getUniqueString(),
+            'answer' => '<p>x</p>',
+        ]);
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Parent ' . $this->getUniqueString(),
+            'answer'   => '<p>x</p>',
+            '_parents' => [$grand_parent->getID()],
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . $this->getUniqueString(),
+            'answer'   => '<p>x</p>',
+            '_parents' => [$parent->getID()],
+        ]);
+
+        $this->assertTrue(
+            KnowbaseItem_KnowbaseItem::isParentOf($parent->getID(), $child->getID()),
+        );
+        // An ancestor is not a parent: only the direct edge counts.
+        $this->assertFalse(
+            KnowbaseItem_KnowbaseItem::isParentOf($grand_parent->getID(), $child->getID()),
+        );
+        // The relation is directed.
+        $this->assertFalse(
+            KnowbaseItem_KnowbaseItem::isParentOf($child->getID(), $parent->getID()),
+        );
+        // Root level is never an edge.
+        $this->assertFalse(
+            KnowbaseItem_KnowbaseItem::isParentOf(0, $child->getID()),
+        );
+    }
 }

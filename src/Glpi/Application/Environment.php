@@ -246,6 +246,22 @@ enum Environment: string
         };
     }
 
+    /**
+     * Get the options to pass to `password_hash()` and `password_needs_rehash()`.
+     *
+     * @return array{cost?: int}
+     */
+    public function getPasswordHashOptions(): array
+    {
+        // Specific for tests, should never be used anywhere else.
+        // The lowest bcrypt cost makes the hash computation and verification
+        // hundreds of times faster, which greatly reduces the tests duration.
+        return match ($this) {
+            default       => [],
+            self::TESTING => ['cost' => 4],
+        };
+    }
+
     public function shouldAddExtraE2EDataDuringInstallation(): bool
     {
         return
@@ -256,7 +272,11 @@ enum Environment: string
 
     public function shouldAddExtraCypressDataDuringInstallation(): bool
     {
-        // Note: this will be removed when we switch to playwright.
+        // Note: this data was added for the Cypress tests, which were replaced
+        // by the Playwright tests. It can't be removed yet because some PHPUnit
+        // tests use it.
+        // TODO: update these PHPUnit tests so they create their own data, then
+        // remove this method.
         return match ($this) {
             default       => false,
             self::TESTING => true,

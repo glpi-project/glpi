@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /// Class IPNetwork : Represent an IPv4 or an IPv6 network.
 /// It fully use IPAddress and IPNetmask to check validity and change representation from binary
@@ -721,7 +722,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested
         // element)
         for ($i = $startIndex; $i < 4; ++$i) {
-            $ORDER[] = new QueryExpression(QueryFunction::bitCount($netmaskDB[$i]) . " $ORDER_ORIENTATION");
+            $ORDER[] = new QueryExpression(QueryFunction::bitCount(new QueryIdentifier($netmaskDB[$i])) . " $ORDER_ORIENTATION");
         }
 
         if (!empty($condition["where"])) {
@@ -783,7 +784,12 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $version = $this->fields["version"];
         $start   = null;
-        $this->computeNetworkRange($start);
+        $end     = null;
+        // A masked equality must compare against the network address itself. Excluding the network
+        // and broadcast addresses is a display concern that shifts the start by one, which would
+        // make this criterion compare a masked value (always the network address) against
+        // network + 1 and never match.
+        $this->computeNetworkRange($start, $end, false);
 
         $result = [];
         for ($i = ($version == 4 ? 3 : 0); $i < 4; ++$i) {
@@ -921,13 +927,12 @@ class IPNetwork extends CommonImplicitTreeDropdown
      *
      * @param IPAddress|array|null $start
      * @param IPAddress|array|null $end                         (default NULL)
-     * @param string $excludeBroadcastAndNetwork Don't provide extremties addresses
-     *                                     ($this->fields['addressable'] by default)
+     * @param string|bool $excludeBroadcastAndNetwork Don't provide extremties addresses.
+     *                                     An empty string derives it from $this->fields['addressable'];
+     *                                     a boolean forces it.
      *                                     (default '')
      *
      * @return void
-     *
-     * @TODO Deprecate the `$excludeBroadcastAndNetwork`, it is never used.
      **/
     public function computeNetworkRange(&$start, &$end = null, $excludeBroadcastAndNetwork = '')
     {

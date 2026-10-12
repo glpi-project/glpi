@@ -35,8 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Config\ConfigContainer;
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 
@@ -336,7 +336,7 @@ class SavedSearch_Alert extends CommonDBChild
                         'glpi_alerts.date' => ['<',
                             QueryFunction::dateSub(
                                 date: QueryFunction::now(),
-                                interval: new QueryExpression($DB::quoteName('glpi_savedsearches_alerts.frequency')),
+                                interval: new QueryIdentifier('glpi_savedsearches_alerts.frequency'),
                                 interval_unit: 'SECOND'
                             ),
                         ],

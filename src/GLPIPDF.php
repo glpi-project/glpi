@@ -162,69 +162,74 @@ class GLPIPDF extends TCPDF
      **/
     public static function getFontList()
     {
-        $list = [];
+        global $GLPI_CACHE;
 
-        $register = static function (string $font_path) use (&$list): void {
-            try {
-                $definition = json_decode(file_get_contents($font_path), true);
-            } catch (Throwable) {
-                return; // Unreadable or invalid JSON, not a font definition file
-            }
+        $list = $GLPI_CACHE->get('pdf_font_list', []);
 
-            $name = is_array($definition) ? ($definition['name'] ?? null) : null;
-            $type = is_array($definition) ? ($definition['type'] ?? null) : null;
-            if ($name === null || $name === '') {
-                return; // Not a font definition file
-            }
+        if ($list === []) {
+            $register = static function (string $font_path) use (&$list): void {
+                try {
+                    $definition = json_decode(file_get_contents($font_path), true);
+                } catch (Throwable) {
+                    return; // Unreadable or invalid JSON, not a font definition file
+                }
 
-            $font = basename($font_path, '.json');
+                $name = is_array($definition) ? ($definition['name'] ?? null) : null;
+                $type = is_array($definition) ? ($definition['type'] ?? null) : null;
+                if ($name === null || $name === '') {
+                    return; // Not a font definition file
+                }
 
-            // skip subfonts
-            if (
-                ((str_ends_with($font, 'b')) || (str_ends_with($font, 'i')))
-                && isset($list[substr($font, 0, -1)])
-            ) {
-                return;
-            }
-            if (
-                ((str_ends_with($font, 'bi')))
-                && isset($list[substr($font, 0, -2)])
-            ) {
-                return;
-            }
+                $font = basename($font_path, '.json');
 
-            if ($type === 'cidfont0') {
-                // cidfont often have the same name (ArialUnicodeMS)
-                $list[$font] = sprintf(__('%1$s (%2$s)'), $name, $font);
-            } else {
-                $list[$font] = $name;
-            }
-        };
+                // skip subfonts
+                if (
+                    ((str_ends_with($font, 'b')) || (str_ends_with($font, 'i')))
+                    && isset($list[substr($font, 0, -1)])
+                ) {
+                    return;
+                }
+                if (
+                    ((str_ends_with($font, 'bi')))
+                    && isset($list[substr($font, 0, -2)])
+                ) {
+                    return;
+                }
 
-        // Collect definition files first, then sort them so that base fonts are
-        // processed before their bold/italic variants (needed by the subfont skip).
-        $font_paths = [];
-        foreach (FontPaths::buildAllowedPaths() as $font_dir) {
-            if (!is_dir($font_dir)) {
-                continue;
-            }
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($font_dir, FilesystemIterator::SKIP_DOTS)
-            );
-            foreach ($iterator as $file) {
-                if ($file->isFile() && strtolower($file->getExtension()) === 'json') {
-                    $font_paths[$file->getPathname()] = true;
+                if ($type === 'cidfont0') {
+                    // cidfont often have the same name (ArialUnicodeMS)
+                    $list[$font] = sprintf(__('%1$s (%2$s)'), $name, $font);
+                } else {
+                    $list[$font] = $name;
+                }
+            };
+
+            // Collect definition files first, then sort them so that base fonts are
+            // processed before their bold/italic variants (needed by the subfont skip).
+            $font_paths = [];
+            foreach (FontPaths::buildAllowedPaths() as $font_dir) {
+                if (!is_dir($font_dir)) {
+                    continue;
+                }
+                $iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($font_dir, FilesystemIterator::SKIP_DOTS)
+                );
+                foreach ($iterator as $file) {
+                    if ($file->isFile() && strtolower($file->getExtension()) === 'json') {
+                        $font_paths[$file->getPathname()] = true;
+                    }
                 }
             }
-        }
-        $font_paths = array_keys($font_paths);
-        sort($font_paths);
+            $font_paths = array_keys($font_paths);
+            sort($font_paths);
 
-        foreach ($font_paths as $font_path) {
-            $register($font_path);
-        }
+            foreach ($font_paths as $font_path) {
+                $register($font_path);
+            }
 
-        asort($list);
+            asort($list);
+            $GLPI_CACHE->set('pdf_font_list', $list);
+        }
         return $list;
     }
 

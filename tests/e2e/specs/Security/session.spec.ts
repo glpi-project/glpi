@@ -31,7 +31,7 @@
  */
 
 import { expect } from '@playwright/test';
-import { authenticator } from 'otplib';
+import { generateSync } from 'otplib';
 import { test } from '../../fixtures/glpi_fixture';
 import { LoginPage } from '../../pages/LoginPage';
 import { GlpiPage } from '../../pages/GlpiPage';
@@ -90,7 +90,7 @@ test.describe('Session', () => {
 
         await anonymousPage.goto('/front/preference.php?forcetab=Preference$0');
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
-        await login_page.doFillTotpCode(authenticator.generate(secret));
+        await login_page.doFillTotpCode(generateSync({ secret }));
 
         // ReAuth required
         const reauth_prompt = new ReAuthPromptPage(anonymousPage);
@@ -104,7 +104,7 @@ test.describe('Session', () => {
         await anonymousPage.getByRole('link', { name: 'Log in again' }).click();
 
         await login_page.doLogin(username, 'glpi');
-        await login_page.doFillTotpCode(authenticator.generate(secret));
+        await login_page.doFillTotpCode(generateSync({ secret }));
 
         await expect(anonymousPage).toHaveURL(/\/MFA\/ShowBackupCodes/);
         await anonymousPage.getByRole('button', { name: 'Continue' }).click();
@@ -158,7 +158,7 @@ test.describe('Session', () => {
         await expect(anonymousPage).toHaveURL(/\/MFA\/Setup/);
 
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
-        await login_page.doFillTotpCode(authenticator.generate(secret));
+        await login_page.doFillTotpCode(generateSync({ secret }));
 
         await expect(anonymousPage).toHaveURL(/\/MFA\/ShowBackupCodes/);
         await expect(anonymousPage.getByText(/Backup codes \(This is the only time these will be shown\)/i)).toBeVisible();
@@ -172,7 +172,7 @@ test.describe('Session', () => {
 
         await login_page.goto();
         await login_page.doLogin(username, 'glpi');
-        await login_page.doFillTotpCode(authenticator.generate(secret));
+        await login_page.doFillTotpCode(generateSync({ secret }));
 
         await expect(anonymousPage).toHaveURL(/\/front\/central\.php/);
     });
@@ -212,7 +212,7 @@ test.describe('Session', () => {
         await expect(anonymousPage.getByRole('textbox', { name: /Digit \d of \d/ })).toHaveCount(6);
 
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
-        await login_page.doFillTotpCode(authenticator.generate(secret));
+        await login_page.doFillTotpCode(generateSync({ secret }));
         await expect(anonymousPage).toHaveURL(/\/MFA\/ShowBackupCodes/);
     });
 
@@ -256,7 +256,7 @@ test.describe('Session', () => {
         // Pasting the full code into the first field spreads it across every field;
         // the user still validates explicitly (no auto-submit).
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
-        const token = authenticator.generate(secret);
+        const token = generateSync({ secret });
 
         await anonymousPage.context().grantPermissions(['clipboard-read', 'clipboard-write']);
         await anonymousPage.evaluate((code) => navigator.clipboard.writeText(code), token);

@@ -350,7 +350,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
             'itemtype'          => $item::class,
             'items_id'          => $item->getID(),
             'id'                => $self->fields['id'] ?? 0,
-            'zones_json'        => $self->fields['zones'] ?? '{}',
             'zones'             => json_decode($self->fields['zones'] ?? '{}', true),
             'nb_zones'          => $self->fields['nb_zones'] ?? 1,
             'pictures'          => $pictures,

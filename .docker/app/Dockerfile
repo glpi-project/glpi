@@ -15,6 +15,15 @@ RUN groupmod --gid ${HOST_GROUP_ID} www-data
 ARG HOST_USER_ID=1000
 RUN usermod --uid ${HOST_USER_ID} www-data
 
+# Serve GLPI on HTTPS, using a self-signed certificate.
+RUN a2enmod ssl \
+  && mkdir /etc/apache2/ssl \
+  && openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
+    -subj "/CN=localhost" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1" \
+    -keyout /etc/apache2/ssl/glpi.key -out /etc/apache2/ssl/glpi.crt \
+  && chown www-data:www-data /etc/apache2/ssl/glpi.key
+COPY https.conf /etc/apache2/sites-enabled/glpi-https.conf
+
 # Allow login as www-data user and allow it to execute sudo
 RUN usermod --shell /bin/bash www-data
 RUN echo "www-data ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers

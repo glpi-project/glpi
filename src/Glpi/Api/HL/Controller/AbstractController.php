@@ -40,6 +40,7 @@ use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\Search;
 use Glpi\Api\HL\StreamedResponseWrapper;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -86,35 +87,36 @@ abstract class AbstractController
     }
 
     /**
+     * @param string $api_version The API version or null.
+     * This is only a hint that can be used in complex scenarios where entire definitions may need to be swapped out depending on version and the `x-version-*` properties are not sufficient.
+     * API version schema/property filtering will still be applied on any schemas returned so it is not worth worrying about the provided version (if any) except in those edge cases.
      * @return array<string, array<string, mixed>>
      */
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         return [];
     }
 
     /**
      * Get all known schemas for this controller for the requested API version
-     * @param ?string $api_version The API version or null if all versions should be returned
+     * @param string $api_version The API version or null if all versions should be returned
      * @return array
      * @phpstan-return array<string, array>
      */
-    final public static function getKnownSchemas(?string $api_version): array
+    final public static function getKnownSchemas(string $api_version): array
     {
-        $schemas = static::getRawKnownSchemas();
+        $schemas = static::getRawKnownSchemas($api_version);
         // Allow plugins to inject or modify schemas
         $schemas = Plugin::doHookFunction(Hooks::REDEFINE_API_SCHEMAS, [
             'controller' => static::class,
             'schemas' => $schemas,
         ])['schemas'];
 
-        if ($api_version !== null) {
-            foreach ($schemas as $schema_name => &$schema) {
-                if (str_starts_with($schema_name, '_')) {
-                    continue;
-                }
-                $schema = Doc\Schema::filterSchemaByAPIVersion($schema, $api_version);
+        foreach ($schemas as $schema_name => &$schema) {
+            if (str_starts_with($schema_name, '_')) {
+                continue;
             }
+            $schema = Doc\Schema::filterSchemaByAPIVersion($schema, $api_version);
         }
         // Remove any null schemas
         return array_filter($schemas);
@@ -141,15 +143,17 @@ abstract class AbstractController
     /**
      * @param class-string<CommonDBTM> $class The class this schema represents. Used in the SQL join.
      * @param string|null $field The SQL field to use as a reference in the SQL join.
-     * @param string $name_field The field that contains the name
+     * @param string|list{string, string} $name_field The field that contains the name. If an array, the first element is the field name and the second element is the alias to use in the schema.
      * @param string|null $full_schema The name of the schema that represents the full object
      * @return array The schema
      */
-    public static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name', ?string $full_schema = null): array
+    public static function getDropdownTypeSchema(string $class, ?string $field = null, string|array $name_field = 'name', ?string $full_schema = null): array
     {
         if ($field === null) {
             $field = $class::getForeignKeyField();
         }
+        $name_field_db = is_array($name_field) ? $name_field[0] : $name_field;
+        $name_field_property = is_array($name_field) ? $name_field[1] : $name_field;
         $schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-field' => $field,
@@ -164,12 +168,26 @@ abstract class AbstractController
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                 ],
-                $name_field => [
+                $name_field_property => [
                     'type' => Doc\Schema::TYPE_STRING,
+                    'x-field' => $name_field_db,
                     'readOnly' => true,
                 ],
             ],
         ];
+
+        // Special case for User for v2
+        if ($full_schema === 'User' && is_array($name_field)) {
+            $schema['properties'][$name_field_property]['x-version-introduced'] = '3.0.0';
+            $schema['properties']['name'] = [
+                'type' => Doc\Schema::TYPE_STRING,
+                'x-field' => 'name',
+                'readOnly' => true,
+                'x-version-introduced' => '2.0.0',
+                'x-version-removed' => '3.0.0',
+            ];
+        }
+
         if ($full_schema !== null) {
             $schema['x-full-schema'] = $full_schema;
         }
@@ -190,6 +208,28 @@ abstract class AbstractController
             throw new RuntimeException('Invalid session');
         }
         return $user_id;
+    }
+
+    /**
+     * Restrict a search to a mandatory RSQL scope that the end user cannot widen.
+     *
+     * Used by sub-resource routes to limit the results to the parent item (e.g. the volumes of a
+     * given asset). The scope is enforced in {@see Search::addRSQLCriteria()}, where it is parsed
+     * on its own and ANDed as its own group, so a user `filter` cannot escape it through operator
+     * precedence, and being ANDed it can only ever narrow the results. Several calls accumulate.
+     *
+     * @param Request $request The request whose parameters are passed to the search.
+     * @param string $scope A RSQL expression, e.g. `rack.id==5` or `itemtype==User;items_id==2`.
+     */
+    protected function restrictSearch(Request $request, string $scope): void
+    {
+        $existing_scope = $request->hasParameter(Search::MANDATORY_FILTER_PARAM)
+            ? (string) $request->getParameter(Search::MANDATORY_FILTER_PARAM)
+            : '';
+        $request->setParameter(
+            Search::MANDATORY_FILTER_PARAM,
+            $existing_scope !== '' ? $existing_scope . ';' . $scope : $scope
+        );
     }
 
     /**

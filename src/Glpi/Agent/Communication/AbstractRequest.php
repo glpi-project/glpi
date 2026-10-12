@@ -533,9 +533,15 @@ abstract class AbstractRequest
      */
     private function addNode(DOMElement $parent, mixed $name, array|string|null $content): void
     {
+        if (!$this->response instanceof DOMDocument) {
+            // Should never actually happen, this is only reached in XML mode
+            throw new RuntimeException("Response document has not been initialized");
+        }
+        $document = $this->response;
+
         if (is_array($content) && !isset($content['content']) && !isset($content['attributes'])) {
             if (is_string($name)) {
-                $node = $parent->appendChild($this->response->createElement($name));
+                $node = $parent->appendChild($document->createElement($name));
                 if (!$node instanceof DOMElement) {
                     // Should never actually happen but help with static analysis
                     throw new RuntimeException("Node is not a DOMElement");
@@ -555,25 +561,18 @@ abstract class AbstractRequest
                 $content = $content['content'];
             }
 
+            $new_node = $document->createElement($name);
+
             if ($type == XML_CDATA_SECTION_NODE) {
                 // Handle CDATA sections
-                $new_node = $this->response->createElement($name);
-                $cdata = $this->response->createCDATASection($content);
-                $new_node->appendChild($cdata);
-            } else {
-                // Normal sections
-                $new_node = $this->response->createElement(
-                    $name,
-                    $content
-                );
+                $new_node->appendChild($document->createCDATASection($content));
+            } elseif ($content !== null && $content !== '') {
+                // Normal sections.
+                $new_node->appendChild($document->createTextNode((string) $content));
             }
 
-            if (count($attributes)) {
-                foreach ($attributes as $aname => $avalue) {
-                    $attr = $this->response->createAttribute($aname);
-                    $attr->value = $avalue;
-                    $new_node->appendChild($attr);
-                }
+            foreach ($attributes as $aname => $avalue) {
+                $new_node->setAttribute($aname, (string) $avalue);
             }
 
             $parent->appendChild($new_node);

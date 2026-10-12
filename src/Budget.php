@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Features\Clonable;
@@ -335,7 +336,6 @@ class Budget extends CommonDropdown
             /** @var CommonDBTM $item */
             $item = getItemForItemtype($itemtype);
 
-            $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : new QueryExpression('0', 'is_deleted');
             $criteria['SELECT'][] = $item->isField('serial') ? "$item_table.serial" : new QueryExpression('NULL', 'serial');
             $criteria['SELECT'][] = $item->isField('otherserial') ? "$item_table.otherserial" : new QueryExpression('NULL', 'otherserial');
             if ($item instanceof Item_Devices) {
@@ -344,6 +344,7 @@ class Budget extends CommonDropdown
                 $criteria['SELECT'][] = new QueryExpression('NULL', 'devices_id');
             }
             $criteria['SELECT'][] = 'glpi_infocoms.value';
+            $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : new QueryExpression('0', 'is_deleted');
             if ($item->maybeTemplate()) {
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
             }
@@ -396,7 +397,7 @@ class Budget extends CommonDropdown
                                       + " . $DB::quoteName("$cost_table.cost_material")),
                     alias: 'value'
                 ),
-                default => QueryFunction::sum(expression: "{$cost_table}.cost", alias: 'value'),
+                default => QueryFunction::sum(expression: new QueryIdentifier("{$cost_table}.cost"), alias: 'value'),
             };
             $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : '0 AS is_deleted';
 
@@ -488,7 +489,7 @@ class Budget extends CommonDropdown
 
             $criteria = [
                 'SELECT' => [
-                    QueryFunction::count("{$item_table}.id", true, 'cpt'),
+                    QueryFunction::count(new QueryIdentifier("{$item_table}.id"), true, 'cpt'),
                 ],
                 'FROM' => $cost_table,
                 'INNER JOIN' => [

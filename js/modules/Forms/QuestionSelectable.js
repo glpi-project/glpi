@@ -130,15 +130,12 @@ export class GlpiFormQuestionTypeSelectable {
             const clone = template.content.cloneNode(true);
             const uuid = getUUID(); // Generate a new UUID to avoid duplicates
 
-            $(clone).find('input[type="text"]')
-                .val(value.value)
-                .attr('name', `options[${uuid}]`);
+            this.#setOptionUuid($(clone), uuid);
+            $(clone).find('input[type="text"]').val(value.value);
             $(clone).find(`input[type="${CSS.escape(this._inputType)}"]`)
-                .val(uuid)
                 .prop('checked', value.checked);
             $(clone).find('input[data-glpi-form-editor-question-option-order]')
-                .val(value.order)
-                .attr('name', `options_order[${uuid}]`);
+                .val(value.order);
 
             const insertedElement = $(clone).children().appendTo(this._container);
 
@@ -193,6 +190,28 @@ export class GlpiFormQuestionTypeSelectable {
         option
             .find('button[data-glpi-form-editor-question-option-remove]')
             .on('click', (event) => this.#removeOption(event));
+
+        // The "copy uuid" button is handled by the generic `data-glpi-clipboard-text`
+        // handler, no listener is needed here. Its value is kept in sync by
+        // `#setOptionUuid()`.
+    }
+
+    /**
+     * Assign an uuid to an option and update every input/attribute referencing it.
+     *
+     * @param {JQuery<HTMLElement>} option
+     * @param {string} uuid
+     */
+    #setOptionUuid(option, uuid) {
+        // The option may still use the input type of the template it was cloned
+        // from (which is not updated when the question switches between single
+        // and multiple mode), so both types must be targeted here.
+        option.find('input[type="radio"], input[type="checkbox"]').val(uuid);
+        option.find('input[type="text"]').attr('name', `options[${uuid}]`);
+        option.find('input[data-glpi-form-editor-question-option-order]')
+            .attr('name', `options_order[${uuid}]`);
+        option.find('[data-glpi-form-editor-question-option-copy-uuid]')
+            .attr('data-glpi-clipboard-text', uuid);
     }
 
     /**
@@ -237,10 +256,7 @@ export class GlpiFormQuestionTypeSelectable {
         }
 
         // Update the uuid with a new random value (random number like mt_rand)
-        const uuid = getUUID();
-        $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
-        $(input).parent().next().find('input[type="text"]').attr('name', `options[${uuid}]`);
-        $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').attr('name', `options_order[${uuid}]`);
+        this.#setOptionUuid($(input).parent().next(), getUUID());
         $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').val(this._container.children().length + 1);
 
         /**
@@ -314,6 +330,7 @@ export class GlpiFormQuestionTypeSelectable {
         $(input).siblings('input[type="radio"], input[type="checkbox"]').prop('disabled', false);
         $(input).parent().removeAttr('data-glpi-form-editor-question-extra-details');
         $(input).siblings('button[data-glpi-form-editor-question-option-remove]').removeClass('d-none');
+        $(input).siblings('button[data-glpi-form-editor-question-option-copy-uuid]').removeClass('d-none');
     }
 
     /**

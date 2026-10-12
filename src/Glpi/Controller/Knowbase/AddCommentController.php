@@ -54,6 +54,7 @@ final class AddCommentController extends AbstractController
     #[Route(
         "/Knowbase/{id}/AddComment",
         name: "knowbase_article_add_comment",
+        methods: ["POST"],
         requirements: [
             'id' => '\d+',
         ]

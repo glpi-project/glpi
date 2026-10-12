@@ -100,6 +100,7 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Ramsey\Uuid\Uuid;
 use Ticket;
 
 final class FormMigrationTest extends DbTestCase
@@ -3363,6 +3364,7 @@ final class FormMigrationTest extends DbTestCase
         $DB->insert('glpi_plugin_formcreator_questions', [
             'name' => 'Target question with unsupported value operator',
             'fieldtype' => 'checkboxes',
+            'values' => json_encode(['Test']),
             'plugin_formcreator_sections_id' => $sectionId,
         ]);
         $targetQuestionId = $DB->insertId();
@@ -3417,6 +3419,73 @@ final class FormMigrationTest extends DbTestCase
         $warnings = array_column($warnings, "message");
         $this->assertContains(
             'A visibility condition used in "Question" "Source question with unsupported value operator" (Form "Form with unsupported value operator") with value operator "Is greater than" is not supported by the question type. It will be ignored.',
+            $warnings,
+        );
+    }
+
+    public function testFormMigrationConditionWithValueNotMatchingAnyOption(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: a condition whose legacy value no longer matches any
+        // option of the referenced radio question (renamed/stale option).
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => 'Form with a condition value not matching any option',
+        ]);
+        $form_id = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $form_id,
+        ]);
+        $section_id = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Target question with condition value not matching any option',
+            'fieldtype' => 'text',
+            'plugin_formcreator_sections_id' => $section_id,
+            'show_rule' => 2, // Visible if condition is met
+        ]);
+        $target_question_id = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Source radio question',
+            'fieldtype' => 'radios',
+            'values' => json_encode(['Option 1', 'Option 2']),
+            'plugin_formcreator_sections_id' => $section_id,
+        ]);
+        $source_question_id = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_conditions', [
+            'itemtype' => 'PluginFormcreatorQuestion',
+            'items_id' => $target_question_id,
+            'plugin_formcreator_questions_id' => $source_question_id,
+            'show_condition' => 1, // Equals condition
+            'show_value' => 'Stale option', // Does not match any option above
+            'show_logic' => 1, // AND logic
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+        $this->assertTrue($result->isFullyProcessed());
+
+        // Assert: the condition was dropped instead of being bound to a phantom option
+        $target_question = getItemByTypeName(
+            Question::class,
+            'Target question with condition value not matching any option'
+        );
+        $this->assertNotFalse($target_question);
+        $this->assertCount(0, $target_question->getConfiguredConditionsData());
+
+        $warnings = array_column(array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Warning
+        ), "message");
+        $this->assertContains(
+            'A visibility condition used in "Question" "Target question with condition value not matching any option" (Form "Form with a condition value not matching any option") references a value that no longer matches any option. It will be ignored.',
             $warnings,
         );
     }
@@ -4136,6 +4205,173 @@ final class FormMigrationTest extends DbTestCase
 
         // Assert: migration should be done without error
         $this->assertTrue($result->isFullyProcessed());
+    }
+
+    public function testFormMigrationWithDuplicateFormNames(): void
+    {
+        global $DB;
+
+        // Arrange: create two formcreator forms with the exact same name, entity
+        // and category. This reproduces a real-world scenario where users had
+        // duplicated form names in formcreator.
+        $duplicate_name = 'Duplicate form name test';
+        $this->createSimpleFormcreatorForm(
+            name: $duplicate_name,
+            questions: [
+                ['name' => 'Question in first form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => Uuid::uuid4(),
+            ]
+        );
+        $this->createSimpleFormcreatorForm(
+            name: $duplicate_name,
+            questions: [
+                ['name' => 'Question in second form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => Uuid::uuid4(),
+            ]
+        );
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: both forms must have been migrated as distinct GLPI forms.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => $duplicate_name],
+        ]);
+        $this->assertEquals(
+            2,
+            $migrated_forms->count(),
+            'Two distinct forms should have been created, one per formcreator form'
+        );
+    }
+
+    public function testFormMigrationWithCollidingFormUuids(): void
+    {
+        global $DB;
+
+        // Arrange: create two formcreator forms sharing the exact same UUID.
+        // Formcreator has no unique constraint on this column, so this can
+        // happen with real-world data (e.g. forms duplicated by a buggy tool).
+        $shared_uuid = (string) Uuid::uuid4();
+        $this->createSimpleFormcreatorForm(
+            name: 'Form with colliding uuid 1',
+            questions: [
+                ['name' => 'Question in first form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $shared_uuid,
+            ]
+        );
+        $this->createSimpleFormcreatorForm(
+            name: 'Form with colliding uuid 2',
+            questions: [
+                ['name' => 'Question in second form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $shared_uuid,
+            ]
+        );
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: both forms must have been migrated as distinct GLPI forms,
+        // despite sharing the same source UUID.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => ['Form with colliding uuid 1', 'Form with colliding uuid 2']],
+        ]);
+        $this->assertEquals(
+            2,
+            $migrated_forms->count(),
+            'Two distinct forms should have been created, one per formcreator form, despite the UUID collision'
+        );
+    }
+
+    public function testFormMigrationSubstituteUuidIsDeterministicAcrossReplays(): void
+    {
+        global $DB;
+
+        // Arrange: a formcreator form with no UUID, forcing a substitute one to be generated.
+        $this->createSimpleFormcreatorForm(
+            name: 'Form without uuid replayed',
+            questions: [
+                ['name' => 'Question', 'fieldtype' => 'text'],
+            ],
+        );
+
+        // Act: run the migration twice, as a real replay of the console command would.
+        $first_migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($first_migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($first_migration, 'processMigration'));
+
+        $second_migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($second_migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($second_migration, 'processMigration'));
+
+        // Assert: the replay reconciled with the form created on the first run instead of duplicating it.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'uuid'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => 'Form without uuid replayed'],
+        ]);
+        $this->assertEquals(
+            1,
+            $migrated_forms->count(),
+            'The substitute UUID must be the same on both runs, so the replay must not create a duplicate'
+        );
+    }
+
+    public function testFormMigrationReconcilesFormsMigratedBeforeUuidReconciliation(): void
+    {
+        global $DB;
+
+        // Arrange: a formcreator form with a UUID, as if Formcreator was upgraded after a first migration.
+        $source_uuid = (string) Uuid::uuid4();
+        $this->createSimpleFormcreatorForm(
+            name: 'Form migrated before uuid reconciliation',
+            questions: [
+                ['name' => 'Question', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $source_uuid,
+            ]
+        );
+
+        // Arrange: a GLPI form matching it by name/entity/category, but with an unrelated UUID,
+        // as produced by a migration run before reconciliation switched from name to uuid.
+        $legacy_form = $this->createItem(Form::class, [
+            'name'        => 'Form migrated before uuid reconciliation',
+            'entities_id' => 0,
+            'uuid'        => (string) Uuid::uuid4(),
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: the pre-existing form was adopted, not duplicated, and its uuid was upgraded.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'uuid'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => 'Form migrated before uuid reconciliation'],
+        ]);
+        $this->assertEquals(1, $migrated_forms->count());
+
+        $migrated_form = $migrated_forms->current();
+        $this->assertEquals($legacy_form->getID(), $migrated_form['id']);
+        $this->assertEquals($source_uuid, $migrated_form['uuid']);
     }
 
     public function testFormMigrationActorsWithEmptyDefaultValue(): void

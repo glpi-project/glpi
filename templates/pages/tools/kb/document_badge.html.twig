@@ -31,7 +31,7 @@
  #}
 
 <span
-    class="kb-item-badge badge bg-light text-dark d-flex align-items-center gap-2"
+    class="kb-item-badge badge d-flex align-items-center gap-2"
     data-glpi-document-assoc-id="{{ doc.assoc_id }}"
     data-glpi-document-id="{{ doc.id }}"
     data-testid="document-chip"
@@ -48,7 +48,7 @@
     {% if can_edit %}
         <button
             type="button"
-            class="kb-unlink-item btn-close btn-close-white"
+            class="kb-unlink-item btn-close"
             data-glpi-kb-unlink-document="{{ doc.assoc_id }}"
             title="{{ __('Unlink document') }}"
             aria-label="{{ __('Unlink document') }}"

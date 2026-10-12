@@ -39,6 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 class DropdownType extends AbstractType
 {
@@ -146,7 +147,7 @@ TWIG, $twig_params);
                 new QueryExpression(
                     'NEWTABLE.' . $DB::quoteName('id') . ' = ' . QueryFunction::jsonUnquote(
                         expression: QueryFunction::jsonExtract([
-                            'REFTABLE.custom_fields',
+                            new QueryIdentifier('REFTABLE.custom_fields'),
                             new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                         ])
                     )
@@ -155,8 +156,8 @@ TWIG, $twig_params);
         } else {
             $opt['joinparams']['condition'] = [
                 QueryFunction::jsonContains(
-                    'REFTABLE.custom_fields',
-                    'NEWTABLE.id',
+                    new QueryIdentifier('REFTABLE.custom_fields'),
+                    new QueryIdentifier('NEWTABLE.id'),
                     '$."' . $this->custom_field->fields['id'] . '"'
                 ),
             ];

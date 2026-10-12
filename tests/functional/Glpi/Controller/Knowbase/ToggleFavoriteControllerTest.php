@@ -34,13 +34,21 @@
 
 namespace tests\units\Glpi\Controller\Knowbase;
 
+use Entity_KnowbaseItem;
 use Glpi\Controller\Knowbase\ToggleFavoriteController;
+use Glpi\Http\Firewall;
+use Glpi\Http\SessionManager;
+use Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Favorite;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use User;
 
 class ToggleFavoriteControllerTest extends DbTestCase
 {
@@ -69,6 +77,53 @@ class ToggleFavoriteControllerTest extends DbTestCase
             'name'   => 'Fav toggle ' . $this->getUniqueString(),
             'answer' => '<p>x</p>',
         ])->getID();
+    }
+
+    private function applyFirewallStrategy(int $id): void
+    {
+        $event = new ControllerEvent(
+            $this->createMock(HttpKernelInterface::class),
+            new ToggleFavoriteController(),
+            Request::create('/Knowbase/' . $id . '/ToggleFavorite', 'POST'),
+            HttpKernelInterface::MAIN_REQUEST,
+        );
+
+        (new FirewallStrategyListener(new Firewall(), new SessionManager()))->onKernelController($event);
+    }
+
+    private function makeFaqArticleVisibleToHelpdesk(): int
+    {
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Fav toggle helpdesk ' . $this->getUniqueString(),
+            'answer'      => '<p>x</p>',
+            'is_faq'      => 1,
+            'users_id'    => getItemByTypeName(User::class, 'glpi', true),
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        return $article->getID();
+    }
+
+    #[AllowMockObjectsWithoutExpectations]
+    public function testHelpdeskProfileCanToggleFavorite(): void
+    {
+        $this->login();
+        $id = $this->makeFaqArticleVisibleToHelpdesk();
+
+        $this->login('post-only', 'postonly');
+
+        $this->applyFirewallStrategy($id);
+        $response = $this->callController($id, true);
+
+        $this->assertSame(1, $this->countFavorites($id));
+        $this->assertSame('{"favorite":true}', $response->getContent());
     }
 
     public function testAddFavoriteTwiceIsIdempotent(): void

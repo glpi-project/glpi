@@ -64,7 +64,7 @@
          <span id="group_{{ random() }}" class="d-inline-flex align-items-center">
             <i class="ti ti-users ms-1 me-1" aria-hidden="true"></i>
             {{ get_item_link('Group', entry['item']['items_id_target'], {
-               'enable_anonymization': enable_anonymization
+               'enable_anonymization': anonym_user ?? false
             })|raw }}
          </span>
       {% endset %}

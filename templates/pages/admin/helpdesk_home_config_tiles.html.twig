@@ -83,16 +83,16 @@
         </div>
     </section>
 {% else %}
-    {# If the content is not editable and the list is empty, we need to add
-    a empty state text as the user will not see the "Add tile" button #}
-    {% if not editable %}
+    {# If the list is empty and the user will not see the "Add tile" button,
+    we need to add an empty state text instead #}
+    {% if not editable or not tiles_manager.canAddTile() %}
         <span class="text-muted">
             {{ __("There are no tiles defined for this item.") }}
         </span>
     {% endif %}
 {% endfor %}
 
-{% if editable %}
+{% if editable and tiles_manager.canAddTile() %}
     <div
         role="button"
         aria-label="{{ __('Add tile') }}"

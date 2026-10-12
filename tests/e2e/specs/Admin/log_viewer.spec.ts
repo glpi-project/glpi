@@ -33,7 +33,7 @@
 import { test, expect } from '../../fixtures/glpi_fixture';
 import { LogViewerPage } from '../../pages/LogViewerPage';
 import { Profiles } from '../../utils/Profiles';
-import AxeBuilder from '@axe-core/playwright';
+import { a11yScan } from '../../utils/Accessibility';
 
 test('Log list has items', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
@@ -41,7 +41,7 @@ test('Log list has items', async ({ page, profile }) => {
     await log_viewer_page.gotoLogList();
     await expect(log_viewer_page.log_list_items.first()).toBeVisible();
 
-    const a11y_results = await new AxeBuilder({ page })
+    const a11y_results = await a11yScan(page)
         .include('[data-testid="log-list-item"]')
         .analyze()
     ;
@@ -54,7 +54,7 @@ test('Log viewer has entries', async ({ page, profile }) => {
     await log_viewer_page.gotoLogViewer('event.log');
     await expect(log_viewer_page.log_entries.first()).toBeVisible();
 
-    const a11y_results = await new AxeBuilder({ page })
+    const a11y_results = await a11yScan(page)
         .include('[data-testid="log-entries"]')
         .analyze()
     ;

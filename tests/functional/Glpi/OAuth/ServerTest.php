@@ -37,15 +37,35 @@ namespace tests\units\Glpi\Migration;
 use Glpi\Exception\OAuth2KeyException;
 use Glpi\OAuth\Server;
 use Glpi\Tests\DbTestCase;
-use PHPUnit\Framework\Attributes\Group;
+
+use function Safe\chmod;
+use function Safe\copy;
+use function Safe\mkdir;
+use function Safe\rmdir;
+use function Safe\unlink;
 
 class ServerTest extends DbTestCase
 {
+    /**
+     * Directory holding a disposable copy of the OAuth keys, if any.
+     */
+    private ?string $keys_directory = null;
+
     public function tearDown(): void
     {
-        //reset correct chmod
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pem', 0o600);
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pub', 0o600);
+        if ($this->keys_directory !== null) {
+            foreach (['oauth.pem', 'oauth.pub'] as $key_filename) {
+                if (!file_exists($this->keys_directory . '/' . $key_filename)) {
+                    continue; //the copy may have failed
+                }
+                //reset correct chmod to be able to delete the file
+                chmod($this->keys_directory . '/' . $key_filename, 0o600);
+                unlink($this->keys_directory . '/' . $key_filename);
+            }
+            rmdir($this->keys_directory);
+            $this->keys_directory = null;
+        }
+
         parent::tearDown();
     }
 
@@ -55,29 +75,54 @@ class ServerTest extends DbTestCase
         $this->assertTrue(Server::checkKeys());
     }
 
-    #[Group('single-thread')] // Modifing permission on the oauth file
     public function testPrivateKeyNotReadable()
     {
-        //by default, keys must be present and readable.
-        $this->assertTrue(Server::checkKeys());
+        //operate on a copy of the keys, as making the real ones unreadable would impact any other test running concurrently.
+        $config_dir = $this->getKeysCopyDirectory();
+
+        //keys must be present and readable.
+        $this->assertTrue(Server::checkKeys($config_dir));
 
         //change ACLs on private key to make it unreadable
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pem', 0o000);
+        chmod($config_dir . '/oauth.pem', 0o000);
         $this->expectException(OAuth2KeyException::class);
         $this->expectExceptionMessage('Either private or public OAuth keys cannot be read. Please check file system permissions');
-        $this->assertTrue(Server::checkKeys());
+        $this->assertTrue(Server::checkKeys($config_dir));
     }
 
-    #[Group('single-thread')] // Modifing permission on the oauth file
     public function testPublicKeyNotReadable()
     {
-        //by default, keys must be present and readable.
-        $this->assertTrue(Server::checkKeys());
+        //operate on a copy of the keys, as making the real ones unreadable would impact any other test running concurrently.
+        $config_dir = $this->getKeysCopyDirectory();
+
+        //keys must be present and readable.
+        $this->assertTrue(Server::checkKeys($config_dir));
 
         //change ACLs on public key to make it unreadable
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pub', 0o000);
+        chmod($config_dir . '/oauth.pub', 0o000);
         $this->expectException(OAuth2KeyException::class);
         $this->expectExceptionMessage('Either private or public OAuth keys cannot be read. Please check file system permissions');
-        $this->assertTrue(Server::checkKeys());
+        $this->assertTrue(Server::checkKeys($config_dir));
+    }
+
+    /**
+     * Copy the OAuth keys into a dedicated directory, removed during the teardown.
+     *
+     * @return string Path of the directory containing the copied keys.
+     */
+    private function getKeysCopyDirectory(): string
+    {
+        $directory = sys_get_temp_dir() . '/glpi_test_oauth_keys_' . uniqid();
+        mkdir($directory);
+        $this->keys_directory = $directory;
+
+        foreach (['oauth.pem', 'oauth.pub'] as $key_filename) {
+            copy(
+                GLPI_CONFIG_DIR . '/' . $key_filename,
+                $directory . '/' . $key_filename
+            );
+        }
+
+        return $directory;
     }
 }

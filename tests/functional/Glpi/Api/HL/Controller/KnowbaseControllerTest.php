@@ -35,12 +35,15 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Budget;
+use Entity_KnowbaseItem;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use KnowbaseItem;
+use KnowbaseItem_Favorite;
 use KnowbaseItemTranslation;
 use Project;
 use Ticket;
+use User;
 
 class KnowbaseControllerTest extends HLAPITestCase
 {
@@ -184,76 +187,159 @@ class KnowbaseControllerTest extends HLAPITestCase
         ]);
     }
 
-    /**
-     * Categories do not exist anymore, but they are still exposed until the v3 of the API
-     * through the articles that have children.
-     */
-    public function testDeprecatedCategories()
+    public function testIsFavoriteProperty(): void
+    {
+        global $DB;
+
+        $DB->insert(KnowbaseItem::getTable(), [
+            'name' => '_knowbaseitem_favorite_test',
+            'answer' => 'Favorite test content',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_faq' => 1,
+        ]);
+        $article_id = $DB->insertId();
+
+        $DB->insert(Entity_KnowbaseItem::getTable(), [
+            'knowbaseitems_id' => $article_id,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+
+        $DB->insert(KnowbaseItem_Favorite::getTable(), [
+            'knowbaseitems_id' => $article_id,
+            'users_id' => getItemByTypeName(User::class, 'post-only', true),
+        ]);
+
+        $DB->insert(KnowbaseItem::getTable(), [
+            'name' => '_knowbaseitem_notfavorite_test',
+            'answer' => 'Not favorite test content',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_faq' => 1,
+        ]);
+        $article_id2 = $DB->insertId();
+
+        $DB->insert(Entity_KnowbaseItem::getTable(), [
+            'knowbaseitems_id' => $article_id2,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+
+        // The `is_favorite` property is a scalar join (a scalar value pulled from another table) which reflects if the article is marked as favorite by the current user.
+        $this->login();
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $article_id), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayHasKey('is_favorite', $content);
+                    $this->assertFalse($content['is_favorite']);
+                });
+        });
+
+        $this->login('post-only', 'postonly');
+
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $article_id), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayHasKey('is_favorite', $content);
+                    $this->assertTrue($content['is_favorite']);
+                });
+        });
+
+        // Test is_favorite as RSQL filter
+        $this->api->call(new Request('GET', '/Knowledgebase/Article'), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    // The root article is readable by FAQ readers, so it is listed too.
+                    $names = array_column($content, 'name');
+                    $this->assertCount(3, $content);
+                    $this->assertContains('_knowbaseitem_favorite_test', $names);
+                    $this->assertContains('_knowbaseitem_notfavorite_test', $names);
+                });
+        });
+
+        $request = new Request('GET', '/Knowledgebase/Article');
+        $request->setParameter('filter', 'is_favorite==1');
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals('_knowbaseitem_favorite_test', $content[0]['name']);
+                });
+        });
+        $request = new Request('GET', '/Knowledgebase/Article');
+        $request->setParameter('filter', 'is_favorite==0');
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    // The root article is readable and is not a favorite, so it matches too.
+                    $names = array_column($content, 'name');
+                    $this->assertCount(2, $content);
+                    $this->assertContains('_knowbaseitem_notfavorite_test', $names);
+                });
+        });
+    }
+
+    public function testSetAndUpdateParentArticles(): void
     {
         $this->loginWeb();
+        $parent_article_id = $this->createItem(KnowbaseItem::class, [
+            'name' => '_knowbaseitem_parent_test',
+            'answer' => 'Parent test content',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_faq' => 1,
+        ])->getID();
 
-        $entity = $this->getTestRootEntity(true);
-
-        // Chained at creation time: adding the links afterwards would leave each
-        // article with a second parent, the root article every parentless
-        // creation is attached to.
-        $articles = [];
-        $parent_id = 0;
-        foreach (['root', 'middle', 'leaf'] as $name) {
-            $articles[$name] = $this->createItem(KnowbaseItem::class, [
-                'name' => '_kbcategory_' . $name,
-                'answer' => $name,
-                'entities_id' => $entity,
-                'is_recursive' => 1,
-                '_parents' => $parent_id > 0 ? [$parent_id] : [],
-            ]);
-            $parent_id = $articles[$name]->getID();
-        }
+        $test_article = $this->createItem(KnowbaseItem::class, [
+            'name' => '_knowbaseitem_child_test2',
+            'answer' => 'Child test content',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_faq' => 1,
+        ])->getID();
 
         $this->login();
 
-        $request = new Request('GET', '/Knowledgebase/Category');
-        $request->setParameter('filter', 'name=like=_kbcategory_*');
-        $this->api->call($request, function ($call) use ($articles) {
+        // Create new article and set "parents" property to the parent article
+        $request = new Request('POST', '/Knowledgebase/Article');
+        $request->setParameter('name', '_knowbaseitem_child_test');
+        $request->setParameter('answer', 'Child test content');
+        $request->setParameter('parents', [$parent_article_id]);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        // Get the newly created article and check that the "parents" property is set correctly
+        $new_article_id = getItemByTypeName(KnowbaseItem::class, '_knowbaseitem_child_test', true);
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $new_article_id), function ($call) use ($parent_article_id) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use ($articles) {
-                    // Only the articles that have children are seen as categories, and they must not be duplicated
-                    $this->assertCount(2, $content);
-                    $categories = array_column($content, null, 'id');
-                    $this->assertArrayHasKey($articles['root']->getID(), $categories);
-                    $this->assertArrayHasKey($articles['middle']->getID(), $categories);
-
-                    // Every article hangs under the root article, which is thus
-                    // the first level of the deprecated category tree.
-                    $root = $categories[$articles['root']->getID()];
-                    $this->assertEquals('Home > _kbcategory_root', $root['completename']);
-                    $this->assertEquals(2, $root['level']);
-                    $this->assertEquals(KnowbaseItem::getRootId(), $root['parent']['id']);
-                    $this->assertEquals('', $root['comment']);
-
-                    $middle = $categories[$articles['middle']->getID()];
-                    $this->assertEquals('Home > _kbcategory_root > _kbcategory_middle', $middle['completename']);
-                    $this->assertEquals(3, $middle['level']);
-                    $this->assertEquals($articles['root']->getID(), $middle['parent']['id']);
-                    $this->assertEquals('_kbcategory_root', $middle['parent']['name']);
+                ->jsonContent(function ($content) use ($parent_article_id) {
+                    $this->assertArrayHasKey('parents', $content);
+                    $this->assertCount(1, $content['parents']);
+                    $this->assertEquals($parent_article_id, $content['parents'][0]['id']);
                 });
         });
 
-        $this->api->call(new Request('GET', '/Knowledgebase/Category/' . $articles['middle']->getID()), function ($call) use ($articles) {
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use ($articles) {
-                    $this->assertEquals('_kbcategory_middle', $content['name']);
-                    $this->assertEquals('Home > _kbcategory_root > _kbcategory_middle', $content['completename']);
-                    $this->assertEquals(3, $content['level']);
-                    $this->assertEquals($articles['root']->getID(), $content['parent']['id']);
-                });
+        // Update the test article to set the "parents" property to the parent article
+        $request = new Request('PATCH', '/Knowledgebase/Article/' . $test_article);
+        $request->setParameter('parents', [$parent_article_id]);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
         });
 
-        // An article without any child is not a category
-        $this->api->call(new Request('GET', '/Knowledgebase/Category/' . $articles['leaf']->getID()), function ($call) {
-            $call->response->isNotFoundError();
+        // Get the test article and check that the "parents" property is set correctly
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $test_article), function ($call) use ($parent_article_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($parent_article_id) {
+                    $this->assertArrayHasKey('parents', $content);
+                    $this->assertCount(1, $content['parents']);
+                    $this->assertEquals($parent_article_id, $content['parents'][0]['id']);
+                });
         });
     }
 }

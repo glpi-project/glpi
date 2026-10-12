@@ -134,9 +134,12 @@ final class SubmitAnswerController extends AbstractController
         $post = $request->request->all();
         $provider = new EndUserInputNameProvider();
 
+        $delegated_users_id = $request->request->getInt('delegation_users_id', 0) ?: null;
         $delegation = new DelegationData(
-            $request->request->getInt('delegation_users_id', 0) ?: null,
-            $request->request->getBoolean('delegation_use_notification', false) ?: null,
+            $delegated_users_id,
+            $delegated_users_id !== null
+                ? $request->request->getBoolean('delegation_use_notification', false)
+                : null,
             $request->request->getString('delegation_alternative_email', '') ?: null
         );
         $answers    = $provider->getAnswers($post);

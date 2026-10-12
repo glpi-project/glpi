@@ -59,8 +59,7 @@ LogParser::checkReAuthenticationOrRedirect();
 if (($_GET['action'] ?? '') === 'download_log_file') {
     LogViewer::checkReAuthenticationOrRedirect();
     Session::checkRight(LogViewer::$rightname, READ);
-    $logparser->download($filepath);
-    // no redirect, log file opened/downloaded without changing page.
+    return $logparser->download($filepath);
 }
 // empty log file
 elseif (($_POST['action'] ?? '') === 'empty') {

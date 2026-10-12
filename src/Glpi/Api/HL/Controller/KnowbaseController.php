@@ -48,6 +48,7 @@ use Group;
 use Group_KnowbaseItem;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
+use KnowbaseItem_Favorite;
 use KnowbaseItem_Item;
 use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_Profile;
@@ -55,6 +56,7 @@ use KnowbaseItem_Revision;
 use KnowbaseItem_User;
 use KnowbaseItemTranslation;
 use Profile;
+use Session;
 use User;
 
 #[Route(path: '/Knowledgebase', requirements: [
@@ -81,7 +83,7 @@ use User;
 )]
 class KnowbaseController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         $schemas = [
             'KBArticle' => [
@@ -122,6 +124,7 @@ class KnowbaseController extends AbstractController
                     'parents' => [
                         'x-version-introduced' => '3.0.0',
                         'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-input-field' => '_parents',
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
                             'x-full-schema' => 'KBArticle',
@@ -139,7 +142,7 @@ class KnowbaseController extends AbstractController
                     'is_faq' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'views' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
@@ -225,6 +228,18 @@ class KnowbaseController extends AbstractController
                                 ],
                                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                             ],
+                        ],
+                    ],
+                    'is_favorite' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '3.0.0',
+                        'description' => 'Whether the article is marked as favorite by the current user.',
+                        'x-field' => 'id',
+                        'x-join' => [
+                            'table' => KnowbaseItem_Favorite::getTable(),
+                            'fkey' => 'id',
+                            'field' => KnowbaseItem::getForeignKeyField(),
+                            'condition' => static fn() => ['users_id' => Session::getLoginUserID()],
                         ],
                     ],
                 ],
@@ -326,7 +341,7 @@ class KnowbaseController extends AbstractController
                         'readOnly' => true,
                     ],
                     'kbarticle' => self::getDropdownTypeSchema(class: KnowbaseItem::class, full_schema: 'KBArticle'),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'language' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Language code (POSIX compliant format e.g. en_US or fr_FR)',
@@ -376,7 +391,7 @@ class KnowbaseController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Language code (POSIX compliant format e.g. en_US or fr_FR)',
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ],
@@ -401,7 +416,7 @@ class KnowbaseController extends AbstractController
                         'format' => Doc\Schema::FORMAT_STRING_HTML,
                         'x-field' => 'answer',
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
@@ -466,7 +481,7 @@ class KnowbaseController extends AbstractController
                         'readOnly' => true,
                     ],
                     'kbarticle' => self::getDropdownTypeSchema(class: KnowbaseItem::class, full_schema: 'KBArticle'),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 ],
             ],
             'KBArticle_Item' => [
@@ -623,9 +638,7 @@ class KnowbaseController extends AbstractController
     #[Doc\SearchRoute(schema_name: 'KBArticleComment')]
     public function searchKBArticleComments(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleComment', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -634,9 +647,7 @@ class KnowbaseController extends AbstractController
     #[Doc\GetRoute(schema_name: 'KBArticleComment')]
     public function getKBArticleComment(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('KBArticleComment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -661,10 +672,7 @@ class KnowbaseController extends AbstractController
     #[Doc\SearchRoute(schema_name: 'KBArticleRevision')]
     public function searchKBArticleDefaultLangRevisions(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $filters .= ';language=empty=';
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id') . ';language=empty=');
         return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -673,10 +681,7 @@ class KnowbaseController extends AbstractController
     #[Doc\GetRoute(schema_name: 'KBArticleRevision')]
     public function getKBArticleDefaultLangRevision(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $filters .= ';language=empty=';
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id') . ';language=empty=');
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -690,10 +695,7 @@ class KnowbaseController extends AbstractController
     #[Doc\SearchRoute(schema_name: 'KBArticleRevision')]
     public function searchKBArticleRevisions(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $filters .= ';language==' . $request->getAttribute('language');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id') . ';language==' . $request->getAttribute('language'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -702,10 +704,7 @@ class KnowbaseController extends AbstractController
     #[Doc\GetRoute(schema_name: 'KBArticleRevision')]
     public function getKBArticleRevision(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
-        $filters .= ';language==' . $request->getAttribute('language');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'kbarticle.id==' . $request->getAttribute('article_id') . ';language==' . $request->getAttribute('language'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)),
             $request->getAttributes(),

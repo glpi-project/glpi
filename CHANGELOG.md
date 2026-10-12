@@ -3,6 +3,26 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [13.0.0] unreleased
+
+### Added
+
+### Changes
+
+### Deprecated
+
+### Removed
+- `itemtype` criteria for Ticket and Change rules. This has been non-operational since 0.85 (over 11 years ago).
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
 
 ## [12.0.0] unreleased
 
@@ -16,6 +36,11 @@ The present file will list all changes made to the project; according to the
 - `Setup > Data and Privacy` menu item to centralize all data policies and privacy related settings.
 - New automatic action "purgesessionhistory" to automate deleting old login history data based on a retention period set in `Setup > Data and Privacy`.
 - A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration. It can be edited like any other article but it cannot be deleted. **On upgrade, articles that have no parent (including the ones created from the former categories) become children of it.**
+- Knowledge base articles can be moved in the aside tree by dragging them: onto an article to become its child, or onto the top or bottom edge of an article to become its sibling. Dragging is mouse-only for now, and reorders nothing: only the parent changes.
+- Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
+- High-Level API version 3.0.0.
+- `=istruthy=` and `=isnottruthy=` RSQL operators.
+- New "Assignment of a project task" notification event, raised when a member is added to a project task team, with a "New project task team member" recipient.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
@@ -31,6 +56,8 @@ The present file will list all changes made to the project; according to the
 - New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
 - "Logs purge" tab moved from `Setup > General` to `Setup > Data and Privacy` and renamed to "Historical logs".
 - Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents). The root article is an exception: it is readable by anyone who can read the knowledge base, and it never grants access to its descendants.
+- Using `==` and `!=` RSQL operators with boolean fields are coerced to `=istruthy=` and `=isnottruthy=`. There should be no noticeable change in behavior with any existing queries, but this was done to fix behavior with a field added with HLAPI v3.
+- Custom asset schemas renamed `state` to `status` to align with the built-in asset schemas in High-Level API v3. The name remains unchanged in v2.
 
 ### Deprecated
 
@@ -44,8 +71,12 @@ The present file will list all changes made to the project; according to the
 - Type declarations for some `CronTask` methods have been added.
 
 #### Added
+- `Glpi\DBAL\QueryElementInterface`, implemented by every SQL building block that may carry bound values (`QueryExpression`, `QueryIdentifier`, `QueryValue`, `AbstractQuery`). It exposes `getValue()` for the SQL fragment and `getParams()` for the values to bind for its `?` placeholders; both must always be used together.
+- `Glpi\DBAL\QueryIdentifier`, to designate a database identifier (table or field name) that has to be quoted, instead of relying on a bare string.
+- `Glpi\DBAL\QueryValue`, to designate a scalar value used in a statement. It renders as a `?` placeholder and carries the value to bind for it, instead of the value being inlined into the SQL. Not to be confused with `QueryParam`, which renders as `?` but binds nothing.
 
 #### Changes
+- `QueryFunction` methods now accept any `QueryElementInterface` where they used to accept only a `string` or a `QueryExpression`
 - `Session::haveRight()` now only returns a boolean
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
 - `KnowbaseItem_Comment` is now final
@@ -68,6 +99,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_KnowbaseItemCategory` renamed to `KnowbaseItem_KnowbaseItem`; table `glpi_knowbaseitems_knowbaseitemcategories` renamed to `glpi_knowbaseitems_knowbaseitems` with columns `knowbaseitems_id` (child) and `knowbaseitems_id_parent` (parent).
 - The `knowbaseitemcategories_id` column of `ITILCategory` and `TaskCategory` is renamed to `knowbaseitems_id` and now references a knowledge base article.
 - `KnowbaseItem::getForCategory()` renamed to `KnowbaseItem::getChildrenArticles()`; the HL API `/Knowledge base/Category` endpoints and the `KBCategory` schema are removed.
+- `Glpi\Api\HL\Controller\AbstractController::getRawKnownSchemas()` now has an optional `$api_version` parameter to accommodate complex schema differences between API versions.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.
@@ -97,6 +129,12 @@ The present file will list all changes made to the project; according to the
 - `escapeMarkupText()` javascript function.
 - `Html::link()`
 - Inclusion of the `inc/includes.php` file.
+- `Knowbase` class. The knowledge base is browsed from the side panel of `KnowbaseItem`.
+- `KnowbaseItem::SEEALL` constant.
+- `KnowbaseItem::searchForm()`
+- `KnowbaseItem::showList()`
+- `KnowbaseItem::showRecentPopular()`
+- `knowbaseitems_id_parent` parameter and `allmy`, `myunpublished`, `allunpublished`, `allpublished` types of `KnowbaseItem::getListRequest()`.
 
 #### Removed
 
@@ -217,9 +255,73 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.9] unreleased
+## [11.0.12] unreleased
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.11] 2026-10-01
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.10] 2026-09-30
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.9] 2026-09-16
+
+### Added
+- System requirements now check that the security key files (`glpicrypt.key`, `oauth.pem` and `oauth.pub`) can be read, or created when missing.
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
@@ -1109,7 +1211,49 @@ If you have anything pinned to specific v2 versions, please try to pin to the la
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.26] unreleased
+## [10.0.28] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.27] 2026-09-16
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.26] 2026-06-24
 
 ### Added
 

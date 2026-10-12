@@ -1566,8 +1566,10 @@ class MassiveAction
                                     $related_item = null;
                                     // Case 1: The modified field is a foreign key (ex : locations_id)
                                     if (isForeignKeyField($field_name)) {
+                                        // Multi-value fields (e.g. a "multiple" dropdown) submit an array
+                                        // as $field_value, which is not a valid single foreign key value.
                                         // Attempt to load the related object using its ID (from the input value)
-                                        if ($item2->getFromDB($field_value)) {
+                                        if (!is_array($field_value) && $item2->getFromDB($field_value)) {
                                             $related_item = $item2;
                                         }
                                         // Case 2: The field is not a foreign key, but the target class supports connexity (relations)
@@ -1672,6 +1674,12 @@ class MassiveAction
                     $_SESSION['glpitransfer_list'][$itemtype] = [];
                 }
                 foreach ($ids as $id) {
+                    if (!$item->can($id, UPDATE)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
                     $_SESSION['glpitransfer_list'][$itemtype][$id] = $id;
                     $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
@@ -1687,11 +1695,6 @@ class MassiveAction
                     break;
                 }
 
-                if (!$item::canUpdate()) {
-                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                    break;
-                }
-
                 // Load input
                 $input = $ma->getInput();
                 $amendment = $input['amendment'];
@@ -1700,8 +1703,8 @@ class MassiveAction
                     $item->getFromDB($id);
 
                     // Check rights
-                    if (!$item->can($item->getID(), UPDATE)) {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                    if (!$item->can($id, UPDATE)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
                     }
@@ -1745,13 +1748,21 @@ class MassiveAction
                 $em = new Notepad();
 
                 foreach ($ids as $id) {
-                    $success = $em->add([
+                    $add_input = [
                         'itemtype'             => $item::class,
                         'items_id'             => $id,
                         'content'              => $content,
                         'users_id'             => Session::getLoginUserID(),
                         'users_id_lastupdater' => Session::getLoginUserID(),
-                    ]);
+                    ];
+
+                    if (!$em->can(-1, CREATE, $add_input)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    $success = $em->add($add_input);
 
                     if (!$success) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);

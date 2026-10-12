@@ -40,6 +40,7 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Infocom;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -979,6 +980,46 @@ class LogTest extends DbTestCase
         // Verify old_id is new manufacturer_id and new_id is 0
         $this->assertEquals($new_manufacturer_id, $log['old_id']);
         $this->assertEquals(0, $log['new_id']);
+    }
+
+    public function testInfocomDateFieldLogging(): void
+    {
+        global $DB;
+
+        $computer = $this->createComputer();
+
+        $infocom = new Infocom();
+        if (!$infocom->getFromDBforDevice(Computer::class, $computer->getID())) {
+            $this->assertGreaterThan(
+                0,
+                $infocom->add([
+                    'itemtype' => Computer::class,
+                    'items_id' => $computer->getID(),
+                ])
+            );
+        }
+
+        // Update a plain Infocom field that match for logging purpose a search option of the linked item (Computer)
+        $this->updateItem(Infocom::class, $infocom->getID(), [
+            'date_creation' => '2020-01-09 11:49:15',
+        ]);
+
+        // Logging must not have thrown and must be recorded against the Computer, using the Computer's search option
+        $log_iterator = $DB->request([
+            'FROM'  => Log::getTable(),
+            'WHERE' => [
+                'items_id'         => $computer->getID(),
+                'itemtype'         => Computer::class,
+                'id_search_option' => 121, // date_creation
+            ],
+            'ORDER' => 'id DESC',
+            'LIMIT' => 1,
+        ]);
+
+        $this->assertEquals(1, count($log_iterator));
+        $log = $log_iterator->current();
+        $this->assertNull($log['old_id']);
+        $this->assertNull($log['new_id']);
     }
 
     public function testLogLongValues(): void

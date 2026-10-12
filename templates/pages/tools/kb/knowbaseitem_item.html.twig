@@ -32,19 +32,25 @@
 
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
+{% set from_kbarticle = get_class(item) == 'KnowbaseItem' %}
+
 <form
-    class="kb-link-item-form"
-    data-glpi-kb-link-item-form
-    data-glpi-kb-id="{{ item.getID() }}"
+    {% if from_kbarticle %}
+        class="kb-link-item-form"
+        data-glpi-kb-link-item-form
+        data-glpi-kb-id="{{ item.getID() }}"
+    {% else %}
+        method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}" class="kb-link-item-form"
+    {% endif %}
 >
-    {% if get_class(item) == 'KnowbaseItem' %}
+    {% if from_kbarticle %}
         {{ inputs.hidden('knowbaseitems_id', item.getID()) }}
     {% else %}
         {{ inputs.hidden('items_id', item.getID()) }}
         {{ inputs.hidden('itemtype', get_class(item)) }}
     {% endif %}
 
-    {% if get_class(item) == 'KnowbaseItem' %}
+    {% if from_kbarticle %}
         <label class="form-label">{{ __('Add a linked item') }}</label>
         <div class="kb-link-item-dropdowns">
             {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id', used_items]) %}
@@ -58,12 +64,14 @@
         }) }}
     {% endif %}
 
-    <div class="kb-link-item-footer">
-        <button
-            class="btn btn-ghost-secondary me-2"
-            type="button"
-            data-bs-dismiss="modal"
-        >{{ __('Cancel') }}</button>
+    <div class="kb-link-item-footer {{ not from_kbarticle ? 'border-0' : '' }}">
+        {% if from_kbarticle %}
+            <button
+                class="btn btn-ghost-secondary me-2"
+                type="button"
+                data-bs-dismiss="modal"
+            >{{ __('Cancel') }}</button>
+        {% endif %}
         {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
     </div>
 </form>

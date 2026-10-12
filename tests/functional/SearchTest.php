@@ -58,13 +58,17 @@ use Group;
 use Group_Item;
 use Group_User;
 use Location;
+use Peripheral;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Problem;
 use Psr\Log\LogLevel;
 use Session;
+use Software;
 use TaskCategory;
 use Ticket;
 use User;
 
+use function Safe\json_encode;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
@@ -186,6 +190,125 @@ class SearchTest extends DbTestCase
             . '\)/im',
             $data['sql']['search']->getQuery()
         );
+    }
+
+    public function testMetaComputerSoftwareDuplicateFieldColumn()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [0 => ['field'      => 'view',
+                'searchtype' => 'contains',
+                'value'      => '',
+            ],
+            ],
+            // two meta criteria targeting the same Software field (name)
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'OR',
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                1 => ['link'       => 'OR',
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'chrome',
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Computer::class, $search_params);
+
+        // the Software "name" field must only produce a single result column,
+        // even though it is targeted by two meta criteria
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        // the corresponding SELECT alias must not be duplicated either
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
+    public function testMetaComputerSoftwareDuplicateFieldColumnNested()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+                1 => [
+                    'link'       => 'OR',
+                    'meta'       => true,
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                2 => [
+                    'link'       => 'OR',
+                    'criteria'   => [
+                        0 => [
+                            'link'       => 'OR',
+                            'meta'       => true,
+                            'itemtype'   => Software::class,
+                            'field'      => 160,
+                            'searchtype' => 'contains',
+                            'value'      => 'chrome',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Computer::class, $search_params);
+
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
+    public function testMetaToviewNotLeakedAcrossIndependentCalls()
+    {
+        $opts = SearchOption::getOptionsForItemtype(Software::class);
+        foreach ($opts as $id => $opt) {
+            if (is_array($opt) && ($opt['field'] ?? null) === 'name') {
+                break;
+            }
+        }
+        $field_id = $id;
+        $data = ['itemtype' => Computer::class];
+        $SELECT = '';
+        $FROM = '';
+        $already_link_tables = [];
+        $criteria1 = [
+            ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'firefox'],
+        ];
+        $criteria2 = [
+            ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'chrome'],
+        ];
+        @\Search::constructAdditionalSqlForMetacriteria($criteria1, $SELECT, $FROM, $already_link_tables, $data);
+        $this->assertSame(1, substr_count($SELECT, "ITEM_Software_$field_id"));
+        // second, independent call reusing the same $data (as a plugin might): must not leak nor drop columns
+        $SELECT2 = '';
+        @\Search::constructAdditionalSqlForMetacriteria($criteria2, $SELECT2, $FROM, $already_link_tables, $data);
+        $this->assertSame(1, substr_count($SELECT2, "ITEM_Software_$field_id"));
     }
 
     public function testSoftwareLinkedToAnyComputer()
@@ -1604,6 +1727,21 @@ class SearchTest extends DbTestCase
         $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
         $this->assertArrayNotHasKey('reset', $_SESSION['glpisearch']['Ticket']);
 
+        // Simulate a page refresh where only the URL is taken into account, and not the “sort”/“order” criteria.
+        // The sort order of the saved search must still be restored from the session and not replaced by the default
+        // sort order for that item type
+        $search = \Search::manageParams('Ticket', [
+            'criteria' => [
+                [
+                    'field' => '5',
+                    'searchtype' => 'equals',
+                    'value' => $uid,
+                ],
+            ],
+        ], true, false);
+        $this->assertEquals([2], $search['sort']);
+        $this->assertEquals(['DESC'], $search['order']);
+
         // saved search criteria must survive a subsequent unrelated request (sort/pagination)
         \Search::manageParams('Ticket', ['sort' => 6, 'order' => 'ASC'], true, false);
         $this->assertEquals(
@@ -2085,7 +2223,7 @@ class SearchTest extends DbTestCase
         $this->assertTrue($DB->delete(Change::getTable(), [new QueryExpression('true')]));
 
         // Creates Changes with different requesters
-        $this->createItems('Change', [
+        $this->createItems(Change::class, [
             // Test set on requester
             [
                 'name' => 'testAddOrderByUser user 1 (R)',
@@ -2145,7 +2283,7 @@ class SearchTest extends DbTestCase
         ]);
 
         yield [
-            'itemtype' => 'Change',
+            'itemtype' => Change::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2171,7 +2309,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Change',
+            'itemtype' => Change::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2197,7 +2335,7 @@ class SearchTest extends DbTestCase
         ];
 
         // Creates Peripheral with different users
-        $this->createItems('Peripheral', [
+        $this->createItems(Peripheral::class, [
             // Test set on user
             [
                 'name' => 'testAddOrderByUser user 1 (U)',
@@ -2216,7 +2354,7 @@ class SearchTest extends DbTestCase
         ]);
 
         yield [
-            'itemtype' => 'Peripheral',
+            'itemtype' => Peripheral::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2239,7 +2377,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Peripheral',
+            'itemtype' => Peripheral::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2263,7 +2401,7 @@ class SearchTest extends DbTestCase
 
         // Creates Problems with different writers
         // Create by glpi user
-        $this->createItems('Problem', [
+        $this->createItems(Problem::class, [
             [
                 'name' => 'testAddOrderByUser by glpi',
                 'content' => '',
@@ -2272,7 +2410,7 @@ class SearchTest extends DbTestCase
 
         // Create by tech user
         $this->login('tech', 'tech');
-        $this->createItems('Problem', [
+        $this->createItems(Problem::class, [
             [
                 'name' => 'testAddOrderByUser by tech',
                 'content' => '',
@@ -2282,7 +2420,7 @@ class SearchTest extends DbTestCase
         $this->login('glpi', 'glpi');
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2304,7 +2442,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2327,7 +2465,7 @@ class SearchTest extends DbTestCase
 
         // Last edit by
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2349,7 +2487,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2503,7 +2641,7 @@ class SearchTest extends DbTestCase
         // reduce the right of tech profile
         // to have only the right of display their own problems (created, assign)
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Problem' => (\Problem::READMY + READNOTE + UPDATENOTE),
+            'Problem' => (Problem::READMY + READNOTE + UPDATENOTE),
         ]);
 
         // add a group for tech user
@@ -2522,7 +2660,7 @@ class SearchTest extends DbTestCase
         );
 
         // create a problem and assign group with tech user
-        $problem = new \Problem();
+        $problem = new Problem();
         $this->assertGreaterThan(
             0,
             $problem->add([
@@ -3027,7 +3165,7 @@ class SearchTest extends DbTestCase
             Computer::getTable(),
             \Monitor::getTable(),
             \NetworkEquipment::getTable(),
-            \Peripheral::getTable(),
+            Peripheral::getTable(),
             \Phone::getTable(),
             \Printer::getTable(),
         ];
@@ -3759,13 +3897,23 @@ class SearchTest extends DbTestCase
             'expected_and_not'  => "false",
             'expected_values'    => [Computer::class, Computer::class],
         ];
+        // A date/time prefix is searched as a range
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 9, // last_inventory_update
             'value'             => '2023-06',
+            'expected_and'      => "(`glpi_computers`.`last_inventory_update` >= ?) AND (`glpi_computers`.`last_inventory_update` < ?)",
+            'expected_and_not'  => "((`glpi_computers`.`last_inventory_update` < ?) OR (`glpi_computers`.`last_inventory_update` >= ?) OR (`glpi_computers`.`last_inventory_update` IS NULL))",
+            'expected_values'    => [Computer::class, Computer::class, '2023-06-01 00:00:00', '2023-07-01 00:00:00'],
+        ];
+        // Any other value keeps the `LIKE` criterion
+        yield [
+            'itemtype'          => Computer::class,
+            'search_option'     => 9, // last_inventory_update
+            'value'             => '-06-',
             'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) LIKE ?)",
             'expected_and_not'  => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) NOT LIKE ? OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NULL)",
-            'expected_values'    => [Computer::class, Computer::class, '%2023-06%'],
+            'expected_values'    => [Computer::class, Computer::class, '%-06-%'],
         ];
 
         // datatype=datetime (usehaving=true)
@@ -3794,13 +3942,22 @@ class SearchTest extends DbTestCase
             'expected_and'      => "false",
             'expected_and_not'  => "false",
         ];
+        // Bounds are expressed as dates, as the column holds no time part
         yield [
             'itemtype'          => \Budget::class,
             'search_option'     => 5, // begin_date
             'value'             => '2023',
+            'expected_and'      => "(`glpi_budgets`.`begin_date` >= ?) AND (`glpi_budgets`.`begin_date` < ?)",
+            'expected_and_not'  => "((`glpi_budgets`.`begin_date` < ?) OR (`glpi_budgets`.`begin_date` >= ?) OR (`glpi_budgets`.`begin_date` IS NULL))",
+            'expected_values'    => ['2023-01-01', '2024-01-01'],
+        ];
+        yield [
+            'itemtype'          => \Budget::class,
+            'search_option'     => 5, // begin_date
+            'value'             => '-06-',
             'expected_and'      => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) LIKE ?)",
             'expected_and_not'  => "(CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) NOT LIKE ? OR CONVERT(`glpi_budgets`.`begin_date` USING utf8mb4) IS NULL)",
-            'expected_values'    => ['%2023%'],
+            'expected_values'    => ['%-06-%'],
         ];
 
         // datatype=date_delay
@@ -4825,6 +4982,252 @@ class SearchTest extends DbTestCase
                     echo $provider_information . "\n";
                     throw $e;
                 }
+            }
+        }
+    }
+
+    /**
+     * A `datetime` "is"/"is not" criterion is searched as a range, to use the column index.
+     */
+    public static function dateTimeEqualsCriterionProvider(): iterable
+    {
+        $ticket_date = '`glpi_tickets`.`date`';
+
+        // Bounds depend on the value precision. A trailing `:00` is stripped before parsing,
+        // so a value given with seconds is handled with a minute precision.
+        $precisions = [
+            '2024-07-28'          => ['2024-07-28 00:00:00', '2024-07-29 00:00:00'],
+            '2024-07-28 14'       => ['2024-07-28 14:00:00', '2024-07-28 15:00:00'],
+            '2024-07-28 14:30'    => ['2024-07-28 14:30:00', '2024-07-28 14:31:00'],
+            '2024-07-28 14:30:00' => ['2024-07-28 14:30:00', '2024-07-28 14:31:00'],
+            '2024-07-28 14:30:15' => ['2024-07-28 14:30:15', '2024-07-28 14:30:16'],
+            '2024-07'             => ['2024-07-01 00:00:00', '2024-08-01 00:00:00'],
+            '2024'                => ['2024-01-01 00:00:00', '2025-01-01 00:00:00'],
+        ];
+
+        foreach ($precisions as $value => [$lower_bound, $upper_bound]) {
+            $value = (string) $value; // PHP casts a numeric-only key to an int
+            yield [
+                'search_option'    => 15, // date
+                'searchtype'       => 'equals',
+                'value'            => $value,
+                'expected_and'     => "({$ticket_date} >= ?) AND ({$ticket_date} < ?)",
+                'expected_and_not' => "(({$ticket_date} < ?) OR ({$ticket_date} >= ?) OR ({$ticket_date} IS NULL))",
+                'expected_values'    => [$lower_bound, $upper_bound],
+            ];
+            // `notequals` is the negation of `equals`
+            yield [
+                'search_option'    => 15, // date
+                'searchtype'       => 'notequals',
+                'value'            => $value,
+                'expected_and'     => "(({$ticket_date} < ?) OR ({$ticket_date} >= ?) OR ({$ticket_date} IS NULL))",
+                'expected_and_not' => "({$ticket_date} >= ?) AND ({$ticket_date} < ?)",
+                'expected_values'    => [$lower_bound, $upper_bound],
+            ];
+        }
+
+        // An unparsable value falls back to the `LIKE` criterion
+        foreach (['2024-02-30', '2024-13-01'] as $value) {
+            yield [
+                'search_option'    => 15, // date
+                'searchtype'       => 'equals',
+                'value'            => $value,
+                'expected_and'     => "{$ticket_date} LIKE ?",
+                // (((`glpi_tickets`.`date` IS NULL)) OR (`glpi_tickets`.`date` = ?))
+                'expected_and_not' => "(((NOT ({$ticket_date} LIKE ?))) OR ({$ticket_date} IS NULL))",
+                'expected_values'    => ['%' . $value . '%'],
+            ];
+        }
+
+        yield [
+            'search_option'    => 15, // date
+            'searchtype'       => 'equals',
+            'value'            => 'NULL',
+            'expected_and'     => "((({$ticket_date} IS NULL)) OR ({$ticket_date} = ?))",
+            'expected_and_not' => "NOT (((({$ticket_date} IS NULL)) OR ({$ticket_date} = ?)))",
+            'expected_values'    => [''],
+        ];
+    }
+
+    #[DataProvider('dateTimeEqualsCriterionProvider')]
+    public function testDateTimeEqualsCriterion(
+        int $search_option,
+        string $searchtype,
+        string $value,
+        string $expected_and,
+        string $expected_and_not,
+        array $expected_values
+    ): void {
+        $cases = [
+            'AND'     => $expected_and,
+            'AND NOT' => $expected_and_not,
+        ];
+
+        foreach ($cases as $link => $expected_where) {
+            $data = $this->doSearch(Ticket::class, [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    [
+                        'link'       => $link,
+                        'field'      => $search_option,
+                        'searchtype' => $searchtype,
+                        'value'      => $value,
+                    ],
+                ],
+            ]);
+
+            $this->assertArrayHasKey('sql', $data);
+            $this->assertArrayHasKey('search', $data['sql']);
+            $this->assertInstanceOf(Select::class, $data['sql']['search']);
+
+            $this->assertStringContainsString(
+                $expected_where,
+                $this->cleanSQL($data['sql']['search']->getQuery()),
+            );
+            foreach ($expected_values as $expected_value) {
+                $this->assertContains(
+                    $expected_value,
+                    $data['sql']['search']->getParams(),
+                );
+            }
+        }
+    }
+
+    /**
+     * The range boundaries must not be shifted by a DST transition of the server timezone,
+     * as the compared `datetime` column holds a naive value with no time offset.
+     */
+    public function testDateTimeEqualsCriterionOnDstTransition(): void
+    {
+        global $DB;
+
+        $original_tz = date_default_timezone_get();
+        // Hack to prevent the script tz from being changed by the DB access layer
+        $DB->use_timezones = true;
+        // Clocks jump from 02:00 to 03:00 in `Europe/Paris` on this date
+        date_default_timezone_set('Europe/Paris');
+
+        try {
+            $data = $this->doSearch(Ticket::class, [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 15, // date
+                        'searchtype' => 'equals',
+                        'value'      => '2024-03-31 02',
+                    ],
+                ],
+            ]);
+        } finally {
+            date_default_timezone_set($original_tz);
+        }
+
+        $this->assertArrayHasKey('sql', $data);
+        $this->assertArrayHasKey('search', $data['sql']);
+        $this->assertInstanceOf(Select::class, $data['sql']['search']);
+
+        $this->assertStringContainsString(
+            '(`glpi_tickets`.`date` >= ?) AND (`glpi_tickets`.`date` < ?)',
+            $this->cleanSQL($data['sql']['search']->getQuery()),
+        );
+        $this->assertContains('2024-03-31 02:00:00', $data['sql']['search']->getParams());
+        $this->assertContains('2024-03-31 03:00:00', $data['sql']['search']->getParams());
+    }
+
+    /**
+     * A `contains` criterion on a date/time field is searched as a range, to use the column index.
+     */
+    public static function dateTimeContainsCriterionProvider(): iterable
+    {
+        $ticket_date = '`glpi_tickets`.`date`';
+
+        $precisions = [
+            '2024-07-28'          => ['2024-07-28 00:00:00', '2024-07-29 00:00:00'],
+            '2024-07-28 14'       => ['2024-07-28 14:00:00', '2024-07-28 15:00:00'],
+            '2024-07-28 14:30'    => ['2024-07-28 14:30:00', '2024-07-28 14:31:00'],
+            '2024-07-28 14:30:15' => ['2024-07-28 14:30:15', '2024-07-28 14:30:16'],
+            '2024-07'             => ['2024-07-01 00:00:00', '2024-08-01 00:00:00'],
+            '2024'                => ['2024-01-01 00:00:00', '2025-01-01 00:00:00'],
+            // a `DD-MM-YYYY` value is reformatted first
+            '28-07-2024'          => ['2024-07-28 00:00:00', '2024-07-29 00:00:00'],
+        ];
+
+        foreach ($precisions as $value => [$lower_bound, $upper_bound]) {
+            $value = (string) $value; // PHP casts a numeric-only key to an int
+            yield [
+                'searchtype'       => 'contains',
+                'value'            => $value,
+                'expected_and'     => "({$ticket_date} >= ?) AND ({$ticket_date} < ?)",
+                'expected_and_not' => "(({$ticket_date} < ?) OR ({$ticket_date} >= ?) OR ({$ticket_date} IS NULL))",
+                'expected_values'    => [$lower_bound, $upper_bound],
+            ];
+            // `notcontains` is the negation of `contains`
+            yield [
+                'searchtype'       => 'notcontains',
+                'value'            => $value,
+                'expected_and'     => "(({$ticket_date} < ?) OR ({$ticket_date} >= ?) OR ({$ticket_date} IS NULL))",
+                'expected_and_not' => "({$ticket_date} >= ?) AND ({$ticket_date} < ?)",
+                'expected_values'    => [$lower_bound, $upper_bound],
+            ];
+        }
+
+        // A value that is not a date/time prefix falls back to the `LIKE` criterion
+        $charset = DBConnection::getDefaultCharset();
+        $converted = "CONVERT({$ticket_date} USING {$charset})";
+        foreach (['-07-', '14:30', '2024-02-30', '2024-13-01', '0000'] as $value) {
+            yield [
+                'searchtype'       => 'contains',
+                'value'            => $value,
+                'expected_and'     => "({$converted} LIKE ?)",
+                'expected_and_not' => "({$converted} NOT LIKE ? OR {$converted} IS NULL)",
+                'expected_values'    => ['%' . $value . '%'],
+            ];
+        }
+    }
+
+    #[DataProvider('dateTimeContainsCriterionProvider')]
+    public function testDateTimeContainsCriterion(
+        string $searchtype,
+        string $value,
+        string $expected_and,
+        string $expected_and_not,
+        array $expected_values
+    ): void {
+        $cases = [
+            'AND'     => $expected_and,
+            'AND NOT' => $expected_and_not,
+        ];
+
+        foreach ($cases as $link => $expected_where) {
+            $data = $this->doSearch(Ticket::class, [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    [
+                        'link'       => $link,
+                        'field'      => 15, // date
+                        'searchtype' => $searchtype,
+                        'value'      => $value,
+                    ],
+                ],
+            ]);
+
+            $this->assertArrayHasKey('sql', $data);
+            $this->assertArrayHasKey('search', $data['sql']);
+            $this->assertInstanceOf(Select::class, $data['sql']['search']);
+
+            $this->assertStringContainsString(
+                $expected_where,
+                $this->cleanSQL($data['sql']['search']->getQuery()),
+            );
+            foreach ($expected_values as $expected_value) {
+                $this->assertContains(
+                    $expected_value,
+                    $data['sql']['search']->getParams(),
+                );
             }
         }
     }
@@ -5876,7 +6279,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    public static function provideCriteriaWithSubqueries(): iterable
+    private static function provideCriteriaWithSubqueries(): iterable
     {
         $category   = fn() => getItemByTypeName('ITILCategory', 'Test Criteria With Subqueries', true);
         $group_1    = fn() => getItemByTypeName('Group', 'Group 1', true);
@@ -6579,45 +6982,55 @@ class SearchTest extends DbTestCase
         ]);
     }
 
-    #[DataProvider('provideCriteriaWithSubqueries')]
-    public function testCriteriaWithSubqueries(
-        string $itemtype,
-        array $criteria,
-        array $expected
-    ): void {
-        // Init datas
+    public function testCriteriaWithSubqueries(): void
+    {
+        // Init datas once for all cases, as creating them is far more expensive than the searches
         $this->provideCriteriaWithSubqueries_Dataset();
 
-        // Process closure values
-        array_walk_recursive($criteria, function (&$value) {
-            if (is_callable($value)) {
-                $value = $value();
+        $case = 0;
+        foreach (self::provideCriteriaWithSubqueries() as ['itemtype' => $itemtype, 'criteria' => $criteria, 'expected' => $expected]) {
+            $case++;
+
+            // Process closure values
+            array_walk_recursive($criteria, function (&$value) {
+                if (is_callable($value)) {
+                    $value = $value();
+                }
+            });
+
+            // Run search
+            $data = \Search::getDatas($itemtype, [
+                'criteria' => $criteria,
+            ]);
+
+            // Parse results
+            $names = [];
+            foreach ($data['data']['rows'] as $row) {
+                // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
+                $n = $row['raw']["ITEM_{$itemtype}_1"];
+                $names[] = explode('$#$', $n)[0];
             }
-        });
 
-        // Run search
-        $data = \Search::getDatas($itemtype, [
-            'criteria' => $criteria,
-        ]);
+            // Sort both array for comparison
+            sort($names);
+            sort($expected);
 
-        // Parse results
-        $names = [];
-        foreach ($data['data']['rows'] as $row) {
-            // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
-            $n = $row['raw']["ITEM_{$itemtype}_1"];
-            $names[] = explode('$#$', $n)[0];
+            // Validate results
+            $this->assertEquals(
+                $expected,
+                $names,
+                sprintf(
+                    "Search query failed for case #%d (%s).\nCriteria: %s\nRaw SQL WHERE clause: %s",
+                    $case,
+                    $itemtype,
+                    json_encode($criteria, JSON_PRETTY_PRINT),
+                    $data['sql']['raw']['WHERE'] ?? 'N/A'
+                )
+            );
         }
 
-        // Sort both array for comparison
-        sort($names);
-        sort($expected);
-
-        // Validate results
-        $this->assertEquals(
-            $expected,
-            $names,
-            "Search query failed. Raw SQL WHERE clause: " . ($data['sql']['raw']['WHERE'] ?? 'N/A')
-        );
+        // Make sure the provider was not silently emptied
+        $this->assertGreaterThan(0, $case);
     }
 
     /**
@@ -7428,6 +7841,28 @@ class SearchTest extends DbTestCase
         $this->assertContains('86', $ids);
     }
 
+    public function testSoftwareLicenseNumberColumnKeepsOneRowPerLicense(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $software = $this->createItem(Software::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
+        $this->createItems(\SoftwareLicense::class, [
+            ['name' => __FUNCTION__ . ' 1', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 2],
+            ['name' => __FUNCTION__ . ' 2', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 3],
+        ]);
+
+        $data = $this->doSearch(\SoftwareLicense::class, [
+            'criteria' => [['field' => 10, 'searchtype' => 'contains', 'value' => __FUNCTION__]],
+        ], [4]);
+
+        // "Number" (4) uses aggregate functions and must not collapse rows into a single one without ID
+        $this->assertSame(2, $data['data']['totalcount']);
+        foreach ($data['data']['rows'] as $row) {
+            $this->assertIsInt($row['id']);
+        }
+    }
+
     public function testTypeHasAssetUrlSearchOption(): void
     {
         global $CFG_GLPI;
@@ -7584,7 +8019,7 @@ class SearchTest extends DbTestCase
 
         // Sorting on a 1:N aggregate — Software option 72 "Number of installations": same reason,
         // deferral is skipped and the regular query is emitted.
-        $agg = \Search::prepareDatasForSearch(\Software::class, [
+        $agg = \Search::prepareDatasForSearch(Software::class, [
             'reset'    => 'reset',
             'sort'     => [72],
             'order'    => ['DESC'],

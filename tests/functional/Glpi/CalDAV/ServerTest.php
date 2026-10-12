@@ -671,7 +671,7 @@ class ServerTest extends DbTestCase
         ];
 
         $users_access = [
-            'normal' => 'HTTP/1.1 403 Forbidden',
+            'normal' => '', // not readable nodes are hidden
             'tech'   => 'HTTP/1.1 200 OK',
         ];
 

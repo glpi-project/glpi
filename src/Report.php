@@ -38,6 +38,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Dashboard\Widget;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Socket;
 
 use function Safe\mktime;
@@ -490,7 +491,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                 'PORT_1.mac AS mac_1',
                 'PORT_1.logical_number AS logical_1',
                 QueryFunction::groupConcat(
-                    expression: 'ADDR_1.name',
+                    expression: new QueryIdentifier('ADDR_1.name'),
                     separator: ', ',
                     alias: 'ip_1'
                 ),
@@ -500,7 +501,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                 'PORT_2.name AS port_2',
                 'PORT_2.mac AS mac_2',
                 QueryFunction::groupConcat(
-                    expression: 'ADDR_2.name',
+                    expression: new QueryIdentifier('ADDR_2.name'),
                     separator: ', ',
                     alias: 'ip_2'
                 ),
@@ -534,7 +535,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         'LINK'   => 'networkports_id_1',
                         'PORT_1' => 'id', [
                             'OR'     => [
-                                'LINK.networkports_id_2'   => new QueryExpression($DB::quoteName('PORT_1.id')),
+                                'LINK.networkports_id_2'   => new QueryIdentifier('PORT_1.id'),
                             ],
                         ],
                     ],
@@ -544,8 +545,8 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         'PORT_2' => 'id',
                         QueryFunction::if(
                             condition: new QueryExpression($DB::quoteName("LINK.networkports_id_1") . ' = ' . $DB::quoteName("PORT_1.id")),
-                            true_expression: "LINK.networkports_id_2",
-                            false_expression: "LINK.networkports_id_1"
+                            true_expression: new QueryIdentifier("LINK.networkports_id_2"),
+                            false_expression: new QueryIdentifier("LINK.networkports_id_1")
                         ),
                     ],
                 ],
@@ -1017,8 +1018,8 @@ TWIG, $twig_params);
 
             $ors = [];
             foreach ($years as $val2) {
-                $ors[] = new QueryExpression(QueryFunction::year('glpi_infocoms.buy_date') . " = " . $DB->quote($val2));
-                $ors[] = new QueryExpression(QueryFunction::year('glpi_contracts.begin_date') . " = " . $DB->quote($val2));
+                $ors[] = new QueryExpression(QueryFunction::year(new QueryIdentifier('glpi_infocoms.buy_date')) . " = " . $DB->quote($val2));
+                $ors[] = new QueryExpression(QueryFunction::year(new QueryIdentifier('glpi_contracts.begin_date')) . " = " . $DB->quote($val2));
             }
             if (count($ors)) {
                 $criteria['WHERE'][] = [
@@ -1246,9 +1247,9 @@ TWIG, $twig_params);
                 if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
                     $ors = [];
                     foreach ($_POST["year"] as $val2) {
-                        $ors[] = new QueryExpression(QueryFunction::year('glpi_contracts.begin_date') . ' = ' . $DB->quote($val2));
+                        $ors[] = new QueryExpression(QueryFunction::year(new QueryIdentifier('glpi_contracts.begin_date')) . ' = ' . $DB->quote($val2));
                         if ($itemtype === SoftwareLicense::class) {
-                            $ors[] = new QueryExpression(QueryFunction::year('glpi_infocoms.buy_date') . ' = ' . $DB->quote($val2));
+                            $ors[] = new QueryExpression(QueryFunction::year(new QueryIdentifier('glpi_infocoms.buy_date')) . ' = ' . $DB->quote($val2));
                         }
                     }
                     if (count($ors)) {
@@ -1291,8 +1292,8 @@ TWIG, $twig_params);
 
                 $ors = [];
                 foreach ($years as $val2) {
-                    $ors[] = new QueryExpression(QueryFunction::year('glpi_infocoms.buy_date') . ' = ' . $DB::quoteValue($val2));
-                    $ors[] = new QueryExpression(QueryFunction::year('glpi_contracts.begin_date') . ' = ' . $DB::quoteValue($val2));
+                    $ors[] = new QueryExpression(QueryFunction::year(new QueryIdentifier('glpi_infocoms.buy_date')) . ' = ' . $DB::quoteValue($val2));
+                    $ors[] = new QueryExpression(QueryFunction::year(new QueryIdentifier('glpi_contracts.begin_date')) . ' = ' . $DB::quoteValue($val2));
                 }
                 if (count($ors)) {
                     $criteria['WHERE'][] = ['OR' => $ors];

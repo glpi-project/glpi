@@ -35,6 +35,7 @@
 namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Migration\UnresolvedConditionValueException;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
@@ -327,5 +328,86 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
         ];
+
+        // Default values are supplied by `EngineInput::fromForm()` as the raw
+        // `default_value` database column, i.e. a comma separated list of
+        // option uuids. An empty string means "no option checked by default",
+        // which must behave exactly like a question with no option checked.
+        yield "Equals check with a default value for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => ["option_a", "option_c"],
+            'submitted_answer'    => "option_a,option_c",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Equals check with an empty default value for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => ["option_c"],
+            'submitted_answer'    => "",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Not equals check with a default value for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => ["option_a"],
+            'submitted_answer'    => "option_a,option_c",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Not equals check with an empty default value for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => ["option_c"],
+            'submitted_answer'    => "",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Contains check with a default value for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::CONTAINS,
+            'condition_value'     => ["option_c"],
+            'submitted_answer'    => "option_a,option_c",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Contains check with an empty default value for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::CONTAINS,
+            'condition_value'     => ["option_c"],
+            'submitted_answer'    => "",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Not contains check with a default value for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_CONTAINS,
+            'condition_value'     => ["option_b"],
+            'submitted_answer'    => "option_a,option_c",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Not contains check with an empty default value for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_CONTAINS,
+            'condition_value'     => ["option_c"],
+            'submitted_answer'    => "",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+    }
+
+    public function testConvertConditionValue(): void
+    {
+        $handler = new MultipleChoiceFromValuesConditionHandler(['Option A', 'Option B']);
+
+        $this->assertSame([0], $handler->convertConditionValue('Option A'));
+        $this->assertSame([1], $handler->convertConditionValue('Option B'));
+
+        // Stale/renamed legacy value: must not fall back to an index.
+        $this->expectException(UnresolvedConditionValueException::class);
+        $handler->convertConditionValue('Deleted option');
     }
 }

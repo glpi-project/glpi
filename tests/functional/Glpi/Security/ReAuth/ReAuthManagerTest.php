@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Security\ReAuth;
 
+use Auth;
 use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\RedirectException;
@@ -375,6 +376,7 @@ class ReAuthManagerTest extends DbTestCase
     {
         // --- arrange : highest priority but unavailable ---
         $this->login();
+        $_SESSION['glpiauthtype'] = Auth::DB_GLPI;
         $manager = $this->getReAuthManager();
         $manager->registerStrategy($this->makeStrategy('My plugin', 999, false));
 

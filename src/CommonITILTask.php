@@ -38,6 +38,7 @@ use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\ParentStatus;
 use Glpi\Features\PlanningEvent;
@@ -61,10 +62,58 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public static string $rightname = 'task';
 
+    private ?CommonITILObject $item = null;
+
     /** @return class-string<CommonITILObject> */
     public static function getItilObjectItemType()
     {
         return str_replace('Task', '', static::class);
+    }
+
+    /**
+     * Set the parent ITIL object, to avoid reloading it from the DB when it
+     * is already available (e.g. when building the ticket/change/problem timeline).
+     *
+     * @param CommonITILObject $parent Parent item
+     *
+     * @return void
+     */
+    final public function setParentItem(CommonITILObject $parent): void
+    {
+        $this->item = $parent;
+    }
+
+    /**
+     * Check if $this->item already contains the correct parent item and thus
+     * help us to avoid reloading it for no reason.
+     *
+     * @phpstan-assert-if-true !null $this->item
+     *
+     * @return bool
+     */
+    protected function isParentAlreadyLoaded(): bool
+    {
+        // If current item fields are not loaded, we can't know what its parent should be
+        if (!isset($this->fields[static::getItilObjectItemType()::getForeignKeyField()])) {
+            return false;
+        }
+
+        // Fail if no item is loaded in $this->item
+        if ($this->item === null) {
+            return false;
+        }
+
+        // Fail if loaded item's type doesn't match our expected parent itemtype
+        if ($this->item::class !== static::getItilObjectItemType()) {
+            return false;
+        }
+
+        // Fail if loaded item's id is not what we expect
+        if ($this->item->getID() !== $this->fields[$this->item::getForeignKeyField()]) {
+            return false;
+        }
+
+        return true;
     }
 
     public static function getItilObjectItemInstance(): CommonITILObject
@@ -186,6 +235,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return false;
         }
 
+        if ($this->isParentAlreadyLoaded()) {
+            return $this->item->canAddTasks();
+        }
+
         $item = static::getItilObjectItemInstance();
         if ($item->getFromDB($this->fields[$item::getForeignKeyField()])) {
             return $item->canAddTasks();
@@ -205,9 +258,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return false;
         }
 
-        $item = static::getItilObjectItemInstance();
+        $parent_loaded = $this->isParentAlreadyLoaded();
+        $item = $parent_loaded ? $this->item : static::getItilObjectItemInstance();
         if (
-            $item->getFromDB($this->fields[$item::getForeignKeyField()])
+            ($parent_loaded || $item->getFromDB($this->fields[$item::getForeignKeyField()]))
             && in_array($item->fields['status'], $item->getClosedStatusArray())
         ) {
             return false;
@@ -235,9 +289,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public function canPurgeItem(): bool
     {
-        $item = static::getItilObjectItemInstance();
+        $parent_loaded = $this->isParentAlreadyLoaded();
+        $item = $parent_loaded ? $this->item : static::getItilObjectItemInstance();
         if (
-            $item->getFromDB($this->fields[$item::getForeignKeyField()])
+            ($parent_loaded || $item->getFromDB($this->fields[$item::getForeignKeyField()]))
             && in_array($item->fields['status'], $item->getClosedStatusArray())
         ) {
             return false;
@@ -255,6 +310,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public function getItem()
     {
+        if ($this->isParentAlreadyLoaded()) {
+            return $this->item;
+        }
+
         $item = static::getItilObjectItemInstance();
         if ($item->getFromDB($this->fields[$item::getForeignKeyField()])) {
             return $item;
@@ -269,7 +328,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public function canReadITILItem()
     {
-        $item = static::getItilObjectItemInstance();
+        $item = $this->isParentAlreadyLoaded() ? $this->item : static::getItilObjectItemInstance();
         if (!$item->can($this->fields[$item::getForeignKeyField()], READ)) {
             return false;
         }
@@ -1207,7 +1266,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 'jointype'           => 'child',
                 'condition'          => $task_condition,
             ],
-            'computation'        => QueryFunction::max('TABLE.date'),
+            'computation'        => QueryFunction::max(new QueryIdentifier('TABLE.date')),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
             'usehaving'          => true,
         ];
@@ -1364,8 +1423,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             // begin date is task date minus duration
             // and end date is task date
             $bdate = QueryFunction::dateSub(
-                date: $item::getTable() . '.date',
-                interval: new QueryExpression($DB::quoteName($item::getTable() . '.actiontime')),
+                date: new QueryIdentifier($item::getTable() . '.date'),
+                interval: new QueryIdentifier($item::getTable() . '.actiontime'),
                 interval_unit: 'SECOND'
             );
             $SELECT[] = new QueryExpression($bdate, 'notp_date');
@@ -1376,8 +1435,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $item->getTable() . '.begin'   => null,
                 $item->getTable() . '.actiontime' => ['>', 0],
                 //begin is replaced with creation tim minus duration
-                new QueryExpression($edate . " >= '" . $begin . "'"),
-                new QueryExpression($bdate . " <= '" . $end . "'"),
+                new QueryExpression($edate . " >= " . $DB::quoteValue($begin)),
+                new QueryExpression($bdate . " <= " . $DB::quoteValue($end)),
             ];
         } else {
             //std case: get tasks for current view dates

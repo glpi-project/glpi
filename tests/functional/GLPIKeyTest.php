@@ -444,6 +444,8 @@ class GLPIKeyTest extends DbTestCase
                 'glpi_authldaps.rootdn_passwd',
                 'glpi_mailcollectors.passwd',
                 'glpi_oauthclients.secret',
+                'glpi_queuednotifications.body_text',
+                'glpi_queuednotifications.body_html',
                 'glpi_sharetokens.token',
                 'glpi_snmpcredentials.auth_passphrase',
                 'glpi_snmpcredentials.priv_passphrase',

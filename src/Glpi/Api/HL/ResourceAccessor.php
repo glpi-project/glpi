@@ -252,6 +252,55 @@ final class ResourceAccessor
     }
 
     /**
+     * Filter the schema properties based on the read restrictions.
+     * @param array<string, mixed> $schema The schema
+     * @param bool $is_graphql_mode Whether the schema is being used in GraphQL mode. If false, the x-graphql-only properties are filtered out.
+     * @return array<string, mixed> The filtered schema
+     */
+    public static function applyFieldReadRestrictions(array $schema, bool $is_graphql_mode = false): array
+    {
+        $filtered_schema = $schema;
+
+        if (!$is_graphql_mode) {
+            foreach ($filtered_schema['properties'] as $key => $prop) {
+                if ($prop['x-graphql-only'] ?? false) {
+                    unset($filtered_schema['properties'][$key]);
+                }
+            }
+        }
+
+        $fn_filter_properties = static function (array $props, string $parent_path = '', array &$removed_paths = []) use (&$fn_filter_properties) {
+            foreach ($props as $key => $prop) {
+                if (isset($prop['x-rights-conditions']['read'])) {
+                    $check_result = $prop['x-rights-conditions']['read']();
+                    if (is_array($check_result)) {
+                        throw new \LogicException('SQL condition field right checks are not currently supported.');
+                    }
+                    if ((bool) $check_result === false) {
+                        $removed_paths[] = $parent_path === '' ? $key : $parent_path . '.' . $key;
+                        unset($props[$key]);
+                        continue;
+                    }
+                }
+                if (isset($prop['properties'])) {
+                    $props[$key]['properties'] = $fn_filter_properties($prop['properties'], $parent_path === '' ? $key : $parent_path . '.' . $key, $removed_paths);
+                } elseif (isset($prop['items']['properties'])) {
+                    $props[$key]['items']['properties'] = $fn_filter_properties($prop['items']['properties'], $parent_path === '' ? $key : $parent_path . '.' . $key, $removed_paths);
+                }
+            }
+            return $props;
+        };
+        $removed_paths = [];
+        if (isset($filtered_schema['properties'])) {
+            $filtered_schema['properties'] = $fn_filter_properties($filtered_schema['properties'], '', $removed_paths);
+        } elseif (isset($filtered_schema['items']['properties'])) {
+            $filtered_schema['items']['properties'] = $fn_filter_properties($filtered_schema['items']['properties'], '', $removed_paths);
+        }
+
+        return $filtered_schema;
+    }
+
+    /**
      * Update an item of the given schema using the given request parameters.
      * @param array $schema The schema
      * @param array $request_attrs The request attributes
@@ -263,6 +312,7 @@ final class ResourceAccessor
      */
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
+        $schema = self::applyFieldReadRestrictions($schema);
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
         // Ignore entity updates. This needs to be done through the Transfer process
         // TODO This should probably be handled in a more generic way (support other fields that can be used during creation but not updates)
@@ -307,6 +357,7 @@ final class ResourceAccessor
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
+        $schema = self::applyFieldReadRestrictions($schema);
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
             $request_params['entity'] = $_SESSION['glpiactive_entity'];
         }
@@ -348,6 +399,7 @@ final class ResourceAccessor
      */
     public static function searchBySchema(array $schema, array $request_params): Response
     {
+        $schema = self::applyFieldReadRestrictions($schema);
         $itemtype = self::getItemtypeFromSchema($schema);
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
@@ -406,16 +458,18 @@ final class ResourceAccessor
      */
     public static function getOneBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
+        $schema = self::applyFieldReadRestrictions($schema);
         $itemtype = self::getItemtypeFromSchema($schema);
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
-        // Shortcut implementation using the search functionality with an injected RSQL filter and returning the first result.
+        // Shortcut implementation using the search functionality with a mandatory RSQL scope and returning the first result.
         // This shouldn't have much if any unneeded overhead as the filter would be mapped to a SQL condition.
-        $filters = $request_params['filter'] ?? '';
-        $filters .= ';' . $field . '==' . $request_attrs[$field];
-        $request_params['filter'] = $filters;
+        // The scope is passed as a mandatory filter (not appended to the user filter) so it cannot be escaped.
+        $scope = $field . '==' . $request_attrs[$field];
+        $existing_scope = $request_params[Search::MANDATORY_FILTER_PARAM] ?? '';
+        $request_params[Search::MANDATORY_FILTER_PARAM] = $existing_scope !== '' ? $existing_scope . ';' . $scope : $scope;
         $request_params['limit'] = 1;
         unset($request_params['start']);
         try {

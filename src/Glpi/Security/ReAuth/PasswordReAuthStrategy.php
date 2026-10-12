@@ -64,7 +64,7 @@ final class PasswordReAuthStrategy extends InPlaceReAuthStrategy
             return false;
         }
 
-        return $user->fields['authtype'] === Auth::DB_GLPI
+        return ($_SESSION['glpiauthtype'] ?? Auth::NOT_YET_AUTHENTIFIED) === Auth::DB_GLPI
             && !empty($user->fields['password']);
     }
 

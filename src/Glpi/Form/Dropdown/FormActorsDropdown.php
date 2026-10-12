@@ -39,6 +39,7 @@ use AbstractRightsDropdown;
 use Dropdown;
 use Group;
 use Override;
+use Session;
 use Supplier;
 use User;
 
@@ -98,6 +99,15 @@ final class FormActorsDropdown extends AbstractRightsDropdown
             }
         JS;
         $params['templateResult'] = $params['templateSelection'];
+
+        $params['_idor_token'] = Session::getNewIDORToken(
+            self::class,
+            [
+                'allowed_types'    => $params['allowed_types'] ?? [],
+                'right_for_users'  => $params['right_for_users'] ?? 'all',
+                'group_conditions' => $params['group_conditions'] ?? [],
+            ],
+        );
 
         return parent::show($name, $values, $params);
     }

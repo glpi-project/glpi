@@ -33,7 +33,7 @@
 {% extends 'layout/page_card_notlogged.html.twig' %}
 
 {% block content_block %}
-    <form action="{{ path('front/login.php') }}" method="post" autocomplete="off" data-submit-once>
+    <form action="{{ path('front/login.php') }}" method="post" data-submit-once>
         <input type="hidden" name="noAUTO" value="{{ noAuto }}"/>
         <input type="hidden" name="redirect" value="{{ redirect }}"/>
         {% if text_login|length > 0 %}
@@ -48,7 +48,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="login_name">{{ __('Login') }}</label>
-                    <input type="text" class="form-control" id="login_name" name="login_name" placeholder=""/>
+                    <input type="text" class="form-control" id="login_name" name="login_name" placeholder="" autocomplete="username"/>
                 </div>
                 <div class="mb-4">
                     <div class="d-flex">
@@ -56,7 +56,7 @@
                             {{ __('Password') }}
                         </label>
                     </div>
-                    <input type="password" class="form-control" id="login_password" name="login_password" placeholder="" autocomplete="off"/>
+                    <input type="password" class="form-control" id="login_password" name="login_password" placeholder="" autocomplete="current-password"/>
                 </div>
 
                 {% if config('display_login_source') %}

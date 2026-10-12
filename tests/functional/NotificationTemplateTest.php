@@ -255,4 +255,67 @@ HTML,
             $this->assertStringNotContainsString("<br><br>-- ", $data['content_html']);
         }
     }
+
+    public static function processIfProvider(): iterable
+    {
+        yield 'condition with an apostrophe' => [
+            'template' => "##IFproblem.action=Mise à jour d'une tâche##UPDATED##ENDIFproblem.action##",
+            'data'     => ['##problem.action##' => htmlspecialchars("Mise à jour d'une tâche")],
+            'expected' => 'UPDATED',
+        ];
+
+        yield 'condition without special characters' => [
+            'template' => '##IFproblem.action=Nouvelle tâche##CREATED##ENDIFproblem.action##',
+            'data'     => ['##problem.action##' => htmlspecialchars('Nouvelle tâche')],
+            'expected' => 'CREATED',
+        ];
+
+        yield 'condition with an ampersand' => [
+            'template' => '##IFcategory.name=R&D##MATCH##ENDIFcategory.name##',
+            'data'     => ['##category.name##' => htmlspecialchars('R&D')],
+            'expected' => 'MATCH',
+        ];
+
+        yield 'condition with angle brackets' => [
+            'template' => '##IFticket.title=<urgent>##MATCH##ENDIFticket.title##',
+            'data'     => ['##ticket.title##' => htmlspecialchars('<urgent>')],
+            'expected' => 'MATCH',
+        ];
+
+        yield 'non-matching condition' => [
+            'template' => "##IFproblem.action=Mise à jour d'une tâche##UPDATED##ENDIFproblem.action##",
+            'data'     => ['##problem.action##' => htmlspecialchars('Nouvelle tâche')],
+            'expected' => '',
+        ];
+
+        yield 'IF/ELSE block with an apostrophe' => [
+            'template' => "##IFproblem.action=Mise à jour d'une tâche##UPDATED##ENDIFproblem.action####ELSEproblem.action##OTHER##ENDELSEproblem.action##",
+            'data'     => ['##problem.action##' => htmlspecialchars('Nouvelle tâche')],
+            'expected' => 'OTHER',
+        ];
+
+        yield 'several IF blocks' => [
+            'template' => "##IFproblem.action=Nouvelle tâche##CREATED##ENDIFproblem.action####IFproblem.action=Mise à jour d'une tâche##UPDATED##ENDIFproblem.action##",
+            'data'     => ['##problem.action##' => htmlspecialchars("Mise à jour d'une tâche")],
+            'expected' => 'UPDATED',
+        ];
+
+        yield 'existence check' => [
+            'template' => '##IFticket.category##HAS-CATEGORY##ENDIFticket.category##',
+            'data'     => ['##ticket.category##' => htmlspecialchars('Hardware')],
+            'expected' => 'HAS-CATEGORY',
+        ];
+
+        yield 'existence check with an empty value' => [
+            'template' => '##IFticket.category##HAS-CATEGORY##ENDIFticket.category##',
+            'data'     => ['##ticket.category##' => ''],
+            'expected' => '',
+        ];
+    }
+
+    #[DataProvider('processIfProvider')]
+    public function testProcessIf(string $template, array $data, string $expected): void
+    {
+        $this->assertEquals($expected, NotificationTemplate::processIf($template, $data));
+    }
 }

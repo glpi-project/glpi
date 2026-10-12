@@ -38,7 +38,9 @@ use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\CloneMapper;
 use Glpi\Features\PlanningEvent;
 use Glpi\Features\Teamwork;
 use Glpi\Features\TeamworkInterface;
@@ -361,11 +363,15 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     $type
                 );
                 foreach ($ids as $id) {
-                    $taskteam->add([
+                    $team_input = [
                         'projecttasks_id' => $this->fields['id'],
                         'itemtype'        => $type,
                         'items_id'        => $id,
-                    ]);
+                    ];
+                    if (isset($this->input['_disablenotif'])) {
+                        $team_input['_disablenotif'] = true;
+                    }
+                    $taskteam->add($team_input);
                 }
             }
         }
@@ -654,13 +660,25 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function post_clone($source, $history)
     {
+        if (CloneMapper::getInstance()->hasItemId(Project::class, $source->fields['projects_id'])) {
+            // The whole project is being cloned (e.g. a project is created from a template).
+            // All its tasks, including the sub-tasks of the current one, are already cloned by
+            // `Clonable::cloneRelations()`.
+            return;
+        }
+
         // Clone all sub-tasks of the source and link them to the cloned task
         foreach (self::getAllForProjectTask($source->getID()) as $task) {
             if ($task = self::getById($task['id'])) {
                 if (method_exists($task, 'clone')) {
-                    $task->clone([
-                        'projecttasks_id' => $this->getID(),
-                    ]);
+                    $task->clone(
+                        [
+                            'projects_id'     => $this->fields['projects_id'],
+                            'projecttasks_id' => $this->getID(),
+                        ],
+                        $history,
+                        clean_mapper: false
+                    );
                 }
             }
         }
@@ -760,7 +778,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @param int $ID ID of the project
      *
-     * @return array of tasks ordered by dates
+     * @return array of tasks ordered by dates or by hierarchical order if no start dates are set
      **/
     public static function getAllForProject($ID)
     {
@@ -772,12 +790,20 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'WHERE'  => [
                 'projects_id'  => $ID,
             ],
-            'ORDERBY'   => ['plan_start_date', 'real_start_date'],
+            'ORDERBY'   => ['plan_start_date', 'real_start_date', 'id'],
         ]);
 
         foreach ($iterator as $data) {
             $tasks[] = $data;
         }
+
+        if (
+            !array_filter($tasks, static fn($task) => !empty($task['plan_start_date']) || !empty($task['real_start_date']))
+        ) {
+            // If no task has plan dates, sort by hierarchy
+            $tasks = self::sortProjectTasksByHierarchy($tasks);
+        }
+
         return $tasks;
     }
 
@@ -786,7 +812,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @since 9.5.0
      * @param int $ID ID of the project task
      *
-     * @return array of tasks ordered by dates
+     * @return array of tasks ordered by dates or by hierarchical order if no start dates are set
      **/
     public static function getAllForProjectTask($ID)
     {
@@ -798,12 +824,20 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'WHERE'  => [
                 'projecttasks_id'  => $ID,
             ],
-            'ORDERBY'   => ['plan_start_date', 'real_start_date'],
+            'ORDERBY'   => ['plan_start_date', 'real_start_date', 'id'],
         ]);
 
         foreach ($iterator as $data) {
             $tasks[] = $data;
         }
+
+        if (
+            !array_filter($tasks, static fn($task) => !empty($task['plan_start_date']) || !empty($task['real_start_date']))
+        ) {
+            // If no task has plan dates, sort by hierarchy
+            $tasks = self::sortProjectTasksByHierarchy($tasks);
+        }
+
         return $tasks;
     }
 
@@ -933,7 +967,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: 'glpi_tickets.actiontime',
+                    expression: new QueryIdentifier('glpi_tickets.actiontime'),
                     alias: 'duration'
                 ),
             ],
@@ -998,7 +1032,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: 'planned_duration',
+                    expression: new QueryIdentifier('planned_duration'),
                     alias: 'duration'
                 ),
             ],
@@ -1371,7 +1405,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (empty($_GET["sort"]) || !isset($columns[$_GET["sort"]])) {
             $_GET['sort'] = 'plan_start_date';
         }
-        $criteria['ORDERBY'] = [$_GET["sort"] . " $order"];
+        $criteria['ORDERBY'] = [$_GET["sort"] . " $order", 'id ASC'];
 
         $canedit = $item::class === Project::class && $item->canEdit($ID);
 
@@ -1450,6 +1484,8 @@ TWIG, $twig_params);
             $entry = [
                 'itemtype' => static::class,
                 'id' => $data['id'],
+                // Used to reorder entries hierarchically when there is no plan_start_date to sort on
+                'projecttasks_id' => $data['projecttasks_id'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'name' => $task->getLink(['comments' => true]),
                 'tname' => $data['transname2'] ?? $data['tname'],
@@ -1484,6 +1520,16 @@ TWIG, $twig_params);
             $entries[] = $entry;
         }
 
+        // If sorting on the planned start date but none of the displayed tasks have one set,
+        // sort using hierarchical order (father followed by its children, recursively)
+        if (
+            $_GET['sort'] === 'plan_start_date'
+            && !array_filter($entries, static fn($entry) => !empty($entry['plan_start_date']))
+        ) {
+            $entries = self::sortProjectTasksByHierarchy($entries);
+            $order = 'none'; // No order to apply, as the order is already set by the hierarchy
+        }
+
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
@@ -1515,6 +1561,60 @@ TWIG, $twig_params);
                 ],
             ],
         ]);
+    }
+
+    /**
+     * sort an array task entries (as built by self::showFor())
+     * using hierarchical order (father followed by its children, recursively)
+     *
+     * Entries whose father (see 'projecttasks_id') is not part of the given list are considered roots;
+     * siblings keep their relative order from the input list.
+     *
+     *
+     * @param list<array<string, mixed>> $entries Flat list of entries, each holding at least 'id' and 'projecttasks_id'
+     *
+     * @return list<array<string, mixed>> sorted entries
+     **/
+    public static function sortProjectTasksByHierarchy(array $entries): array
+    {
+        $by_id      = [];
+        $children   = [];
+        foreach ($entries as $entry) {
+            $by_id[$entry['id']] = $entry;
+            $children[$entry['projecttasks_id']][] = $entry['id'];
+        }
+
+        $ordered = [];
+        $visited = [];
+        $visit = static function ($parent_id) use (&$visit, &$children, &$by_id, &$ordered, &$visited) {
+            foreach ($children[$parent_id] ?? [] as $id) {
+                if (isset($visited[$id])) {
+                    continue;
+                }
+                $visited[$id] = true;
+                $ordered[] = $by_id[$id];
+                $visit($id);
+            }
+        };
+
+        // Roots are the tasks whose father is not part of the current list
+        // (either they have no father, or their father is out of the displayed scope).
+        foreach (array_keys($children) as $parent_id) {
+            if (!isset($by_id[$parent_id])) {
+                $visit($parent_id);
+            }
+        }
+
+        // Check for tasks that are still unvisited because they are not reachable from any root
+        foreach ($by_id as $id => $entry) {
+            if (!isset($visited[$id])) {
+                $visited[$id] = true;
+                $ordered[] = $entry;
+                $visit($id);
+            }
+        }
+
+        return $ordered;
     }
 
 
@@ -1990,13 +2090,13 @@ TWIG, $twig_params);
         if (isset($options['not_planned'])) {
             //not planned case
             $bdate = QueryFunction::dateSub(
-                date: $ttask_table . '.date_creation',
-                interval: new QueryExpression($DB::quoteName($ttask_table . '.planned_duration')),
+                date: new QueryIdentifier($ttask_table . '.date_creation'),
+                interval: new QueryIdentifier($ttask_table . '.planned_duration'),
                 interval_unit: 'SECOND',
             );
             $edate = QueryFunction::dateAdd(
-                date: $ttask_table . '.date_creation',
-                interval: new QueryExpression($DB::quoteName($ttask_table . '.planned_duration')),
+                date: new QueryIdentifier($ttask_table . '.date_creation'),
+                interval: new QueryIdentifier($ttask_table . '.planned_duration'),
                 interval_unit: 'SECOND',
             );
             $SELECT[] = new QueryExpression($bdate, 'notp_date');
@@ -2007,8 +2107,8 @@ TWIG, $twig_params);
                 $ttask_table . '.plan_end_date'     => null,
                 $ttask_table . '.planned_duration'  => ['>', 0],
                 //begin is replaced with creation tim minus duration
-                new QueryExpression($edate . " >= '" . $begin . "'"),
-                new QueryExpression($bdate . " <= '" . $end . "'"),
+                new QueryExpression($edate . " >= " . $DB::quoteValue($begin)),
+                new QueryExpression($bdate . " <= " . $DB::quoteValue($end)),
             ]);
         } else {
             //std case: get tasks for current view dates
@@ -2045,6 +2145,9 @@ TWIG, $twig_params);
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $task->getFromResultSet($data);
+                if (!$task->can($task->getID(), READ)) {
+                    continue;
+                }
                 if (isset($data['notp_date'])) {
                     $data['plan_start_date'] = $data['notp_date'];
                     $data['plan_end_date'] = $data['notp_edate'];
@@ -2224,7 +2327,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => [
                 QueryFunction::cast(
-                    expression: QueryFunction::avg('percent_done'),
+                    expression: QueryFunction::avg(new QueryIdentifier('percent_done')),
                     type: 'UNSIGNED',
                     alias: 'percent_done'
                 ),

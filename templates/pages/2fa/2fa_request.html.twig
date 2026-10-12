@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'pages/2fa/macros.html.twig' as tfa %}
+
 {% extends 'layout/page_card_notlogged.html.twig' %}
 
 {% block header_block %}
@@ -40,39 +42,10 @@
    <form method="post" action="{{ path(action, {"redirect": redirect}) }}" data-submit-once autocomplete="off" class="m-md-n4" data-code-type="code">
       <div>
          <twig:Mfa:CodeInput />
-         <input type="text" name="backup_code" class="form-control d-none" disabled="disabled" placeholder="{{ __('Backup code') }}"/>
       </div>
       <div class="border-top mt-2 pt-2 mx-n2 d-flex">
          <div class="ms-auto pe-2">
-            <button type="button" id="switch_code_type" class="btn btn-link px-1">{{ __('Use a backup code') }}</button>
-            <script>
-                $('#switch_code_type').on('click', (e) => {
-                    const btn = $(e.currentTarget);
-                    const card_title = btn.closest('.card').find('.card-title');
-                    const form = btn.closest('form');
-
-                    const code_group = $('[data-mfa-code-input]');
-                    if (form.attr('data-code-type') === 'code') {
-                        // Switch to backup code
-                        form.attr('data-code-type', 'backup_code');
-                        code_group.addClass('d-none').find('input').attr('disabled', 'disabled');
-                        $('input[name="backup_code"]')
-                            .removeAttr('disabled')
-                            .removeClass('d-none');
-                        btn.text('{{ __('Use a code from your authenticator app') }}');
-                        card_title.text('{{ __('Please enter a backup code') }}');
-                    } else {
-                        // Switch to code
-                        form.attr('data-code-type', 'code');
-                        $('input[name="backup_code"]')
-                            .attr('disabled', 'disabled')
-                            .toggleClass('d-none');
-                        code_group.removeClass('d-none').find('input').removeAttr('disabled');
-                        btn.text('{{ __('Use a backup code') }}');
-                        card_title.text('{{ __('Please enter the code from your authenticator app') }}');
-                    }
-                });
-            </script>
+            {{ tfa.tfa_backup_code_toggle(true) }}
             <button type="submit" formnovalidate name="totp_cancel" class="btn btn-outline-secondary">{{ __('Cancel') }}</button>
             <button type="submit" formnovalidate name="continue" class="btn btn-primary ms-1">{{ __('Verify') }}</button>
          </div>

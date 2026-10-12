@@ -70,6 +70,20 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     use TreeBrowse;
     use ParentStatus;
 
+    /**
+     * List of file extension allowed for images documents.
+     *
+     * @var string[]
+     */
+    public const ALLOWED_IMAGE_EXTENSIONS = [
+        'bmp',
+        'gif',
+        'jpeg',
+        'jpg',
+        'png',
+        'webp',
+    ];
+
     // From CommonDBTM
     public bool $dohistory                   = true;
 
@@ -141,7 +155,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 ($item = getItemForItemtype($this->input['itemtype']))
                 && $item->getFromDB($this->input['items_id'])
             ) {
-                return $item->canAddItem('Document');
+                // canAddItem() holds the "one write is enough" rule; parent::canCreateItem()
+                // still enforces the document's own entity.
+                return $item->canAddItem('Document') && parent::canCreateItem();
             } else {
                 unset($this->input['itemtype'], $this->input['items_id']);
             }
@@ -226,9 +242,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $input = $this->filterFields($input);
 
-        // current_filename is not necessary (item is new, current_filename should not exist
-        // but used for display can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
-        $input['current_filename'] = '';
+        // current_filename/current_filepath are not necessary (item is new, there is no current file)
+        // an unexpected value can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
+        unset($input['current_filepath'], $input['current_filename']);
 
         if ($uid = Session::getLoginUserID()) {
             $input["users_id"] = Session::getLoginUserID();
@@ -1654,6 +1670,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (!file_exists($file) || !is_file($file)) {
             return false;
         }
+
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if (!in_array(strtolower($ext), self::ALLOWED_IMAGE_EXTENSIONS)) {
+            // Filter by file extensions, since `exif_imagetype()` can be fooled.
+            return false;
+        }
+
         if (extension_loaded('exif')) {
             if (filesize($file) < 12) {
                 return false;
@@ -1738,7 +1761,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function cronInfo($name): array
     {
         return match ($name) {
-            'cleanorphans' => ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')],
+            'cleanorphansdocument' => ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')],
             default => [],
         };
     }
@@ -1751,7 +1774,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
-    public static function cronCleanOrphans(CronTask $task): int
+    public static function cronCleanOrphansDocument(CronTask $task): int
     {
         global $DB;
 

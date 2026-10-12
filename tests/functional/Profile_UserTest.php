@@ -96,6 +96,58 @@ class Profile_UserTest extends DbTestCase
         $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$glpi_users_id]], 1));
     }
 
+    public function testCannotPurgeAuthorizationWithMoreRights(): void
+    {
+        $this->login('tech', 'tech');
+
+        // Super-Admin authorization: more rights than the current user
+        $super_admin_auth = new Profile_User();
+        $this->assertTrue($super_admin_auth->getFromDBByCrit([
+            'users_id'    => getItemByTypeName('User', 'jsmith123', true),
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+        $this->assertFalse($super_admin_auth->canPurgeItem());
+
+        // Self-Service authorization: less rights than the current user
+        $self_service_auth = new Profile_User();
+        $this->assertTrue($self_service_auth->getFromDBByCrit([
+            'users_id'    => getItemByTypeName('User', 'post-only', true),
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+        ]));
+        $this->assertTrue($self_service_auth->canPurgeItem());
+    }
+
+    public function testCannotPurgeAuthorizationOutsideAccessibleEntity(): void
+    {
+        $root_entity      = getItemByTypeName(\Entity::class, '_test_root_entity');
+        $child_entity     = getItemByTypeName(\Entity::class, '_test_child_1');
+        $post_only_id     = getItemByTypeName('User', 'post-only', true);
+        $self_service_id  = getItemByTypeName('Profile', 'Self-Service', true);
+
+        // Create the authorizations as a super-admin, so fixture setup isn't
+        // itself affected by the entity/rights restrictions under test.
+        $this->login('glpi', 'glpi');
+        $outside_entity_auth = $this->createItem(Profile_User::class, [
+            'users_id'     => $post_only_id,
+            'profiles_id'  => $self_service_id,
+            'entities_id'  => $root_entity->getID(),
+            'is_recursive' => 0,
+        ]);
+        $inside_entity_auth = $this->createItem(Profile_User::class, [
+            'users_id'     => $post_only_id,
+            'profiles_id'  => $self_service_id,
+            'entities_id'  => $child_entity->getID(),
+            'is_recursive' => 0,
+        ]);
+
+        // tech must not be able to purge an authorization in another entity.
+        $this->login('tech', 'tech');
+        $this->setEntity($child_entity->getID(), false);
+
+        $this->assertFalse($outside_entity_auth->canPurgeItem());
+        $this->assertTrue($inside_entity_auth->canPurgeItem());
+    }
+
     public function testLogOperationOnAddAndDelete(): void
     {
         global $DB;

@@ -40,6 +40,7 @@ use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\RichText\RichText;
@@ -719,7 +720,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_tickets_users'],
                             [
-                                'glpi_tickets_users.tickets_id'  => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_tickets_users.tickets_id'  => new QueryIdentifier('glpi_tickets.id'),
                                 'glpi_tickets_users.users_id'    => $item->getID(),
                                 'glpi_tickets_users.type'        => CommonITILActor::REQUESTER,
                                 'glpi_tickets.is_deleted'        => 0,
@@ -732,7 +733,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_suppliers_tickets'],
                             [
-                                'glpi_suppliers_tickets.tickets_id'    => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_suppliers_tickets.tickets_id'    => new QueryIdentifier('glpi_tickets.id'),
                                 'glpi_suppliers_tickets.suppliers_id'  => $item->getID(),
                                 'glpi_tickets.is_deleted'              => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
@@ -765,7 +766,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_groups_tickets'],
                             [
-                                'glpi_groups_tickets.tickets_id' => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_groups_tickets.tickets_id' => new QueryIdentifier('glpi_tickets.id'),
                                 'glpi_groups_tickets.groups_id'  => $item->getID(),
                                 'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
                                 'glpi_tickets.is_deleted'        => 0,
@@ -1891,7 +1892,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 ),
                 new QueryExpression(
                     QueryFunction::dateAdd(
-                        date: static::getTable() . '.solvedate',
+                        date: new QueryIdentifier(static::getTable() . '.solvedate'),
                         interval: $days,
                         interval_unit: 'DAY'
                     ) . ' > ' . QueryFunction::now()
@@ -2332,6 +2333,8 @@ JAVASCRIPT;
                     $mergeparams['append_actors'] = [];
                 }
 
+                // /!\ rights checks are made inside the Ticket::merge() method
+
                 Ticket::merge($input['_mergeticket'], $ids, $status, $mergeparams);
                 foreach ($status as $id => $status_code) {
                     if ($status_code == 0) {
@@ -2378,6 +2381,7 @@ JAVASCRIPT;
                     if (!$ticket->getFromDB($id)) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        continue;
                     }
 
                     // Check ticket is not already resolved or closed
@@ -2388,11 +2392,19 @@ JAVASCRIPT;
                     if (in_array($ticket->fields['status'], $invalid_status)) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        continue;
                     }
 
                     // Add reference to ticket in input
                     $input['itemtype'] = static::class;
                     $input['items_id'] = $id;
+
+                    // Check item creation right
+                    if (!$em->can(-1, CREATE, $input)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
 
                     // Insert new solution
                     $res = $em->add($input);
@@ -2441,11 +2453,20 @@ JAVASCRIPT;
                         continue;
                     }
 
-                    // Add link
-                    $res = $em->add([
+                    $add_input = [
                         'contracts_id' => $contracts_id,
                         'tickets_id'   => $id,
-                    ]);
+                    ];
+
+                    // Check item creation right
+                    if (!$em->can(-1, CREATE, $add_input)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    // Add link
+                    $res = $em->add($add_input);
 
                     // Check if creation was successful
                     if ($res) {
@@ -2544,15 +2565,15 @@ JAVASCRIPT;
                 expression: QueryFunction::least([
                     QueryFunction::if(
                         condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
-                        true_expression: QueryFunction::coalesce(['TABLE.time_to_own', $max_date]),
+                        true_expression: QueryFunction::coalesce([new QueryIdentifier('TABLE.time_to_own'), $max_date]),
                         false_expression: $max_date
                     ),
                     QueryFunction::coalesce([
-                        new QueryExpression((new QuerySubQuery(['FROM' => Item_Ola::getTable(), 'SELECT' => QueryFunction::min('due_time')]))->getQuery()), $max_date,
+                        new QueryExpression((new QuerySubQuery(['FROM' => Item_Ola::getTable(), 'SELECT' => QueryFunction::min(new QueryIdentifier('due_time'))]))->getQuery()), $max_date,
                     ]),
                     QueryFunction::if(
                         condition: ['TABLE.solvedate' => null],
-                        true_expression: QueryFunction::coalesce(['TABLE.time_to_resolve', $max_date]),
+                        true_expression: QueryFunction::coalesce([new QueryIdentifier('TABLE.time_to_resolve'), $max_date]),
                         false_expression: $max_date
                     ),
                 ]),
@@ -3525,10 +3546,9 @@ JAVASCRIPT;
             return false;
         }
 
-        if (isset($options['_add_fromitem']) && isset($options['itemtype']) && is_a($options['itemtype'], CommonDBTM::class, true)) {
-            $item = new $options['itemtype']();
-            $item->getFromDB($options['items_id'][$options['itemtype']][0]);
-            $options['entities_id'] = $item->fields['entities_id'];
+        $entities_id = $this->getEntitiesIdFromAddFromItemOptions($options);
+        if ($entities_id !== null) {
+            $options['entities_id'] = $entities_id;
         }
 
         $this->restoreInputAndDefaults($ID, $options, null, true);
@@ -3545,6 +3565,7 @@ JAVASCRIPT;
                 if ($pt->getFromDB($options['_projecttasks_id'])) {
                     $options['name'] = $pt->fields['name'];
                     $options['content'] = $pt->fields['content'];
+                    $options['entities_id'] = $pt->fields['entities_id'];
                 }
             }
             // Override default values from followup if needed
@@ -3763,51 +3784,77 @@ JAVASCRIPT;
     {
         global $DB;
 
-        if (
-            !Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
-            && !Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())
-        ) {
+        $ticket_validation_rights = Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights());
+
+        if (!Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN, self::READGROUP, self::READMY]) && !$ticket_validation_rights) {
             return false;
         }
 
+        $search_users_id = [new QueryExpression('false')];
+        $search_assign = [new QueryExpression('false')];
+        $search_observer = [new QueryExpression('false')];
         $SELECT = ['glpi_tickets.id', 'glpi_tickets.date_mod'];
         $JOINS = [];
         $WHERE = [
             'glpi_tickets.is_deleted' => 0,
         ];
-        $search_users_id = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::REQUESTER,
-        ];
-        $search_assign = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::ASSIGN,
-        ];
-        $search_observer = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::OBSERVER,
-        ];
+
+        $table = $showgrouptickets ? Group_Ticket::getTable() : Ticket_User::getTable();
+        $reject_assign_user = [];
+        $reject_requester_or_assign_user = [];
 
         if ($showgrouptickets) {
-            $search_users_id  = [0];
-            $search_assign = [0];
-
             if (count($_SESSION['glpigroups'])) {
-                $search_assign = [
-                    'glpi_groups_tickets.groups_id'  => $_SESSION['glpigroups'],
-                    'glpi_groups_tickets.type'       => CommonITILActor::ASSIGN,
+                $reject_assign_user = [
+                    $table . '.groups_id' => $_SESSION['glpigroups'],
+                    $table . '.type'      => CommonITILActor::ASSIGN,
                 ];
-
-                if (Session::haveRight(self::$rightname, self::READGROUP)) {
-                    $search_users_id = [
-                        'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'      => CommonITILActor::REQUESTER,
-                    ];
-                    $search_observer = [
-                        'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'      => CommonITILActor::OBSERVER,
+                $reject_requester_or_assign_user = [
+                    $table . '.groups_id' => $_SESSION['glpigroups'],
+                    $table . '.type'      => [CommonITILActor::ASSIGN, CommonITILActor::REQUESTER],
+                ];
+                if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN])) {
+                    $search_assign = [
+                        $table . '.groups_id'  => $_SESSION['glpigroups'],
+                        $table . '.type'       => CommonITILActor::ASSIGN,
                     ];
                 }
+
+                if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READGROUP])) {
+                    $search_users_id = [
+                        $table . '.groups_id' => $_SESSION['glpigroups'],
+                        $table . '.type'      => CommonITILActor::REQUESTER,
+                    ];
+                    $search_observer = [
+                        $table . '.groups_id' => $_SESSION['glpigroups'],
+                        $table . '.type'      => CommonITILActor::OBSERVER,
+                    ];
+                }
+            }
+        } else {
+            $reject_assign_user = [
+                $table . '.users_id' => Session::getLoginUserID(),
+                $table . '.type'     => CommonITILActor::ASSIGN,
+            ];
+            $reject_requester_or_assign_user = [
+                $table . '.users_id' => Session::getLoginUserID(),
+                $table . '.type'     => [CommonITILActor::ASSIGN, CommonITILActor::REQUESTER],
+            ];
+            if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]) || $ticket_validation_rights) {
+                $search_users_id = [
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::REQUESTER,
+                ];
+                $search_observer = [
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::OBSERVER,
+                ];
+            }
+            if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN]) || $ticket_validation_rights) {
+                $search_assign = [
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::ASSIGN,
+                ];
             }
         }
 
@@ -3877,7 +3924,7 @@ JAVASCRIPT;
                     'SELECT' => 'last_solution.id',
                     'FROM'   => 'glpi_itilsolutions AS last_solution',
                     'WHERE'  => [
-                        'last_solution.items_id'   => new QueryExpression($DB->quoteName('glpi_tickets.id')),
+                        'last_solution.items_id'   => new QueryIdentifier('glpi_tickets.id'),
                         'last_solution.itemtype'   => self::class,
                     ],
                     'ORDER'  => 'last_solution.id DESC',
@@ -3907,15 +3954,21 @@ JAVASCRIPT;
                     $WHERE,
                     $search_observer,
                     [
-                        'glpi_tickets.status'   => [
+                        Ticket::getTable() . '.status'   => [
                             self::INCOMING,
                             self::PLANNED,
                             self::ASSIGNED,
                             self::WAITING,
                         ],
-                        'NOT'                   => [
-                            $search_assign,
-                            $search_users_id,
+                    ],
+                    [
+                        Ticket::getTable() . '.id' => [
+                            'NOT IN',
+                            new QuerySubQuery([
+                                'SELECT' => $table . '.tickets_id',
+                                'FROM'   => $table,
+                                'WHERE'  => $reject_requester_or_assign_user,
+                            ]),
                         ],
                     ]
                 );
@@ -3966,8 +4019,8 @@ JAVASCRIPT;
                                 new QueryExpression(
                                     QueryFunction::dateDiff(
                                         expression1: QueryFunction::dateAdd(
-                                            date: 'glpi_ticketsatisfactions.date_begin',
-                                            interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
+                                            date: new QueryIdentifier('glpi_ticketsatisfactions.date_begin'),
+                                            interval: new QueryIdentifier('glpi_entities.inquest_duration'),
                                             interval_unit: 'DAY'
                                         ),
                                         expression2: QueryFunction::curDate()
@@ -3988,13 +4041,22 @@ JAVASCRIPT;
                     $WHERE,
                     $search_users_id,
                     [
-                        'glpi_tickets.status'   => [
+                        Ticket::getTable() . '.status'   => [
                             self::INCOMING,
                             self::PLANNED,
                             self::ASSIGNED,
                             self::WAITING,
                         ],
-                        'NOT' => $search_assign,
+                    ],
+                    [
+                        Ticket::getTable() . '.id' => [
+                            'NOT IN',
+                            new QuerySubQuery([
+                                'SELECT' => $table . '.tickets_id',
+                                'FROM'   => $table,
+                                'WHERE'  => $reject_assign_user,
+                            ]),
+                        ],
                     ]
                 );
         }
@@ -5012,8 +5074,11 @@ JAVASCRIPT;
                     'description' => __('Automatic closed tickets purge'),
                     'parameter' => __('Maximum number of tickets purged per entity (0 = unlimited)'),
                 ];
+
+            case 'createinquestticket':
+                return ['description' => __('Generation of tickets satisfaction surveys')];
         }
-        return parent::cronInfo($name);
+        return [];
     }
 
 
@@ -5071,7 +5136,7 @@ JAVASCRIPT;
                         // no calendar, remove all days
                         $criteria['WHERE'][] = new QueryExpression(
                             QueryFunction::dateAdd(
-                                date: 'solvedate',
+                                date: new QueryIdentifier('solvedate'),
                                 interval: $delay,
                                 interval_unit: 'DAY'
                             ) . ' < ' . QueryFunction::now()
@@ -5133,7 +5198,7 @@ JAVASCRIPT;
                     'closedate'    => null,
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: 'date',
+                            date: new QueryIdentifier('date'),
                             interval: $value,
                             interval_unit: 'DAY'
                         ) . ' < ' . QueryFunction::now()
@@ -5209,7 +5274,7 @@ JAVASCRIPT;
                     // remove all days
                     $criteria['WHERE'][] = new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: 'closedate',
+                            date: new QueryIdentifier('closedate'),
                             interval: $delay,
                             interval_unit: 'DAY'
                         ) . ' < ' . QueryFunction::now()
@@ -5243,6 +5308,18 @@ JAVASCRIPT;
         }
 
         return ($tot > 0 ? 1 : 0);
+    }
+
+    /**
+     * Cron for automatically creating tickets satisfaction surveys
+     *
+     * @param CronTask $task
+     *
+     * @return int (0 : nothing done - 1 : done)
+     **/
+    public static function cronCreateInquestTicket($task)
+    {
+        return parent::cronCreateInquest($task);
     }
 
 
@@ -5756,6 +5833,7 @@ JAVASCRIPT;
                         'date_mod'        => $ticket->fields['date_mod'],
                         'date'            => $ticket->fields['date_creation'],
                         'sourceitems_id'  => $ticket->getID(),
+                        '_disablenotif'   => true,
                     ];
                     if (!$fup->add($input)) {
                         //Cannot add followup. Abort/fail the merge
@@ -5770,7 +5848,7 @@ JAVASCRIPT;
                         foreach ($tomerge as $fup2) {
                             $fup2['items_id'] = $merge_target_id;
                             $fup2['sourceitems_id'] = $id;
-                            $fup2['content'] = $fup2['content'];
+                            $fup2['_disablenotif'] = true;
                             unset($fup2['id']);
                             if (!$fup->add($fup2)) {
                                 // Cannot add followup. Abort/fail the merge
@@ -5790,7 +5868,7 @@ JAVASCRIPT;
                         foreach ($tomerge as $task2) {
                             $task2['tickets_id'] = $merge_target_id;
                             $task2['sourceitems_id'] = $id;
-                            $task2['content'] = $task2['content'];
+                            $task2['_disablenotif'] = true;
                             unset($task2['id']);
                             unset($task2['uuid']);
                             if (!$task->add($task2)) {
@@ -5913,16 +5991,19 @@ JAVASCRIPT;
                             });
                             foreach ($users as $user) {
                                 $user['tickets_id'] = $merge_target_id;
+                                $user['_disablenotif'] = true;
                                 unset($user['id']);
                                 $tu->add($user);
                             }
                             foreach ($groups as $group) {
                                 $group['tickets_id'] = $merge_target_id;
+                                $group['_disablenotif'] = true;
                                 unset($group['id']);
                                 $gt->add($group);
                             }
                             foreach ($suppliers as $supplier) {
                                 $supplier['tickets_id'] = $merge_target_id;
+                                $supplier['_disablenotif'] = true;
                                 unset($supplier['id']);
                                 $st->add($supplier);
                             }

@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 
@@ -693,9 +693,21 @@ class Rule extends CommonDBTM
         switch ($ma->getAction()) {
             case 'export':
                 if (count($ids)) {
-                    $_SESSION['exportitems'] = $ids;
-                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_OK);
-                    $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item::class);
+                    $_SESSION['exportitems'] = [];
+                    foreach ($ids as $id) {
+                        if (!$item->can($id, READ)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
+                        $_SESSION['exportitems'][$id] = $id;
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                    }
+
+                    if ($_SESSION['exportitems'] !== []) {
+                        $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item::class);
+                    }
                 }
                 break;
 
@@ -708,6 +720,12 @@ class Rule extends CommonDBTM
                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                 } elseif ($rulecollection->canUpdate()) {
                     foreach ($ids as $id) {
+                        if (!$item->can($id, UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         if ($item->getFromDB($id)) {
                             if ($rulecollection->moveRule($id, $input['ranking'], $input['move_type'])) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
@@ -1160,7 +1178,7 @@ TWIG, $twig_params);
                             $('#viewaction{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->ruleactionclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: action_id
                             });
                         }
@@ -1276,7 +1294,7 @@ TWIG, $twig_params);
                             $('#viewcriteria{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->rulecriteriaclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: criteria_id
                             });
                         }
@@ -2982,7 +3000,7 @@ TWIG, $twig_params);
                 static::getTable(),
             ],
             'WHERE'  => [
-                getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryExpression(DBmysql::quoteName(static::getTable() . '.id')),
+                getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryIdentifier(static::getTable() . '.id'),
                 static::getTable() . '.sub_type'                                           => static::class,
 
             ],
@@ -3193,7 +3211,14 @@ TWIG, ['label' => $this->getTitle()]);
 
                 foreach ($iterator as $data) {
                     $input['id'] = $data[$fieldid];
-                    $ruleitem->update($input);
+                    // Update the rule through its concrete class, otherwise the history entry
+                    // would be attached to the `Rule` itemtype and would therefore not be
+                    // visible in the history tab of the rule.
+                    $updated_item = $ruleitem;
+                    if ($ruleitem::getTable() === self::getTable()) {
+                        $updated_item = self::getRuleObjectByID($data[$fieldid]) ?? $ruleitem;
+                    }
+                    $updated_item->update($input);
                 }
                 Session::addMessageAfterRedirect(
                     __s('Rules using the object have been disabled.'),
@@ -3285,7 +3310,7 @@ TWIG, ['label' => $this->getTitle()]);
                             $nb = countElementsInTable(
                                 ['glpi_rules', 'glpi_ruleactions'],
                                 [
-                                    'glpi_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('glpi_rules.id')),
+                                    'glpi_ruleactions.rules_id'   => new QueryIdentifier('glpi_rules.id'),
                                     'glpi_rules.sub_type'         => $types,
                                     'glpi_ruleactions.field'      => 'entities_id',
                                     'glpi_ruleactions.value'      => $item->getID(),
@@ -3415,6 +3440,32 @@ TWIG, ['label' => $this->getTitle()]);
     public static function canPurge(): bool
     {
         return static::canUpdate();
+    }
+
+    public function canViewItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canViewItem();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canUpdateItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canPurgeItem();
+    }
+
+    /**
+     * Rules of all types share the same table, but each type has its own rights.
+     * A loaded rule must therefore be of the type it is accessed through.
+     */
+    private function isOfCurrentType(): bool
+    {
+        return static::class === self::class
+            || !isset($this->fields['sub_type'])
+            || $this->fields['sub_type'] === static::class;
     }
 
     public static function getIcon()

@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\TooManyResultsException;
 
 use function Safe\preg_match;
@@ -191,7 +192,7 @@ class ItemVirtualMachine extends CommonDBChild
                 self::getTable(),
                 [
                     'RAW' => [
-                        (string) QueryFunction::lower('uuid') => self::getUUIDRestrictCriteria($asset->fields['uuid']),
+                        (string) QueryFunction::lower(new QueryIdentifier('uuid')) => self::getUUIDRestrictCriteria($asset->fields['uuid']),
                     ],
                 ]
             );
@@ -416,7 +417,7 @@ class ItemVirtualMachine extends CommonDBChild
             'FROM'   => $itemtype::getTable(),
             'WHERE'  => [
                 'RAW' => [
-                    (string) QueryFunction::lower('uuid')  => self::getUUIDRestrictCriteria($fields['uuid']),
+                    (string) QueryFunction::lower(new QueryIdentifier('uuid'))  => self::getUUIDRestrictCriteria($fields['uuid']),
                 ],
             ],
         ]);

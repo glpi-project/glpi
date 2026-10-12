@@ -43,6 +43,7 @@ use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\ArrayNormalizer;
 use Group_User;
@@ -152,7 +153,8 @@ trait PlanningEvent
             $input["name"] = __('Without title');
         }
 
-        $input["begin"] = $input["end"] = "NULL";
+        $input["begin"] ??= 'NULL';
+        $input["end"] ??= "NULL";
 
         if (isset($input['plan'])) {
             if (
@@ -485,7 +487,7 @@ trait PlanningEvent
                     'OR' => [
                         "$table.users_id" => $who,
                         QueryFunction::jsonContains(
-                            "$table.users_id_guests",
+                            new QueryIdentifier("$table.users_id_guests"),
                             new QueryExpression($DB::quoteValue((int) $who)),
                             '$'
                         ),
@@ -679,6 +681,18 @@ trait PlanningEvent
             $events += $events_toadd;
         }
 
+        return static::translatePlanningEvents($events);
+    }
+
+    /**
+     * Apply the translations of the current language to the planning events.
+     *
+     * @param array<array<string, mixed>> $events
+     *
+     * @return array<array<string, mixed>>
+     */
+    protected static function translatePlanningEvents(array $events): array
+    {
         return $events;
     }
 
