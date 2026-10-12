@@ -1809,7 +1809,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $level_criteria = $visible_criteria;
             $level_criteria['WHERE'][] = [self::getTableField('id') => $candidates];
             $visible = [];
-            foreach ($DB->request($level_criteria) as $row) {
+            $lvl_iterator = $DB->request($level_criteria);
+            foreach ($lvl_iterator as $row) {
                 $visible[(int) $row['id']] = true;
             }
 
