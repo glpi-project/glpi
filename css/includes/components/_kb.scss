@@ -428,6 +428,21 @@ body.in_modal .kb-article {
     -webkit-line-clamp: 3;
 }
 
+.kb-comment-anchor-quote--context {
+    font-size: 0.75rem;
+    font-style: italic;
+    line-height: 16px;
+
+    &::before {
+        content: "\efbe"; // ti-quote
+        margin-right: 6px;
+        font-family: "tabler-icons";
+        font-size: 14px;
+        font-style: normal;
+        vertical-align: middle;
+    }
+}
+
 // KB visibility dates
 .kb-schedule-panel {
     min-width: 280px;
