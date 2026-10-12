@@ -34,11 +34,11 @@
 
 namespace test\units;
 
+use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
-use Entity;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
@@ -1942,7 +1942,7 @@ HTML,
         ]);
 
         // Target entity
-        $entity = new \Entity();
+        $entity = new Entity();
         $faq_entity1 = (int) $entity->add([
             'name' => 'FAQ 1 entity',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
@@ -2450,7 +2450,7 @@ HTML,
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $entity->getFromDBByCrit(['name' => '_test_root_entity']);
 
         $date = date('Y-m-d H:i:s');
@@ -2468,7 +2468,7 @@ HTML,
         );
 
         //add target
-        $tentity = new \Entity();
+        $tentity = new Entity();
         $this->assertGreaterThan(
             0,
             $eid = $tentity->add([
