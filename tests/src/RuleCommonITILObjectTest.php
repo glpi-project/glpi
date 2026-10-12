@@ -3173,6 +3173,60 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
     /**
+     * Add approvals to the supervisor of the requesters (User::users_id_supervisor), not their group manager
+     *
+     * Tested action : 'add_validation' with 'responsible_id_validate' field
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testApprovalRequestToRequesterSupervisor(int $condition): void
+    {
+        // no validation for problems
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+
+        // --- arrange : 2 requesters sharing the same supervisor + 1 requester without supervisor
+        $this->login();
+        $supervisor = $this->createItem(User::class, ['name' => __FUNCTION__ . '_supervisor']);
+        $requesters_ids = [
+            $this->createItem(User::class, ['name' => __FUNCTION__ . '_1', 'users_id_supervisor' => $supervisor->getID()])->getID(),
+            $this->createItem(User::class, ['name' => __FUNCTION__ . '_2', 'users_id_supervisor' => $supervisor->getID()])->getID(),
+            $this->createItem(User::class, ['name' => __FUNCTION__ . '_3'])->getID(),
+        ];
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('urgency', Rule::PATTERN_IS, 5)
+            ->addAction('add_validation', 'responsible_id_validate', 1);
+        $this->createRule($rule_builder);
+
+        // --- act : add an itil object with the requesters, or update one to match the rule
+        $requesters = array_map(fn($id) => ['itemtype' => User::class, 'items_id' => $id], $requesters_ids);
+        $itil = $this->createItem(
+            $this->getITILObjectClass(),
+            $this->getMinimalCreationInput($this->getITILObjectClass()) + [
+                'urgency' => $condition === RuleCommonITILObject::ONADD ? 5 : 3,
+                '_actors' => ['requester' => $requesters],
+            ],
+            ['_actors']
+        );
+        if ($condition === RuleCommonITILObject::ONUPDATE) {
+            $this->updateItem($this->getITILObjectClass(), $itil->getID(), ['urgency' => 5]);
+        }
+
+        // --- assert : a single approval request, for the supervisor
+        $validations = $this->getITILObjectInstance()->getValidationClassInstance()->find(
+            [$this->getITILObjectClass()::getForeignKeyField() => $itil->getID()]
+        );
+        $this->assertCount(1, $validations, 'A single approval should be created for the shared supervisor');
+        $validation = current($validations);
+        $this->assertSame(User::class, $validation['itemtype_target']);
+        $this->assertSame($supervisor->getID(), $validation['items_id_target']);
+    }
+
+    /**
      * Ensure a rule using the "global_validation" criteria work as expected on updates.
      *
      * @return void
