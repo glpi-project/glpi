@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Api\HL;
 
+use CommonDBTM;
+use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Tests\GLPITestCase;
@@ -63,9 +65,30 @@ class ResourceAccessorTest extends GLPITestCase
                 ],
             ],
         ];
+        $schema_b = [
+            'type' => 'object',
+            'properties' => [
+                'name' => ['type' => 'string'],
+                'members' => [
+                    'type' => 'array',
+                    'items' => [
+                        'type' => 'object',
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => static fn($v) => [],
+                        'properties' => [
+                            'id' => ['type' => 'integer'],
+                            'name' => ['type' => 'string'],
+                        ],
+                    ],
+                    'x-input-mapper' => static fn($v) => ['_members' => $v],
+                ],
+            ],
+        ];
         return [
             [$schema_a, ['name' => 'Test', 'status' => 4, 'renamed' => 'test', 'extra' => 'not exist'], ['name' => 'Test', 'status' => 4, 'old_name' => 'test']],
             [$schema_a, ['name' => 'Test', 'status' => ['id' => 4]], ['name' => 'Test', 'status' => 4]],
+            // Properties with an input mapper are handled by getMappedInputParamsBySchema
+            [$schema_b, ['name' => 'Test', 'members' => [['id' => 2]]], ['name' => 'Test']],
         ];
     }
 
@@ -73,6 +96,87 @@ class ResourceAccessorTest extends GLPITestCase
     public function testGetInputParamsBySchema($schema, $request_params, $expected)
     {
         $this->assertEquals($expected, ResourceAccessor::getInputParamsBySchema($schema, $request_params));
+    }
+
+    public function testGetMappedInputParamsBySchema(): void
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'name' => [
+                    'type' => 'string',
+                ],
+                'members' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'integer'],
+                    'x-input-mapper' => static fn(mixed $v, CommonDBTM $item) => [
+                        '_members' => $v,
+                        '_is_new' => $item->isNewItem(),
+                    ],
+                ],
+                'tags' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'string'],
+                    'x-input-mapper' => static fn(mixed $v) => ['_tags' => $v],
+                ],
+                'readonly_members' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'integer'],
+                    'readOnly' => true,
+                    'x-input-mapper' => static fn(mixed $v) => ['_readonly_members' => $v],
+                ],
+            ],
+        ];
+
+        // Only properties with an input mapper which are present in the request and not read-only are mapped
+        $this->assertEquals(
+            ['_members' => [1, 2], '_is_new' => true],
+            ResourceAccessor::getMappedInputParamsBySchema($schema, [
+                'name' => 'Test',
+                'members' => [1, 2],
+                'readonly_members' => [3],
+            ], new Ticket())
+        );
+        $this->assertEquals(
+            ['_members' => [], '_is_new' => true, '_tags' => ['a']],
+            ResourceAccessor::getMappedInputParamsBySchema($schema, ['members' => [], 'tags' => ['a']], new Ticket())
+        );
+        $this->assertEquals([], ResourceAccessor::getMappedInputParamsBySchema($schema, ['name' => 'Test'], new Ticket()));
+    }
+
+    public function testGetMappedInputParamsBySchemaWithInvalidValue(): void
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'members' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'integer'],
+                    'x-input-mapper' => static function (mixed $v) {
+                        throw new InvalidArgumentException('Invalid members');
+                    },
+                ],
+                'tags' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'string'],
+                    'x-input-mapper' => static fn(mixed $v) => ['_tags' => $v],
+                ],
+            ],
+        ];
+
+        try {
+            ResourceAccessor::getMappedInputParamsBySchema($schema, ['members' => [1], 'tags' => ['a']], new Ticket());
+            $this->fail('An APIException should have been thrown');
+        } catch (APIException $e) {
+            $this->assertEquals([
+                'members' => [
+                    [
+                        'error' => 'invalid',
+                        'message' => 'Invalid members',
+                    ],
+                ],
+            ], $e->getDetails());
+        }
     }
 
     public function testCreateWithInvalidProperties()
