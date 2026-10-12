@@ -70,8 +70,12 @@ class Agent extends CommonDBTM
     public static $rightname = 'agent';
     //static $rightname = 'inventory';
 
-    /** @var bool */
-    private static $found_address = false;
+    /**
+     * Addresses that successfully answered, indexed by agent ID.
+     *
+     * @var array<int, string>
+     */
+    private static array $found_addresses = [];
 
     public $history_blacklist = ['last_contact'];
 
@@ -697,8 +701,9 @@ class Agent extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        if (self::$found_address !== false) {
-            $addresses = [self::$found_address];
+        $agents_id = (int) $this->getID();
+        if (isset(self::$found_addresses[$agents_id])) {
+            $addresses = [self::$found_addresses[$agents_id]];
         } else {
             $addresses = $this->getAgentURLs();
         }
@@ -718,7 +723,7 @@ class Agent extends CommonDBTM
                 // init guzzle client with base options
                 $httpClient = Toolbox::getGuzzleClient($options);
                 $response = $httpClient->request('GET', $endpoint, []);
-                self::$found_address = $address;
+                self::$found_addresses[$agents_id] = $address;
                 break;
             } catch (Throwable $exception) {
                 // many addresses will be incorrect

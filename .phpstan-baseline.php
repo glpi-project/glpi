@@ -992,12 +992,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Agent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Static property Agent\\:\\:\\$found_address \\(bool\\) does not accept string\\|true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Agent.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset numeric\\-string might not exist on array\\|string\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,

@@ -832,4 +832,100 @@ XML;
         $this->expectException(ConnectException::class);
         $agent->requestAgent('status');
     }
+
+    public function testRequestAgentDoesNotReuseAnotherAgentAddress(): void
+    {
+        // Local HTTP server answering any request, standing for the first agent.
+        $router = GLPI_TMP_DIR . '/agent_router_' . mt_rand() . '.php';
+        file_put_contents($router, '<?php echo "status: waiting";');
+        $socket = stream_socket_server('tcp://127.0.0.2:0');
+        $this->assertNotFalse($socket);
+        $port = (int) substr(strrchr(stream_socket_get_name($socket, false), ':'), 1);
+        fclose($socket);
+        $server = proc_open(
+            [PHP_BINARY, '-S', '127.0.0.2:' . $port, $router],
+            [['pipe', 'r'], ['file', '/dev/null', 'w'], ['file', '/dev/null', 'w']],
+            $pipes
+        );
+        $this->assertIsResource($server);
+
+        try {
+            $ready = false;
+            for ($i = 0; $i < 50 && !$ready; $i++) {
+                $fp = @fsockopen('127.0.0.2', $port);
+                if ($fp !== false) {
+                    fclose($fp);
+                    $ready = true;
+                } else {
+                    usleep(100000);
+                }
+            }
+            $this->assertTrue($ready, 'Local HTTP server did not start');
+
+            // Both agents listen on the same port, but only the first one is reachable.
+            $first_agent  = $this->createAgentWithAddress('agent-first.invalid', '127.0.0.2', $port);
+            $second_agent = $this->createAgentWithAddress('agent-second.invalid', '127.0.0.3', $port);
+
+            // Reuse a single instance, as the wakeup automatic action does.
+            $agent = new \Agent();
+            $this->assertTrue($agent->getFromDB($first_agent->getID()));
+            $response = $agent->requestAgent('status');
+            $this->assertSame('status: waiting', (string) $response->getBody());
+
+            // The second agent is not reachable: the request must not be sent
+            // to the address found for the first agent.
+            $this->assertTrue($agent->getFromDB($second_agent->getID()));
+            $this->expectException(ConnectException::class);
+            $agent->requestAgent('status');
+        } finally {
+            proc_terminate($server);
+            proc_close($server);
+            unlink($router);
+        }
+    }
+
+    private function createAgentWithAddress(string $name, string $ip, int $port): \Agent
+    {
+        global $DB;
+
+        $computer = $this->createItem(
+            Computer::class,
+            [
+                'name'        => $name,
+                'entities_id' => $this->getTestRootEntity(only_id: true),
+            ]
+        );
+
+        $networkPort = new \NetworkPort();
+        $this->assertGreaterThan(
+            0,
+            $networkPort->add([
+                'name'                       => 'eth0',
+                'itemtype'                   => Computer::class,
+                'items_id'                   => $computer->getID(),
+                'instantiation_type'         => 'NetworkPortEthernet',
+                'logical_number'             => 0,
+                'items_devicenetworkcards_id' => 0,
+                '_create_children'           => 1,
+                'NetworkName_name'           => '',
+                'NetworkName_fqdns_id'       => 0,
+                'NetworkName__ipaddresses'   => ['-1' => $ip],
+            ])
+        );
+
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agent = $this->createItem(
+            \Agent::class,
+            [
+                'name'          => $name,
+                'deviceid'      => $name,
+                'itemtype'      => Computer::class,
+                'items_id'      => $computer->getID(),
+                'agenttypes_id' => $agenttype['id'],
+                'port'          => $port,
+            ]
+        );
+
+        return $agent;
+    }
 }
