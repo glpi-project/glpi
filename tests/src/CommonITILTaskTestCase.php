@@ -444,6 +444,16 @@ abstract class CommonITILTaskTestCase extends DbTestCase
         // Cannot change state of a task whose parent is in the trashbin
         $this->assertTrue($itil_item->delete(['id' => $itil_item->getID()]));
         $this->assertFalse($assigned_task->canChangeState());
+
+        // Cannot change state of a task whose parent is closed
+        $this->assertTrue($itil_item->restore(['id' => $itil_item->getID()]));
+        $this->assertTrue($assigned_task->canChangeState());
+        $DB->update(
+            $itil_class::getTable(),
+            ['status' => \CommonITILObject::CLOSED],
+            ['id' => $itil_item->getID()]
+        );
+        $this->assertFalse($assigned_task->canChangeState());
     }
 
     /**
