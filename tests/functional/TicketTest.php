@@ -3012,6 +3012,8 @@ class TicketTest extends DbTestCase
 
     public function testClosedTicketTransfer()
     {
+        // dropdown values are deleted (and replaced) by a user having the update right on tickets
+        $this->login();
 
         // 1- create a category and location
         $itilcat      = new ITILCategory();

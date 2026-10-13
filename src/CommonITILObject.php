@@ -1859,13 +1859,29 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $check_allowed_fields_for_template = true;
 
             if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-                $allowed_fields[] = 'status';
+                if (
+                    $this->canReopen()
+                    && isset($input['status']) && in_array($input['status'], [self::ASSIGNED, self::INCOMING])
+                    && self::isAllowedStatus($this->fields['status'], $input['status'])
+                ) {
+                    $allowed_fields[] = 'status';
+                }
 
-                // probably transfer
-                $allowed_fields[] = 'entities_id';
-                $allowed_fields[] = 'itilcategories_id';
-                $allowed_fields[] = 'locations_id';
-            } else {
+                $is_transfer = isset($input['_transfer']) && $input['_transfer'] == 1
+                    && Session::haveRight(Transfer::$rightname, READ);
+
+                // fields only for transfer
+                if ($is_transfer) {
+                    $allowed_fields[] = 'entities_id';
+                }
+
+                // transfer, or replacement of a deleted dropdown value (see CommonDBTM::cleanRelationData())
+                if ($is_transfer || Session::haveRight(static::$rightname, UPDATE)) {
+                    $allowed_fields[] = 'itilcategories_id';
+                    $allowed_fields[] = 'locations_id';
+                }
+            } else { // fields for other status
+
                 if (
                     $this->canApprove()
                     || $this->canAssign()
@@ -1931,15 +1947,21 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
             }
 
-            $ret = [];
-
+            // rebuild $input with non empty allowed fields
+            $_filtered_input = [];
             foreach ($allowed_fields as $field) {
                 if (isset($input[$field])) {
-                    $ret[$field] = $input[$field];
+                    // additionnal constraint : entity must be accessible by user (non cron)
+                    if ($field === 'entities_id') {
+                        if (!Session::haveAccessToEntity($input['entities_id'])) {
+                            continue;
+                        }
+                    }
+                    $_filtered_input[$field] = $input[$field];
                 }
             }
 
-            $input = $ret;
+            $input = $_filtered_input;
 
             // Only ID return false
             if (count($input) == 1) {
@@ -1969,6 +1991,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $input[static::getTemplateFormFieldName()] = $tt->getID();
         }
 
+        //
         if (count($tt->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
