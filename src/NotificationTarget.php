@@ -1294,7 +1294,7 @@ class NotificationTarget extends CommonDBChild
     {
         if ($this->target_object !== []) {
             foreach ($this->target_object as $val) {
-                if (!$this->obj instanceof CommonDBTM) {
+                if (!$val instanceof CommonDBTM) {
                     continue;
                 }
 
