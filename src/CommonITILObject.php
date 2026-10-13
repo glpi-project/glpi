@@ -1826,7 +1826,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * Handle template mandatory fields on update
+     * Handle template mandatory fields on update.
+     * Also restricts the updatable fields according to the current user rights
+     * when they lack the global UPDATE right (status, validation, assignment...).
      *
      * @param array $input Input
      * @param bool  $show_error_message Show error message
@@ -1886,6 +1888,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = '_users_id_assign';
                     $allowed_fields[] = '_groups_id_assign';
                     $allowed_fields[] = '_suppliers_id_assign';
+                } elseif (
+                    static::class === Ticket::class
+                    && $this->canAssignToMe()
+                    && ($input['_itil_assign']['_type'] ?? null) === 'user'
+                    && (int) ($input['_itil_assign']['users_id'] ?? 0) === (int) Session::getLoginUserID()
+                ) {
+                    // "Associate myself" button is displayed with OWN right, so self-assignment must be kept
+                    $allowed_fields[] = '_itil_assign';
                 }
 
                 // Can only update initial fields if no followup or task already added
