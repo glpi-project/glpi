@@ -51,6 +51,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
@@ -358,6 +359,60 @@ class SearchTest extends DbTestCase
         $this->assertStringContainsString('GROUP BY', $data['sql']['raw']['GROUPBY']);
         $this->assertSame(1, $data['data']['totalcount']);
         $this->assertEquals($followup_with_supplier->getID(), $data['data']['rows'][0]['id']);
+    }
+
+    public function testRowWithoutIdIsNotListedInFoundItems(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Followup on a ticket that has no supplier assigned
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        $data = SearchEngine::prepareDataForSearch(ITILFollowup::class, [
+            'criteria' => [
+                [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'meta'       => true,
+                    'field'      => 6, // Assigned to a supplier
+                    'searchtype' => 'equals',
+                    'value'      => $supplier->getID(),
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => 7, // ID
+                    'searchtype' => 'contains',
+                    'value'      => $followup->getID(),
+                ],
+            ],
+        ]);
+        SQLProvider::constructSQL($data);
+
+        // Drop the GROUP BY so the aggregated meta column yields a single row full of NULL values
+        $this->assertNotEmpty($data['sql']['raw']['GROUPBY']);
+        $raw = $data['sql']['raw'];
+        $data['sql']['search'] = $raw['SELECT'] . $raw['FROM'] . $raw['WHERE']
+            . $raw['HAVING'] . $raw['ORDER'] . $raw['LIMIT'];
+        SQLProvider::constructData($data);
+
+        // The row exists but must not be listed as a found item
+        $this->assertCount(1, $data['data']['rows']);
+        $this->assertNull($data['data']['rows'][0]['id']);
+        $this->assertSame([], $data['data']['items']);
     }
 
     public function testMetaToviewNotLeakedAcrossIndependentCalls()

@@ -4479,7 +4479,7 @@ final class SQLProvider implements SearchProviderInterface
         // Meta Search / Search All / Count tickets
         if (
             (count($data['search']['metacriteria']))
-            || !empty($data['meta_toview'] ?? [])
+            || !empty($data['meta_toview'])
             || !empty($HAVING)
             || $data['search']['all_search']
         ) {
