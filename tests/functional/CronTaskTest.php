@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use CronTask;
+use CronTaskLog;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -281,7 +282,7 @@ class CronTaskTest extends DbTestCase
         global $DB;
 
         // Deactivate all registered tasks
-        $crontask = new \CronTask();
+        $crontask = new CronTask();
         $this->assertTrue($DB->update(CronTask::getTable(), ['state' => CronTask::STATE_DISABLE], [new QueryExpression('true')]));
         $this->assertFalse($crontask->getNeedToRun());
 
@@ -349,25 +350,25 @@ class CronTaskTest extends DbTestCase
 
         // Simulate what CronTask::start() and CronTask::stop() do: add CronTaskLog entries
         $this->createItem(
-            \CronTaskLog::class,
+            CronTaskLog::class,
             [
                 'crontasks_id'    => $crontask->getID(),
                 'date'            => date('Y-m-d H:i:s'),
                 'content'         => 'Starting',
                 'crontasklogs_id' => 0,
-                'state'           => \CronTaskLog::STATE_START,
+                'state'           => CronTaskLog::STATE_START,
                 'volume'          => 0,
                 'elapsed'         => 0.0,
             ]
         );
         $this->createItem(
-            \CronTaskLog::class,
+            CronTaskLog::class,
             [
                 'crontasks_id'    => $crontask->getID(),
                 'date'            => date('Y-m-d H:i:s'),
                 'content'         => 'Stopping',
                 'crontasklogs_id' => 0,
-                'state'           => \CronTaskLog::STATE_STOP,
+                'state'           => CronTaskLog::STATE_STOP,
                 'volume'          => 1,
                 'elapsed'         => 0.1,
             ]
@@ -429,7 +430,7 @@ class CronTaskTest extends DbTestCase
     #[DataProvider('manualExecutionStateProvider')]
     public function testManualExecutionState(int $initial_state, int $error_count, int $expected_state): void
     {
-        $crontask = new \CronTask();
+        $crontask = new CronTask();
         $this->assertTrue($crontask->getFromDBbyName(CronTask::class, 'graph'));
         $this->updateItem(CronTask::class, $crontask->getID(), [
             'state'       => $initial_state,
