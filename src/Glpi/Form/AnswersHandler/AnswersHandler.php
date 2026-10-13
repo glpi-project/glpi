@@ -417,6 +417,7 @@ final class AnswersHandler
         // Init the contionnal creation engine
         $engine = new Engine($form, new EngineInput($answers_set->toArray()));
         $engine_output = $engine->computeItemsThatMustBeCreated();
+        $answers_set->setCreationOutput($engine_output);
 
         // Store created items for post-creation processing
         $created_items = [];
