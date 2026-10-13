@@ -219,6 +219,39 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
         );
     }
 
+    public function testGetTabNameForItemIgnoresDeletedITIL(): void
+    {
+        if (!is_subclass_of($this->getTestedClass()::$itemtype_1, CommonITILObject::class)) {
+            $this->markTestSkipped('This test is only for ITIL items');
+        }
+        $this->login();
+        $itil_itemtype = $this->getTestedClass()::$itemtype_1;
+        $link = new ($this->getTestedClass())();
+
+        $computer = $this->createItem(Computer::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $itil_items = [];
+        foreach ([1, 2] as $i) {
+            $itil_items[] = $this->createItem($itil_itemtype, [
+                'name' => __FUNCTION__ . ' ' . $i,
+                'content' => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
+                'items_id' => [Computer::class => [$computer->getID()]],
+            ], ['content', 'items_id']);
+        }
+
+        // Trashed ITIL objects are not displayed in the list, so they must not be counted
+        $this->assertTrue($itil_items[0]->delete(['id' => $itil_items[0]->getID()]));
+
+        $this->assertMatchesRegularExpression(
+            '/<span class="badge glpi-badge"[^>]*>1<\/span>/',
+            $link->getTabNameForItem($computer),
+        );
+    }
+
     public function getGetTabNameForItemAsset(): void
     {
         $this->login();
