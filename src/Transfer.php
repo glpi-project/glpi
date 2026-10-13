@@ -436,46 +436,7 @@ final class Transfer extends CommonDBTM
         if (!$this->options['keep_software']) {
             return;
         }
-        // Clean DB
-        $DB->delete('glpi_items_softwareversions', ['glpi_softwareversions.id'  => null], [
-            'LEFT JOIN' => [
-                'glpi_softwareversions'  => [
-                    'ON' => [
-                        'glpi_items_softwareversions' => 'softwareversions_id',
-                        'glpi_softwareversions'       => 'id',
-                    ],
-                ],
-            ],
-        ]);
-
-        // Clean DB
-        $DB->delete('glpi_softwareversions', ['glpi_softwares.id'  => null], [
-            'LEFT JOIN' => [
-                'glpi_softwares'  => [
-                    'ON' => [
-                        'glpi_softwareversions' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
-                    ],
-                ],
-            ],
-        ]);
         foreach ($CFG_GLPI['software_types'] as $itemtype) {
-            $itemtable = getTableForItemType($itemtype);
-            // Clean DB
-            $DB->delete('glpi_items_softwareversions', [
-                "{$itemtable}.id"  => null,
-                'glpi_items_softwareversions.itemtype' => $itemtype,
-            ], [
-                'LEFT JOIN' => [
-                    $itemtable  => [
-                        'ON' => [
-                            'glpi_items_softwareversions' => 'items_id',
-                            $itemtable                    => 'id',
-                        ],
-                    ],
-                ],
-            ]);
-
             if ($this->haveItemsToTransfer($itemtype)) {
                 $iterator = $DB->request([
                     'SELECT'       => [
