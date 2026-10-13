@@ -907,7 +907,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForAdd($input)
     {
-        global $DB;
+        global $CFG_GLPI, $DB;
 
         $input = $this->cleanInput($input);
 
@@ -1015,7 +1015,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         if (
             array_key_exists('language', $input)
-            && (!is_string($input['language']) || !LanguageRegistry::has($input['language']))
+            && (
+                !is_string($input['language'])
+                || !LanguageRegistry::has($input['language'])
+                || $input['language'] === $CFG_GLPI['language']
+            )
         ) {
             unset($input['language']);
         }
