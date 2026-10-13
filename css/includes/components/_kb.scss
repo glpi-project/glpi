@@ -435,8 +435,8 @@ body.in_modal .kb-article {
 
     &::before {
         content: "\efbe"; // ti-quote
-        margin-right: 6px;
-        font-family: "tabler-icons";
+        margin-inline-end: 6px;
+        font-family: tabler-icons;
         font-size: 14px;
         font-style: normal;
         vertical-align: middle;
@@ -1292,7 +1292,11 @@ $kb-aside-min-width: 300px;
 [data-main-page-aside="knowbaseitem"] {
     // Resizable from the edge handle, up to half of the row; the article column takes the rest.
     // max-width repeats the width so the collapse transition has a value to animate from.
-    --kb-aside-size: clamp(#{$kb-aside-min-width}, var(--kb-aside-width, #{$kb-aside-min-width}), 50%);
+    --kb-aside-size: clamp(
+        #{$kb-aside-min-width},
+        var(--kb-aside-width, #{$kb-aside-min-width}),
+        50%
+    );
 
     flex: 0 0 auto;
     width: var(--kb-aside-size);
@@ -1616,7 +1620,11 @@ $kb-aside-min-width: 300px;
         .kb-aside-resizer:hover,
         .kb-aside-resizer:focus-visible,
         &[data-glpi-kb-aside-resizing] .kb-aside-resizer {
-            background: linear-gradient(var(--tblr-primary), var(--tblr-primary)) center / 2px 100% no-repeat;
+            background: linear-gradient(
+                    var(--tblr-primary),
+                    var(--tblr-primary)
+                )
+                center / 2px 100% no-repeat;
         }
 
         // Collapse via max-width + overflow:hidden (zeroes the flex min so the column shrinks to the rail).
