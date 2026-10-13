@@ -39,6 +39,9 @@ use AuthMail;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Auth\HelpersTrait;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 class AuthMailTest extends DbTestCase
 {
     use HelpersTrait;
@@ -178,6 +181,33 @@ class AuthMailTest extends DbTestCase
 
         // Assert
         $this->assertDefaultAuthIs($updated);
+    }
+
+    public function test_ShowFormWarnsAboutPopProtocol(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        // POP items cannot be created anymore, insert it as it would exist after the migration
+        $DB->insert(AuthMail::getTable(), [
+            'name'           => 'pop-auth',
+            'connect_string' => '{pop.example.org:110/pop}',
+            'is_active'      => 0,
+        ]);
+        $pop_auth_id = $DB->insertId();
+
+        $warning = 'This mail authentication server uses the POP protocol, which is no longer supported.';
+
+        $auth_mail = new AuthMail();
+        $this->assertTrue($auth_mail->getFromDB($pop_auth_id));
+        ob_start();
+        $auth_mail->showForm($pop_auth_id);
+        $this->assertStringContainsString($warning, ob_get_clean());
+
+        ob_start();
+        $this->initialDefaultAuth->showForm($this->initialDefaultAuth->getID());
+        $this->assertStringNotContainsString($warning, ob_get_clean());
     }
 
     /**

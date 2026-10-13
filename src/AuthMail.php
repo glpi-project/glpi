@@ -202,9 +202,10 @@ class AuthMail extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/authentication/mail.html.twig', [
-            'item'             => $this,
-            'params'           => $options,
-            'protocol_choices' => $protocol_choices,
+            'item'              => $this,
+            'params'            => $options,
+            'protocol_choices'  => $protocol_choices,
+            'uses_pop_protocol' => Toolbox::isPopMailServerConnectString((string) ($this->fields['connect_string'] ?? '')),
         ]);
         return true;
     }
@@ -292,7 +293,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Test a connexion to the IMAP/POP server
+     * Test a connexion to the IMAP server
      *
      * @param string $connect_string mail server
      * @param string $login          user login

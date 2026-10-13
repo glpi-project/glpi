@@ -367,6 +367,16 @@ final class StatusChecker
                     foreach ($imap_methods as $method) {
                         $param = Toolbox::parseMailServerConnectString($method['connect_string'], true);
                         $display_name = $public_only ? 'GLPI_IMAP_' . $method['id'] : $method['name'];
+                        if ($param['type'] === '') {
+                            // Unsupported protocol (e.g. POP), no default port can be computed
+                            $status['servers'][$display_name] = [
+                                'status' => self::STATUS_PROBLEM,
+                                'status_msg' => _x('glpi_status', 'Unsupported mail server type'),
+                            ];
+                            $total_error++;
+                            $global_status = self::STATUS_PROBLEM;
+                            continue;
+                        }
                         if ($param['ssl'] === true) {
                             $host = 'ssl://' . $param['address'];
                         } elseif ($param['tls'] === true) {
@@ -374,7 +384,7 @@ final class StatusChecker
                         } else {
                             $host = $param['address'];
                         }
-                        if ($fp = @fsockopen($host, $param['port'], $errno, $errstr, 1)) { // @phpstan-ignore theCodingMachineSafe.function
+                        if ($fp = @fsockopen($host, (int) $param['port'], $errno, $errstr, 1)) { // @phpstan-ignore theCodingMachineSafe.function
                             $status['servers'][$display_name] = [
                                 'status' => self::STATUS_OK,
                             ];

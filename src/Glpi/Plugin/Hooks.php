@@ -1142,8 +1142,9 @@ class Hooks
      * The function is called with no parameters.
      * The function is expected to return an array where the keys are the protocol name and the values are arrays with the following properties:
      * - 'label' => The label to be used for the protocol.
-     * - 'protocol' => The name of the class to be used for the protocol. The class should use the `Laminas\Mail\Protocol\ProtocolTrait` trait.
-     * - 'storage' => The name of the class to be used for the protocol storage. The class should extend the `Laminas\Mail\Storage\AbstractStorage` class.
+     * - 'protocol' => The name of the class, or a callable returning an instance, used to authenticate users. The class should implement the `Glpi\Mail\Protocol\ProtocolInterface` interface.
+     * - 'mailbox' => The name of the class, or a callable returning an instance, used by mails receivers. The class should implement the `DirectoryTree\ImapEngine\MailboxInterface` interface.
+     *   The class constructor (or the callable) receives the mailbox configuration, as built by `Glpi\Mail\Imap\Mailbox::buildConfig()`.
      */
     public const MAIL_SERVER_PROTOCOLS = 'mail_server_protocols';
 

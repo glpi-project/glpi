@@ -233,9 +233,9 @@ class Auth extends CommonGLPI
     }
 
     /**
-     * Try a IMAP/POP connection
+     * Try a IMAP connection
      *
-     * @param string $host  IMAP/POP host to connect
+     * @param string $host  IMAP host to connect
      * @param string $login Login to try
      * @param string $pass  Password to try
      *
@@ -269,7 +269,7 @@ class Auth extends CommonGLPI
             }
             $protocol->connect(
                 $config['address'],
-                $config['port'],
+                $config['port'] !== '' ? (int) $config['port'] : null,
                 $ssl
             );
 

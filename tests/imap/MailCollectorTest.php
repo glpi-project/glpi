@@ -35,12 +35,11 @@
 namespace tests\units;
 
 use Config;
+use Glpi\Mail\Imap\ImapProtocol;
+use Glpi\Mail\Imap\Mailbox;
 use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
-use Laminas\Mail\Protocol\Imap;
-use Laminas\Mail\Protocol\Pop3;
-use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
 use NotificationTargetTicket;
@@ -48,6 +47,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareLicense;
 use Ticket;
+use ZBateson\MailMimeParser\IMessage;
+
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 class MailCollectorTest extends DbTestCase
 {
@@ -218,6 +221,37 @@ class MailCollectorTest extends DbTestCase
         $this->hasSessionMessages(ERROR, [
             'Mandatory fields are not filled. Please correct: Server, Connection options',
         ]);
+    }
+
+    public function testShowFormWarnsAboutPopProtocol(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        // POP items cannot be created anymore, insert it as it would exist after the migration
+        $DB->insert(\MailCollector::getTable(), [
+            'name'      => 'pop-collector',
+            'host'      => '{pop.example.org:110/pop}',
+            'is_active' => 0,
+        ]);
+        $pop_collector_id = $DB->insertId();
+        $imap_collector = $this->createItem(\MailCollector::class, [
+            'name' => 'imap-collector',
+            'host' => '{imap.example.org/imap/novalidate-cert}',
+        ]);
+
+        $warning = 'This mails receiver uses the POP protocol, which is no longer supported.';
+
+        $collector = new \MailCollector();
+        $this->assertTrue($collector->getFromDB($pop_collector_id));
+        ob_start();
+        $collector->showForm($pop_collector_id);
+        $this->assertStringContainsString($warning, ob_get_clean());
+
+        ob_start();
+        $imap_collector->showForm($imap_collector->getID());
+        $this->assertStringNotContainsString($warning, ob_get_clean());
     }
 
     public function testCounts()
@@ -397,12 +431,7 @@ class MailCollectorTest extends DbTestCase
     {
         $instance = new \MailCollector();
 
-        $message = new Message(
-            [
-                'headers' => ['Message-Id' => $message_id],
-                'content' => 'Message contents...',
-            ]
-        );
+        $message = $this->buildMessage(['Message-Id' => $message_id]);
 
         $this->assertEquals($is_self_itil_notification, $this->callPrivateMethod($instance, 'isItilNotificationFromSelf', $message));
     }
@@ -645,12 +674,7 @@ class MailCollectorTest extends DbTestCase
     ) {
         $instance = new \MailCollector();
 
-        $message = new Message(
-            [
-                'headers' => $headers,
-                'content' => 'Message contents...',
-            ]
-        );
+        $message = $this->buildMessage($headers);
 
         $item = $instance->getItemFromHeaders($message);
 
@@ -671,14 +695,25 @@ class MailCollectorTest extends DbTestCase
     ) {
         $instance = new \MailCollector();
 
-        $message = new Message(
-            [
-                'headers' => $headers,
-                'content' => 'Message contents...',
-            ]
-        );
+        $message = $this->buildMessage($headers);
 
         $this->assertEquals(!$accepted, $instance->isResponseToMessageSentByAnotherGlpi($message));
+    }
+
+    /**
+     * Build a message with given headers.
+     *
+     * @param array<string, string> $headers
+     */
+    private function buildMessage(array $headers): IMessage
+    {
+        $raw = '';
+        foreach ($headers as $name => $value) {
+            $raw .= $name . ': ' . $value . "\r\n";
+        }
+        $raw .= "\r\nMessage contents...\r\n";
+
+        return \MailCollector::parseMessage($raw);
     }
 
     private function doConnect()
@@ -772,28 +807,9 @@ class MailCollectorTest extends DbTestCase
 
         $msg = $this->collector->collect($this->mailgate_id);
 
-        $expected_logged_errors = [
-            // 05-empty-from.eml - Invalid address caught by Laminas patch
-            'Invalid address "<>"' => LogLevel::WARNING,
-            // 17-malformed-email.eml
-            'Header with Name date or date not found' => LogLevel::ERROR,
-            // 35-message-with-some-invalid-headers.eml
-            'Invalid header "X-Invalid-Encoding"' => LogLevel::WARNING,
-            // 49-invalid-cc-email-address.eml - Invalid CC address caught by Laminas patch
-            'Invalid address "} <}>"' => LogLevel::WARNING,
-            // 50-all-invalid-addresses.eml - All addresses are invalid (From and CC)
-            'Invalid address "< >"' => LogLevel::WARNING,
-            'Invalid address "{{{"' => LogLevel::WARNING,
-        ];
-
-        // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
-        foreach ($expected_logged_errors as $error_message => $error_level) {
-            $this->hasPhpLogRecordThatContains($error_message, $error_level);
-        }
-
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-        $expected_refused_count          = 14;
-        $expected_error_count            = 1;
+        $expected_refused_count          = 15;
+        $expected_error_count            = 0;
         $expected_blacklist_count        = 1;
         $expected_expected_already_seen  = 0;
 
@@ -831,10 +847,11 @@ class MailCollectorTest extends DbTestCase
                 'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
             [
-                'subject' => null, // Subject is empty has mail was not processed
+                // 17-malformed-email.eml - No sender, it is refused
+                'subject' => 'This message is malformed',
                 'from'    => '', // '' as value is not nullable in DB
                 'to'      => '', // '' as value is not nullable in DB
-                'reason'  => \NotImportedEmail::FAILED_OPERATION,
+                'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
             [
                 // Email without 'To:' header that is refused should not crash
@@ -1291,37 +1308,32 @@ HTML,
                 'cnx_string'        => '',
                 'expected_type'     => '',
                 'expected_protocol' => null,
-                'expected_storage'  => null,
+                'expected_mailbox'  => null,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/imap}',
                 'expected_type'     => 'imap',
-                'expected_protocol' => Imap::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
+                'expected_protocol' => ImapProtocol::class,
+                'expected_mailbox'  => Mailbox::class,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/imap/ssl/debug}INBOX',
                 'expected_type'     => 'imap',
-                'expected_protocol' => Imap::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
+                'expected_protocol' => ImapProtocol::class,
+                'expected_mailbox'  => Mailbox::class,
             ],
+            // POP protocol is not supported anymore
             [
                 'cnx_string'        => '{mail.domain.org/pop}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
-            ],
-            [
-                'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
+                'expected_type'     => '',
+                'expected_protocol' => null,
+                'expected_mailbox'  => null,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/unknown-type/ssl}',
                 'expected_type'     => '',
                 'expected_protocol' => null,
-                'expected_storage'  => null,
+                'expected_mailbox'  => null,
             ],
         ];
     }
@@ -1331,7 +1343,7 @@ HTML,
         string $cnx_string,
         string $expected_type,
         ?string $expected_protocol,
-        ?string $expected_storage
+        ?string $expected_mailbox
     ) {
         $type = \Toolbox::parseMailServerConnectString($cnx_string)['type'];
 
@@ -1343,15 +1355,15 @@ HTML,
             $this->assertNull(\Toolbox::getMailServerProtocolInstance($type));
         }
 
-        $params = [
+        $config = [
             'host'     => 'dovecot',
-            'user'     => 'testuser',
+            'username' => 'testuser',
             'password' => 'applesauce',
         ];
-        if ($expected_storage !== null) {
-            $this->assertInstanceOf($expected_storage, \Toolbox::getMailServerStorageInstance($type, $params));
+        if ($expected_mailbox !== null) {
+            $this->assertInstanceOf($expected_mailbox, \Toolbox::getMailServerMailboxInstance($type, $config));
         } else {
-            $this->assertNull(\Toolbox::getMailServerStorageInstance($type, $params));
+            $this->assertNull(\Toolbox::getMailServerMailboxInstance($type, $config));
         }
     }
 
@@ -1364,8 +1376,8 @@ HTML,
             'hook_result'               => 'invalid result',
             'type'                      => 'imap',
             'expected_warning'          => 'Invalid value returned by "mail_server_protocols" hook.',
-            'expected_protocol'         => Imap::class,
-            'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
+            'expected_protocol'         => ImapProtocol::class,
+            'expected_mailbox'          => Mailbox::class,
         ];
 
         // Check that hook cannot alter core IMAP protocol
@@ -1375,29 +1387,13 @@ HTML,
                 'imap' => [
                     'label'    => 'Override test',
                     'protocol' => 'SomeClass',
-                    'storage'  => 'SomeClass',
+                    'mailbox'  => 'SomeClass',
                 ],
             ],
             'type'                      => 'imap',
             'expected_warning'          => 'Protocol "imap" is already defined and cannot be overwritten.',
-            'expected_protocol'         => Imap::class,
-            'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
-        ];
-
-        // Check that hook cannot alter core POP3 protocol
-        yield [
-            'allow_plugins_protocols'   => true,
-            'hook_result'               => [
-                'pop' => [
-                    'label'    => 'Override test',
-                    'protocol' => 'SomeClass',
-                    'storage'  => 'SomeClass',
-                ],
-            ],
-            'type'                      => 'pop',
-            'expected_warning'          => 'Protocol "pop" is already defined and cannot be overwritten.',
-            'expected_protocol'         => Pop3::class,
-            'expected_storage'          => \Laminas\Mail\Storage\Pop3::class,
+            'expected_protocol'         => ImapProtocol::class,
+            'expected_mailbox'          => Mailbox::class,
         ];
 
         // Check that class must exist
@@ -1407,13 +1403,13 @@ HTML,
                 'custom-protocol' => [
                     'label'    => 'Invalid class',
                     'protocol' => 'SomeClass1',
-                    'storage'  => 'SomeClass2',
+                    'mailbox'  => 'SomeClass2',
                 ],
             ],
             'type'                      => 'custom-protocol',
             'expected_warning'          => 'Invalid specs for protocol "custom-protocol".',
             'expected_protocol'         => null,
-            'expected_storage'          => null,
+            'expected_mailbox'          => null,
         ];
 
         // Check that class must implement expected functions
@@ -1423,13 +1419,13 @@ HTML,
                 'custom-protocol' => [
                     'label'    => 'Invalid class',
                     'protocol' => 'Plugin',
-                    'storage'  => 'Migration',
+                    'mailbox'  => 'Migration',
                 ],
             ],
             'type'                      => 'custom-protocol',
             'expected_warning'          => 'Invalid specs for protocol "custom-protocol".',
             'expected_protocol'         => null,
-            'expected_storage'          => null,
+            'expected_mailbox'          => null,
         ];
 
         // Check valid case using class names
@@ -1439,13 +1435,13 @@ HTML,
                 'custom-protocol' => [
                     'label'    => 'Custom email protocol',
                     'protocol' => \PluginTesterFakeProtocol::class,
-                    'storage'  => \PluginTesterFakeStorage::class,
+                    'mailbox'  => \PluginTesterFakeMailbox::class,
                 ],
             ],
             'type'                      => 'custom-protocol',
             'expected_warning'          => null,
             'expected_protocol'         => \PluginTesterFakeProtocol::class,
-            'expected_storage'          => \PluginTesterFakeStorage::class,
+            'expected_mailbox'          => \PluginTesterFakeMailbox::class,
         ];
 
         // Check valid case using class names is not returned if plugins protocols are not allowed
@@ -1455,13 +1451,13 @@ HTML,
                 'custom-protocol' => [
                     'label'    => 'Custom email protocol',
                     'protocol' => \PluginTesterFakeProtocol::class,
-                    'storage'  => \PluginTesterFakeStorage::class,
+                    'mailbox'  => \PluginTesterFakeMailbox::class,
                 ],
             ],
             'type'                      => 'custom-protocol',
             'expected_warning'          => null,
             'expected_protocol'         => null,
-            'expected_storage'          => null,
+            'expected_mailbox'          => null,
         ];
 
         // Check valid case using callback
@@ -1473,15 +1469,15 @@ HTML,
                     'protocol' => function () {
                         return new \PluginTesterFakeProtocol();
                     },
-                    'storage'  => function (array $params) {
-                        return new \PluginTesterFakeStorage($params);
+                    'mailbox'  => function (array $config) {
+                        return new \PluginTesterFakeMailbox($config);
                     },
                 ],
             ],
             'type'                      => 'custom-protocol',
             'expected_warning'          => null,
             'expected_protocol'         => \PluginTesterFakeProtocol::class,
-            'expected_storage'          => \PluginTesterFakeStorage::class,
+            'expected_mailbox'          => \PluginTesterFakeMailbox::class,
         ];
 
         // Check valid case using callback is not returned if plugins protocols are not allowed
@@ -1493,15 +1489,15 @@ HTML,
                     'protocol' => function () {
                         return new \PluginTesterFakeProtocol();
                     },
-                    'storage'  => function (array $params) {
-                        return new \PluginTesterFakeStorage($params);
+                    'mailbox'  => function (array $config) {
+                        return new \PluginTesterFakeMailbox($config);
                     },
                 ],
             ],
             'type'                      => 'custom-protocol',
             'expected_warning'          => null,
             'expected_protocol'         => null,
-            'expected_storage'          => null,
+            'expected_mailbox'          => null,
         ];
     }
 
@@ -1512,7 +1508,7 @@ HTML,
         string $type,
         ?string $expected_warning,
         ?string $expected_protocol,
-        ?string $expected_storage
+        ?string $expected_mailbox
     ) {
         global $PLUGIN_HOOKS;
 
@@ -1536,17 +1532,17 @@ HTML,
             );
         }
 
-        // Get storage
-        $storage   = null;
-        $getStorage = function () use ($type, $allow_plugins_protocols, &$storage) {
-            $params = [
+        // Get mailbox
+        $mailbox   = null;
+        $getMailbox = function () use ($type, $allow_plugins_protocols, &$mailbox) {
+            $config = [
                 'host'     => 'dovecot',
-                'user'     => 'testuser',
+                'username' => 'testuser',
                 'password' => 'applesauce',
             ];
-            $storage = \Toolbox::getMailServerStorageInstance($type, $params, $allow_plugins_protocols);
+            $mailbox = \Toolbox::getMailServerMailboxInstance($type, $config, $allow_plugins_protocols);
         };
-        $getStorage();
+        $getMailbox();
         if ($expected_warning !== null) {
             $this->hasPhpLogRecordThatContains(
                 $expected_warning,
@@ -1562,10 +1558,10 @@ HTML,
             $this->assertNull($protocol);
         }
 
-        if ($expected_storage !== null) {
-            $this->assertInstanceOf($expected_storage, $storage);
+        if ($expected_mailbox !== null) {
+            $this->assertInstanceOf($expected_mailbox, $mailbox);
         } else {
-            $this->assertNull($storage);
+            $this->assertNull($mailbox);
         }
     }
 
@@ -1681,16 +1677,13 @@ HTML,
         \Safe\unlink(GLPI_TMP_DIR . '/bar.png');
     }
 
-    public function testGetAttachedRestoresCrlfForRfc822Parts(): void
+    public function testGetAttachedPreservesCrlfForRfc822Parts(): void
     {
         // RFC 2822 requires CRLF (\r\n) line endings in email messages.
-        // When the GLPI mail collector receives an email via IMAP, the Laminas MIME parser
-        // strips all \r characters during multipart boundary splitting
-        // (see Laminas\Mime\Decode::splitMime). As a result, embedded emails
-        // (message/rfc822 attachments) lose their CRLF line endings, which breaks
-        // Quoted-Printable soft line breaks (=\r\n becomes =\n) and makes the
-        // extracted EML file unreadable in strict clients such as Outlook.
-        // This test verifies that GLPI restores CRLF line endings in extracted
+        // If embedded emails (message/rfc822 attachments) lose their CRLF line endings,
+        // Quoted-Printable soft line breaks (=\r\n becomes =\n) are broken, and the
+        // extracted EML file is unreadable in strict clients such as Outlook.
+        // This test verifies that GLPI preserves CRLF line endings in extracted
         // message/rfc822 attachments.
 
         // Register EML as a valid document type (not present by default).
@@ -1740,7 +1733,7 @@ HTML,
             '',
         ]);
 
-        $message = new Message(['raw' => $raw]);
+        $message = \MailCollector::parseMessage($raw);
 
         $tmp_path = GLPI_TMP_DIR . '/test_rfc822_crlf_' . uniqid();
         mkdir($tmp_path);
@@ -1758,8 +1751,6 @@ HTML,
         rmdir($tmp_path);
 
         // The extracted EML file must use CRLF line endings (RFC 2822 requirement).
-        // Without the fix, Laminas strips all \r during MIME parsing, leaving LF-only
-        // line endings that break Quoted-Printable soft line breaks.
         $this->assertStringContainsString(
             "\r\n",
             $extracted_content,
@@ -1786,7 +1777,7 @@ HTML,
             '',
         ]);
 
-        $message = new Message(['raw' => $raw]);
+        $message = \MailCollector::parseMessage($raw);
         $collector = new \MailCollector();
         $headers = $collector->getHeaders($message);
 
@@ -1854,6 +1845,6 @@ HTML,
 
         $collector = new \MailCollector();
 
-        $this->assertSame($expected, trim($collector->getDecodedContent(new Message(['raw' => $raw]))));
+        $this->assertSame($expected, trim($collector->getDecodedContent(\MailCollector::parseMessage($raw))));
     }
 }

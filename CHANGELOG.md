@@ -8,21 +8,37 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changes
+- Mails receivers now rely on the `directorytree/imapengine` library to connect to IMAP servers.
 
 ### Deprecated
 
 ### Removed
 - `itemtype` criteria for Ticket and Change rules. This has been non-operational since 0.85 (over 11 years ago).
+- POP protocol support for mails receivers and mail authentication servers. Existing mails receivers and authentication servers using it are disabled during the update.
 
 ### API changes
 
 #### Added
+- `Glpi\Mail\Imap\Mailbox` and `Glpi\Mail\Imap\ImapProtocol` classes, used by the native IMAP protocol.
+- `MailCollector::parseMessage()`
+- `Toolbox::getMailServerMailboxInstance()`
 
 #### Changes
+- Messages handled by `MailCollector` are now `ZBateson\MailMimeParser\IMessage` instances, instead of `Laminas\Mail\Storage\Message` instances.
+  This applies to `MailCollector::buildTicket()`, `MailCollector::getAdditionnalHeaders()`, `MailCollector::getAttached()`, `MailCollector::getBody()`,
+  `MailCollector::getHeaders()`, `MailCollector::getItemFromHeaders()`, `MailCollector::isResponseToMessageSentByAnotherGlpi()`
+  and to the `_message` key of the input built by `MailCollector::buildTicket()`.
+- `MailCollector::getDecodedContent()` now expects a `ZBateson\MailMimeParser\Message\IMessagePart` instance.
+- Protocols registered using the `mail_server_protocols` hook must now provide a `mailbox` entry, instead of the `storage` one.
+  It must be a class name, or a callable returning an instance, implementing `DirectoryTree\ImapEngine\MailboxInterface`.
+  The `protocol` entry must now implement `Glpi\Mail\Protocol\ProtocolInterface`.
+- `Toolbox::getMailServerProtocolInstance()` now returns a `Glpi\Mail\Protocol\ProtocolInterface` instance, or `null`.
 
 #### Deprecated
 
 #### Removed
+- `laminas/laminas-mail` and `laminas/laminas-mime` PHP libraries. Use `directorytree/imapengine` and `zbateson/mail-mime-parser` instead.
+- `Toolbox::getMailServerStorageInstance()`. Use `Toolbox::getMailServerMailboxInstance()` instead.
 
 ## [12.0.0] unreleased
 

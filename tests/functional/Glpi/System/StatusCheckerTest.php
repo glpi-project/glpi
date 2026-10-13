@@ -201,6 +201,37 @@ class StatusCheckerTest extends GLPITestCase
         $this->assertEquals(StatusChecker::STATUS_PROBLEM, $status['glpi']['status']);
     }
 
+    public function testIMAPStatusWithUnsupportedProtocol(): void
+    {
+        global $DB;
+
+        // Run a DB check first so the status checker knows the DB is available.
+        StatusChecker::getDBStatus();
+
+        $DB->beginTransaction();
+
+        $auth_mail = new AuthMail();
+        $authmail_id = $auth_mail->add([
+            'name'            => 'testpop',
+            'connect_string'  => '{pop.localhost/pop}',
+            'is_active'       => 1,
+        ]);
+        $this->assertGreaterThan(0, $authmail_id);
+
+        $status = StatusChecker::getIMAPStatus(false);
+
+        $DB->rollBack();
+
+        $this->assertEquals(StatusChecker::STATUS_PROBLEM, $status['status']);
+        $this->assertEquals(
+            [
+                'status'     => StatusChecker::STATUS_PROBLEM,
+                'status_msg' => 'Unsupported mail server type',
+            ],
+            $status['servers']['testpop']
+        );
+    }
+
     public static function getCalculatedGlobalStatusProvider()
     {
         return [

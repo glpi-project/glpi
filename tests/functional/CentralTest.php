@@ -34,8 +34,10 @@
 
 namespace tests\units;
 
+use AuthMail;
 use Central;
 use Glpi\Tests\DbTestCase;
+use MailCollector;
 use Reminder;
 use RSSFeed;
 use Ticket;
@@ -161,5 +163,45 @@ class CentralTest extends DbTestCase
             str_contains($output, 'data-itemtype="Reminder"'),
             'Reminder widget must be rendered with permission.',
         );
+    }
+
+    public function testShowMessagesWarnsAboutPopMailServers(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        // POP items cannot be created anymore, insert them as they would exist after the migration
+        $DB->insert(MailCollector::getTable(), [
+            'name'      => 'pop-collector',
+            'host'      => '{pop.example.org:110/pop}',
+            'is_active' => 0,
+        ]);
+        $pop_collector_id = $DB->insertId();
+        $DB->insert(AuthMail::getTable(), [
+            'name'           => 'pop-auth',
+            'connect_string' => '{pop.example.org:995/pop/ssl}',
+            'is_active'      => 0,
+        ]);
+        $pop_auth_id = $DB->insertId();
+        $this->createItem(AuthMail::class, [
+            'name'           => 'imap-auth',
+            'connect_string' => '{imap.example.org/imap}',
+            'is_active'      => 1,
+        ]);
+
+        ob_start();
+        Central::showMessages();
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString(
+            'The &quot;<a href="' . htmlescape(MailCollector::getFormURLWithID($pop_collector_id)) . '">pop-collector</a>&quot; mails receiver uses the POP protocol',
+            $output
+        );
+        $this->assertStringContainsString(
+            'The &quot;<a href="' . htmlescape(AuthMail::getFormURLWithID($pop_auth_id)) . '">pop-auth</a>&quot; mail authentication server uses the POP protocol',
+            $output
+        );
+        $this->assertStringNotContainsString('imap-auth', $output);
     }
 }
