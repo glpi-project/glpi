@@ -661,12 +661,14 @@ final class SessionTracker
 
         Profiler::getInstance()->start('SessionTracker::getSessions - Loop sessions');
         foreach ($it as $data) {
-            if (!isset($user_cache[$data['user_identifier']])) {
-                $user_cache[$data['user_identifier']] = getUserLink($data['user_identifier']);
-            }
             $is_current_session = $data['_type'] === 'web' && $data['login_session_uid'] === Session::getLoginSessionUID();
 
+            // Tokens from the client credentials grant have no user identifier
             $is_real_user = is_numeric($data['user_identifier']) && $data['user_identifier'] !== $data['client'];
+            if ($is_real_user) {
+                $users_id = (int) $data['user_identifier'];
+                $user_cache[$users_id] ??= getUserLink($users_id);
+            }
             /** @phpstan-ignore-next-line */
             $user = $is_real_user ? $user_cache[$data['user_identifier']] : ('<span class="text-muted">' . __s('Client credentials') . '</span>');
 

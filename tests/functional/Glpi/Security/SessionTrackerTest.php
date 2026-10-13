@@ -404,4 +404,33 @@ class SessionTrackerTest extends DbTestCase
         $this->assertStringContainsString('ti-brand-firefox', $details);
         $this->assertStringContainsString('Firefox 140.0', $details);
     }
+
+    public function testGetSessionsClientCredentialsToken(): void
+    {
+        global $DB;
+
+        $this->login();
+        $client = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+        ]);
+        // Tokens from the client credentials grant are not linked to a user
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'client_credentials_token',
+            'uuid' => 'client_credentials_token_uuid',
+            'client' => $client->fields['identifier'],
+            'date_expiration' => date('Y-m-d H:i:s', strtotime('+1 hour')),
+            'user_identifier' => null,
+            'scopes' => exportArrayToDB(['api']),
+            'ip_address' => '::1',
+        ]));
+
+        $sessions = array_values(array_filter(
+            (new SessionTracker())->getSessions(users_id: 0, filters: ['status' => 'all']),
+            static fn($session) => $session['type_raw'] === 'api'
+        ));
+        $this->assertCount(1, $sessions);
+        $this->assertStringContainsString('Client credentials', $sessions[0]['user']);
+    }
 }
