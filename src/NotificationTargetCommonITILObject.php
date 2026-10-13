@@ -166,6 +166,21 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addLinkedUserByType($type)
     {
+        foreach ($this->getLinkedUsers((int) $type, [(int) $this->obj->fields['id']]) as $linked) {
+            $this->addToRecipientsList($linked['user']);
+        }
+    }
+
+    /**
+     * Get users linked to the given items, as recipients data.
+     *
+     * @param int   $type      type of linked users
+     * @param int[] $items_ids
+     *
+     * @return iterable<array{items_id: int, user: array<string, mixed>}>
+     */
+    private function getLinkedUsers(int $type, array $items_ids): iterable
+    {
         global $CFG_GLPI, $DB;
 
         $userlinktable = getTableForItemType($this->obj->userlinkclass);
@@ -187,9 +202,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             [
                 "$userlinktable.use_notification AS notif",
                 "$userlinktable.alternative_email AS altemail",
+                "$userlinktable.$fkfield AS items_id",
             ]
         );
-        $criteria['WHERE']["$userlinktable.$fkfield"] = $this->obj->fields['id'];
+        $criteria['WHERE']["$userlinktable.$fkfield"] = $items_ids;
         $criteria['WHERE']["$userlinktable.type"] = $type;
 
         $iterator = $DB->request($criteria);
@@ -221,16 +237,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 if ($this->isMailMode()) {
                     $user['email'] = $author_email;
                 }
-                $this->addToRecipientsList($user);
+                yield ['items_id' => (int) $data['items_id'], 'user' => $user];
             }
         }
 
         // Anonymous user
         $iterator = $DB->request([
-            'SELECT' => 'alternative_email',
+            'SELECT' => ['alternative_email', $fkfield],
             'FROM'   => $userlinktable,
             'WHERE'  => [
-                $fkfield             => $this->obj->fields['id'],
+                $fkfield             => $items_ids,
                 'users_id'           => 0,
                 'use_notification'   => 1,
                 'type'               => $type,
@@ -239,11 +255,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         foreach ($iterator as $data) {
             if ($this->isMailMode()) {
                 if (NotificationMailing::isUserAddressValid($data['alternative_email'])) {
-                    $this->addToRecipientsList([
-                        'email'    => $data['alternative_email'],
-                        'language' => $CFG_GLPI["language"],
-                        'users_id' => -1,
-                    ]);
+                    yield [
+                        'items_id' => (int) $data[$fkfield],
+                        'user'     => [
+                            'email'    => $data['alternative_email'],
+                            'language' => $CFG_GLPI["language"],
+                            'users_id' => -1,
+                        ],
+                    ];
                 }
             }
         }
@@ -259,24 +278,37 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addLinkedGroupByType($type)
     {
+        foreach ($this->getLinkedGroups((int) $type, [(int) $this->obj->fields['id']]) as $linked) {
+            //Add the group in the notified users list
+            $this->addForGroup(0, $linked['groups_id']);
+        }
+    }
+
+    /**
+     * Get groups linked to the given items.
+     *
+     * @param int   $type      type of linked groups
+     * @param int[] $items_ids
+     *
+     * @return iterable<array{items_id: int, groups_id: int}>
+     */
+    private function getLinkedGroups(int $type, array $items_ids): iterable
+    {
         global $DB;
 
         $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
         $fkfield        = $this->obj->getForeignKeyField();
 
-        //Look for the user by his id
         $iterator = $DB->request([
-            'SELECT' => 'groups_id',
+            'SELECT' => ['groups_id', $fkfield],
             'FROM'   => $grouplinktable,
             'WHERE'  => [
-                $fkfield => $this->obj->fields['id'],
+                $fkfield => $items_ids,
                 'type'   => $type,
             ],
         ]);
-
         foreach ($iterator as $data) {
-            //Add the group in the notified users list
-            $this->addForGroup(0, $data['groups_id']);
+            yield ['items_id' => (int) $data[$fkfield], 'groups_id' => (int) $data['groups_id']];
         }
     }
 
@@ -1333,8 +1365,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     private function addAssignedActorsOfAlertedItems(array $data, array $options): void
     {
-        global $CFG_GLPI, $DB;
-
         $done_key  = $data['notifications_id'] . '_' . $this->getMode();
         $items_ids = array_map(intval(...), array_column($options['items'] ?? [], 'id'));
         if (
@@ -1365,74 +1395,24 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $unrestricted = $collector->target;
 
         // One entry per actor, to resolve each of them only once
-        $fkfield = $this->obj->getForeignKeyField();
-        $adders  = [];
-        $actors  = [];
+        $adders = [];
+        $actors = [];
 
         if (in_array(Notification::ASSIGN_TECH, $assigned_types, true)) {
-            $linktable = getTableForItemType($this->obj->userlinkclass);
-            $criteria  = [
-                'LEFT JOIN' => [
-                    User::getTable() => ['ON' => [$linktable => 'users_id', User::getTable() => 'id']],
-                ],
-            ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
-            $criteria['FROM']     = $linktable;
-            $criteria['FIELDS'][] = "$linktable.alternative_email AS altemail";
-            $criteria['FIELDS'][] = "$linktable.$fkfield AS items_id";
-            $criteria['WHERE']["$linktable.$fkfield"]         = $items_ids;
-            $criteria['WHERE']["$linktable.type"]             = CommonITILActor::ASSIGN;
-            $criteria['WHERE']["$linktable.use_notification"] = 1;
-
-            foreach ($DB->request($criteria) as $row) {
-                $user = ['language' => $row['language'], 'users_id' => $row['users_id']];
-                if (
-                    $this->isMailMode()
-                    && !empty($row['altemail'])
-                    && NotificationMailing::isUserAddressValid($row['altemail'])
-                ) {
-                    $user['email'] = $row['altemail'];
-                }
+            foreach ($this->getLinkedUsers(CommonITILActor::ASSIGN, $items_ids) as $linked) {
+                $user  = $linked['user'];
                 $actor = 'user_' . implode('_', $user);
                 $adders[$actor]   = static fn(self $collector) => $collector->addToRecipientsList($user);
-                $actors[$actor][] = (int) $row['items_id'];
-            }
-
-            // Anonymous actors are only known by their email
-            $iterator = $this->isMailMode() ? $DB->request([
-                'SELECT' => ['alternative_email', $fkfield],
-                'FROM'   => $linktable,
-                'WHERE'  => [
-                    $fkfield           => $items_ids,
-                    'users_id'         => 0,
-                    'use_notification' => 1,
-                    'type'             => CommonITILActor::ASSIGN,
-                ],
-            ]) : [];
-            foreach ($iterator as $row) {
-                if (!NotificationMailing::isUserAddressValid($row['alternative_email'])) {
-                    continue;
-                }
-                $user = [
-                    'email'    => $row['alternative_email'],
-                    'language' => $CFG_GLPI['language'],
-                    'users_id' => -1,
-                ];
-                $actor = 'anonymous_' . $row['alternative_email'];
-                $adders[$actor]   = static fn(self $collector) => $collector->addToRecipientsList($user);
-                $actors[$actor][] = (int) $row[$fkfield];
+                $actors[$actor][] = $linked['items_id'];
             }
         }
 
         if (in_array(Notification::ASSIGN_GROUP, $assigned_types, true)) {
-            $iterator = $DB->request([
-                'SELECT' => ['groups_id', $fkfield],
-                'FROM'   => getTableForItemType($this->obj->grouplinkclass),
-                'WHERE'  => [$fkfield => $items_ids, 'type' => CommonITILActor::ASSIGN],
-            ]);
-            foreach ($iterator as $row) {
-                $actor = 'group_' . $row['groups_id'];
-                $adders[$actor]   = static fn(self $collector) => $collector->addForGroup(0, $row['groups_id']);
-                $actors[$actor][] = (int) $row[$fkfield];
+            foreach ($this->getLinkedGroups(CommonITILActor::ASSIGN, $items_ids) as $linked) {
+                $groups_id = $linked['groups_id'];
+                $actor     = 'group_' . $groups_id;
+                $adders[$actor]   = static fn(self $collector) => $collector->addForGroup(0, $groups_id);
+                $actors[$actor][] = $linked['items_id'];
             }
         }
 
