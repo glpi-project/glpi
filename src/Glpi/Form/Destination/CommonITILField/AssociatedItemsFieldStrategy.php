@@ -185,9 +185,7 @@ enum AssociatedItemsFieldStrategy: string
         }
 
         $all_items = array_merge(...array_map(
-            function ($answer) {
-                return $this->getItemsFromRawAnswer($answer->getRawAnswer());
-            },
+            fn($answer) => $this->getItemsFromRawAnswer($answer->getRawAnswer()),
             $valid_answers
         ));
 
@@ -204,13 +202,11 @@ enum AssociatedItemsFieldStrategy: string
                 QuestionTypeItem::class,
                 QuestionTypeUserDevice::class,
             ]),
-            function ($answer) {
-                return array_reduce(
-                    $this->getItemsFromRawAnswer($answer->getRawAnswer()),
-                    fn($carry, $value) => $carry || $this->isValidAnswer($value),
-                    false
-                );
-            }
+            fn($answer) => array_reduce(
+                $this->getItemsFromRawAnswer($answer->getRawAnswer()),
+                fn($carry, $value) => $carry || $this->isValidAnswer($value),
+                false
+            )
         );
     }
 
