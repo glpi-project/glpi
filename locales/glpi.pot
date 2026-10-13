@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-07 12:44+0200\n"
+"POT-Creation-Date: 2026-10-13 09:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -151,7 +151,7 @@ msgstr ""
 #: src/Document.php:947 src/Plug.php:317 src/NotificationTargetDomain.php:76
 #: src/NotificationTargetDomain.php:95
 #: src/NotificationTargetCertificate.php:120 src/CableStrand.php:148
-#: src/Agent.php:104 src/Agent.php:303 src/Project.php:507 src/Project.php:878
+#: src/Agent.php:109 src/Agent.php:308 src/Project.php:507 src/Project.php:878
 #: src/Project.php:1132 src/Project.php:1982 src/Project.php:2024
 #: src/Project.php:2433 src/Contract_Supplier.php:207
 #: src/Contract_Supplier.php:330 src/ITILCategory.php:486 src/SLM.php:203
@@ -913,7 +913,7 @@ msgstr ""
 #: src/DeviceFirmware.php:106 src/DeviceFirmware.php:143
 #: src/DeviceFirmware.php:261 src/RuleDictionnaryOperatingSystemVersion.php:47
 #: src/RuleDictionnaryOperatingSystemVersion.php:72 src/Lock.php:893
-#: src/Lock.php:1009 src/Plugin.php:2749 src/Agent.php:141 src/Agent.php:324
+#: src/Lock.php:1009 src/Plugin.php:2749 src/Agent.php:146 src/Agent.php:329
 #: src/DatabaseInstance.php:213 src/DatabaseInstance.php:516
 #: src/Item_SoftwareVersion.php:94 src/Item_SoftwareVersion.php:489
 #: src/Item_SoftwareVersion.php:1128 src/Item_SoftwareVersion.php:1363
@@ -1903,7 +1903,7 @@ msgstr ""
 #: templates/pages/assets/template_list.html.twig src/NetworkAlias.php:392
 #: src/CartridgeItem_PrinterModel.php:194 src/Search.php:949
 #: src/Item_SoftwareLicense.php:585 src/Item_SoftwareLicense.php:713
-#: src/Item_SoftwareLicense.php:1060 src/KnowbaseItem.php:2819
+#: src/Item_SoftwareLicense.php:1060 src/KnowbaseItem.php:2880
 #: src/CableStrand.php:209 src/ITILCategory.php:531 src/ProjectCost.php:464
 #: src/Item_SoftwareVersion.php:542 src/Item_SoftwareVersion.php:844
 #: src/Item_SoftwareVersion.php:896 src/Item_SoftwareVersion.php:1237
@@ -1990,7 +1990,7 @@ msgstr ""
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 #: templates/pages/admin/ldap.user_criteria.html.twig
 #: templates/pages/assistance/planning/availability.html.twig
-#: src/Glpi/Search/Input/QueryBuilder.php:95 src/KnowbaseItem.php:2151
+#: src/Glpi/Search/Input/QueryBuilder.php:95 src/KnowbaseItem.php:2212
 #: src/Knowbase.php:66
 msgctxt "button"
 msgid "Search"
@@ -2159,7 +2159,7 @@ msgstr ""
 #: src/ITILValidationTemplate.php:88 src/ITILValidationTemplate.php:146
 #: src/RSSFeed.php:429 src/CommonITILObject.php:10368
 #: src/NotificationTargetKnowbaseItem.php:69
-#: src/NotificationTargetKnowbaseItem.php:190 src/KnowbaseItem.php:2992
+#: src/NotificationTargetKnowbaseItem.php:190 src/KnowbaseItem.php:3053
 #: src/Project.php:1985 src/Project.php:2027 src/TaskTemplate.php:70
 #: src/TaskTemplate.php:117 src/BlacklistedMailContent.php:78
 #: src/BlacklistedMailContent.php:96
@@ -2509,7 +2509,7 @@ msgstr ""
 #: src/CommonITILObject.php:11014 src/DevicePowerSupply.php:174
 #: src/DevicePowerSupply.php:186 src/Plugin.php:2949 src/Plugin.php:2986
 #: src/DeviceSoundCard.php:173 src/DeviceSoundCard.php:185 src/Supplier.php:579
-#: src/Supplier.php:601 src/KnowbaseItem.php:2617 src/CartridgeItem.php:495
+#: src/Supplier.php:601 src/KnowbaseItem.php:2678 src/CartridgeItem.php:495
 #: src/CartridgeItem.php:499 src/MailCollector.php:1720
 #: src/MailCollector.php:1734 src/NotificationTarget.php:1122
 #: src/NotificationTarget.php:1153 src/NotificationTarget.php:1160
@@ -2588,7 +2588,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:2303
 #: src/NotificationTargetCommonITILObject.php:2383 src/User.php:3846
 #: src/CommonITILObject.php:4492 src/CommonITILObject.php:6956
-#: src/CommonITILObject.php:6999 src/KnowbaseItem.php:3237
+#: src/CommonITILObject.php:6999 src/KnowbaseItem.php:3298
 #: src/RuleSoftwareCategory.php:84 src/PlanningExternalEventTemplate.php:70
 #: src/DatabaseInstance.php:248 src/Stat.php:1816 src/Stat.php:1838
 #: src/Item_SoftwareVersion.php:1080 src/RuleDictionnarySoftware.php:111
@@ -2700,7 +2700,7 @@ msgid "Created from the template %s"
 msgstr ""
 
 #: templates/components/form/header_content.html.twig src/CommonDBTM.php:6606
-#: src/KnowbaseItem.php:1202 src/KnowbaseItem.php:1236
+#: src/KnowbaseItem.php:1239 src/KnowbaseItem.php:1285
 msgid "New item"
 msgstr ""
 
@@ -2760,7 +2760,7 @@ msgstr ""
 #: src/Rule.php:842 src/Appliance.php:326 src/FieldUnicity.php:373
 #: src/Profile_User.php:979 src/ProjectTask.php:1249 src/LevelAgreement.php:558
 #: src/Supplier.php:332 src/Document.php:1016 src/RuleImportEntity.php:231
-#: src/Plug.php:326 src/SavedSearch.php:133 src/Agent.php:116
+#: src/Plug.php:326 src/SavedSearch.php:133 src/Agent.php:121
 #: src/Project.php:736 src/SLM.php:246 src/Notification.php:460
 #: src/Database.php:188 src/Contract.php:709 src/Contact.php:422
 #: src/Budget.php:264
@@ -2799,7 +2799,7 @@ msgstr ""
 #: src/Reservation.php:1228 src/NotificationTargetCommonITILObject.php:1100
 #: src/Link.php:594 src/Domain_Item.php:239 src/Lock.php:406
 #: src/Item_Devices.php:633 src/Item_Devices.php:693 src/Item_Line.php:61
-#: src/Item_Line.php:280 src/Agent.php:168 src/IPAddress.php:324
+#: src/Item_Line.php:280 src/Agent.php:173 src/IPAddress.php:324
 #: src/IPAddress.php:1109 src/Appliance_Item.php:62 src/Appliance_Item.php:201
 #: src/DatabaseInstance.php:199 src/PDU_Rack.php:57 src/PDU_Rack.php:345
 #: src/KnowbaseItem_Item.php:202 src/Item_Rack.php:52 src/Item_Rack.php:155
@@ -2847,7 +2847,7 @@ msgstr ""
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
-#: src/Glpi/Features/Inventoriable.php:205 src/Agent.php:148 src/Agent.php:345
+#: src/Glpi/Features/Inventoriable.php:205 src/Agent.php:153 src/Agent.php:350
 msgid "Useragent"
 msgstr ""
 
@@ -2859,14 +2859,14 @@ msgid "Inventory tag"
 msgstr ""
 
 #: templates/components/form/inventory_info.html.twig
-#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:181
-#: src/Agent.php:338
+#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:186
+#: src/Agent.php:343
 msgid "Public contact address"
 msgstr ""
 
 #: templates/components/form/inventory_info.html.twig
-#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:122
-#: src/Agent.php:317
+#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:127
+#: src/Agent.php:322
 msgid "Last contact"
 msgstr ""
 
@@ -2891,8 +2891,8 @@ msgstr ""
 #: front/notificationajaxsetting.form.php:51
 #: front/notificationmailingsetting.form.php:50
 #: src/Glpi/Features/Inventoriable.php:225 src/NetworkPort.php:999
-#: src/NetworkPort.php:1222 src/Item_Devices.php:1175 src/Agent.php:736
-#: src/Agent.php:757 src/NetworkPortConnectionLog.php:142
+#: src/NetworkPort.php:1222 src/Item_Devices.php:1175 src/Agent.php:742
+#: src/Agent.php:763 src/NetworkPortConnectionLog.php:142
 msgid "Unknown"
 msgstr ""
 
@@ -3328,7 +3328,7 @@ msgstr ""
 #: ajax/dropdownMassiveActionAddValidator.php:138 src/NetworkAlias.php:110
 #: src/NetworkAlias.php:403 src/CommonDBTM.php:3698
 #: src/Glpi/ContentTemplates/Parameters/AssetParameters.php:77 src/Lock.php:608
-#: src/KnowbaseItem.php:1844 src/ProjectCost.php:290
+#: src/KnowbaseItem.php:1905 src/ProjectCost.php:290
 #: src/Item_SoftwareVersion.php:1485 src/Item_SoftwareVersion.php:1573
 msgid "Comments"
 msgstr ""
@@ -3949,7 +3949,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:2685 src/Ticket.php:2259
 #: src/Ticket.php:4495 src/Change.php:1323 src/ProjectTask.php:1088
 #: src/CommonITILObject.php:4370 src/LevelAgreement.php:422
-#: src/KnowbaseItem.php:3229 src/ProjectTaskTemplate.php:107
+#: src/KnowbaseItem.php:3290 src/ProjectTaskTemplate.php:107
 #: src/ProjectTaskTemplate.php:213 src/NotificationTargetPlanningRecall.php:254
 #: src/Project.php:547 src/Project.php:892
 #: src/PlanningExternalEventTemplate.php:87 src/Reminder.php:355
@@ -4718,7 +4718,7 @@ msgstr ""
 #: src/Contract_Item.php:142 src/User.php:3566 src/User.php:6071
 #: src/CommonITILObject.php:4380 src/CommonITILObject.php:6938
 #: src/CommonITILObject.php:6985 src/OAuthClient.php:103
-#: src/LevelAgreement.php:496 src/Supplier.php:180 src/KnowbaseItem.php:2983
+#: src/LevelAgreement.php:496 src/Supplier.php:180 src/KnowbaseItem.php:3044
 #: src/CartridgeItem.php:220 src/Document.php:956 src/Enclosure.php:136
 #: src/Computer.php:439 src/Plug.php:335 src/SavedSearch.php:305
 #: src/QueuedWebhook.php:329 src/Notification_NotificationTemplate.php:191
@@ -5014,7 +5014,7 @@ msgid "Continue"
 msgstr ""
 
 #: templates/install/step6.html.twig
-#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:237
+#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:242
 msgid "Collect data"
 msgstr ""
 
@@ -5887,8 +5887,8 @@ msgid_plural "%s comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1885
-#: src/KnowbaseItem.php:1891
+#: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1946
+#: src/KnowbaseItem.php:1952
 msgid "Schedule visibility"
 msgstr ""
 
@@ -6000,7 +6000,7 @@ msgid "Add comment"
 msgstr ""
 
 #: templates/pages/tools/kb/sidepanel/revisions.html.twig
-#: src/KnowbaseItem.php:1828
+#: src/KnowbaseItem.php:1889
 msgid "History"
 msgstr ""
 
@@ -6109,7 +6109,7 @@ msgid "New parent"
 msgstr ""
 
 #: templates/pages/tools/kb/modal/move.html.twig src/Rule.php:650
-#: src/KnowbaseItem.php:1963 src/Group.php:816
+#: src/KnowbaseItem.php:2024 src/Group.php:816
 msgid "Move"
 msgstr ""
 
@@ -6131,7 +6131,7 @@ msgid "No end date"
 msgstr ""
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
-#: src/KnowbaseItem.php:3213
+#: src/KnowbaseItem.php:3274
 msgid "Show in service catalog"
 msgstr ""
 
@@ -6141,7 +6141,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
-#: src/KnowbaseItem.php:3221
+#: src/KnowbaseItem.php:3282
 msgid "Pin to top of the service catalog"
 msgstr ""
 
@@ -6204,7 +6204,7 @@ msgstr ""
 #: src/QueuedNotification.php:270 src/Printer.php:502 src/Link.php:274
 #: src/Domain_Item.php:661 src/Cable.php:366 src/User.php:3749
 #: src/ProjectTask.php:1113 src/RSSFeed.php:412 src/Lockedfield.php:165
-#: src/Supplier.php:278 src/KnowbaseItem.php:3043 src/Document.php:1033
+#: src/Supplier.php:278 src/KnowbaseItem.php:3104 src/Document.php:1033
 #: src/Enclosure.php:197 src/Computer.php:585 src/Notepad.php:257
 #: src/QueuedWebhook.php:338 src/Project.php:583 src/Project.php:719
 #: src/Project.php:950 src/Datacenter.php:125 src/Profile.php:1639
@@ -6238,7 +6238,7 @@ msgstr ""
 #: src/Printer.php:493 src/Link.php:265 src/Cable.php:326 src/User.php:3740
 #: src/ProjectTask.php:1122 src/RSSFeed.php:403 src/CommonITILObject.php:4483
 #: src/CommonITILObject.php:6942 src/CommonITILObject.php:6989
-#: src/Supplier.php:269 src/KnowbaseItem.php:3034 src/MailCollector.php:435
+#: src/Supplier.php:269 src/KnowbaseItem.php:3095 src/MailCollector.php:435
 #: src/Document.php:1024 src/Enclosure.php:188 src/Computer.php:576
 #: src/Notepad.php:288 src/NotificationTargetPlanningRecall.php:251
 #: src/Project.php:699 src/Project.php:964 src/Project.php:1135
@@ -6327,8 +6327,8 @@ msgstr ""
 #: templates/pages/login.html.twig front/knowbaseitemtranslation.form.php:64
 #: front/knowbaseitemtranslation.form.php:66
 #: front/knowbaseitemtranslation.form.php:70
-#: front/knowbaseitemtranslation.form.php:72 front/helpdesk.faq.php:77
-#: front/helpdesk.faq.php:81 front/helpdesk.faq.php:83
+#: front/knowbaseitemtranslation.form.php:72 front/helpdesk.faq.php:78
+#: front/helpdesk.faq.php:82 front/helpdesk.faq.php:84
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:83
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:194 src/KnowbaseItem.php:139
@@ -6382,8 +6382,8 @@ msgstr ""
 #: templates/pages/self-service/service_catalog.html.twig
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #: src/Glpi/Form/ServiceCatalog/ServiceCatalog.php:50
-#: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:82 src/KnowbaseItem.php:1860
-#: src/KnowbaseItem.php:1866 src/KnowbaseItem.php:3206 src/Html.php:1084
+#: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:82 src/KnowbaseItem.php:1921
+#: src/KnowbaseItem.php:1927 src/KnowbaseItem.php:3267 src/Html.php:1084
 msgid "Service catalog"
 msgstr ""
 
@@ -6501,7 +6501,7 @@ msgstr ""
 #: templates/pages/assets/printer.html.twig
 #: templates/pages/assets/monitor.html.twig
 #: templates/pages/assets/phone.html.twig src/AuthLDAP.php:867
-#: src/Agent.php:162 src/DatabaseInstance.php:186
+#: src/Agent.php:167 src/DatabaseInstance.php:186
 msgid "Port"
 msgid_plural "Ports"
 msgstr[0] ""
@@ -6664,7 +6664,7 @@ msgstr ""
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 #: templates/pages/admin/user/user.html.twig
-#: front/knowbaseitemtranslation.form.php:71 front/helpdesk.faq.php:82
+#: front/knowbaseitemtranslation.form.php:71 front/helpdesk.faq.php:83
 #: src/Auth.php:140 src/Glpi/Controller/IndexController.php:118
 #: src/User.php:3683
 msgid "Authentication"
@@ -6836,8 +6836,8 @@ msgstr ""
 
 #: templates/pages/setup/webhook/webhook.html.twig src/DomainRecord.php:542
 #: src/Glpi/Console/Database/UpdateCommand.php:190 src/RSSFeed.php:435
-#: src/KnowbaseItem.php:3123 src/KnowbaseItem.php:3141
-#: src/KnowbaseItem.php:3159 src/KnowbaseItem.php:3177 src/Reminder.php:463
+#: src/KnowbaseItem.php:3184 src/KnowbaseItem.php:3202
+#: src/KnowbaseItem.php:3220 src/KnowbaseItem.php:3238 src/Reminder.php:463
 msgid "Target"
 msgid_plural "Targets"
 msgstr[0] ""
@@ -8897,7 +8897,7 @@ msgstr ""
 #: src/Glpi/ContentTemplates/Parameters/KnowbaseItemParameters.php:68
 #: src/NotificationTemplateTranslation.php:273 src/ReminderTranslation.php:178
 #: src/QueuedNotification.php:252 src/NotificationTargetKnowbaseItem.php:191
-#: src/KnowbaseItem.php:2677 src/KnowbaseItem.php:2974
+#: src/KnowbaseItem.php:2738 src/KnowbaseItem.php:3035
 msgid "Subject"
 msgstr ""
 
@@ -10076,7 +10076,7 @@ msgstr ""
 #: templates/pages/admin/glpi_page_tile_config_fields.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 #: src/Glpi/Form/Category.php:88 src/Glpi/Form/Category.php:112
-#: src/KnowbaseItem.php:3245
+#: src/KnowbaseItem.php:3306
 msgid "Illustration"
 msgstr ""
 
@@ -10258,8 +10258,8 @@ msgid_plural "Agents types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/pages/admin/inventory/agent.html.twig src/ObjectLock.php:419
-#: src/Agent.php:128
+#: templates/pages/admin/inventory/agent.html.twig src/ObjectLock.php:422
+#: src/Agent.php:133
 msgid "Locked"
 msgstr ""
 
@@ -10270,7 +10270,7 @@ msgstr ""
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/NotificationTemplateTranslation.php:382 src/Document_Item.php:720
-#: src/Document.php:990 src/Agent.php:155 src/Agent.php:310
+#: src/Document.php:990 src/Agent.php:160 src/Agent.php:315
 msgid "Tag"
 msgstr ""
 
@@ -10307,33 +10307,33 @@ msgstr ""
 msgid "When reported by GLPI agent via native inventory"
 msgstr ""
 
-#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:189
+#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:194
 msgid "Wake on LAN"
 msgstr ""
 
-#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:197
+#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:202
 msgid "Computer inventory"
 msgstr ""
 
-#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:205
+#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:210
 msgid "ESX remote inventory"
 msgstr ""
 
 #: templates/pages/admin/inventory/agent.html.twig
-#: src/Glpi/Agent/Communication/AbstractRequest.php:200 src/Agent.php:213
+#: src/Glpi/Agent/Communication/AbstractRequest.php:200 src/Agent.php:218
 msgid "Network inventory (SNMP)"
 msgstr ""
 
 #: templates/pages/admin/inventory/agent.html.twig
-#: src/Glpi/Agent/Communication/AbstractRequest.php:202 src/Agent.php:221
+#: src/Glpi/Agent/Communication/AbstractRequest.php:202 src/Agent.php:226
 msgid "Network discovery (SNMP)"
 msgstr ""
 
-#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:229
+#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:234
 msgid "Package Deployment"
 msgstr ""
 
-#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:245
+#: templates/pages/admin/inventory/agent.html.twig src/Agent.php:250
 msgid "Remote inventory"
 msgstr ""
 
@@ -15126,7 +15126,7 @@ msgstr ""
 msgid "Element seems not geolocalized or cannot be found"
 msgstr ""
 
-#: ajax/getMapPoint.php:71 src/Agent.php:733 src/Agent.php:754
+#: ajax/getMapPoint.php:71 src/Agent.php:739 src/Agent.php:760
 msgid "Not allowed"
 msgstr ""
 
@@ -15759,7 +15759,7 @@ msgstr ""
 #. TRANS: %s is the user login
 #: front/reminder.form.php:133 front/rssfeed.form.php:133
 #: src/Glpi/Controller/Knowbase/AddPermissionController.php:109
-#: src/KnowbaseItem.php:542
+#: src/KnowbaseItem.php:579
 #, php-format
 msgid "%s adds a target"
 msgstr ""
@@ -16221,7 +16221,7 @@ msgstr ""
 #: src/Ticket.php:2598 src/Ticket.php:4492 src/Change.php:508
 #: src/Item_Devices.php:194 src/CommonITILObject.php:6954
 #: src/CommonITILObject.php:6998 src/Lockedfield.php:191
-#: src/KnowbaseItem.php:2684 src/KnowbaseItem.php:3090 src/NetworkName.php:117
+#: src/KnowbaseItem.php:2745 src/KnowbaseItem.php:3151 src/NetworkName.php:117
 #: src/Stat.php:1661 src/NotificationTargetTicket.php:627
 #: src/NotificationTargetTicket.php:632 src/NotificationTargetTicket.php:637
 #: src/NotificationTargetTicket.php:642 src/NotificationTargetTicket.php:647
@@ -16791,7 +16791,7 @@ msgstr ""
 #: src/User.php:3549 src/ProjectTask.php:1052 src/RSSFeed.php:308
 #: src/CommonITILObject.php:4352 src/ItemVirtualMachine.php:450
 #: src/Plugin.php:2722 src/LevelAgreement.php:480 src/Supplier.php:164
-#: src/KnowbaseItem.php:2967 src/MailCollector.php:377 src/Document.php:940
+#: src/KnowbaseItem.php:3028 src/MailCollector.php:377 src/Document.php:940
 #: src/Plug.php:310 src/QueuedWebhook.php:322 src/Project.php:500
 #: src/SLM.php:196 src/Notification.php:358 src/Datacenter.php:89
 #: src/Profile.php:1605 src/NotificationTemplate.php:148
@@ -16829,7 +16829,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:2296
 #: src/NotificationTargetCommonITILObject.php:2378
 #: src/NotificationTargetCommonITILObject.php:2442
-#: src/CommonITILObject.php:4910 src/KnowbaseItem.php:2680 src/Notepad.php:270
+#: src/CommonITILObject.php:4910 src/KnowbaseItem.php:2741 src/Notepad.php:270
 #: src/NotificationTargetPlanningRecall.php:250 src/Stat.php:1834
 #: src/Reminder.php:335
 msgid "Writer"
@@ -21772,6 +21772,7 @@ msgstr ""
 #: src/Glpi/Api/API.php:2061 src/Glpi/Api/API.php:2203
 #: src/Glpi/Api/API.php:2815 src/Glpi/Controller/ErrorController.php:73
 #: src/Glpi/Controller/GenericAjaxCrudController.php:331
+#: src/KnowbaseItem.php:1263
 msgid "You don't have permission to perform this action."
 msgstr ""
 
@@ -21986,7 +21987,7 @@ msgstr[1] ""
 #: src/Glpi/Socket.php:357 src/Problem.php:505
 #: src/CommonItilObject_Item.php:1536 src/Ticket.php:2615 src/Change.php:524
 #: src/Cable.php:197 src/Cable.php:219 src/Item_Devices.php:205
-#: src/KnowbaseItem.php:3107 src/Plug.php:361 src/Plug.php:384
+#: src/KnowbaseItem.php:3168 src/Plug.php:361 src/Plug.php:384
 #: src/Database.php:221
 msgid "Associated item type"
 msgid_plural "Associated item types"
@@ -25713,13 +25714,13 @@ msgid "Failed to save the article"
 msgstr ""
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:241
-#: src/Glpi/Search/Provider/SQLProvider.php:7659 src/KnowbaseItem.php:2732
-#: src/KnowbaseItem.php:2927
+#: src/Glpi/Search/Provider/SQLProvider.php:7659 src/KnowbaseItem.php:2793
+#: src/KnowbaseItem.php:2988
 msgid "This item is part of the FAQ"
 msgstr ""
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:247
-#: src/Glpi/Search/Provider/SQLProvider.php:7664 src/KnowbaseItem.php:2738
+#: src/Glpi/Search/Provider/SQLProvider.php:7664 src/KnowbaseItem.php:2799
 msgid "This item is not published yet"
 msgstr ""
 
@@ -25809,7 +25810,7 @@ msgid "Search results for %1$s"
 msgstr ""
 
 #: src/Glpi/Search/Output/HTMLSearchOutput.php:175 src/Item_Devices.php:1136
-#: src/KnowbaseItem.php:3009
+#: src/KnowbaseItem.php:3070
 msgid "View"
 msgid_plural "Views"
 msgstr[0] ""
@@ -31684,24 +31685,24 @@ msgstr ""
 msgid "Lock status"
 msgstr ""
 
-#: src/ObjectLock.php:420
+#: src/ObjectLock.php:423
 msgid "Free"
 msgstr ""
 
-#: src/ObjectLock.php:421
+#: src/ObjectLock.php:424
 #, php-format
 msgid "Locked by %s at %s"
 msgstr ""
 
-#: src/ObjectLock.php:445
+#: src/ObjectLock.php:448
 msgid "Unlock"
 msgstr ""
 
-#: src/ObjectLock.php:462
+#: src/ObjectLock.php:465
 msgid "Unlock forgotten locked objects"
 msgstr ""
 
-#: src/ObjectLock.php:463
+#: src/ObjectLock.php:466
 msgid "Timeout to force unlock (hours)"
 msgstr ""
 
@@ -32281,97 +32282,97 @@ msgstr[1] ""
 msgid "Knowledge base"
 msgstr ""
 
-#: src/KnowbaseItem.php:713
+#: src/KnowbaseItem.php:750
 msgid "The root article of the knowledge base cannot be deleted."
 msgstr ""
 
-#: src/KnowbaseItem.php:765
+#: src/KnowbaseItem.php:802
 msgid ""
 "This article cannot be deleted because it contains sub-articles. They must "
 "be moved or deleted first."
 msgstr ""
 
-#: src/KnowbaseItem.php:1871
+#: src/KnowbaseItem.php:1932
 msgid "Permissions"
 msgstr ""
 
-#: src/KnowbaseItem.php:1930
+#: src/KnowbaseItem.php:1991
 msgid "Add to favorites"
 msgstr ""
 
-#: src/KnowbaseItem.php:1947
+#: src/KnowbaseItem.php:2008
 msgid "Add to FAQ"
 msgstr ""
 
-#: src/KnowbaseItem.php:1969
+#: src/KnowbaseItem.php:2030
 msgid "Move article"
 msgstr ""
 
-#: src/KnowbaseItem.php:1976 js/modules/Knowbase/AsideController.js:1197
+#: src/KnowbaseItem.php:2037 js/modules/Knowbase/AsideController.js:1197
 #: js/modules/Knowbase/AsideController.js:1210
 #: js/modules/Knowbase/ArticleController.js:684
 #: js/modules/Knowbase/ArticleController.js:697
 msgid "Delete article"
 msgstr ""
 
-#: src/KnowbaseItem.php:2682
+#: src/KnowbaseItem.php:2743
 msgid "Parent articles"
 msgstr ""
 
-#: src/KnowbaseItem.php:2800
+#: src/KnowbaseItem.php:2861
 msgid "Use as a solution"
 msgstr ""
 
-#: src/KnowbaseItem.php:2851
+#: src/KnowbaseItem.php:2912
 msgid "Recent entries"
 msgstr ""
 
-#: src/KnowbaseItem.php:2854
+#: src/KnowbaseItem.php:2915
 msgid "Last updated entries"
 msgstr ""
 
-#: src/KnowbaseItem.php:2857
+#: src/KnowbaseItem.php:2918
 msgid "Most popular questions"
 msgstr ""
 
-#: src/KnowbaseItem.php:3001
+#: src/KnowbaseItem.php:3062
 msgid "FAQ item"
 msgstr ""
 
-#: src/KnowbaseItem.php:3018 src/Reminder.php:365
+#: src/KnowbaseItem.php:3079 src/Reminder.php:365
 msgid "Visibility start date"
 msgstr ""
 
-#: src/KnowbaseItem.php:3026 src/Reminder.php:373
+#: src/KnowbaseItem.php:3087 src/Reminder.php:373
 msgid "Visibility end date"
 msgstr ""
 
-#: src/KnowbaseItem.php:3068
+#: src/KnowbaseItem.php:3129
 msgid "Parent article"
 msgstr ""
 
-#: src/KnowbaseItem.php:3195
+#: src/KnowbaseItem.php:3256
 msgid "Is favorite"
 msgstr ""
 
-#: src/KnowbaseItem.php:3298
+#: src/KnowbaseItem.php:3359
 msgid "Knowledge base administration"
 msgstr ""
 
-#: src/KnowbaseItem.php:3299
+#: src/KnowbaseItem.php:3360
 msgid "Publish in the FAQ"
 msgstr ""
 
-#: src/KnowbaseItem.php:3300
+#: src/KnowbaseItem.php:3361
 msgid "Comment KB entries"
 msgstr ""
 
-#: src/KnowbaseItem.php:3302
+#: src/KnowbaseItem.php:3363
 msgid "Read the FAQ"
 msgstr ""
 
 #. TRANS: %1$s is the user login, %2$s the revision number
-#: src/KnowbaseItem.php:3394
+#: src/KnowbaseItem.php:3455
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
 msgstr ""
@@ -32844,26 +32845,26 @@ msgstr ""
 msgid "SQL replica: read only"
 msgstr ""
 
-#: src/Agent.php:80
+#: src/Agent.php:85
 msgid "Agent"
 msgid_plural "Agents"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Agent.php:134 src/Agent.php:331
+#: src/Agent.php:139 src/Agent.php:336
 msgid "Device id"
 msgstr ""
 
-#: src/Agent.php:500
+#: src/Agent.php:505
 msgid "\"deviceid\" is mandatory!"
 msgstr ""
 
-#: src/Agent.php:782
+#: src/Agent.php:788
 #, php-format
 msgid "Requested at %s"
 msgstr ""
 
-#: src/Agent.php:783
+#: src/Agent.php:789
 msgid "Y-m-d H:i:s"
 msgstr ""
 
