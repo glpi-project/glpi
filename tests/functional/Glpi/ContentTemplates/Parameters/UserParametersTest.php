@@ -97,6 +97,7 @@ class UserParametersTest extends AbstractParametersTest
                     'name' => 'test category',
                 ],
                 'used_items'  => [],
+                'created_tickets' => [],
             ],
             $values
         );
