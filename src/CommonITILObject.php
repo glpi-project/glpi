@@ -9028,7 +9028,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     private function canLinkItem(string $itemtype, int $items_id): bool
     {
-        if (Session::getLoginUserID() === false) {
+        if (Session::getLoginUserID() === false || Session::isRightChecksDisabled()) {
             // System action (cron, rule, inventory, ...)
             return true;
         }
@@ -9055,7 +9055,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     private function canAttachDocument(int $documents_id): bool
     {
-        if (Session::getLoginUserID() === false) {
+        if (Session::getLoginUserID() === false || Session::isRightChecksDisabled()) {
             // System action (cron, mail collector, ...)
             return true;
         }
