@@ -1485,6 +1485,18 @@ class NotificationTarget extends CommonDBChild
     public function addDataForTemplate($event, $options = []) {}
 
     /**
+     * Name of the option that contains the items grouped in a single notification,
+     * indexed by their ID (e.g. alerts raised by an automatic action).
+     * The notification filter is then applied to each of these items.
+     *
+     * @return string|null
+     */
+    public function getGroupedItemsOptionName(): ?string
+    {
+        return null;
+    }
+
+    /**
      * @return array
      */
     final public function getTargets()
