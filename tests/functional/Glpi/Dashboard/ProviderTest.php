@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Dashboard;
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
 use Glpi\Dashboard\Filters\DatesFilter;
+use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
 use Item_DeviceSimcard;
@@ -1203,6 +1204,103 @@ class ProviderTest extends DbTestCase
         $this->assertSame(1, $result['data']['series'][1]['data'][$group1_index], 'group1: 1 closed ticket expected');
         $this->assertSame(1, $result['data']['series'][0]['data'][$group2_index], 'group2: 1 opened ticket expected');
         $this->assertSame(2, $result['data']['series'][1]['data'][$group2_index], 'group2: 2 closed tickets expected');
+    }
+
+    public function testTicketsByCategoryAndType(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $category = $this->createItem(\ITILCategory::class, [
+            'name' => 'test dashboard category for tickets by category and type',
+        ]);
+
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard opened incident',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::INCIDENT_TYPE,
+            'status'            => \Ticket::ASSIGNED,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard opened request',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::DEMAND_TYPE,
+            'status'            => \Ticket::INCOMING,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard closed incident',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::INCIDENT_TYPE,
+            'status'            => \Ticket::CLOSED,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard solved request',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => $category->getID(),
+            'type'              => \Ticket::DEMAND_TYPE,
+            'status'            => \Ticket::SOLVED,
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard opened incident without category',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => 0,
+            'type'              => \Ticket::INCIDENT_TYPE,
+            'status'            => \Ticket::ASSIGNED,
+        ]);
+
+        $opened = Provider::ticketsByCategoryAndType('open');
+        $this->assertArrayHasKey('data', $opened);
+        $category_index = array_search($category->fields['completename'], $opened['data']['labels'], true);
+        $this->assertNotFalse($category_index, 'category must appear in the opened report labels');
+
+        $opened_series_by_name = [];
+        foreach ($opened['data']['series'] as $serie) {
+            $opened_series_by_name[$serie['name']] = $serie['data'];
+        }
+        $this->assertSame(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$category_index], '1 opened incident expected');
+        $this->assertSame(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$category_index], '1 opened request expected');
+
+        $none_index = array_search(__('None'), $opened['data']['labels'], true);
+        $this->assertNotFalse($none_index, 'a "None" label is expected for the uncategorized ticket');
+        $this->assertGreaterThanOrEqual(1, $opened_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$none_index], 'at least 1 opened uncategorized incident expected');
+
+        $closed = Provider::ticketsByCategoryAndType('close');
+        $this->assertArrayHasKey('data', $closed);
+        $category_index_closed = array_search($category->fields['completename'], $closed['data']['labels'], true);
+        $this->assertNotFalse($category_index_closed, 'category must appear in the closed report labels');
+
+        $closed_series_by_name = [];
+        foreach ($closed['data']['series'] as $serie) {
+            $closed_series_by_name[$serie['name']] = $serie['data'];
+        }
+        $this->assertSame(1, $closed_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$category_index_closed], '1 closed incident expected');
+        $this->assertSame(1, $closed_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$category_index_closed], '1 solved request expected');
+
+        // Series are ordered by type id so colors stay consistent between cards
+        $expected_order = [
+            \Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE),
+            \Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE),
+        ];
+        $this->assertSame($expected_order, array_column($opened['data']['series'], 'name'));
+        $this->assertSame($expected_order, array_column($closed['data']['series'], 'name'));
+
+        // A dashboard status filter must not leak tickets outside the requested case
+        $opened_filtered = Provider::ticketsByCategoryAndType('open', [
+            'apply_filters' => [TicketStatusFilter::getId() => \Ticket::CLOSED],
+        ]);
+        $filtered_index = array_search($category->fields['completename'], $opened_filtered['data']['labels'], true);
+        $this->assertNotFalse($filtered_index);
+        $filtered_series_by_name = array_column($opened_filtered['data']['series'], 'data', 'name');
+        $this->assertSame(1, $filtered_series_by_name[\Ticket::getTicketTypeName(\Ticket::INCIDENT_TYPE)][$filtered_index], 'closed incident must not leak into the opened report');
+        $this->assertSame(1, $filtered_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$filtered_index], 'solved request must not leak into the opened report');
     }
 
     private function attachTicketToGroup(string $name, int $status, \Group $group): \Ticket
