@@ -248,4 +248,34 @@ test.describe("ITIL Task Template Preservation", () => {
         await expect(getTaskContent(task)).toContainText(template_content);
         await expect(getTaskContent(task)).not.toContainText(user_content);
     });
+
+    test("applies template duration that does not match the time step", async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const glpi_page = new GlpiPage(page);
+
+        const fixtures = await setupFixtures(api);
+        // 17 minutes is not in the duration dropdown with the default 5 minutes step
+        const duration_template_name = `Task Template with duration ${randomUUID()}`;
+        await api.createItem('TaskTemplate', {
+            name: duration_template_name,
+            content: '',
+            actiontime: 17 * 60,
+            entities_id: getWorkerEntityId(),
+        });
+
+        await page.goto(
+            `/front/ticket.form.php?id=${fixtures.test_ticket_id}&forcetab=Ticket$main`
+        );
+
+        const task = await doOpenTaskForm(page);
+        await doApplyTaskTemplate(page, glpi_page, task, duration_template_name);
+
+        await expect(getTaskDropdown(task, 'actiontime')).toContainText('0h17');
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(task.locator('select[name="actiontime"]')).toHaveValue('1020');
+    });
 });

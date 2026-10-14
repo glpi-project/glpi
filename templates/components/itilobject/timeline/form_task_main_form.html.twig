@@ -207,7 +207,7 @@
                 {% endset %}
 
                 {% if subitem.fields['actiontime'] <= 360000 %}
-                    {% set duration_dropdown = call('Dropdown::getDurationDropdown') %}
+                    {% set duration_dropdown = call('Dropdown::getDurationDropdown', [subitem.fields['actiontime'] ?? 0]) %}
                     {{ fields.dropdownArrayField('actiontime', subitem.fields['actiontime'], duration_dropdown, task_actiontime_lbl, {
                         'full_width': true,
                         'icon_label': true,
@@ -431,7 +431,23 @@
                 }
 
                 if (data.actiontime !== undefined) {
-                    $("#dropdown_actiontime{{ rand }}").trigger('setValue', data.actiontime);
+                    const actiontime_dropdown = $("#dropdown_actiontime{{ rand }}");
+                    // Template duration may not match the time step, add it to the list
+                    if (
+                        data.actiontime_label !== undefined
+                        && actiontime_dropdown.find(`option[value="${data.actiontime}"]`).length === 0
+                    ) {
+                        const new_option = new Option(data.actiontime_label, data.actiontime);
+                        const next_option = actiontime_dropdown.find('option')
+                            .filter((i, option) => parseInt(option.value) > parseInt(data.actiontime))
+                            .first();
+                        if (next_option.length > 0) {
+                            next_option.before(new_option);
+                        } else {
+                            actiontime_dropdown.append(new_option);
+                        }
+                    }
+                    actiontime_dropdown.trigger('setValue', data.actiontime);
                 }
 
                 if (data.users_id_tech !== undefined) {
