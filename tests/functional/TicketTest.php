@@ -10357,7 +10357,7 @@ HTML,
     /**
      * A ticket created without template input (e.g. from mailcollector) must store the template
      */
-    public function testTemplateIsStoredOnUpdateWhenTicketHasNone(): void
+    public function testTemplateIsStoredOnAddWithoutTemplateInput(): void
     {
         $this->login();
 
@@ -10403,12 +10403,17 @@ HTML,
             '_auto_import' => 1,
         ], ['_auto_import']);
         $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
-        $this->assertEquals(0, $ticket->fields['tickettemplates_id']);
-
-        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
-            'content' => 'updated content',
-        ]);
         $this->assertEquals($template->getID(), $ticket->fields['tickettemplates_id']);
+
+        // Without category template, profile or entity template must not be stored
+        $ticket = $this->createItem(Ticket::class, [
+            'name'         => 'Ticket without category',
+            'content'      => 'content',
+            'entities_id'  => $entity_id,
+            '_auto_import' => 1,
+        ], ['_auto_import']);
+        $this->assertEquals(0, $ticket->fields['itilcategories_id']);
+        $this->assertEquals(0, $ticket->fields['tickettemplates_id']);
     }
 
     /**
