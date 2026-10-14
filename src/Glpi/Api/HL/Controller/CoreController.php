@@ -650,12 +650,19 @@ HTML;
 
     #[Route(path: '/authorize', methods: ['GET', 'POST'], security_level: Route::SECURITY_NONE, tags: ['Session'], middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Authorize the API client using the authorization code grant type.')]
+    #[Doc\Route(description: 'Authorize the API client using the authorization code grant type. PKCE (RFC 7636) is supported and is required (with the S256 method) for public clients.')]
     public function authorize(Request $request): Response
     {
         global $CFG_GLPI;
         try {
             $auth_request = Server::getAuthorizationServer()->validateAuthorizationRequest($request);
+            if (
+                !$auth_request->getClient()->isConfidential()
+                && $auth_request->getCodeChallengeMethod() !== 'S256'
+            ) {
+                // Public clients cannot authenticate themselves, so they must use PKCE with the S256 method
+                throw OAuthServerException::invalidRequest('code_challenge_method', 'Public clients must use the S256 code challenge method');
+            }
 
             $user_id = Session::getLoginUserID();
             if ($user_id === false) {
@@ -666,6 +673,16 @@ HTML;
                     'response_type' => 'code',
                     'redirect_uri'  => $auth_request->getRedirectUri(),
                 ];
+                $optional_params = [
+                    'state'                 => $auth_request->getState(),
+                    'code_challenge'        => $auth_request->getCodeChallenge(),
+                    'code_challenge_method' => $auth_request->getCodeChallengeMethod(),
+                ];
+                foreach ($optional_params as $param => $value) {
+                    if ($value !== null) {
+                        $redirect_params[$param] = $value;
+                    }
+                }
                 $redirect_uri = $CFG_GLPI['url_base']
                     . '/api.php/v2'
                     . $this->getAPIPathForRouteFunction(self::class, 'authorize')
