@@ -7557,6 +7557,46 @@ HTML,
         $this->assertCount(0, $actors);
     }
 
+    public function testAssignToMeWithOwnRightOnly(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+        ]);
+
+        $this->changeTechRights(['ticket' => Ticket::READALL + Ticket::OWN]);
+        $tech_id = Session::getLoginUserID();
+
+        $ticket->update([
+            'id'           => $ticket->getID(),
+            '_itil_assign' => [
+                '_type'            => 'user',
+                'users_id'         => getItemByTypeName('User', 'glpi', true),
+                'use_notification' => 0,
+            ],
+        ]);
+        $ticket->getFromDB($ticket->getID());
+        $this->assertCount(0, $ticket->getActorsForType(CommonITILActor::ASSIGN));
+
+        $ticket->update([
+            'id'           => $ticket->getID(),
+            '_itil_assign' => [
+                '_type'            => 'user',
+                'users_id'         => $tech_id,
+                'use_notification' => 0,
+            ],
+        ]);
+        $ticket->getFromDB($ticket->getID());
+        $assigned_actors = array_values($ticket->getActorsForType(CommonITILActor::ASSIGN));
+        $this->assertCount(1, $assigned_actors);
+        $this->assertSame(User::class, $assigned_actors[0]['itemtype']);
+        $this->assertSame($tech_id, (int) $assigned_actors[0]['items_id']);
+    }
+
     public static function mailCollectorFollowupSetAssigneeProvider(): array
     {
         return [
