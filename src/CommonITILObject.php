@@ -1845,6 +1845,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     protected function handleTemplateFields(array $input, bool $show_error_message = true)
     {
+        // the target entity must be accessible by the user
+        if (
+            isset($input['entities_id'])
+            && $input['entities_id'] != $this->fields['entities_id']
+            && !Session::isCron()
+            && !Session::isInventory()
+            && !Session::haveAccessToEntity($input['entities_id'])
+        ) {
+            unset($input['entities_id']);
+        }
+
         //// check mandatory fields
 
         $check_allowed_fields_for_template = false;
@@ -1951,12 +1962,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $_filtered_input = [];
             foreach ($allowed_fields as $field) {
                 if (isset($input[$field])) {
-                    // additionnal constraint : entity must be accessible by user (non cron)
-                    if ($field === 'entities_id') {
-                        if (!Session::haveAccessToEntity($input['entities_id'])) {
-                            continue;
-                        }
-                    }
                     $_filtered_input[$field] = $input[$field];
                 }
             }
