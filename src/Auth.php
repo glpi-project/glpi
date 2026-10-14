@@ -688,25 +688,29 @@ class Auth extends CommonGLPI
                 $cookie_name   = session_name() . '_rememberme';
 
                 if ($CFG_GLPI["login_remember_time"]) {
-                    $data = null;
-                    if (array_key_exists($cookie_name, $_COOKIE)) {
-                        $data = json_decode($_COOKIE[$cookie_name], true);
-                    }
-                    if (is_array($data) && count($data) === 2) {
-                        [$cookie_id, $cookie_token] = $data;
-
-                        $user = new User();
-                        $user->getFromDB($cookie_id);
-                        $hash = $user->getAuthToken('cookie_token');
-
-                        if (self::checkPassword($cookie_token, $hash)) {
-                            $this->user->fields['name'] = $user->fields['name'];
-                            // Use current time as session time may not be initialized yet or may be from previous session
-                            $user->update(['id' => $user->getID(), 'last_login' => date("Y-m-d H:i:s")]);
-                            return true;
-                        } else {
-                            $this->addToError(__("Invalid cookie data"));
+                    try {
+                        $data = null;
+                        if (array_key_exists($cookie_name, $_COOKIE)) {
+                            $data = json_decode($_COOKIE[$cookie_name], true);
                         }
+                        if (is_array($data) && count($data) === 2) {
+                            [$cookie_id, $cookie_token] = $data;
+
+                            $user = new User();
+                            $user->getFromDB($cookie_id);
+                            $hash = $user->getAuthToken('cookie_token');
+
+                            if (self::checkPassword($cookie_token, $hash)) {
+                                $this->user->fields['name'] = $user->fields['name'];
+                                // Use current time as session time may not be initialized yet or may be from previous session
+                                $user->update(['id' => $user->getID(), 'last_login' => date("Y-m-d H:i:s")]);
+                                return true;
+                            } else {
+                                $this->addToError(__("Invalid cookie data"));
+                            }
+                        }
+                    } catch (Throwable $e) {
+                        $this->addToError(__("Invalid cookie data"));
                     }
                 } else {
                     $this->addToError(__("Auto login disabled"));
