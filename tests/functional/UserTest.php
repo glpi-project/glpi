@@ -446,6 +446,63 @@ class UserTest extends DbTestCase
         $this->assertSame(null, $user->fields['entities_id']);
     }
 
+    public static function addLanguageProvider(): iterable
+    {
+        yield 'valid language' => ['fr_FR', 'fr_FR'];
+        yield 'empty language' => ['', null];
+        yield 'default value choice' => ['0', null];
+        yield 'global default language' => ['en_GB', null];
+        yield 'unknown language' => ['xx_XX', null];
+    }
+
+    #[DataProvider('addLanguageProvider')]
+    public function testAddWithLanguage(string $language, ?string $expected): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['language'] = 'en_GB';
+
+        $this->login();
+
+        $user = $this->createItem(User::class, [
+            'name'     => 'user_with_language',
+            'language' => $language,
+        ], ['language']);
+
+        $this->assertSame($expected, $user->fields['language']);
+    }
+
+    public function testAddWithLanguageSendsPasswordInitInUserLanguage(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['language']              = 'en_GB';
+        $CFG_GLPI['use_notifications']     = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+
+        $user = $this->createItem(User::class, [
+            'name'           => 'user_with_language_init_password',
+            'language'       => 'fr_FR',
+            '_useremails'    => ['user_with_language_init_password@example.com'],
+            '_init_password' => 1,
+        ], ['language', '_useremails', '_init_password']);
+
+        // Emails cannot be sent in the testing env
+        $this->hasSessionMessageThatContains('Error in sending the email', ERROR);
+
+        $queued = getAllDataFromTable('glpi_queuednotifications', [
+            'itemtype' => User::class,
+            'items_id' => $user->getID(),
+        ]);
+        $this->assertCount(1, $queued);
+        $this->assertStringContainsString(
+            "Votre compte vient juste d'être créé. Veuillez définir votre mot de passe.",
+            (new \GLPIKey())->decrypt(reset($queued)['body_text'])
+        );
+    }
+
     public function testPrepareInputForAddPdfFont(): void
     {
         global $CFG_GLPI;
