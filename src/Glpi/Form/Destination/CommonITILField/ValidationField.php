@@ -54,8 +54,10 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Group;
 use InvalidArgumentException;
+use ITILValidationTemplate;
 use Override;
 use User;
+use ValidationStep;
 
 use function Safe\json_decode;
 
@@ -433,6 +435,30 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
                     }
                 }
             }
+
+            // Register requirement for the validation step
+            $step_id = $strategy_config[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_STEP_ID] ?? null;
+            if ($step_id !== null) {
+                $step = ValidationStep::getById($step_id);
+                if ($step) {
+                    $requirement = DataRequirementSpecification::fromItem($step);
+                    $requirements[] = $requirement;
+                    $config[ValidationFieldConfig::STRATEGY_CONFIGS][$index][ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_STEP_ID] = $requirement->name;
+                }
+            }
+
+            // Register requirements for specific validation templates
+            if ($strategy_config[ValidationFieldStrategyConfig::STRATEGY] === ValidationFieldStrategy::SPECIFIC_VALUES->value) {
+                foreach ($strategy_config[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_TEMPLATE_IDS] ?? [] as $i => $template_id) {
+                    $template = ITILValidationTemplate::getById($template_id);
+                    if ($template) {
+                        // Replace template ID with name in config
+                        $requirement = DataRequirementSpecification::fromItem($template);
+                        $requirements[] = $requirement;
+                        $config[ValidationFieldConfig::STRATEGY_CONFIGS][$index][ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_TEMPLATE_IDS][$i] = $requirement->name;
+                    }
+                }
+            }
         }
 
         return new DynamicExportDataField($config, $requirements);
@@ -454,6 +480,21 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
                         $id = $mapper->getItemId($itemtype, $item_name);
                         $strategy_configs[ValidationFieldStrategyConfig::SPECIFIC_ACTORS][$itemtype][$i] = $id;
                     }
+                }
+            }
+
+            // Convert validation step from name to ID
+            $step_name = $strategy_config[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_STEP_ID] ?? null;
+            if ($step_name !== null) {
+                $strategy_configs[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_STEP_ID] = $mapper->getItemId(ValidationStep::class, $step_name);
+            }
+
+            // Convert specific validation templates from names to IDs
+            if ($strategy_config[ValidationFieldStrategyConfig::STRATEGY] === ValidationFieldStrategy::SPECIFIC_VALUES->value) {
+                $templates = $strategy_config[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_TEMPLATE_IDS] ?? [];
+                foreach ($templates as $i => $template_name) {
+                    $id = $mapper->getItemId(ITILValidationTemplate::class, $template_name);
+                    $strategy_configs[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_TEMPLATE_IDS][$i] = $id;
                 }
             }
 
