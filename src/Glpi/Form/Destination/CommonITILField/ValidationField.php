@@ -438,7 +438,7 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
 
             // Register requirement for the validation step
             $step_id = $strategy_config[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_STEP_ID] ?? null;
-            if ($step_id !== null) {
+            if (!empty($step_id)) {
                 $step = ValidationStep::getById($step_id);
                 if ($step) {
                     $requirement = DataRequirementSpecification::fromItem($step);
@@ -485,7 +485,7 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
 
             // Convert validation step from name to ID
             $step_name = $strategy_config[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_STEP_ID] ?? null;
-            if ($step_name !== null) {
+            if (!empty($step_name)) {
                 $strategy_configs[ValidationFieldStrategyConfig::SPECIFIC_VALIDATION_STEP_ID] = $mapper->getItemId(ValidationStep::class, $step_name);
             }
 

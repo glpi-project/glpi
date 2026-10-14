@@ -329,6 +329,25 @@ final class FormSerializerDestinationTest extends DbTestCase
             ],
         ];
 
+        yield 'ValidationField without validation step' => [
+            'field_key'        => ValidationField::getKey(),
+            'config_fn'        => fn($created_items) => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_VALUES,
+                    specific_validationtemplate_ids: [$created_items[0]->getId()],
+                    specific_validation_step_id: 0
+                ),
+            ]),
+            'items_to_create'  => [
+                [
+                    'itemtype' => \ITILValidationTemplate::class,
+                    'input'    => [
+                        'name' => 'My validation template',
+                    ],
+                ],
+            ],
+        ];
+
         yield 'ITILTaskField' => [
             'field_key' => ITILTaskField::getKey(),
             'config_fn' => fn($created_items) => new ITILTaskFieldConfig(
