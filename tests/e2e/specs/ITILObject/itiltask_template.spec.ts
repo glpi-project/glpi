@@ -258,7 +258,8 @@ test.describe("ITIL Task Template Preservation", () => {
         const glpi_page = new GlpiPage(page);
 
         const fixtures = await setupFixtures(api);
-        // 17 minutes is not in the duration dropdown with the default 5 minutes step
+        // Any duration missing from the dropdown (e.g. after a time step change) must be added to it.
+        // 17 minutes is used as it is not in the list with the default 5 minutes step.
         const duration_template_name = `Task Template with duration ${randomUUID()}`;
         await api.createItem('TaskTemplate', {
             name: duration_template_name,
