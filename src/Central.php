@@ -692,6 +692,35 @@ class Central extends CommonGLPI
                 ) . ' ' . __s('Remove it from your configuration to restore the expected security level.');
             }
 
+            // POP protocol is no longer supported, mails receivers and authentication servers using it are disabled.
+            $pop_itemtypes = [
+                MailCollector::class => 'host',
+                AuthMail::class      => 'connect_string',
+            ];
+            foreach ($pop_itemtypes as $itemtype => $connect_string_field) {
+                $iterator = $DB->request([
+                    'SELECT' => ['id', 'name', $connect_string_field],
+                    'FROM'   => $itemtype::getTable(),
+                    'WHERE'  => [
+                        $connect_string_field => ['LIKE', '%/pop%'],
+                    ],
+                ]);
+                foreach ($iterator as $data) {
+                    if (!Toolbox::isPopMailServerConnectString((string) $data[$connect_string_field])) {
+                        continue;
+                    }
+                    $link = '<a href="' . htmlescape($itemtype::getFormURLWithID($data['id'])) . '">'
+                        . htmlescape($data['name'])
+                        . '</a>';
+                    $messages['warnings'][] = sprintf(
+                        $itemtype === MailCollector::class
+                            ? __s('The "%s" mails receiver uses the POP protocol, which is no longer supported. It has been disabled, please reconfigure it to use the IMAP protocol.')
+                            : __s('The "%s" mail authentication server uses the POP protocol, which is no longer supported. It has been disabled, please reconfigure it to use the IMAP protocol.'),
+                        $link
+                    );
+                }
+            }
+
             // Check for available plugin updates
             $count = Controller::countUpdatablePlugins();
 

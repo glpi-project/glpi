@@ -39,7 +39,6 @@ use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use Laminas\Mail\Protocol\Imap;
-use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
@@ -48,6 +47,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareLicense;
 use Ticket;
+
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 class MailCollectorTest extends DbTestCase
 {
@@ -218,6 +220,37 @@ class MailCollectorTest extends DbTestCase
         $this->hasSessionMessages(ERROR, [
             'Mandatory fields are not filled. Please correct: Server, Connection options',
         ]);
+    }
+
+    public function testShowFormWarnsAboutPopProtocol(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        // POP items cannot be created anymore, insert it as it would exist after the migration
+        $DB->insert(\MailCollector::getTable(), [
+            'name'      => 'pop-collector',
+            'host'      => '{pop.example.org:110/pop}',
+            'is_active' => 0,
+        ]);
+        $pop_collector_id = $DB->insertId();
+        $imap_collector = $this->createItem(\MailCollector::class, [
+            'name' => 'imap-collector',
+            'host' => '{imap.example.org/imap/novalidate-cert}',
+        ]);
+
+        $warning = 'This mails receiver uses the POP protocol, which is no longer supported.';
+
+        $collector = new \MailCollector();
+        $this->assertTrue($collector->getFromDB($pop_collector_id));
+        ob_start();
+        $collector->showForm($pop_collector_id);
+        $this->assertStringContainsString($warning, ob_get_clean());
+
+        ob_start();
+        $imap_collector->showForm($imap_collector->getID());
+        $this->assertStringNotContainsString($warning, ob_get_clean());
     }
 
     public function testCounts()
@@ -1305,17 +1338,12 @@ HTML,
                 'expected_protocol' => Imap::class,
                 'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
             ],
+            // POP protocol is not supported anymore
             [
                 'cnx_string'        => '{mail.domain.org/pop}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
-            ],
-            [
-                'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
-                'expected_type'     => 'pop',
-                'expected_protocol' => Pop3::class,
-                'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
+                'expected_type'     => '',
+                'expected_protocol' => null,
+                'expected_storage'  => null,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/unknown-type/ssl}',
@@ -1382,22 +1410,6 @@ HTML,
             'expected_warning'          => 'Protocol "imap" is already defined and cannot be overwritten.',
             'expected_protocol'         => Imap::class,
             'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
-        ];
-
-        // Check that hook cannot alter core POP3 protocol
-        yield [
-            'allow_plugins_protocols'   => true,
-            'hook_result'               => [
-                'pop' => [
-                    'label'    => 'Override test',
-                    'protocol' => 'SomeClass',
-                    'storage'  => 'SomeClass',
-                ],
-            ],
-            'type'                      => 'pop',
-            'expected_warning'          => 'Protocol "pop" is already defined and cannot be overwritten.',
-            'expected_protocol'         => Pop3::class,
-            'expected_storage'          => \Laminas\Mail\Storage\Pop3::class,
         ];
 
         // Check that class must exist
