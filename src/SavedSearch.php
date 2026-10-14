@@ -488,6 +488,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $options['candel'] = false;
         }
 
+        if ($is_ajax) {
+            // FIXME: Cannot rely on `canCreate()` for simplified interface,
+            // the `canCreate()` method should probably fixed to handle this.
+            $options['canedit'] = $this->canCreateItem();
+        }
+
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/form.html.twig', [
             'item' => $this,
             'can_create' => self::canCreate(),
