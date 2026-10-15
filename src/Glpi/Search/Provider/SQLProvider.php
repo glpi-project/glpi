@@ -6932,7 +6932,7 @@ final class SQLProvider implements SearchProviderInterface
                             ) {
                                 $out .= $so['toadd'][$data[$ID][$k]['name']];
                             } else {
-                                $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
+                                $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, $so['decimals'] ?? 0);
                             }
                         }
                     }
