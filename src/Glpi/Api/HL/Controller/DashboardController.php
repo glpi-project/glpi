@@ -80,7 +80,7 @@ final class DashboardController extends AbstractController
                 $all_widgets = array_merge($all_widgets, $card['widgettype']);
             }
         }
-        $all_widgets = array_unique(array_filter($all_widgets));
+        $all_widgets = array_values(array_unique(array_filter($all_widgets)));
 
         $known_filters = array_map(static fn($f) => $f::getId(), Dashboard\Filter::getRegisteredFilterClasses());
 
