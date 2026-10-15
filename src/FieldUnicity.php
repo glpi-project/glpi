@@ -311,7 +311,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return array<string, mixed>
      */
-    private static function getSearchOptionForField(CommonDBTM $item, string $field): array
+    public static function getSearchOptionForField(CommonDBTM $item, string $field): array
     {
         $searchOption = $item->getSearchOptionByField('field', $field);
         if (!empty($searchOption)) {
