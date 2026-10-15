@@ -1153,7 +1153,8 @@ TWIG, $twig_params);
     public static function isCriteraADropdown($available_criteria, $condition, $criterion)
     {
         $type = $available_criteria[$criterion]['type'] ?? false;
-        return (in_array($condition, [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT, Rule::PATTERN_UNDER], true)
+        return (is_numeric($condition)
+              && in_array((int) $condition, [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT, Rule::PATTERN_UNDER], true)
               && ($type === 'dropdown'));
     }
 
