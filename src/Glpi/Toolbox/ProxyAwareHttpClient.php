@@ -61,6 +61,9 @@ final class ProxyAwareHttpClient implements HttpClientInterface
         $this->decoratorConstruct($client);
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
         $on_progress = $options['on_progress'] ?? null;
