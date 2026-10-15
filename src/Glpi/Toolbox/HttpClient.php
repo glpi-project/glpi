@@ -50,6 +50,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
 
+use function Safe\dns_get_record;
+
 final class HttpClient
 {
     private HttpClientInterface $client;
@@ -92,7 +94,10 @@ final class HttpClient
                 $proxy_host = trim($CFG_GLPI['proxy_name'], '[]');
                 $proxy_ips = filter_var($proxy_host, FILTER_VALIDATE_IP) !== false
                     ? [$proxy_host]
-                    : (gethostbynamel($proxy_host) ?: []);
+                    : array_merge(
+                        gethostbynamel($proxy_host) ?: [],
+                        array_column(@dns_get_record($proxy_host, DNS_AAAA) ?: [], 'ipv6')
+                    );
                 $inner_client = new ProxyAwareHttpClient($inner_client, $proxy_ips);
             }
             $inner_client = new NoPrivateNetworkHttpClient($inner_client);
