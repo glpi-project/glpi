@@ -35,8 +35,10 @@
 namespace tests\units;
 
 use Computer;
+use Entity;
 use FieldUnicity;
 use Glpi\Tests\DbTestCase;
+use Manufacturer;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class FieldUnicityTest extends DbTestCase
@@ -147,5 +149,76 @@ class FieldUnicityTest extends DbTestCase
         if (count($errors) > 0) {
             $this->hasSessionMessages(ERROR, $errors);
         }
+    }
+
+    public function testDropdownFieldsIncludesForeignKeys(): void
+    {
+        $this->login();
+
+        $html = FieldUnicity::dropdownFields(Computer::class, ['display' => false]);
+        $this->assertStringContainsString("value='serial'", $html);
+        $this->assertStringContainsString("value='manufacturers_id'", $html);
+        $this->assertStringContainsString("value='computermodels_id'", $html);
+        $this->assertStringContainsString("value='users_id_tech'", $html);
+        $this->assertStringNotContainsString("value='entities_id'", $html);
+    }
+
+    public function testGetSpecificValueToDisplayWithForeignKeys(): void
+    {
+        $this->login();
+
+        $this->assertEquals(
+            'Serial number, Manufacturer, Model, Technician in charge',
+            FieldUnicity::getSpecificValueToDisplay('fields', [
+                'itemtype' => Computer::class,
+                'fields'   => 'serial,manufacturers_id,computermodels_id,users_id_tech',
+            ])
+        );
+    }
+
+    public function testCheckUnicityWithForeignKey(): void
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'serial and manufacturer uniqueness',
+            'itemtype'      => Computer::class,
+            '_fields'       => ['serial', 'manufacturers_id'],
+            'is_active'     => 1,
+            'action_refuse' => 1,
+            'entities_id'   => $entities_id,
+        ]);
+
+        $manufacturer_1 = $this->createItem(Manufacturer::class, ['name' => __FUNCTION__ . '_1']);
+        $manufacturer_2 = $this->createItem(Manufacturer::class, ['name' => __FUNCTION__ . '_2']);
+
+        $this->createItem(Computer::class, [
+            'name'             => __FUNCTION__ . '_1',
+            'entities_id'      => $entities_id,
+            'serial'           => 'SN-123',
+            'manufacturers_id' => $manufacturer_1->getID(),
+        ]);
+
+        // Same serial number on another manufacturer is allowed
+        $this->createItem(Computer::class, [
+            'name'             => __FUNCTION__ . '_2',
+            'entities_id'      => $entities_id,
+            'serial'           => 'SN-123',
+            'manufacturers_id' => $manufacturer_2->getID(),
+        ]);
+
+        $computer = new Computer();
+        $this->assertFalse($computer->add([
+            'name'             => __FUNCTION__ . '_3',
+            'entities_id'      => $entities_id,
+            'serial'           => 'SN-123',
+            'manufacturers_id' => $manufacturer_1->getID(),
+        ]));
+        $this->hasSessionMessageThatContains(
+            'Impossible record for Serial number = SN-123 &amp; Manufacturer = ' . __FUNCTION__ . '_1',
+            ERROR
+        );
     }
 }
