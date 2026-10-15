@@ -301,12 +301,89 @@ final class RecordSet
             }
 
             Profiler::getInstance()->start('RecordSet::assembleHydratedRecordsLoop', Profiler::CATEGORY_HLAPI);
+            $hydrated_schema_records = [];
             foreach ($dehydrated_records as $row) {
-                $hydrated_records[] = $this->assembleHydratedRecords($row, $schema_name, $fetched_records);
+                $hydrated_schema_records[] = $this->assembleHydratedRecords($row, $schema_name, $fetched_records);
             }
             Profiler::getInstance()->stop('RecordSet::assembleHydratedRecordsLoop');
+
+            Profiler::getInstance()->start('RecordSet::hydratePolymorphicJoins', Profiler::CATEGORY_HLAPI);
+            $this->hydratePolymorphicJoins($hydrated_schema_records);
+            Profiler::getInstance()->stop('RecordSet::hydratePolymorphicJoins');
+            array_push($hydrated_records, ...$hydrated_schema_records);
         }
         return $hydrated_records;
+    }
+
+    /**
+     * Fetch and add the items of the polymorphic joins to the hydrated records.
+     * The items for all records are fetched at once using the union of the join branches restricted to the IDs of the records.
+     * @param array<int, array<string, mixed>> $hydrated_records The hydrated records. Will be modified in-place.
+     * @return void
+     * @throws APIException
+     * @see PolymorphicJoin
+     */
+    private function hydratePolymorphicJoins(array &$hydrated_records): void
+    {
+        $context = $this->search->getContext();
+        $flattened_properties = $context->getFlattenedProperties();
+
+        foreach ($context->getPolymorphicJoins() as $join_name => $join) {
+            $parent_key = $join['fkey'];
+            $parent_ids = [];
+            foreach ($hydrated_records as $record) {
+                if (isset($record[$parent_key])) {
+                    $parent_ids[] = (int) $record[$parent_key];
+                }
+            }
+            $parent_ids = array_values(array_unique($parent_ids));
+
+            $items_by_parent = [];
+            if ($parent_ids !== []) {
+                $discriminator = PolymorphicJoin::getDiscriminatorColumn($join);
+                $paths_by_column = PolymorphicJoin::getPropertyPathsByColumn($join_name, $flattened_properties);
+                // Flattened properties relative to an item, used to cast the values
+                $item_properties = [];
+                foreach ($paths_by_column as $relative_path) {
+                    $item_properties[$relative_path] = $flattened_properties[$join_name . '.' . $relative_path];
+                }
+
+                $it = $this->search->getDBRead()->request([
+                    'FROM' => PolymorphicJoin::build($join, $parent_ids, str_replace('.', chr(0x1F), $join_name)),
+                ]);
+                $this->search->validateIterator($it);
+                foreach ($it as $data) {
+                    // Only keep the properties populated by the branch the item comes from
+                    $branch_properties = $join['branches'][$data[$discriminator]]['properties'] ?? null;
+                    $item = [];
+                    foreach ($paths_by_column as $column => $relative_path) {
+                        if (!array_key_exists($column, $data)) {
+                            continue;
+                        }
+                        $top_level_property = explode('.', $relative_path, 2)[0];
+                        if ($branch_properties !== null && !in_array($top_level_property, $branch_properties, true)) {
+                            continue;
+                        }
+                        ArrayPathAccessor::setElementByArrayPath($item, $relative_path, $data[$column]);
+                    }
+                    Doc\Schema::castProperties($item, $item_properties);
+                    $items_by_parent[$data[PolymorphicJoin::PARENT_ID_COLUMN]][] = [
+                        'order' => $data[PolymorphicJoin::ORDER_COLUMN] ?? null,
+                        'item' => $item,
+                    ];
+                }
+            }
+
+            foreach ($hydrated_records as &$record) {
+                if (!array_key_exists($parent_key, $record)) {
+                    continue;
+                }
+                $items = $items_by_parent[$record[$parent_key]] ?? [];
+                usort($items, static fn($a, $b) => strcasecmp((string) $a['order'], (string) $b['order']));
+                ArrayPathAccessor::setElementByArrayPath($record, $join_name, array_column($items, 'item'));
+            }
+            unset($record);
+        }
     }
 
     /**

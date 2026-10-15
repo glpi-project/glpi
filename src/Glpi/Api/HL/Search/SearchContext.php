@@ -49,6 +49,8 @@ final class SearchContext
     private array $request_params;
     private array $flattened_properties;
     private array $joins;
+    /** @var array<string, array<string, mixed>>|null Cache of the polymorphic joins */
+    private ?array $polymorphic_joins = null;
     private array $union_table_schemas;
     /**
      * @var array Cache of table names for foreign keys.
@@ -71,6 +73,7 @@ final class SearchContext
         $this->schema = $schema;
         $this->flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         $this->joins = Doc\Schema::getJoins($schema['properties']);
+        $this->polymorphic_joins = null;
         $this->union_table_schemas = $this->getUnionTables();
         $this->clearFkeyTablesCache();
     }
@@ -199,6 +202,40 @@ final class SearchContext
     public function getJoins(): array
     {
         return $this->joins;
+    }
+
+    /**
+     * @param string $join The name of the join.
+     * @return bool True if the join is a polymorphic join.
+     * @see PolymorphicJoin
+     */
+    public function isPolymorphicJoin(string $join): bool
+    {
+        return isset($this->getPolymorphicJoins()[$join]);
+    }
+
+    /**
+     * @return array<string, array<string, mixed>> The polymorphic joins defined in the schema.
+     * @see PolymorphicJoin
+     */
+    public function getPolymorphicJoins(): array
+    {
+        return $this->polymorphic_joins ??= array_filter($this->joins, static fn($join) => PolymorphicJoin::isPolymorphicJoin($join));
+    }
+
+    /**
+     * @param string $prop_name The property name
+     * @return string|null The name of the polymorphic join the property is part of, or null if it isn't part of a polymorphic join.
+     */
+    public function getPolymorphicJoinNameForProperty(string $prop_name): ?string
+    {
+        $prop_name = str_replace(chr(0x1F), '.', $prop_name);
+        foreach (array_keys($this->getPolymorphicJoins()) as $join_name) {
+            if (str_starts_with($prop_name, $join_name . '.')) {
+                return $join_name;
+            }
+        }
+        return null;
     }
 
     /**
