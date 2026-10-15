@@ -88,6 +88,13 @@ final class HttpClient
 
         $inner_client = HttpClientFactory::create();
         if (!$allow_private_networks) {
+            if ($use_proxy && !empty($CFG_GLPI['proxy_name'])) {
+                $proxy_host = trim($CFG_GLPI['proxy_name'], '[]');
+                $proxy_ips = filter_var($proxy_host, FILTER_VALIDATE_IP) !== false
+                    ? [$proxy_host]
+                    : (gethostbynamel($proxy_host) ?: []);
+                $inner_client = new ProxyAwareHttpClient($inner_client, $proxy_ips);
+            }
             $inner_client = new NoPrivateNetworkHttpClient($inner_client);
         }
 
