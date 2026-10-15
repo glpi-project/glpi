@@ -436,6 +436,52 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
 
     /**
+     * Format a specificity value for display without changing its stored unit.
+     *
+     * @param int|float|string $value      Value in the unit used by the database
+     * @param array            $attributes Specificity attributes
+     * @phpstan-param array{display_unit?: string, ...} $attributes
+     */
+    public static function formatSpecificityValue($value, array $attributes): string
+    {
+        $display_unit = $attributes['display_unit'] ?? null;
+
+        if ($display_unit === 'binary_size') {
+            $units = [
+                _x('size', 'MiB'),
+                _x('size', 'GiB'),
+                _x('size', 'TiB'),
+                _x('size', 'PiB'),
+                _x('size', 'EiB'),
+            ];
+            $base = 1024;
+        } elseif ($display_unit === 'frequency') {
+            $units = [
+                __('MHz'),
+                __('GHz'),
+                __('THz'),
+            ];
+            $base = 1000;
+        } else {
+            return (string) $value;
+        }
+
+        $formatted_value = (float) $value;
+        $unit = $units[0];
+        foreach ($units as $index => $current_unit) {
+            $unit = $current_unit;
+            if (abs($formatted_value) < $base || !isset($units[$index + 1])) {
+                break;
+            }
+            $formatted_value /= $base;
+        }
+
+        //TRANS: %1$s is a number and %2$s is its unit
+        return sprintf(__('%1$s %2$s'), round($formatted_value, 2), $unit);
+    }
+
+
+    /**
      * Get the items on which this Item_Device can be attached. For instance, a computer can have
      * any kind of device. Conversely, a soundcard does not concern a NetworkEquipment
      * A configuration entry is automatically checked in $CFG_GLPI (must be the name of
@@ -977,14 +1023,15 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             ? $table_group->addHeader('firmware', _sn('Firmware', 'Firmware', 1), $common_column)
             : null;
 
+        $specificities       = static::getSpecificities();
         $specificity_columns = [];
         $link_column         = $table_group->addHeader('spec_link', '', $specific_column);
         $spec_column         = $link_column;
 
-        foreach (static::getSpecificities() as $field => $attributs) {
+        foreach ($specificities as $field => $attributs) {
             $spec_column                 = $table_group->addHeader(
                 'spec_' . $field,
-                htmlescape($attributs['long name']),
+                htmlescape($attributs['display_name'] ?? $attributs['long name']),
                 $specific_column,
                 $spec_column
             );
@@ -1140,7 +1187,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 "<a href='" . htmlescape($this->getLinkURL()) . "'>$mode</a>"
             );
 
-            foreach (static::getSpecificities() as $field => $attributs) {
+            foreach ($specificities as $field => $attributs) {
                 $content = '';
 
                 if (!empty($link[$field])) {
@@ -1181,7 +1228,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                                 break;
 
                             default:
-                                $content = htmlescape($link[$field]);
+                                $content = htmlescape(static::formatSpecificityValue($link[$field], $attributs));
                         }
                     }
                 }
