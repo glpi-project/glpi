@@ -360,6 +360,17 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertEquals('number', $opt['datatype']);
         $this->assertEquals(2, $opt['decimals']);
 
+        $custom_field_definition_4c = $this->createItem(CustomFieldDefinition::class, [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'system_name' => 'test_empty_options_number',
+            'label' => 'Test empty options number',
+            'type' => NumberType::class,
+            'field_options' => ['min' => '', 'step' => ''],
+        ], ['field_options']); // JSON encoded field cannot be automatically checked
+        $opt = $custom_field_definition_4c->getFieldType()->getSearchOption();
+        $this->assertEquals('number', $opt['datatype']);
+        $this->assertEquals(0, $opt['decimals']);
+
         $custom_field_definition_5 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_date',
