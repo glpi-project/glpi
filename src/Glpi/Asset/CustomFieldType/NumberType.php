@@ -116,7 +116,9 @@ TWIG, $twig_params);
         $opt['min'] = $field_opts['min'] ?? 0;
         $opt['max'] = $field_opts['max'] ?? PHP_INT_MAX;
         $opt['step'] = $field_opts['step'] ?? 1;
-        $opt['decimals'] = $this->getDecimalsCount($opt['min'], $opt['step']);
+        $opt['decimals'] = $this->getDecimalsCount(
+    is_numeric($opt['min']) ? (float) $opt['min'] : 0,
+    is_numeric($opt['step']) ? (float) $opt['step'] : 1
         return $opt;
     }
 }
