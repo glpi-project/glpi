@@ -96,7 +96,7 @@ TWIG, $twig_params);
      *
      * @return int
      */
-    private function getDecimalsCount(int $min, int $step): int
+    private function getDecimalsCount(float $min, float $step): int
     {
         $decimals_count = 0;
         foreach ([$min, $step] as $value) {
