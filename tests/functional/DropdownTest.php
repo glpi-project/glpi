@@ -796,19 +796,20 @@ HTML;
                     'itemtype'              => TaskCategory::class,
                     'searchText'            => 'subcat',
                     'toadd'                 => [
-                        'key'  => 'value',
-                        'key2' => "value with unescaped \t and escaped \\t",
+                        'key'  => 'subcat value',
+                        'key2' => "subcat value with unescaped \t and escaped \\t",
+                        'key3' => 'not matching the search',
                     ],
                 ],
                 'expected'  => [
                     'results' => [
                         [
                             'id'     => 'key',
-                            'text'   => 'value',
+                            'text'   => 'subcat value',
                         ],
                         [
                             'id'     => 'key2',
-                            'text'   => "value with unescaped \t and escaped \\t",
+                            'text'   => "subcat value with unescaped \t and escaped \\t",
                         ],
                         [
                             'text'      => 'Root entity',
@@ -1221,6 +1222,56 @@ HTML;
         }
 
         $this->assertSame($expected, $result);
+    }
+
+    public static function getDropdownValueToAddWithSearchTextProvider(): iterable
+    {
+        $toadd = [
+            -1 => Dropdown::EMPTY_VALUE,
+            -2 => 'Inheritance of the parent entity',
+            -3 => 'Special VALUE',
+        ];
+
+        foreach ([Entity::class, Location::class, Computer::class] as $itemtype) {
+            yield "$itemtype - no search" => [$itemtype, $toadd, '', [-1, -2, -3]];
+            yield "$itemtype - search matching no added value" => [$itemtype, $toadd, '_test', []];
+            yield "$itemtype - search is case insensitive" => [$itemtype, $toadd, 'special value', [-3]];
+            yield "$itemtype - search contains" => [$itemtype, $toadd, 'parent', [-2]];
+            yield "$itemtype - search starts with" => [$itemtype, $toadd, '^inheritance', [-2]];
+            yield "$itemtype - search starts with, not matching" => [$itemtype, $toadd, '^parent', []];
+            yield "$itemtype - search ends with" => [$itemtype, $toadd, 'value$', [-3]];
+            yield "$itemtype - search with regex chars" => [$itemtype, $toadd, '-----', [-1]];
+        }
+    }
+
+    #[DataProvider('getDropdownValueToAddWithSearchTextProvider')]
+    public function testGetDropdownValueFiltersToAddWithSearchText(
+        string $itemtype,
+        array $toadd,
+        string $search_text,
+        array $expected_toadd_ids
+    ): void {
+        $this->login();
+
+        $params = [
+            'itemtype'            => $itemtype,
+            'display_emptychoice' => 0,
+            'searchText'          => $search_text,
+            'toadd'               => $toadd,
+        ];
+        $params['_idor_token'] = $this->generateIdor($params);
+
+        $result = Dropdown::getDropdownValue($params, false);
+
+        // Added values are listed at the top level, before the items
+        $toadd_ids = array_values(array_filter(
+            array_column($result['results'], 'id'),
+            static fn($id) => array_key_exists($id, $toadd)
+        ));
+        $this->assertSame($expected_toadd_ids, $toadd_ids);
+        if ($expected_toadd_ids !== []) {
+            $this->assertSame($expected_toadd_ids[0], $result['results'][0]['id']);
+        }
     }
 
     public static function getDropdownConnectProvider()
