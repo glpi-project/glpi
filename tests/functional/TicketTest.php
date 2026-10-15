@@ -12386,4 +12386,103 @@ HTML,
             $this->assertCount(1, array_keys($recipients, $user->fields['name'] . '@several.test'));
         }
     }
+
+    public static function linkedItemsAccessProvider(): iterable
+    {
+        yield 'central interface' => ['profile' => 'Technician'];
+        yield 'self-service interface' => ['profile' => 'Self-Service'];
+    }
+
+    #[DataProvider('linkedItemsAccessProvider')]
+    public function testLinkedItemsRequireAccessToTheItems(string $profile): void
+    {
+        $this->login();
+        $entity_1 = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $entity_2 = getItemByTypeName(Entity::class, '_test_child_2', true);
+        $computer_1 = $this->createItem(Computer::class, ['name' => 'Computer 1', 'entities_id' => $entity_1]);
+        $computer_2 = $this->createItem(Computer::class, ['name' => 'Computer 2', 'entities_id' => $entity_2]);
+
+        // A user that can only access the first entity
+        $this->createItem(User::class, [
+            'name'          => 'restricted_user',
+            'password'      => 'Restricted-Pass-123!',
+            'password2'     => 'Restricted-Pass-123!',
+            '_profiles_id'  => getItemByTypeName(Profile::class, $profile, true),
+            '_entities_id'  => $entity_1,
+            '_is_recursive' => 0,
+        ], skip_fields: ['password', 'password2']);
+        $this->login('restricted_user', 'Restricted-Pass-123!');
+
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add([
+            'name'        => 'Ticket with items',
+            'content'     => 'Content',
+            'entities_id' => $entity_1,
+            'items_id'    => [
+                Computer::class => [$computer_1->getID(), $computer_2->getID()],
+            ],
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        // Only the item of the entity of the user is linked
+        $this->assertSame(1, countElementsInTable(\Item_Ticket::getTable(), ['tickets_id' => $ticket_id, 'items_id' => $computer_1->getID()]));
+        $this->assertSame(0, countElementsInTable(\Item_Ticket::getTable(), ['tickets_id' => $ticket_id, 'items_id' => $computer_2->getID()]));
+    }
+
+    public function testAttachedDocumentsRequireAccessToTheDocuments(): void
+    {
+        $this->login();
+        $entity_1 = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $entity_2 = getItemByTypeName(Entity::class, '_test_child_2', true);
+
+        $documents = [];
+        foreach ([$entity_1, $entity_2] as $entity_id) {
+            $document = new \Document();
+            $documents[$entity_id] = $document->add([
+                'name'         => 'Document ' . $entity_id,
+                'entities_id'  => $entity_id,
+                'is_recursive' => 0,
+                'filename'     => 'document_' . $entity_id . '.pdf',
+                'filepath'     => 'PDF/aa/document_' . $entity_id . '.pdf',
+                'mime'         => 'application/pdf',
+                'sha1sum'      => sha1((string) $entity_id),
+            ]);
+            $this->assertGreaterThan(0, $documents[$entity_id]);
+        }
+
+        // A technician that can only access the first entity
+        $this->createItem(User::class, [
+            'name'          => 'restricted_technician',
+            'password'      => 'Restricted-Pass-123!',
+            'password2'     => 'Restricted-Pass-123!',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Technician', true),
+            '_entities_id'  => $entity_1,
+            '_is_recursive' => 0,
+        ], skip_fields: ['password', 'password2']);
+        $this->login('restricted_technician', 'Restricted-Pass-123!');
+
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add([
+            'name'           => 'Ticket with documents',
+            'content'        => 'Content',
+            'entities_id'    => $entity_1,
+            '_documents_id'  => [$documents[$entity_1], $documents[$entity_2]],
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $count_links = fn(int $documents_id): int => countElementsInTable(\Document_Item::getTable(), [
+            'documents_id' => $documents_id,
+            'itemtype'     => Ticket::class,
+            'items_id'     => $ticket_id,
+        ]);
+
+        // Only the document that the user can read is attached
+        $this->assertSame(1, $count_links($documents[$entity_1]));
+        $this->assertSame(0, $count_links($documents[$entity_2]));
+
+        // The document of the other entity cannot be downloaded through the ticket
+        $other_document = new \Document();
+        $this->assertTrue($other_document->getFromDB($documents[$entity_2]));
+        $this->assertFalse((bool) $other_document->canViewFile(['itemtype' => Ticket::class, 'items_id' => $ticket_id]));
+    }
 }
