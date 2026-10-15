@@ -60,6 +60,7 @@ use ITILReminder;
 use ITILSolution;
 use Laminas\Mail\Storage\Message as MailMessage;
 use MailCollector;
+use Notification;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
@@ -12384,6 +12385,61 @@ HTML,
         );
         foreach ($techs as $user) {
             $this->assertCount(1, array_keys($recipients, $user->fields['name'] . '@several.test'));
+        }
+    }
+
+    public function testAssignmentStatusChangeDoesNotDuplicateUpdateNotification(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $this->updateItem(Notification::class, getItemByTypeName(Notification::class, 'Update Ticket', true), ['is_active' => 1]);
+
+        $requester = getItemByTypeName(User::class, 'normal');
+        $this->createItem(UserEmail::class, [
+            'users_id'   => $requester->getID(),
+            'is_default' => 1,
+            'email'      => 'requester@assignment.test',
+        ]);
+        $category = $this->createItem(ITILCategory::class, ['name' => 'Assignment notification category']);
+
+        $count_update_notifications = static fn(Ticket $ticket): int => countElementsInTable('glpi_queuednotifications', [
+            'itemtype'  => Ticket::class,
+            'items_id'  => $ticket->getID(),
+            'event'     => 'update',
+            'recipient' => 'requester@assignment.test',
+        ]);
+
+        foreach ([[], ['itilcategories_id' => $category->getID()]] as $other_changes) {
+            $ticket = $this->createItem(Ticket::class, [
+                'name'        => 'Assignment notification',
+                'content'     => 'Assignment notification',
+                'entities_id' => 0,
+                '_actors'     => [
+                    'requester' => [
+                        ['itemtype' => User::class, 'items_id' => $requester->getID(), 'use_notification' => 1],
+                    ],
+                ],
+            ]);
+            $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
+
+            // Assigning a technician changes the status, the requester is notified once
+            $this->assertTrue($ticket->update(['id' => $ticket->getID()] + $other_changes + [
+                '_actors' => [
+                    'requester' => [
+                        ['itemtype' => User::class, 'items_id' => $requester->getID(), 'use_notification' => 1],
+                    ],
+                    'assign' => [
+                        ['itemtype' => User::class, 'items_id' => getItemByTypeName(User::class, 'tech', true), 'use_notification' => 1],
+                    ],
+                ],
+            ]));
+            $this->assertTrue($ticket->getFromDB($ticket->getID()));
+            $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
+            $this->assertEquals(1, $count_update_notifications($ticket));
         }
     }
 }
