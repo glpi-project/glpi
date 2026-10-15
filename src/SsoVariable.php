@@ -64,6 +64,52 @@ class SsoVariable extends CommonDropdown
         return static::canUpdate();
     }
 
+    public function prepareInputForAdd($input)
+    {
+        $input = $this->prepareInput($input);
+
+        if ($input === false) {
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->prepareInput($input);
+
+        if ($input === false) {
+            return false;
+        }
+
+        return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>|false
+     */
+    private function prepareInput(array $input): array|false
+    {
+        if (
+            $this->isServerVariableSafe($input['name'] ?? '') === false
+            && ($this->isNewItem() || $input['name'] !== $this->fields['name'])
+        ) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __s('The %s variable is unsafe. It should not be used for authentication.'),
+                    htmlescape($input['name']),
+                ),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        return $input;
+    }
+
 
     public function cleanRelationData()
     {
@@ -106,5 +152,24 @@ class SsoVariable extends CommonDropdown
 
         return array_key_exists('ssovariables_id', $config_values)
          && $config_values['ssovariables_id'] == $this->fields['id'];
+    }
+
+    /**
+     * Indicates whether the current variable is safe.
+     */
+    public function isSafe(): bool
+    {
+        return $this->isServerVariableSafe($this->fields['name'] ?? '');
+    }
+
+    /**
+     * Indicates whether a server variable is safe.
+     */
+    private function isServerVariableSafe(string $name): bool
+    {
+        $name = mb_strtoupper($name);
+
+        return str_starts_with($name, 'HTTP_') === false
+            && $name !== 'PHP_AUTH_USER';
     }
 }

@@ -1738,8 +1738,19 @@ class Auth extends CommonGLPI
         if (!Config::canUpdate()) {
             return false;
         }
+
+        $is_sso_variable_safe = true;
+        if (
+            $CFG_GLPI['ssovariables_id'] > 0
+            && ($sso_variable = SsoVariable::getById($CFG_GLPI['ssovariables_id'])) !== false
+            && $sso_variable->isSafe() === false
+        ) {
+            $is_sso_variable_safe = false;
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/authentication/other_ext_setup.html.twig', [
             'config' => $CFG_GLPI,
+            'is_sso_variable_safe' => $is_sso_variable_safe,
         ]);
     }
 

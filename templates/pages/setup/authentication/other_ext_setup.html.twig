@@ -81,6 +81,12 @@
                      {% if config['ssovariables_id'] is not empty and config['ssovariables_id'] != 0 %}
                         <div class="alert alert-info">{{ _x('authentication', 'Enabled') }}</div>
                      {% endif %}
+                     {% if not is_sso_variable_safe %}
+                        <div class="alert alert-important alert-danger">
+                            <i class="ti ti-alert-triangle alert-icon" aria-hidden="true"></i>
+                            {{ __('The %s variable is unsafe. It should not be used for authentication.')|format(get_item_name('SsoVariable', config['ssovariables_id'])) }}
+                        </div>
+                     {% endif %}
                      {{ fields.dropdownField('SsoVariable', 'ssovariables_id', config['ssovariables_id'], 'SsoVariable'|itemtype_name(1)) }}
                      {{ fields.textField('ssologout_url', config['ssologout_url'], __('SSO logout url')) }}
                      {{ fields.dropdownYesNo(
