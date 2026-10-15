@@ -309,7 +309,7 @@ class FieldUnicity extends CommonDropdown
      * @param CommonDBTM $item
      * @param string     $field
      *
-     * @return array
+     * @return array<string, mixed>
      */
     private static function getSearchOptionForField(CommonDBTM $item, string $field): array
     {
