@@ -431,7 +431,7 @@ class AuthTest extends DbTestCase
 
         $ssovariable_row = $DB->request([
             'FROM'  => 'glpi_ssovariables',
-            'WHERE' => ['name' => 'HTTP_AUTH_USER'],
+            'WHERE' => ['name' => 'REMOTE_USER'],
         ])->current();
         $this->assertNotEmpty($ssovariable_row);
 
@@ -441,13 +441,13 @@ class AuthTest extends DbTestCase
 
         // Simulate what the oauthsso plugin (or any external auth) does:
         // it sets the SSO server variable and calls login() with an empty login_name.
-        $_SERVER['HTTP_AUTH_USER'] = $username;
+        $_SERVER['REMOTE_USER'] = $username;
 
         $auth = new Auth();
         $logged_in = $auth->login('', '', false);
 
         $CFG_GLPI = $cfg_backup;
-        unset($_SERVER['HTTP_AUTH_USER']);
+        unset($_SERVER['REMOTE_USER']);
 
         $this->assertTrue($logged_in);
 
@@ -480,7 +480,7 @@ class AuthTest extends DbTestCase
 
         $ssovariable_row = $DB->request([
             'FROM'  => 'glpi_ssovariables',
-            'WHERE' => ['name' => 'HTTP_AUTH_USER'],
+            'WHERE' => ['name' => 'REMOTE_USER'],
         ])->current();
         $this->assertNotEmpty($ssovariable_row);
 
@@ -489,7 +489,7 @@ class AuthTest extends DbTestCase
         $CFG_GLPI['existing_auth_server_field_clean_domain'] = 0;
         $CFG_GLPI['is_users_auto_add'] = $auto_add ? 1 : 0;
 
-        $_SERVER['HTTP_AUTH_USER'] = $username;
+        $_SERVER['REMOTE_USER'] = $username;
 
         return $cfg_backup;
     }
@@ -518,7 +518,7 @@ class AuthTest extends DbTestCase
         $applied = $auth->applyValidatedLogin();
 
         $CFG_GLPI = $cfg_backup;
-        unset($_SERVER['HTTP_AUTH_USER']);
+        unset($_SERVER['REMOTE_USER']);
 
         $this->assertTrue($validated, implode(' ', $auth->getErrors()));
         $this->assertNull($user_id_after_validation, 'validateLogin() must not create the user');
@@ -550,7 +550,7 @@ class AuthTest extends DbTestCase
         $applied = $auth->applyValidatedLogin();
 
         $CFG_GLPI = $cfg_backup;
-        unset($_SERVER['HTTP_AUTH_USER']);
+        unset($_SERVER['REMOTE_USER']);
 
         $this->assertTrue($validated);
         $this->assertFalse($applied);
