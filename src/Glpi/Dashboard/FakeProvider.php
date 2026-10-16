@@ -452,7 +452,6 @@ final class FakeProvider extends Provider
                 ),
             ];
         }
-
         return [
             'data'  => [
                 'labels' => $labels,
@@ -460,6 +459,57 @@ final class FakeProvider extends Provider
             ],
             'label' => $params['label'] ?? '',
             'icon'  => User::getIcon(),
+        ];
+    }
+
+    public static function ticketsBacklog(string $period = 'month', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $labels[] = match ($period) {
+                'day'   => date('Y-m-d', strtotime("-$i days")),
+                'week'  => date('o-\WW', strtotime("-$i weeks")),
+                'year'  => date('Y', strtotime("-$i years")),
+                default => date('Y-m', strtotime("-$i months")),
+            };
+        }
+
+        $series = [];
+        foreach (
+            [
+                _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
+                _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
+                __('Closed'),
+            ] as $name
+        ) {
+            $series[] = [
+                'name' => $name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($name . $label, 80) + 20, 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        // Backlog follows the difference between opened and solved tickets
+        $backlog = 150;
+        $backlog_data = [];
+        foreach (array_keys($labels) as $index) {
+            $backlog += $series[0]['data'][$index]['value'] - $series[1]['data'][$index]['value'];
+            $backlog_data[] = ['value' => max(0, $backlog), 'url' => ''];
+        }
+        $series[] = [
+            'name' => __('Backlog'),
+            'data' => $backlog_data,
+        ];
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
         ];
     }
 

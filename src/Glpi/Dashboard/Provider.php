@@ -65,6 +65,7 @@ use Item_OperatingSystem;
 use Location;
 use OperatingSystem;
 use Profile_User;
+use Safe\DateTimeImmutable;
 use Safe\Exceptions\DatetimeException;
 use Session;
 use Stat;
@@ -1883,6 +1884,185 @@ class Provider
         }
 
         return isset($criteria['WHERE']) ? $criteria : null;
+    }
+
+    /**
+     * Count opened, solved and closed tickets per period, and the backlog
+     * (tickets not solved yet) at the end of each period.
+     * @param string $period 'day', 'week', 'month' or 'year'
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsBacklog(string $period = 'month', array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        // SQL and PHP formats must produce the same period keys (ISO weeks start on monday)
+        $periods_specs = [
+            'day'   => ['sql' => '%Y-%m-%d', 'php' => 'Y-m-d',  'start' => 'today',             'step' => '+1 day',   'default_range' => '-29 days'],
+            'week'  => ['sql' => '%x-W%v',   'php' => 'o-\WW',  'start' => 'monday this week',  'step' => '+1 week',  'default_range' => '-11 weeks'],
+            'month' => ['sql' => '%Y-%m',    'php' => 'Y-m',    'start' => 'first day of this month', 'step' => '+1 month', 'default_range' => '-11 months'],
+            'year'  => ['sql' => '%Y',       'php' => 'Y',      'start' => 'first day of january this year', 'step' => '+1 year', 'default_range' => '-4 years'],
+        ];
+        $spec = $periods_specs[$period] ?? $periods_specs['month'];
+        // Avoid unreadable charts and heavy queries on a long range with a short period
+        $max_periods = 366;
+
+        $no_data = [
+            'data'  => [
+                'labels' => [],
+                'series' => [],
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return $no_data;
+        }
+
+        // The dates filter defines the displayed range, it must not restrict the tickets counted in the backlog
+        $range_end   = new DateTimeImmutable('today');
+        $range_begin = $range_end->modify($spec['default_range']);
+        $dates_value = $params['apply_filters'][DatesFilter::getId()] ?? null;
+        unset($params['apply_filters'][DatesFilter::getId()]);
+        if (is_array($dates_value) && count($dates_value) === 2) {
+            try {
+                $filter_begin = new DateTimeImmutable((string) $dates_value[0]);
+                $filter_end   = new DateTimeImmutable((string) $dates_value[1]);
+                [$range_begin, $range_end] = $filter_begin <= $filter_end
+                    ? [$filter_begin, $filter_end]
+                    : [$filter_end, $filter_begin];
+            } catch (\Exception) {
+                // keep default range if filter values are not parsable dates
+            }
+        }
+
+        // Split the range into periods, aligned on the period start
+        $periods      = [];
+        $period_start = $range_begin->modify($spec['start'])->setTime(0, 0);
+        $last_day     = $range_end->setTime(0, 0);
+        while ($period_start <= $last_day) {
+            $next_start = $period_start->modify($spec['step']);
+            $periods[$period_start->format($spec['php'])] = [
+                'start'        => $period_start->format('Y-m-d H:i:s'),
+                'end'          => $next_start->format('Y-m-d H:i:s'),
+                // The search "morethan" is strict, while the period includes its first second
+                'search_start' => $period_start->modify('-1 second')->format('Y-m-d H:i:s'),
+            ];
+            $period_start = $next_start;
+        }
+        $periods = array_slice($periods, -$max_periods, null, true);
+        if (count($periods) === 0) {
+            return $no_data;
+        }
+        $begin = reset($periods)['start'];
+        $end   = end($periods)['end'];
+
+        $ticket_table = Ticket::getTable();
+        $base_criteria = array_merge_recursive(
+            [
+                'FROM'  => $ticket_table,
+                'WHERE' => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+            ],
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $count_by_period = static function (string $field) use ($db, $base_criteria, $ticket_table, $spec, $begin, $end): array {
+            $criteria = array_merge_recursive($base_criteria, [
+                'SELECT'  => [
+                    QueryFunction::dateFormat("$ticket_table.$field", $spec['sql'], 'period'),
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'WHERE'   => [
+                    ["$ticket_table.$field" => ['>=', $begin]],
+                    ["$ticket_table.$field" => ['<', $end]],
+                ],
+                'GROUPBY' => 'period',
+            ]);
+
+            $counts = [];
+            foreach ($db->request($criteria) as $result) {
+                $counts[$result['period']] = (int) $result['cpt'];
+            }
+            return $counts;
+        };
+        $count_before = static function (string $field) use ($db, $base_criteria, $ticket_table, $begin): int {
+            $criteria = array_merge_recursive($base_criteria, [
+                'SELECT' => ['COUNT DISTINCT' => "$ticket_table.id AS cpt"],
+                'WHERE'  => [
+                    ["$ticket_table.$field" => ['<', $begin]],
+                ],
+            ]);
+            return (int) ($db->request($criteria)->current()['cpt'] ?? 0);
+        };
+
+        $opened = $count_by_period('date');
+        $solved = $count_by_period('solvedate');
+        $closed = $count_by_period('closedate');
+        // Solving a ticket fills its solve date (closing it too), reopening it empties the solve date,
+        // so the tickets not solved yet are the created ones minus the solved ones
+        $backlog = $count_before('date') - $count_before('solvedate');
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $search_criteria = self::getSearchFiltersCriteria($ticket_table, $params['apply_filters'])['criteria'] ?? [];
+        $url             = Ticket::getSearchURL();
+        $build_url       = (static fn(int $date_so, array $dates): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+            'criteria' => array_merge([
+                [
+                    'link'       => 'AND',
+                    'field'      => $date_so,
+                    'searchtype' => 'morethan',
+                    'value'      => $dates['search_start'],
+                ], [
+                    'link'       => 'AND',
+                    'field'      => $date_so,
+                    'searchtype' => 'lessthan',
+                    'value'      => $dates['end'],
+                ],
+            ], $search_criteria),
+            'reset'    => 'reset',
+        ]));
+
+        $series = [
+            ['name' => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()), 'data' => []],
+            ['name' => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()), 'data' => []],
+            ['name' => __('Closed'), 'data' => []],
+            ['name' => __('Backlog'), 'data' => []],
+        ];
+        foreach ($periods as $period_key => $dates) {
+            $period_opened = $opened[$period_key] ?? 0;
+            $period_solved = $solved[$period_key] ?? 0;
+            $backlog += $period_opened - $period_solved;
+
+            $series[0]['data'][] = ['value' => $period_opened, 'url' => $build_url(15, $dates)]; // creation date
+            $series[1]['data'][] = ['value' => $period_solved, 'url' => $build_url(17, $dates)]; // solve date
+            $series[2]['data'][] = ['value' => $closed[$period_key] ?? 0, 'url' => $build_url(16, $dates)]; // close date
+            // Tickets search can't express "not solved at a given date"
+            $series[3]['data'][] = ['value' => max(0, $backlog), 'url' => ''];
+        }
+
+        return [
+            'data'  => [
+                'labels' => array_map('strval', array_keys($periods)),
+                'series' => $series,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
     }
 
     /**
