@@ -36,7 +36,9 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\FakeProvider;
 use Glpi\Dashboard\Filters\DatesFilter;
+use Glpi\Dashboard\Filters\GroupRequesterFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
@@ -1206,6 +1208,75 @@ class ProviderTest extends DbTestCase
         $this->assertSame(2, $result['data']['series'][1]['data'][$group2_index], 'group2: 2 closed tickets expected');
     }
 
+    public function testTicketsByRequesterGroupAndStatus(): void
+    {
+        $this->login();
+
+        $requester_group = $this->createItem(\Group::class, [
+            'name' => 'test dashboard requester group for tickets by status',
+        ]);
+        $other_requester_group = $this->createItem(\Group::class, [
+            'name' => 'test dashboard other requester group for tickets by status',
+        ]);
+        $assigned_group = $this->createItem(\Group::class, [
+            'name' => 'test dashboard assigned group for tickets by requester group',
+        ]);
+
+        $this->attachTicketToGroup('requester group opened 1', \Ticket::INCOMING, $requester_group, \Group_Ticket::REQUESTER);
+        $this->attachTicketToGroup('requester group opened 2', \Ticket::WAITING, $requester_group, \Group_Ticket::REQUESTER);
+        $this->attachTicketToGroup('requester group closed', \Ticket::CLOSED, $requester_group, \Group_Ticket::REQUESTER);
+        $this->attachTicketToGroup('other requester group solved', \Ticket::SOLVED, $other_requester_group, \Group_Ticket::REQUESTER);
+        $this->attachTicketToGroup('assigned group opened', \Ticket::INCOMING, $assigned_group);
+
+        $result = Provider::ticketsByRequesterGroupAndStatus();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertCount(2, $result['data']['series']);
+
+        $requester_index = array_search($requester_group->fields['name'], $result['data']['labels'], true);
+        $other_index     = array_search($other_requester_group->fields['name'], $result['data']['labels'], true);
+        $this->assertNotFalse($requester_index, 'requester group must be included in report labels');
+        $this->assertNotFalse($other_index, 'other requester group must be included in report labels');
+        $this->assertNotContains($assigned_group->fields['name'], $result['data']['labels'], 'assigned groups must not be included');
+
+        $this->assertSame(2, $result['data']['series'][0]['data'][$requester_index], 'requester group: 2 opened tickets expected');
+        $this->assertSame(1, $result['data']['series'][1]['data'][$requester_index], 'requester group: 1 closed ticket expected');
+        $this->assertSame(0, $result['data']['series'][0]['data'][$other_index], 'other requester group: no opened ticket expected');
+        $this->assertSame(1, $result['data']['series'][1]['data'][$other_index], 'other requester group: 1 solved ticket expected');
+
+        // The assigned groups card must not include requester groups
+        $assigned = Provider::ticketsByGroupAndStatus();
+        $this->assertContains($assigned_group->fields['name'], $assigned['data']['labels']);
+        $this->assertNotContains($requester_group->fields['name'], $assigned['data']['labels'], 'requester groups must not be included');
+
+        // The requester group filter restricts the rows to the selected groups
+        $filtered = Provider::ticketsByRequesterGroupAndStatus([
+            'apply_filters' => [GroupRequesterFilter::getId() => [$requester_group->getID()]],
+        ]);
+        $this->assertSame([$requester_group->fields['name']], $filtered['data']['labels']);
+        $this->assertSame(2, $filtered['data']['series'][0]['data'][0]);
+        $this->assertSame(1, $filtered['data']['series'][1]['data'][0]);
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsByRequesterGroupAndStatus()['data']['nodata'] ?? false);
+        $this->assertTrue(Provider::ticketsByGroupAndStatus()['data']['nodata'] ?? false);
+    }
+
+    public function testFakeTicketsByRequesterGroupAndStatus(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByRequesterGroupAndStatus');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByRequesterGroupAndStatus(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertCount(2, $result['data']['series']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->assertCount(count($result['data']['labels']), $serie['data']);
+        }
+    }
+
     public function testTicketsByCategoryAndType(): void
     {
         $this->login();
@@ -1303,7 +1374,7 @@ class ProviderTest extends DbTestCase
         $this->assertSame(1, $filtered_series_by_name[\Ticket::getTicketTypeName(\Ticket::DEMAND_TYPE)][$filtered_index], 'solved request must not leak into the opened report');
     }
 
-    private function attachTicketToGroup(string $name, int $status, \Group $group): \Ticket
+    private function attachTicketToGroup(string $name, int $status, \Group $group, int $type = \Group_Ticket::ASSIGN): \Ticket
     {
         $ticket = $this->createItem(\Ticket::class, [
             'name'        => "test dashboard $name",
@@ -1314,7 +1385,7 @@ class ProviderTest extends DbTestCase
         $this->createItem(\Group_Ticket::class, [
             'tickets_id' => $ticket->getID(),
             'groups_id'  => $group->getID(),
-            'type'       => \Group_Ticket::ASSIGN,
+            'type'       => $type,
         ]);
 
         return $ticket;
