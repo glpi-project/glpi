@@ -1148,24 +1148,43 @@ class MassiveActionTest extends DbTestCase
     {
         $this->login();
         $users_id = (int) Session::getLoginUserID();
+        $tech_id = getItemByTypeName(User::class, 'tech', true);
 
         $displaypref = new DisplayPreference();
         $displaypref->activatePerso(['itemtype' => 'Computer', 'users_id' => $users_id]);
-        $this->assertGreaterThan(
-            0,
-            countElementsInTable(DisplayPreference::getTable(), ['users_id' => $users_id, 'itemtype' => 'Computer'])
-        );
+        $displaypref->activatePerso(['itemtype' => 'Computer', 'users_id' => $tech_id]);
+        $own_crit = ['users_id' => $users_id, 'itemtype' => 'Computer'];
+        $tech_crit = ['users_id' => $tech_id, 'itemtype' => 'Computer'];
+        $this->assertGreaterThan(0, countElementsInTable(DisplayPreference::getTable(), $own_crit));
+        $tech_count = countElementsInTable(DisplayPreference::getTable(), $tech_crit);
+        $this->assertGreaterThan(0, $tech_count);
 
         // Another user's personal view cannot be deleted
         $this->processMassiveActionsForOneItemtype(
             'delete_for_user',
             $displaypref,
             ['Computer'],
-            ['users_id' => (string) getItemByTypeName(User::class, 'tech', true)],
+            ['users_id' => (string) $tech_id],
             0,
             1,
             DisplayPreference::class
         );
+        $this->assertSame($tech_count, countElementsInTable(DisplayPreference::getTable(), $tech_crit));
+
+        // Own personal view cannot be deleted without the PERSONAL right
+        $old_right = $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname];
+        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = DisplayPreference::GENERAL;
+        $this->processMassiveActionsForOneItemtype(
+            'delete_for_user',
+            $displaypref,
+            ['Computer'],
+            ['users_id' => (string) $users_id],
+            0,
+            1,
+            DisplayPreference::class
+        );
+        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = $old_right;
+        $this->assertGreaterThan(0, countElementsInTable(DisplayPreference::getTable(), $own_crit));
 
         $this->processMassiveActionsForOneItemtype(
             'delete_for_user',
@@ -1176,10 +1195,7 @@ class MassiveActionTest extends DbTestCase
             0,
             DisplayPreference::class
         );
-        $this->assertSame(
-            0,
-            countElementsInTable(DisplayPreference::getTable(), ['users_id' => $users_id, 'itemtype' => 'Computer'])
-        );
+        $this->assertSame(0, countElementsInTable(DisplayPreference::getTable(), $own_crit));
     }
 
     public function testProcessMassiveActionsForOneItemtype_updateDropdownOrCommonDBConnexity()
