@@ -438,6 +438,31 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsByStatusAndTechnician(array $params = []): array
+    {
+        $labels = self::getFakeNames();
+
+        $series = [];
+        foreach (array_keys(Ticket::getAllStatusArray()) as $status) {
+            $series[] = [
+                'name' => Ticket::getStatus($status),
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($label . $status, 30),
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => User::getIcon(),
+        ];
+    }
+
     public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
         $item_counts = self::getItemCount();
