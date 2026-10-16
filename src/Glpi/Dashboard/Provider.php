@@ -1441,8 +1441,10 @@ class Provider
         while ($period_start <= $last_day) {
             $next_start = $period_start->modify($spec['step']);
             $periods[$period_start->format($spec['php'])] = [
-                'start' => $period_start->format('Y-m-d H:i:s'),
-                'end'   => $next_start->format('Y-m-d H:i:s'),
+                'start'        => $period_start->format('Y-m-d H:i:s'),
+                'end'          => $next_start->format('Y-m-d H:i:s'),
+                // The search "morethan" is strict, while the period includes its first second
+                'search_start' => $period_start->modify('-1 second')->format('Y-m-d H:i:s'),
             ];
             $period_start = $next_start;
         }
@@ -1512,7 +1514,7 @@ class Provider
                         'link'       => 'AND',
                         'field'      => $date_so,
                         'searchtype' => 'morethan',
-                        'value'      => $dates['start'],
+                        'value'      => $dates['search_start'],
                     ], [
                         'link'       => 'AND',
                         'field'      => $date_so,

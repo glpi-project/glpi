@@ -1262,7 +1262,9 @@ class ProviderTest extends DbTestCase
         // 2 tickets not solved before the range, then opened minus solved each month
         $this->assertSame([2, 2, 3], $values[3], 'backlog at the end of each month');
 
-        $this->assertStringContainsString('2010-02-01 00:00:00', urldecode($result['data']['series'][0]['data'][1]['url']));
+        // The search lower bound is strict, it starts 1 second before the period
+        $this->assertStringContainsString('2010-01-31 23:59:59', urldecode($result['data']['series'][0]['data'][1]['url']));
+        $this->assertStringContainsString('2010-03-01 00:00:00', urldecode($result['data']['series'][0]['data'][1]['url']));
         $this->assertSame('', $result['data']['series'][3]['data'][0]['url']);
 
         // Periods are aligned on their start: ISO weeks start on monday
@@ -1283,6 +1285,21 @@ class ProviderTest extends DbTestCase
             'apply_filters' => [DatesFilter::getId() => ['2009-06-01', '2010-02-01']],
         ]);
         $this->assertSame(['2009', '2010'], $years['data']['labels']);
+
+        // A ticket created exactly at the period start is counted and found by the period search
+        $midnight_ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'test dashboard backlog created at midnight',
+            'content'     => 'blablabla',
+            'entities_id' => $entity_id,
+        ]);
+        $DB->update(\Ticket::getTable(), ['date' => '2010-04-01 00:00:00'], ['id' => $midnight_ticket->getID()]);
+        $april = Provider::ticketsBacklog('month', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-04-01', '2010-04-30']],
+        ]);
+        $this->assertSame(1, $april['data']['series'][0]['data'][0]['value']);
+        parse_str((string) parse_url($april['data']['series'][0]['data'][0]['url'], PHP_URL_QUERY), $search_params);
+        $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+        $this->assertSame(1, $search_data['data']['totalcount'], 'the midnight ticket must be found by the period search');
 
         // A long range with a short period is limited to the last periods
         $long_range = Provider::ticketsBacklog('day', [
