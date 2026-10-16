@@ -1379,7 +1379,7 @@ class Provider
      */
     public static function openedTicketsByCategoryAndStatus(array $params = []): array
     {
-        $DB = DBConnection::getReadConnection();
+        $db = DBConnection::getReadConnection();
 
         $default_params = [
             'label'         => "",
@@ -1388,20 +1388,30 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
-        // A dashboard status filter would be merged into the IN() list, intersect it with opened statuses instead
-        $statuses        = Ticket::getNotSolvedStatusArray();
-        $filtered_status = (int) ($params['apply_filters'][TicketStatusFilter::getId()] ?? 0);
-        unset($params['apply_filters'][TicketStatusFilter::getId()]);
-        if ($filtered_status > 0) {
-            $statuses = array_values(array_intersect($statuses, [$filtered_status]));
-        }
-
         $data = [
             'labels' => [],
             'series' => [],
         ];
 
-        if (count($statuses) > 0) {
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return [
+                'data'  => $data + ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
+        // A dashboard status filter would be merged into the IN() list, intersect it with opened statuses instead
+        $opened_statuses  = Ticket::getNotSolvedStatusArray();
+        $queried_statuses = $opened_statuses;
+        $filtered_status  = (int) ($params['apply_filters'][TicketStatusFilter::getId()] ?? 0);
+        unset($params['apply_filters'][TicketStatusFilter::getId()]);
+        if ($filtered_status > 0) {
+            $queried_statuses = array_values(array_intersect($opened_statuses, [$filtered_status]));
+        }
+
+        if (count($queried_statuses) > 0) {
             $ticket_table   = Ticket::getTable();
             $category_table = \ITILCategory::getTable();
 
@@ -1425,7 +1435,7 @@ class Provider
                     ],
                     'WHERE'     => [
                         "$ticket_table.is_deleted" => 0,
-                        "$ticket_table.status"     => $statuses,
+                        "$ticket_table.status"     => $queried_statuses,
                     ] + getEntitiesRestrictCriteria($ticket_table),
                     'GROUPBY'   => ["$category_table.id", "$ticket_table.status"],
                     'ORDERBY'   => "$category_table.completename",
@@ -1433,7 +1443,7 @@ class Provider
                 Ticket::getCriteriaFromProfile(),
                 self::getFiltersCriteria($ticket_table, $params['apply_filters'])
             );
-            $iterator = $DB->request($criteria);
+            $iterator = $db->request($criteria);
             Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 
             $matrix         = [];
@@ -1446,8 +1456,8 @@ class Provider
             }
 
             $data['labels'] = array_values($category_names);
-            // Keep one series per opened status, even empty, so colors stay stable
-            foreach ($statuses as $status) {
+            // Keep one series per opened status, even filtered out, as the palette depends on the number of series
+            foreach ($opened_statuses as $status) {
                 $series_data = [];
                 foreach (array_keys($category_names) as $category_id) {
                     $series_data[] = $matrix[$category_id][$status] ?? 0;

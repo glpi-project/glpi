@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\FakeProvider;
 use Glpi\Dashboard\Filters\DatesFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Provider;
@@ -1352,20 +1353,41 @@ class ProviderTest extends DbTestCase
         $this->assertNotFalse($none_index, 'a "None" label is expected for the uncategorized ticket');
         $this->assertGreaterThanOrEqual(1, $series_by_name[\Ticket::getStatus(\Ticket::INCOMING)][$none_index], 'at least 1 new uncategorized ticket expected');
 
-        // A status filter on an opened status keeps only this status
+        // A status filter on an opened status keeps every series, so colors don't change, but only counts this status
         $filtered = Provider::openedTicketsByCategoryAndStatus([
             'apply_filters' => [TicketStatusFilter::getId() => \Ticket::WAITING],
         ]);
-        $this->assertSame([\Ticket::getStatus(\Ticket::WAITING)], array_column($filtered['data']['series'], 'name'));
+        $this->assertSame($expected_order, array_column($filtered['data']['series'], 'name'));
         $filtered_index = array_search($category->fields['completename'], $filtered['data']['labels'], true);
         $this->assertNotFalse($filtered_index);
-        $this->assertSame(1, $filtered['data']['series'][0]['data'][$filtered_index], '1 pending ticket expected');
+        $filtered_series_by_name = array_column($filtered['data']['series'], 'data', 'name');
+        $this->assertSame(1, $filtered_series_by_name[\Ticket::getStatus(\Ticket::WAITING)][$filtered_index], '1 pending ticket expected');
+        $this->assertSame(0, $filtered_series_by_name[\Ticket::getStatus(\Ticket::INCOMING)][$filtered_index], 'new tickets must be filtered out');
 
         // A status filter on a closed status must not leak closed tickets into the report
         $filtered_closed = Provider::openedTicketsByCategoryAndStatus([
             'apply_filters' => [TicketStatusFilter::getId() => \Ticket::CLOSED],
         ]);
         $this->assertTrue($filtered_closed['data']['nodata'] ?? false, 'no data expected when filtering on a closed status');
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::openedTicketsByCategoryAndStatus()['data']['nodata'] ?? false);
+    }
+
+    public function testFakeOpenedTicketsByCategoryAndStatus(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'openedTicketsByCategoryAndStatus');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::openedTicketsByCategoryAndStatus(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertCount(count(\Ticket::getNotSolvedStatusArray()), $result['data']['series']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->assertCount(count($result['data']['labels']), $serie['data']);
+        }
     }
 
     private function attachTicketToGroup(string $name, int $status, \Group $group): \Ticket
