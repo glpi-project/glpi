@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\FakeProvider;
 use Glpi\Dashboard\Filters\DatesFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Provider;
@@ -1204,6 +1205,129 @@ class ProviderTest extends DbTestCase
         $this->assertSame(1, $result['data']['series'][1]['data'][$group1_index], 'group1: 1 closed ticket expected');
         $this->assertSame(1, $result['data']['series'][0]['data'][$group2_index], 'group2: 1 opened ticket expected');
         $this->assertSame(2, $result['data']['series'][1]['data'][$group2_index], 'group2: 2 closed tickets expected');
+    }
+
+    public function testTicketsBacklog(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        // Dates far in the past so that no other ticket of the test database is counted
+        foreach (
+            [
+                ['created before, not solved', '2009-12-15 10:00:00', null, null],
+                ['created before, solved in january', '2009-12-20 10:00:00', '2010-01-10 10:00:00', null],
+                ['created in january, solved and closed in february', '2010-01-05 10:00:00', '2010-02-03 10:00:00', '2010-02-10 10:00:00'],
+                ['created in february, not solved', '2010-02-15 10:00:00', null, null],
+                ['created and solved in march', '2010-03-01 10:00:00', '2010-03-02 10:00:00', null],
+                ['created in march, not solved', '2010-03-10 10:00:00', null, null],
+            ] as [$name, $date, $solvedate, $closedate]
+        ) {
+            $ticket = $this->createItem(\Ticket::class, [
+                'name'        => "test dashboard backlog $name",
+                'content'     => 'blablabla',
+                'entities_id' => $entity_id,
+            ]);
+            $DB->update(\Ticket::getTable(), [
+                'date'      => $date,
+                'solvedate' => $solvedate,
+                'closedate' => $closedate,
+            ], ['id' => $ticket->getID()]);
+        }
+
+        $result = Provider::ticketsBacklog('month', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-01-01', '2010-03-31']],
+        ]);
+        $this->assertSame(['2010-01', '2010-02', '2010-03'], $result['data']['labels']);
+
+        // 4 series in a fixed order, so colors stay consistent
+        $this->assertSame(
+            [
+                _nx('ticket', 'Opened', 'Opened', \Session::getPluralNumber()),
+                _nx('ticket', 'Solved', 'Solved', \Session::getPluralNumber()),
+                __('Closed'),
+                __('Backlog'),
+            ],
+            array_column($result['data']['series'], 'name')
+        );
+        $values = array_map(
+            static fn(array $serie) => array_column($serie['data'], 'value'),
+            $result['data']['series']
+        );
+        $this->assertSame([1, 1, 2], $values[0], 'opened tickets per month');
+        $this->assertSame([1, 1, 1], $values[1], 'solved tickets per month');
+        $this->assertSame([0, 1, 0], $values[2], 'closed tickets per month');
+        // 2 tickets not solved before the range, then opened minus solved each month
+        $this->assertSame([2, 2, 3], $values[3], 'backlog at the end of each month');
+
+        // The search lower bound is strict, it starts 1 second before the period
+        $this->assertStringContainsString('2010-01-31 23:59:59', urldecode($result['data']['series'][0]['data'][1]['url']));
+        $this->assertStringContainsString('2010-03-01 00:00:00', urldecode($result['data']['series'][0]['data'][1]['url']));
+        $this->assertSame('', $result['data']['series'][3]['data'][0]['url']);
+
+        // Periods are aligned on their start: ISO weeks start on monday
+        $weeks = Provider::ticketsBacklog('week', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-01-06', '2010-01-20']],
+        ]);
+        $this->assertSame(['2010-W01', '2010-W02', '2010-W03'], $weeks['data']['labels']);
+        // 2010-01-10 is a sunday, the last day of week 1
+        $this->assertSame([1, 0, 0], array_column($weeks['data']['series'][1]['data'], 'value'), 'ticket solved on sunday belongs to week 1');
+
+        $days = Provider::ticketsBacklog('day', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-03-01', '2010-03-02']],
+        ]);
+        $this->assertSame(['2010-03-01', '2010-03-02'], $days['data']['labels']);
+        $this->assertSame([1, 0], array_column($days['data']['series'][0]['data'], 'value'));
+
+        $years = Provider::ticketsBacklog('year', [
+            'apply_filters' => [DatesFilter::getId() => ['2009-06-01', '2010-02-01']],
+        ]);
+        $this->assertSame(['2009', '2010'], $years['data']['labels']);
+
+        // A ticket created exactly at the period start is counted and found by the period search
+        $midnight_ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'test dashboard backlog created at midnight',
+            'content'     => 'blablabla',
+            'entities_id' => $entity_id,
+        ]);
+        $DB->update(\Ticket::getTable(), ['date' => '2010-04-01 00:00:00'], ['id' => $midnight_ticket->getID()]);
+        $april = Provider::ticketsBacklog('month', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-04-01', '2010-04-30']],
+        ]);
+        $this->assertSame(1, $april['data']['series'][0]['data'][0]['value']);
+        parse_str((string) parse_url($april['data']['series'][0]['data'][0]['url'], PHP_URL_QUERY), $search_params);
+        $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+        $this->assertSame(1, $search_data['data']['totalcount'], 'the midnight ticket must be found by the period search');
+
+        // A long range with a short period is limited to the last periods
+        $long_range = Provider::ticketsBacklog('day', [
+            'apply_filters' => [DatesFilter::getId() => ['2008-01-01', '2010-12-31']],
+        ]);
+        $this->assertCount(366, $long_range['data']['labels']);
+        $this->assertSame('2010-12-31', end($long_range['data']['labels']));
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsBacklog()['data']['nodata'] ?? false);
+    }
+
+    public function testFakeTicketsBacklog(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsBacklog');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        foreach (['day', 'week', 'month', 'year'] as $period) {
+            $result = FakeProvider::ticketsBacklog($period, ['label' => 'test']);
+            $this->assertSame('test', $result['label']);
+            $this->assertCount(4, $result['data']['series']);
+            foreach ($result['data']['series'] as $serie) {
+                $this->assertCount(count($result['data']['labels']), $serie['data']);
+            }
+        }
     }
 
     public function testTicketsByCategoryAndType(): void
