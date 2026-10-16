@@ -244,12 +244,12 @@ export default function usePlanningScheduler(calendar_el, current_view, full_vie
             },
             body: new URLSearchParams({
                 action: 'clone_event',
-                old_itemtype: event.extendedProps.itemtype,
-                old_items_id: event.extendedProps.items_id,
-                actor_itemtype: actor.itemtype,
-                actor_items_id: actor.items_id,
-                start: event.start.toISOString(),
-                end: event.end.toISOString(),
+                'event[old_itemtype]': event.extendedProps.itemtype,
+                'event[old_items_id]': event.extendedProps.items_id,
+                'event[actor][itemtype]': actor.itemtype,
+                'event[actor][items_id]': actor.items_id,
+                'event[start]': event.start.toISOString(),
+                'event[end]': event.end.toISOString(),
             }),
         }).then(response => {
             if (response.ok) {
