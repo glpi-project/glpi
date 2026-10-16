@@ -1282,10 +1282,37 @@ class ProviderTest extends DbTestCase
         ]);
         $this->assertSame([$tech2->fields['name']], $filtered_tech['data']['labels']);
 
+        // A new ticket, only visible with the new tickets right among the limited rights below
+        global $DB;
+        $new_ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'test dashboard tickets by status and technician new',
+            'content'     => 'blablabla',
+            'entities_id' => $entity_id,
+            '_actors'     => [
+                'assign' => [['itemtype' => User::class, 'items_id' => $tech2->getID()]],
+            ],
+        ], ['_actors', 'status']);
+        // Assigning a technician switches the ticket status, force it back to new
+        $DB->update(\Ticket::getTable(), ['status' => \Ticket::INCOMING], ['id' => $new_ticket->getID()]);
+
         // Without any ticket right, nothing is exposed
         $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
         $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
         $this->assertTrue(Provider::ticketsByStatusAndTechnician()['data']['nodata'] ?? false);
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsByStatusAndTechnician()['data']['nodata'] ?? false);
+
+        // The new tickets right alone only allows to see new tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $new_only = Provider::ticketsByStatusAndTechnician();
+        $new_only_series = array_column($new_only['data']['series'], 'data', 'name');
+        $new_only_index  = array_search($tech2->fields['name'], $new_only['data']['labels'], true);
+        $this->assertNotFalse($new_only_index, 'technician 2 has a new ticket');
+        $this->assertSame(1, $new_only_series[\Ticket::getStatus(\Ticket::INCOMING)][$new_only_index]);
+        $this->assertSame(0, $new_only_series[\Ticket::getStatus(\Ticket::SOLVED)][$new_only_index], 'solved ticket must not be visible');
+        $this->assertNotContains($tech1->fields['name'], $new_only['data']['labels'], 'technician 1 has no new ticket');
     }
 
     public function testFakeTicketsByStatusAndTechnician(): void

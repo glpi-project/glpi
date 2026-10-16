@@ -1393,8 +1393,8 @@ class Provider
             'series' => [],
         ];
 
-        // Without any ticket right, the profile criteria don't restrict anything
-        if (!Ticket::canView()) {
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
             return [
                 'data'  => $data + ['nodata' => true],
                 'label' => $params['label'],
@@ -1463,7 +1463,7 @@ class Provider
                       + getEntitiesRestrictCriteria($ticket_table),
                     'GROUPBY'    => ["$user_table.id", "$ticket_table.status"],
                 ],
-                Ticket::getCriteriaFromProfile(),
+                $visibility_criteria,
                 self::getFiltersCriteria($ticket_table, $params['apply_filters'])
             );
             $iterator = $db->request($criteria);
@@ -1507,6 +1507,31 @@ class Provider
             'label' => $params['label'],
             'icon'  => $params['icon'],
         ];
+    }
+
+    /**
+     * Get the criteria restricting tickets to the ones the current user can see.
+     *
+     * Ticket::getCriteriaFromProfile() returns no restriction for a profile that only has
+     * the UPDATE right, only the READNEWTICKET right (handled with READASSIGN only), or no right at all.
+     *
+     * @return array<string, mixed>|null criteria to merge into the query, null if no ticket is visible
+     */
+    private static function getTicketVisibilityCriteria(): ?array
+    {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            return [];
+        }
+
+        $criteria = Ticket::getCriteriaFromProfile();
+        if (
+            Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)
+            && !Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)
+        ) {
+            $criteria['WHERE'][0]['OR'][] = [Ticket::getTable() . '.status' => Ticket::INCOMING];
+        }
+
+        return isset($criteria['WHERE']) ? $criteria : null;
     }
 
     /**
