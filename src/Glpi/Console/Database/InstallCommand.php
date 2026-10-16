@@ -272,7 +272,8 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
                 $this->dbh = $dbh;
             }
         };
-        $config_requirement = new DbConfiguration($db);
+        // Enable the `max_allowed_packet` check as it is needed to import the default data.
+        $config_requirement = new DbConfiguration($db, true);
         if (!$config_requirement->isValidated()) {
             $msg = '<error>' . __('Database configuration is not compatible with "utf8mb4" usage.') . '</error>';
             foreach ($config_requirement->getValidationMessages() as $validation_message) {
