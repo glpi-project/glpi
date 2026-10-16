@@ -36,6 +36,7 @@ namespace Glpi\Toolbox;
 
 use CommonGLPI;
 use GLPIKey;
+use Safe\Exceptions\NetworkException;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
 use Symfony\Component\HttpClient\Exception\ServerException;
@@ -92,12 +93,16 @@ final class HttpClient
         if (!$allow_private_networks) {
             if ($use_proxy && !empty($CFG_GLPI['proxy_name'])) {
                 $proxy_host = trim($CFG_GLPI['proxy_name'], '[]');
-                $proxy_ips = filter_var($proxy_host, FILTER_VALIDATE_IP) !== false
-                    ? [$proxy_host]
-                    : array_merge(
-                        gethostbynamel($proxy_host) ?: [],
-                        array_column(@dns_get_record($proxy_host, DNS_AAAA) ?: [], 'ipv6')
-                    );
+                if (filter_var($proxy_host, FILTER_VALIDATE_IP) !== false) {
+                    $proxy_ips = [$proxy_host];
+                } else {
+                    try {
+                        $proxy_ipv6 = array_column(@dns_get_record($proxy_host, DNS_AAAA), 'ipv6');
+                    } catch (NetworkException) {
+                        $proxy_ipv6 = [];
+                    }
+                    $proxy_ips = array_merge(gethostbynamel($proxy_host) ?: [], $proxy_ipv6);
+                }
                 $inner_client = new ProxyAwareHttpClient($inner_client, $proxy_ips);
             }
             $inner_client = new NoPrivateNetworkHttpClient($inner_client);
