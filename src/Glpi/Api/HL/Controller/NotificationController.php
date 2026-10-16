@@ -40,6 +40,9 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Notification;
@@ -57,9 +60,23 @@ use QueuedNotification;
 ], tags: ['Notifications'])]
 class NotificationController extends AbstractController
 {
+    /**
+     * Get the SQL expression for a queued notification body field which returns an empty string if the body is encrypted (sensitive).
+     * @param string $field The body field name
+     * @return QueryExpression
+     */
+    private static function getSensitiveBodyComputation(string $field): QueryExpression
+    {
+        return QueryFunction::if(
+            new QueryIdentifier('_.is_body_encrypted'),
+            new QueryExpression("''"),
+            new QueryIdentifier('_.' . $field)
+        );
+    }
+
     protected static function getRawKnownSchemas(string $api_version): array
     {
-        return [
+        $schemas = [
             'Notification' => [
                 'x-version-introduced' => '2.3.0',
                 'x-itemtype' => Notification::class,
@@ -358,8 +375,30 @@ EOT,
                     'replyto' => ['type' => Doc\Schema::TYPE_STRING],
                     'replyto_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'replytoname'],
                     'headers' => ['type' => Doc\Schema::TYPE_STRING],
-                    'body_text' => ['type' => Doc\Schema::TYPE_STRING],
-                    'body_html' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
+                    'is_body_disclosed' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '3.0.0',
+                        'readOnly' => true,
+                        'computation' => QueryFunction::if(
+                            new QueryIdentifier('_.is_body_encrypted'),
+                            new QueryExpression('0'),
+                            new QueryExpression('1')
+                        ),
+                        'description' => 'Whether the body of the notification is disclosed in the API response. Some sensitive notifications like password resets may not be disclosed.',
+                    ],
+                    'body_text' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                        'computation' => self::getSensitiveBodyComputation('body_text'),
+                        'description' => 'The text body of the notification. Empty if the body is not disclosed.',
+                    ],
+                    'body_html' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_HTML,
+                        'readOnly' => true,
+                        'computation' => self::getSensitiveBodyComputation('body_html'),
+                        'description' => 'The HTML body of the notification. Empty if the body is not disclosed.',
+                    ],
                     'message_id' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'messageid'],
                     'documents' => ['type' => Doc\Schema::TYPE_STRING],
                     'mode' => [
@@ -398,6 +437,16 @@ EOT,
                 ],
             ],
         ];
+
+        // v3 queued notification body properties are now computed to account for sensitive notifications, so we need to remove the computation for older versions
+        if (version_compare($api_version, '3.0.0', '<')) {
+            $keys_to_remove = ['computation', 'description', 'readOnly'];
+            foreach ($keys_to_remove as $key) {
+                unset($schemas['QueuedNotification']['properties']['body_text'][$key], $schemas['QueuedNotification']['properties']['body_html'][$key]);
+            }
+        }
+
+        return $schemas;
     }
 
     #[Route(path: '/QueuedNotification', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
