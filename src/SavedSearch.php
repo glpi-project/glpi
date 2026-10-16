@@ -488,6 +488,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $options['candel'] = false;
         }
 
+        if ($is_ajax) {
+            // FIXME: Cannot rely on `canCreate()` for simplified interface,
+            // the `canCreate()` method should probably fixed to handle this.
+            $options['canedit'] = $this->canCreateItem();
+        }
+
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/form.html.twig', [
             'item' => $this,
             'can_create' => self::canCreate(),
@@ -1171,7 +1177,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
 
         if ($notif->isNewItem()) {
-            $notif->check(-1, CREATE);
+            $notif->checkGlobal(CREATE);
             $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
                 // Fall back to the saved search entity when there is no default
                 // entity, so the insertion does not fail on the NOT NULL column.
