@@ -511,7 +511,8 @@ abstract class CommonDevice extends CommonDropdown
         $with_history = $input['with_history'] ?? true;
         unset($input['with_history']);
 
-        if (empty($input['designation'])) {
+        // Do not use `empty()`, "0" is a valid designation (ARM CPUs are reported by their index)
+        if (trim((string) ($input['designation'] ?? '')) === '') {
             return 0;
         }
         $where      = [];

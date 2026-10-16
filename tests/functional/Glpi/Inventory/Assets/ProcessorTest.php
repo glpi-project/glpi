@@ -313,4 +313,40 @@ class ProcessorTest extends AbstractInventoryAsset
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $cpus);
     }
+
+    public function testInventoryNumericDesignation()
+    {
+        $source = '{
+            "action": "inventory",
+            "content": {
+                "hardware": {
+                    "name": "rpi001"
+                },
+                "cpus": [
+                    {"arch": "aarch64", "name": "0"},
+                    {"arch": "aarch64", "name": "1"}
+                ],
+                "versionclient": "GLPI-Agent_v1.18"
+            },
+            "deviceid": "rpi001-2026-10-07-10-00-00",
+            "itemtype": "Computer"
+        }';
+
+        $inventory = $this->doInventory(json_decode($source));
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        $item_proc = new \Item_DeviceProcessor();
+        $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->assertCount(2, $cpus);
+
+        $device_proc = new \DeviceProcessor();
+        $designations = [];
+        foreach ($cpus as $cpu) {
+            $this->assertTrue($device_proc->getFromDB($cpu['deviceprocessors_id']));
+            $designations[] = $device_proc->fields['designation'];
+        }
+        sort($designations);
+        $this->assertSame(['0', '1'], $designations);
+    }
 }
