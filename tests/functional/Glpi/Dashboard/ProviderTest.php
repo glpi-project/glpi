@@ -36,8 +36,10 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\FakeProvider;
 use Glpi\Dashboard\Filters\DatesFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
+use Glpi\Dashboard\Filters\UserTechFilter;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
 use Item_DeviceSimcard;
@@ -1204,6 +1206,127 @@ class ProviderTest extends DbTestCase
         $this->assertSame(1, $result['data']['series'][1]['data'][$group1_index], 'group1: 1 closed ticket expected');
         $this->assertSame(1, $result['data']['series'][0]['data'][$group2_index], 'group2: 1 opened ticket expected');
         $this->assertSame(2, $result['data']['series'][1]['data'][$group2_index], 'group2: 2 closed tickets expected');
+    }
+
+    public function testTicketsByStatusAndTechnician(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $tech1 = $this->createItem(User::class, [
+            'name' => 'test dashboard tickets by status technician 1',
+        ]);
+        $tech2 = $this->createItem(User::class, [
+            'name' => 'test dashboard tickets by status technician 2',
+        ]);
+
+        foreach (
+            [
+                ['tech1 assigned 1', $tech1, \Ticket::ASSIGNED],
+                ['tech1 assigned 2', $tech1, \Ticket::ASSIGNED],
+                ['tech1 pending', $tech1, \Ticket::WAITING],
+                ['tech1 closed', $tech1, \Ticket::CLOSED],
+                ['tech2 solved', $tech2, \Ticket::SOLVED],
+            ] as [$name, $tech, $status]
+        ) {
+            $this->createItem(\Ticket::class, [
+                'name'        => "test dashboard tickets by status and technician $name",
+                'content'     => 'blablabla',
+                'entities_id' => $entity_id,
+                'status'      => $status,
+                '_actors'     => [
+                    'assign' => [['itemtype' => User::class, 'items_id' => $tech->getID()]],
+                ],
+            ], ['_actors']);
+        }
+
+        $result = Provider::ticketsByStatusAndTechnician();
+        $this->assertArrayHasKey('data', $result);
+
+        // One series per status, in status order, so colors stay consistent
+        $expected_order = array_map(
+            static fn(int $status) => \Ticket::getStatus($status),
+            array_keys(\Ticket::getAllStatusArray())
+        );
+        $this->assertSame($expected_order, array_column($result['data']['series'], 'name'));
+
+        $tech1_index = array_search($tech1->fields['name'], $result['data']['labels'], true);
+        $tech2_index = array_search($tech2->fields['name'], $result['data']['labels'], true);
+        $this->assertNotFalse($tech1_index, 'technician 1 must be included in report labels');
+        $this->assertNotFalse($tech2_index, 'technician 2 must be included in report labels');
+
+        $series_by_name = array_column($result['data']['series'], 'data', 'name');
+        $this->assertSame(2, $series_by_name[\Ticket::getStatus(\Ticket::ASSIGNED)][$tech1_index]);
+        $this->assertSame(1, $series_by_name[\Ticket::getStatus(\Ticket::WAITING)][$tech1_index]);
+        $this->assertSame(1, $series_by_name[\Ticket::getStatus(\Ticket::CLOSED)][$tech1_index]);
+        $this->assertSame(0, $series_by_name[\Ticket::getStatus(\Ticket::SOLVED)][$tech1_index]);
+        $this->assertSame(1, $series_by_name[\Ticket::getStatus(\Ticket::SOLVED)][$tech2_index]);
+
+        // A status filter keeps every series, so colors don't change, but only counts this status
+        $filtered = Provider::ticketsByStatusAndTechnician([
+            'apply_filters' => [TicketStatusFilter::getId() => \Ticket::WAITING],
+        ]);
+        $this->assertSame($expected_order, array_column($filtered['data']['series'], 'name'));
+        $this->assertSame([$tech1->fields['name']], array_values(array_intersect(
+            $filtered['data']['labels'],
+            [$tech1->fields['name'], $tech2->fields['name']]
+        )), 'only technician 1 has a pending ticket');
+        $filtered_series_by_name = array_column($filtered['data']['series'], 'data', 'name');
+        $filtered_index          = array_search($tech1->fields['name'], $filtered['data']['labels'], true);
+        $this->assertSame(1, $filtered_series_by_name[\Ticket::getStatus(\Ticket::WAITING)][$filtered_index]);
+        $this->assertSame(0, $filtered_series_by_name[\Ticket::getStatus(\Ticket::ASSIGNED)][$filtered_index]);
+
+        // The technician filter restricts the rows to the selected technician
+        $filtered_tech = Provider::ticketsByStatusAndTechnician([
+            'apply_filters' => [UserTechFilter::getId() => $tech2->getID()],
+        ]);
+        $this->assertSame([$tech2->fields['name']], $filtered_tech['data']['labels']);
+
+        // A new ticket, only visible with the new tickets right among the limited rights below
+        global $DB;
+        $new_ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'test dashboard tickets by status and technician new',
+            'content'     => 'blablabla',
+            'entities_id' => $entity_id,
+            '_actors'     => [
+                'assign' => [['itemtype' => User::class, 'items_id' => $tech2->getID()]],
+            ],
+        ], ['_actors', 'status']);
+        // Assigning a technician switches the ticket status, force it back to new
+        $DB->update(\Ticket::getTable(), ['status' => \Ticket::INCOMING], ['id' => $new_ticket->getID()]);
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsByStatusAndTechnician()['data']['nodata'] ?? false);
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsByStatusAndTechnician()['data']['nodata'] ?? false);
+
+        // The new tickets right alone only allows to see new tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $new_only = Provider::ticketsByStatusAndTechnician();
+        $new_only_series = array_column($new_only['data']['series'], 'data', 'name');
+        $new_only_index  = array_search($tech2->fields['name'], $new_only['data']['labels'], true);
+        $this->assertNotFalse($new_only_index, 'technician 2 has a new ticket');
+        $this->assertSame(1, $new_only_series[\Ticket::getStatus(\Ticket::INCOMING)][$new_only_index]);
+        $this->assertSame(0, $new_only_series[\Ticket::getStatus(\Ticket::SOLVED)][$new_only_index], 'solved ticket must not be visible');
+        $this->assertNotContains($tech1->fields['name'], $new_only['data']['labels'], 'technician 1 has no new ticket');
+    }
+
+    public function testFakeTicketsByStatusAndTechnician(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByStatusAndTechnician');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByStatusAndTechnician(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertCount(count(\Ticket::getAllStatusArray()), $result['data']['series']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->assertCount(count($result['data']['labels']), $serie['data']);
+        }
     }
 
     public function testTicketsByCategoryAndType(): void

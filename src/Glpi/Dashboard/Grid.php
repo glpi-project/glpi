@@ -1707,6 +1707,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_ticket_by_status_and_technician"] = [
+                'widgettype' => ['stackedHBars', 'hBars', 'stackedbars', 'bars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by status and technician"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByStatusAndTechnician",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),
