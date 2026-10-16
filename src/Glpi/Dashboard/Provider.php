@@ -46,7 +46,9 @@ use Config;
 use DBConnection;
 use ExtraVisibilityCriteria;
 use Glpi\Dashboard\Filters\{
+    AbstractGroupFilter,
     DatesFilter,
+    GroupRequesterFilter,
     GroupTechFilter,
     TicketStatusFilter,
     UserTechFilter,
@@ -1379,6 +1381,28 @@ class Provider
      */
     public static function ticketsByGroupAndStatus(array $params = []): array
     {
+        return self::ticketsByActorGroupAndStatus(Group_Ticket::ASSIGN, GroupTechFilter::class, $params);
+    }
+
+    /**
+     * count number of opened and closed tickets grouped by their requester group
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByRequesterGroupAndStatus(array $params = []): array
+    {
+        return self::ticketsByActorGroupAndStatus(Group_Ticket::REQUESTER, GroupRequesterFilter::class, $params);
+    }
+
+    /**
+     * count number of opened and closed tickets grouped by their group for the given actor type
+     * @param int $actor_type Group_Ticket::ASSIGN or Group_Ticket::REQUESTER
+     * @param class-string<AbstractGroupFilter> $group_filter dashboard filter on the same groups
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    private static function ticketsByActorGroupAndStatus(int $actor_type, string $group_filter, array $params = []): array
+    {
         $DB = DBConnection::getReadConnection();
 
         $default_params = [
@@ -1395,12 +1419,12 @@ class Provider
         $opened_statuses = implode(',', [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING]);
         $closed_statuses = implode(',', [Ticket::SOLVED, Ticket::CLOSED]);
 
-        // Restrict our own grouping to the groups selected by the "technician
-        // group" filter, not just which tickets are included (see
+        // Restrict our own grouping to the groups selected by the matching
+        // group filter, not just which tickets are included (see
         // extractActorFilterIds() doc for why this is needed).
         $filtered_group_ids = self::extractActorFilterIds(
-            GroupTechFilter::class,
-            'gl_' . GroupTechFilter::getId() . '.groups_id',
+            $group_filter,
+            'gl_' . $group_filter::getId() . '.groups_id',
             $ticket_table,
             $params['apply_filters']
         );
@@ -1421,7 +1445,7 @@ class Provider
                             $ticket_table        => 'id',
                             [
                                 'AND' => [
-                                    "$group_ticket_table.type" => Group_Ticket::ASSIGN,
+                                    "$group_ticket_table.type" => $actor_type,
                                 ],
                             ],
                         ],
