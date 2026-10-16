@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\FakeProvider;
 use Glpi\Dashboard\Filters\DatesFilter;
 use Glpi\Dashboard\Filters\GroupRequesterFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
@@ -1254,6 +1255,26 @@ class ProviderTest extends DbTestCase
         $this->assertSame([$requester_group->fields['name']], $filtered['data']['labels']);
         $this->assertSame(2, $filtered['data']['series'][0]['data'][0]);
         $this->assertSame(1, $filtered['data']['series'][1]['data'][0]);
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsByRequesterGroupAndStatus()['data']['nodata'] ?? false);
+        $this->assertTrue(Provider::ticketsByGroupAndStatus()['data']['nodata'] ?? false);
+    }
+
+    public function testFakeTicketsByRequesterGroupAndStatus(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByRequesterGroupAndStatus');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByRequesterGroupAndStatus(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertCount(2, $result['data']['series']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->assertCount(count($result['data']['labels']), $serie['data']);
+        }
     }
 
     public function testTicketsByCategoryAndType(): void

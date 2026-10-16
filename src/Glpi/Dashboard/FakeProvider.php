@@ -307,6 +307,32 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsByRequesterGroupAndStatus(array $params = []): array
+    {
+        return [
+            'data'  => [
+                'labels' => [
+                    _x('fake_data', 'Accounting'),
+                    _x('fake_data', 'Sales'),
+                    _x('fake_data', 'Human resources'),
+                    _x('fake_data', 'Marketing'),
+                ],
+                'series' => [
+                    [
+                        'name' => __('Opened'),
+                        'data' => [34, 52, 18, 27],
+                    ],
+                    [
+                        'name' => __('Closed'),
+                        'data' => [121, 168, 64, 89],
+                    ],
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
     public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
         $item_counts = self::getItemCount();

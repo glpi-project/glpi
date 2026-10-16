@@ -1412,6 +1412,19 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return [
+                'data'  => [
+                    'labels' => [],
+                    'series' => [],
+                    'nodata' => true,
+                ],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
         $ticket_table       = Ticket::getTable();
         $group_ticket_table = Group_Ticket::getTable();
         $group_table        = Group::getTable();
