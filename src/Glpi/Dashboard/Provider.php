@@ -1373,6 +1373,145 @@ class Provider
     }
 
     /**
+     * Count number of tickets by category, as a tree of categories and sub-categories.
+     * The number of a category includes the tickets of its sub-categories.
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByCategoryTree(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => \ITILCategory::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $no_data = [
+            'data'  => ['nodata' => true],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return $no_data;
+        }
+
+        $ticket_table   = Ticket::getTable();
+        $category_table = \ITILCategory::getTable();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'  => [
+                    "$ticket_table.itilcategories_id AS category_id",
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'    => $ticket_table,
+                'WHERE'   => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY' => "$ticket_table.itilcategories_id",
+            ],
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+        $iterator = $db->request($criteria);
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $own_counts = [];
+        foreach ($iterator as $result) {
+            $own_counts[(int) $result['category_id']] = (int) $result['cpt'];
+        }
+        if (count($own_counts) === 0) {
+            return $no_data;
+        }
+
+        // Load the counted categories and all their ancestors in a single query
+        $counted_ids  = array_values(array_filter(array_keys($own_counts)));
+        $category_ids = $counted_ids;
+        if (count($counted_ids) > 0) {
+            $category_ids = array_unique(array_merge(
+                $counted_ids,
+                array_map('intval', array_keys(getAncestorsOf($category_table, $counted_ids)))
+            ));
+        }
+        $categories = [];
+        if (count($category_ids) > 0) {
+            $category_iterator = $db->request([
+                'SELECT' => ['id', 'name', 'itilcategories_id'],
+                'FROM'   => $category_table,
+                'WHERE'  => ['id' => array_values($category_ids)],
+            ]);
+            foreach ($category_iterator as $category) {
+                $categories[(int) $category['id']] = $category;
+            }
+        }
+
+        $search_criteria = self::getSearchFiltersCriteria($ticket_table, $params['apply_filters'])['criteria'] ?? [];
+        $url             = Ticket::getSearchURL();
+        $category_so     = 7; // Ticket category search option
+        $build_url       = static function (string $searchtype, int $category_id) use ($search_criteria, $url, $category_so): string {
+            $node_criteria   = $search_criteria;
+            $node_criteria[] = [
+                'link'       => 'AND',
+                'field'      => $category_so,
+                'searchtype' => $searchtype,
+                'value'      => $category_id,
+            ];
+
+            return $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                'criteria' => $node_criteria,
+                'reset'    => 'reset',
+            ]);
+        };
+
+        $children_ids = [];
+        foreach ($categories as $category_id => $category) {
+            $parent_id = (int) $category['itilcategories_id'];
+            // A parent outside of the loaded categories (not visible or deleted) makes it a root node
+            $children_ids[isset($categories[$parent_id]) ? $parent_id : 0][] = $category_id;
+        }
+
+        $build_nodes = static function (int $parent_id) use (&$build_nodes, $children_ids, $categories, $own_counts, $build_url): array {
+            $nodes = [];
+            foreach ($children_ids[$parent_id] ?? [] as $category_id) {
+                $children = $build_nodes($category_id);
+                $node     = [
+                    'label'  => $categories[$category_id]['name'],
+                    'number' => ($own_counts[$category_id] ?? 0) + array_sum(array_column($children, 'number')),
+                    'url'    => $build_url('under', $category_id),
+                ];
+                if (count($children) > 0) {
+                    $node['children'] = $children;
+                }
+                $nodes[] = $node;
+            }
+            usort($nodes, static fn(array $a, array $b) => strnatcasecmp($a['label'], $b['label']));
+
+            return $nodes;
+        };
+
+        $data = $build_nodes(0);
+        if (isset($own_counts[0])) {
+            $data[] = [
+                'label'  => __('None'),
+                'number' => $own_counts[0],
+                'url'    => $build_url('equals', 0),
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
      * count number of opened and closed tickets grouped by their assigned group
      * @param array<string, mixed> $params
      * @return array<string, mixed>
