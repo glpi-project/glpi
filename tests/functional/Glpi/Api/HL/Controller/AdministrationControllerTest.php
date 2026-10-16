@@ -34,7 +34,9 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use DisplayPreference;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Api\HL\Search\SearchOptionMapper;
 use Glpi\Event;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
@@ -977,5 +979,149 @@ EOT;
         $this->assertNotSame($original_picture_path, $updated_picture_path);
         $this->assertFileDoesNotExist($original_picture_path);
         $this->assertFileExists($updated_picture_path);
+    }
+
+    public function testDisplayPreferences(): void
+    {
+        $this->login();
+        SearchOptionMapper::clearCache();
+
+        $status_column = SearchOptionMapper::getPropertyForOption('Ticket', 12);
+        $date_column = SearchOptionMapper::getPropertyForOption('Ticket', 15);
+        $this->assertNotNull($status_column);
+        $this->assertNotNull($date_column);
+
+        // Replace the personal columns
+        $request = new Request('PUT', '/Administration/DisplayPreference/Ticket');
+        $request->setParameter('columns', [$date_column, $status_column]);
+        $this->api->call($request, function ($call) use ($date_column, $status_column) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($date_column, $status_column) {
+                    $this->assertTrue($content['is_personal']);
+                    $this->assertSame([$date_column, $status_column], $content['columns']);
+                });
+        });
+
+        // The order is kept when reading the preferences
+        $this->api->call(new Request('GET', '/Administration/DisplayPreference/Ticket'), function ($call) use ($date_column, $status_column) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($date_column, $status_column) {
+                    $this->assertTrue($content['is_personal']);
+                    $this->assertSame([$date_column, $status_column], $content['columns']);
+                    $this->assertNotEmpty($content['fixed_columns']);
+                    $this->assertSame('central', $content['interface']);
+                });
+        });
+
+        // Invalid, duplicate and unknown columns are rejected and nothing is changed
+        foreach ([['not_a_column'], [$status_column, $status_column], [123]] as $invalid_columns) {
+            $request = new Request('PUT', '/Administration/DisplayPreference/Ticket');
+            $request->setParameter('columns', $invalid_columns);
+            $this->api->call($request, function ($call) {
+                $call->response->status(function ($status) {
+                    $this->assertEquals(400, $status);
+                });
+            });
+        }
+        $request = new Request('PUT', '/Administration/DisplayPreference/Ticket');
+        $this->api->call($request, function ($call) {
+            $call->response->status(function ($status) {
+                $this->assertEquals(400, $status);
+            });
+        });
+        $this->api->call(new Request('GET', '/Administration/DisplayPreference/Ticket'), function ($call) use ($date_column, $status_column) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($date_column, $status_column) {
+                    $this->assertSame([$date_column, $status_column], $content['columns']);
+                });
+        });
+
+        // Deleting the personal columns falls back to the global columns
+        $this->api->call(new Request('DELETE', '/Administration/DisplayPreference/Ticket'), function ($call) {
+            $call->response->isOK();
+        });
+        $this->api->call(new Request('GET', '/Administration/DisplayPreference/Ticket'), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertFalse($content['is_personal']);
+                });
+        });
+
+        // Unknown schemas
+        $this->api->call(new Request('GET', '/Administration/DisplayPreference/NotASchema'), function ($call) {
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testGlobalDisplayPreferences(): void
+    {
+        $this->login();
+        SearchOptionMapper::clearCache();
+
+        $status_column = SearchOptionMapper::getPropertyForOption('Ticket', 12);
+        $this->assertNotNull($status_column);
+
+        $request = new Request('PUT', '/Administration/DisplayPreference/Ticket/Global');
+        $request->setParameter('columns', [$status_column]);
+        $this->api->call($request, function ($call) use ($status_column) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($status_column) {
+                    $this->assertFalse($content['is_personal']);
+                    $this->assertSame([$status_column], $content['columns']);
+                });
+        });
+        // Users without personal preferences see the global preferences
+        $this->api->call(new Request('GET', '/Administration/DisplayPreference/Ticket'), function ($call) use ($status_column) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($status_column) {
+                    $this->assertFalse($content['is_personal']);
+                    $this->assertSame([$status_column], $content['columns']);
+                });
+        });
+
+        $this->api->call(new Request('DELETE', '/Administration/DisplayPreference/Ticket/Global'), function ($call) {
+            $call->response->isOK();
+        });
+        $this->api->call(new Request('GET', '/Administration/DisplayPreference/Ticket/Global'), function ($call) use ($status_column) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    // Back to the defaults which contain more than one column
+                    $this->assertGreaterThan(1, count($content['columns']));
+                });
+        });
+    }
+
+    public function testDisplayPreferencesNoRights(): void
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $original_rights = $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname];
+        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = 0;
+
+        $this->api->call(new Request('GET', '/Administration/DisplayPreference/Ticket'), function ($call) {
+            $call->response->isAccessDenied();
+        });
+        $request = new Request('PUT', '/Administration/DisplayPreference/Ticket');
+        $request->setParameter('columns', []);
+        $this->api->call($request, function ($call) {
+            $call->response->isAccessDenied();
+        });
+
+        // Personal preferences alone do not allow changing the global preferences
+        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = DisplayPreference::PERSONAL;
+        $request = new Request('PUT', '/Administration/DisplayPreference/Ticket/Global');
+        $request->setParameter('columns', []);
+        $this->api->call($request, function ($call) {
+            $call->response->isAccessDenied();
+        });
+
+        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = $original_rights;
     }
 }
