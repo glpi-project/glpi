@@ -872,7 +872,14 @@ class NotificationTarget extends CommonDBChild
                     continue;
                 }
 
-                if ($target->fields['groups_id'] > 0) {
+                if (!array_key_exists('groups_id', $target->fields)) {
+                    continue;
+                }
+                if (is_array($target->fields['groups_id'])) {
+                    foreach (array_filter($target->fields['groups_id'], static fn($g) => $g > 0) as $group_id) {
+                        $this->addForGroup(0, $group_id);
+                    }
+                } elseif ($target->fields['groups_id'] > 0) {
                     $this->addForGroup(0, $target->fields['groups_id']);
                 }
             }
@@ -894,7 +901,14 @@ class NotificationTarget extends CommonDBChild
                     continue;
                 }
 
-                if ($target->fields['groups_id'] > 0) {
+                if (!array_key_exists('groups_id', $target->fields)) {
+                    continue;
+                }
+                if (is_array($target->fields['groups_id'])) {
+                    foreach (array_filter($target->fields['groups_id'], static fn($g) => $g > 0) as $group_id) {
+                        $this->addForGroup(1, $group_id);
+                    }
+                } elseif ($target->fields['groups_id'] > 0) {
                     $this->addForGroup(1, $target->fields['groups_id']);
                 }
             }
@@ -916,7 +930,14 @@ class NotificationTarget extends CommonDBChild
                     continue;
                 }
 
-                if ($target->fields['groups_id'] > 0) {
+                if (!array_key_exists('groups_id', $target->fields)) {
+                    continue;
+                }
+                if (is_array($target->fields['groups_id'])) {
+                    foreach (array_filter($target->fields['groups_id'], static fn($g) => $g > 0) as $group_id) {
+                        $this->addForGroup(2, $group_id);
+                    }
+                } elseif ($target->fields['groups_id'] > 0) {
                     $this->addForGroup(2, $target->fields['groups_id']);
                 }
             }
@@ -1298,7 +1319,14 @@ class NotificationTarget extends CommonDBChild
                     continue;
                 }
 
-                if (isset($val->fields['groups_id_tech']) && $val->fields['groups_id_tech'] > 0) {
+                if (!array_key_exists('groups_id_tech', $val->fields)) {
+                    continue;
+                }
+                if (is_array($val->fields['groups_id_tech'])) {
+                    foreach (array_filter($val->fields['groups_id_tech'], static fn($g) => $g > 0) as $group_id) {
+                        $this->addForGroup(0, $group_id);
+                    }
+                } elseif ($val->fields['groups_id_tech'] > 0) {
                     $this->addForGroup(0, $val->fields['groups_id_tech']);
                 }
             }
