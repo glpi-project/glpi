@@ -1,0 +1,81 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<style>
+    #{{ chart_id }} {
+        background-color: {{ bg_color }};
+        color: {{ fg_color }};
+    }
+
+    .theme-dark #{{ chart_id }} {
+        background-color: {{ dark_bg_color }};
+        color: {{ dark_fg_color }};
+    }
+</style>
+<div class="card g-chart sunburst {{ class }}" id="{{ chart_id }}" data-testid="dashboard-widget">
+    <div class="chart ct-chart">
+        {% if nodata %}
+            <span class="empty-card no-data">
+                <div>{{ __('No data found') }}</div>
+            </span>
+        {% endif %}
+    </div>
+    <span class="main-label">{{ label }}</span>
+    <i class="main-icon {{ icon }}" aria-hidden="true"></i>
+</div>
+
+{% if not nodata %}
+    <script type="module">
+        (async () => {
+            await import('/js/modules/Dashboard/Dashboard.js');
+
+            const target = GLPI.Dashboard.getActiveDashboard() ?
+                GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
+                : $('#{{ chart_id }} .chart');
+            const chart_options = {{ options|json_encode|raw }};
+            const chart = echarts.init(target[0]);
+            chart.setOption(chart_options);
+            chart.on('click', (params) => {
+                const data_url = _.get(params, 'data.url', '');
+                if (data_url.length > 0) {
+                    window.location.href = data_url;
+                }
+            });
+
+            target.on('mouseover', () => {
+                chart.setOption({'toolbox': {'show': true}});
+            }).on('mouseout', () => {
+                chart.setOption({'toolbox': {'show': false}});
+            });
+        })();
+    </script>
+{% endif %}
