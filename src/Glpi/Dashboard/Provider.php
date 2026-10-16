@@ -1507,24 +1507,22 @@ class Provider
 
         $search_criteria = self::getSearchFiltersCriteria($ticket_table, $params['apply_filters'])['criteria'] ?? [];
         $url             = Ticket::getSearchURL();
-        $build_url       = static function (int $date_so, array $dates) use ($search_criteria, $url): string {
-            return $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
-                'criteria' => array_merge([
-                    [
-                        'link'       => 'AND',
-                        'field'      => $date_so,
-                        'searchtype' => 'morethan',
-                        'value'      => $dates['search_start'],
-                    ], [
-                        'link'       => 'AND',
-                        'field'      => $date_so,
-                        'searchtype' => 'lessthan',
-                        'value'      => $dates['end'],
-                    ],
-                ], $search_criteria),
-                'reset'    => 'reset',
-            ]);
-        };
+        $build_url       = (static fn(int $date_so, array $dates): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+            'criteria' => array_merge([
+                [
+                    'link'       => 'AND',
+                    'field'      => $date_so,
+                    'searchtype' => 'morethan',
+                    'value'      => $dates['search_start'],
+                ], [
+                    'link'       => 'AND',
+                    'field'      => $date_so,
+                    'searchtype' => 'lessthan',
+                    'value'      => $dates['end'],
+                ],
+            ], $search_criteria),
+            'reset'    => 'reset',
+        ]));
 
         $series = [
             ['name' => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()), 'data' => []],
