@@ -270,6 +270,10 @@ phpstan-generate-baseline: c=--generate-baseline=.phpstan-baseline.php analyze  
 phpstan-generate-baseline: phpstan
 .PHONY: phpstan-generate-baseline
 
+phpstan-generate-rawsql-baseline: c=--generate-baseline=.phpstan-baseline.rawSql.php analyze  ## Regenerate the raw SQL baseline file
+phpstan-generate-rawsql-baseline: phpstan
+.PHONY: phpstan-generate-rawsql-baseline
+
 parallel-lint:
 	@$(eval c ?=.)
 	$(PHP) php vendor/bin/parallel-lint \
