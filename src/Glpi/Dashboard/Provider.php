@@ -1373,6 +1373,143 @@ class Provider
     }
 
     /**
+     * Count number of tickets grouped by their assigned technician and their status
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByStatusAndTechnician(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => User::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $data = [
+            'labels' => [],
+            'series' => [],
+        ];
+
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return [
+                'data'  => $data + ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
+        $ticket_table      = Ticket::getTable();
+        $ticket_user_table = Ticket_User::getTable();
+        $user_table        = User::getTable();
+
+        // A dashboard status filter would be merged into the IN() list, intersect it with all statuses instead
+        $statuses         = array_keys(Ticket::getAllStatusArray());
+        $queried_statuses = $statuses;
+        $filtered_status  = (int) ($params['apply_filters'][TicketStatusFilter::getId()] ?? 0);
+        unset($params['apply_filters'][TicketStatusFilter::getId()]);
+        if ($filtered_status > 0) {
+            $queried_statuses = array_values(array_intersect($statuses, [$filtered_status]));
+        }
+
+        // Restrict our own grouping to the technician selected by the "technician"
+        // filter, not just which tickets are included (see extractActorFilterIds() doc).
+        $filtered_user_ids = self::extractActorFilterIds(
+            UserTechFilter::class,
+            'ul_' . UserTechFilter::getId() . '.users_id',
+            $ticket_table,
+            $params['apply_filters']
+        );
+
+        if (count($queried_statuses) > 0) {
+            Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+            $criteria = array_merge_recursive(
+                [
+                    'SELECT'     => [
+                        "$user_table.id AS user_id",
+                        "$user_table.name AS user_name",
+                        "$user_table.realname AS user_realname",
+                        "$user_table.firstname AS user_firstname",
+                        "$ticket_table.status AS status",
+                        'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                    ],
+                    'FROM'       => $ticket_table,
+                    'INNER JOIN' => [
+                        "$ticket_user_table AS tu_assign" => [
+                            'ON' => [
+                                'tu_assign'   => 'tickets_id',
+                                $ticket_table => 'id',
+                                [
+                                    'AND' => [
+                                        'tu_assign.type' => Ticket_User::ASSIGN,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        $user_table => [
+                            'ON' => [
+                                $user_table => 'id',
+                                'tu_assign' => 'users_id',
+                            ],
+                        ],
+                    ],
+                    'WHERE'      => [
+                        "$ticket_table.is_deleted" => 0,
+                        "$ticket_table.status"     => $queried_statuses,
+                    ] + ($filtered_user_ids !== null ? ["$user_table.id" => $filtered_user_ids] : [])
+                      + getEntitiesRestrictCriteria($ticket_table),
+                    'GROUPBY'    => ["$user_table.id", "$ticket_table.status"],
+                ],
+                Ticket::getCriteriaFromProfile(),
+                self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+            );
+            $iterator = $db->request($criteria);
+            Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+            $matrix     = [];
+            $user_names = [];
+            foreach ($iterator as $result) {
+                $user_id = (int) $result['user_id'];
+
+                $user_names[$user_id] = formatUserName(
+                    $user_id,
+                    $result['user_name'],
+                    $result['user_realname'],
+                    $result['user_firstname']
+                );
+                $matrix[$user_id][(int) $result['status']] = (int) $result['cpt'];
+            }
+            asort($user_names, SORT_NATURAL | SORT_FLAG_CASE);
+
+            $data['labels'] = array_values($user_names);
+            // Keep one series per status, even filtered out, as the palette depends on the number of series
+            foreach ($statuses as $status) {
+                $series_data = [];
+                foreach (array_keys($user_names) as $user_id) {
+                    $series_data[] = $matrix[$user_id][$status] ?? 0;
+                }
+                $data['series'][] = [
+                    'name' => Ticket::getStatus($status),
+                    'data' => $series_data,
+                ];
+            }
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
      * count number of opened and closed tickets grouped by their assigned group
      * @param array<string, mixed> $params
      * @return array<string, mixed>
