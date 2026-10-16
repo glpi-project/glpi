@@ -46,7 +46,7 @@ use USBVendor;
 
 class Peripheral extends InventoryAsset
 {
-    protected array $extra_data = ['inputs' => null];
+    protected array $extra_data = ['inputs' => null, 'ignored' => null];
 
     public function prepare(): array
     {
@@ -58,6 +58,12 @@ class Peripheral extends InventoryAsset
         $usbvendor = new USBVendor();
 
         foreach ($this->data as $k => &$val) {
+            /** @var \stdClass $val */
+            if (property_exists($val, 'name') && is_array($this->extra_data['ignored']) && isset($this->extra_data['ignored'][$val->name])) {
+                unset($this->data[$k]);
+                continue;
+            }
+
             if (property_exists($val, 'name')) {
                 foreach ($mapping as $origin => $dest) {
                     if (property_exists($val, $origin)) {
@@ -149,6 +155,15 @@ class Peripheral extends InventoryAsset
         $value = $this->data;
 
         foreach ($value as $key => $val) {
+            // Skip devices that have been claimed by another asset (e.g. NetworkCard via USB)
+            if (
+                property_exists($val, 'name')
+                && is_array($this->extra_data['ignored'])
+                && isset($this->extra_data['ignored'][$val->name])
+            ) {
+                continue;
+            }
+
             $input = [
                 'itemtype'     => GPeripheral::class,
                 'name'         => $val->name ?? '',
