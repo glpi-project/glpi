@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
+use Glpi\Dashboard\FakeProvider;
 use Glpi\Dashboard\Filters\DatesFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Provider;
@@ -1270,6 +1271,27 @@ class ProviderTest extends DbTestCase
         $sorted = array_column($result['data'], 'number');
         rsort($sorted);
         $this->assertSame($sorted, array_column($result['data'], 'number'));
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertSame(['nodata' => true], Provider::ticketsByRequesterLocation()['data']);
+    }
+
+    public function testFakeTicketsByRequesterLocation(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByRequesterLocation');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByRequesterLocation(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertNotEmpty($result['data']);
+        foreach ($result['data'] as $entry) {
+            $this->assertArrayHasKey('number', $entry);
+            $this->assertArrayHasKey('label', $entry);
+            $this->assertArrayHasKey('url', $entry);
+        }
     }
 
     public function testTicketsByCategoryAndType(): void

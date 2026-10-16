@@ -1380,7 +1380,7 @@ class Provider
      */
     public static function ticketsByRequesterLocation(array $params = []): array
     {
-        $DB = DBConnection::getReadConnection();
+        $db = DBConnection::getReadConnection();
 
         $default_params = [
             'label'         => "",
@@ -1389,6 +1389,15 @@ class Provider
             'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
+
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return [
+                'data'  => ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
 
         $ticket_table      = Ticket::getTable();
         $ticket_user_table = Ticket_User::getTable();
@@ -1439,7 +1448,7 @@ class Provider
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
-        $iterator = $DB->request($criteria);
+        $iterator = $db->request($criteria);
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 
         $data = [];
