@@ -1593,6 +1593,15 @@ HTML;
                 ];
             }
 
+            $cards["opened_ticket_by_category_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened tickets by category and status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::openedTicketsByCategoryAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["ticket_times"] = [
                 'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
                 'itemtype'   => "\\Ticket",
