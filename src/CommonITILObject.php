@@ -11302,11 +11302,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         foreach ($actors as $actor) {
                             if (
                                 (
-                                    // "email" actor match
-                                    $actor['itemtype'] === User::class
+                                    // "email" actor match (users and suppliers can both be anonymous actors)
+                                    $actor['itemtype'] !== Group::class
                                     && $actor['items_id'] == 0
                                     && $actor['itemtype'] == $existing['itemtype']
-                                    && $actor['alternative_email'] == $existing['alternative_email']
+                                    && ($actor['alternative_email'] ?? '') == ($existing['alternative_email'] ?? '')
                                 )
                                 || (
                                     // other actor match

@@ -120,6 +120,7 @@ final class ResourceAccessor
      * Only top-level properties are mapped.
      * Nested properties which would represent relations are not supported.
      * Creating/updating relations should be done using the appropriate endpoints.
+     * Properties with an input mapper (x-input-mapper) are ignored. See {@link self::getMappedInputParamsBySchema()}.
      * @param array $schema
      * @param array $request_params
      * @return array
@@ -129,8 +130,12 @@ final class ResourceAccessor
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         $joins = Doc\Schema::getJoins($schema['properties']);
-        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins) {
+        $input_mapped_props = array_filter($schema['properties'], static fn($p) => isset($p['x-input-mapper']));
+        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins, $input_mapped_props) {
             $base_k = strstr($k, '.', true) ?: $k;
+            if (isset($input_mapped_props[$base_k])) {
+                return false;
+            }
             $is_join = isset($joins[$base_k]);
             $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $k);
             return $is_dropdown_identifier || !$is_join;
@@ -180,6 +185,47 @@ final class ResourceAccessor
             }
         }
         return $params;
+    }
+
+    /**
+     * Map the request parameters for top-level properties that have an input mapper (x-input-mapper) to the format
+     * required for the GLPI add/update methods.
+     *
+     * The input mapper is a callable which receives the requested value and the item being created or updated
+     * and returns an array of input fields that will be merged into the input of the add/update methods.
+     * It may throw an {@link InvalidArgumentException} if the requested value is not valid.
+     * Read-only properties are ignored.
+     * @param array<string, mixed> $schema
+     * @param array<string, mixed> $request_params
+     * @param CommonDBTM $item The item being created (new item) or updated (item loaded from the DB)
+     * @return array<string, mixed>
+     * @throws APIException If any requested value is not valid. The details contain the errors for each property.
+     */
+    public static function getMappedInputParamsBySchema(array $schema, array $request_params, CommonDBTM $item): array
+    {
+        $mapped_params = [];
+        $errors = [];
+        foreach ($schema['properties'] as $prop_name => $prop) {
+            if (!isset($prop['x-input-mapper']) || ($prop['readOnly'] ?? false) || !array_key_exists($prop_name, $request_params)) {
+                continue;
+            }
+            try {
+                $mapped_params[] = $prop['x-input-mapper']($request_params[$prop_name], $item);
+            } catch (InvalidArgumentException $e) {
+                $errors[$prop_name][] = [
+                    'error' => 'invalid',
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+        if ($errors !== []) {
+            throw new APIException(
+                message: 'Invalid input parameters',
+                user_message: 'Invalid input parameters',
+                details: $errors
+            );
+        }
+        return array_merge(...$mapped_params);
     }
 
     /**
@@ -400,6 +446,15 @@ final class ResourceAccessor
             }
         }
 
+        try {
+            $input = array_merge($input, self::getMappedInputParamsBySchema($schema, $request_params, $item));
+        } catch (APIException $e) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage(), $e->getDetails()),
+                400
+            );
+        }
+
         $result = $item->update($input);
 
         if ($result === false) {
@@ -445,6 +500,14 @@ final class ResourceAccessor
         $item = self::getItemFromSchema($schema);
         if (!$item->can($item->getID(), CREATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
+        }
+        try {
+            $input = array_merge($input, self::getMappedInputParamsBySchema($schema, $request_params, $item));
+        } catch (APIException $e) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage(), $e->getDetails()),
+                400
+            );
         }
         $items_id = $item->add($input);
         [$controller, $method] = $get_route;
