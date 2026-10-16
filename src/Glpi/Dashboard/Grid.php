@@ -1707,6 +1707,27 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            foreach (
+                [
+                    'day'   => __("Tickets backlog by day"),
+                    'week'  => __("Tickets backlog by week"),
+                    'month' => __("Tickets backlog by month"),
+                    'year'  => __("Tickets backlog by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_backlog_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsBacklog",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),
