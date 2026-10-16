@@ -1373,6 +1373,114 @@ class Provider
     }
 
     /**
+     * Count number of opened tickets grouped by their category and their status
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function openedTicketsByCategoryAndStatus(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $data = [
+            'labels' => [],
+            'series' => [],
+        ];
+
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return [
+                'data'  => $data + ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
+        // A dashboard status filter would be merged into the IN() list, intersect it with opened statuses instead
+        $opened_statuses  = Ticket::getNotSolvedStatusArray();
+        $queried_statuses = $opened_statuses;
+        $filtered_status  = (int) ($params['apply_filters'][TicketStatusFilter::getId()] ?? 0);
+        unset($params['apply_filters'][TicketStatusFilter::getId()]);
+        if ($filtered_status > 0) {
+            $queried_statuses = array_values(array_intersect($opened_statuses, [$filtered_status]));
+        }
+
+        if (count($queried_statuses) > 0) {
+            $ticket_table   = Ticket::getTable();
+            $category_table = \ITILCategory::getTable();
+
+            Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+            $criteria = array_merge_recursive(
+                [
+                    'SELECT'    => [
+                        "$category_table.id AS category_id",
+                        "$category_table.completename AS category_name",
+                        "$ticket_table.status AS status",
+                        'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                    ],
+                    'FROM'      => $ticket_table,
+                    'LEFT JOIN' => [
+                        $category_table => [
+                            'ON' => [
+                                $ticket_table   => 'itilcategories_id',
+                                $category_table => 'id',
+                            ],
+                        ],
+                    ],
+                    'WHERE'     => [
+                        "$ticket_table.is_deleted" => 0,
+                        "$ticket_table.status"     => $queried_statuses,
+                    ] + getEntitiesRestrictCriteria($ticket_table),
+                    'GROUPBY'   => ["$category_table.id", "$ticket_table.status"],
+                    'ORDERBY'   => "$category_table.completename",
+                ],
+                Ticket::getCriteriaFromProfile(),
+                self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+            );
+            $iterator = $db->request($criteria);
+            Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+            $matrix         = [];
+            $category_names = [];
+            foreach ($iterator as $result) {
+                $category_id = $result['category_id'] ?? 0;
+
+                $category_names[$category_id]                   = $result['category_name'] ?? __('None');
+                $matrix[$category_id][(int) $result['status']] = (int) $result['cpt'];
+            }
+
+            $data['labels'] = array_values($category_names);
+            // Keep one series per opened status, even filtered out, as the palette depends on the number of series
+            foreach ($opened_statuses as $status) {
+                $series_data = [];
+                foreach (array_keys($category_names) as $category_id) {
+                    $series_data[] = $matrix[$category_id][$status] ?? 0;
+                }
+                $data['series'][] = [
+                    'name' => Ticket::getStatus($status),
+                    'data' => $series_data,
+                ];
+            }
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
      * count number of opened and closed tickets grouped by their assigned group
      * @param array<string, mixed> $params
      * @return array<string, mixed>
