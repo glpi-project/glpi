@@ -62,6 +62,7 @@ use Glpi\Search\Input\QueryBuilder;
 use Group;
 use Group_Ticket;
 use Item_OperatingSystem;
+use Location;
 use OperatingSystem;
 use Profile_User;
 use Safe\Exceptions\DatetimeException;
@@ -1612,6 +1613,107 @@ class Provider
 
         if (count($data['labels']) === 0) {
             $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Count number of tickets grouped by the location of their requesters
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByRequesterLocation(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Location::getIcon(),
+            'limit'         => 50,
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return [
+                'data'  => ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
+        $ticket_table      = Ticket::getTable();
+        $ticket_user_table = Ticket_User::getTable();
+        $user_table        = User::getTable();
+        $location_table    = Location::getTable();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$location_table.id AS location_id",
+                    "$location_table.completename AS location_name",
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'      => $ticket_table,
+                'LEFT JOIN' => [
+                    "$ticket_user_table AS tu_requester" => [
+                        'ON' => [
+                            'tu_requester' => 'tickets_id',
+                            $ticket_table  => 'id',
+                            [
+                                'AND' => [
+                                    'tu_requester.type' => Ticket_User::REQUESTER,
+                                ],
+                            ],
+                        ],
+                    ],
+                    "$user_table AS u_requester" => [
+                        'ON' => [
+                            'u_requester'  => 'id',
+                            'tu_requester' => 'users_id',
+                        ],
+                    ],
+                    $location_table => [
+                        'ON' => [
+                            $location_table => 'id',
+                            'u_requester'   => 'locations_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => "$location_table.id",
+                'ORDERBY'   => "cpt DESC",
+                'LIMIT'     => $params['limit'],
+            ],
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+        $iterator = $db->request($criteria);
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $data = [];
+        foreach ($iterator as $result) {
+            $data[] = [
+                'number' => (int) $result['cpt'],
+                'label'  => $result['location_name'] ?? __('None'),
+                // Tickets search has no criterion on the requester's location
+                'url'    => '',
+            ];
+        }
+
+        if (count($data) === 0) {
+            $data = [
+                'nodata' => true,
+            ];
         }
 
         return [

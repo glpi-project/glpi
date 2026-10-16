@@ -412,6 +412,32 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsByRequesterLocation(array $params = []): array
+    {
+        $data = [];
+        foreach (
+            [
+                _x('fake_data', 'Headquarters') => 412,
+                _x('fake_data', 'North agency') => 238,
+                _x('fake_data', 'South agency') => 187,
+                _x('fake_data', 'Warehouse')    => 64,
+                __('None')                      => 21,
+            ] as $label => $number
+        ) {
+            $data[] = [
+                'number' => $number,
+                'label'  => $label,
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Location::getIcon(),
+        ];
+    }
+
     public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
         $item_counts = self::getItemCount();

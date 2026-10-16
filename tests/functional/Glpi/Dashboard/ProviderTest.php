@@ -1406,6 +1406,93 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testTicketsByRequesterLocation(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $location1 = $this->createItem(\Location::class, [
+            'name' => 'test dashboard requester location 1',
+        ]);
+        $location2 = $this->createItem(\Location::class, [
+            'name' => 'test dashboard requester location 2',
+        ]);
+        $ticket_location = $this->createItem(\Location::class, [
+            'name' => 'test dashboard ticket location',
+        ]);
+
+        $user1 = $this->createItem(User::class, [
+            'name'         => 'test dashboard requester location user 1',
+            'locations_id' => $location1->getID(),
+        ]);
+        $user2 = $this->createItem(User::class, [
+            'name'         => 'test dashboard requester location user 2',
+            'locations_id' => $location2->getID(),
+        ]);
+        $user_without_location = $this->createItem(User::class, [
+            'name' => 'test dashboard requester without location',
+        ]);
+
+        foreach (
+            [
+                'user1 ticket 1'          => [$user1],
+                'user1 ticket 2'          => [$user1],
+                'user2 ticket'            => [$user2],
+                'user1 and user2 ticket'  => [$user1, $user2],
+                'without location ticket' => [$user_without_location],
+            ] as $name => $requesters
+        ) {
+            $this->createItem(\Ticket::class, [
+                'name'         => "test dashboard requester location $name",
+                'content'      => 'blablabla',
+                'entities_id'  => $entity_id,
+                // The ticket location must not be used by this report
+                'locations_id' => $ticket_location->getID(),
+                '_actors'      => [
+                    'requester' => array_map(
+                        static fn(User $user) => ['itemtype' => User::class, 'items_id' => $user->getID()],
+                        $requesters
+                    ),
+                ],
+            ], ['_actors']);
+        }
+
+        $result = Provider::ticketsByRequesterLocation();
+        $this->assertArrayHasKey('data', $result);
+        $numbers = array_column($result['data'], 'number', 'label');
+
+        $this->assertSame(3, $numbers[$location1->fields['completename']] ?? null, 'location 1: 3 tickets expected');
+        $this->assertSame(2, $numbers[$location2->fields['completename']] ?? null, 'location 2: 2 tickets expected');
+        $this->assertGreaterThanOrEqual(1, $numbers[__('None')] ?? 0, 'at least 1 ticket expected for requesters without location');
+        $this->assertArrayNotHasKey($ticket_location->fields['completename'], $numbers, 'ticket location must not be used');
+
+        // Rows are sorted by number of tickets
+        $sorted = array_column($result['data'], 'number');
+        rsort($sorted);
+        $this->assertSame($sorted, array_column($result['data'], 'number'));
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertSame(['nodata' => true], Provider::ticketsByRequesterLocation()['data']);
+    }
+
+    public function testFakeTicketsByRequesterLocation(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByRequesterLocation');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByRequesterLocation(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertNotEmpty($result['data']);
+        foreach ($result['data'] as $entry) {
+            $this->assertArrayHasKey('number', $entry);
+            $this->assertArrayHasKey('label', $entry);
+            $this->assertArrayHasKey('url', $entry);
+        }
+    }
+
     public function testTicketsByCategoryAndType(): void
     {
         $this->login();

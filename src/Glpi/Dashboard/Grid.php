@@ -1734,6 +1734,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_ticket_by_requester_location"] = [
+                'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by requester location"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByRequesterLocation",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),
