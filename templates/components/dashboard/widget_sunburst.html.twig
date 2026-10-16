@@ -55,27 +55,42 @@
 
 {% if not nodata %}
     <script type="module">
-        (async () => {
-            await import('/js/modules/Dashboard/Dashboard.js');
+        const chart_options = {{ options|json_encode|raw }};
+        const open_url = (params) => {
+            const data_url = _.get(params, 'data.url', '');
+            if (data_url.length > 0) {
+                window.location.href = data_url;
+            }
+        };
 
-            const target = GLPI.Dashboard.getActiveDashboard() ?
-                GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
-                : $('#{{ chart_id }} .chart');
-            const chart_options = {{ options|json_encode|raw }};
-            const chart = echarts.init(target[0]);
+        // Look for the card in every dashboard, the response may target a dashboard that is not visible
+        document.querySelectorAll('[id="{{ chart_id }}"] .chart').forEach((target) => {
+            if (target.hasAttribute('_echarts_instance_')) {
+                return;
+            }
+
+            const chart = echarts.init(target);
             chart.setOption(chart_options);
+            // A chart initialized in a hidden dashboard has no size, render it again once displayed
+            new ResizeObserver(() => {
+                if (!chart.isDisposed()) {
+                    chart.resize();
+                }
+            }).observe(target);
+            // A click on a node with sub-nodes zooms into it (or back, on the center), on a leaf it opens its search
             chart.on('click', (params) => {
-                const data_url = _.get(params, 'data.url', '');
-                if (data_url.length > 0) {
-                    window.location.href = data_url;
+                if (_.get(params, 'data.children', []).length === 0) {
+                    open_url(params);
                 }
             });
+            // A double click opens the search of any node
+            chart.on('dblclick', open_url);
 
-            target.on('mouseover', () => {
+            $(target).on('mouseover', () => {
                 chart.setOption({'toolbox': {'show': true}});
             }).on('mouseout', () => {
                 chart.setOption({'toolbox': {'show': false}});
             });
-        })();
+        });
     </script>
 {% endif %}

@@ -921,7 +921,8 @@ TWIG, $twig_params);
      * - array  'data': the root nodes to display, each node contains:
      *    - string 'label': title of the node
      *    - int    'number': value of the node, including the value of its children
-     *    - string 'url': url to redirect when clicking on the node
+     *    - string 'url': url to redirect when clicking on a leaf node, or double clicking on any node
+     *      (a click on a node with children zooms into it)
      *    - array  'children': child nodes, with the same keys
      * - string 'label': global title of the widget
      * - string 'color': hex color of the widget
