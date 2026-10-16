@@ -407,6 +407,70 @@
 {% endmacro %}
 
 
+{% macro time(name, value, options = {}) %}
+    {% set options = {
+        'rand': random(),
+        'container_addclass': '',
+        'input_addclass': '',
+        'readonly': false,
+        'disabled': false,
+        'field_label': '',
+        'minute_increment': config('time_step'),
+    }|merge(options) %}
+
+    {% set editable = not options.readonly and not options.disabled %}
+
+    {% set options = {
+        'id': name|safe_dom_id ~ '_' ~ options.rand
+    }|merge(options) %}
+
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
+        {% set options = options|merge({'readonly': true}) %}
+    {% endif %}
+
+    {% set a11y_name = options.field_label is not empty ? options.field_label : __('Enter or select a time') %}
+
+    <div class="btn-group flex-grow-1 flatpickr d-flex {{ options.container_addclass }}" id="{{ options.id }}">
+        {{ _self.input(name, value, options|merge({
+            'type': 'text',
+            'id': options.id ~ '_input',
+            'additional_attributes': (options.additional_attributes ?? {})|merge({
+                'data-input': '',
+                'aria-label': a11y_name,
+            }),
+            'clearable': false
+        })) }}
+
+        {% if editable %}
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
+                <i class="ti ti-clock" aria-hidden="true"></i>
+                <span class="visually-hidden">{{ __('Enter or select a time') }}</span>
+            </button>
+        {% endif %}
+    </div>
+
+    {% if editable %}
+        {% set locale = get_current_locale() %}
+        <script type="module">
+            flatpickr(document.getElementById('{{ options.id|e('js') }}'), {
+                wrap: true,
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: 'H:i',
+                time_24hr: true,
+                minuteIncrement: {{ options.minute_increment }},
+                allowInput: true,
+                locale: getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
+                onClose(dates, currentdatestring, picker) {
+                    // take manually typed value into account
+                    picker.setDate(picker.input.value, true);
+                },
+            });
+        </script>
+    {% endif %}
+{% endmacro %}
+
+
 {% macro textarea(name, value, options = {}) %}
     {% set options = {
         'id': null,
