@@ -330,18 +330,6 @@ class AnswersHandlerTest extends DbTestCase
             ],
         ];
 
-        yield 'Filled location dropdown question - should be valid' => [
-            'builder' => $mandatory_location_question_form_builder,
-            'answers' => [
-                'Mandatory Location Question' => [
-                    'itemtype' => Location::class,
-                    'items_ids' => [1],
-                ],
-            ],
-            'expectedIsValid' => true,
-            'expectedErrors' => [],
-        ];
-
         // Conditonnal validation form builder
         $validation_conditional_form_builder = (new FormBuilder("Conditional Validation Test Form"))
             ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
@@ -563,6 +551,32 @@ class AnswersHandlerTest extends DbTestCase
                 'Mandatory type' => 'This field is mandatory',
             ],
         ];
+    }
+
+    public function testValidateFilledLocationDropdownQuestion(): void
+    {
+        self::login();
+
+        $location = $this->createItem(Location::class, [
+            'name'        => 'My location',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $form = self::createForm(
+            (new FormBuilder("Mandatory Dropdown Item Question Type Test Form"))->addQuestion(
+                "Mandatory Location Question",
+                QuestionTypeItemDropdown::class,
+                extra_data: \Safe\json_encode(
+                    new QuestionTypeItemDropdownExtraDataConfig(itemtype: Location::class)
+                ),
+                is_mandatory: true
+            )
+        );
+
+        $result = AnswersHandler::getInstance()->validateAnswers($form, [
+            self::getQuestionId($form, "Mandatory Location Question") => ['itemtype' => Location::class, 'items_ids' => [$location->getID()]],
+        ]);
+
+        $this->assertTrue($result->isValid());
     }
 
     #[DataProvider('provideTestValidateAnswers')]
