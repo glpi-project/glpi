@@ -454,6 +454,10 @@ final class ResourceAccessor
         if ($results['next_cursor'] !== null) {
             $headers['GLPI-Next-Cursor'] = $results['next_cursor'];
         }
+        if ($results['adjacent_cursors'] !== []) {
+            // Keyed by the page offset relative to the current page, plus "last"
+            $headers['GLPI-Adjacent-Cursors'] = json_encode($results['adjacent_cursors'], JSON_THROW_ON_ERROR);
+        }
         return new JSONResponse($results['results'], $has_more ? 206 : 200, $headers);
     }
 

@@ -50,6 +50,7 @@ class SearchRoute extends Route
                 new ParameterReference('start'),
                 new ParameterReference('limit'),
                 new ParameterReference('cursor'),
+                new ParameterReference('cursor_adjacent_pages'),
                 new ParameterReference('sort'),
             ],
             responses: $responses

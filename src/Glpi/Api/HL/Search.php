@@ -116,6 +116,11 @@ final class Search
      */
     private const CURSOR_VALUE_ALIAS_PREFIX = '_cursor_value_';
 
+    /**
+     * Maximum number of pages in each direction that cursors can be generated for with the cursor_adjacent_pages parameter
+     */
+    public const MAX_CURSOR_ADJACENT_PAGES = 3;
+
     public function __construct(array $schema, array $request_params)
     {
         $this->context = new SearchContext($schema, $request_params);
@@ -663,6 +668,75 @@ final class Search
     }
 
     /**
+     * @return int The number of pages in each direction to generate cursors for, between 0 (disabled) and {@link self::MAX_CURSOR_ADJACENT_PAGES}.
+     */
+    public function getCursorAdjacentPages(): int
+    {
+        $pages = $this->context->getRequestParameter('cursor_adjacent_pages');
+        if (!is_numeric($pages)) {
+            return 0;
+        }
+        return max(0, min((int) $pages, self::MAX_CURSOR_ADJACENT_PAGES));
+    }
+
+    /**
+     * Get the SQL values of the sort properties for the records following an edge record of a page, in the order they are read for the given cursor type.
+     * This is used to generate cursors for pages further away than the previous or next page.
+     * @param CursorPagination::TYPE_* $type The direction to read in. 'next' reads the records after the edge record. 'previous' reads the records before it, going backwards.
+     * @param array<string, scalar|null> $edge_values The SQL values of the sort properties for the edge record
+     * @param int $rows The maximum number of records to read
+     * @return list<array<string, scalar|null>> The SQL values of the sort properties keyed by property name for each record
+     * @throws APIException
+     * @throws RSQLException
+     * @internal
+     */
+    public function getAdjacentCursorValues(string $type, array $edge_values, int $rows): array
+    {
+        if ($rows <= 0 || !$this->supportsCursorPagination()) {
+            return [];
+        }
+
+        $sort = [];
+        foreach ($this->getSortOrder(true) as $prop_name => $direction) {
+            $sort[] = [
+                'field' => $prop_name,
+                'direction' => $direction,
+                'value' => $edge_values[$prop_name] ?? null,
+            ];
+        }
+        // The search with the cursor position of the edge record instead of the one from the request
+        $search = clone $this;
+        $search->cursor_params = ['type' => $type, 'sort' => $sort];
+
+        $criteria = $search->getSearchCriteria();
+        unset($criteria['START']);
+        $cursor_select = $search->getCursorValueSelectCriteria();
+        if (empty($criteria['HAVING'])) {
+            // Only the sort values are needed. Computed fields are kept when used by HAVING because it refers to them by alias.
+            $criteria['SELECT'] = ['_.id', ...$cursor_select];
+        } else {
+            array_push($criteria['SELECT'], ...$cursor_select);
+        }
+        $criteria['LIMIT'] = $rows;
+        $criteria['FROM'] = $search->getFrom($criteria);
+        $criteria['GROUPBY'] = ['_.id'];
+
+        try {
+            $search->addReadRestrictCriteria($criteria);
+            $iterator = $this->db_read->request($criteria);
+            $this->validateIterator($iterator);
+        } catch (RightConditionNotMetException) {
+            return [];
+        }
+
+        $values = [];
+        foreach ($iterator as $row) {
+            $values[] = $search->extractCursorValues($row);
+        }
+        return $values;
+    }
+
+    /**
      * Get the SELECT criteria for the SQL values of the sort properties, which are used to generate cursors for the records at the edges of the page.
      * @return list<QueryExpression>
      * @throws APIException
@@ -1064,7 +1138,7 @@ final class Search
      * @param array $schema
      * @param array $request_params
      * @return array The search results
-     * @phpstan-return array{results: array, start: int, limit: int, cursor_used: bool, prev_cursor: string|null, next_cursor: string|null, total?: int}
+     * @phpstan-return array{results: array, start: int, limit: int, cursor_used: bool, prev_cursor: string|null, next_cursor: string|null, adjacent_cursors: array<int|string, string>, total?: int}
      * @throws RSQLException|APIException
      */
     public static function getSearchResultsBySchema(array $schema, array $request_params): array
@@ -1142,6 +1216,7 @@ final class Search
             'cursor_used' => $cursor_used,
             'prev_cursor' => $cursors['prev_cursor'],
             'next_cursor' => $cursors['next_cursor'],
+            'adjacent_cursors' => $cursors['adjacent_cursors'],
         ];
 
         if (!$cursor_used) {

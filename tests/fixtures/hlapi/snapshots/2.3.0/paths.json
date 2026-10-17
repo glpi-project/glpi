@@ -772,6 +772,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -828,6 +831,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -929,6 +935,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -1026,6 +1035,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -1127,6 +1139,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -1224,6 +1239,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -1325,6 +1343,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -1422,6 +1443,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -1523,6 +1547,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -1622,6 +1649,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -1719,6 +1749,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -6017,6 +6050,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -6418,6 +6454,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -6823,6 +6862,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -7032,6 +7074,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -7239,6 +7284,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -7501,6 +7549,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -7708,6 +7759,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -7919,6 +7973,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -8126,6 +8183,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -8337,6 +8397,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -8544,6 +8607,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -8831,6 +8897,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -8988,6 +9057,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -9069,6 +9141,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -9154,6 +9229,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -9235,6 +9313,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -9320,6 +9401,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -9403,6 +9487,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -9443,6 +9530,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -9528,6 +9618,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -9611,6 +9704,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -9692,6 +9788,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -10476,6 +10575,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -10557,6 +10659,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -10642,6 +10747,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -10723,6 +10831,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -10808,6 +10919,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -10891,6 +11005,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -10931,6 +11048,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -11016,6 +11136,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -11099,6 +11222,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -11180,6 +11306,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -11964,6 +12093,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -12045,6 +12177,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -12130,6 +12265,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -12211,6 +12349,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -12296,6 +12437,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -12379,6 +12523,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -12419,6 +12566,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -12504,6 +12654,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -12587,6 +12740,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -12668,6 +12824,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -13452,6 +13611,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -13533,6 +13695,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -13618,6 +13783,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -13699,6 +13867,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -13784,6 +13955,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -13867,6 +14041,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -13907,6 +14084,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -13992,6 +14172,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -14075,6 +14258,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -14156,6 +14342,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -14940,6 +15129,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -15021,6 +15213,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -15106,6 +15301,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -15187,6 +15385,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -15272,6 +15473,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -15355,6 +15559,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -15395,6 +15602,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -15480,6 +15690,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -15563,6 +15776,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -15644,6 +15860,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -17283,6 +17502,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -17403,6 +17625,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -17527,6 +17752,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -17647,6 +17875,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -17771,6 +18002,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -17891,6 +18125,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -18015,6 +18252,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -18135,6 +18375,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -18259,6 +18502,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -18379,6 +18625,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -19933,6 +20182,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -20053,6 +20305,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -20177,6 +20432,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -20297,6 +20555,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -20421,6 +20682,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -20543,6 +20807,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -20663,6 +20930,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -21788,6 +22058,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -21908,6 +22181,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -22032,6 +22308,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -22152,6 +22431,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -22276,6 +22558,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -22396,6 +22681,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -22520,6 +22808,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -22642,6 +22933,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -22762,6 +23056,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -24173,6 +24470,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -24293,6 +24593,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -24417,6 +24720,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -24539,6 +24845,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -24659,6 +24968,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -25498,6 +25810,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -25618,6 +25933,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -25742,6 +26060,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -25862,6 +26183,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -25986,6 +26310,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -26106,6 +26433,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -26230,6 +26560,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -26350,6 +26683,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -26474,6 +26810,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -26594,6 +26933,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -28148,6 +28490,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -28268,6 +28613,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -28392,6 +28740,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -28512,6 +28863,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -28636,6 +28990,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -28756,6 +29113,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -28880,6 +29240,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -29000,6 +29363,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -29124,6 +29490,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -29244,6 +29613,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -29368,6 +29740,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -29488,6 +29863,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -29612,6 +29990,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -29732,6 +30113,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -31889,6 +32273,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -32154,6 +32541,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -32417,6 +32807,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -32757,6 +33150,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -32854,6 +33250,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -32955,6 +33354,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -33052,6 +33454,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -33153,6 +33558,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -33250,6 +33658,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -33351,6 +33762,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -33448,6 +33862,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -33549,6 +33966,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -33646,6 +34066,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -33747,6 +34170,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -33844,6 +34270,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -33945,6 +34374,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -34042,6 +34474,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -34143,6 +34578,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -34240,6 +34678,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -34341,6 +34782,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -34438,6 +34882,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -36465,6 +36912,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -36531,6 +36981,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -36601,6 +37054,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -36667,6 +37123,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -36737,6 +37196,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -36803,6 +37265,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -36873,6 +37338,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -36939,6 +37407,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -37009,6 +37480,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -37075,6 +37549,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -37145,6 +37622,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -37211,6 +37691,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -37281,6 +37764,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -37347,6 +37833,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -37417,6 +37906,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -37483,6 +37975,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -37553,6 +38048,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -37619,6 +38117,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -38481,6 +38982,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -38547,6 +39051,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -38617,6 +39124,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -38683,6 +39193,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -38753,6 +39266,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -38819,6 +39335,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -38889,6 +39408,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -38955,6 +39477,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -39025,6 +39550,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -39091,6 +39619,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -39161,6 +39692,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -39227,6 +39761,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -39297,6 +39834,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -39363,6 +39903,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -39433,6 +39976,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -39499,6 +40045,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -39569,6 +40118,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -39635,6 +40187,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -39705,6 +40260,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -39771,6 +40329,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -39841,6 +40402,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -39907,6 +40471,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -39977,6 +40544,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -40043,6 +40613,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -40113,6 +40686,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -40179,6 +40755,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -40249,6 +40828,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -40315,6 +40897,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -40385,6 +40970,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -40451,6 +41039,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -40521,6 +41112,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -40587,6 +41181,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -40657,6 +41254,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -40723,6 +41323,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -40793,6 +41396,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -40859,6 +41465,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -40929,6 +41538,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -40995,6 +41607,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -41065,6 +41680,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -41131,6 +41749,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -41201,6 +41822,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -41267,6 +41891,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -41337,6 +41964,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -41403,6 +42033,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -41473,6 +42106,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -41539,6 +42175,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -41609,6 +42248,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -41675,6 +42317,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -41745,6 +42390,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -41811,6 +42459,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -41881,6 +42532,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -41947,6 +42601,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -42017,6 +42674,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -42083,6 +42743,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -42153,6 +42816,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -42219,6 +42885,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -42289,6 +42958,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -42355,6 +43027,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -42425,6 +43100,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -42491,6 +43169,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -42561,6 +43242,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -42627,6 +43311,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -42697,6 +43384,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -42763,6 +43453,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -42833,6 +43526,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -42899,6 +43595,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -42969,6 +43668,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -43035,6 +43737,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -43105,6 +43810,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -43171,6 +43879,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -43241,6 +43952,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -43307,6 +44021,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -43377,6 +44094,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -43443,6 +44163,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -43513,6 +44236,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -43579,6 +44305,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -43649,6 +44378,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -43715,6 +44447,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -43785,6 +44520,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -43851,6 +44589,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -43921,6 +44662,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -43987,6 +44731,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -44057,6 +44804,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -44123,6 +44873,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -44193,6 +44946,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -44259,6 +45015,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -44329,6 +45088,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -44395,6 +45157,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -44465,6 +45230,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -44531,6 +45299,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -44601,6 +45372,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -44667,6 +45441,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -44737,6 +45514,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -44803,6 +45583,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -44873,6 +45656,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -44939,6 +45725,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -45009,6 +45798,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -45075,6 +45867,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -45145,6 +45940,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -45211,6 +46009,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -45281,6 +46082,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -45347,6 +46151,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -45417,6 +46224,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -45483,6 +46293,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -45553,6 +46366,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -45619,6 +46435,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -45689,6 +46508,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -45755,6 +46577,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -45825,6 +46650,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -45891,6 +46719,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -45961,6 +46792,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -46027,6 +46861,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -46097,6 +46934,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -46163,6 +47003,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -46233,6 +47076,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -46299,6 +47145,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -46369,6 +47218,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -46435,6 +47287,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -46505,6 +47360,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -46571,6 +47429,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -46641,6 +47502,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -46707,6 +47571,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -46777,6 +47644,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -46843,6 +47713,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -46913,6 +47786,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -46979,6 +47855,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -47049,6 +47928,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -47115,6 +47997,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -47185,6 +48070,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -47251,6 +48139,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -47321,6 +48212,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -47387,6 +48281,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -47457,6 +48354,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -47523,6 +48423,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -47593,6 +48496,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -47659,6 +48565,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -47729,6 +48638,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -47795,6 +48707,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -47865,6 +48780,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -47931,6 +48849,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -48001,6 +48922,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -48067,6 +48991,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -48137,6 +49064,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -48203,6 +49133,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -48273,6 +49206,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -48339,6 +49275,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -48409,6 +49348,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -48475,6 +49417,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -48545,6 +49490,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -48611,6 +49559,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -48681,6 +49632,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -48747,6 +49701,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -48817,6 +49774,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -48883,6 +49843,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -48953,6 +49916,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -49019,6 +49985,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -49089,6 +50058,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -49155,6 +50127,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -49225,6 +50200,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -49291,6 +50269,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -49361,6 +50342,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -49427,6 +50411,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -49497,6 +50484,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -49563,6 +50553,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -49633,6 +50626,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -49699,6 +50695,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -49769,6 +50768,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -49835,6 +50837,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -49905,6 +50910,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -49971,6 +50979,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -50041,6 +51052,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -50107,6 +51121,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -50177,6 +51194,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -50243,6 +51263,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -50313,6 +51336,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -50379,6 +51405,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -50449,6 +51478,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -50515,6 +51547,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -50585,6 +51620,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -50651,6 +51689,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -50730,6 +51771,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -50854,6 +51898,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -50974,6 +52021,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -51098,6 +52148,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -51218,6 +52271,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -51342,6 +52398,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -51464,6 +52523,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -51531,6 +52593,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -51655,6 +52720,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -51775,6 +52843,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -53203,6 +54274,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -53302,6 +54376,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -53399,6 +54476,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -58095,6 +59175,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -58304,6 +59387,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -58511,6 +59597,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -58733,6 +59822,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -58855,6 +59947,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -58975,6 +60070,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -59560,6 +60658,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -59680,6 +60781,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -59798,6 +60902,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -60288,6 +61395,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -60389,6 +61499,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -60735,6 +61848,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -60832,6 +61948,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -60933,6 +62052,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -61030,6 +62152,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -61592,6 +62717,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -61621,6 +62749,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -61664,6 +62795,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -61705,6 +62839,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -61734,6 +62871,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -61775,6 +62915,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -62399,6 +63542,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -62488,6 +63634,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -62589,6 +63738,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -62686,6 +63838,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -63119,6 +64274,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -63374,6 +64532,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -63711,6 +64872,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -63808,6 +64972,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -63909,6 +65076,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -64006,6 +65176,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -64107,6 +65280,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -64204,6 +65380,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -64305,6 +65484,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -64402,6 +65584,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -64503,6 +65688,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -64600,6 +65788,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -64701,6 +65892,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -64800,6 +65994,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -64897,6 +66094,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -66389,6 +67589,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -66647,6 +67850,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -66765,6 +67971,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -67161,6 +68370,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -67279,6 +68491,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -67675,6 +68890,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -67922,6 +69140,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -68040,6 +69261,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -68162,6 +69386,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -68280,6 +69507,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -68898,6 +70128,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -69102,6 +70335,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -69321,6 +70557,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -69430,6 +70669,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -69690,6 +70932,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -69937,6 +71182,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -70153,6 +71401,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -70308,6 +71559,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -70467,6 +71721,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -70624,6 +71881,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -70768,6 +72028,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -70987,6 +72250,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -71084,6 +72350,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -71185,6 +72454,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -71282,6 +72554,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -71383,6 +72658,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -71480,6 +72758,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -71581,6 +72862,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -71678,6 +72962,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -71779,6 +73066,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -71876,6 +73166,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -71977,6 +73270,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -72074,6 +73370,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -72175,6 +73474,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -72272,6 +73574,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -72373,6 +73678,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -72470,6 +73778,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -72571,6 +73882,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -72668,6 +73982,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -72769,6 +74086,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -72866,6 +74186,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -72967,6 +74290,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -73064,6 +74390,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -73165,6 +74494,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -73262,6 +74594,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -73363,6 +74698,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -73460,6 +74798,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -73561,6 +74902,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -73658,6 +75002,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -73759,6 +75106,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -73856,6 +75206,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -73957,6 +75310,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -74054,6 +75410,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -74155,6 +75514,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -74252,6 +75614,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -74353,6 +75718,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -74450,6 +75818,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -74551,6 +75922,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -74648,6 +76022,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -74749,6 +76126,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -74846,6 +76226,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -74947,6 +76330,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -75044,6 +76430,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -75145,6 +76534,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -75242,6 +76634,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -75343,6 +76738,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -75440,6 +76838,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -75541,6 +76942,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -75638,6 +77042,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -75739,6 +77146,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -75836,6 +77246,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -75937,6 +77350,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -76034,6 +77450,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -76135,6 +77554,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -76232,6 +77654,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -76333,6 +77758,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -76430,6 +77858,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -76531,6 +77962,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -76628,6 +78062,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -76729,6 +78166,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -76826,6 +78266,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -76927,6 +78370,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -77024,6 +78470,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -77125,6 +78574,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -77222,6 +78674,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -77323,6 +78778,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -77420,6 +78878,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -77521,6 +78982,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -77618,6 +79082,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -77719,6 +79186,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -77816,6 +79286,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -77917,6 +79390,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -78014,6 +79490,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -89426,6 +90905,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -89523,6 +91005,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -89624,6 +91109,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -89721,6 +91209,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -89822,6 +91313,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -89919,6 +91413,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -90020,6 +91517,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -90117,6 +91617,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -90218,6 +91721,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -90317,6 +91823,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -90414,6 +91923,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -97562,6 +99074,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -97659,6 +99174,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -98058,6 +99576,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -98155,6 +99676,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -98256,6 +99780,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -98353,6 +99880,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -98454,6 +99984,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -98551,6 +100084,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -98652,6 +100188,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -98749,6 +100288,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -98850,6 +100392,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -98947,6 +100492,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -99048,6 +100596,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -99145,6 +100696,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -99246,6 +100800,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -99343,6 +100900,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -99444,6 +101004,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -99541,6 +101104,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -101501,6 +103067,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -101557,6 +103126,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -101701,6 +103273,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -101757,6 +103332,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -102042,6 +103620,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -102218,6 +103799,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -102336,6 +103920,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -102458,6 +104045,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -102576,6 +104166,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -102698,6 +104291,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -102816,6 +104412,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -102938,6 +104537,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -103056,6 +104658,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -103178,6 +104783,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -103296,6 +104904,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -103418,6 +105029,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -103536,6 +105150,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -103658,6 +105275,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -103776,6 +105396,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -103898,6 +105521,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -104016,6 +105642,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -104138,6 +105767,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -104256,6 +105888,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -104378,6 +106013,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -104496,6 +106134,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -104618,6 +106259,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -104736,6 +106380,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -104858,6 +106505,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -104976,6 +106626,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -105098,6 +106751,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -105216,6 +106872,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -105338,6 +106997,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -105456,6 +107118,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -105578,6 +107243,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -105696,6 +107364,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -109640,6 +111311,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -109927,6 +111601,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -110183,6 +111860,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -110317,6 +111997,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -110495,6 +112178,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -110698,6 +112384,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -110754,6 +112443,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -110853,6 +112545,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -111430,6 +113125,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -111575,6 +113273,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -111783,6 +113484,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 },
                 {
@@ -111989,6 +113693,9 @@
                     "$ref": "#/components/parameters/cursor"
                 },
                 {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
+                },
+                {
                     "$ref": "#/components/parameters/sort"
                 }
             ],
@@ -112193,6 +113900,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"
@@ -112548,6 +114258,9 @@
                 },
                 {
                     "$ref": "#/components/parameters/cursor"
+                },
+                {
+                    "$ref": "#/components/parameters/cursor_adjacent_pages"
                 },
                 {
                     "$ref": "#/components/parameters/sort"

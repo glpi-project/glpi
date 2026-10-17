@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\Search;
 use CommonDBTM;
 use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -431,9 +432,12 @@ final class RecordSet
     }
 
     /**
-     * @return array{prev_cursor: string|null, next_cursor: string|null} Cursors that can be used to fetch the previous and next page of results based on the search sorts.
+     * @return array{prev_cursor: string|null, next_cursor: string|null, adjacent_cursors: array<int|string, string>}
+     * Cursors that can be used to fetch the previous and next page of results based on the search sorts.
      * A cursor is null if there is no page in that direction.
+     * If adjacent pages were requested, adjacent_cursors also contains cursors keyed by their page offset relative to the current page ("-2", "-1", "1", "2", etc.).
      * @throws APIException
+     * @throws RSQLException
      * @internal
      */
     public function getCursors(): array
@@ -441,6 +445,7 @@ final class RecordSet
         $cursors = [
             'prev_cursor' => null,
             'next_cursor' => null,
+            'adjacent_cursors' => [],
         ];
         if ($this->cursor_values === []) {
             // No results or cursor-based pagination isn't supported for this search
@@ -460,12 +465,63 @@ final class RecordSet
         }
 
         $sort = $this->search->getSortOrder(true);
-        //TODO Allow generating cursors for adjacent pages (given a value of 2 for adjacency, generate tokens for 2 pages back and 2 pages forward)
         if ($has_previous) {
             $cursors['prev_cursor'] = CursorPagination::generateCursorToken(CursorPagination::TYPE_PREVIOUS, reset($this->cursor_values), $sort);
         }
         if ($has_next) {
             $cursors['next_cursor'] = CursorPagination::generateCursorToken(CursorPagination::TYPE_NEXT, end($this->cursor_values), $sort);
+        }
+
+        $adjacent_pages = $this->search->getCursorAdjacentPages();
+        $limit = $this->search->getContext()->getRequestParameter('limit');
+        if ($adjacent_pages > 0 && is_numeric($limit) && (int) $limit > 0) {
+            $limit = (int) $limit;
+            // Ordered from the furthest previous page to the furthest next page
+            if ($cursors['prev_cursor'] !== null) {
+                $previous = $this->getAdjacentCursors(CursorPagination::TYPE_PREVIOUS, reset($this->cursor_values), $adjacent_pages, $limit, $sort);
+                $previous[-1] = $cursors['prev_cursor'];
+                ksort($previous);
+                $cursors['adjacent_cursors'] += $previous;
+            }
+            if ($cursors['next_cursor'] !== null) {
+                $next = $this->getAdjacentCursors(CursorPagination::TYPE_NEXT, end($this->cursor_values), $adjacent_pages, $limit, $sort);
+                $next[1] = $cursors['next_cursor'];
+                ksort($next);
+                $cursors['adjacent_cursors'] += $next;
+            }
+        }
+        return $cursors;
+    }
+
+    /**
+     * Get the cursors for the pages after the first adjacent page in the given direction.
+     * The first record of a page (or last record when going forward) is the position of the cursor for the following page, so those records
+     * are read from the database starting at the edge of the current page.
+     * @param CursorPagination::TYPE_* $type The direction to generate the cursors for
+     * @param array<string, scalar|null> $edge_values The sort values of the record at the edge of the current page in the given direction
+     * @param int $adjacent_pages The number of pages to generate cursors for including the one that can be generated without reading more records
+     * @param int $limit The page size
+     * @param array<string, 'ASC'|'DESC'> $sort The sort order
+     * @return array<int, string> Cursors keyed by their page offset relative to the current page. Negative for previous pages.
+     * @throws APIException
+     * @throws RSQLException
+     */
+    private function getAdjacentCursors(string $type, array $edge_values, int $adjacent_pages, int $limit, array $sort): array
+    {
+        if ($adjacent_pages < 2) {
+            return [];
+        }
+        // To know if a page exists, there needs to be at least one record on it
+        $boundary_values = $this->search->getAdjacentCursorValues($type, $edge_values, ($adjacent_pages - 1) * $limit + 1);
+        $cursors = [];
+        for ($page = 2; $page <= $adjacent_pages; $page++) {
+            $boundary_index = ($page - 1) * $limit - 1;
+            if (count($boundary_values) <= $boundary_index + 1) {
+                // No records on this page, so it doesn't exist
+                break;
+            }
+            $offset = $type === CursorPagination::TYPE_PREVIOUS ? -$page : $page;
+            $cursors[$offset] = CursorPagination::generateCursorToken($type, $boundary_values[$boundary_index], $sort);
         }
         return $cursors;
     }

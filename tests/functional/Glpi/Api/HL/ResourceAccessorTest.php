@@ -225,7 +225,7 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertArrayNotHasKey('date_sync', $result[0]);
 
         $result = json_decode((string) ResourceAccessor::getOneBySchema($user_schema, ['id' => 2], [])->getBody(), true);
-        $this->assertArrayHasKey( 'id', $result);
+        $this->assertArrayHasKey('id', $result);
         $this->assertArrayHasKey('username', $result);
         $this->assertArrayNotHasKey('date_sync', $result);
 
@@ -379,6 +379,68 @@ class ResourceAccessorTest extends DbTestCase
             'cursor' => 'not a cursor',
         ]);
         $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    public function testSearchCursorsAdjacentPages(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $test_entity_id = $this->getTestRootEntity(true);
+        for ($i = 0; $i < 30; $i++) {
+            $DB->insert('glpi_computers', [
+                'name' => __FUNCTION__ . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'entities_id' => $test_entity_id,
+            ]);
+        }
+
+        $prefix = __FUNCTION__;
+        $schema = AssetController::getKnownSchemas(Router::API_VERSION)['Computer'];
+        $fn_search = static function (array $params) use ($schema, $prefix) {
+            $response = ResourceAccessor::searchBySchema($schema, $params + [
+                'filter' => 'name=like=' . $prefix . '*',
+                'limit' => 5,
+                'cursor_adjacent_pages' => 2,
+            ]);
+            $headers = $response->getHeaders();
+            return [
+                array_column(json_decode((string) $response->getBody(), true), 'name'),
+                isset($headers['GLPI-Adjacent-Cursors']) ? json_decode($headers['GLPI-Adjacent-Cursors'][0], true) : null,
+            ];
+        };
+        // Names of the items on the given 1-based page
+        $fn_page = static fn(int $page) => array_map(
+            static fn($i) => $prefix . str_pad($i, 3, '0', STR_PAD_LEFT),
+            range(($page - 1) * 5, $page * 5 - 1)
+        );
+
+        // First page has no previous pages, and the cursors for the next two pages
+        [$names, $adjacent] = $fn_search([]);
+        $this->assertEquals($fn_page(1), $names);
+        $this->assertEquals(['1', '2'], array_map('strval', array_keys($adjacent)));
+
+        // Jump to page 3 and then check all pages around it
+        [$names, $adjacent] = $fn_search(['cursor' => $adjacent['2']]);
+        $this->assertEquals($fn_page(3), $names);
+        $this->assertEquals(['-2', '-1', '1', '2'], array_map('strval', array_keys($adjacent)));
+        foreach ([-2 => 1, -1 => 2, 1 => 4, 2 => 5] as $offset => $page) {
+            [$names] = $fn_search(['cursor' => $adjacent[(string) $offset]]);
+            $this->assertEquals($fn_page($page), $names, "Page offset {$offset}");
+        }
+
+        // Only the cursors for pages that exist are given
+        [$names, $adjacent] = $fn_search(['cursor' => $adjacent['2']]);
+        $this->assertEquals($fn_page(5), $names);
+        $this->assertEquals(['-2', '-1', '1'], array_map('strval', array_keys($adjacent)));
+
+        // Disabled by default
+        $response = ResourceAccessor::searchBySchema($schema, ['filter' => 'name=like=' . $prefix . '*', 'limit' => 5]);
+        $this->assertArrayNotHasKey('GLPI-Adjacent-Cursors', $response->getHeaders());
+
+        // The number of adjacent pages is capped
+        [, $adjacent] = $fn_search(['cursor_adjacent_pages' => 10, 'limit' => 2]);
+        $this->assertEquals(['1', '2', '3'], array_map('strval', array_keys($adjacent)));
     }
 
     public function testSearchCursorsComputedSort(): void

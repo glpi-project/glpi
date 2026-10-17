@@ -37,8 +37,8 @@ namespace Glpi\Api\HL\Search;
 use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
-
 use Safe\Exceptions\UrlException;
+
 use function Safe\base64_decode;
 
 /**
