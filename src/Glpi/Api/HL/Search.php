@@ -645,6 +645,10 @@ final class Search
                 // Write-only values are never hydrated, and the SQL value must not be exposed in a cursor token
                 return 'Cursor-based pagination is not supported when sorting by ' . $prop_name . ' because it is a write-only property';
             }
+            if (isset($flattened_props[$prop_name]['computation'])) {
+                // Computed values only exist as SELECT aliases, which cannot be referenced in the WHERE clause the cursor condition goes in
+                return 'Cursor-based pagination is not supported when sorting by ' . $prop_name . ' because it is a computed property';
+            }
             if ($this->isArrayJoinedProperty($prop_name)) {
                 // There is no single value to compare the position against
                 return 'Cursor-based pagination is not supported when sorting by ' . $prop_name . ' because items may have multiple values for it';

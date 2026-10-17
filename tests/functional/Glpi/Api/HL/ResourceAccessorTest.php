@@ -37,9 +37,11 @@ namespace tests\units\Glpi\Api\HL;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
 use Glpi\Api\HL\Controller\AssetController;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\Search\CursorPagination;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use Manufacturer;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -377,6 +379,27 @@ class ResourceAccessorTest extends DbTestCase
             'cursor' => 'not a cursor',
         ]);
         $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    public function testSearchCursorsComputedSort(): void
+    {
+        $this->login();
+
+        $schema = AssetController::getKnownSchemas(Router::API_VERSION)['Computer'];
+        $schema['properties']['computed_name'] = [
+            'type' => Schema::TYPE_STRING,
+            'computation' => new QueryExpression('UPPER(`_`.`name`)'),
+        ];
+
+        // Computed values are SELECT aliases and cannot be used in the WHERE clause of a cursor condition
+        $response = ResourceAccessor::searchBySchema($schema, [
+            'sort' => 'computed_name',
+            'limit' => 10,
+            'cursor' => 'any-cursor',
+        ]);
+        $this->assertEquals(400, $response->getStatusCode());
+        $body = json_decode((string) $response->getBody(), true);
+        $this->assertStringContainsString('computed', $body['detail'] ?? $body['title'] ?? '');
     }
 
     public static function searchCursorsComplexProvider(): iterable
