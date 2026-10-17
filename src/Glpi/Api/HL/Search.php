@@ -639,7 +639,12 @@ final class Search
             // IDs are not unique across the different tables, so there is no stable sort to base a cursor on
             return 'Cursor-based pagination is not supported for this endpoint';
         }
+        $flattened_props = $this->context->getFlattenedProperties();
         foreach (array_keys($this->getSortOrder(true)) as $prop_name) {
+            if ($flattened_props[$prop_name]['writeOnly'] ?? false) {
+                // Write-only values are never hydrated, and the SQL value must not be exposed in a cursor token
+                return 'Cursor-based pagination is not supported when sorting by ' . $prop_name . ' because it is a write-only property';
+            }
             if ($this->isArrayJoinedProperty($prop_name)) {
                 // There is no single value to compare the position against
                 return 'Cursor-based pagination is not supported when sorting by ' . $prop_name . ' because items may have multiple values for it';
