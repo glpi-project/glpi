@@ -356,6 +356,7 @@ class TestUpdatedDataCommand extends Command
             'glpi_users' => [
                 'password',
             ],
+            'glpi_documenttypes' => ['mime']
         ];
         return array_merge(
             $excluded_fields['*'],
