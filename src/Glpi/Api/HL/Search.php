@@ -88,6 +88,7 @@ use function Safe\preg_replace;
  *     </li>
  *     <li>0x1F: Unit separator. Used as a replacement for '.' in property names (which would be used as a table/column alias).</li>
  * </ul>
+ * @phpstan-import-type CursorParams from CursorPagination
  */
 final class Search
 {
@@ -97,7 +98,7 @@ final class Search
     /** @var array<string, string> */
     private array $sql_field_cache = [];
     /**
-     * @var array|null Decoded cursor token for cursor-based pagination
+     * @var CursorParams|null Decoded cursor token for cursor-based pagination
      * @see CursorPagination::decodeCursorToken()
      */
     private ?array $cursor_params = null;
@@ -670,7 +671,7 @@ final class Search
 
     /**
      * Remove the cursor values selected by {@link self::getCursorValueSelectCriteria()} from a row.
-     * @param array $row The row. Will be modified in-place.
+     * @param array<string, mixed> $row The row. Will be modified in-place.
      * @return array<string, mixed> The cursor values keyed by property name
      * @throws APIException
      */
@@ -834,6 +835,7 @@ final class Search
     /**
      * @param bool $count_only
      * @return RecordSet|int
+     * @phpstan-return ($count_only is true ? int : RecordSet)
      * @throws APIException
      * @throws RSQLException
      */

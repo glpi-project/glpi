@@ -440,12 +440,13 @@ final class ResourceAccessor
             // The offset of the results is unknown when using a cursor, so a Content-Range header cannot be given
             $has_more = $results['next_cursor'] !== null;
         } else {
-            $has_more = $results['start'] + $results['limit'] < $results['total'];
+            $total = $results['total'] ?? count($results['results']);
+            $has_more = $results['start'] + $results['limit'] < $total;
             $end = max(0, ($results['start'] + $results['limit'] - 1));
-            if ($end > $results['total']) {
-                $end = $results['total'] - 1;
+            if ($end > $total) {
+                $end = $total - 1;
             }
-            $headers['Content-Range'] = $results['start'] . '-' . $end . '/' . $results['total'];
+            $headers['Content-Range'] = $results['start'] . '-' . $end . '/' . $total;
         }
         if ($results['prev_cursor'] !== null) {
             $headers['GLPI-Previous-Cursor'] = $results['prev_cursor'];

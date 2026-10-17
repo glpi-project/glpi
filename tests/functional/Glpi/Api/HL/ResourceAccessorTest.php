@@ -217,13 +217,13 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertArrayNotHasKey('date_sync', $filtered['properties']);
 
         $this->login('tech', 'tech');
-        $result = json_decode((string)ResourceAccessor::searchBySchema($user_schema, ['limit' => 1])->getBody(), true);
+        $result = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['limit' => 1])->getBody(), true);
         $this->assertArrayHasKey('id', $result[0]);
         $this->assertArrayHasKey('username', $result[0]);
         $this->assertArrayNotHasKey('date_sync', $result[0]);
 
-        $result = json_decode((string)ResourceAccessor::getOneBySchema($user_schema, ['id' => 2], [])->getBody(), true);
-        $this->assertArrayHasKey('id', $result);
+        $result = json_decode((string) ResourceAccessor::getOneBySchema($user_schema, ['id' => 2], [])->getBody(), true);
+        $this->assertArrayHasKey( 'id', $result);
         $this->assertArrayHasKey('username', $result);
         $this->assertArrayNotHasKey('date_sync', $result);
 
@@ -280,11 +280,11 @@ class ResourceAccessorTest extends DbTestCase
         );
 
         // Sorting by the date_sync field should be ignored for the tech user
-        $response = json_decode((string)ResourceAccessor::searchBySchema($user_schema, ['sort' => 'date_sync'])->getBody(), true);
+        $response = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['sort' => 'date_sync'])->getBody(), true);
         $this->assertEquals("Invalid property for sorting: date_sync", $response['title']);
 
         // Filtering by the date_sync field should be ignored for the tech user
-        $response = json_decode((string)ResourceAccessor::searchBySchema($user_schema, ['filter' => 'date_sync=gt="2040-01-01"'])->getBody(), true);
+        $response = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['filter' => 'date_sync=gt="2040-01-01"'])->getBody(), true);
         $this->assertGreaterThan(5, count($response));
     }
 
