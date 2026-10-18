@@ -2665,6 +2665,17 @@ HTML;
         }
     }
 
+    public function testGetDurationDropdownUsesTimeStep()
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI["time_step"] = 15;
+        $durations = Dropdown::getDurationDropdown();
+
+        $this->assertArrayHasKey(15 * MINUTE_TIMESTAMP, $durations);
+        $this->assertArrayHasKey(45 * MINUTE_TIMESTAMP, $durations);
+        $this->assertArrayNotHasKey(35 * MINUTE_TIMESTAMP, $durations);
+    }
+
     public function testGetLanguages()
     {
         global $CFG_GLPI;

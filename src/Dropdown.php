@@ -5161,7 +5161,10 @@ HTML;
 
     public static function getDurationDropdown(): array
     {
+        global $CFG_GLPI;
+
         $durationDropdown = [];
+        $step = (int) $CFG_GLPI['time_step'];
 
         // 1..9 minutes
         for ($i = 1; $i <= 9; $i++) {
@@ -5169,8 +5172,8 @@ HTML;
             $durationDropdown[$key] = sprintf('%dh%02d', 0, $i);
         }
 
-        // 10..595 step 5 (minutes)
-        for ($i = 10; $i < 595; $i += 5) {
+        // 10..595 using the configured time step (minutes)
+        for ($i = (int) ceil(10 / $step) * $step; $i < 595; $i += $step) {
             $minutes = $i % 60;
             $hours = intdiv($i, 60);
             $key = $i * MINUTE_TIMESTAMP;
