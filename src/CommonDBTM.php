@@ -2973,6 +2973,11 @@ class CommonDBTM extends CommonGLPI
             $this->fields['entities_id']  = $_SESSION['glpiactive_entity'];
         }
 
+        // `header_toolbar` contains raw HTML and must only be provided by code.
+        // Ignore it when the request carries it as $options is built from it.
+        if (isset($_GET['header_toolbar']) || isset($_POST['header_toolbar'])) {
+            $params['header_toolbar'] = [];
+        }
         $header_toolbar = $params['header_toolbar'];
         unset($params['header_toolbar']);
 
