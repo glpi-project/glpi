@@ -39,6 +39,8 @@ use Glpi\Event;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile_User;
+use User;
 use UserEmail;
 
 class AdministrationControllerTest extends HLAPITestCase
@@ -787,21 +789,17 @@ class AdministrationControllerTest extends HLAPITestCase
         $useremail_id = $DB->insertId();
 
         $this->api->call(new Request('GET', "/Administration/User/$users_id"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
         $this->api->call(new Request('GET', "/Administration/User/$users_id/Email/$useremail_id"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
         $create_request = new Request('POST', "/Administration/User/$users_id/Email");
         $create_request->setParameter('email', TU_USER . '@example.com');
         $this->api->call($create_request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
         $this->api->call(new Request('DELETE', "/Administration/User/$users_id/Email/$useremail_id"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
     }
@@ -815,13 +813,402 @@ class AdministrationControllerTest extends HLAPITestCase
         $create_request->setParameter('email', TU_USER . '@example.com');
         // First call should succeed
         $this->api->call($create_request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
         // Second call should fail with a 409 status
         $this->api->call($create_request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->status(fn($status) => $this->assertEquals(409, $status));
+        });
+    }
+
+    public function testCRUDUserProfileAuthorizations(): void
+    {
+        $this->login();
+        $users_id = getItemByTypeName('User', 'normal', true);
+
+        $this->api->autoTestCRUD(
+            endpoint: "/Administration/User/$users_id/ProfileAuthorization",
+            create_params: [
+                'profile' => getItemByTypeName('Profile', 'Technician', true),
+                'entity' => $this->getTestRootEntity(true),
+                'is_recursive' => false,
+            ],
+            extra_options: ['skip_update_test' => true],
+        );
+    }
+
+    public function testSearchUserProfileAuthorizations(): void
+    {
+        $users_id = getItemByTypeName('User', 'tech', true);
+
+        $this->loginWeb();
+        // 'tech' only has authorizations in the root entity, which is not part of the API session active entities
+        $visible_authorization = $this->createItem(Profile_User::class, [
+            'users_id' => $users_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Observer', true),
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 0,
+        ])->getID();
+
+        $this->login();
+        $this->api->call(new Request('GET', "/Administration/User/$users_id/ProfileAuthorization"), function ($call) use ($users_id, $visible_authorization) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($users_id, $visible_authorization) {
+                    // Authorizations in entities outside the active entities are not visible
+                    $this->assertEquals([$visible_authorization], array_column($content, 'id'));
+                    foreach ($content as $authorization) {
+                        $this->assertEquals($users_id, $authorization['user']['id']);
+                        $this->assertArrayHasKey('profile', $authorization);
+                        $this->assertArrayHasKey('entity', $authorization);
+                        $this->assertArrayHasKey('is_recursive', $authorization);
+                        $this->assertArrayHasKey('is_dynamic', $authorization);
+                    }
+                });
+        });
+    }
+
+    public function testCRUDNoRightsUserProfileAuthorizations(): void
+    {
+        $users_id = getItemByTypeName('User', TU_USER, true);
+        $authorizations_id = array_key_first((new Profile_User())->find(['users_id' => $users_id], [], 1));
+
+        $this->login('post-only', 'postonly');
+
+        $this->api->call(new Request('GET', "/Administration/User/$users_id/ProfileAuthorization"), function ($call) {
+            $call->response->isAccessDenied();
+        });
+        $this->api->call(new Request('GET', "/Administration/User/$users_id/ProfileAuthorization/$authorizations_id"), function ($call) {
+            $call->response->isAccessDenied();
+        });
+        $create_request = new Request('POST', "/Administration/User/$users_id/ProfileAuthorization");
+        $create_request->setParameter('profile', getItemByTypeName('Profile', 'Self-Service', true));
+        $create_request->setParameter('entity', $this->getTestRootEntity(true));
+        $this->api->call($create_request, function ($call) {
+            $call->response->isAccessDenied();
+        });
+        $this->api->call(new Request('DELETE', "/Administration/User/$users_id/ProfileAuthorization/$authorizations_id"), function ($call) {
+            $call->response->isAccessDenied();
+        });
+    }
+
+    public function testAddUserProfileAuthorizationInvalidInput(): void
+    {
+        $this->login();
+        $users_id = getItemByTypeName('User', 'normal', true);
+
+        $request = new Request('POST', "/Administration/User/$users_id/ProfileAuthorization");
+        $request->setParameter('entity', $this->getTestRootEntity(true));
+        $this->api->call($request, function ($call) {
+            $call->response->status(fn($status) => $this->assertEquals(400, $status));
+        });
+
+        $request = new Request('POST', "/Administration/User/$users_id/ProfileAuthorization");
+        $request->setParameter('profile', getItemByTypeName('Profile', 'Technician', true));
+        $request->setParameter('entity', 999999);
+        $this->api->call($request, function ($call) {
+            $call->response->status(fn($status) => $this->assertEquals(400, $status));
+        });
+    }
+
+    public function testDeleteProfileAuthorizationOfOtherUser(): void
+    {
+        $this->login();
+        $authorizations_id = array_key_first((new Profile_User())->find(['users_id' => getItemByTypeName('User', 'tech', true)], [], 1));
+        $users_id = getItemByTypeName('User', 'normal', true);
+
+        $this->api->call(new Request('DELETE', "/Administration/User/$users_id/ProfileAuthorization/$authorizations_id"), function ($call) {
+            $call->response->isNotFoundError();
+        });
+        $this->assertTrue((new Profile_User())->getFromDB($authorizations_id));
+    }
+
+    /**
+     * Create a user with the Admin profile in the given entity and log in with it using the API.
+     */
+    private function loginAsLimitedAdmin(int $entities_id, bool $is_recursive): void
+    {
+        $this->loginWeb();
+        $this->createItem(User::class, [
+            'name' => 'limited_admin',
+            'password' => 'limited_admin',
+            'password2' => 'limited_admin',
+            '_profiles_id' => getItemByTypeName('Profile', 'Admin', true),
+            '_entities_id' => $entities_id,
+            '_is_recursive' => (int) $is_recursive,
+        ], ['password', 'password2']);
+        $this->login('limited_admin', 'limited_admin');
+    }
+
+    public function testCannotGrantOrRevokeHigherProfile(): void
+    {
+        $root_entity = $this->getTestRootEntity(true);
+        $this->loginAsLimitedAdmin(0, true);
+        $users_id = getItemByTypeName('User', 'normal', true);
+
+        // Super-Admin has more rights than Admin
+        $request = new Request('POST', "/Administration/User/$users_id/ProfileAuthorization");
+        $request->setParameter('profile', getItemByTypeName('Profile', 'Super-Admin', true));
+        $request->setParameter('entity', $root_entity);
+        $this->api->call($request, function ($call) {
+            $call->response->isAccessDenied();
+        });
+        $this->assertEquals(0, countElementsInTable(Profile_User::getTable(), [
+            'users_id' => $users_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+
+        // Technician has less rights than Admin
+        $request = new Request('POST', "/Administration/User/$users_id/ProfileAuthorization");
+        $request->setParameter('profile', getItemByTypeName('Profile', 'Technician', true));
+        $request->setParameter('entity', $root_entity);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        // Cannot revoke a Super-Admin authorization
+        $tu_users_id = getItemByTypeName('User', TU_USER, true);
+        $authorizations_id = array_key_first((new Profile_User())->find([
+            'users_id' => $tu_users_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ], [], 1));
+        $this->assertNotNull($authorizations_id);
+        $this->api->call(new Request('DELETE', "/Administration/User/$tu_users_id/ProfileAuthorization/$authorizations_id"), function ($call) {
+            $call->response->isAccessDenied();
+        });
+        $this->assertTrue((new Profile_User())->getFromDB($authorizations_id));
+    }
+
+    public function testCannotGrantOrRevokeInInaccessibleEntity(): void
+    {
+        $root_entity = $this->getTestRootEntity(true);
+        $child_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        $technician = getItemByTypeName('Profile', 'Technician', true);
+
+        $this->loginWeb();
+        $target_users_id = $this->createItem(User::class, [
+            'name' => 'profile_target',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $root_entity,
+            '_is_recursive' => 0,
+        ])->getID();
+        // Authorization in an entity the limited admin cannot see
+        $child_authorization = $this->createItem(Profile_User::class, [
+            'users_id' => $target_users_id,
+            'profiles_id' => $technician,
+            'entities_id' => $child_entity,
+            'is_recursive' => 0,
+        ])->getID();
+
+        // Admin profile only in the test root entity, without its children
+        $this->loginAsLimitedAdmin($root_entity, false);
+
+        $endpoint = "/Administration/User/$target_users_id/ProfileAuthorization";
+
+        // Child entity is not accessible
+        $request = new Request('POST', $endpoint);
+        $request->setParameter('profile', $technician);
+        $request->setParameter('entity', $child_entity);
+        $request->setParameter('is_recursive', false);
+        $this->api->call($request, function ($call) {
+            $call->response->isAccessDenied();
+        });
+
+        // Recursive authorization would give access to the inaccessible child entities
+        $request = new Request('POST', $endpoint);
+        $request->setParameter('profile', $technician);
+        $request->setParameter('entity', $root_entity);
+        $request->setParameter('is_recursive', true);
+        $this->api->call($request, function ($call) {
+            $call->response->isAccessDenied();
+        });
+
+        // Recursive by default
+        $request = new Request('POST', $endpoint);
+        $request->setParameter('profile', $technician);
+        $request->setParameter('entity', $root_entity);
+        $this->api->call($request, function ($call) {
+            $call->response->isAccessDenied();
+        });
+
+        $this->assertEquals(0, countElementsInTable(Profile_User::getTable(), [
+            'users_id' => $target_users_id,
+            'profiles_id' => $technician,
+            'entities_id' => $root_entity,
+        ]));
+
+        // Non-recursive authorization in the accessible entity
+        $request = new Request('POST', $endpoint);
+        $request->setParameter('profile', $technician);
+        $request->setParameter('entity', $root_entity);
+        $request->setParameter('is_recursive', false);
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        // Authorizations in inaccessible entities are hidden and cannot be removed
+        $this->api->call(new Request('GET', "$endpoint/$child_authorization"), function ($call) {
+            $call->response->isNotFoundError();
+        });
+        $this->api->call(new Request('DELETE', "$endpoint/$child_authorization"), function ($call) {
+            $call->response->isAccessDenied();
+        });
+        $this->assertTrue((new Profile_User())->getFromDB($child_authorization));
+
+        // The new authorization can be removed
+        $this->api->call(new Request('DELETE', $new_location), function ($call) {
+            $call->response->isOK();
+        });
+    }
+
+    /**
+     * Create a user with a visible (test root entity) and a hidden (root entity) authorization.
+     * @return array{users_id: int, visible: int, hidden: int}
+     */
+    private function createUserWithProfileAuthorizations(): array
+    {
+        $this->loginWeb();
+        $users_id = $this->createItem(User::class, [
+            'name' => 'graphql_profile_auth',
+            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            '_entities_id' => $this->getTestRootEntity(true),
+            '_is_recursive' => 0,
+        ])->getID();
+        $visible = array_key_first((new Profile_User())->find(['users_id' => $users_id], [], 1));
+        // The root entity is not part of the active entities of the test session
+        $hidden = $this->createItem(Profile_User::class, [
+            'users_id' => $users_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Observer', true),
+            'entities_id' => 0,
+            'is_recursive' => 0,
+        ])->getID();
+
+        return ['users_id' => $users_id, 'visible' => $visible, 'hidden' => $hidden];
+    }
+
+    public function testGraphQLProfileAuthorizations(): void
+    {
+        ['users_id' => $users_id, 'visible' => $visible, 'hidden' => $hidden] = $this->createUserWithProfileAuthorizations();
+        $technician = getItemByTypeName('Profile', 'Technician', true);
+        $root_entity = $this->getTestRootEntity(true);
+        $this->graphql->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $this->graphql->call(
+            "query { User(id: $users_id) { id profile_authorizations { id user { id } profile { id name } entity { id } is_recursive is_dynamic } } }",
+            function ($call) use ($users_id, $visible, $technician, $root_entity) {
+                $call->response
+                    ->isOK()
+                    ->data('User', function ($users) use ($users_id, $visible, $technician, $root_entity) {
+                        $this->assertCount(1, $users);
+                        $authorizations = $users[0]['profile_authorizations'];
+                        // The authorization in the root entity is not visible
+                        $this->assertEquals([$visible], array_column($authorizations, 'id'));
+                        $this->assertEquals($users_id, $authorizations[0]['user']['id']);
+                        $this->assertEquals($technician, $authorizations[0]['profile']['id']);
+                        $this->assertEquals('Technician', $authorizations[0]['profile']['name']);
+                        $this->assertEquals($root_entity, $authorizations[0]['entity']['id']);
+                        $this->assertFalse($authorizations[0]['is_recursive']);
+                        $this->assertFalse($authorizations[0]['is_dynamic']);
+                    });
+            }
+        );
+
+        $this->graphql->call(
+            "query { Profile(id: $technician) { id profile_authorizations { id user { id } } } }",
+            function ($call) use ($users_id, $visible, $hidden) {
+                $call->response
+                    ->isOK()
+                    ->data('Profile', function ($profiles) use ($users_id, $visible, $hidden) {
+                        $authorizations = $profiles[0]['profile_authorizations'];
+                        $ids = array_column($authorizations, 'id');
+                        $this->assertContains($visible, $ids);
+                        $this->assertNotContains($hidden, $ids);
+                        foreach ($authorizations as $authorization) {
+                            if ($authorization['id'] === $visible) {
+                                $this->assertEquals($users_id, $authorization['user']['id']);
+                            }
+                        }
+                    });
+            }
+        );
+
+        $this->graphql->call(
+            "query { Entity(id: $root_entity) { id profile_authorizations { id entity { id } } } }",
+            function ($call) use ($visible, $root_entity) {
+                $call->response
+                    ->isOK()
+                    ->data('Entity', function ($entities) use ($visible, $root_entity) {
+                        $authorizations = $entities[0]['profile_authorizations'];
+                        $this->assertContains($visible, array_column($authorizations, 'id'));
+                        foreach ($authorizations as $authorization) {
+                            $this->assertEquals($root_entity, $authorization['entity']['id']);
+                        }
+                    });
+            }
+        );
+    }
+
+    public function testGraphQLProfileAuthorizationsWithoutRight(): void
+    {
+        ['visible' => $visible] = $this->createUserWithProfileAuthorizations();
+        $technician = getItemByTypeName('Profile', 'Technician', true);
+        $this->graphql->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        // Without the right to view users, the authorizations cannot be expanded
+        $_SESSION['glpiactiveprofile']['user'] = 0;
+        $this->graphql->call(
+            "query { Profile(id: $technician) { id profile_authorizations { id user { id } entity { id } } } }",
+            function ($call) use ($visible) {
+                $call->response
+                    ->isOK()
+                    ->data('Profile', function ($profiles) use ($visible) {
+                        $authorizations = $profiles[0]['profile_authorizations'];
+                        $this->assertContains($visible, array_column($authorizations, 'id'));
+                        foreach ($authorizations as $authorization) {
+                            $this->assertNull($authorization['user']);
+                            $this->assertNull($authorization['entity']);
+                        }
+                    });
+            }
+        );
+    }
+
+    public function testProfileAuthorizationsNotDirectlyAccessible(): void
+    {
+        ['users_id' => $users_id] = $this->createUserWithProfileAuthorizations();
+        $this->login();
+
+        // No GraphQL query for the authorizations themselves
+        $this->graphql->call('query { ProfileAuthorization { id } }', function ($call) {
+            $call->response->isCompletelyError();
+        });
+
+        // GraphQL-only properties are not part of the REST API
+        $this->api->call(new Request('GET', "/Administration/User/$users_id"), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayNotHasKey('profile_authorizations', $content);
+                });
+        });
+        $this->api->call(new Request('GET', '/Administration/Profile/' . getItemByTypeName('Profile', 'Technician', true)), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayNotHasKey('profile_authorizations', $content);
+                });
+        });
+        $this->api->call(new Request('GET', '/Administration/Entity/' . $this->getTestRootEntity(true)), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayNotHasKey('profile_authorizations', $content);
+                });
         });
     }
 }
