@@ -1436,6 +1436,7 @@ class TicketTest extends DbTestCase
         $this->assertTrue((bool) $ticket->canAddFollowups());
         $this->assertTrue((bool) $ticket->canUserAddFollowups(Session::getLoginUserID()));
 
+        $ticket = new Ticket();
         $this->assertGreaterThan(
             0,
             (int) $ticket->add([
@@ -3543,6 +3544,8 @@ class TicketTest extends DbTestCase
     /**
      * @see self::testTakeIntoAccountDelayComputationOnCreate()
      * @see self::testTakeIntoAccountDelayComputationOnUpdate()
+     *
+     * side effect : create a group and add 'tech' into.
      */
     protected function takeIntoAccountDelayComputationProvider()
     {
@@ -3683,13 +3686,14 @@ class TicketTest extends DbTestCase
     {
         $provider = $this->takeIntoAccountDelayComputationProvider();
         $this->login('tech', 'tech'); // Login with tech to be sure to be the requester
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] |= Ticket::ASSIGN; // assigning a group requires the assign right
 
         foreach ($provider as $row) {
             $input = $row['input'];
             $computed = $row['computed'];
 
             // Create a ticket
-            $_SESSION['glpiset_default_tech'] = false;
+            $_SESSION['glpiset_default_tech'] = false; // do not set an assignee by default
             $ticket = new Ticket();
             $ticketId = $ticket->add(
                 $input + [
@@ -3744,6 +3748,7 @@ class TicketTest extends DbTestCase
 
             // Login with tech to be sure to be have rights to take into account
             $this->login('tech', 'tech');
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] |= Ticket::ASSIGN; // assigning a group requires the assign right
 
             $this->modifyCurrentTime('+1 second'); // be sure to wait at least one second before updating
             $this->assertTrue(
@@ -3877,6 +3882,8 @@ class TicketTest extends DbTestCase
 
     public function testLocationAssignment()
     {
+        $this->login();
+
         $rule = new Rule();
         $rule->getFromDBByCrit([
             'sub_type' => 'RuleTicket',

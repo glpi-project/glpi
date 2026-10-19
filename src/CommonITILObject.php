@@ -11312,9 +11312,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Transfer "_actors" input (introduced in 10.0.0) into historical input keys.
      *
-     * @param array $input
-     *
-     * @return array
+     * It also processes a filtering regarding rights, @see removeActorChangesNotAllowed()
      */
     protected function transformActorsInput(array $input): array
     {
@@ -11330,12 +11328,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ) {
             foreach (['requester', 'observer', 'assign'] as $actor_type) {
                 $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
-                if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
-                    continue;
-                }
-                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->canUpdateItem()) {
-                    continue;
-                }
 
                 $get_input_key = (fn(string $actor_itemtype, string $actor_type): string => sprintf(
                     '_%s_%s',
@@ -11430,6 +11422,157 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
             }
             unset($input['_actors']);
+        }
+
+        return $this->removeActorChangesNotAllowed($input);
+    }
+
+    /**
+     * Remove actors the current user hasn't the right to set
+     *
+     * Handle
+     * - historical format _<fk>_<type> (e.g. _users_id_requester )
+     * - rules format _additional_
+     * - _deleted entries
+     *
+     * _actors key is not handled, no removal on it.
+     */
+    private function removeActorChangesNotAllowed(array $input): array
+    {
+        // no filtering in some contexts
+        if (Session::isRightChecksDisabled() || Session::isCron()) {
+            return $input;
+        }
+
+        // Format 1 : historical keys: _(users|groups|suppliers)_id_(requester|observer|assign)(_notif|_deleted)?
+        // e.g. _users_id_assign, _groups_id_requester, etc
+        // (no _notif for groups, assign only for suppliers)
+
+        $is_new_item = $this->isNewItem();
+        $can_update_existing_item = !$is_new_item && $this->can($this->getID(), UPDATE);
+        $can_assign = $this->canAssign();
+        // delegation is checked against the logged user, none means no delegation
+        $is_user_logged_in = Session::getLoginUserID() !== false;
+
+        foreach (['users', 'groups', 'suppliers'] as $actor_type) {
+            foreach (['requester', 'observer', 'assign'] as $role) {
+                $key = sprintf('_%s_id_%s', $actor_type, $role);
+                if (!isset($input[$key])) {
+                    // key not defined, nothing to filter.
+                    continue;
+                }
+                // $input[$key] = <int> || [0 => <int>, '_actors_<int>' => <int>(*1), '_actors_<email>' => 0 (*2) always 0 for email keys)]
+                // *1 = same value for array key and array value
+                // *2 = array value is always 0
+                $input_key_array = (array) $input[$key]; // copy $input[$key] and always have an array inside
+
+                // assignment depend on canAssign and canAssignToMe()
+                // requester depends on canDelegateeCreateTicket for Tickets
+                // for these cases, each actor must be checked
+
+                $check_each_actors_strategy
+                    // user assignments uses canAssignToMe() which can be used only if it maches the current user (so an actor_id is required)
+                    = ($role === 'assign' && $actor_type === 'users')
+                    // requester uses canDelegateeCreateTicket() which requires the actor_id and can only be used on creation, not on update
+                    || ($this instanceof Ticket && $role === 'requester' && $actor_type === 'users' && $is_new_item);
+
+                if ($check_each_actors_strategy) {
+                    foreach ($input_key_array as $actor_key => $actor_id) {
+                        // rights check
+                        $allowed = match ($role) {
+                            'assign' => $can_assign || ($actor_id == Session::getLoginUserID() && $this->canAssignToMe()),
+                            'requester' => $is_user_logged_in && is_numeric($actor_id) && Ticket::canDelegateeCreateTicket((int) $actor_id, $input['entities_id'] ?? null),
+                        };
+
+                        if (!$allowed) {
+                            if (is_array($input[$key])) {
+                                unset($input[$key][$actor_key]);
+                            } else {
+                                unset($input[$key]);
+                            }
+                        }
+                    }
+                } else {
+                    $allowed = match ($role) {
+                        'assign' => $can_assign,
+                        'requester', 'observer' => $is_new_item || $can_update_existing_item,
+                    };
+
+                    if (!$allowed) {
+                        unset($input[$key]);
+                    }
+                }
+            }
+        }
+
+        // Format 2 : rules keys: _additional_((groups|suppliers)_)?(requesters|observers|assigns)
+        // e.g. _additional_suppliers_assigns, _additional_requesters
+        foreach (['', '_groups', '_suppliers'] as $actor_type) { // '' stands for 'users'
+            foreach (['requesters', 'observers', 'assigns'] as $role) {
+                $key = sprintf('_additional%s_%s', $actor_type, $role); //
+                if (!isset($input[$key])) {
+                    // key not defined, nothing to filter.
+                    continue;
+                }
+                $input_key_array = (array) $input[$key]; // copy $input[$key] and always have an array inside
+
+                $check_each_actors_strategy
+                    // user assignments uses canAssignToMe() which can be used only if it maches the current user (so an actor_id is required)
+                    = ($role === 'assigns' && $actor_type === '') // 'users' type
+                    // requester uses canDelegateeCreateTicket() which requires the actor_id and can only be used on creation, not on update
+                    || ($this instanceof Ticket && $role === 'requesters' && $actor_type === '' && $is_new_item);
+
+                if ($check_each_actors_strategy) {
+                    foreach ($input_key_array as $actor_key => $element) {
+                        $actor_id = is_array($element) && array_key_exists('users_id', $element) ? $element['users_id'] : $element;
+                        // rights check
+                        $allowed = match ($role) {
+                            'assigns' => $can_assign || ($actor_id == Session::getLoginUserID() && $this->canAssignToMe()),
+                            'requesters' => $is_user_logged_in && is_numeric($actor_id) && Ticket::canDelegateeCreateTicket((int) $actor_id, $input['entities_id'] ?? null),
+                        };
+
+                        if (!$allowed) {
+                            if (is_array($input[$key])) {
+                                unset($input[$key][$actor_key]);
+                            } else {
+                                unset($input[$key]);
+                            }
+                        }
+                    }
+                } else {
+                    $allowed = match ($role) {
+                        'assigns' => $can_assign,
+                        'requesters', 'observers' => $is_new_item || $can_update_existing_item,
+                    };
+
+                    if (!$allowed) {
+                        unset($input[$key]);
+                    }
+                }
+            }
+        }
+
+        // Format 3 : 'deleted' keys: (users|groups|suppliers)_id_(requester|observer|assign)_deleted
+        // values: [['itemtype' => '<Group|User|Supplier>', 'items_id' => 3, 'id' => 22, …]]
+        foreach (['users', 'groups', 'suppliers'] as $actor_type) {
+            foreach (['requester', 'observer', 'assign'] as $role) {
+                $key = sprintf('_%s_id_%s_deleted', $actor_type, $role); // e.g. _users_id_assign_deleted, _groups_id_requester_deleted, etc
+
+                // remove all _deleted on creation - not really needed as transformActorsInput() create it empty, kept for safety
+                if ($is_new_item) {
+                    unset($input[$key]);
+                    continue;
+                }
+
+                $allowed = match ($role) {
+                    'assign' => $can_assign,
+                    'requester', 'observer' => $can_update_existing_item
+                };
+
+                if (!$allowed) {
+                    unset($input[$key]);
+                }
+            }
         }
 
         return $input;
