@@ -1866,6 +1866,55 @@ HTML,
         $this->assertTrue($folder->messages()->withFlags()->find($uid)->isSeen());
     }
 
+    public function testImportRefusedEmailOnlyFetchesSelectedEmail(): void
+    {
+        $this->login();
+
+        $refused_folder = $this->fillImapFolder('refused-import-tests', [
+            $this->buildRawMessage('<refused-1@glpi-project.org>', 'Refused email 1'),
+            $this->buildRawMessage('<refused-2@glpi-project.org>', 'Refused email 2'),
+            $this->buildRawMessage('<refused-3@glpi-project.org>', 'Refused email 3'),
+        ]);
+        $accepted_folder = $this->fillImapFolder('accepted-import-tests', []);
+
+        $collector = $this->createImapCollector('refused-import-tests', [
+            'refused'  => 'refused-import-tests',
+            'accepted' => 'accepted-import-tests',
+        ]);
+
+        $users_id = getItemByTypeName('User', 'normal', true);
+        $not_imported_email = $this->createItem(\NotImportedEmail::class, [
+            'mailcollectors_id' => $collector->getID(),
+            'from'              => 'normal@glpi-project.org',
+            'to'                => 'unittests@glpi-project.org',
+            'messageid'         => '<refused-2@glpi-project.org>',
+            'date'              => $_SESSION['glpi_currenttime'],
+            'subject'           => 'Refused email 2',
+            'reason'            => \NotImportedEmail::USER_UNKNOWN,
+            'users_id'          => $users_id,
+        ]);
+
+        $collector->deleteOrImportSeveralEmails([$not_imported_email->getID()], 1, 0);
+
+        // Selected email has been imported, then moved to the accepted folder.
+        $this->assertSame(1, countElementsInTable(Ticket::getTable(), ['name' => 'Refused email 2']));
+        $this->assertFalse(\NotImportedEmail::getById($not_imported_email->getID()));
+        $this->assertSame(
+            ['Refused email 2'],
+            $accepted_folder->messages()->withHeaders()->get()->map(static fn($message) => $message->subject())->values()->all()
+        );
+
+        // Other emails have not been retrieved, they are still unread.
+        $remaining = $refused_folder->messages()->withHeaders()->withFlags()->get();
+        $this->assertSame(
+            ['Refused email 1', 'Refused email 3'],
+            $remaining->map(static fn($message) => $message->subject())->values()->all()
+        );
+        foreach ($remaining as $message) {
+            $this->assertFalse($message->isSeen());
+        }
+    }
+
     /**
      * Empty the given IMAP folder of the test server (it is created if needed), then push the given raw messages into it.
      *
