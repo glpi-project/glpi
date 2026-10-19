@@ -291,9 +291,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return true;
         }
 
+        $is_assigned_user = (int) $this->fields['users_id_tech'] === Session::getLoginUserID();
+        $is_assigned_group = (int) $this->fields['groups_id_tech'] > 0
+            && in_array((int) $this->fields['groups_id_tech'], $_SESSION['glpigroups'] ?? []);
+
         if (
             !$this->canReadITILItem()
-            || (int) $this->fields['users_id_tech'] !== Session::getLoginUserID()
+            || (!$is_assigned_user && !$is_assigned_group)
         ) {
             return false;
         }

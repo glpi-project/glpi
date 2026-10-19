@@ -389,6 +389,28 @@ abstract class CommonITILTaskTestCase extends DbTestCase
         $itil_fkey = getForeignKeyFieldForItemType($itil_class);
 
         $this->login();
+        $my_group = $this->createItem(
+            \Group::class,
+            [
+                'name' => __FUNCTION__ . ' - my group',
+                'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $this->createItem(
+            \Group_User::class,
+            [
+                'groups_id' => $my_group->getID(),
+                'users_id' => getItemByTypeName(\User::class, TU_USER, true),
+            ]
+        );
+        $other_group = $this->createItem(
+            \Group::class,
+            [
+                'name' => __FUNCTION__ . ' - other group',
+                'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+
         $itil_item = $this->createItem(
             $itil_class,
             [
@@ -415,14 +437,34 @@ abstract class CommonITILTaskTestCase extends DbTestCase
                 'users_id_tech' => getItemByTypeName(\User::class, 'tech', true),
             ]
         );
+        $my_group_task = $this->createItem(
+            $task_class,
+            [
+                'state' => \Planning::TODO,
+                $itil_fkey => $itil_item->getID(),
+                'content' => 'Task assigned to a group of the current user',
+                'groups_id_tech' => $my_group->getID(),
+            ]
+        );
+        $other_group_task = $this->createItem(
+            $task_class,
+            [
+                'state' => \Planning::TODO,
+                $itil_fkey => $itil_item->getID(),
+                'content' => 'Task assigned to a group the current user does not belong to',
+                'groups_id_tech' => $other_group->getID(),
+            ]
+        );
         // Tasks authored by another user
+        $tasks = [$assigned_task, $other_task, $my_group_task, $other_group_task];
         $DB->update(
             $task_class::getTable(),
             ['users_id' => getItemByTypeName(\User::class, 'tech', true)],
-            ['id' => [$assigned_task->getID(), $other_task->getID()]]
+            ['id' => array_map(static fn($task) => $task->getID(), $tasks)]
         );
-        $this->assertTrue($assigned_task->getFromDB($assigned_task->getID()));
-        $this->assertTrue($other_task->getFromDB($other_task->getID()));
+        foreach ($tasks as $task) {
+            $this->assertTrue($task->getFromDB($task->getID()));
+        }
 
         // Only UPDATEMY right: cannot update tasks authored by someone else
         $DB->update(
@@ -440,6 +482,12 @@ abstract class CommonITILTaskTestCase extends DbTestCase
 
         $this->assertFalse($other_task->canUpdateItem());
         $this->assertFalse($other_task->canChangeState());
+
+        $this->assertFalse($my_group_task->canUpdateItem());
+        $this->assertTrue($my_group_task->canChangeState());
+
+        $this->assertFalse($other_group_task->canUpdateItem());
+        $this->assertFalse($other_group_task->canChangeState());
 
         // Cannot change state of a task whose parent is in the trashbin
         $this->assertTrue($itil_item->delete(['id' => $itil_item->getID()]));
