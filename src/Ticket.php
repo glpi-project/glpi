@@ -5516,7 +5516,7 @@ JAVASCRIPT;
 
             $due_time = $safe_get_strtime($ola_data['due_time']);
             $key = $due_time . '_ola_' . $ola_data['olas_id'] . '_due_time';
-            $label = __('OLA') . ' ' . OLA::getOneTypeName($ola_data['type']) . ' ' . $ola_data['name'] . ' ' . __('due time');
+            $label = htmlescape(__('OLA') . ' ' . OLA::getOneTypeName($ola_data['type']) . ' ' . $ola_data['name'] . ' ' . __('due time'));
             $label .= '<a href="' . htmlescape($ola->getLinkURL()) . '"><i class="ti ti-stopwatch slt" title="' . htmlescape($ola->getName()) . '"></i></a>';
 
             $dates_olas[$key] = [
