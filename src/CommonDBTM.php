@@ -4425,7 +4425,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function getUnallowedFieldsForUnicity()
     {
-        return ['alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id'];
+        return ['alert', 'comment', 'date_mod', 'entities_id', 'id', 'is_recursive', 'items_id'];
     }
 
 
@@ -4443,13 +4443,12 @@ class CommonDBTM extends CommonGLPI
 
         $message = [];
         foreach ($msgs as $field => $value) {
+            $searchOption = FieldUnicity::getSearchOptionForField($this, $field);
             $table = getTableNameForForeignKeyField($field);
-            if ($table != '') {
-                $searchOption = $this->getSearchOptionByField('field', 'name', $table);
-            } else {
-                $searchOption = $this->getSearchOptionByField('field', $field);
+            if ($table !== '') {
+                $value = Dropdown::getDropdownName($table, $value);
             }
-            $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'], $value);
+            $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'] ?? $field, $value);
         }
 
         if ($unicity['action_refuse']) {
