@@ -12,6 +12,8 @@ The present file will list all changes made to the project; according to the
 
 - Default behavior when submitting a Form that has only one destination is now redirecting to created item instead of showing the feedback page. Previous behavior is obtained by unchecking "Go to created item after creation" in General configuration > Default values.
 
+- Webhooks on ITIL tasks now match the entity of their parent item. A non-recursive task webhook defined in the root entity is no longer triggered by tasks of sub-entities: enable "Sub-entities" on the webhook to keep the previous behavior.
+
 ### Deprecated
 
 ### Removed
