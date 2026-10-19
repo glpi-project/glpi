@@ -551,13 +551,13 @@ class MailCollector extends CommonDBTM
                     continue;
                 }
 
-                foreach ($collector->getMessages() as $uid => $message) {
-                    $head = $collector->getHeaders($message);
+                foreach ($collector->getMessagesHeaders() as $uid => $message_headers) {
+                    $head = $collector->getHeaders($message_headers);
                     if (isset($rejected[$head['message_id']])) {
                         if ($action == 1) {
                             $tkt = $collector->buildTicket(
                                 (string) $uid,
-                                $message,
+                                $collector->fetchMessage($uid),
                                 [
                                     'mailgates_id' => $mailcollector_id,
                                     'play_rules'   => false,
@@ -1958,15 +1958,21 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * Iterate over all messages of the collected folder.
+     * Iterate over all messages of the collected folder, parsed from their headers only.
      *
-     * @return Generator<int, IMessage> Parsed messages, indexed by UID
+     * @return Generator<int, IMessage> Messages parsed from their headers, indexed by UID
      */
-    private function getMessages(): Generator
+    private function getMessagesHeaders(): Generator
     {
-        // Messages contents are not fetched here, they are fetched one by one to limit memory usage.
-        foreach ($this->getFolder()->messages()->oldest()->get() as $message) {
-            yield $message->uid() => $this->fetchMessage($message->uid());
+        // Messages bodies are not fetched, and messages flags are not altered.
+        $messages = $this->getFolder()->messages()
+            ->oldest()
+            ->withHeaders()
+            ->leaveUnread()
+            ->get();
+
+        foreach ($messages as $message) {
+            yield $message->uid() => self::parseMessage($message);
         }
     }
 
