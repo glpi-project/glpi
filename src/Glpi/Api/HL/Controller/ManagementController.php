@@ -857,6 +857,7 @@ EOT,
                     'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
                     'readOnly' => true,
                 ],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User', params: ['x-version-introduced' => '2.4.0']),
                 'timeline_position' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_NUMBER,
