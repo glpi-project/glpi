@@ -1145,7 +1145,7 @@ TWIG, $twig_params);
      * @since 0.85
      *
      * @param array   $available_criteria available criteria for this rule
-     * @param int $condition          the rulecriteria condition
+     * @param int|string $condition   the rulecriteria condition
      * @param string  $criterion          the criterion
      *
      * @return bool true if a criterion is a dropdown, false otherwise
