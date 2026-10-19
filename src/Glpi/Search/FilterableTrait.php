@@ -92,7 +92,9 @@ trait FilterableTrait
             'criteria' => $criteria,
         ]);
 
-        return $data['data']['totalcount'] > 0;
+        // Check that the current item is really returned, a row without id
+        // (e.g. aggregated NULL values) is not listed in the found items
+        return isset($data['data']['items'][$item->getID()]);
     }
 
     public function saveFilter(

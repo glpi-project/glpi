@@ -2068,4 +2068,43 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertEquals($sla->getID(), $ticket->fields['slas_id_ttr']);
     }
 
+    public static function isCriteriaADropdownWithImportedConditionProvider(): iterable
+    {
+        yield 'integer condition from database' => [
+            'condition' => Rule::PATTERN_IS,
+            'expected'  => true,
+        ];
+
+        yield '"is" condition from XML' => [
+            'condition' => (string) Rule::PATTERN_IS,
+            'expected'  => true,
+        ];
+        yield '"is not" condition from XML' => [
+            'condition' => (string) Rule::PATTERN_IS_NOT,
+            'expected'  => true,
+        ];
+        yield '"under" condition from XML' => [
+            'condition' => (string) Rule::PATTERN_UNDER,
+            'expected'  => true,
+        ];
+        yield '"contains" condition from XML' => [
+            'condition' => (string) Rule::PATTERN_CONTAIN,
+            'expected'  => false,
+        ];
+        yield 'non numeric condition from XML' => [
+            'condition' => 'abc',
+            'expected'  => false,
+        ];
+    }
+
+    #[DataProvider('isCriteriaADropdownWithImportedConditionProvider')]
+    public function testIsCriteriaADropdownWithImportedCondition(int|string $condition, bool $expected): void
+    {
+        $rule = new \RuleTicket();
+
+        $this->assertSame(
+            $expected,
+            \RuleCollection::isCriteraADropdown($rule->getCriterias(), $condition, 'itilcategories_id')
+        );
+    }
 }

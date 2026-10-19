@@ -34,6 +34,10 @@
 {% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 
 <div class="itil-timeline d-flex flex-column align-items-start mb-auto {{ is_helpdesk ? "px-3 py-2" : '' }}">
+    {% if is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/satisfaction_survey.html.twig') }}
+    {% endif %}
+
     {% if not is_timeline_reversed %}
         {{ include('components/itilobject/timeline/main_description.html.twig') }}
     {% else %}
@@ -240,7 +244,9 @@
     {% if not is_timeline_reversed %}
         {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
         {{ include('components/itilobject/answer.html.twig') }}
+        {{ include('components/itilobject/timeline/satisfaction_survey.html.twig') }}
     {% endif %}
+</div>
 
     {% if survey is defined and survey %}
         <form

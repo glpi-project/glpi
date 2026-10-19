@@ -6818,12 +6818,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Dropdown\\:\\:getDurationDropdown\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Dropdown\\:\\:getGMTValues\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

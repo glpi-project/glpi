@@ -814,13 +814,13 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$array of function array_replace expects array, false given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 5,
+	'count' => 2,
 	'path' => __DIR__ . '/install/empty_data.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$array of function array_replace expects array, null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/install/empty_data.php',
 ];
 $ignoreErrors[] = [

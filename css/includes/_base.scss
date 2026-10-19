@@ -379,6 +379,12 @@ body.in_modal {
     }
 }
 
+// Remove contextual skip links from pages that do not contain their target
+body:not(:has(#search-results)) .skip-links .skip-link-search-results,
+body:not(:has(#itil-timeline)) .skip-links .skip-link-itil-timeline {
+    display: none;
+}
+
 table {
     &.table thead th {
         font-size: 0.625rem;

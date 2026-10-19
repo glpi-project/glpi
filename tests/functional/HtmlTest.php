@@ -700,6 +700,15 @@ class HtmlTest extends DbTestCase
         $this->assertSame($url, Html::cleanParametersURL($purl));
     }
 
+    public function testIncludeHeaderTitleWithId(): void
+    {
+        $_GET['id'] = '2';
+        $this->assertStringContainsString('<title>FAQ - 2 - GLPI</title>', Html::includeHeader('FAQ', display: false));
+
+        $_GET['id'] = ['2'];
+        $this->assertStringContainsString('<title>FAQ - GLPI</title>', Html::includeHeader('FAQ', display: false));
+    }
+
     public function testDisplayMessageAfterRedirect()
     {
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [
