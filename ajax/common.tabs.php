@@ -102,7 +102,7 @@ if (isset($_GET['_target'])) {
 
 Session::setActiveTab($_GET['_itemtype'], $_GET['_glpi_tab']);
 
-$notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions'];
+$notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions', 'header_toolbar'];
 $options         = $_GET;
 foreach ($notvalidoptions as $key) {
     if (isset($options[$key])) {
