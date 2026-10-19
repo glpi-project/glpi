@@ -2707,9 +2707,9 @@ class SearchTest extends DbTestCase
 
         // update the right of tech profile
         // to have only the right of display their own tickets and tickets with incoming status
-        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+        Session::callAsSystem(fn() => \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
             'Ticket' => (Ticket::READMY + Ticket::READNEWTICKET),
-        ]);
+        ]));
 
         // reload current profile to take into account the new rights
         $this->login('tech', 'tech');
