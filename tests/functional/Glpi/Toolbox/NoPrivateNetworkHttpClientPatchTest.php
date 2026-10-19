@@ -35,14 +35,16 @@
 namespace tests\units\Glpi\Toolbox;
 
 use Glpi\Tests\GLPITestCase;
-use Glpi\Toolbox\ProxyAwareHttpClient;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
-class ProxyAwareHttpClientTest extends GLPITestCase
+/**
+ * Validates `tools/patches/symfony-http-client-no-private-network-allow-list.patch`.
+ */
+class NoPrivateNetworkHttpClientPatchTest extends GLPITestCase
 {
     private const PROXY_IP = '192.168.68.86';
     private const PUBLIC_URL = 'http://93.184.215.14/';
@@ -83,9 +85,7 @@ class ProxyAwareHttpClientTest extends GLPITestCase
     #[DataProvider('requestProvider')]
     public function testRequest(string $url, array $responses, bool $blocked): void
     {
-        $client = new NoPrivateNetworkHttpClient(
-            new ProxyAwareHttpClient(new MockHttpClient($responses), [self::PROXY_IP])
-        );
+        $client = new NoPrivateNetworkHttpClient(new MockHttpClient($responses), null, [self::PROXY_IP]);
 
         if ($blocked) {
             $this->expectException(TransportException::class);
