@@ -7097,6 +7097,7 @@
         },
         "EmailAddress": {
             "x-itemtype": "UserEmail",
+            "x-unicity": ["user", "email"],
             "type": "object",
             "properties": {
                 "id": {
@@ -9611,6 +9612,72 @@
                 "date_mod": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Group_User",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Group_User"
+                    }
+                }
+            }
+        },
+        "Group_User": {
+            "x-itemtype": "Group_User",
+            "x-unicity": ["user", "group"],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "user": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User"
+                },
+                "group": {
+                    "type": "object",
+                    "x-itemtype": "Group",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Group"
+                },
+                "is_dynamic": {
+                    "type": "boolean"
+                },
+                "is_manager": {
+                    "type": "boolean"
+                },
+                "is_userdelegate": {
+                    "type": "boolean"
                 }
             }
         },
@@ -26083,6 +26150,21 @@
                         }
                     },
                     "x-full-schema": "User"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Group_User",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Group_User"
+                    }
                 }
             }
         },
