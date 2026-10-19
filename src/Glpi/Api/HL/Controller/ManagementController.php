@@ -40,10 +40,13 @@ use AutoUpdateSystem;
 use Budget;
 use BudgetType;
 use BusinessCriticity;
+use CartridgeItem;
 use Cluster;
 use ClusterType;
+use ChangeCost;
 use CommonDBTM;
 use CommonITILObject;
+use ConsumableItem;
 use Contact;
 use ContactType;
 use Contract;
@@ -71,21 +74,29 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group_Item;
+use Infocom;
 use Item_Line;
 use Line;
 use LineOperator;
 use LineType;
 use Location;
 use Manufacturer;
+use ProblemCost;
+use ProjectCost;
+use Software;
 use SoftwareLicense;
 use SoftwareLicenseType;
 use State;
 use Supplier;
 use SupplierType;
+use TicketCost;
 use User;
 
 #[Route(path: '/Management', tags: ['Management'])]
@@ -197,6 +208,50 @@ final class ManagementController extends AbstractController
         ];
     }
 
+    /**
+     * Get the SQL expression (as a parenthesized string) used to compute the total amount spent for a budget.
+     * Expects the budget table to be aliased as `_`.
+     * @return string
+     */
+    private static function getBudgetTotalSpentSQL(): string
+    {
+        global $DB;
+
+        $terms = [
+            new QuerySubQuery([
+                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum('value'), new QueryExpression('0')])],
+                'FROM' => Infocom::getTable(),
+                'WHERE' => [
+                    'budgets_id' => new QueryExpression($DB::quoteName('_.id')),
+                    'itemtype' => ['NOT IN', [ConsumableItem::class, CartridgeItem::class, Software::class]],
+                ],
+            ])
+        ];
+        foreach ([ContractCost::class, ProjectCost::class] as $cost_class) {
+            /** @var CommonDBTM $cost_class */
+            $terms[] = new QuerySubQuery([
+                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum('cost'), new QueryExpression('0')])],
+                'FROM' => $cost_class::getTable(),
+                'WHERE' => [
+                    'budgets_id' => new QueryExpression($DB::quoteName('_.id')),
+                ],
+            ]);
+        }
+        foreach ([TicketCost::class, ProblemCost::class, ChangeCost::class] as $cost_class) {
+            /** @var CommonDBTM $cost_class */
+            $alg = new QueryExpression('(`actiontime` * `cost_time` / ' . HOUR_TIMESTAMP . ' + `cost_fixed` + `cost_material`)');
+            $terms[] = new QuerySubQuery([
+                'SELECT' => [QueryFunction::coalesce([QueryFunction::sum($alg), new QueryExpression('0')])],
+                'FROM' => $cost_class::getTable(),
+                'WHERE' => [
+                    'budgets_id' => new QueryExpression($DB::quoteName('_.id')),
+                ],
+            ]);
+        }
+
+        return '(' . implode(' + ', $terms) . ')';
+    }
+
     protected static function getRawKnownSchemas(): array
     {
         global $CFG_GLPI;
@@ -292,6 +347,18 @@ final class ManagementController extends AbstractController
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'value' => [
                         'type' => Doc\Schema::TYPE_NUMBER,
+                    ],
+                    'total_spent' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                        'readOnly' => true,
+                        'computation' => new QueryExpression(self::getBudgetTotalSpentSQL()),
+                    ],
+                    'amount_remaining' => [
+                        'x-version-introduced' => '2.4.0',
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                        'readOnly' => true,
+                        'computation' => new QueryExpression('(`_`.`value` - ' . self::getBudgetTotalSpentSQL() . ')'),
                     ],
                     'date_begin' => [
                         'type' => Doc\Schema::TYPE_STRING,
