@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Config;
+use DirectoryTree\ImapEngine\FolderInterface;
 use Glpi\Mail\Imap\ImapProtocol;
 use Glpi\Mail\Imap\Mailbox;
 use Glpi\Socket;
@@ -1846,5 +1847,92 @@ HTML,
         $collector = new \MailCollector();
 
         $this->assertSame($expected, trim($collector->getDecodedContent(\MailCollector::parseMessage($raw))));
+    }
+
+    public function testFetchMessageMarksMessageAsReadOnceParsed(): void
+    {
+        $folder = $this->fillImapFolder('fetch-message-tests', [
+            $this->buildRawMessage('<fetch-message-test@glpi-project.org>', 'Message to fetch'),
+        ]);
+        $uid = $folder->messages()->get()->first()->uid();
+        $this->assertFalse($folder->messages()->withFlags()->find($uid)->isSeen());
+
+        $collector = $this->createImapCollector('fetch-message-tests');
+        $collector->connect();
+
+        $message = $this->callPrivateMethod($collector, 'fetchMessage', $uid);
+
+        $this->assertSame('Message to fetch', $message->getSubject());
+        $this->assertTrue($folder->messages()->withFlags()->find($uid)->isSeen());
+    }
+
+    /**
+     * Empty the given IMAP folder of the test server (it is created if needed), then push the given raw messages into it.
+     *
+     * @param string[] $raw_messages
+     */
+    private function fillImapFolder(string $folder_name, array $raw_messages): FolderInterface
+    {
+        $mailbox = new Mailbox([
+            'host'       => 'dovecot',
+            'port'       => 143,
+            'username'   => 'testuser',
+            'password'   => 'applesauce',
+            'encryption' => null,
+        ]);
+        $mailbox->connect();
+
+        $mailbox->folders()->find($folder_name)?->delete();
+        $folder = $mailbox->folders()->create($folder_name);
+
+        foreach ($raw_messages as $raw_message) {
+            $folder->messages()->append($raw_message);
+        }
+
+        return $folder;
+    }
+
+    /**
+     * Create a mail collector on the given IMAP folder of the test server.
+     *
+     * @param array<string, mixed> $input
+     */
+    private function createImapCollector(string $folder_name, array $input = []): \MailCollector
+    {
+        $collector = new \MailCollector();
+        $collector_id = (int) $collector->add($input + [
+            'name'                => $folder_name,
+            'login'               => 'testuser',
+            'passwd'              => 'applesauce',
+            'is_active'           => 1,
+            'mail_server'         => 'dovecot',
+            'server_type'         => '/imap',
+            'server_port'         => 143,
+            'server_ssl'          => '',
+            'server_cert'         => '/novalidate-cert',
+            'server_mailbox'      => $folder_name,
+            'collect_only_unread' => 1,
+        ]);
+        $this->assertGreaterThan(0, $collector_id);
+        $this->assertTrue($collector->getFromDB($collector_id));
+
+        return $collector;
+    }
+
+    private function buildRawMessage(string $message_id, string $subject): string
+    {
+        return implode("\r\n", [
+            'From: normal@glpi-project.org',
+            'To: unittests@glpi-project.org',
+            'Subject: ' . $subject,
+            'Date: ' . date(DATE_RFC2822),
+            'Message-ID: ' . $message_id,
+            'MIME-Version: 1.0',
+            'Content-Type: text/plain; charset=utf-8',
+            'Content-Transfer-Encoding: 7bit',
+            '',
+            'Message contents...',
+            '',
+        ]);
     }
 }

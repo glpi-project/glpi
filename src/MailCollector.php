@@ -1965,7 +1965,7 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * Fetch and parse the message corresponding to the given UID.
+     * Fetch and parse the message corresponding to the given UID, then mark it as read.
      *
      * @param int $uid Message UID
      *
@@ -1973,17 +1973,25 @@ class MailCollector extends CommonDBTM
      */
     private function fetchMessage(int $uid): IMessage
     {
+        // Contents are fetched without altering the message flags.
         $message = $this->getFolder()->messages()
             ->withHeaders()
             ->withBody()
-            ->markAsRead()
+            ->leaveUnread()
             ->find($uid);
 
         if ($message === null) {
             throw new RuntimeException(sprintf('Message "%d" not found.', $uid));
         }
 
-        return self::parseMessage($message);
+        $parsed_message = self::parseMessage($message);
+
+        // Message is marked as read only once it has been retrieved and parsed successfully.
+        // Otherwise, a message in error would be left in the mailbox with the `\Seen` flag,
+        // and would then be ignored by collectors that only collect unread messages.
+        $message->markRead();
+
+        return $parsed_message;
     }
 
     /**
