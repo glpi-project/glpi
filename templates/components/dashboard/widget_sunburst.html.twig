@@ -31,14 +31,14 @@
  #}
 
 <style>
-    #{{ chart_id }} {
-        background-color: {{ bg_color }};
-        color: {{ fg_color }};
+    #{{ chart_id|e('css') }} {
+        background-color: {{ bg_color|e('css') }};
+        color: {{ fg_color|e('css') }};
     }
 
-    .theme-dark #{{ chart_id }} {
-        background-color: {{ dark_bg_color }};
-        color: {{ dark_fg_color }};
+    .theme-dark #{{ chart_id|e('css') }} {
+        background-color: {{ dark_bg_color|e('css') }};
+        color: {{ dark_fg_color|e('css') }};
     }
 </style>
 <div class="card g-chart sunburst {{ class }}" id="{{ chart_id }}" data-testid="dashboard-widget">
@@ -64,7 +64,7 @@
         };
 
         // Look for the card in every dashboard, the response may target a dashboard that is not visible
-        document.querySelectorAll('[id="{{ chart_id }}"] .chart').forEach((target) => {
+        document.querySelectorAll('[id="{{ chart_id|e('js') }}"] .chart').forEach((target) => {
             if (target.hasAttribute('_echarts_instance_')) {
                 return;
             }
