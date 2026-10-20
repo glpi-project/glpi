@@ -65,6 +65,9 @@ final readonly class SchemaGenerator
             $component_schemas = Schemas::getInstance($this->api_version)->getAllSchemas();
             Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval');
             foreach ($component_schemas as $schema_name => $schema_info) {
+                if ($schema_info['x-graphql-no-query'] ?? false) {
+                    continue;
+                }
                 $has_custom_resolver = array_key_exists('x-graphql-resolver', $schema_info);
                 $should_have_query = (
                     !str_starts_with($schema_name, '_')
@@ -107,9 +110,6 @@ final readonly class SchemaGenerator
                     'type' => fn(): Type => Types::load($schema_name, $this->api_version),
                     'args' => $query_args,
                 ];
-                if (isset($schema_info['resolver'])) {
-                    $query_type_config['fields'][$schema_name]['resolve'] = ($schema_info['resolver'])(...);
-                }
             } else {
                 $query_type_config['fields'][$schema_name] = [
                     'type' => Type::listOf(fn(): Type => Types::load($schema_name, $this->api_version)),
@@ -122,6 +122,9 @@ final readonly class SchemaGenerator
                         'order' => ['type' => Type::string()],
                     ],
                 ];
+            }
+            if (isset($schema_info['resolver'])) {
+                $query_type_config['fields'][$schema_name]['resolve'] = ($schema_info['resolver'])(...);
             }
         }
         /** @phpstan-ignore-next-line */
