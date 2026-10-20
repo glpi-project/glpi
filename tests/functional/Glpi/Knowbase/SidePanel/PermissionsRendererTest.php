@@ -103,6 +103,50 @@ final class PermissionsRendererTest extends DbTestCase
         );
     }
 
+    public function testCanViewRequiresUpdateRight(): void
+    {
+        // Arrange: create a KB article visible for a user that can not edit it
+        $this->login();
+        $kb = $this->createArticle();
+        $this->addUserVisiblity($kb, getItemByTypeName(User::class, "normal"));
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+        $renderer = new PermissionsRenderer();
+        $this->assertTrue($renderer->canView($kb));
+
+        // Act: log in as this user
+        $this->login('normal', 'normal');
+
+        // Assert: the permissions are only visible to the users that can edit the article
+        $this->assertTrue($kb->can($kb->getID(), READ));
+        $this->assertFalse($kb->can($kb->getID(), UPDATE));
+        $this->assertFalse($renderer->canView($kb));
+    }
+
+    public function testCanViewRequiresPublishFaqRightForFaq(): void
+    {
+        // Arrange: create a FAQ article visible for a user that is not its author
+        $this->login();
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'My FAQ article',
+            'answer' => 'My content',
+            'is_faq' => 1,
+        ]);
+        $this->addUserVisiblity($kb, getItemByTypeName(User::class, "tech"));
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+        $renderer = new PermissionsRenderer();
+
+        // Act: log in as this user
+        $this->login('tech', 'tech');
+
+        // Assert: the update right is not enough for a FAQ article
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+        $this->assertFalse($renderer->canView($kb));
+
+        // Assert: the right to publish in the FAQ is also required
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | KnowbaseItem::PUBLISHFAQ;
+        $this->assertTrue($renderer->canView($kb));
+    }
+
     public function testBuildEntryReturnsNullForUnknownClass(): void
     {
         $renderer = new PermissionsRenderer();
