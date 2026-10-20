@@ -343,4 +343,70 @@ class WidgetTest extends DbTestCase
         $this->assertEquals([440, 558, 581], array_column($serie_data, 'value'));
         $this->assertEquals(['2025-09', '2025-10', '2025-11'], array_column($serie_data, 'meta'));
     }
+
+    public function testSunburst(): void
+    {
+        $this->assertArrayHasKey('sunburst', Widget::getAllTypes());
+
+        $html = Widget::sunburst([
+            'label'  => 'Tickets by category',
+            'labels' => true,
+            'limit'  => 2,
+            'data'   => [
+                [
+                    'label'    => 'Hardware',
+                    'number'   => 5,
+                    'url'      => '/front/ticket.php?hardware',
+                    'children' => [
+                        ['label' => 'Laptop', 'number' => 3, 'url' => '/front/ticket.php?laptop'],
+                        ['label' => 'Printer', 'number' => 2, 'url' => ''],
+                    ],
+                ],
+                ['label' => 'Software', 'number' => 4, 'url' => ''],
+                ['label' => 'Network', 'number' => 1, 'url' => ''],
+            ],
+        ]);
+
+        $chart_options = $this->extractChartOptions($html);
+        $this->assertCount(1, $chart_options['series']);
+        $serie = $chart_options['series'][0];
+        $this->assertSame('sunburst', $serie['type']);
+        $this->assertTrue($serie['label']['show']);
+
+        // The limit applies to root nodes, children are kept
+        $this->assertSame(['Hardware', 'Software'], array_column($serie['data'], 'name'));
+        $this->assertSame(['Laptop', 'Printer'], array_column($serie['data'][0]['children'], 'name'));
+        $this->assertEquals([3, 2], array_column($serie['data'][0]['children'], 'value'));
+        $this->assertSame('/front/ticket.php?laptop', $serie['data'][0]['children'][0]['url']);
+        $this->assertArrayNotHasKey('children', $serie['data'][1]);
+        $this->assertNotEmpty($serie['color']);
+    }
+
+    public function testSunburstWithoutData(): void
+    {
+        $html = Widget::sunburst([
+            'label' => 'Tickets by category',
+            'data'  => ['nodata' => true],
+        ]);
+
+        $this->assertStringContainsString('no-data', $html);
+        $this->assertStringNotContainsString('chart_options', $html);
+    }
+
+    public function testSunburstEscapesLabels(): void
+    {
+        $html = Widget::sunburst([
+            'label' => '<b>card</b>',
+            'data'  => [
+                ['label' => '</script><script>alert(1)</script>', 'number' => 1, 'url' => ''],
+            ],
+        ]);
+
+        $this->assertStringNotContainsString('<b>card</b>', $html);
+        $this->assertStringNotContainsString('</script><script>alert(1)', $html);
+        $this->assertSame(
+            '</script><script>alert(1)</script>',
+            $this->extractChartOptions($html)['series'][0]['data'][0]['name']
+        );
+    }
 }
