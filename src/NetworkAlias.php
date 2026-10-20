@@ -247,31 +247,17 @@ class NetworkAlias extends FQDNLabel
         }
 
         if ($canedit) {
-            echo Html::scriptBlock(
-                "function viewAddAlias$rand() {"
-                . Ajax::updateItemJsCode(
-                    "viewnetworkalias$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                    [
-                        'type'            => self::class,
-                        'parenttype'      => 'NetworkName',
-                        'networknames_id' => $ID,
-                        'id'              => -1,
-                    ],
-                    display: false
-                )
-                . "};"
-            );
-
-            TemplateRenderer::getInstance()->display(
-                'components/tab/addlink_block.html.twig',
-                [
-                    'add_link' => 'javascript:viewAddAlias' . $rand . '();',
-                    'button_label' => __('Add a network alias'),
-                ]
-            );
+            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+                'type'                  => self::class,
+                'parenttype'            => NetworkName::class,
+                'items_id'              => 'networknames_id',
+                'id'                    => $ID,
+                'rand'                  => $rand,
+                'subitem_container_id'  => 'viewnetworkalias' . $rand,
+                'cancreate'             => true,
+                'add_new_label'         => __('Add a network alias'),
+            ]);
         }
-        echo "<div id='viewnetworkalias$rand'></div>";
 
         echo "<div class='spaced'>";
         if ($canedit && $number) {
