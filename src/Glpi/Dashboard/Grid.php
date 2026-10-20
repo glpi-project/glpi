@@ -1261,6 +1261,12 @@ HTML;
             if ($html === '') {
                 return $notfound_html;
             }
+        } catch (AccessDeniedHttpException $e) {
+            // Rights denial is not an application error, do not log it
+            $html = "<div class='empty-card card-warning '>
+         <i class='ti ti-lock'></i>"
+         . \htmlescape($e->getMessageToDisplay() ?? __("You don't have permission to perform this action.")) . "
+      </div>";
         } catch (Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
