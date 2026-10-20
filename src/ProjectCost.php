@@ -339,30 +339,16 @@ class ProjectCost extends CommonDBChild
         $rand   = mt_rand();
 
         if ($canedit) {
-            echo "<div id='viewcost" . $ID . "_$rand'></div>\n";
-            echo "<script type='text/javascript' >\n";
-            echo "function viewAddCost" . $ID . "_$rand(btn) {\n";
-            echo "// Hide the triggering button\n";
-            echo "$(btn).hide();\n";
-            $params = ['type'         => self::class,
-                'parenttype'   => Project::class,
-                'projects_id' => $ID,
-                'id'           => -1,
-            ];
-            Ajax::updateItemJsCode(
-                "viewcost" . $ID . "_$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
-            );
-            echo "};";
-            echo "</script>";
-            TemplateRenderer::getInstance()->display(
-                'components/tab/addlink_block.html.twig',
-                [
-                    'add_link' => 'javascript:viewAddCost' . $ID . '_' . $rand . '(this);',
-                    'button_label' => __('Add a new cost'),
-                ]
-            );
+            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+                'type'                  => self::class,
+                'parenttype'            => Project::class,
+                'items_id'              => 'projects_id',
+                'id'                    => $ID,
+                'rand'                  => $rand,
+                'subitem_container_id'  => 'viewcost' . $ID . '_' . $rand,
+                'cancreate'             => true,
+                'add_new_label'         => __('Add a new cost'),
+            ]);
         }
         $total = 0;
         echo "<table class='table'>";

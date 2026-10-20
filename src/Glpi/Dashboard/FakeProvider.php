@@ -355,6 +355,63 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function openedTicketsByCategoryAndStatus(array $params = []): array
+    {
+        $labels = [
+            _x('fake_data', 'Hardware'),
+            _x('fake_data', 'Software'),
+            _x('fake_data', 'Network'),
+            _x('fake_data', 'Accounts'),
+            __('None'),
+        ];
+
+        $series = [];
+        foreach (Ticket::getNotSolvedStatusArray() as $status) {
+            $series[] = [
+                'name' => Ticket::getStatus($status),
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($label . $status, 40),
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsByRequesterGroupAndStatus(array $params = []): array
+    {
+        return [
+            'data'  => [
+                'labels' => [
+                    _x('fake_data', 'Accounting'),
+                    _x('fake_data', 'Sales'),
+                    _x('fake_data', 'Human resources'),
+                    _x('fake_data', 'Marketing'),
+                ],
+                'series' => [
+                    [
+                        'name' => __('Opened'),
+                        'data' => [34, 52, 18, 27],
+                    ],
+                    [
+                        'name' => __('Closed'),
+                        'data' => [121, 168, 64, 89],
+                    ],
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
     public static function ticketsByRequesterLocation(array $params = []): array
     {
         $data = [];

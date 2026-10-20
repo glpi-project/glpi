@@ -1593,6 +1593,15 @@ HTML;
                 ];
             }
 
+            $cards["opened_ticket_by_category_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened tickets by category and status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::openedTicketsByCategoryAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["ticket_times"] = [
                 'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
                 'itemtype'   => "\\Ticket",
@@ -1713,6 +1722,15 @@ HTML;
                 'group'      => __('Assistance'),
                 'label'      => __("Number of tickets by category and sub-category"),
                 'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryTree",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_requester_group_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened and solved tickets by requester group"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByRequesterGroupAndStatus",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 

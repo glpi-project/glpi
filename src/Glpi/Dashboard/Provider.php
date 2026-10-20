@@ -46,7 +46,9 @@ use Config;
 use DBConnection;
 use ExtraVisibilityCriteria;
 use Glpi\Dashboard\Filters\{
+    AbstractGroupFilter,
     DatesFilter,
+    GroupRequesterFilter,
     GroupTechFilter,
     TicketStatusFilter,
     UserTechFilter,
@@ -1513,6 +1515,114 @@ class Provider
     }
 
     /**
+     * Count number of opened tickets grouped by their category and their status
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function openedTicketsByCategoryAndStatus(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $data = [
+            'labels' => [],
+            'series' => [],
+        ];
+
+        // Without any ticket right, the profile criteria don't restrict anything
+        if (!Ticket::canView()) {
+            return [
+                'data'  => $data + ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
+        // A dashboard status filter would be merged into the IN() list, intersect it with opened statuses instead
+        $opened_statuses  = Ticket::getNotSolvedStatusArray();
+        $queried_statuses = $opened_statuses;
+        $filtered_status  = (int) ($params['apply_filters'][TicketStatusFilter::getId()] ?? 0);
+        unset($params['apply_filters'][TicketStatusFilter::getId()]);
+        if ($filtered_status > 0) {
+            $queried_statuses = array_values(array_intersect($opened_statuses, [$filtered_status]));
+        }
+
+        if (count($queried_statuses) > 0) {
+            $ticket_table   = Ticket::getTable();
+            $category_table = \ITILCategory::getTable();
+
+            Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+            $criteria = array_merge_recursive(
+                [
+                    'SELECT'    => [
+                        "$category_table.id AS category_id",
+                        "$category_table.completename AS category_name",
+                        "$ticket_table.status AS status",
+                        'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                    ],
+                    'FROM'      => $ticket_table,
+                    'LEFT JOIN' => [
+                        $category_table => [
+                            'ON' => [
+                                $ticket_table   => 'itilcategories_id',
+                                $category_table => 'id',
+                            ],
+                        ],
+                    ],
+                    'WHERE'     => [
+                        "$ticket_table.is_deleted" => 0,
+                        "$ticket_table.status"     => $queried_statuses,
+                    ] + getEntitiesRestrictCriteria($ticket_table),
+                    'GROUPBY'   => ["$category_table.id", "$ticket_table.status"],
+                    'ORDERBY'   => "$category_table.completename",
+                ],
+                Ticket::getCriteriaFromProfile(),
+                self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+            );
+            $iterator = $db->request($criteria);
+            Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+            $matrix         = [];
+            $category_names = [];
+            foreach ($iterator as $result) {
+                $category_id = $result['category_id'] ?? 0;
+
+                $category_names[$category_id]                   = $result['category_name'] ?? __('None');
+                $matrix[$category_id][(int) $result['status']] = (int) $result['cpt'];
+            }
+
+            $data['labels'] = array_values($category_names);
+            // Keep one series per opened status, even filtered out, as the palette depends on the number of series
+            foreach ($opened_statuses as $status) {
+                $series_data = [];
+                foreach (array_keys($category_names) as $category_id) {
+                    $series_data[] = $matrix[$category_id][$status] ?? 0;
+                }
+                $data['series'][] = [
+                    'name' => Ticket::getStatus($status),
+                    'data' => $series_data,
+                ];
+            }
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
      * Count number of tickets grouped by the location of their requesters
      * @param array<string, mixed> $params
      * @return array<string, mixed>
@@ -1620,6 +1730,28 @@ class Provider
      */
     public static function ticketsByGroupAndStatus(array $params = []): array
     {
+        return self::ticketsByActorGroupAndStatus(Group_Ticket::ASSIGN, GroupTechFilter::class, $params);
+    }
+
+    /**
+     * count number of opened and closed tickets grouped by their requester group
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByRequesterGroupAndStatus(array $params = []): array
+    {
+        return self::ticketsByActorGroupAndStatus(Group_Ticket::REQUESTER, GroupRequesterFilter::class, $params);
+    }
+
+    /**
+     * count number of opened and closed tickets grouped by their group for the given actor type
+     * @param int $actor_type Group_Ticket::ASSIGN or Group_Ticket::REQUESTER
+     * @param class-string<AbstractGroupFilter> $group_filter dashboard filter on the same groups
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    private static function ticketsByActorGroupAndStatus(int $actor_type, string $group_filter, array $params = []): array
+    {
         $DB = DBConnection::getReadConnection();
 
         $default_params = [
@@ -1629,6 +1761,30 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
+        // The profile criteria don't restrict anything for a profile that only has the UPDATE right,
+        // only the READNEWTICKET right (handled with READASSIGN only), or no right at all
+        $visibility_criteria = [];
+        if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            $visibility_criteria = Ticket::getCriteriaFromProfile();
+            if (
+                Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)
+                && !Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)
+            ) {
+                $visibility_criteria['WHERE'][0]['OR'][] = [Ticket::getTable() . '.status' => Ticket::INCOMING];
+            }
+            if (!isset($visibility_criteria['WHERE'])) {
+                return [
+                    'data'  => [
+                        'labels' => [],
+                        'series' => [],
+                        'nodata' => true,
+                    ],
+                    'label' => $params['label'],
+                    'icon'  => $params['icon'],
+                ];
+            }
+        }
+
         $ticket_table       = Ticket::getTable();
         $group_ticket_table = Group_Ticket::getTable();
         $group_table        = Group::getTable();
@@ -1636,12 +1792,12 @@ class Provider
         $opened_statuses = implode(',', [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING]);
         $closed_statuses = implode(',', [Ticket::SOLVED, Ticket::CLOSED]);
 
-        // Restrict our own grouping to the groups selected by the "technician
-        // group" filter, not just which tickets are included (see
+        // Restrict our own grouping to the groups selected by the matching
+        // group filter, not just which tickets are included (see
         // extractActorFilterIds() doc for why this is needed).
         $filtered_group_ids = self::extractActorFilterIds(
-            GroupTechFilter::class,
-            'gl_' . GroupTechFilter::getId() . '.groups_id',
+            $group_filter,
+            'gl_' . $group_filter::getId() . '.groups_id',
             $ticket_table,
             $params['apply_filters']
         );
@@ -1662,7 +1818,7 @@ class Provider
                             $ticket_table        => 'id',
                             [
                                 'AND' => [
-                                    "$group_ticket_table.type" => Group_Ticket::ASSIGN,
+                                    "$group_ticket_table.type" => $actor_type,
                                 ],
                             ],
                         ],
@@ -1681,7 +1837,7 @@ class Provider
                 'GROUPBY'   => "$group_table.id",
                 'ORDERBY'   => "$group_table.name",
             ],
-            Ticket::getCriteriaFromProfile(),
+            $visibility_criteria,
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
         $iterator = $DB->request($criteria);
