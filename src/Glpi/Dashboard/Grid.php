@@ -1562,6 +1562,27 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            // The month granularity is covered by the "ticket_status" card
+            foreach (
+                [
+                    'day'  => __("Tickets status by day"),
+                    'week' => __("Tickets status by week"),
+                    'year' => __("Tickets status by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_lifetime_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsLifetime",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
             $cards["ticket_by_category_and_entity"] = [
                 'widgettype' => ['hBars', 'stackedHBars'],
                 'itemtype'   => "\\Ticket",

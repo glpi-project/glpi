@@ -2712,6 +2712,176 @@ class Provider
         ];
     }
 
+    /**
+     * Count tickets by their opening period and their current status.
+     * The status is the one of the ticket today, not the one it had at the end of the period.
+     * @param string $period 'day', 'week', 'month' or 'year'
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsLifetime(string $period = 'month', array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        // SQL and PHP formats must produce the same period keys (ISO weeks start on monday)
+        $periods_specs = [
+            'day'   => ['sql' => '%Y-%m-%d', 'php' => 'Y-m-d',  'start' => 'today',             'step' => '+1 day', 'unit' => 'day',   'default_range' => '-29 days'],
+            'week'  => ['sql' => '%x-W%v',   'php' => 'o-\WW',  'start' => 'monday this week',  'step' => '+1 week', 'unit' => 'week',  'default_range' => '-11 weeks'],
+            'month' => ['sql' => '%Y-%m',    'php' => 'Y-m',    'start' => 'first day of this month', 'step' => '+1 month', 'unit' => 'month', 'default_range' => '-11 months'],
+            'year'  => ['sql' => '%Y',       'php' => 'Y',      'start' => 'first day of january this year', 'step' => '+1 year', 'unit' => 'year', 'default_range' => '-4 years'],
+        ];
+        $spec = $periods_specs[$period] ?? $periods_specs['month'];
+        // Avoid unreadable charts and heavy queries on a long range with a short period
+        $max_periods = 366;
+
+        $no_data = [
+            'data'  => [
+                'labels' => [],
+                'series' => [],
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        // The profile criteria don't restrict anything for a profile that only has the UPDATE right,
+        // only the READNEWTICKET right (handled with READASSIGN only), or no right at all
+        $visibility_criteria = [];
+        if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            $visibility_criteria = Ticket::getCriteriaFromProfile();
+            if (
+                Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)
+                && !Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)
+            ) {
+                $visibility_criteria['WHERE'][0]['OR'][] = [Ticket::getTable() . '.status' => Ticket::INCOMING];
+            }
+            if (!isset($visibility_criteria['WHERE'])) {
+                return $no_data;
+            }
+        }
+
+        // The dates filter defines the displayed range, its periods are computed below
+        $range_end   = new DateTimeImmutable('today');
+        $range_begin = $range_end->modify($spec['default_range']);
+        $dates_value = $params['apply_filters'][DatesFilter::getId()] ?? null;
+        unset($params['apply_filters'][DatesFilter::getId()]);
+        if (is_array($dates_value) && count($dates_value) === 2) {
+            try {
+                $filter_begin = new DateTimeImmutable((string) $dates_value[0]);
+                $filter_end   = new DateTimeImmutable((string) $dates_value[1]);
+                [$range_begin, $range_end] = $filter_begin <= $filter_end
+                    ? [$filter_begin, $filter_end]
+                    : [$filter_end, $filter_begin];
+            } catch (\Exception) {
+                // keep default range if filter values are not parsable dates
+            }
+        }
+
+        // Split the range into periods, aligned on the period start
+        $periods      = [];
+        $period_start = $range_begin->modify($spec['start'])->setTime(0, 0);
+        $last_day     = $range_end->setTime(0, 0);
+        // Start at the first of the last periods, so a very long range doesn't build periods that would be dropped
+        $first_start  = $last_day->modify($spec['start'])->setTime(0, 0)
+            ->modify(sprintf('-%d %s', $max_periods - 1, $spec['unit']));
+        if ($period_start < $first_start) {
+            $period_start = $first_start;
+        }
+        while ($period_start <= $last_day) {
+            $next_start = $period_start->modify($spec['step']);
+            $periods[$period_start->format($spec['php'])] = [
+                'start'        => $period_start->format('Y-m-d H:i:s'),
+                'end'          => $next_start->format('Y-m-d H:i:s'),
+                // The search "morethan" is strict, while the period includes its first second
+                'search_start' => $period_start->modify('-1 second')->format('Y-m-d H:i:s'),
+            ];
+            $period_start = $next_start;
+        }
+        if (count($periods) === 0) {
+            return $no_data;
+        }
+
+        $ticket_table = Ticket::getTable();
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'  => [
+                    QueryFunction::dateFormat("$ticket_table.date", $spec['sql'], 'period'),
+                    "$ticket_table.status",
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'    => $ticket_table,
+                'WHERE'   => [
+                    "$ticket_table.is_deleted" => 0,
+                    ["$ticket_table.date" => ['>=', reset($periods)['start']]],
+                    ["$ticket_table.date" => ['<', end($periods)['end']]],
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY' => ['period', "$ticket_table.status"],
+            ],
+            $visibility_criteria,
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+
+        $counts = [];
+        foreach ($db->request($criteria) as $result) {
+            $counts[$result['period']][(int) $result['status']] = (int) $result['cpt'];
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $search_criteria = self::getSearchFiltersCriteria($ticket_table, $params['apply_filters'])['criteria'] ?? [];
+        $url             = Ticket::getSearchURL();
+        $build_url       = (static fn(int $status, array $dates): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+            'criteria' => array_merge([
+                [
+                    'link'       => 'AND',
+                    'field'      => 12, // status
+                    'searchtype' => 'equals',
+                    'value'      => $status,
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'morethan',
+                    'value'      => $dates['search_start'],
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'lessthan',
+                    'value'      => $dates['end'],
+                ],
+            ], $search_criteria),
+            'reset'    => 'reset',
+        ]));
+
+        // One serie per status, in a fixed order, so colors stay consistent
+        $series = [];
+        foreach (Ticket::getAllStatusArray() as $status => $status_name) {
+            $serie = ['name' => $status_name, 'data' => []];
+            foreach ($periods as $period_key => $dates) {
+                $serie['data'][] = [
+                    'value' => $counts[$period_key][$status] ?? 0,
+                    'url'   => $build_url($status, $dates),
+                ];
+            }
+            $series[] = $serie;
+        }
+
+        return [
+            'data'  => [
+                'labels' => array_map('strval', array_keys($periods)),
+                'series' => $series,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
 
     /**
      * Get numbers of tickets grouped by actors

@@ -706,6 +706,39 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsLifetime(string $period = 'month', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $labels[] = match ($period) {
+                'day'   => date('Y-m-d', strtotime("-$i days")),
+                'week'  => date('o-\WW', strtotime("-$i weeks")),
+                'year'  => date('Y', strtotime("-$i years")),
+                default => date('Y-m', strtotime("-$i months")),
+            };
+        }
+
+        $series = [];
+        foreach (Ticket::getAllStatusArray() as $status_name) {
+            $series[] = [
+                'name' => $status_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($status_name . $label, 50), 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
     public static function nbTicketsActor(string $case = "", array $params = []): array
     {
         $default_params = [

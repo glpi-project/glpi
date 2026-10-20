@@ -903,6 +903,160 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testTicketsLifetime(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id   = $this->getTestRootEntity(true);
+        $tickets_ids = [];
+
+        // Dates far in the past so that no other ticket of the test database is counted
+        foreach (
+            [
+                ['new at the start of week 1', '2010-01-04 00:00:00', \Ticket::INCOMING],
+                ['solved on sunday of week 1', '2010-01-10 23:00:00', \Ticket::SOLVED],
+                ['new in week 2', '2010-01-12 10:00:00', \Ticket::INCOMING],
+                ['closed in week 2', '2010-01-13 10:00:00', \Ticket::CLOSED],
+                ['closed in february', '2010-02-15 10:00:00', \Ticket::CLOSED],
+                ['new in 2009', '2009-12-31 10:00:00', \Ticket::INCOMING],
+            ] as [$name, $date, $status]
+        ) {
+            $ticket = $this->createItem(\Ticket::class, [
+                'name'        => "test dashboard lifetime $name",
+                'content'     => 'blablabla',
+                'entities_id' => $entity_id,
+            ]);
+            $DB->update(\Ticket::getTable(), [
+                'date'   => $date,
+                'status' => $status,
+            ], ['id' => $ticket->getID()]);
+            $tickets_ids[$name] = $ticket->getID();
+        }
+
+        $statuses = \Ticket::getAllStatusArray();
+        $get_values = static function (array $result) use ($statuses): array {
+            $values = [];
+            foreach ($result['data']['series'] as $serie) {
+                $values[array_search($serie['name'], $statuses, true)] = array_column($serie['data'], 'value');
+            }
+            return $values;
+        };
+
+        // Periods are aligned on their start: ISO weeks start on monday
+        $weeks = Provider::ticketsLifetime('week', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-01-06', '2010-01-20']],
+        ]);
+        $this->assertSame(['2010-W01', '2010-W02', '2010-W03'], $weeks['data']['labels']);
+        // One serie per status, in a fixed order, so colors stay consistent
+        $this->assertSame(array_values($statuses), array_column($weeks['data']['series'], 'name'));
+        $values = $get_values($weeks);
+        $this->assertSame([1, 1, 0], $values[\Ticket::INCOMING]);
+        // 2010-01-10 is a sunday, the last day of week 1
+        $this->assertSame([1, 0, 0], $values[\Ticket::SOLVED]);
+        $this->assertSame([0, 1, 0], $values[\Ticket::CLOSED]);
+        $this->assertSame([0, 0, 0], $values[\Ticket::ASSIGNED]);
+
+        $days = Provider::ticketsLifetime('day', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-01-12', '2010-01-13']],
+        ]);
+        $this->assertSame(['2010-01-12', '2010-01-13'], $days['data']['labels']);
+        $values = $get_values($days);
+        $this->assertSame([1, 0], $values[\Ticket::INCOMING]);
+        $this->assertSame([0, 1], $values[\Ticket::CLOSED]);
+
+        $years = Provider::ticketsLifetime('year', [
+            'apply_filters' => [DatesFilter::getId() => ['2009-06-01', '2010-02-01']],
+        ]);
+        $this->assertSame(['2009', '2010'], $years['data']['labels']);
+        $values = $get_values($years);
+        $this->assertSame([1, 2], $values[\Ticket::INCOMING]);
+        $this->assertSame([0, 2], $values[\Ticket::CLOSED]);
+
+        // The search of a period finds the tickets counted, the strict lower bound starts 1 second before the period
+        $closed_url = $weeks['data']['series'][array_search(\Ticket::CLOSED, array_keys($statuses), true)]['data'][1]['url'];
+        $this->assertStringContainsString('2010-01-10 23:59:59', urldecode($closed_url));
+        $this->assertStringContainsString('2010-01-18 00:00:00', urldecode($closed_url));
+        parse_str((string) parse_url($closed_url, PHP_URL_QUERY), $search_params);
+        $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+        $this->assertSame(1, $search_data['data']['totalcount']);
+
+        // A ticket created exactly at the period start is counted and found by the period search
+        $new_url = $weeks['data']['series'][array_search(\Ticket::INCOMING, array_keys($statuses), true)]['data'][0]['url'];
+        parse_str((string) parse_url($new_url, PHP_URL_QUERY), $search_params);
+        $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+        $this->assertSame(1, $search_data['data']['totalcount'], 'the midnight ticket must be found by the period search');
+
+        // A long range with a short period is limited to the last periods
+        $long_range = Provider::ticketsLifetime('day', [
+            'apply_filters' => [DatesFilter::getId() => ['2008-01-01', '2010-12-31']],
+        ]);
+        $this->assertCount(366, $long_range['data']['labels']);
+        $this->assertSame('2010-12-31', end($long_range['data']['labels']));
+
+        // A range of several centuries only builds the last periods
+        foreach (
+            [
+                'day'   => ['2009-12-31', '2010-12-31'],
+                'week'  => ['2004-W01', '2010-W52'],
+                'year'  => ['1645', '2010'],
+            ] as $period => [$first, $last]
+        ) {
+            $centuries = Provider::ticketsLifetime($period, [
+                'apply_filters' => [DatesFilter::getId() => ['0001-01-01', '2010-12-31']],
+            ]);
+            $this->assertCount(366, $centuries['data']['labels'], $period);
+            $this->assertSame($first, reset($centuries['data']['labels']), $period);
+            $this->assertSame($last, end($centuries['data']['labels']), $period);
+        }
+
+        $week_filters = [
+            'apply_filters' => [DatesFilter::getId() => ['2010-01-06', '2010-01-20']],
+        ];
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsLifetime('day')['data']['nodata'] ?? false);
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsLifetime('week', $week_filters)['data']['nodata'] ?? false);
+
+        // The new tickets right alone only allows to see new tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $values = $get_values(Provider::ticketsLifetime('week', $week_filters));
+        $this->assertSame([1, 1, 0], $values[\Ticket::INCOMING]);
+        $this->assertSame([0, 0, 0], $values[\Ticket::SOLVED], 'solved ticket must not be visible');
+        $this->assertSame([0, 0, 0], $values[\Ticket::CLOSED], 'closed ticket must not be visible');
+
+        // The "my tickets" right only allows to see the tickets the user is actor of
+        $closed_id = $tickets_ids['closed in week 2'];
+        $DB->update(\Ticket::getTable(), ['users_id_recipient' => 0], ['id' => $closed_id]);
+        $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $closed_id]);
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READMY;
+        $values = $get_values(Provider::ticketsLifetime('week', $week_filters));
+        $this->assertSame([1, 1, 0], $values[\Ticket::INCOMING]);
+        $this->assertSame([1, 0, 0], $values[\Ticket::SOLVED]);
+        $this->assertSame([0, 0, 0], $values[\Ticket::CLOSED], 'ticket of another user must not be visible');
+    }
+
+    public function testFakeTicketsLifetime(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsLifetime');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        foreach (['day', 'week', 'year'] as $period) {
+            $result = FakeProvider::ticketsLifetime($period, ['label' => 'test']);
+            $this->assertSame('test', $result['label']);
+            $this->assertCount(count(\Ticket::getAllStatusArray()), $result['data']['series']);
+            foreach ($result['data']['series'] as $serie) {
+                $this->assertCount(count($result['data']['labels']), $serie['data']);
+            }
+        }
+    }
+
 
     public function testTopTicketsCategories()
     {
