@@ -64,6 +64,8 @@ final class Schemas
      */
     private static array $instance_cache = [];
 
+    private static array $itemtype_schema_name_map_cache = [];
+
     public function __construct(?string $api_version = null)
     {
         global $GLPI_CACHE;
@@ -247,5 +249,38 @@ final class Schemas
         }
         // Not in cache and was not found
         return null;
+    }
+
+    private function getItemtypeSchemaNameMap(): array
+    {
+        global $GLPI_CACHE;
+
+        $api_version = $this->api_version;
+        if (!isset(self::$itemtype_schema_name_map_cache[$api_version])) {
+            self::$itemtype_schema_name_map_cache[$api_version] = $GLPI_CACHE->get('hlapi_itemtype_schema_name_map_' . $api_version);
+        }
+        if (!isset(self::$itemtype_schema_name_map_cache[$api_version])) {
+            $schemas_instance = self::getInstance($api_version);
+            $all_schemas = $schemas_instance->getAllSchemas();
+            foreach ($all_schemas as $schema_name => $schema) {
+                if (isset($schema['x-itemtype'])) {
+                    self::$itemtype_schema_name_map_cache[$api_version][$schema['x-itemtype']] = $schema_name;
+                }
+            }
+            $GLPI_CACHE->set('hlapi_itemtype_schema_name_map_' . $api_version, self::$itemtype_schema_name_map_cache[$api_version]);
+        }
+        return self::$itemtype_schema_name_map_cache[$api_version];
+    }
+
+    public function getSchemaNameForItemtype(string $itemtype): ?string
+    {
+        return $this->getItemtypeSchemaNameMap()[$itemtype] ?? null;
+    }
+
+    public function getItemtypeForSchemaName(string $schema_name): ?string
+    {
+        $map = $this->getItemtypeSchemaNameMap();
+        $itemtype = array_search($schema_name, $map, true);
+        return $itemtype !== false ? $itemtype : null;
     }
 }

@@ -35,12 +35,23 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Change;
+use Change_Item;
 use ChangeValidation;
 use CommonITILObject;
+use Computer;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Api\HL\Router;
+use Glpi\Api\HL\Schemas;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Item_Problem;
+use Item_Ticket;
+use Monitor;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Printer;
 use Problem;
+use Profile;
+use ProfileRight;
 use Ticket;
 use TicketValidation;
 
@@ -737,6 +748,303 @@ class ITILControllerTest extends HLAPITestCase
                         });
                 });
             }
+        }
+    }
+
+    public static function graphQLAssociatedItemsProvider(): iterable
+    {
+        yield [Ticket::class, Item_Ticket::class];
+        yield [Change::class, Change_Item::class];
+        yield [Problem::class, Item_Problem::class];
+    }
+
+    #[DataProvider('graphQLAssociatedItemsProvider')]
+    public function testGraphQLAssociatedItems(string $itil_type, string $link_type)
+    {
+        $this->login();
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $itil = $this->createItem($itil_type, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $entities_id,
+        ]);
+        $computer = $this->createItem(Computer::class, ['name' => __FUNCTION__ . ' computer', 'entities_id' => $entities_id]);
+        $monitor = $this->createItem(Monitor::class, ['name' => __FUNCTION__ . ' monitor', 'entities_id' => $entities_id]);
+        $printer = $this->createItem(Printer::class, ['name' => __FUNCTION__ . ' printer', 'entities_id' => $entities_id]);
+        foreach ([$computer, $monitor, $printer] as $item) {
+            $this->createItem($link_type, [
+                $itil_type::getForeignKeyField() => $itil->getID(),
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ]);
+        }
+
+        // Printers are not allowed to be associated with ITIL items for this profile
+        $this->assertTrue((new Profile())->update([
+            'id' => getItemByTypeName(Profile::class, 'Super-Admin', true),
+            'helpdesk_item_type' => [Computer::class, Monitor::class],
+        ]));
+
+        $schema_name = $itil_type;
+        $query = <<<GRAPHQL
+            query {
+                {$schema_name}(id: {$itil->getID()}) {
+                    id
+                    associated_items {
+                        _type
+                        data {
+                            ... on Computer { id name }
+                            ... on Monitor { id name }
+                        }
+                    }
+                }
+            }
+        GRAPHQL;
+        $this->graphql->call($query, function ($call) use ($schema_name, $computer, $monitor) {
+            $call->response
+                ->isOK()
+                ->data($schema_name, function ($items) use ($computer, $monitor) {
+                    $this->assertCount(1, $items);
+                    $associated_items = $items[0]['associated_items'];
+                    usort($associated_items, static fn($a, $b) => strcmp($a['_type'], $b['_type']));
+                    $this->assertEquals([
+                        ['_type' => 'Computer', 'data' => ['id' => $computer->getID(), 'name' => $computer->fields['name']]],
+                        ['_type' => 'Monitor', 'data' => ['id' => $monitor->getID(), 'name' => $monitor->fields['name']]],
+                    ], $associated_items);
+                });
+        });
+    }
+
+    #[DataProvider('graphQLAssociatedItemsProvider')]
+    public function testGraphQLAssociatedItemsHidesUnreadableItems(string $itil_type, string $link_type)
+    {
+        $this->login();
+        $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $itil = $this->createItem($itil_type, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $child_1,
+        ]);
+        $visible_computer = $this->createItem(Computer::class, ['name' => __FUNCTION__ . ' visible', 'entities_id' => $child_1]);
+        $hidden_computer = $this->createItem(Computer::class, ['name' => __FUNCTION__ . ' hidden', 'entities_id' => $child_2]);
+        $monitor = $this->createItem(Monitor::class, ['name' => __FUNCTION__ . ' monitor', 'entities_id' => $child_1]);
+        foreach ([$visible_computer, $hidden_computer, $monitor] as $item) {
+            $this->createItem($link_type, [
+                $itil_type::getForeignKeyField() => $itil->getID(),
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ]);
+        }
+
+        // Cannot read monitors at all
+        ProfileRight::updateProfileRights(getItemByTypeName(Profile::class, 'Super-Admin', true), ['monitor' => 0]);
+
+        $schema_name = $itil_type;
+        $query = <<<GRAPHQL
+            query {
+                {$schema_name}(id: {$itil->getID()}) {
+                    id
+                    associated_items {
+                        _type
+                        data {... on Computer { id name } }
+                    }
+                }
+            }
+        GRAPHQL;
+        // Only the child 1 entity is active, so the computer in child 2 cannot be read
+        $this->graphql->call($query, function ($call) use ($schema_name, $visible_computer) {
+            $call->response
+                ->isOK()
+                ->data($schema_name, function ($items) use ($visible_computer) {
+                    $this->assertCount(1, $items);
+                    $this->assertEquals([
+                        ['_type' => 'Computer', 'data' => ['id' => $visible_computer->getID(), 'name' => $visible_computer->fields['name']]],
+                    ], $items[0]['associated_items']);
+                });
+        }, headers: ['GLPI-Entity' => (string) $child_1]);
+    }
+
+    #[DataProvider('graphQLAssociatedItemsProvider')]
+    public function testGraphQLAssociatedItemsCustomAsset(string $itil_type, string $link_type)
+    {
+        $this->login();
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $asset_class = 'Glpi\\CustomAsset\\Test01Asset';
+
+        $itil = $this->createItem($itil_type, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $entities_id,
+        ]);
+        $computer = $this->createItem(Computer::class, ['name' => __FUNCTION__ . ' computer', 'entities_id' => $entities_id]);
+        $asset = $this->createItem($asset_class, ['name' => __FUNCTION__ . ' asset', 'entities_id' => $entities_id]);
+        foreach ([$computer, $asset] as $item) {
+            $this->createItem($link_type, [
+                $itil_type::getForeignKeyField() => $itil->getID(),
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ]);
+        }
+
+        $this->assertTrue((new Profile())->update([
+            'id' => getItemByTypeName(Profile::class, 'Super-Admin', true),
+            'helpdesk_item_type' => [Computer::class, $asset_class],
+        ]));
+
+        $schema_name = $itil_type;
+        $query = <<<GRAPHQL
+            query {
+                {$schema_name}(id: {$itil->getID()}) {
+                    id
+                    associated_items {
+                        _type
+                        data {
+                            ... on Computer { id name }
+                            ... on CustomAsset_Test01 { id name }
+                        }
+                    }
+                }
+            }
+        GRAPHQL;
+        $this->graphql->call($query, function ($call) use ($schema_name, $computer, $asset) {
+            $call->response
+                ->isOK()
+                ->data($schema_name, function ($items) use ($computer, $asset) {
+                    $this->assertCount(1, $items);
+                    $associated_items = $items[0]['associated_items'];
+                    usort($associated_items, static fn($a, $b) => strcmp($a['_type'], $b['_type']));
+                    $this->assertEquals([
+                        ['_type' => 'Computer', 'data' => ['id' => $computer->getID(), 'name' => $computer->fields['name']]],
+                        ['_type' => 'CustomAsset_Test01', 'data' => ['id' => $asset->getID(), 'name' => $asset->fields['name']]],
+                    ], $associated_items);
+                });
+        });
+    }
+
+    #[DataProvider('graphQLAssociatedItemsProvider')]
+    public function testGraphQLAssociatedItemsCustomAssetRestrictedByProfile(string $itil_type, string $link_type)
+    {
+        $this->login();
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $asset_class = 'Glpi\\CustomAsset\\Test01Asset';
+
+        $itil = $this->createItem($itil_type, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $entities_id,
+        ]);
+        $computer = $this->createItem(Computer::class, ['name' => __FUNCTION__ . ' computer', 'entities_id' => $entities_id]);
+        $asset = $this->createItem($asset_class, ['name' => __FUNCTION__ . ' asset', 'entities_id' => $entities_id]);
+        foreach ([$computer, $asset] as $item) {
+            $this->createItem($link_type, [
+                $itil_type::getForeignKeyField() => $itil->getID(),
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ]);
+        }
+
+        // Only custom assets are allowed for this profile, the computer link must be hidden
+        $this->assertTrue((new Profile())->update([
+            'id' => getItemByTypeName(Profile::class, 'Super-Admin', true),
+            'helpdesk_item_type' => [$asset_class],
+        ]));
+
+        $schema_name = $itil_type;
+        $query = <<<GRAPHQL
+            query {
+                {$schema_name}(id: {$itil->getID()}) {
+                    id
+                    associated_items { _type data {... on CustomAsset_Test01 { id name } } }
+                }
+            }
+        GRAPHQL;
+        $this->graphql->call($query, function ($call) use ($schema_name, $asset) {
+            $call->response
+                ->isOK()
+                ->data($schema_name, function ($items) use ($asset) {
+                    $this->assertCount(1, $items);
+                    $this->assertEquals([
+                        ['_type' => 'CustomAsset_Test01', 'data' => ['id' => $asset->getID(), 'name' => $asset->fields['name']]],
+                    ], $items[0]['associated_items']);
+                });
+        });
+    }
+
+    #[DataProvider('graphQLAssociatedItemsProvider')]
+    public function testGraphQLAssociatedItemsCustomAssetHidesUnreadableItems(string $itil_type, string $link_type)
+    {
+        $this->login();
+        $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+        $asset_class = 'Glpi\\CustomAsset\\Test01Asset';
+
+        $itil = $this->createItem($itil_type, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $child_1,
+        ]);
+        $visible_asset = $this->createItem($asset_class, ['name' => __FUNCTION__ . ' visible', 'entities_id' => $child_1]);
+        $hidden_asset = $this->createItem($asset_class, ['name' => __FUNCTION__ . ' hidden', 'entities_id' => $child_2]);
+        foreach ([$visible_asset, $hidden_asset] as $item) {
+            $this->createItem($link_type, [
+                $itil_type::getForeignKeyField() => $itil->getID(),
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+            ]);
+        }
+
+        $this->assertTrue((new Profile())->update([
+            'id' => getItemByTypeName(Profile::class, 'Super-Admin', true),
+            'helpdesk_item_type' => [Computer::class, $asset_class],
+        ]));
+
+        $schema_name = $itil_type;
+        $query = <<<GRAPHQL
+            query {
+                {$schema_name}(id: {$itil->getID()}) {
+                    id
+                    associated_items {
+                        _type
+                        data {
+                            ... on CustomAsset_Test01 { id name }
+                        }
+                    }
+                }
+            }
+        GRAPHQL;
+        // Only the child 1 entity is active, so the asset in child 2 cannot be read
+        $this->graphql->call($query, function ($call) use ($schema_name, $visible_asset) {
+            $call->response
+                ->isOK()
+                ->data($schema_name, function ($items) use ($visible_asset) {
+                    $this->assertCount(1, $items);
+                    $this->assertEquals([
+                        ['_type' => 'CustomAsset_Test01', 'data' => ['id' => $visible_asset->getID(), 'name' => $visible_asset->fields['name']]],
+                    ], $items[0]['associated_items']);
+                });
+        }, headers: ['GLPI-Entity' => (string) $child_1]);
+    }
+
+    public function testAssociatedItemSchemaIncludesCustomAssets(): void
+    {
+        $schemas = Schemas::getInstance(Router::API_VERSION);
+        $all_schemas = $schemas->getAllSchemas();
+        $associated_item_schema = $all_schemas['Assistance_AssociatedItem'];
+
+        $this->assertContains('CustomAsset_Test01', $associated_item_schema['properties']['_type']['enum']);
+        $this->assertContains('CustomAsset_Test02', $associated_item_schema['properties']['_type']['enum']);
+        $this->assertArrayHasKey('CustomAsset_Test01', $associated_item_schema['discriminator']['mapping']);
+        $this->assertEquals(
+            '#/components/schemas/CustomAsset_Test01',
+            $associated_item_schema['discriminator']['mapping']['CustomAsset_Test01']
+        );
+
+        // Every type referenced by the associated item schema must correspond to an existing schema
+        foreach ($associated_item_schema['properties']['_type']['enum'] as $type) {
+            $this->assertArrayHasKey($type, $all_schemas, "Schema '$type' referenced by Assistance_AssociatedItem does not exist");
         }
     }
 

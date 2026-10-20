@@ -944,6 +944,141 @@
                 }
             }
         },
+        "Assistance_AssociatedItem": {
+            "type": "object",
+            "properties": {
+                "_type": {
+                    "type": "string",
+                    "enum": [
+                        "Appliance",
+                        "Cable",
+                        "Certificate",
+                        "Cluster",
+                        "Computer",
+                        "DCRoom",
+                        "Database",
+                        "DatabaseInstance",
+                        "Domain",
+                        "DomainRecord",
+                        "Enclosure",
+                        "License",
+                        "Line",
+                        "Monitor",
+                        "NetworkEquipment",
+                        "PDU",
+                        "PassiveDCEquipment",
+                        "Peripheral",
+                        "Phone",
+                        "Printer",
+                        "Rack",
+                        "SIMCardItem",
+                        "Software"
+                    ]
+                },
+                "data": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/components/schemas/Appliance"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Cable"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Certificate"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Cluster"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Computer"
+                        },
+                        {
+                            "$ref": "#/components/schemas/DCRoom"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Database"
+                        },
+                        {
+                            "$ref": "#/components/schemas/DatabaseInstance"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Domain"
+                        },
+                        {
+                            "$ref": "#/components/schemas/DomainRecord"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Enclosure"
+                        },
+                        {
+                            "$ref": "#/components/schemas/License"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Line"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Monitor"
+                        },
+                        {
+                            "$ref": "#/components/schemas/NetworkEquipment"
+                        },
+                        {
+                            "$ref": "#/components/schemas/PDU"
+                        },
+                        {
+                            "$ref": "#/components/schemas/PassiveDCEquipment"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Peripheral"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Phone"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Printer"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Rack"
+                        },
+                        {
+                            "$ref": "#/components/schemas/SIMCardItem"
+                        },
+                        {
+                            "$ref": "#/components/schemas/Software"
+                        }
+                    ]
+                }
+            },
+            "discriminator": {
+                "propertyName": "_type",
+                "mapping": {
+                    "Appliance": "#/components/schemas/Appliance",
+                    "Cable": "#/components/schemas/Cable",
+                    "Certificate": "#/components/schemas/Certificate",
+                    "Cluster": "#/components/schemas/Cluster",
+                    "Computer": "#/components/schemas/Computer",
+                    "DCRoom": "#/components/schemas/DCRoom",
+                    "Database": "#/components/schemas/Database",
+                    "DatabaseInstance": "#/components/schemas/DatabaseInstance",
+                    "Domain": "#/components/schemas/Domain",
+                    "DomainRecord": "#/components/schemas/DomainRecord",
+                    "Enclosure": "#/components/schemas/Enclosure",
+                    "License": "#/components/schemas/License",
+                    "Line": "#/components/schemas/Line",
+                    "Monitor": "#/components/schemas/Monitor",
+                    "NetworkEquipment": "#/components/schemas/NetworkEquipment",
+                    "PDU": "#/components/schemas/PDU",
+                    "PassiveDCEquipment": "#/components/schemas/PassiveDCEquipment",
+                    "Peripheral": "#/components/schemas/Peripheral",
+                    "Phone": "#/components/schemas/Phone",
+                    "Printer": "#/components/schemas/Printer",
+                    "Rack": "#/components/schemas/Rack",
+                    "SIMCardItem": "#/components/schemas/SIMCardItem",
+                    "Software": "#/components/schemas/Software"
+                }
+            }
+        },
         "AutoUpdateSystem": {
             "type": "object",
             "x-itemtype": "AutoUpdateSystem",
@@ -3191,6 +3326,21 @@
                             }
                         },
                         "x-full-schema": "ChangeCost"
+                    }
+                },
+                "associated_items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Change_Item",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Assistance_AssociatedItem"
                     }
                 }
             },
@@ -17662,6 +17812,21 @@
                         },
                         "x-full-schema": "ProblemCost"
                     }
+                },
+                "associated_items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_Problem",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Assistance_AssociatedItem"
+                    }
                 }
             },
             "x-itemtype": "Problem"
@@ -25054,6 +25219,21 @@
                             }
                         },
                         "x-full-schema": "TicketCost"
+                    }
+                },
+                "associated_items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_Ticket",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Assistance_AssociatedItem"
                     }
                 }
             },

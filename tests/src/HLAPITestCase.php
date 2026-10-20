@@ -1246,11 +1246,12 @@ final class GraphQLHelper
     /**
      * @param string $query The GraphQL query string to send in the request body.
      * @param callable(GraphQLCallAsserter): void $fn
+     * @param array<string, string> $headers Additional request headers
      * @return self
      */
-    public function call(string $query, callable $fn, bool $auto_auth_header = true): self
+    public function call(string $query, callable $fn, bool $auto_auth_header = true, array $headers = []): self
     {
-        $request = new Request('POST', '/GraphQL', [], $query);
+        $request = new Request('POST', '/GraphQL', $headers, $query);
         if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
             $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
         }
