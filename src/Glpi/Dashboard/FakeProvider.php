@@ -355,6 +355,37 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function openedTicketsByCategoryAndStatus(array $params = []): array
+    {
+        $labels = [
+            _x('fake_data', 'Hardware'),
+            _x('fake_data', 'Software'),
+            _x('fake_data', 'Network'),
+            _x('fake_data', 'Accounts'),
+            __('None'),
+        ];
+
+        $series = [];
+        foreach (Ticket::getNotSolvedStatusArray() as $status) {
+            $series[] = [
+                'name' => Ticket::getStatus($status),
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($label . $status, 40),
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
     public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
         $item_counts = self::getItemCount();
