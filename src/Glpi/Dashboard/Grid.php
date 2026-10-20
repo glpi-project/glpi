@@ -1707,6 +1707,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_ticket_by_category_tree"] = [
+                'widgettype' => ['sunburst'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and sub-category"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryTree",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["report_ticket_by_status_and_technician"] = [
                 'widgettype' => ['stackedHBars', 'hBars', 'stackedbars', 'bars'],
                 'itemtype'   => "\\Ticket",

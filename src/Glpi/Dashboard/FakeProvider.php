@@ -307,6 +307,54 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsByCategoryTree(array $params = []): array
+    {
+        $tree = [
+            _x('fake_data', 'Hardware') => [
+                _x('fake_data', 'Laptop')  => 184,
+                _x('fake_data', 'Printer') => 97,
+                _x('fake_data', 'Monitor') => 45,
+            ],
+            _x('fake_data', 'Software') => [
+                _x('fake_data', 'Office suite') => 152,
+                _x('fake_data', 'ERP')          => 88,
+            ],
+            _x('fake_data', 'Network') => [
+                _x('fake_data', 'Wi-Fi') => 76,
+                _x('fake_data', 'VPN')   => 63,
+            ],
+        ];
+
+        $data = [];
+        foreach ($tree as $label => $children) {
+            $child_nodes = [];
+            foreach ($children as $child_label => $number) {
+                $child_nodes[] = [
+                    'label'  => $child_label,
+                    'number' => $number,
+                    'url'    => '',
+                ];
+            }
+            $data[] = [
+                'label'    => $label,
+                'number'   => array_sum($children),
+                'url'      => '',
+                'children' => $child_nodes,
+            ];
+        }
+        $data[] = [
+            'label'  => __('None'),
+            'number' => 34,
+            'url'    => '',
+        ];
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => \ITILCategory::getIcon(),
+        ];
+    }
+
     public static function ticketsByStatusAndTechnician(array $params = []): array
     {
         $labels = self::getFakeNames();

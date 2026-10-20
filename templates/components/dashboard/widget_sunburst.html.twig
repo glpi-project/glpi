@@ -1,0 +1,96 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<style>
+    #{{ chart_id|e('css') }} {
+        background-color: {{ bg_color|e('css') }};
+        color: {{ fg_color|e('css') }};
+    }
+
+    .theme-dark #{{ chart_id|e('css') }} {
+        background-color: {{ dark_bg_color|e('css') }};
+        color: {{ dark_fg_color|e('css') }};
+    }
+</style>
+<div class="card g-chart sunburst {{ class }}" id="{{ chart_id }}" data-testid="dashboard-widget">
+    <div class="chart ct-chart">
+        {% if nodata %}
+            <span class="empty-card no-data">
+                <div>{{ __('No data found') }}</div>
+            </span>
+        {% endif %}
+    </div>
+    <span class="main-label">{{ label }}</span>
+    <i class="main-icon {{ icon }}" aria-hidden="true"></i>
+</div>
+
+{% if not nodata %}
+    <script type="module">
+        const chart_options = {{ options|json_encode|raw }};
+        const open_url = (params) => {
+            const data_url = _.get(params, 'data.url', '');
+            if (data_url.length > 0) {
+                window.location.href = data_url;
+            }
+        };
+
+        // Look for the card in every dashboard, the response may target a dashboard that is not visible
+        document.querySelectorAll('[id="{{ chart_id|e('js') }}"] .chart').forEach((target) => {
+            if (target.hasAttribute('_echarts_instance_')) {
+                return;
+            }
+
+            const chart = echarts.init(target);
+            chart.setOption(chart_options);
+            // A chart initialized in a hidden dashboard has no size, render it again once displayed
+            new ResizeObserver(() => {
+                if (!chart.isDisposed()) {
+                    chart.resize();
+                }
+            }).observe(target);
+            // A click on a node with sub-nodes zooms into it (or back, on the center), on a leaf it opens its search
+            chart.on('click', (params) => {
+                if (_.get(params, 'data.children', []).length === 0) {
+                    open_url(params);
+                }
+            });
+            // A double click opens the search of any node
+            chart.on('dblclick', open_url);
+
+            $(target).on('mouseover', () => {
+                chart.setOption({'toolbox': {'show': true}});
+            }).on('mouseout', () => {
+                chart.setOption({'toolbox': {'show': false}});
+            });
+        });
+    </script>
+{% endif %}
