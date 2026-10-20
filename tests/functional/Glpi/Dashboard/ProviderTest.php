@@ -1210,6 +1210,8 @@ class ProviderTest extends DbTestCase
 
     public function testTicketsByRequesterGroupAndStatus(): void
     {
+        global $DB;
+
         $this->login();
 
         $requester_group = $this->createItem(\Group::class, [
@@ -1224,7 +1226,7 @@ class ProviderTest extends DbTestCase
 
         $this->attachTicketToGroup('requester group opened 1', \Ticket::INCOMING, $requester_group, \Group_Ticket::REQUESTER);
         $this->attachTicketToGroup('requester group opened 2', \Ticket::WAITING, $requester_group, \Group_Ticket::REQUESTER);
-        $this->attachTicketToGroup('requester group closed', \Ticket::CLOSED, $requester_group, \Group_Ticket::REQUESTER);
+        $closed_ticket = $this->attachTicketToGroup('requester group closed', \Ticket::CLOSED, $requester_group, \Group_Ticket::REQUESTER);
         $this->attachTicketToGroup('other requester group solved', \Ticket::SOLVED, $other_requester_group, \Group_Ticket::REQUESTER);
         $this->attachTicketToGroup('assigned group opened', \Ticket::INCOMING, $assigned_group);
 
@@ -1261,6 +1263,30 @@ class ProviderTest extends DbTestCase
         $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
         $this->assertTrue(Provider::ticketsByRequesterGroupAndStatus()['data']['nodata'] ?? false);
         $this->assertTrue(Provider::ticketsByGroupAndStatus()['data']['nodata'] ?? false);
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsByRequesterGroupAndStatus()['data']['nodata'] ?? false);
+        $this->assertTrue(Provider::ticketsByGroupAndStatus()['data']['nodata'] ?? false);
+
+        // The new tickets right alone only allows to see new tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $new_only       = Provider::ticketsByRequesterGroupAndStatus();
+        $new_only_index = array_search($requester_group->fields['name'], $new_only['data']['labels'], true);
+        $this->assertNotFalse($new_only_index, 'requester group has a new ticket');
+        $this->assertSame(1, $new_only['data']['series'][0]['data'][$new_only_index], 'only the new ticket must be visible');
+        $this->assertSame(0, $new_only['data']['series'][1]['data'][$new_only_index], 'closed ticket must not be visible');
+        $this->assertNotContains($other_requester_group->fields['name'], $new_only['data']['labels'], 'other requester group has no new ticket');
+
+        // The "my tickets" right only allows to see the tickets the user is actor of
+        $DB->update(\Ticket::getTable(), ['users_id_recipient' => 0], ['id' => $closed_ticket->getID()]);
+        $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $closed_ticket->getID()]);
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READMY;
+        $my_tickets       = Provider::ticketsByRequesterGroupAndStatus();
+        $my_tickets_index = array_search($requester_group->fields['name'], $my_tickets['data']['labels'], true);
+        $this->assertNotFalse($my_tickets_index);
+        $this->assertSame(2, $my_tickets['data']['series'][0]['data'][$my_tickets_index]);
+        $this->assertSame(0, $my_tickets['data']['series'][1]['data'][$my_tickets_index], 'ticket of another user must not be visible');
     }
 
     public function testFakeTicketsByRequesterGroupAndStatus(): void

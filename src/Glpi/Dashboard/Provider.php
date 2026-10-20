@@ -1412,17 +1412,28 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
-        // Without any ticket right, the profile criteria don't restrict anything
-        if (!Ticket::canView()) {
-            return [
-                'data'  => [
-                    'labels' => [],
-                    'series' => [],
-                    'nodata' => true,
-                ],
-                'label' => $params['label'],
-                'icon'  => $params['icon'],
-            ];
+        // The profile criteria don't restrict anything for a profile that only has the UPDATE right,
+        // only the READNEWTICKET right (handled with READASSIGN only), or no right at all
+        $visibility_criteria = [];
+        if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            $visibility_criteria = Ticket::getCriteriaFromProfile();
+            if (
+                Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)
+                && !Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)
+            ) {
+                $visibility_criteria['WHERE'][0]['OR'][] = [Ticket::getTable() . '.status' => Ticket::INCOMING];
+            }
+            if (!isset($visibility_criteria['WHERE'])) {
+                return [
+                    'data'  => [
+                        'labels' => [],
+                        'series' => [],
+                        'nodata' => true,
+                    ],
+                    'label' => $params['label'],
+                    'icon'  => $params['icon'],
+                ];
+            }
         }
 
         $ticket_table       = Ticket::getTable();
@@ -1477,7 +1488,7 @@ class Provider
                 'GROUPBY'   => "$group_table.id",
                 'ORDERBY'   => "$group_table.name",
             ],
-            Ticket::getCriteriaFromProfile(),
+            $visibility_criteria,
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
         $iterator = $DB->request($criteria);
