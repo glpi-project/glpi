@@ -163,6 +163,17 @@ class Widget
                 'width'      => 3,
                 'height'     => 2,
             ],
+            'sunburst' => [
+                'label'      => __("Sunburst"),
+                'function'   => 'Glpi\\Dashboard\\Widget::sunburst',
+                'image'      => $CFG_GLPI['root_doc'] . '/pics/charts/sunburst.png',
+                'haspalette' => true,
+                'gradient'   => true,
+                'limit'      => true,
+                'labels'     => true,
+                'width'      => 4,
+                'height'     => 4,
+            ],
             'bar' => [
                 'label'      => __("Bars"),
                 'function'   => 'Glpi\\Dashboard\\Widget::simpleBar',
@@ -901,6 +912,135 @@ TWIG, $twig_params);
         return self::pie(array_merge($params, [
             'half' => true,
         ]));
+    }
+
+    /**
+     * Display a widget with a sunburst chart (hierarchical data on concentric rings)
+     *
+     * @param array<string, mixed> $params contains these keys:
+     * - array  'data': the root nodes to display, each node contains:
+     *    - string 'label': title of the node
+     *    - int    'number': value of the node, including the value of its children
+     *    - string 'url': url to redirect when clicking on a leaf node, or double clicking on any node
+     *      (a click on a node with children zooms into it)
+     *    - array  'children': child nodes, with the same keys
+     * - string 'label': global title of the widget
+     * - string 'color': hex color of the widget
+     * - string 'icon': icon class to display side of the label
+     * - bool   'use_gradient': gradient or generic palette
+     * - string 'palette': name of the palette
+     * - int    'limit': the number of root nodes
+     * - bool   'labels': display node labels on the rings
+     * - array  'filters': array of filter's id to apply classes on widget html
+     *
+     * @return string html of the widget
+     */
+    public static function sunburst(array $params = []): string
+    {
+        $default = [
+            'data'         => [],
+            'label'        => '',
+            'color'        => '',
+            'icon'         => '',
+            'labels'       => false,
+            'use_gradient' => false,
+            'palette'      => '',
+            'limit'        => 99999,
+            'filters'      => [],
+            'rand'         => mt_rand(),
+        ];
+        $p = array_merge($default, $params);
+        $p['cache_key'] ??= $p['rand'];
+
+        $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
+        $nodes  = $nodata ? [] : array_slice($p['data'], 0, max(0, (int) $p['limit']));
+
+        $bg_color = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
+        $fg_color      = Toolbox::getFgColor($p['color']);
+        $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
+        $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
+
+        // Root nodes take the palette colors, ECharts makes children inherit them
+        $nb_roots = count($nodes);
+        $colors   = self::getPalette($p['palette'], $nb_roots);
+        if ($p['use_gradient']) {
+            $colors = self::getGradientPalette($p['color'], $nb_roots, false)['colors'];
+        }
+
+        $options = [
+            'animationDuration' => self::$animation_duration,
+            'tooltip'           => [
+                'trigger'      => 'item',
+                'appendToBody' => true,
+            ],
+            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
+            'series'  => [
+                [
+                    'type'      => 'sunburst',
+                    'data'      => self::getSunburstNodes($nodes),
+                    'color'     => $colors,
+                    'radius'    => ['15%', '90%'],
+                    'nodeClick' => 'rootToNode',
+                    'sort'      => null,
+                    'emphasis'  => [
+                        'focus' => 'ancestor',
+                    ],
+                    'itemStyle' => [
+                        'borderColor' => 'rgba(255, 255, 255, 0.5)',
+                        'borderWidth' => 1,
+                    ],
+                    'label'     => [
+                        'show'     => (bool) $p['labels'],
+                        'rotate'   => 'radial',
+                        'color'    => $fg_color,
+                        'minAngle' => 10,
+                    ],
+                ],
+            ],
+        ];
+
+        return TemplateRenderer::getInstance()->render('components/dashboard/widget_sunburst.html.twig', [
+            'chart_id'      => Toolbox::slugify("chart-{$p['cache_key']}"),
+            'class'         => count($p['filters']) > 0 ? 'filter-' . implode(' filter-', $p['filters']) : '',
+            'label'         => $p['label'],
+            'icon'          => $p['icon'],
+            'bg_color'      => $bg_color,
+            'fg_color'      => $fg_color,
+            'dark_bg_color' => $dark_bg_color,
+            'dark_fg_color' => $dark_fg_color,
+            'nodata'        => $nodata || $nb_roots === 0,
+            'options'       => $options,
+        ]);
+    }
+
+    /**
+     * Convert widget nodes (label/number/url/children) into ECharts sunburst nodes
+     *
+     * @param array<int, array<string, mixed>> $nodes
+     * @return array<int, array<string, mixed>>
+     */
+    private static function getSunburstNodes(array $nodes): array
+    {
+        $echarts_nodes = [];
+        foreach ($nodes as $node) {
+            $echarts_node = [
+                'name'  => (string) ($node['label'] ?? ''),
+                'value' => (float) ($node['number'] ?? 0),
+                'url'   => (string) ($node['url'] ?? ''),
+            ];
+            if (!empty($node['children']) && is_array($node['children'])) {
+                $echarts_node['children'] = self::getSunburstNodes($node['children']);
+            }
+            $echarts_nodes[] = $echarts_node;
+        }
+
+        return $echarts_nodes;
     }
 
 

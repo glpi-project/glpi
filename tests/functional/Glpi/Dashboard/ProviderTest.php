@@ -38,6 +38,7 @@ use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
 use Glpi\Dashboard\FakeProvider;
 use Glpi\Dashboard\Filters\DatesFilter;
+use Glpi\Dashboard\Filters\ItilCategoryFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
@@ -1205,6 +1206,108 @@ class ProviderTest extends DbTestCase
         $this->assertSame(1, $result['data']['series'][1]['data'][$group1_index], 'group1: 1 closed ticket expected');
         $this->assertSame(1, $result['data']['series'][0]['data'][$group2_index], 'group2: 1 opened ticket expected');
         $this->assertSame(2, $result['data']['series'][1]['data'][$group2_index], 'group2: 2 closed tickets expected');
+    }
+
+    public function testTicketsByCategoryTree(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $root_a = $this->createItem(\ITILCategory::class, [
+            'name' => 'test dashboard category tree A',
+        ]);
+        $child_a1 = $this->createItem(\ITILCategory::class, [
+            'name'              => 'A1',
+            'itilcategories_id' => $root_a->getID(),
+        ]);
+        $child_a2 = $this->createItem(\ITILCategory::class, [
+            'name'              => 'A2',
+            'itilcategories_id' => $root_a->getID(),
+        ]);
+        $grandchild_a2a = $this->createItem(\ITILCategory::class, [
+            'name'              => 'A2a',
+            'itilcategories_id' => $child_a2->getID(),
+        ]);
+        $root_b = $this->createItem(\ITILCategory::class, [
+            'name' => 'test dashboard category tree B',
+        ]);
+
+        foreach (
+            [
+                [$root_a, 1],
+                [$child_a1, 2],
+                [$grandchild_a2a, 3],
+                [$root_b, 1],
+            ] as [$category, $count]
+        ) {
+            for ($i = 0; $i < $count; $i++) {
+                $this->createItem(\Ticket::class, [
+                    'name'              => 'test dashboard category tree ticket ' . $category->fields['name'] . " $i",
+                    'content'           => 'blablabla',
+                    'entities_id'       => $entity_id,
+                    'itilcategories_id' => $category->getID(),
+                ]);
+            }
+        }
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard category tree ticket without category',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => 0,
+        ]);
+
+        $result = Provider::ticketsByCategoryTree();
+        $this->assertArrayHasKey('data', $result);
+        $roots = array_column($result['data'], null, 'label');
+
+        // Parents count their own tickets plus the ones of their sub-categories
+        $node_a = $roots[$root_a->fields['name']] ?? null;
+        $this->assertNotNull($node_a, 'root category A must be a root node');
+        $this->assertSame(6, $node_a['number']);
+        $this->assertSame(['A1', 'A2'], array_column($node_a['children'], 'label'));
+        $node_a2 = $node_a['children'][1];
+        $this->assertSame(3, $node_a2['number'], 'A2 has no own ticket but its sub-category has 3');
+        $this->assertSame(['A2a'], array_column($node_a2['children'], 'label'));
+        $this->assertSame(3, $node_a2['children'][0]['number']);
+        $this->assertArrayNotHasKey('children', $node_a['children'][0]);
+
+        $this->assertSame(1, $roots[$root_b->fields['name']]['number'] ?? null);
+        $this->assertGreaterThanOrEqual(1, $roots[__('None')]['number'] ?? 0);
+        $this->assertSame(__('None'), array_key_last($roots), '"None" must be the last root node');
+
+        // Each node links to its tickets, sub-categories included
+        $this->assertStringContainsString('under', urldecode($node_a['url']));
+        $this->assertStringContainsString('value]=' . $root_a->getID(), urldecode($node_a['url']));
+
+        // The category filter keeps the ancestors of the selected category
+        $filtered = Provider::ticketsByCategoryTree([
+            'apply_filters' => [ItilCategoryFilter::getId() => $child_a2->getID()],
+        ]);
+        $this->assertSame([$root_a->fields['name']], array_column($filtered['data'], 'label'));
+        $this->assertSame(3, $filtered['data'][0]['number']);
+        $this->assertSame(['A2'], array_column($filtered['data'][0]['children'], 'label'));
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertSame(['nodata' => true], Provider::ticketsByCategoryTree()['data']);
+    }
+
+    public function testFakeTicketsByCategoryTree(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByCategoryTree');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByCategoryTree(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertNotEmpty($result['data']);
+        foreach ($result['data'] as $node) {
+            $this->assertArrayHasKey('url', $node);
+            if (isset($node['children'])) {
+                $this->assertSame($node['number'], array_sum(array_column($node['children'], 'number')));
+            }
+        }
     }
 
     public function testTicketsByRequesterLocation(): void
