@@ -1050,10 +1050,21 @@ EOT;
         foreach ($schema['components']['schemas'] as $name => &$component_schema) {
             unset($component_schema['description']);
             foreach (array_keys($component_schema['properties'] ?? []) as $property_name) {
-                unset($component_schema['properties'][$property_name]['description']);
+                $property_schema = &$component_schema['properties'][$property_name];
+
+                unset($property_schema['description']);
+
+                // Enums should be simple lists
+                if (isset($property_schema['enum']) && is_array($property_schema['enum'])) {
+                    $property_schema['enum'] = array_values($property_schema['enum']);
+                }
+                if (isset($property_schema['items']['enum']) && is_array($property_schema['items']['enum'])) {
+                    $property_schema['items']['enum'] = array_values($property_schema['items']['enum']);
+                }
             }
             $schema_components[$name] = $component_schema;
         }
+        unset($component_schema);
 
         return $schema_components;
     }

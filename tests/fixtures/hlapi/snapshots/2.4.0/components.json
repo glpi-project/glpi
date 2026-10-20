@@ -5578,28 +5578,28 @@
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "enum": {
-                            "0": "bigNumber",
-                            "57": "summaryNumbers",
-                            "58": "multipleNumber",
-                            "59": "pie",
-                            "60": "donut",
-                            "61": "halfpie",
-                            "62": "halfdonut",
-                            "63": "bar",
-                            "64": "hbar",
-                            "701": "searchShowList",
-                            "718": "line",
-                            "719": "area",
-                            "721": "lines",
-                            "722": "areas",
-                            "723": "bars",
-                            "724": "stackedbars",
-                            "737": "hBars",
-                            "738": "stackedHBars",
-                            "821": "articleList",
-                            "822": "markdown"
-                        }
+                        "enum": [
+                            "bigNumber",
+                            "summaryNumbers",
+                            "multipleNumber",
+                            "pie",
+                            "donut",
+                            "halfpie",
+                            "halfdonut",
+                            "bar",
+                            "hbar",
+                            "searchShowList",
+                            "line",
+                            "area",
+                            "lines",
+                            "areas",
+                            "bars",
+                            "stackedbars",
+                            "hBars",
+                            "stackedHBars",
+                            "articleList",
+                            "markdown"
+                        ]
                     }
                 },
                 "group": {
