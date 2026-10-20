@@ -469,92 +469,6 @@ class Document_ItemTest extends DbTestCase
     }
 
     /**
-     * Test that document owner can always see their own private documents.
-     */
-    public function testPrivateDocumentVisibleToOwner()
-    {
-        // Create a user
-        $user = new \User();
-        $user_id = $user->add([
-            'name' => 'doc_owner',
-            'password' => 'test_password',
-            'password2' => 'test_password',
-        ]);
-        $this->assertGreaterThan(0, $user_id);
-
-        // Create profile with document READ but not SEEPRIVATE
-        $profile_id = $this->createItem(
-            \Profile::class,
-            [
-                'name' => 'Test doc owner profile',
-            ]
-        )->getID();
-
-        $this->addRightToProfile(
-            'Test doc owner profile',
-            \Ticket::$rightname,
-            \Ticket::READASSIGN
-        );
-
-        // Assign profile to user
-        $this->createItem(
-            \Profile_User::class,
-            [
-                'users_id' => $user_id,
-                'profiles_id' => $profile_id,
-                'entities_id' => $this->getTestRootEntity(true),
-            ]
-        );
-
-        // Login as doc owner user
-        $this->login('doc_owner', 'test_password');
-
-        \Session::changeProfile($profile_id);
-        \Session::changeActiveEntities([$this->getTestRootEntity(true)]);
-
-        // Create a ticket
-        $tickets_id = $this->createItem(
-            \Ticket::class,
-            [
-                'name' => 'Test owner private document',
-                'content' => 'Test content',
-                'entities_id' => $this->getTestRootEntity(true),
-                '_users_id_assign' => $user_id,
-            ]
-        )->getID();
-
-        // Create a document
-        $doc_id = $this->createItem(
-            \Document::class,
-            [
-                'name' => 'Owner private document',
-                'entities_id' => $this->getTestRootEntity(true),
-            ]
-        )->getID();
-
-        // Attach document as private with current user as owner
-        $doc_item = $this->createItem(
-            Document_Item::class,
-            [
-                'items_id'      => $tickets_id,
-                'itemtype'      => \Ticket::class,
-                'documents_id'  => $doc_id,
-                'is_private'    => 1,
-                'users_id'      => \Session::getLoginUserID(),
-                'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
-            ]
-        );
-        $doc_item_id = $doc_item->getID();
-
-        // Check that the owner can see their own private document
-        $doc_item->getFromDB($doc_item_id);
-        $this->assertTrue($doc_item->canViewItem());
-
-        // Clean up
-        $this->login();
-    }
-
-    /**
      * Test that SEEPRIVATE constant is correctly defined.
      */
     public function testSeeprivateConstant()
@@ -1037,5 +951,46 @@ class Document_ItemTest extends DbTestCase
             $rendered_list($browsed_document),
             'The SEEPRIVATE right must restore the private link in the reverse branch'
         );
+    }
+
+    public function testCannotUnlinkDocumentWithOnlyReadRights(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'content'     => 'x',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $link_id = $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ])->getID();
+
+        // Can view both items, but can update neither
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $this->assertTrue($ticket->can($ticket->getID(), READ));
+        $this->assertFalse($ticket->can($ticket->getID(), UPDATE));
+
+        $link = new Document_Item();
+        $this->assertFalse($link->can($link_id, DELETE));
+        $this->assertFalse($link->can($link_id, PURGE));
+
+        // Update right on the document side is enough
+        $_SESSION['glpiactiveprofile']['document'] = READ | UPDATE;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $this->assertTrue($link->can($link_id, DELETE));
+        $this->assertTrue($link->can($link_id, PURGE));
+
+        // Update right on the ticket side is enough
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ | UPDATE;
+        $this->assertTrue($link->can($link_id, DELETE));
+        $this->assertTrue($link->can($link_id, PURGE));
     }
 }

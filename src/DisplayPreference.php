@@ -182,6 +182,13 @@ class DisplayPreference extends CommonDBTM
         switch ($ma->getAction()) {
             case 'delete_for_user':
                 $input = $ma->getInput();
+
+                if (!Session::haveRight(static::$rightname, DisplayPreference::PERSONAL)) {
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    return;
+                }
+
                 if (isset($input['users_id'])) {
                     $user = new User();
                     $user->getFromDB($input['users_id']);

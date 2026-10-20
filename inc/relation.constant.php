@@ -313,20 +313,12 @@ $RELATION = [
         'glpi_racks' => 'dcrooms_id',
     ],
 
-    'glpi_devicebatteries' => [
-        'glpi_items_devicebatteries' => 'devicebatteries_id',
-    ],
-
     'glpi_devicebatterymodels' => [
         'glpi_devicebatteries' => 'devicebatterymodels_id',
     ],
 
     'glpi_devicecameramodels' => [
         'glpi_devicecameras' => 'devicecameramodels_id',
-    ],
-
-    'glpi_devicecameras' => [
-        'glpi_items_devicecameras' => 'devicecameras_id',
     ],
 
     'glpi_devicebatterytypes' => [
@@ -337,10 +329,6 @@ $RELATION = [
         'glpi_devicecases' => 'devicecasemodels_id',
     ],
 
-    'glpi_devicecases' => [
-        'glpi_items_devicecases' => 'devicecases_id',
-    ],
-
     'glpi_devicecasetypes' => [
         'glpi_devicecases' => 'devicecasetypes_id',
     ],
@@ -349,24 +337,12 @@ $RELATION = [
         'glpi_devicecontrols' => 'devicecontrolmodels_id',
     ],
 
-    'glpi_devicecontrols' => [
-        'glpi_items_devicecontrols' => 'devicecontrols_id',
-    ],
-
     'glpi_devicedrivemodels' => [
         'glpi_devicedrives' => 'devicedrivemodels_id',
     ],
 
-    'glpi_devicedrives' => [
-        'glpi_items_devicedrives' => 'devicedrives_id',
-    ],
-
     'glpi_devicefirmwaremodels' => [
         'glpi_devicefirmwares' => 'devicefirmwaremodels_id',
-    ],
-
-    'glpi_devicefirmwares' => [
-        'glpi_items_devicefirmwares' => 'devicefirmwares_id',
     ],
 
     'glpi_devicefirmwaretypes' => [
@@ -377,10 +353,6 @@ $RELATION = [
         'glpi_devicegenerics' => 'devicegenericmodels_id',
     ],
 
-    'glpi_devicegenerics' => [
-        'glpi_items_devicegenerics' => 'devicegenerics_id',
-    ],
-
     'glpi_devicegenerictypes' => [
         'glpi_devicegenerics' => 'devicegenerictypes_id',
     ],
@@ -389,24 +361,12 @@ $RELATION = [
         'glpi_devicegraphiccards' => 'devicegraphiccardmodels_id',
     ],
 
-    'glpi_devicegraphiccards' => [
-        'glpi_items_devicegraphiccards' => 'devicegraphiccards_id',
-    ],
-
     'glpi_deviceharddrivemodels' => [
         'glpi_deviceharddrives' => 'deviceharddrivemodels_id',
     ],
 
     'glpi_deviceharddrivetypes' => [
         'glpi_deviceharddrives' => 'deviceharddrivetypes_id',
-    ],
-
-    'glpi_deviceharddrives' => [
-        'glpi_items_deviceharddrives' => 'deviceharddrives_id',
-    ],
-
-    'glpi_devicememories' => [
-        'glpi_items_devicememories' => 'devicememories_id',
     ],
 
     'glpi_devicememorymodels' => [
@@ -421,29 +381,13 @@ $RELATION = [
         'glpi_devicemotherboards' => 'devicemotherboardmodels_id',
     ],
 
-    'glpi_devicemotherboards' => [
-        'glpi_items_devicemotherboards' => 'devicemotherboards_id',
-    ],
-
     'glpi_devicenetworkcardmodels' => [
         'glpi_devicenetworkcards' => 'devicenetworkcardmodels_id',
         'glpi_devicepcis'         => 'devicenetworkcardmodels_id', // FIXME This field should probably removed
     ],
 
-    'glpi_devicenetworkcards' => [
-        'glpi_items_devicenetworkcards' => 'devicenetworkcards_id',
-    ],
-
     'glpi_devicepcimodels' => [
         'glpi_devicepcis' => 'devicepcimodels_id',
-    ],
-
-    'glpi_devicepcis' => [
-        'glpi_items_devicepcis' => 'devicepcis_id',
-    ],
-
-    'glpi_devicepowersupplies' => [
-        'glpi_items_devicepowersupplies' => 'devicepowersupplies_id',
     ],
 
     'glpi_devicepowersupplymodels' => [
@@ -454,24 +398,12 @@ $RELATION = [
         'glpi_deviceprocessors' => 'deviceprocessormodels_id',
     ],
 
-    'glpi_deviceprocessors' => [
-        'glpi_items_deviceprocessors' => 'deviceprocessors_id',
-    ],
-
     'glpi_devicesensormodels' => [
         'glpi_devicesensors' => 'devicesensormodels_id',
     ],
 
-    'glpi_devicesensors' => [
-        'glpi_items_devicesensors' => 'devicesensors_id',
-    ],
-
     'glpi_devicesensortypes' => [
         'glpi_devicesensors' => 'devicesensortypes_id',
-    ],
-
-    'glpi_devicesimcards' => [
-        'glpi_items_devicesimcards' => 'devicesimcards_id',
     ],
 
     'glpi_devicesimcardtypes' => [
@@ -480,10 +412,6 @@ $RELATION = [
 
     'glpi_devicesoundcardmodels' => [
         'glpi_devicesoundcards' => 'devicesoundcardmodels_id',
-    ],
-
-    'glpi_devicesoundcards' => [
-        'glpi_items_devicesoundcards' => 'devicesoundcards_id',
     ],
 
     'glpi_documentcategories' => [
@@ -1889,4 +1817,20 @@ foreach ($assignable_itemtypes as $assignable_itemtype) {
     $source_table_key = $assignable_itemtype::getTable();
 
     $add_mapping_entry($source_table_key, '_glpi_groups_items', ['itemtype', 'items_id']);
+}
+
+// `Item_Device*` relations automatically handled by `Device::cleanDBOnPurge()`
+foreach ($CFG_GLPI['device_types'] as $device_itemtype) {
+    if (!is_a($device_itemtype, CommonDevice::class, true)) {
+        continue; // unexpected declaration
+    }
+
+    $item_device_itemtype = $device_itemtype::getItem_DeviceType();
+    if (is_a($item_device_itemtype, CommonDBTM::class, true)) {
+        $add_mapping_entry(
+            $device_itemtype::getTable(),
+            '_' . $item_device_itemtype::getTable(),
+            $device_itemtype::getForeignKeyField()
+        );
+    }
 }

@@ -49,7 +49,9 @@
                     <input type="text" placeholder="{{ _x('button', 'Search') }}" class="ms-auto" id="search-itemtype" />
                 </div>
                 {{ inputs.hidden('users_id', users_id, {
-                    'data-glpicore-ma-tags': 'common'
+                    'additional_attributes': {
+                        'data-glpicore-ma-tags': 'common'
+                    }
                 }) }}
                 <div class="display-prefs-list row g-2 mt-1">
                     {% for pref in preferences %}
