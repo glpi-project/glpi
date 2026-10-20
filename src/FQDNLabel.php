@@ -49,6 +49,8 @@ abstract class FQDNLabel extends CommonDBChild
     // Inherits from CommonDBChild as it must be attached to a specific element
     // (NetworkName, NetworkPort, ...)
 
+    public const FQDN_LABEL_PATTERN = "/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/";
+
     /**
      * @return string
      */
@@ -103,11 +105,10 @@ abstract class FQDNLabel extends CommonDBChild
                     return false;
                 }
             } else {
-                $fqdn_regex = "/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/";
-                if (!preg_match($fqdn_regex, $label, $regs)) {
+                if (!preg_match(self::FQDN_LABEL_PATTERN, $label, $regs)) {
                     //check also Internationalized domain name
                     $idn = idn_to_ascii($label);
-                    if (!preg_match($fqdn_regex, $idn, $regs)) {
+                    if (!preg_match(self::FQDN_LABEL_PATTERN, $idn, $regs)) {
                         return false;
                     }
                 }
@@ -126,7 +127,7 @@ abstract class FQDNLabel extends CommonDBChild
      **/
     public function prepareLabelInput($input)
     {
-        if (isset($input['name']) && !empty($input['name'])) {
+        if (!empty($input['name'])) {
             // Empty names are allowed
 
             $input['name'] = strtolower($input['name']);
@@ -153,7 +154,7 @@ abstract class FQDNLabel extends CommonDBChild
     {
 
         //getIPNetwork from IPV4 if not set
-        if (!isset($input['ipnetworks_id']) || (isset($input['ipnetworks_id']) && $input['ipnetworks_id'] == 0)) {
+        if (!isset($input['ipnetworks_id']) || (int) $input['ipnetworks_id'] === 0) {
             if (isset($input['_ipaddresses'])) {
                 foreach ($input['_ipaddresses'] as $value) {
                     //if its an ipv4, find it's IPNetwork
