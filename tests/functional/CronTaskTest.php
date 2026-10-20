@@ -532,11 +532,13 @@ class CronTaskTest extends DbTestCase
 
         $tasks = [
             // Running for 2 hours with a 1 minute frequency, considered as dead
-            'dead'   => ['frequency' => MINUTE_TIMESTAMP, 'minutes' => 120, 'state' => CronTask::STATE_WAITING],
+            'dead'    => ['frequency' => MINUTE_TIMESTAMP, 'minutes' => 120, 'errors' => 0, 'state' => CronTask::STATE_WAITING, 'expected_errors' => 1],
+            // Dead again after previous errors, stopped in error state
+            'failing' => ['frequency' => MINUTE_TIMESTAMP, 'minutes' => 120, 'errors' => CronTask::MAX_ERROR_COUNT - 1, 'state' => CronTask::STATE_ERROR, 'expected_errors' => CronTask::MAX_ERROR_COUNT],
             // Running for 30 minutes, may still be running
-            'recent' => ['frequency' => MINUTE_TIMESTAMP, 'minutes' => 30, 'state' => CronTask::STATE_RUNNING],
+            'recent'  => ['frequency' => MINUTE_TIMESTAMP, 'minutes' => 30, 'errors' => 0, 'state' => CronTask::STATE_RUNNING, 'expected_errors' => 0],
             // Running for 2 hours with a 1 day frequency, may still be running
-            'daily'  => ['frequency' => DAY_TIMESTAMP, 'minutes' => 120, 'state' => CronTask::STATE_RUNNING],
+            'daily'   => ['frequency' => DAY_TIMESTAMP, 'minutes' => 120, 'errors' => 0, 'state' => CronTask::STATE_RUNNING, 'expected_errors' => 0],
         ];
         $ids = [];
         foreach ($tasks as $name => $values) {
@@ -546,8 +548,9 @@ class CronTaskTest extends DbTestCase
                 'frequency' => $values['frequency'],
             ]);
             $DB->update(CronTask::getTable(), [
-                'state'   => CronTask::STATE_RUNNING,
-                'lastrun' => QueryFunction::dateSub(QueryFunction::now(), $values['minutes'], 'MINUTE'),
+                'state'       => CronTask::STATE_RUNNING,
+                'error_count' => $values['errors'],
+                'lastrun'     => QueryFunction::dateSub(QueryFunction::now(), $values['minutes'], 'MINUTE'),
             ], ['id' => $crontask->getID()]);
             $ids[$name] = $crontask->getID();
         }
@@ -558,6 +561,7 @@ class CronTaskTest extends DbTestCase
             $crontask = new CronTask();
             $this->assertTrue($crontask->getFromDB($ids[$name]));
             $this->assertSame($values['state'], $crontask->fields['state'], $name);
+            $this->assertSame($values['expected_errors'], $crontask->fields['error_count'], $name);
         }
     }
 }
