@@ -1429,6 +1429,14 @@
                 "value": {
                     "type": "number"
                 },
+                "total_spent": {
+                    "type": "number",
+                    "readOnly": true
+                },
+                "amount_remaining": {
+                    "type": "number",
+                    "readOnly": true
+                },
                 "date_begin": {
                     "type": "string",
                     "format": "date"

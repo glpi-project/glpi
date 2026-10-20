@@ -122,6 +122,11 @@ final class OpenAPIGenerator
         foreach ($schema as $key => &$value) {
             // If the key is a vendor extension
             // If the key is not a public vendor extension
+            if ($key === 'computation' && $parent_key !== 'properties') {
+                // Server-side SQL computation for a property. Not part of the public schema.
+                unset($schema[$key]);
+                continue;
+            }
             if (str_starts_with($key, 'x-') && !in_array($key, $to_keep, true)) {
                 // Remove the key from the schema
                 unset($schema[$key]);

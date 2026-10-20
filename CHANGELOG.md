@@ -91,6 +91,7 @@ The present file will list all changes made to the project; according to the
   File uploads also work with the existing update (PATCH) endpoints.
 - New schema properties to enable the selective removal of files/pictures for fields that accept multiple files/pictures in the High-Level API v2.4.
 - Support for converting inline images in rich text fields to attachments in the High-Level API v2.4.
+- `total_spent` and `amount_remaining` properties added for `Budget` schema in High-Level API v2.4.
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
