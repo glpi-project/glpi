@@ -1198,6 +1198,19 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
+        $visibility_criteria = self::getVisibleTicketsCriteria();
+        if ($visibility_criteria === null) {
+            return [
+                'data'  => [
+                    'labels' => [],
+                    'series' => [],
+                    'nodata' => true,
+                ],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
         $ticket_table   = Ticket::getTable();
         $entity_table   = \Entity::getTable();
         $category_table = \ITILCategory::getTable();
@@ -1233,7 +1246,7 @@ class Provider
                 'GROUPBY'   => ["$entity_table.id", "$category_table.id"],
                 'ORDERBY'   => ["$entity_table.completename", "$category_table.completename"],
             ],
-            Ticket::getCriteriaFromProfile(),
+            $visibility_criteria,
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
         $iterator = $DB->request($criteria);
@@ -1294,6 +1307,19 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
+        $visibility_criteria = self::getVisibleTicketsCriteria();
+        if ($visibility_criteria === null) {
+            return [
+                'data'  => [
+                    'labels' => [],
+                    'series' => [],
+                    'nodata' => true,
+                ],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
         // Status is fixed by $case, a dashboard status filter would be merged into the IN() list
         unset($params['apply_filters'][TicketStatusFilter::getId()]);
 
@@ -1329,7 +1355,7 @@ class Provider
                 'GROUPBY'   => ["$category_table.id", "$ticket_table.type"],
                 'ORDERBY'   => "$category_table.completename",
             ],
-            Ticket::getCriteriaFromProfile(),
+            $visibility_criteria,
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
         $iterator = $DB->request($criteria);
@@ -2204,6 +2230,182 @@ class Provider
 
         return [
             'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Get the criteria restricting tickets to the ones the current user can see.
+     *
+     * Ticket::getCriteriaFromProfile() returns no restriction for a profile that only has
+     * the UPDATE right, only the READNEWTICKET right (handled with READASSIGN only), or no right at all.
+     *
+     * @return array<string, mixed>|null criteria to merge into the query, null if no ticket is visible
+     */
+    private static function getVisibleTicketsCriteria(): ?array
+    {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            return [];
+        }
+
+        $criteria = Ticket::getCriteriaFromProfile();
+        if (
+            Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)
+            && !Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)
+        ) {
+            $criteria['WHERE'][0]['OR'][] = [Ticket::getTable() . '.status' => Ticket::INCOMING];
+        }
+
+        return isset($criteria['WHERE']) ? $criteria : null;
+    }
+
+    /**
+     * Count tickets grouped by their assigned group, with one serie per status.
+     * A ticket assigned to several groups is counted in each of them,
+     * tickets without any assigned group are counted in a "None" row.
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByAssignedGroupAndStatuses(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $no_data = [
+            'data'  => [
+                'labels' => [],
+                'series' => [],
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        $visibility_criteria = self::getVisibleTicketsCriteria();
+        if ($visibility_criteria === null) {
+            return $no_data;
+        }
+
+        $ticket_table       = Ticket::getTable();
+        $group_ticket_table = Group_Ticket::getTable();
+        $group_table        = Group::getTable();
+
+        // Restrict our own grouping to the groups selected by the "technician
+        // group" filter, not just which tickets are included (see
+        // extractActorFilterIds() doc for why this is needed).
+        $filtered_group_ids = self::extractActorFilterIds(
+            GroupTechFilter::class,
+            'gl_' . GroupTechFilter::getId() . '.groups_id',
+            $ticket_table,
+            $params['apply_filters']
+        );
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$group_table.id AS group_id",
+                    "$group_table.completename AS group_name",
+                    "$ticket_table.status",
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'      => $ticket_table,
+                'LEFT JOIN' => [
+                    $group_ticket_table => [
+                        'ON' => [
+                            $group_ticket_table => 'tickets_id',
+                            $ticket_table        => 'id',
+                            [
+                                'AND' => [
+                                    "$group_ticket_table.type" => Group_Ticket::ASSIGN,
+                                ],
+                            ],
+                        ],
+                    ],
+                    $group_table => [
+                        'ON' => [
+                            $group_table         => 'id',
+                            $group_ticket_table  => 'groups_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + ($filtered_group_ids !== null ? ["$group_table.id" => $filtered_group_ids] : [])
+                  + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => ["$group_table.id", "$ticket_table.status"],
+            ],
+            $visibility_criteria,
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+
+        $groups = [];
+        $counts = [];
+        foreach ($db->request($criteria) as $result) {
+            $group_id = (int) $result['group_id'];
+            $groups[$group_id] = $group_id === 0 ? __('None') : (string) $result['group_name'];
+            $counts[$group_id][(int) $result['status']] = (int) $result['cpt'];
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        if (count($groups) === 0) {
+            return $no_data;
+        }
+
+        // Groups sorted by name, then the tickets without any assigned group
+        $none_label = $groups[0] ?? null;
+        unset($groups[0]);
+        asort($groups, SORT_NATURAL | SORT_FLAG_CASE);
+        if ($none_label !== null) {
+            $groups[0] = $none_label;
+        }
+
+        $search_criteria = self::getSearchFiltersCriteria($ticket_table, $params['apply_filters'])['criteria'] ?? [];
+        $url             = Ticket::getSearchURL();
+        $build_url       = (static fn(int $status, int $group_id): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+            'criteria' => array_merge([
+                [
+                    'link'       => 'AND',
+                    'field'      => 12, // status
+                    'searchtype' => 'equals',
+                    'value'      => $status,
+                ], [
+                    // The "empty" search type is ignored on actor fields, tickets without any assigned group
+                    // are the ones not matching a group name that starts with anything
+                    'link'       => 'AND',
+                    'field'      => 8, // technician group
+                    'searchtype' => $group_id === 0 ? 'notcontains' : 'equals',
+                    'value'      => $group_id === 0 ? '^' : $group_id,
+                ],
+            ], $search_criteria),
+            'reset'    => 'reset',
+        ]));
+
+        // One serie per status, in a fixed order, so colors stay consistent
+        $series = [];
+        foreach (Ticket::getAllStatusArray() as $status => $status_name) {
+            $serie = ['name' => $status_name, 'data' => []];
+            foreach (array_keys($groups) as $group_id) {
+                $serie['data'][] = [
+                    'value' => $counts[$group_id][$status] ?? 0,
+                    'url'   => $build_url($status, $group_id),
+                ];
+            }
+            $series[] = $serie;
+        }
+
+        return [
+            'data'  => [
+                'labels' => array_values($groups),
+                'series' => $series,
+            ],
             'label' => $params['label'],
             'icon'  => $params['icon'],
         ];

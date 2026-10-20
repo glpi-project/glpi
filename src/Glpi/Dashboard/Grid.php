@@ -1710,6 +1710,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_ticket_by_assigned_group_and_statuses"] = [
+                'widgettype' => ['stackedHBars', 'hBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by assigned group and status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByAssignedGroupAndStatuses",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["report_computers_by_os"] = [
                 'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Computer",
