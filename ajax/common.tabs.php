@@ -87,7 +87,9 @@ if ($item = getItemForItemtype($_GET['_itemtype'])) {
             // method, but it is not always true, including in plugins, and we cannot refactor this in a bugfixes version.
             // Therefore, the current call prevent introducing `Undefined array key` warning when accessing `$this->fields`.
             // FIXME: Try to move `initForm()` call outside the `showForm()` method in a future GLPI version.
-            $item->initObjectOnCreation($_GET);
+            if ($item instanceof CommonDBTM) {
+                $item->initObjectOnCreation($_GET);
+            }
         } elseif (!$item->can($_GET["id"], READ)) {
             return;
         }
