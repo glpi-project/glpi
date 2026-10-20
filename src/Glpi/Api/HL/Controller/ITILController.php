@@ -58,6 +58,7 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
@@ -552,6 +553,8 @@ final class ITILController extends AbstractController
                     'properties' => $schemas['TeamMember']['properties'],
                     'x-full-schema' => 'TeamMember',
                 ],
+                // The whole team is replaced by the given team members. Only available since v2.4. See getKnownWritableSchema().
+                'x-input-mapper' => static fn(mixed $v, CommonDBTM $item) => self::getActorsInputFromTeam($v, $item),
             ];
 
             $cost_type = match ($itil_type) {
@@ -1612,7 +1615,7 @@ EOT,
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownWritableSchema($itemtype, $request), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'])]
@@ -1624,7 +1627,23 @@ EOT,
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownWritableSchema($itemtype, $request), $request->getAttributes(), $request->getParameters());
+    }
+
+    /**
+     * Get the schema of a Ticket, Change or Problem to use when creating or updating an item.
+     * @param string $itemtype
+     * @param Request $request
+     * @return array<string, mixed>
+     */
+    private function getKnownWritableSchema(string $itemtype, Request $request): array
+    {
+        $schema = $this->getKnownSchema($itemtype, $this->getAPIVersion($request));
+        // TODO Remove once the API version is passed to getRawKnownSchemas so the input mapper can be added only for v2.4+
+        if (version_compare(Router::normalizeAPIVersion($this->getAPIVersion($request)), '2.4.0', '<')) {
+            unset($schema['properties']['team']['x-input-mapper']);
+        }
+        return $schema;
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'])]
@@ -2153,6 +2172,144 @@ EOT,
     }
 
     /**
+     * Convert team members from the API format to the "_actors" input format used when adding/updating an ITIL object.
+     *
+     * The given team replaces the whole team. Any existing member that is not in the given team is removed.
+     * Existing anonymous actors (identified only by an email address) cannot be represented by the API so they are kept.
+     * @param mixed $team The requested team members
+     * @param CommonDBTM $item The item being created or updated
+     * @return array{_actors: array<string, array{itemtype: string, items_id: int, use_notification?: int|bool, alternative_email?: string}[]>}
+     * @throws InvalidArgumentException If the team is not valid or if the user is not allowed to change the assigned members
+     */
+    private static function getActorsInputFromTeam(mixed $team, CommonDBTM $item): array
+    {
+        if (!$item instanceof CommonITILObject) {
+            throw new InvalidArgumentException('Team members can only be set on Tickets, Changes and Problems');
+        }
+        if (!is_array($team) || !array_is_list($team)) {
+            throw new InvalidArgumentException('The team must be an array of team members');
+        }
+
+        $actor_types = [
+            Team::ROLE_REQUESTER => 'requester',
+            Team::ROLE_OBSERVER => 'observer',
+            Team::ROLE_ASSIGNED => 'assign',
+        ];
+        $actors = array_fill_keys(array_values($actor_types), []);
+
+        // Members already on the item are not validated again so the current team can always be sent back as-is.
+        $existing_members = [];
+        if (!$item->isNewItem()) {
+            $item->loadActors();
+            foreach (array_keys($actor_types) as $role) {
+                foreach ($item->getActorsForType($role) as $existing_actor) {
+                    $existing_members[$role][] = $existing_actor['itemtype'] . '_' . $existing_actor['items_id'];
+                }
+            }
+        }
+
+        foreach ($team as $i => $member) {
+            if (!is_array($member) || !isset($member['type'], $member['id'], $member['role'])) {
+                throw new InvalidArgumentException("Team member $i must have a type, id and role");
+            }
+            if (!is_string($member['type']) || !in_array($member['type'], $item::getTeamItemtypes(), true)) {
+                throw new InvalidArgumentException("Team member $i has an invalid type");
+            }
+            if (!is_int($member['id']) && !(is_string($member['id']) && ctype_digit($member['id']))) {
+                throw new InvalidArgumentException("Team member $i has an invalid id");
+            }
+            if (!is_string($member['role']) && !is_int($member['role'])) {
+                throw new InvalidArgumentException("Team member $i has an invalid role");
+            }
+            $role = self::getRoleID($member['role']);
+            /** @var class-string<CommonDBTM> $member_itemtype */
+            $member_itemtype = $member['type'];
+            $member_items_id = (int) $member['id'];
+            if ($member_itemtype::getById($member_items_id) === false) {
+                throw new InvalidArgumentException("Team member $i does not exist: {$member_itemtype} {$member_items_id}");
+            }
+            // The core silently ignores new users that are not valid for the entity of the item. Since the team replaces
+            // the existing one, this would remove members without adding the requested ones, so reject it instead.
+            // The entity of a new item is not known yet, so this is only checked when updating.
+            if (
+                $member_itemtype === User::class
+                && !$item->isNewItem()
+                && !in_array($member_itemtype . '_' . $member_items_id, $existing_members[$role] ?? [], true)
+                && !User::isValidUserForEntity($member_items_id, (int) $item->fields['entities_id'])
+            ) {
+                throw new InvalidArgumentException("Team member $i is not a valid user for the entity of this item");
+            }
+            $actors[$actor_types[$role]][] = [
+                'itemtype' => $member_itemtype,
+                'items_id' => $member_items_id,
+            ];
+        }
+
+        if (!$item->isNewItem()) {
+            foreach ($actor_types as $role => $actor_type) {
+                foreach ($item->getActorsForType($role) as $existing_actor) {
+                    if ((int) $existing_actor['items_id'] === 0) {
+                        $actors[$actor_type][] = [
+                            'itemtype' => $existing_actor['itemtype'],
+                            'items_id' => 0,
+                            'use_notification' => $existing_actor['use_notification'] ?? 1,
+                            'alternative_email' => $existing_actor['alternative_email'] ?? '',
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Changing the members of a role requires the same right as the team member endpoints (see canChangeTeamRole()).
+        // Sending the current members of a role again is allowed.
+        foreach ($actor_types as $role => $actor_type) {
+            $requested = array_map(
+                static fn($actor) => $actor['itemtype'] . '_' . $actor['items_id'],
+                array_filter($actors[$actor_type], static fn($actor) => $actor['items_id'] !== 0)
+            );
+            $requested = array_values(array_unique($requested));
+            $existing = array_values(array_unique(array_filter(
+                $existing_members[$role] ?? [],
+                static fn($key) => !str_ends_with($key, '_0')
+            )));
+            sort($requested);
+            sort($existing);
+            if ($requested === $existing) {
+                continue;
+            }
+            // Like the core, the update right is not checked for the actors of a new item
+            if ($role !== Team::ROLE_ASSIGNED && $item->isNewItem()) {
+                continue;
+            }
+            if (!self::canChangeTeamRole($item, $role)) {
+                throw new InvalidArgumentException(
+                    $role === Team::ROLE_ASSIGNED
+                        ? 'You are not allowed to change the assigned team members'
+                        : 'You are not allowed to change the requester or observer team members'
+                );
+            }
+        }
+
+        return ['_actors' => $actors];
+    }
+
+    /**
+     * Check if the current user can add or remove team members with the given role.
+     *
+     * This matches the rules used by the core when handling actors: assigned members require the assign right while
+     * requesters and observers only require the right to update the item.
+     * @param CommonITILObject $item The ITIL item
+     * @param int $role The numeric role of the team member
+     */
+    private static function canChangeTeamRole(CommonITILObject $item, int $role): bool
+    {
+        if ($role === Team::ROLE_ASSIGNED) {
+            return $item->canAssign();
+        }
+        return $item->canUpdateItem();
+    }
+
+    /**
      * Get the numeric role type given a textual representation or a numeric representation.
      *
      * Only valid roles are returned. If a role is given that is not valid, an exception is thrown instead of returning the
@@ -2284,13 +2441,17 @@ EOT,
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
 
-        if (!$item->can($item->getID(), READ) || !$item->canAssign()) {
+        if (!$item->can($item->getID(), READ)) {
             return self::getAccessDeniedErrorResponse();
         }
 
         $member_itemtype = $request->getParameter('type');
         $member_items_id = $request->getParameter('id');
         $role_id = self::getRoleID($request->getParameter('role'));
+
+        if (!self::canChangeTeamRole($item, $role_id)) {
+            return self::getAccessDeniedErrorResponse();
+        }
 
         $result = $item->addTeamMember($member_itemtype, $member_items_id, [
             'role'  => $role_id,
@@ -2337,13 +2498,17 @@ EOT,
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
 
-        if (!$item->can($item->getID(), READ) || !$item->canAssign()) {
+        if (!$item->can($item->getID(), READ)) {
             return self::getAccessDeniedErrorResponse();
         }
 
         $member_itemtype = $request->getParameter('type');
         $member_items_id = $request->getParameter('id');
         $role_id = self::getRoleID($request->getParameter('role'));
+
+        if (!self::canChangeTeamRole($item, $role_id)) {
+            return self::getAccessDeniedErrorResponse();
+        }
 
         $result = $item->deleteTeamMember($member_itemtype, $member_items_id, [
             'role'  => $role_id,
