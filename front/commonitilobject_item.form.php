@@ -87,11 +87,17 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } elseif (isset($_POST["delete"])) {
-    $item_obj->deleteByCriteria([
-        $obj_fkey  => $_POST[$obj_fkey],
-        'items_id' => $_POST['items_id'],
-        'itemtype' => $_POST['itemtype'],
-    ]);
+    if (
+        !$item_obj->getFromDBByCrit([
+            $obj_fkey  => $_POST[$obj_fkey],
+            'items_id' => $_POST['items_id'],
+            'itemtype' => $_POST['itemtype'],
+        ])
+    ) {
+        Html::back();
+    }
+    $item_obj->check($item_obj->getID(), PURGE);
+    $item_obj->delete(['id' => $item_obj->getID()], true);
     Html::back();
 }
 

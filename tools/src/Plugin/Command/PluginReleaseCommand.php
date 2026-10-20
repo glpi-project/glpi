@@ -264,7 +264,7 @@ final class PluginReleaseCommand extends AbstractPluginCommand
 
         $tar_cmd = [
             'tar',
-            '--format=ustar',
+            '--format=gnu',
             '--auto-compress',
             '-cf',
             $dest,

@@ -35,15 +35,21 @@
 namespace tests\units;
 
 use Change;
+use CommonITILActor;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
+use Supplier;
+use Supplier_Ticket;
 use Ticket;
+use TicketTask;
+use TicketValidation;
 use User;
 use Webhook;
 
@@ -480,6 +486,87 @@ JSON;
         );
     }
 
+    public function testWebhookFilterWithMetaCriteria(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: create one ticket assigned to a supplier and one ticket without supplier
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => 'Test supplier',
+            'entities_id' => $entity_id,
+        ]);
+        $ticket_with_supplier = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket with supplier',
+            'content'     => 'Ticket with supplier',
+            'entities_id' => $entity_id,
+        ]);
+        $this->createItem(Supplier_Ticket::class, [
+            'tickets_id'   => $ticket_with_supplier->getID(),
+            'suppliers_id' => $supplier->getID(),
+            'type'         => CommonITILActor::ASSIGN,
+        ]);
+        $ticket_without_supplier = $this->createItem(Ticket::class, [
+            'name'             => 'Ticket without supplier',
+            'content'          => 'Ticket without supplier',
+            'entities_id'      => $entity_id,
+            '_users_id_assign' => getItemByTypeName(User::class, 'tech', true),
+        ]);
+
+        // Arrange: setup a followup webhook filtered on the parent ticket supplier (meta criteria)
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype'        => Webhook::class,
+            'items_id'        => $webhook->getID(),
+            'search_itemtype' => ITILFollowup::class,
+            'search_criteria' => json_encode([
+                [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'meta'       => true,
+                    'field'      => '6', // Assigned to a supplier
+                    'searchtype' => 'equals',
+                    'value'      => $supplier->getID(),
+                ],
+            ]),
+        ], ['search_criteria']);
+
+        // Act: add a followup on the ticket without supplier
+        $base_count = $this->countQueuedRequestForWebhook($webhook);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_without_supplier->getID(),
+            'content'  => 'Followup on ticket without supplier',
+        ]);
+
+        // Assert: the webhook must not be triggered
+        $this->assertEquals(
+            $base_count,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+
+        // Act: add a followup on the ticket with supplier
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_with_supplier->getID(),
+            'content'  => 'Followup on ticket with supplier',
+        ]);
+
+        // Assert: the webhook must be triggered
+        $this->assertEquals(
+            $base_count + 1,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+    }
+
     private function countQueuedRequestForWebhook(Webhook $webhook): int
     {
         return countElementsInTable(QueuedWebhook::getTable(), [
@@ -629,6 +716,87 @@ JSON;
             static fn(string $msg) => stripos($msg, 'webhook') !== false
         );
         $this->assertEmpty($webhook_errors);
+    }
+
+    public function testParentItemResolvedForFixedParentChild(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        // TicketValidation is a CommonDBChild with a fixed parent (Ticket), so its payload carries
+        // tickets_id, not itemtype/items_id. The parent must still be resolved for the body.
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test validation webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketValidation::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for validation',
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName('User', TU_USER, true),
+        ]);
+
+        $webhooks = array_values(getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]));
+        $this->assertCount(1, $webhooks);
+        $body = json_decode($webhooks[0]['body'], true);
+        $this->assertIsArray($body);
+        $this->assertArrayHasKey('parent_item', $body);
+        $this->assertSame($ticket->getID(), $body['parent_item']['id']);
+    }
+
+    public function testParentItemResolvedWithoutParentReadRight(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test validation webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketValidation::class,
+            'event'               => 'new',
+            'is_active'           => 0,
+            'use_default_payload' => 1,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for validation',
+            'entities_id' => $entity_id,
+        ]);
+        $validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName('User', TU_USER, true),
+        ]);
+
+        // The user raising the event (an approver for instance) may not be able to read the ticket.
+        // The parent must still be resolved, and never replaced by an API error body.
+        $saved_profile = $_SESSION['glpiactiveprofile'];
+        $_SESSION['glpiactiveprofile']['ticket'] = 0;
+        try {
+            $body = $webhook->getResultForPath(
+                $webhook->getApiPath($validation),
+                'new',
+                TicketValidation::class,
+                $validation->getID(),
+                true
+            );
+        } finally {
+            $_SESSION['glpiactiveprofile'] = $saved_profile;
+        }
+
+        $data = json_decode($body, true);
+        $this->assertIsArray($data);
+        $this->assertSame($ticket->getID(), $data['parent_item']['id'] ?? null);
     }
 
     public function testParentItemResolvedProperly(): void
@@ -825,5 +993,47 @@ JSON;
 
         $this->assertNotNull($pinned_body);
         $this->assertSame($pinned_body, $unpinned_body);
+    }
+
+    public static function itilTaskWebhookEntityProvider(): iterable
+    {
+        yield 'same entity' => ['_test_root_entity', false, '_test_root_entity', 1];
+        yield 'parent entity, recursive' => ['_test_root_entity', true, '_test_child_1', 1];
+        yield 'parent entity, not recursive' => ['_test_root_entity', false, '_test_child_1', 0];
+        yield 'other entity' => ['_test_child_2', true, '_test_child_1', 0];
+        yield 'root entity, recursive' => ['Root entity', true, '_test_child_1', 1];
+    }
+
+    #[DataProvider('itilTaskWebhookEntityProvider')]
+    public function testITILTaskWebhookMatchesParentEntity(
+        string $webhook_entity,
+        bool $is_recursive,
+        string $ticket_entity,
+        int $expected_count
+    ): void {
+        $this->login();
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => getItemByTypeName('Entity', $webhook_entity, true),
+            'is_recursive'        => (int) $is_recursive,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketTask::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket',
+            'content'     => 'Test ticket content',
+            'entities_id' => getItemByTypeName('Entity', $ticket_entity, true),
+        ]);
+        $this->createItem(TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => 'Test task',
+        ]);
+
+        $this->assertEquals($expected_count, $this->countQueuedRequestForWebhook($webhook));
     }
 }

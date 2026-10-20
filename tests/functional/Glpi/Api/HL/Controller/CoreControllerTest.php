@@ -421,6 +421,33 @@ class CoreControllerTest extends HLAPITestCase
         }, false);
     }
 
+    public function testAccessTokenRecordsUserAgent(): void
+    {
+        global $DB;
+
+        $user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0';
+        $previous_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        $_SERVER['HTTP_USER_AGENT'] = $user_agent;
+        try {
+            $this->login();
+        } finally {
+            if ($previous_user_agent === null) {
+                unset($_SERVER['HTTP_USER_AGENT']);
+            } else {
+                $_SERVER['HTTP_USER_AGENT'] = $previous_user_agent;
+            }
+        }
+
+        $token = $DB->request([
+            'SELECT' => ['user_agent'],
+            'FROM' => 'glpi_oauth_access_tokens',
+            'WHERE' => ['client' => TU_OAUTH_CLIENT_ID],
+            'ORDER' => ['date_expiration DESC'],
+            'LIMIT' => 1,
+        ])->current();
+        $this->assertEquals($user_agent, $token['user_agent']);
+    }
+
     public function testStatusScope()
     {
         $this->login(api_options: ['scope' => 'api']);

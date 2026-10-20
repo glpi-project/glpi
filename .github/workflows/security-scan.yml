@@ -38,9 +38,9 @@ jobs:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
             ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
-          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          key: "app_home_deps-8.5-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
-            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-8.5-
             app_home_deps-
       - name: "Initialize containers"
         run: |

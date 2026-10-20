@@ -640,7 +640,7 @@ TWIG,
         global $CFG_GLPI;
 
         // complete title with id if exist
-        if ($add_id && isset($_GET['id']) && $_GET['id']) {
+        if ($add_id && isset($_GET['id']) && is_scalar($_GET['id']) && $_GET['id']) {
             $title = sprintf(__('%1$s - %2$s'), $title, $_GET['id']);
         }
 
@@ -1288,7 +1288,7 @@ TWIG,
         }
         $FOOTER_LOADED = true;
 
-        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
+        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && Session::getLoginUserID() !== false && !Session::isImpersonateActive()) {
             $options = [
                 'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
                 'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
@@ -5652,7 +5652,7 @@ JS);
         self::redefineAlert();
         self::redefineConfirm();
 
-        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
+        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && Session::getLoginUserID() !== false && !Session::isImpersonateActive()) {
             $options = [
                 'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
                 'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,

@@ -2871,7 +2871,8 @@ class CommonDBTM extends CommonGLPI
             && !static::isNewID($ID)
         ) {
             // Create item from template
-            // Check read right on the template
+            // Check right to create an item and read right on the template
+            $this->checkGlobal(CREATE);
             $this->check($ID, READ);
 
             // Restore saved input or template data
@@ -2882,19 +2883,48 @@ class CommonDBTM extends CommonGLPI
                 $input['entities_id'] = $_SESSION['glpiactive_entity'];
             }
 
-            // Check create right
-            $this->check(-1, CREATE, $input);
+            $input = $this->initObjectOnCreation($input);
         } elseif (static::isNewID($ID)) {
+            // Check create right
+            $this->checkGlobal(CREATE);
+
             // Restore saved input if available
             $input = $this->restoreInput($options);
-            // Create item
-            $this->check(-1, CREATE, $input);
+
+            $input = $this->initObjectOnCreation($input);
         } else {
             // Existing item
             $this->check($ID, READ);
         }
 
         return ($options['withtemplate'] ?? '');
+    }
+
+    /**
+     * Init object fields and fill default input fields.
+     *
+     * @param array<string, mixed>|null $input
+     * @return array<string, mixed>|null
+     */
+    public function initObjectOnCreation(?array $input): ?array
+    {
+        if (!isset($this->fields['id'])) {
+            // Only once
+            $this->getEmpty();
+        }
+
+        if (is_array($input)) {
+            $input = $this->addNeededInfoToInput($input);
+            // Copy input field to allow getEntityID() to work
+            // from entites_id field or from parent item ref
+            foreach ($input as $key => $val) {
+                if (isset($this->fields[$key])) {
+                    $this->fields[$key] = $val;
+                }
+            }
+        }
+
+        return $input;
     }
 
 
@@ -3017,21 +3047,10 @@ class CommonDBTM extends CommonGLPI
 
         // New item
         if (static::isNewID($ID)) {
-            if (!isset($this->fields['id'])) {
-                // Only once
-                $this->getEmpty();
-            }
+            $input = $this->initObjectOnCreation($input);
 
+            // Store to be available for others functions
             if (is_array($input)) {
-                $input = $this->addNeededInfoToInput($input);
-                // Copy input field to allow getEntityID() to work
-                // from entites_id field or from parent item ref
-                foreach ($input as $key => $val) {
-                    if (isset($this->fields[$key])) {
-                        $this->fields[$key] = $val;
-                    }
-                }
-                // Store to be available for others functions
                 $this->input = $input;
             }
 
@@ -4491,7 +4510,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function getUnallowedFieldsForUnicity()
     {
-        return ['alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id'];
+        return ['alert', 'comment', 'date_mod', 'entities_id', 'id', 'is_recursive', 'items_id'];
     }
 
 
@@ -4509,13 +4528,12 @@ class CommonDBTM extends CommonGLPI
 
         $message = [];
         foreach ($msgs as $field => $value) {
+            $searchOption = FieldUnicity::getSearchOptionForField($this, $field);
             $table = getTableNameForForeignKeyField($field);
-            if ($table != '') {
-                $searchOption = $this->getSearchOptionByField('field', 'name', $table);
-            } else {
-                $searchOption = $this->getSearchOptionByField('field', $field);
+            if ($table !== '') {
+                $value = Dropdown::getDropdownName($table, $value);
             }
-            $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'], $value);
+            $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'] ?? $field, $value);
         }
 
         if ($unicity['action_refuse']) {

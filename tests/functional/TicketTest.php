@@ -45,6 +45,7 @@ use Computer;
 use Contract;
 use CronTask;
 use Entity;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
@@ -12644,6 +12645,143 @@ HTML,
                     in_array($ticket->getID(), $found_ids, true),
                 );
             }
+        }
+    }
+
+    public function testUpdateFormRequiresAccessToTheTicket(): void
+    {
+        $this->login();
+        $entity_1 = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $entity_2 = getItemByTypeName(Entity::class, '_test_child_2', true);
+        $ticket_1 = $this->createItem(Ticket::class, ['name' => 'Ticket 1', 'content' => 'Content', 'entities_id' => $entity_1]);
+        $ticket_2 = $this->createItem(Ticket::class, ['name' => 'Ticket 2', 'content' => 'Content', 'entities_id' => $entity_2]);
+
+        // A technician that can only access the first entity
+        $this->createItem(User::class, [
+            'name'          => 'restricted_technician',
+            'password'      => 'Restricted-Pass-123!',
+            'password2'     => 'Restricted-Pass-123!',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Technician', true),
+            '_entities_id'  => $entity_1,
+            '_is_recursive' => 0,
+        ], skip_fields: ['password', 'password2']);
+        $this->login('restricted_technician', 'Restricted-Pass-123!');
+        $this->assertTrue(Ticket::canUpdate());
+        $this->assertFalse((new Ticket())->can($ticket_2->getID(), READ));
+
+        $submit = function (Ticket $ticket, string $name): ?\Throwable {
+            $_POST = ['update' => 1, 'id' => $ticket->getID(), 'name' => $name];
+            $exception = null;
+            try {
+                include GLPI_ROOT . '/front/ticket.form.php';
+            } catch (\Throwable $e) {
+                $exception = $e;
+            } finally {
+                $_POST = [];
+            }
+            return $exception;
+        };
+
+        // The ticket of the other entity cannot be updated
+        $this->assertInstanceOf(AccessDeniedHttpException::class, $submit($ticket_2, 'Updated'));
+        $this->assertTrue($ticket_2->getFromDB($ticket_2->getID()));
+        $this->assertSame('Ticket 2', $ticket_2->fields['name']);
+
+        // The ticket of the entity of the technician can be updated
+        $this->assertNotInstanceOf(AccessDeniedHttpException::class, $submit($ticket_1, 'Updated'));
+        $this->assertTrue($ticket_1->getFromDB($ticket_1->getID()));
+        $this->assertSame('Updated', $ticket_1->fields['name']);
+    }
+
+    public function testReassignDoesNotNotifyRemovedTechnician(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        $old_tech = getItemByTypeName(User::class, 'tech');
+        $new_tech = getItemByTypeName(User::class, TU_USER);
+        foreach ([$old_tech, $new_tech] as $user) {
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'is_default' => 1,
+                'email'      => $user->fields['name'] . '@reassign.test',
+            ]);
+        }
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'reassign notif',
+            'content'     => 'reassign notif',
+            'entities_id' => 0,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'User', 'items_id' => $old_tech->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ]);
+
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            '_actors' => [
+                'assign' => [
+                    ['itemtype' => 'User', 'items_id' => $new_tech->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ]);
+
+        $recipients = array_column(
+            getAllDataFromTable('glpi_queuednotifications', [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'event'    => 'assign_user',
+            ]),
+            'recipient'
+        );
+        $this->assertContains($new_tech->fields['name'] . '@reassign.test', $recipients);
+        $this->assertNotContains($old_tech->fields['name'] . '@reassign.test', $recipients);
+    }
+
+    public function testAddingSeveralTechniciansNotifiesEachOnce(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        $techs = [getItemByTypeName(User::class, 'tech'), getItemByTypeName(User::class, TU_USER)];
+        $actors = [];
+        foreach ($techs as $user) {
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'is_default' => 1,
+                'email'      => $user->fields['name'] . '@several.test',
+            ]);
+            $actors[] = ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1];
+        }
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'several techs',
+            'content'     => 'several techs',
+            'entities_id' => 0,
+        ]);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_actors' => ['assign' => $actors]]);
+
+        $recipients = array_column(
+            getAllDataFromTable('glpi_queuednotifications', [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'event'    => 'assign_user',
+            ]),
+            'recipient'
+        );
+        foreach ($techs as $user) {
+            $this->assertCount(1, array_keys($recipients, $user->fields['name'] . '@several.test'));
         }
     }
 }

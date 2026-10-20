@@ -171,10 +171,6 @@ test.describe('LDAP integration', () => {
         await purgeLdapUser(new Api(workerSessionCache));
     });
 
-    test.afterAll(async ({ workerSessionCache }) => {
-        await purgeLdapUser(new Api(workerSessionCache));
-    });
-
     test.beforeEach(async ({ api, profile }) => {
         await api.updateItem('AuthLDAP', await getLdapServerId(api), {
             'is_active': 1,
@@ -194,6 +190,10 @@ test.describe('LDAP integration', () => {
             'is_active': 0,
             'is_default': 1,
         });
+    });
+
+    test.afterAll(async ({ workerSessionCache }) => {
+        await purgeLdapUser(new Api(workerSessionCache));
     });
 
     test('Import users', async ({ page }) => {

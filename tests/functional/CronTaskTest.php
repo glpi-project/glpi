@@ -34,11 +34,14 @@
 
 namespace tests\units;
 
+use CronTask;
+use CronTaskLog;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use User;
 
 /* Test for inc/crontask.class.php */
 
@@ -75,11 +78,62 @@ class CronTaskTest extends DbTestCase
         }
 
         // launch Cron for cleaning _tmp directory
-        $mode = - \CronTask::MODE_EXTERNAL; // force
-        \CronTask::launch($mode, 5, 'temp');
+        $mode = - CronTask::MODE_EXTERNAL; // force
+        CronTask::launch($mode, 5, 'temp');
 
         $nb_file = $this->getFileCountRecursively(GLPI_TMP_DIR);
         $this->assertEquals(1, $nb_file); // only recent_file.txt should be preserved
+    }
+
+    public function testCronSessionRemovesOnlyExpiredRememberMeTokens(): void
+    {
+        global $DB;
+
+        $user = getItemByTypeName(User::class, TU_USER);
+        $token_uids = [
+            'expired_rememberme' => bin2hex(random_bytes(8)),
+            'active_rememberme' => bin2hex(random_bytes(8)),
+            'expired_other_type' => bin2hex(random_bytes(8)),
+        ];
+        $tokens = [
+            [
+                'token_uid' => $token_uids['expired_rememberme'],
+                'type' => 'rememberme',
+                'date_expiration' => date('Y-m-d H:i:s', time() - MINUTE_TIMESTAMP),
+            ],
+            [
+                'token_uid' => $token_uids['active_rememberme'],
+                'type' => 'rememberme',
+                'date_expiration' => date('Y-m-d H:i:s', time() + HOUR_TIMESTAMP),
+            ],
+            [
+                'token_uid' => $token_uids['expired_other_type'],
+                'type' => 'api',
+                'date_expiration' => date('Y-m-d H:i:s', time() - MINUTE_TIMESTAMP),
+            ],
+        ];
+
+        foreach ($tokens as $token) {
+            $this->assertNotFalse($DB->insert('glpi_usertokens', [
+                'users_id' => $user->getID(),
+                'type' => $token['type'],
+                'token_uid' => $token['token_uid'],
+                'token_hash' => 'test-token-hash',
+                'date_expiration' => $token['date_expiration'],
+            ]));
+        }
+
+        CronTask::cronSession(new CronTask());
+
+        $this->assertSame(0, countElementsInTable('glpi_usertokens', [
+            'token_uid' => $token_uids['expired_rememberme'],
+        ]));
+        $this->assertSame(1, countElementsInTable('glpi_usertokens', [
+            'token_uid' => $token_uids['active_rememberme'],
+        ]));
+        $this->assertSame(1, countElementsInTable('glpi_usertokens', [
+            'token_uid' => $token_uids['expired_other_type'],
+        ]));
     }
 
 
@@ -128,7 +182,7 @@ class CronTaskTest extends DbTestCase
     #[DataProvider('registerProvider')]
     public function testRegister(string $itemtype, string $name, bool $should_register)
     {
-        $result = \CronTask::register($itemtype, $name, 30);
+        $result = CronTask::register($itemtype, $name, 30);
         if ($should_register) {
             $this->assertNotFalse($result);
         } else {
@@ -167,25 +221,25 @@ class CronTaskTest extends DbTestCase
         global $DB;
 
         // Register task .
-        $plugin_task = \CronTask::register($itemtype, $name, 30, []);
+        $plugin_task = CronTask::register($itemtype, $name, 30, []);
         $this->assertNotFalse($plugin_task);
 
         // Check the task has been created in DB
         $iterator = $DB->request([
             'SELECT' => ['id'],
-            'FROM'   => \CronTask::getTable(),
+            'FROM'   => CronTask::getTable(),
             'WHERE'  => ['itemtype' => $itemtype, 'name' => $name],
         ]);
         $this->assertEquals(1, $iterator->count());
 
         // Try un-registering the task
-        $result = \CronTask::unregister($plugin_name);
+        $result = CronTask::unregister($plugin_name);
         $this->assertTrue($result);
 
         // Check delete actually worked
         $iterator = $DB->request([
             'SELECT' => ['id'],
-            'FROM'   => \CronTask::getTable(),
+            'FROM'   => CronTask::getTable(),
             'WHERE'  => ['itemtype' => $itemtype, 'name' => $name],
         ]);
         $this->assertEquals($should_unregister ? 0 : 1, $iterator->count());
@@ -228,17 +282,17 @@ class CronTaskTest extends DbTestCase
         global $DB;
 
         // Deactivate all registered tasks
-        $crontask = new \CronTask();
-        $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [new QueryExpression('true')]));
+        $crontask = new CronTask();
+        $this->assertTrue($DB->update(CronTask::getTable(), ['state' => CronTask::STATE_DISABLE], [new QueryExpression('true')]));
         $this->assertFalse($crontask->getNeedToRun());
 
         // Register task for active plugin.
-        $plugin_task = \CronTask::register(
+        $plugin_task = CronTask::register(
             $itemtype,
             $name,
             30,
             [
-                'state'   => \CronTask::STATE_WAITING,
+                'state'   => CronTask::STATE_WAITING,
                 'hourmin' => 0,
                 'hourmax' => 24,
             ]
@@ -255,7 +309,7 @@ class CronTaskTest extends DbTestCase
     {
         global $DB;
 
-        $iterator = $DB->request(['FROM' => \CronTask::getTable()]);
+        $iterator = $DB->request(['FROM' => CronTask::getTable()]);
 
         foreach ($iterator as $row) {
             $itemtype = $row['itemtype'];
@@ -283,45 +337,45 @@ class CronTaskTest extends DbTestCase
     {
         global $DB;
 
-        $crontask = $this->createItem(\CronTask::class, [
-            'itemtype'  => \CronTask::class,
+        $crontask = $this->createItem(CronTask::class, [
+            'itemtype'  => CronTask::class,
             'name'      => 'test_no_history',
             'frequency' => MINUTE_TIMESTAMP,
         ]);
 
         $log_count_before = countElementsInTable(\Log::getTable(), [
-            'itemtype' => \CronTask::class,
+            'itemtype' => CronTask::class,
             'items_id' => $crontask->getID(),
         ]);
 
         // Simulate what CronTask::start() and CronTask::stop() do: add CronTaskLog entries
         $this->createItem(
-            \CronTaskLog::class,
+            CronTaskLog::class,
             [
                 'crontasks_id'    => $crontask->getID(),
                 'date'            => date('Y-m-d H:i:s'),
                 'content'         => 'Starting',
                 'crontasklogs_id' => 0,
-                'state'           => \CronTaskLog::STATE_START,
+                'state'           => CronTaskLog::STATE_START,
                 'volume'          => 0,
                 'elapsed'         => 0.0,
             ]
         );
         $this->createItem(
-            \CronTaskLog::class,
+            CronTaskLog::class,
             [
                 'crontasks_id'    => $crontask->getID(),
                 'date'            => date('Y-m-d H:i:s'),
                 'content'         => 'Stopping',
                 'crontasklogs_id' => 0,
-                'state'           => \CronTaskLog::STATE_STOP,
+                'state'           => CronTaskLog::STATE_STOP,
                 'volume'          => 1,
                 'elapsed'         => 0.1,
             ]
         );
 
         $log_count_after = countElementsInTable(\Log::getTable(), [
-            'itemtype' => \CronTask::class,
+            'itemtype' => CronTask::class,
             'items_id' => $crontask->getID(),
         ]);
 
@@ -336,8 +390,8 @@ class CronTaskTest extends DbTestCase
     {
         $this->login();
 
-        $crontask = $this->createItem(\CronTask::class, [
-            'itemtype'  => \CronTask::class,
+        $crontask = $this->createItem(CronTask::class, [
+            'itemtype'  => CronTask::class,
             'name'      => 'test_null_next_run',
             'frequency' => MINUTE_TIMESTAMP,
             'hourmin'   => 0,
@@ -357,35 +411,35 @@ class CronTaskTest extends DbTestCase
     public static function manualExecutionStateProvider(): iterable
     {
         yield 'disabled task stays disabled' => [
-            'initial_state'  => \CronTask::STATE_DISABLE,
+            'initial_state'  => CronTask::STATE_DISABLE,
             'error_count'    => 0,
-            'expected_state' => \CronTask::STATE_DISABLE,
+            'expected_state' => CronTask::STATE_DISABLE,
         ];
         yield 'task in error goes back to waiting' => [
-            'initial_state'  => \CronTask::STATE_ERROR,
-            'error_count'    => \CronTask::MAX_ERROR_COUNT,
-            'expected_state' => \CronTask::STATE_WAITING,
+            'initial_state'  => CronTask::STATE_ERROR,
+            'error_count'    => CronTask::MAX_ERROR_COUNT,
+            'expected_state' => CronTask::STATE_WAITING,
         ];
         yield 'aborted task goes back to waiting' => [
-            'initial_state'  => \CronTask::STATE_ABORTED,
+            'initial_state'  => CronTask::STATE_ABORTED,
             'error_count'    => 0,
-            'expected_state' => \CronTask::STATE_WAITING,
+            'expected_state' => CronTask::STATE_WAITING,
         ];
     }
 
     #[DataProvider('manualExecutionStateProvider')]
     public function testManualExecutionState(int $initial_state, int $error_count, int $expected_state): void
     {
-        $crontask = new \CronTask();
-        $this->assertTrue($crontask->getFromDBbyName(\CronTask::class, 'graph'));
-        $this->updateItem(\CronTask::class, $crontask->getID(), [
+        $crontask = new CronTask();
+        $this->assertTrue($crontask->getFromDBbyName(CronTask::class, 'graph'));
+        $this->updateItem(CronTask::class, $crontask->getID(), [
             'state'       => $initial_state,
             'error_count' => $error_count,
-            'allowmode'   => \CronTask::MODE_INTERNAL | \CronTask::MODE_EXTERNAL,
+            'allowmode'   => CronTask::MODE_INTERNAL | CronTask::MODE_EXTERNAL,
         ]);
 
         // Manual execution, as done from the crontask form
-        $this->assertSame('graph', \CronTask::launch(-\CronTask::MODE_INTERNAL, 1, 'graph'));
+        $this->assertSame('graph', CronTask::launch(-CronTask::MODE_INTERNAL, 1, 'graph'));
 
         $this->assertTrue($crontask->getFromDB($crontask->getID()));
         $this->assertSame($expected_state, $crontask->fields['state']);
@@ -399,7 +453,7 @@ class CronTaskTest extends DbTestCase
         $names = [];
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'name'],
-            'FROM'   => \CronTask::getTable(),
+            'FROM'   => CronTask::getTable(),
         ]);
 
         foreach ($iterator as $row) {
@@ -415,5 +469,59 @@ class CronTaskTest extends DbTestCase
                 implode(', ', array_unique($duplicates))
             )
         );
+    }
+
+    public function testShowHistoryLinksToTheWholeRun(): void
+    {
+        $this->login();
+
+        $crontask = $this->createItem(CronTask::class, [
+            'itemtype'  => CronTask::class,
+            'name'      => 'test_history_detail',
+            'frequency' => MINUTE_TIMESTAMP,
+        ]);
+
+        // A run is stored as a start log, followed by the logs added during the run and the stop log
+        $start_log = $this->createItem(CronTaskLog::class, [
+            'crontasks_id'    => $crontask->getID(),
+            'date'            => date('Y-m-d H:i:s'),
+            'content'         => 'Run mode: CLI',
+            'crontasklogs_id' => 0,
+            'state'           => CronTaskLog::STATE_START,
+            'volume'          => 0,
+            'elapsed'         => 0,
+        ]);
+        $this->createItem(CronTaskLog::class, [
+            'crontasks_id'    => $crontask->getID(),
+            'date'            => date('Y-m-d H:i:s'),
+            'content'         => 'Detail logged during the run',
+            'crontasklogs_id' => $start_log->getID(),
+            'state'           => CronTaskLog::STATE_RUN,
+            'volume'          => 0,
+            'elapsed'         => 0,
+        ]);
+        $this->createItem(CronTaskLog::class, [
+            'crontasks_id'    => $crontask->getID(),
+            'date'            => date('Y-m-d H:i:s'),
+            'content'         => 'Action completed, fully processed',
+            'crontasklogs_id' => $start_log->getID(),
+            'state'           => CronTaskLog::STATE_STOP,
+            'volume'          => 1,
+            'elapsed'         => 0.1,
+        ]);
+
+        // The runs list must link to the start log, which groups all the logs of the run
+        ob_start();
+        $crontask->showHistory();
+        $html = ob_get_clean();
+        $this->assertStringContainsString("crontasklogs_id={$start_log->getID()}'", $html);
+
+        // The detail of the run must display the logs added during the run
+        $_GET['crontasklogs_id'] = $start_log->getID();
+        ob_start();
+        $crontask->showHistory();
+        $html = ob_get_clean();
+        unset($_GET['crontasklogs_id']);
+        $this->assertStringContainsString('Detail logged during the run', $html);
     }
 }

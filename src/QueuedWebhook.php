@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
 use Glpi\Toolbox\HttpClient;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
@@ -251,10 +252,12 @@ class QueuedWebhook extends CommonDBChild
         if ($process_request) {
             $request_url   = (string) $queued_webhook->fields['url'];
             $request_error = null;
+            /** @var Request::METHOD_* $method */
+            $method = strtoupper($queued_webhook->fields['http_method']);
 
             try {
                 $response = $client->request(
-                    $queued_webhook->fields['http_method'],
+                    $method,
                     $request_url,
                     [
                         'headers' => $headers,

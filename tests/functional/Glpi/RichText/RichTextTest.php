@@ -357,6 +357,19 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => '<p>Some content</p>',
         ];
+        yield 'TinyMCE ephox blocker containing a non-breaking space entity should be removed' => [
+            'content'                => <<<HTML
+<p>Some content</p>
+<div class="ephox-dragster-blocker" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%;" role="presentation">&nbsp;</div>
+HTML,
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Some content</p>',
+        ];
+        yield 'TinyMCE ephox blocker containing a non-breaking space should be removed' => [
+            'content'                => "<p>Some content</p>\n<div class=\"ephox-dragster-blocker\" role=\"presentation\">\u{00A0}</div>",
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Some content</p>',
+        ];
 
         // Deprecated html attributes should not be transformed into styles
         // see #11580

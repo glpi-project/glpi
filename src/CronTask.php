@@ -1275,7 +1275,7 @@ class CronTask extends CommonDBTM
                 'id'       => $data['id'],
                 'date'     => sprintf(
                     '<a href="javascript:reloadTab(\'crontasklogs_id=%s\');">%s</a>',
-                    (int) $data['id'],
+                    (int) $data['crontasklogs_id'],
                     htmlescape(Html::convDateTime($data['date']))
                 ),
                 'elapsed'  => $data['elapsed'],
@@ -1662,10 +1662,9 @@ TWIG, ['msg' => __('Last run list')]);
         SessionTracker::revokeSessionsByAge($maxlifetime);
 
         // Clean expired remember me tokens
-        $cookie_lifetime = time() + $CFG_GLPI['login_remember_time'];
         $DB->delete('glpi_usertokens', [
             'type' => 'rememberme',
-            'date_expiration' => ['<', $cookie_lifetime],
+            'date_expiration' => ['<=', date('Y-m-d H:i:s')],
         ]);
 
         $task->setVolume($nb);

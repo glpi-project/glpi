@@ -1366,11 +1366,17 @@ HTML;
                         // Treat as OK
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $result = $reservation_item->add([
+                        $input = [
                             'itemtype' => $item::class,
                             'items_id' => $id,
                             'is_active' => 1,
-                        ]);
+                        ];
+                        if (!$reservation_item->can(-1, CREATE, $input)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+                        $result = $reservation_item->add($input);
                         $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     }
                 }
@@ -1378,6 +1384,11 @@ HTML;
             case 'disable':
                 foreach ($ids as $id) {
                     if ($reservation_item->getFromDBbyItem($item::class, $id)) {
+                        if (!$reservation_item->can($reservation_item->getID(), DELETE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
                         $result = $reservation_item->delete(['id' => $reservation_item->getID()]);
                         $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
@@ -1388,6 +1399,11 @@ HTML;
             case 'available':
                 foreach ($ids as $id) {
                     if ($reservation_item->getFromDBbyItem($item::class, $id)) {
+                        if (!$reservation_item->can($reservation_item->getID(), UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
                             'is_active' => 1,
@@ -1401,6 +1417,11 @@ HTML;
             case 'unavailable':
                 foreach ($ids as $id) {
                     if ($reservation_item->getFromDBbyItem($item::class, $id)) {
+                        if (!$reservation_item->can($reservation_item->getID(), UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
                             'is_active' => 0,

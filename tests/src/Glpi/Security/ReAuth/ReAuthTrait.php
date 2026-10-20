@@ -34,6 +34,7 @@
 
 namespace Glpi\Tests\Glpi\Security\ReAuth;
 
+use Auth;
 use Glpi\Controller\Security\ReAuthController;
 use Glpi\Security\ReAuth\InPlaceReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
@@ -135,6 +136,24 @@ trait ReAuthTrait
         );
         $_GET  = [];
         $_POST = [];
+    }
+
+    /**
+     * Log the test user in with a session opened through CAS, not re-authenticated yet.
+     */
+    private function loginWithCasSession(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        unset($_SESSION['glpi_reauth_until']);
+        $this->resetReAuthManager();
+
+        $CFG_GLPI['cas_host']    = 'cas.test';
+        $CFG_GLPI['cas_port']    = '443';
+        $CFG_GLPI['cas_uri']     = 'cas';
+        $CFG_GLPI['cas_version'] = 'CAS_VERSION_3_0';
+        $_SESSION['glpiauthtype'] = Auth::CAS;
     }
 
     private function setReauthenticated(bool $reauthenticated): void

@@ -59,6 +59,15 @@ export class TicketPage extends GlpiPage
         await this.page.goto(url);
     }
 
+    /**
+     * Get the answer of a form question, as displayed in the description of a
+     * ticket created from a form.
+     */
+    public getFormAnswer(answer: string): Locator
+    {
+        return this.page.getByText(`: ${answer}`).first();
+    }
+
     public async doSetEntityDropdown(value: string): Promise<void>
     {
         const dropdown = this.getDropdownByLabel("Entity");

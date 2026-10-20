@@ -47,6 +47,14 @@ final class ReAuthControllerTest extends DbTestCase
 {
     use ReAuthTrait;
 
+    public function tearDown(): void
+    {
+        // The manager caches the resolved strategy: do not leak the CAS one to other tests.
+        $this->resetReAuthManager();
+
+        parent::tearDown();
+    }
+
     /** Returns a 200 response containing the verify action URL. */
     public function testPromptRendersTheReAuthForm(): void
     {
@@ -99,6 +107,38 @@ final class ReAuthControllerTest extends DbTestCase
         // --- assert : the prompt is re-rendered and no reauth window is opened ---
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsString('/ReAuth/Verify', $response->getContent());
+        $this->assertArrayNotHasKey('glpi_reauth_until', $_SESSION);
+    }
+
+    /** Out of band strategies coming back from a failed verification display the failure. */
+    public function testPromptDisplaysFailure(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $controller = new ReAuthController($this->getReAuthManager());
+
+        // --- act ---
+        $failed = $controller->prompt(true);
+        $not_failed = $controller->prompt();
+
+        // --- assert ---
+        $this->assertStringContainsString('Authentication failure', (string) $failed->getContent());
+        $this->assertStringNotContainsString('Authentication failure', (string) $not_failed->getContent());
+    }
+
+    /** A submission to the core verify endpoint while CAS is selected re-renders the prompt. */
+    public function testVerifyPostDoesNotReAuthenticateWhenCasIsSelected(): void
+    {
+        // --- arrange ---
+        $this->loginWithCasSession();
+        $controller = new ReAuthController($this->getReAuthManager());
+
+        // --- act ---
+        $response = $controller->verify(Request::create('/ReAuth/Verify', 'POST', ['user_input' => TU_PASS]));
+
+        // --- assert ---
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString('/ReAuth/CAS', (string) $response->getContent());
         $this->assertArrayNotHasKey('glpi_reauth_until', $_SESSION);
     }
 }

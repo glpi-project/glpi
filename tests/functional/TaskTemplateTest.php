@@ -198,4 +198,33 @@ class TaskTemplateTest extends AbstractITILChildTemplateTest
             $task->fields['users_id_tech']
         );
     }
+
+    public function testAjaxSendsDurationLabel(): void
+    {
+        global $CFG_GLPI;
+
+        // Arrange: a template whose duration does not match the configured time step
+        $CFG_GLPI['time_step'] = 30;
+        $template = $this->createItem(TaskTemplate::class, [
+            'name'       => 'template 0h25',
+            'content'    => '<p>test</p>',
+            'actiontime' => 25 * MINUTE_TIMESTAMP,
+        ]);
+        $this->login();
+
+        // Act: load the template as the task form does
+        $_POST['tasktemplates_id'] = $template->getID();
+        try {
+            ob_start();
+            include GLPI_ROOT . '/ajax/task.php';
+            $data = json_decode(ob_get_contents(), true);
+        } finally {
+            ob_end_clean();
+            unset($_POST['tasktemplates_id']);
+        }
+
+        // Assert: the label is sent so the duration can be added to the dropdown
+        $this->assertEquals(25 * MINUTE_TIMESTAMP, $data['actiontime']);
+        $this->assertSame('0h25', $data['actiontime_label']);
+    }
 }

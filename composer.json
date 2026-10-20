@@ -121,7 +121,7 @@
         "glpi-project/rector-glpi": "^1.1",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.4",
-        "phpstan/phpstan": "^2.2",
+        "phpstan/phpstan": "^2.3",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^12.5",
         "rector/rector": "^2.6",
@@ -215,7 +215,8 @@
         ],
         "patch": [
             "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
-            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
+            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/symfony/http-client/' PATCH_FILE='tools/patches/symfony-http-client-no-private-network-allow-list.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
         ]
     }
 }

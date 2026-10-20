@@ -35,6 +35,8 @@
 namespace tests\units\Glpi\Form;
 
 use Glpi\Form\EndUserInputNameProvider;
+use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -88,5 +90,43 @@ class EndUserInputNameProviderTest extends DbTestCase
             $form->getQuestions()[array_keys($form->getQuestions())[0]]->getID() => 'John Doe',
             $form->getQuestions()[array_keys($form->getQuestions())[1]]->getID() => 'john.doe@mail.mail',
         ], $answers);
+    }
+
+    public function testGetFiles()
+    {
+        // Create a new form
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->addQuestion('Attachment', QuestionTypeFile::class)
+                ->addQuestion('Description', QuestionTypeLongText::class)
+                ->addQuestion('Name', QuestionTypeShortText::class)
+        );
+        $file_question_id = $this->getQuestionId($form, 'Attachment');
+        $text_question_id = $this->getQuestionId($form, 'Description');
+        $name_question_id = $this->getQuestionId($form, 'Name');
+
+        // Generate the inputs as submitted by the upload widget
+        $inputs = [
+            "_answers_$file_question_id"        => ['prefix1foo.txt', 'prefix2bar.txt'],
+            "_prefix_answers_$file_question_id" => ['prefix1', 'prefix2'],
+            "_tag_answers_$file_question_id"    => ['tag1', 'tag2'],
+            "_answers_$text_question_id"        => ['prefix3image_paste123.png'],
+            "_prefix_answers_$text_question_id" => ['prefix3'],
+            "_tag_answers_$text_question_id"    => ['tag3'],
+        ];
+        $answers = [
+            $file_question_id => ['prefix1foo.txt', 'prefix2bar.txt'],
+            $text_question_id => '<p>Content</p>',
+            $name_question_id => 'John Doe',
+        ];
+
+        // Check that each file is associated with the question it comes from
+        $files = (new EndUserInputNameProvider())->getFiles($inputs, $answers);
+        $this->assertSame([
+            'filename'    => ['prefix1foo.txt', 'prefix2bar.txt', 'prefix3image_paste123.png'],
+            'prefix'      => ['prefix1', 'prefix2', 'prefix3'],
+            'tag'         => ['tag1', 'tag2', 'tag3'],
+            'question_id' => [$file_question_id, $file_question_id, $text_question_id],
+        ], $files);
     }
 }
