@@ -213,7 +213,7 @@ class GridTest extends DbTestCase
         $grid = $this->getMockBuilder(Grid::class)
             ->onlyMethods(['getAllDasboardCards'])
             ->getMock();
-        $grid->method('getAllDasboardCards')->willReturn([
+        $grid->expects($this->atLeastOnce())->method('getAllDasboardCards')->willReturn([
             'denied_card' => [
                 'widgettype' => ['bigNumber'],
                 'label'      => 'Denied card',
