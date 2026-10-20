@@ -55,6 +55,7 @@ use CommonITILValidation;
 use Document_Item;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -674,6 +675,17 @@ final class ITILController extends AbstractController
                     'enum' => $timeline_position_enum,
                     'description' => $timeline_position_description,
                 ],
+                'file' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'x-version-introduced' => '2.4.0',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-input-field' => '_filename',
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_DOCUMENT),
+                    ],
+                ],
             ],
         ];
 
@@ -735,6 +747,7 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_HTML,
                     'x-supports-mentions' => true,
+                    'x-supports-inline-images' => true,
                 ],
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
@@ -764,6 +777,17 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-field' => 'sourceof_items_id',
+                ],
+                'file' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'x-version-introduced' => '2.4.0',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-input-field' => '_filename',
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_DOCUMENT),
+                    ],
                 ],
             ],
         ];
@@ -827,6 +851,17 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                 ],
+                'file' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'x-version-introduced' => '2.4.0',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-input-field' => '_filename',
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_DOCUMENT),
+                    ],
+                ],
             ],
         ];
 
@@ -885,6 +920,17 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'enum' => $timeline_position_enum,
                     'description' => $timeline_position_description,
+                ],
+                'file' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'x-version-introduced' => '2.4.0',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-input-field' => '_filename',
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_DOCUMENT),
+                    ],
                 ],
             ],
         ];
