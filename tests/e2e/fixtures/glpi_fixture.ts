@@ -130,7 +130,7 @@ export const test = baseTest.extend<{
         // Map id to expected playwright worker login
         const worker_prefix = Constants.E2E_WORKER_PREFIX;
         const worker_index = id + 1;
-        const worker_index_string = worker_index > 10
+        const worker_index_string = worker_index >= 10
             ? worker_index.toString()
             : `0${worker_index.toString()}` // Pad numbers < 10
         ;
