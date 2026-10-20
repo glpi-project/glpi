@@ -43,6 +43,7 @@ use Document;
 use Entity;
 use Group;
 use InvalidArgumentException;
+use ITILCategory;
 use KnowbaseItem;
 use Location;
 use Manufacturer;
@@ -351,7 +352,7 @@ final class FakeProvider extends Provider
         return [
             'data'  => $data,
             'label' => $params['label'] ?? '',
-            'icon'  => \ITILCategory::getIcon(),
+            'icon'  => ITILCategory::getIcon(),
         ];
     }
 
@@ -563,6 +564,93 @@ final class FakeProvider extends Provider
             'url'    => $item::getSearchURL(),
             'label'  => sprintf(__('List of %s'), $item::getTypeName(Session::getPluralNumber())),
             'icon'   => $item::getIcon(),
+        ];
+    }
+
+    public static function ticketsByCategoryAndEntity(array $params = []): array
+    {
+        $labels = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $labels[] = sprintf(__('%1$s %2$s'), Entity::getTypeName(1), $i);
+        }
+
+        $series = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $name     = sprintf(__('%1$s %2$s'), ITILCategory::getTypeName(1), $i);
+            $series[] = [
+                'name' => $name,
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($name . $label, 40),
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsByCategoryAndType(string $case = 'open', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $labels[] = sprintf(__('%1$s %2$s'), ITILCategory::getTypeName(1), $i);
+        }
+
+        $series = [];
+        foreach ([Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE] as $type) {
+            $name     = Ticket::getTicketTypeName($type);
+            $series[] = [
+                'name' => $name,
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($case . $name . $label, 40),
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsByAssignedGroupAndStatuses(array $params = []): array
+    {
+        $labels = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $labels[] = sprintf(__('%1$s %2$s'), Group::getTypeName(1), $i);
+        }
+        $labels[] = __('None');
+
+        $series = [];
+        foreach (Ticket::getAllStatusArray() as $status_name) {
+            $series[] = [
+                'name' => $status_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($status_name . $label, 30), 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
         ];
     }
 
