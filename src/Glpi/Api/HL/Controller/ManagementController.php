@@ -225,7 +225,7 @@ final class ManagementController extends AbstractController
                     'budgets_id' => new QueryExpression($DB::quoteName('_.id')),
                     'itemtype' => ['NOT IN', [ConsumableItem::class, CartridgeItem::class, Software::class]],
                 ],
-            ])
+            ]),
         ];
         foreach ([ContractCost::class, ProjectCost::class] as $cost_class) {
             /** @var CommonDBTM $cost_class */
