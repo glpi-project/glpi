@@ -34,16 +34,6 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-    {{ fields.dropdownArrayField('notifications_ajax_sound', config('notifications_ajax_sound'), {
-        sound_a: __('Sound') ~ ' A',
-        sound_b: __('Sound') ~ ' B',
-        sound_c: __('Sound') ~ ' C',
-        sound_d: __('Sound') ~ ' D',
-    }, __('Default notification sound'), {
-        display_emptychoice: true,
-        emptylabel: __('Disabled'),
-    }) }}
-
     {{ fields.dropdownNumberField('notifications_ajax_check_interval', config('notifications_ajax_check_interval'), __('Time to check for new notifications (in seconds)'), {
         min: 5,
         max: 120,

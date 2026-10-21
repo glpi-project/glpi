@@ -85,7 +85,6 @@ function update120xto1300()
             );
         }
     }
-
     $migration->executeMigration();
 
     return $updateresult;

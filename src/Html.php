@@ -1291,7 +1291,6 @@ TWIG,
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && Session::getLoginUserID() !== false && !Session::isImpersonateActive()) {
             $options = [
                 'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
-                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
                 'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
                 'user_id'   => Session::getLoginUserID(),
             ];
@@ -5655,7 +5654,6 @@ JS);
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && Session::getLoginUserID() !== false && !Session::isImpersonateActive()) {
             $options = [
                 'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
-                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
                 'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
                 'user_id'   => Session::getLoginUserID(),
             ];
