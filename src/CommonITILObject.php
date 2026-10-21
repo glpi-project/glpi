@@ -1836,6 +1836,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Can the ITIL object be moved to the entity of the input? The target entity must be accessible.
+     */
+    private function canMoveToEntity(int $entities_id): bool
+    {
+        return $entities_id === (int) $this->fields['entities_id']
+            || Session::isCron()
+            || Session::isInventory()
+            || Session::haveAccessToEntity($entities_id);
+    }
+
+    /**
      * Handle template mandatory fields on update
      *
      * @param array $input Input
@@ -1846,13 +1857,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     protected function handleTemplateFields(array $input, bool $show_error_message = true)
     {
         // the target entity must be accessible by the user
-        if (
-            isset($input['entities_id'])
-            && $input['entities_id'] != $this->fields['entities_id']
-            && !Session::isCron()
-            && !Session::isInventory()
-            && !Session::haveAccessToEntity($input['entities_id'])
-        ) {
+        if (isset($input['entities_id']) && !$this->canMoveToEntity((int) $input['entities_id'])) {
             unset($input['entities_id']);
         }
 
@@ -1996,7 +2001,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $input[static::getTemplateFormFieldName()] = $tt->getID();
         }
 
-        //
         if (count($tt->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
@@ -11382,7 +11386,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Transfer "_actors" input (introduced in 10.0.0) into historical input keys.
      *
-     * It also processes a filtering regarding rights, @see removeActorChangesNotAllowed()
+     * It also processes a filtering regarding rights, @see removeActorChangesNotAllowed(),
+     * and regarding actors eligibility, @see removeIneligibleActors()
      */
     protected function transformActorsInput(array $input): array
     {
@@ -11494,7 +11499,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             unset($input['_actors']);
         }
 
-        return $this->removeActorChangesNotAllowed($input);
+        $input = $this->removeActorChangesNotAllowed($input);
+
+        return $this->removeIneligibleActors($input);
     }
 
     /**
@@ -11662,6 +11669,151 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         return $input;
+    }
+
+    /**
+     * Remove the actors that cannot hold their role on this ITIL object
+     *
+     * The actor dropdown taken as reference (Dropdown::getDropdownActors())
+     * - a supplier can only be assigned
+     * - a group must have the flag of its role (is_requester, is_watcher, is_assign)
+     * - a group or a supplier must be visible in the entity of the ITIL object
+     * - an assigned user must have the Ticket OWN right in the entity of the ITIL object, also for
+     *   changes and problems, which have no right of their own (users_right 'own_ticket' of the form)
+     *
+     * Handle the same keys as removeActorChangesNotAllowed(), except the _deleted entries, and the single
+     * actor keys _itil_<type> (e.g. _itil_assign), applied later by prepareInputForUpdate().
+     * No filtering for cron and for calls made with right checks disabled.
+     *
+     * @param array<string, mixed> $input
+     *
+     * @return array<string, mixed> $input without the ineligible actors
+     */
+    private function removeIneligibleActors(array $input): array
+    {
+        // no filtering in some contexts
+        if (Session::isRightChecksDisabled() || Session::isCron()) {
+            return $input;
+        }
+
+        if ($this->isNewItem()) {
+            // on creation, a missing entity is set to 0 by prepareInputForAdd(), after this filter
+            $itil_entities_id = (int) ($input['entities_id'] ?? 0);
+        } else {
+            // a target entity that handleTemplateFields() will refuse must not be used: the object stays in its entity
+            $itil_entities_id = isset($input['entities_id']) && $this->canMoveToEntity((int) $input['entities_id'])
+                ? (int) $input['entities_id']
+                : (int) $this->fields['entities_id'];
+        }
+
+        foreach (['requester', 'observer', 'assign'] as $role) {
+            foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
+                $fkey = getForeignKeyFieldForItemType($actor_itemtype);
+                $keys = [
+                    // historical keys, e.g. _users_id_assign, _groups_id_requester
+                    sprintf('_%s_%s', $fkey, $role),
+                    // rules keys, built as in updateActors(), e.g. _additional_assigns, _additional_groups_requesters
+                    $actor_itemtype === User::class
+                        ? sprintf('_additional_%ss', $role)
+                        : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $role),
+                ];
+
+                foreach ($keys as $key) {
+                    if (!isset($input[$key])) {
+                        // key not defined, nothing to filter.
+                        continue;
+                    }
+
+                    // elements: an id, or an array of ids or of arrays holding the foreign key
+                    foreach ((array) $input[$key] as $actor_key => $element) {
+                        $actor_id = is_array($element) ? ($element[$fkey] ?? null) : $element;
+                        if ($this->isActorEligible($actor_itemtype, $actor_id, $role, $itil_entities_id)) {
+                            continue;
+                        }
+
+                        if (is_array($input[$key])) {
+                            unset($input[$key][$actor_key]);
+                        } else {
+                            unset($input[$key]);
+                        }
+                    }
+                }
+            }
+
+            // single actor key, e.g. _itil_assign => ['_type' => 'user', 'users_id' => 2] (massive action, "associate myself" buttons)
+            $single_actor_key = '_itil_' . $role;
+            if (isset($input[$single_actor_key]['_type'])) {
+                $actor_itemtype = match (strtolower((string) $input[$single_actor_key]['_type'])) {
+                    'user'     => User::class,
+                    'group'    => Group::class,
+                    'supplier' => Supplier::class,
+                    default    => null,
+                };
+                if ($actor_itemtype !== null) {
+                    $actor_id = $input[$single_actor_key][getForeignKeyFieldForItemType($actor_itemtype)] ?? null;
+                    if (!$this->isActorEligible($actor_itemtype, $actor_id, $role, $itil_entities_id)) {
+                        unset($input[$single_actor_key]);
+                    }
+                }
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     * Can the actor hold the role on an ITIL object of the given entity? See removeIneligibleActors().
+     *
+     * Values that are not an actor id (email actors, `requester_manager`) are left to the existing checks
+     * of updateActors() and CommonITILActor. An unknown group or supplier is not eligible.
+     *
+     * @param class-string<User|Group|Supplier> $actor_itemtype
+     * @param mixed                             $actor_id
+     * @param string                            $role requester, observer or assign
+     */
+    private function isActorEligible(string $actor_itemtype, mixed $actor_id, string $role, int $itil_entities_id): bool
+    {
+        if (!is_numeric($actor_id) || (int) $actor_id <= 0) {
+            return true;
+        }
+        $actor_id = (int) $actor_id;
+
+        if ($actor_itemtype === User::class) {
+            // only assignees are restricted
+            return $role !== 'assign' || Profile::haveUserRight($actor_id, Ticket::$rightname, Ticket::OWN, $itil_entities_id);
+        }
+
+        // a supplier can only be assigned
+        if ($actor_itemtype === Supplier::class && $role !== 'assign') {
+            return false;
+        }
+
+        $actor = getItemForItemtype($actor_itemtype);
+        if (!$actor->getFromDB($actor_id)) {
+            return false;
+        }
+
+        // a group must have the flag of its role
+        if ($actor instanceof Group) {
+            $role_flag = match ($role) {
+                'requester' => 'is_requester',
+                'observer'  => 'is_watcher',
+                'assign'    => 'is_assign',
+                default     => throw new RuntimeException('Unexpected actor role.'),
+            };
+            if (!$actor->fields[$role_flag]) {
+                return false;
+            }
+        }
+
+        // the actor must be visible in the entity of the ITIL object
+        $actor_entities_id = (int) $actor->fields['entities_id'];
+
+        return $actor_entities_id === $itil_entities_id
+            || (
+                $actor->fields['is_recursive']
+                && in_array($actor_entities_id, getAncestorsOf(Entity::getTable(), $itil_entities_id))
+            );
     }
 
     /**
