@@ -3842,7 +3842,14 @@ HTML;
             return false;
         }
 
-        $where = [];
+        $where = $item->getSystemSQLCriteria();
+
+        if (Toolbox::hasTrait($post['itemtype'], AssignableItem::class)) {
+            $visibility_criteria = $post['itemtype']::getAssignableVisiblityCriteria();
+            if (count($visibility_criteria)) {
+                $where[] = $visibility_criteria;
+            }
+        }
 
         if ($item->maybeDeleted()) {
             $where["$table.is_deleted"] = 0;
@@ -5152,8 +5159,20 @@ HTML;
         self::$standard_itemtypes_options = null;
     }
 
-    public static function getDurationDropdown(): array
+    /**
+     * Get the values of the task duration dropdown.
+     *
+     * @param int|string|null $value Current duration, added to the list if it does not match any step
+     *
+     * @return array<int, string>
+     */
+    public static function getDurationDropdown(int|string|null $value = 0): array
     {
+        global $CFG_GLPI;
+
+        // Value comes from DB fields, it can be an empty string for a new task
+        $value = (int) $value;
+        $step = max(1, (int) $CFG_GLPI['time_step']);
         $durationDropdown = [];
 
         // 1..9 minutes
@@ -5162,8 +5181,8 @@ HTML;
             $durationDropdown[$key] = sprintf('%dh%02d', 0, $i);
         }
 
-        // 10..595 step 5 (minutes)
-        for ($i = 10; $i < 595; $i += 5) {
+        // From 10 minutes to 10 hours, using the configured time step
+        for ($i = (int) ceil(10 / $step) * $step; $i < 600; $i += $step) {
             $minutes = $i % 60;
             $hours = intdiv($i, 60);
             $key = $i * MINUTE_TIMESTAMP;
@@ -5180,6 +5199,16 @@ HTML;
         for ($i = 5; $i <= 366; $i++) {
             $key = $i * DAY_TIMESTAMP;
             $durationDropdown[$key] = sprintf(_n('%s day', '%s days', $i), $i);
+        }
+
+        // Keep a duration saved with a previous time step
+        if ($value > 0 && !isset($durationDropdown[$value])) {
+            $durationDropdown[$value] = sprintf(
+                '%dh%02d',
+                intdiv($value, HOUR_TIMESTAMP),
+                intdiv($value % HOUR_TIMESTAMP, MINUTE_TIMESTAMP)
+            );
+            ksort($durationDropdown);
         }
 
         return $durationDropdown;

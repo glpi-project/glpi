@@ -37,14 +37,26 @@ namespace tests\units;
 use DocumentCategory;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\Destination\CommonITILField\EntityField;
+use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
+use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\RequesterField;
+use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use User;
+
+use function Safe\json_encode;
 
 /* Test for inc/document.class.php */
 
@@ -136,14 +148,9 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(4, $prepare);
         $this->assertSame('A_name.pdf', $prepare['filename']);
         $this->assertSame('A_name.pdf', $prepare['name']);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(4, $prepare);
+        $this->assertCount(3, $prepare);
 
         $this->login();
         $uid = getItemByTypeName('User', TU_USER, true);
@@ -152,13 +159,8 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(5, $prepare);
         $this->assertSame($uid, $prepare['users_id']);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
-        $this->assertCount(5, $prepare);
+        $this->assertCount(4, $prepare);
 
         $item = new \Computer();
         $cid = $item->add([
@@ -186,23 +188,29 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('items_id', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
-        $this->assertArrayHasKey('current_filename', $prepare);
-        $this->assertEmpty($prepare['current_filename']);
         $this->assertSame($uid, $prepare['users_id']);
         $this->assertSame('Computer', $prepare['itemtype']);
         $this->assertSame($cid, $prepare['items_id']);
         $this->assertSame('A_name.pdf', $prepare['name']);
-        $this->assertCount(7, $prepare);
+        $this->assertCount(6, $prepare);
     }
 
     public function testPrepareInputForAddIgnoreBlacklistedFields(): void
     {
         $_ignored = 'should_be_ignored';
-        $input = ['name' => 'legit name', 'filepath' => $_ignored, 'sha1sum' =>  $_ignored];
+        $input = [
+            'name'              => 'legit name',
+            'filepath'          => $_ignored,
+            'sha1sum'           => $_ignored,
+            'current_filename'  => $_ignored,
+            'current_filepath'  => $_ignored,
+        ];
         $prepare = (new \Document())->prepareInputForAdd($input);
 
         $this->assertArrayNotHasKey('filepath', $prepare);
         $this->assertArrayNotHasKey('sha1sum', $prepare);
+        $this->assertArrayNotHasKey('current_filename', $prepare);
+        $this->assertArrayNotHasKey('current_filepath', $prepare);
     }
 
     /**
@@ -466,12 +474,16 @@ class DocumentTest extends DbTestCase
     {
         return [
             [__FILE__, false],
-            [__DIR__ . "/../../public/pics/add_dropdown.png", true],
-            [__DIR__ . "/../../public/pics/corners.gif", true],
-            [__DIR__ . "/../../public/pics/PICS-AUTHORS.txt", false],
-            [__DIR__ . "/../notanimage.jpg", false],
-            [__DIR__ . "/../notafile.jpg", false],
-            [__DIR__ . "/../", false],
+            [__DIR__ . '/../../tests/fixtures/images/blank.bmp', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.jpg', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.JPEG', true],
+            [__DIR__ . '/../../tests/fixtures/images/blank.webp', true],
+            [__DIR__ . '/../../tests/fixtures/images/empty.gif', true],
+            [__DIR__ . '/../../tests/fixtures/images/empty.png', true],
+            [__DIR__ . "/../../tests/fixtures/images/fake_gif.php", false],
+            [__DIR__ . "/../../tests/fixtures/images/notanimage.php", false],
+            [__DIR__ . '/../../tests/fixtures/images/readme.txt', false],
+            [__DIR__ . '/../../tests/fixtures/images/this/file/does/no/exists.png', false],
         ];
     }
 
@@ -1073,6 +1085,19 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($document_2->canViewFile());
         $this->assertFalse($document_2->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
         $this->assertFalse($document_2->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
+    }
+
+    public function testGetDownloadLinkEncodesNamespacedItemtype(): void
+    {
+        $this->login();
+
+        $form = $this->createForm(new FormBuilder());
+        $document = $this->addDocumentToItem('doc.txt', 'content', $form);
+
+        $link = $document->getDownloadLink($form);
+
+        $this->assertStringContainsString('itemtype=Glpi%5CForm%5CForm&amp;items_id=' . $form->getID(), $link);
+        $this->assertStringNotContainsString('\\', $link);
     }
 
     public function testCronCleanOrphansDocument()
@@ -1897,5 +1922,218 @@ class DocumentTest extends DbTestCase
         // are not linked to the form he is allowed to see.
         $this->assertFalse($can_view_3);
         $this->assertFalse($can_view_4);
+    }
+
+    public static function formFileQuestionDestinationEntityProvider(): iterable
+    {
+        $cases = [
+            [EntityFieldStrategy::FORM_FILLER, '_test_root_entity', 'Root entity'],
+            [EntityFieldStrategy::FROM_FORM, '_test_child_1', '_test_child_1'],
+            [EntityFieldStrategy::SPECIFIC_VALUE, '_test_child_2', '_test_child_2'],
+            [EntityFieldStrategy::SPECIFIC_ANSWER, '_test_child_2', '_test_child_2'],
+            [EntityFieldStrategy::LAST_VALID_ANSWER, '_test_child_2', '_test_child_2'],
+            [EntityFieldStrategy::REQUESTER_ENTITY, '_test_child_3', '_test_child_3'],
+        ];
+
+        foreach ($cases as $case) {
+            [$strategy, $expected_entity_name, $expected_anonymous_entity_name] = $case;
+            yield [$strategy, $expected_entity_name, false];
+            yield [$strategy, $expected_anonymous_entity_name, true];
+        }
+    }
+
+    #[DataProvider('formFileQuestionDestinationEntityProvider')]
+    public function testFormFileQuestionDoesNotDuplicateDocumentWithDestinationEntity(
+        EntityFieldStrategy $strategy,
+        string $expected_entity_name,
+        bool $anonymous,
+    ): void {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Define a default heading for documents attached to tickets
+        $document_category = $this->createItem(DocumentCategory::class, ['name' => 'Default Category']);
+        $CFG_GLPI['documentcategories_id_forticket'] = $document_category->getID();
+
+        $root_entities_id = $this->getTestRootEntity(only_id: true);
+        $child_1_entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $child_2_entities_id = getItemByTypeName(\Entity::class, '_test_child_2', true);
+        $child_3_entities_id = getItemByTypeName(\Entity::class, '_test_child_3', true);
+
+        // Create a form with a file question, an entity question, and a requester question
+        $builder = new FormBuilder();
+        $builder->setEntitiesId($child_1_entities_id);
+        $builder->addQuestion('Attachment', QuestionTypeFile::class);
+        $builder->addQuestion('Entity', QuestionTypeItem::class, 0, json_encode([
+            'itemtype'             => \Entity::class,
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
+        ]));
+        $builder->addQuestion('Requester', QuestionTypeRequester::class);
+        $form = $this->createForm($builder);
+        $question_id = $this->getQuestionId($form, 'Attachment');
+
+        $requester = $this->createItem(User::class, [
+            'name'          => 'Form file question requester',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Self-Service', true),
+            '_entities_id'  => $child_3_entities_id,
+            '_is_recursive' => false,
+        ]);
+
+        // Set the destination field configuration for the requester and entity questions
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: RequesterField::getKey(),
+            config: new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, 'Requester')]
+            ),
+        );
+
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: EntityField::getKey(),
+            config: new EntityFieldConfig(
+                strategy: $strategy,
+                specific_question_id: $this->getQuestionId($form, 'Entity'),
+                specific_entity_id: $child_2_entities_id,
+            ),
+        );
+
+        // Logout the user if we are testing the anonymous case
+        if ($anonymous) {
+            $this->logOut();
+        } else {
+            $this->assertTrue(\Session::changeActiveEntities($root_entities_id, false));
+        }
+
+        // Copy the test file
+        $prefix = 'testFormFileQuestionDoesNotDuplicateDocumentWithDestinationEntity';
+        $tag = \Rule::getUuid();
+        $filename = $prefix . 'foo.txt';
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $_POST['_prefix_answers_' . $question_id] = $prefix;
+
+        // Submit the form and get the created ticket
+        $ticket = $this->sendFormAndGetCreatedTicket(
+            $form,
+            [
+                'Attachment' => [$filename],
+                'Entity'     => ['itemtype' => \Entity::class, 'items_id' => $child_2_entities_id],
+                'Requester'  => ["users_id-{$requester->getID()}"],
+            ],
+            ['filename' => [$filename], 'prefix' => [$prefix], 'tag' => [$tag], 'question_id' => [$question_id]],
+        );
+        unset($_POST['_prefix_answers_' . $question_id]);
+
+        // Assert that the ticket was created and has the expected entity
+        $this->assertEquals(
+            getItemByTypeName(\Entity::class, $expected_entity_name, true),
+            (int) $ticket->fields['entities_id']
+        );
+
+        // Assert that the document was created and linked to the ticket with the default category
+        $document = new \Document();
+        $documents = $document->find([
+            'sha1sum' => sha1_file(FIXTURE_DIR . '/uploads/foo.txt'),
+        ]);
+        $this->assertCount(
+            1,
+            $documents,
+            'Submitting a form file question must not create a duplicate, orphaned Document.'
+        );
+        $document = current($documents);
+        $this->assertEquals($document_category->getID(), $document['documentcategories_id']);
+
+        $docitem = new \Document_Item();
+        $this->assertTrue($docitem->getFromDBByCrit([
+            'documents_id' => $document['id'],
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ]));
+    }
+
+    public function testFormFileQuestionWithMultipleFilesDoesNotDuplicateDocuments(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Define a default heading for documents attached to tickets
+        $document_category = $this->createItem(DocumentCategory::class, ['name' => 'Default Category']);
+        $CFG_GLPI['documentcategories_id_forticket'] = $document_category->getID();
+
+        // Form is in a sub-entity, the ticket is created in the form entity
+        $child_1_entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $builder = new FormBuilder();
+        $builder->setEntitiesId($child_1_entities_id);
+        $builder->addQuestion('Attachment', QuestionTypeFile::class);
+        $form = $this->createForm($builder);
+        $question_id = $this->getQuestionId($form, 'Attachment');
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: EntityField::getKey(),
+            config: new EntityFieldConfig(strategy: EntityFieldStrategy::FROM_FORM),
+        );
+
+        $this->assertTrue(\Session::changeActiveEntities($this->getTestRootEntity(only_id: true), false));
+
+        // Copy the test files
+        $prefixes = [
+            'testFormFileQuestionWithMultipleFiles1',
+            'testFormFileQuestionWithMultipleFiles2',
+        ];
+        $filenames = [
+            $prefixes[0] . 'foo.txt',
+            $prefixes[1] . 'bar.txt',
+        ];
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filenames[0]);
+        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filenames[1]);
+        $_POST['_prefix_answers_' . $question_id] = $prefixes;
+
+        // Submit the form with multiple files and get the created ticket
+        $ticket = $this->sendFormAndGetCreatedTicket(
+            $form,
+            ['Attachment' => $filenames],
+            [
+                'filename'    => $filenames,
+                'prefix'      => $prefixes,
+                'tag'         => [\Rule::getUuid(), \Rule::getUuid()],
+                'question_id' => [$question_id, $question_id],
+            ],
+        );
+        unset($_POST['_prefix_answers_' . $question_id]);
+
+        // Assert that the ticket was created and has the expected entity
+        $this->assertEquals($child_1_entities_id, (int) $ticket->fields['entities_id']);
+
+        // Assert that the documents were created and linked to the ticket with the default category
+        $documents = (new \Document())->find([
+            'sha1sum' => [
+                sha1_file(FIXTURE_DIR . '/uploads/foo.txt'),
+                sha1_file(FIXTURE_DIR . '/uploads/bar.txt'),
+            ],
+        ]);
+        $this->assertCount(
+            2,
+            $documents,
+            'Submitting two files in a form file question must create exactly two Documents.'
+        );
+        $this->assertEqualsCanonicalizing(
+            ['foo.txt', 'bar.txt'],
+            array_column($documents, 'filename')
+        );
+
+        $docitem = new \Document_Item();
+        foreach ($documents as $document) {
+            $this->assertEquals($document_category->getID(), $document['documentcategories_id']);
+            $this->assertTrue($docitem->getFromDBByCrit([
+                'documents_id' => $document['id'],
+                'itemtype'     => \Ticket::class,
+                'items_id'     => $ticket->getID(),
+            ]));
+        }
     }
 }

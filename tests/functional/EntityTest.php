@@ -183,6 +183,38 @@ class EntityTest extends DbTestCase
         $this->assertEquals($input, $entity->prepareInputForUpdate($input));
     }
 
+    public function testPrepareInputForUpdateSanitizesEmptyDefaultSatisfactionRate(): void
+    {
+        $this->login();
+
+        $entity = new Entity();
+        $input = [
+            'id' => 1,
+            'inquest_default_rate' => '',
+            'inquest_default_rate_change' => '',
+        ];
+
+        $result = $entity->prepareInputForUpdate($input);
+        $this->assertSame(0, $result['inquest_default_rate']);
+        $this->assertSame(0, $result['inquest_default_rate_change']);
+    }
+
+    public function testPrepareInputForUpdateSanitizesEmptyMandatoryComment(): void
+    {
+        $this->login();
+
+        $entity = new Entity();
+        $input = [
+            'id' => 1,
+            'inquest_mandatory_comment' => '',
+            'inquest_mandatory_comment_change' => '',
+        ];
+
+        $result = $entity->prepareInputForUpdate($input);
+        $this->assertSame(0, $result['inquest_mandatory_comment']);
+        $this->assertSame(0, $result['inquest_mandatory_comment_change']);
+    }
+
     /**
      * Test that entity creation generates sequential IDs.
      */
@@ -1438,9 +1470,6 @@ class EntityTest extends DbTestCase
 
     public static function entityTreeProvider(): iterable
     {
-        $e2e_test_root = getItemByTypeName('Entity', 'E2ETestEntity', true);
-        $e2e_test_child1 = getItemByTypeName('Entity', 'E2ETestSubEntity1', true);
-        $e2e_test_child2 = getItemByTypeName('Entity', 'E2ETestSubEntity2', true);
         $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
         $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');
         $entity_test_child_2 = getItemByTypeName('Entity', '_test_child_2');
@@ -1452,19 +1481,6 @@ class EntityTest extends DbTestCase
                 0 => [
                     'name' => 'Root entity',
                     'tree' => [
-                        $e2e_test_root => [
-                            'name' => 'E2ETestEntity',
-                            'tree' => [
-                                $e2e_test_child1 => [
-                                    'name' => 'E2ETestSubEntity1',
-                                    'tree' => [],
-                                ],
-                                $e2e_test_child2 => [
-                                    'name' => 'E2ETestSubEntity2',
-                                    'tree' => [],
-                                ],
-                            ],
-                        ],
                         $entity_test_root->getID() => [
                             'name' => $entity_test_root->fields['name'],
                             'tree' => [

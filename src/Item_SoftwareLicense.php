@@ -338,7 +338,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                             ];
                         }
 
-                        if ($item_licence->can(-1, UPDATE, $input_data)) {
+                        if ($item_licence->can(-1, CREATE, $input_data)) {
                             if ($item_licence->add($input_data)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {

@@ -252,6 +252,20 @@ final class Parser
     }
 
     /**
+     * @return bool True if the provided operator is unary (does not require a value. the only parameter for it is the property name), false otherwise.
+     */
+    public static function isOperatorUnary(string $operator): bool
+    {
+        $unary_operators = [
+            '=isnull=',
+            '=notnull=',
+            '=empty=',
+            '=notempty=',
+        ];
+        return in_array($operator, $unary_operators, true);
+    }
+
+    /**
      * @param array $tokens Tokens from the RSQL lexer.
      * @return Result RSQL query result
      * @throws RSQLException

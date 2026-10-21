@@ -35,7 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-if (!isset($_GET['genical'])) {
+// The iCal/WebCal export authenticates with its own token further down
+if (!isset($_GET['genical']) || isset($_GET['checkavailability'])) {
     Session::checkRight("planning", READ);
 }
 

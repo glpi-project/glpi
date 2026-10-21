@@ -37,6 +37,7 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
+use Glpi\Form\Migration\UnresolvedConditionValueException;
 use Override;
 
 final class SingleChoiceFromValuesConditionHandler implements
@@ -104,6 +105,11 @@ final class SingleChoiceFromValuesConditionHandler implements
     #[Override]
     public function convertConditionValue(string $value): int
     {
-        return array_search($value, $this->values, true) ?: 0;
+        $index = array_search($value, $this->values, true);
+        if ($index === false) {
+            throw new UnresolvedConditionValueException();
+        }
+
+        return (int) $index;
     }
 }

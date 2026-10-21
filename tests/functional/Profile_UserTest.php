@@ -60,21 +60,19 @@ class Profile_UserTest extends DbTestCase
         $super_admin = getItemByTypeName('Profile', 'Super-Admin');
         $this->assertTrue($super_admin->isLastSuperAdminProfile());
 
-        // Default: 4 super admin account authorizations
+        // Default: 3 super admin account authorizations
         $authorizations = (new Profile_User())->find([
             'profiles_id' => $super_admin->fields['id'],
         ]);
-        $this->assertCount(4, $authorizations);
+        $this->assertCount(3, $authorizations);
         $glpi_users_id = getItemByTypeName('User', 'glpi', true);
         $tu_users_id = getItemByTypeName('User', TU_USER, true);
         $jsmith_users_id = getItemByTypeName('User', 'jsmith123', true);
-        $e2e_tests_users_id = getItemByTypeName('User', 'e2e_tests', true);
 
         $auth_array = array_column($authorizations, 'users_id');
         $this->assertContains($glpi_users_id, $auth_array);
         $this->assertContains($tu_users_id, $auth_array);
         $this->assertContains($jsmith_users_id, $auth_array);
-        $this->assertContains($e2e_tests_users_id, $auth_array);
 
         $authorizations_by_user_id = [];
         foreach ($authorizations as $authorization) {
@@ -87,13 +85,63 @@ class Profile_UserTest extends DbTestCase
         $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$tu_users_id]], 1));
         $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$jsmith_users_id])->canPurgeItem());
         $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$jsmith_users_id]], 1));
-        $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$e2e_tests_users_id])->canPurgeItem());
-        $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$e2e_tests_users_id]], 1));
 
         // Last user, can't be purged
         $this->assertFalse(Profile_User::getById($authorizations_by_user_id[$glpi_users_id])->canPurgeItem());
         // Can still be purged by calling delete, maybe it should not be possible ?
         $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$glpi_users_id]], 1));
+    }
+
+    public function testCannotPurgeAuthorizationWithMoreRights(): void
+    {
+        $this->login('tech', 'tech');
+
+        // Super-Admin authorization: more rights than the current user
+        $super_admin_auth = new Profile_User();
+        $this->assertTrue($super_admin_auth->getFromDBByCrit([
+            'users_id'    => getItemByTypeName('User', 'jsmith123', true),
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+        $this->assertFalse($super_admin_auth->canPurgeItem());
+
+        // Self-Service authorization: less rights than the current user
+        $self_service_auth = new Profile_User();
+        $this->assertTrue($self_service_auth->getFromDBByCrit([
+            'users_id'    => getItemByTypeName('User', 'post-only', true),
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+        ]));
+        $this->assertTrue($self_service_auth->canPurgeItem());
+    }
+
+    public function testCannotPurgeAuthorizationOutsideAccessibleEntity(): void
+    {
+        $root_entity      = getItemByTypeName(\Entity::class, '_test_root_entity');
+        $child_entity     = getItemByTypeName(\Entity::class, '_test_child_1');
+        $post_only_id     = getItemByTypeName('User', 'post-only', true);
+        $self_service_id  = getItemByTypeName('Profile', 'Self-Service', true);
+
+        // Create the authorizations as a super-admin, so fixture setup isn't
+        // itself affected by the entity/rights restrictions under test.
+        $this->login('glpi', 'glpi');
+        $outside_entity_auth = $this->createItem(Profile_User::class, [
+            'users_id'     => $post_only_id,
+            'profiles_id'  => $self_service_id,
+            'entities_id'  => $root_entity->getID(),
+            'is_recursive' => 0,
+        ]);
+        $inside_entity_auth = $this->createItem(Profile_User::class, [
+            'users_id'     => $post_only_id,
+            'profiles_id'  => $self_service_id,
+            'entities_id'  => $child_entity->getID(),
+            'is_recursive' => 0,
+        ]);
+
+        // tech must not be able to purge an authorization in another entity.
+        $this->login('tech', 'tech');
+        $this->setEntity($child_entity->getID(), false);
+
+        $this->assertFalse($outside_entity_auth->canPurgeItem());
+        $this->assertTrue($inside_entity_auth->canPurgeItem());
     }
 
     public function testLogOperationOnAddAndDelete(): void
@@ -426,20 +474,20 @@ class Profile_UserTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $profile = getItemByTypeName(Profile::class, 'Self-Service');
         $profile_user = new Profile_User();
-        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">1</span>', $profile_user->getTabNameForItem($profile));
         $this->createItem(User::class, [
             'name' => __FUNCTION__ . '_deleted',
             '_profiles_id' => $profile->getId(),
             '_entities_id' => $this->getTestRootEntity(true),
             'is_deleted' => 1,
         ]);
-        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">1</span>', $profile_user->getTabNameForItem($profile));
         $this->createItem(User::class, [
             'name' => __FUNCTION__ . '_not_deleted',
             '_profiles_id' => $profile->getId(),
             '_entities_id' => $this->getTestRootEntity(true),
         ]);
-        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">3</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
 
     }
 

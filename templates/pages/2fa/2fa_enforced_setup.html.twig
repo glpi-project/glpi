@@ -36,5 +36,5 @@
 {% set in_grace_period = enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD') %}
 
 {% block content_block %}
-   {{ tfa.tfa_setup(secret, qrcode, true, in_grace_period, grace_period_days_left) }}
+   {{ tfa.tfa_setup(user_id, secret, qrcode, true, in_grace_period, grace_period_days_left) }}
 {% endblock %}

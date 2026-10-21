@@ -36,7 +36,7 @@ import { resolve } from 'path';
 import { Config } from '../utils/Config';
 import { JSDOM } from 'jsdom';
 import { CsrfExtractor } from '../utils/CsrfExtractor';
-import { Constants } from '../utils/Constants';
+import { getWorkerLogin } from '../utils/WorkerEntities';
 import { ProfileSwitcher } from '../utils/ProfileSwitcher';
 import { CsrfFetcher } from '../utils/CsrfFetcher';
 import { WorkerSessionCache } from '../utils/WorkerSessionCache';
@@ -44,6 +44,7 @@ import { Api } from '../utils/Api';
 import { EntitySwitcher } from '../utils/EntitySwitcher';
 import { FormImporter } from '../utils/FormImporter';
 import { DebugModeSwitcher } from '../utils/DebugModeSwitcher';
+import { GeneralConfig } from '../utils/GeneralConfig';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -55,6 +56,7 @@ export const test = baseTest.extend<{
     formImporter: FormImporter,
     api: Api,
     debug: DebugModeSwitcher,
+    general_config: GeneralConfig,
     retryTimeout: void,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
@@ -86,8 +88,23 @@ export const test = baseTest.extend<{
 
         // Render the login page in order to extract the CSRF token and find the
         // login and password fields names
-        const response = await context.get(Config.getBaseUrl());
-        const body = await response.text();
+        let response = await context.get(Config.getBaseUrl());
+        let body = await response.text();
+
+        if (body.includes('MAINTENANCE MODE')) {
+            // An isolated test that enables the maintenance mode is supposed to
+            // disable it again, even when it fails (see
+            // `playwright.isolated.config.ts`). If it did not, no session could
+            // be created anymore and the whole suite would fail with a
+            // confusing error.
+            // GLPI's own backdoor puts a flag in the session that lets this
+            // request go through, see `CheckMaintenanceListener`.
+            response = await context.get(
+                `${Config.getBaseUrl()}/index.php?skipMaintenance=1`
+            );
+            body = await response.text();
+        }
+
         const document = new JSDOM(body).window.document;
 
         // Extract CSRF token
@@ -115,13 +132,7 @@ export const test = baseTest.extend<{
         }
 
         // Map id to expected playwright worker login
-        const worker_prefix = Constants.E2E_WORKER_PREFIX;
-        const worker_index = id + 1;
-        const worker_index_string = worker_index > 10
-            ? worker_index.toString()
-            : `0${worker_index.toString()}` // Pad numbers < 10
-        ;
-        const worker_login = worker_prefix + worker_index_string;
+        const worker_login = getWorkerLogin();
 
         // Send login request
         await context.post(`${Config.getBaseUrl()}/front/login.php`, {
@@ -131,6 +142,26 @@ export const test = baseTest.extend<{
                 '_glpi_csrf_token': token,
             }
         });
+
+        // Make sure the login succeeded: an anonymous session would otherwise
+        // be stored and every test of this worker would fail later with an
+        // unrelated HTTP 401.
+        // An authenticated session renders the central page, an anonymous one
+        // is redirected to the login page.
+        response = await context.get(`${Config.getBaseUrl()}/front/central.php`, {
+            maxRedirects: 0,
+        });
+        if (response.status() !== 200) {
+            await context.dispose();
+            throw new Error(
+                `Unable to log in as "${worker_login}" (worker ${id + 1}, `
+                + `HTTP ${response.status()} on the central page). `
+                + `The e2e database only contains 16 worker `
+                + `accounts (see \`PLAYWRIGHT_MAX_WORKERS\` in \`install/empty_data.php\`): `
+                + `run the tests with fewer workers, or increase this constant and `
+                + `reinstall the e2e database with \`make e2e-db-install\`.`
+            );
+        }
 
         // Store session
         await context.storageState({ path: file_name });
@@ -167,6 +198,13 @@ export const test = baseTest.extend<{
     // Service used to switch debug mode on/off.
     debug: [async ({ request, csrf }, use) => {
         await use(new DebugModeSwitcher(request, csrf));
+    }, { scope: 'test' }],
+
+    // Service used to update GLPI's general configuration.
+    // This configuration is global to the whole application, thus only the
+    // isolated tests (`*.spec.isolated.ts`) may use it.
+    general_config: [async ({ request }, use) => {
+        await use(new GeneralConfig(request));
     }, { scope: 'test' }],
 
     // Store the state of the current session.

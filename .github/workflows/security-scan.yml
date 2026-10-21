@@ -16,8 +16,11 @@ concurrency:
 
 jobs:
   security-scan:
+    # Let tier repositories opt out of running the scan on a push event
+    # (e.g. a private mirror branch)
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'push' || vars.CI_SKIP_PUSH != 'true'
     name: "Security scan"
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ vars.CI_RUNNER_LABEL || 'ubuntu-latest' }}"
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -35,9 +38,9 @@ jobs:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
             ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
-          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          key: "app_home_deps-8.5-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
-            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-8.5-
             app_home_deps-
       - name: "Initialize containers"
         run: |

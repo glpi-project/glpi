@@ -37,7 +37,9 @@ namespace Glpi\Tests;
 use CommonITILObject;
 use CommonItilObject_Item;
 use Computer;
+use DeviceSimcard;
 use Glpi\Form\Form;
+use Item_DeviceSimcard;
 use User;
 
 abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
@@ -100,6 +102,66 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
         $this->assertEquals(
             'Items',
             strip_tags($link->getTabNameForItem($itil_item)),
+        );
+    }
+
+    public function testShowForObjectWithItemtypeWithoutNameField(): void
+    {
+        $itil_itemtype = $this->getTestedClass()::$itemtype_1;
+        if (!is_subclass_of($itil_itemtype, CommonITILObject::class)) {
+            $this->markTestSkipped('This test is only for ITIL items');
+        }
+
+        $this->login();
+        $entity = $this->getTestRootEntity(true);
+
+        // Item_DeviceSimcard is a linkable itemtype whose table has no "name" column.
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $simcard_model = $this->createItem(DeviceSimcard::class, [
+            'designation' => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $simcard = $this->createItem(Item_DeviceSimcard::class, [
+            'devicesimcards_id' => $simcard_model->getID(),
+            'itemtype'          => Computer::class,
+            'items_id'          => $computer->getID(),
+            'entities_id'       => $entity,
+        ]);
+
+        $itil_item = $this->createItem($itil_itemtype, [
+            'name'        => __FUNCTION__,
+            'content'     => 'test',
+            'entities_id' => $entity,
+        ], ['content']);
+        $this->createItem($this->getTestedClass(), [
+            $itil_itemtype::getForeignKeyField() => $itil_item->getID(),
+            'itemtype'                           => Item_DeviceSimcard::class,
+            'items_id'                           => $simcard->getID(),
+        ]);
+
+        $_SESSION['glpiactiveprofile']['helpdesk_item_type'][] = Item_DeviceSimcard::class;
+
+        // Rendering the linked items must not raise "Undefined array key name".
+        $errors = [];
+        set_error_handler(static function (int $errno, string $errstr) use (&$errors): bool {
+            $errors[] = $errstr;
+            return true;
+        });
+        try {
+            $method = new \ReflectionMethod($this->getTestedClass(), 'showForObject');
+            $method->setAccessible(true);
+            ob_start();
+            $method->invoke(null, $itil_item);
+            ob_get_clean();
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertEmpty(
+            array_filter($errors, static fn(string $e): bool => str_contains($e, 'Undefined array key "name"')),
         );
     }
 

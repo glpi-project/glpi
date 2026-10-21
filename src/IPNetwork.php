@@ -787,7 +787,12 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $version = $this->fields["version"];
         $start   = null;
-        $this->computeNetworkRange($start);
+        $end     = null;
+        // A masked equality must compare against the network address itself. Excluding the network
+        // and broadcast addresses is a display concern that shifts the start by one, which would
+        // make this criterion compare a masked value (always the network address) against
+        // network + 1 and never match.
+        $this->computeNetworkRange($start, $end, false);
 
         $result = [];
         for ($i = ($version == 4 ? 3 : 0); $i < 4; ++$i) {
@@ -925,13 +930,12 @@ class IPNetwork extends CommonImplicitTreeDropdown
      *
      * @param IPAddress|array|null $start
      * @param IPAddress|array|null $end                         (default NULL)
-     * @param string $excludeBroadcastAndNetwork Don't provide extremties addresses
-     *                                     ($this->fields['addressable'] by default)
+     * @param string|bool $excludeBroadcastAndNetwork Don't provide extremties addresses.
+     *                                     An empty string derives it from $this->fields['addressable'];
+     *                                     a boolean forces it.
      *                                     (default '')
      *
      * @return void
-     *
-     * @TODO Deprecate the `$excludeBroadcastAndNetwork`, it is never used.
      **/
     public function computeNetworkRange(&$start, &$end = null, $excludeBroadcastAndNetwork = '')
     {

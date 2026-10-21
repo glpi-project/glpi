@@ -38,6 +38,7 @@ use Appliance;
 use Appliance_Item;
 use Change;
 use CommonDBTM;
+use CommonITILActor;
 use Computer;
 use DBConnection;
 use Document;
@@ -50,18 +51,28 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
+use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\SearchEngine;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
 use Group_User;
+use ITILFollowup;
 use Location;
+use Peripheral;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Problem;
 use Psr\Log\LogLevel;
 use Session;
+use Software;
+use Supplier;
+use Supplier_Ticket;
 use TaskCategory;
 use Ticket;
 use User;
 
+use function Safe\json_encode;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
@@ -180,6 +191,255 @@ class SearchTest extends DbTestCase
             . '\)/im',
             $data['sql']['search']
         );
+    }
+
+    public function testMetaComputerSoftwareDuplicateFieldColumn()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [0 => ['field'      => 'view',
+                'searchtype' => 'contains',
+                'value'      => '',
+            ],
+            ],
+            // two meta criteria targeting the same Software field (name)
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'OR',
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                1 => ['link'       => 'OR',
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'chrome',
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Computer::class, $search_params);
+
+        // the Software "name" field must only produce a single result column,
+        // even though it is targeted by two meta criteria
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        // the corresponding SELECT alias must not be duplicated either
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
+    public function testMetaComputerSoftwareDuplicateFieldColumnNested()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+                1 => [
+                    'link'       => 'OR',
+                    'meta'       => true,
+                    'itemtype'   => Software::class,
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                2 => [
+                    'link'       => 'OR',
+                    'criteria'   => [
+                        0 => [
+                            'link'       => 'OR',
+                            'meta'       => true,
+                            'itemtype'   => Software::class,
+                            'field'      => 160,
+                            'searchtype' => 'contains',
+                            'value'      => 'chrome',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Computer::class, $search_params);
+
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
+    public function testNestedMetaCriteria(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+
+        // Followup on a ticket that has the supplier assigned
+        $ticket_with_supplier = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $this->createItem(Supplier_Ticket::class, [
+            'tickets_id'   => $ticket_with_supplier->getID(),
+            'suppliers_id' => $supplier->getID(),
+            'type'         => CommonITILActor::ASSIGN,
+        ]);
+        $followup_with_supplier = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_with_supplier->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        // Followup on a ticket that has no supplier assigned
+        $ticket_without_supplier = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $followup_without_supplier = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_without_supplier->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        // Meta criterion inside a nested group, as built by `FilterableTrait::itemMatchFilter()`
+        $search_followup = static fn(ITILFollowup $followup): array => SearchEngine::getData(ITILFollowup::class, [
+            'criteria' => [
+                [
+                    'link'     => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'itemtype'   => Ticket::class,
+                            'meta'       => true,
+                            'field'      => 6, // Assigned to a supplier
+                            'searchtype' => 'equals',
+                            'value'      => $supplier->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => 7, // ID
+                    'searchtype' => 'contains',
+                    'value'      => $followup->getID(),
+                ],
+            ],
+        ]);
+
+        // The meta criterion adds an aggregated column, so a GROUP BY is required
+        // to avoid a single row full of NULL values when nothing matches
+        $data = $search_followup($followup_without_supplier);
+        $this->assertStringContainsString('GROUP BY', $data['sql']['raw']['GROUPBY']);
+        $this->assertSame(0, $data['data']['totalcount']);
+
+        $data = $search_followup($followup_with_supplier);
+        $this->assertStringContainsString('GROUP BY', $data['sql']['raw']['GROUPBY']);
+        $this->assertSame(1, $data['data']['totalcount']);
+        $this->assertEquals($followup_with_supplier->getID(), $data['data']['rows'][0]['id']);
+    }
+
+    public function testRowWithoutIdIsNotListedInFoundItems(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Followup on a ticket that has no supplier assigned
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        $data = SearchEngine::prepareDataForSearch(ITILFollowup::class, [
+            'criteria' => [
+                [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'meta'       => true,
+                    'field'      => 6, // Assigned to a supplier
+                    'searchtype' => 'equals',
+                    'value'      => $supplier->getID(),
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => 7, // ID
+                    'searchtype' => 'contains',
+                    'value'      => $followup->getID(),
+                ],
+            ],
+        ]);
+        SQLProvider::constructSQL($data);
+
+        // Drop the GROUP BY so the aggregated meta column yields a single row full of NULL values
+        $this->assertNotEmpty($data['sql']['raw']['GROUPBY']);
+        $raw = $data['sql']['raw'];
+        $data['sql']['search'] = $raw['SELECT'] . $raw['FROM'] . $raw['WHERE']
+            . $raw['HAVING'] . $raw['ORDER'] . $raw['LIMIT'];
+        SQLProvider::constructData($data);
+
+        // The row exists but must not be listed as a found item
+        $this->assertCount(1, $data['data']['rows']);
+        $this->assertNull($data['data']['rows'][0]['id']);
+        $this->assertSame([], $data['data']['items']);
+    }
+
+    public function testMetaToviewNotLeakedAcrossIndependentCalls()
+    {
+        $opts = SearchOption::getOptionsForItemtype(Software::class);
+        foreach ($opts as $id => $opt) {
+            if (is_array($opt) && ($opt['field'] ?? null) === 'name') {
+                break;
+            }
+        }
+        $field_id = $id;
+        $data = ['itemtype' => Computer::class];
+        $SELECT = '';
+        $FROM = '';
+        $already_link_tables = [];
+        $criteria1 = [
+            ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'firefox'],
+        ];
+        $criteria2 = [
+            ['meta' => true, 'itemtype' => Software::class, 'field' => $field_id, 'searchtype' => 'contains', 'value' => 'chrome'],
+        ];
+        \Search::constructAdditionalSqlForMetacriteria($criteria1, $SELECT, $FROM, $already_link_tables, $data);
+        $this->assertSame(1, substr_count($SELECT, "ITEM_Software_$field_id"));
+        // second, independent call reusing the same $data (as a plugin might): must not leak nor drop columns
+        $SELECT2 = '';
+        \Search::constructAdditionalSqlForMetacriteria($criteria2, $SELECT2, $FROM, $already_link_tables, $data);
+        $this->assertSame(1, substr_count($SELECT2, "ITEM_Software_$field_id"));
     }
 
     public function testSoftwareLinkedToAnyComputer()
@@ -2059,7 +2319,7 @@ class SearchTest extends DbTestCase
         $this->assertTrue($DB->delete(Change::getTable(), [new QueryExpression('true')]));
 
         // Creates Changes with different requesters
-        $this->createItems('Change', [
+        $this->createItems(Change::class, [
             // Test set on requester
             [
                 'name' => 'testAddOrderByUser user 1 (R)',
@@ -2119,7 +2379,7 @@ class SearchTest extends DbTestCase
         ]);
 
         yield [
-            'itemtype' => 'Change',
+            'itemtype' => Change::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2145,7 +2405,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Change',
+            'itemtype' => Change::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2171,7 +2431,7 @@ class SearchTest extends DbTestCase
         ];
 
         // Creates Peripheral with different users
-        $this->createItems('Peripheral', [
+        $this->createItems(Peripheral::class, [
             // Test set on user
             [
                 'name' => 'testAddOrderByUser user 1 (U)',
@@ -2190,7 +2450,7 @@ class SearchTest extends DbTestCase
         ]);
 
         yield [
-            'itemtype' => 'Peripheral',
+            'itemtype' => Peripheral::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2213,7 +2473,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Peripheral',
+            'itemtype' => Peripheral::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2237,7 +2497,7 @@ class SearchTest extends DbTestCase
 
         // Creates Problems with different writers
         // Create by glpi user
-        $this->createItems('Problem', [
+        $this->createItems(Problem::class, [
             [
                 'name' => 'testAddOrderByUser by glpi',
                 'content' => '',
@@ -2246,7 +2506,7 @@ class SearchTest extends DbTestCase
 
         // Create by tech user
         $this->login('tech', 'tech');
-        $this->createItems('Problem', [
+        $this->createItems(Problem::class, [
             [
                 'name' => 'testAddOrderByUser by tech',
                 'content' => '',
@@ -2256,7 +2516,7 @@ class SearchTest extends DbTestCase
         $this->login('glpi', 'glpi');
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2278,7 +2538,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2301,7 +2561,7 @@ class SearchTest extends DbTestCase
 
         // Last edit by
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2323,7 +2583,7 @@ class SearchTest extends DbTestCase
         ];
 
         yield [
-            'itemtype' => 'Problem',
+            'itemtype' => Problem::class,
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
@@ -2477,7 +2737,7 @@ class SearchTest extends DbTestCase
         // reduce the right of tech profile
         // to have only the right of display their own problems (created, assign)
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Problem' => (\Problem::READMY + READNOTE + UPDATENOTE),
+            'Problem' => (Problem::READMY + READNOTE + UPDATENOTE),
         ]);
 
         // add a group for tech user
@@ -2496,7 +2756,7 @@ class SearchTest extends DbTestCase
         );
 
         // create a problem and assign group with tech user
-        $problem = new \Problem();
+        $problem = new Problem();
         $this->assertGreaterThan(
             0,
             $problem->add([
@@ -2974,7 +3234,7 @@ class SearchTest extends DbTestCase
             Computer::getTable(),
             \Monitor::getTable(),
             \NetworkEquipment::getTable(),
-            \Peripheral::getTable(),
+            Peripheral::getTable(),
             \Phone::getTable(),
             \Printer::getTable(),
         ];
@@ -3250,7 +3510,7 @@ class SearchTest extends DbTestCase
             ]);
             $this->assertGreaterThan(0, $tickets_id);
             $actors = $ticket->getITILActors();
-            $this->assertEquals(\CommonITILActor::OBSERVER, $actors[$params['observer']][0]);
+            $this->assertEquals(CommonITILActor::OBSERVER, $actors[$params['observer']][0]);
         }
 
         return [
@@ -5824,7 +6084,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    public static function provideCriteriaWithSubqueries(): iterable
+    private static function provideCriteriaWithSubqueries(): iterable
     {
         $category   = fn() => getItemByTypeName('ITILCategory', 'Test Criteria With Subqueries', true);
         $group_1    = fn() => getItemByTypeName('Group', 'Group 1', true);
@@ -6527,45 +6787,55 @@ class SearchTest extends DbTestCase
         ]);
     }
 
-    #[DataProvider('provideCriteriaWithSubqueries')]
-    public function testCriteriaWithSubqueries(
-        string $itemtype,
-        array $criteria,
-        array $expected
-    ): void {
-        // Init datas
+    public function testCriteriaWithSubqueries(): void
+    {
+        // Init datas once for all cases, as creating them is far more expensive than the searches
         $this->provideCriteriaWithSubqueries_Dataset();
 
-        // Process closure values
-        array_walk_recursive($criteria, function (&$value) {
-            if (is_callable($value)) {
-                $value = $value();
+        $case = 0;
+        foreach (self::provideCriteriaWithSubqueries() as ['itemtype' => $itemtype, 'criteria' => $criteria, 'expected' => $expected]) {
+            $case++;
+
+            // Process closure values
+            array_walk_recursive($criteria, function (&$value) {
+                if (is_callable($value)) {
+                    $value = $value();
+                }
+            });
+
+            // Run search
+            $data = \Search::getDatas($itemtype, [
+                'criteria' => $criteria,
+            ]);
+
+            // Parse results
+            $names = [];
+            foreach ($data['data']['rows'] as $row) {
+                // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
+                $n = $row['raw']["ITEM_{$itemtype}_1"];
+                $names[] = explode('$#$', $n)[0];
             }
-        });
 
-        // Run search
-        $data = \Search::getDatas($itemtype, [
-            'criteria' => $criteria,
-        ]);
+            // Sort both array for comparison
+            sort($names);
+            sort($expected);
 
-        // Parse results
-        $names = [];
-        foreach ($data['data']['rows'] as $row) {
-            // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
-            $n = $row['raw']["ITEM_{$itemtype}_1"];
-            $names[] = explode('$#$', $n)[0];
+            // Validate results
+            $this->assertEquals(
+                $expected,
+                $names,
+                sprintf(
+                    "Search query failed for case #%d (%s).\nCriteria: %s\nRaw SQL WHERE clause: %s",
+                    $case,
+                    $itemtype,
+                    json_encode($criteria, JSON_PRETTY_PRINT),
+                    $data['sql']['raw']['WHERE'] ?? 'N/A'
+                )
+            );
         }
 
-        // Sort both array for comparison
-        sort($names);
-        sort($expected);
-
-        // Validate results
-        $this->assertEquals(
-            $expected,
-            $names,
-            "Search query failed. Raw SQL WHERE clause: " . ($data['sql']['raw']['WHERE'] ?? 'N/A')
-        );
+        // Make sure the provider was not silently emptied
+        $this->assertGreaterThan(0, $case);
     }
 
     /**
@@ -7225,6 +7495,28 @@ class SearchTest extends DbTestCase
         $this->assertContains('121', $ids);
         $this->assertContains('80', $ids);
         $this->assertContains('86', $ids);
+    }
+
+    public function testSoftwareLicenseNumberColumnKeepsOneRowPerLicense(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $software = $this->createItem(Software::class, ['name' => __FUNCTION__, 'entities_id' => $entities_id]);
+        $this->createItems(\SoftwareLicense::class, [
+            ['name' => __FUNCTION__ . ' 1', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 2],
+            ['name' => __FUNCTION__ . ' 2', 'entities_id' => $entities_id, 'softwares_id' => $software->getID(), 'number' => 3],
+        ]);
+
+        $data = $this->doSearch(\SoftwareLicense::class, [
+            'criteria' => [['field' => 10, 'searchtype' => 'contains', 'value' => __FUNCTION__]],
+        ], [4]);
+
+        // "Number" (4) uses aggregate functions and must not collapse rows into a single one without ID
+        $this->assertSame(2, $data['data']['totalcount']);
+        foreach ($data['data']['rows'] as $row) {
+            $this->assertIsInt($row['id']);
+        }
     }
 
     public function testTypeHasAssetUrlSearchOption(): void

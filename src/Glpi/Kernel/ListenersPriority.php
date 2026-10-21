@@ -34,6 +34,8 @@
 
 namespace Glpi\Kernel;
 
+use Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener;
+use Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener;
 use Glpi\Kernel\Listener\PostBootListener\BootPlugins;
 use Glpi\Kernel\Listener\PostBootListener\CheckPluginsStates;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsAutoloaderRegistration;
@@ -137,6 +139,17 @@ final class ListenersPriority
         // Update session variables according to request parameters.
         // Must be called as late as possible, just before controllers execution.
         SessionVariables::class            => 0,
+    ];
+
+    public const CONTROLLER_LISTENERS_PRIORITIES = [
+        // Applies the security strategy of the controller (authentication, profile rights, ...).
+        // Must be executed before the `CheckCsrfListener`: when the session has expired, the CSRF token
+        // no longer exists in the session, and the CSRF check would fail with a generic "access denied" error
+        // instead of letting the firewall throw a `SessionExpiredException` that redirects the user to the login page.
+        FirewallStrategyListener::class => 10,
+
+        // Validates the CSRF token of requests that are supposed to have a body.
+        CheckCsrfListener::class        => 0,
     ];
 
     private function __construct() {}

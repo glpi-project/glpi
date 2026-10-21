@@ -67,6 +67,15 @@ export class Api
         return response.data;
     }
 
+    public async getItemsByName(itemtype: string, name: string): Promise<any[]>
+    {
+        const response = await this.doCrudRequest(
+            'GET',
+            `${itemtype}?searchText[name]=^${name}$`
+        );
+        return response.data;
+    }
+
     public async getSubItems(itemtype: string, id: number, subitemtype: string): Promise<any[]>
     {
         const response = await this.doCrudRequest(
@@ -110,11 +119,16 @@ export class Api
         return response.data;
     }
 
-    public async purgeItem(itemtype: string, id: number): Promise<any>
-    {
+    public async purgeItem(
+        itemtype: string,
+        id: number,
+        force_purge: boolean = false,
+    ): Promise<any> {
+        // Without `force_purge`, the items that have a trashbin are only
+        // moved to it.
         const response = await this.doCrudRequest(
             'DELETE',
-            `${itemtype}/${id}`,
+            `${itemtype}/${id}${force_purge ? '?force_purge=1' : ''}`,
         );
         return response.data;
     }

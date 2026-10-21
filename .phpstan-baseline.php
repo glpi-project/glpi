@@ -758,6 +758,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/rule.common.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method check\\(\\) on Rule\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method delete\\(\\) on Rule\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -982,12 +988,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Agent\\:\\:getLinkedItem\\(\\) should return CommonDBTM but returns CommonDBTM\\|false\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Agent.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Static property Agent\\:\\:\\$found_address \\(bool\\) does not accept string\\|true\\.$#',
-	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Agent.php',
 ];
@@ -1856,30 +1856,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$itemtype of static method CommonDBConnexity\\:\\:canConnexity\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$items_id of static method CommonDBConnexity\\:\\:canConnexity\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$itemtype of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$items_id of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type list\\<list\\<string\\>\\|string\\>\\|string supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 3,
@@ -1899,12 +1875,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset mixed on array\\<string, mixed\\>\\|false\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset string on array\\<string, mixed\\>\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
@@ -3148,7 +3118,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
@@ -3160,7 +3130,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
@@ -3179,12 +3149,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method getNameID\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method maybeLocated\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
@@ -5300,19 +5264,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\.\\=" between 0\\|0\\.0\\|array\\{\\}\\|string\\|false and non\\-falsy\\-string results in an error\\.$#',
-	'identifier' => 'assignOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getEmailDataForUser\\(\\) should return array\\<array\\{id\\: int, email\\: string, is_default\\: int, _links\\: array\\{self\\: array\\{href\\: non\\-empty\\-string\\}\\}\\}\\> but returns list\\<array\\{id\\: int, email\\: string, is_default\\: int, _links\\: array\\{self\\: array\\{href\\: string\\}\\}\\}\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getUsedOrManagedItems\\(\\) expects int, int\\|null given\\.$#',
+	'message' => '#^Parameter \\#2 \\$users_id of method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getUsedOrManagedItems\\(\\) expects int, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
@@ -7364,12 +7322,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of static method Gettext\\\\Languages\\\\Language\\:\\:getById\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -7886,10 +7838,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionData.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Condition\\\\ConditionHandler\\\\SingleChoiceFromValuesConditionHandler\\:\\:convertConditionValue\\(\\) should return int but returns int\\|string\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Method Glpi\\\\Form\\\\Condition\\\\ConditionHandler\\\\ItemConditionHandler\\:\\:convertConditionValue\\(\\) never returns int so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionHandler/SingleChoiceFromValuesConditionHandler.php',
+	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionHandler/ItemConditionHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Condition\\\\ConditionHandler\\\\UserDevicesConditionHandler\\:\\:getSupportedDeviceTypes\\(\\) should return array\\<class\\-string\\<CommonDBTM\\>\\> but returns array\\<int\\<0, max\\>, class\\-string\\>\\.$#',
@@ -8460,12 +8412,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\+" between int\\|string\\|false and 1 results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Group\\|false\\.$#',
@@ -15308,18 +15254,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotImportedEmail.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Notepad\\:\\:canCreateItem\\(\\) should return bool but returns bool\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notepad.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Notepad\\:\\:canUpdateItem\\(\\) should return bool but returns bool\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notepad.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:addFiles\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -16364,12 +16298,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'notifications_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -16600,17 +16528,11 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDBByCrit\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getLinkURL\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Planning.php',
@@ -17512,12 +17434,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Reminder\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'OR\' might not exist on non\\-empty\\-array\\{0\\?\\: 0, OR\\?\\: array\\{\'glpi_reminders\\.users_id\'\\: int\\<min, \\-1\\>\\|int\\<1, max\\>\\|non\\-falsy\\-string, \'glpi_reminders_users\\.users_id\'\\: int\\<min, \\-1\\>\\|int\\<1, max\\>\\|non\\-falsy\\-string, 0\\?\\: array\\{\'glpi_groups_reminders\\.groups_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\|array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}, 1\\?\\: array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\|array\\{0\\: array\\{\'glpi_groups_reminders\\.groups_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}, 1\\?\\: array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\|array\\{array\\{\'glpi_profiles_reminders\\.profiles_id\'\\: mixed, OR\\: non\\-empty\\-array\\<mixed\\>\\}\\}\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
@@ -18964,7 +18880,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$nb of static method CommonGLPI\\:\\:createTabEntry\\(\\) expects int, int\\<0, max\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
@@ -19372,12 +19288,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset 2 might not exist on array\\{0\\: int\\<0, max\\>, 1\\: int\\<0, max\\>, 2\\: int, 3\\: string, mime\\: string, channels\\: int, bits\\: int\\}\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 2 on array\\{non\\-empty\\-string, non\\-empty\\-string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];

@@ -36,7 +36,9 @@ namespace tests\units;
 
 use Domain;
 use DomainRecord;
+use DomainRecordType;
 use Glpi\Tests\DbTestCase;
+use ProfileRight;
 
 /* Test for inc/software.class.php */
 
@@ -111,5 +113,173 @@ class DomainRecordTest extends DbTestCase
 
         // Record name is a genuine FQDN suffixed by the domain name.
         $this->assertSame('www', DomainRecord::getDisplayName($domain, 'www.Test'));
+    }
+
+    public static function testDomainRecordCRUDRightsProvider()
+    {
+
+        $empty_manageable_records = [];
+        $all_manageable_records_id = [-1];
+        $a_mangeable_record_id = [getItemByTypeName(DomainRecordType::class, 'A', true)];
+
+        $rights = [0, CREATE, UPDATE, DELETE, PURGE];
+
+        foreach ($rights as $right) {
+            yield [
+                'rights' => $right,
+                'manageable_records' => $empty_manageable_records,
+                'A_record_type_rights' => [
+                    'canCreate' => false,
+                    'canUpdate' => false,
+                    'canDelete' => false,
+                    'canPurge' => false,
+                ],
+                'AAAA_record_type_rights' => [
+                    'canCreate' => false,
+                    'canUpdate' => false,
+                    'canDelete' => false,
+                    'canPurge' => false,
+                ],
+            ];
+
+            yield [
+                'rights' => $right,
+                'manageable_records' => $all_manageable_records_id,
+                'A_record_type_rights' => [
+                    'canCreate' => true,
+                    'canUpdate' => true,
+                    'canDelete' => true,
+                    'canPurge' => true,
+                ],
+                'AAAA_record_type_rights' => [
+                    'canCreate' => true,
+                    'canUpdate' => true,
+                    'canDelete' => true,
+                    'canPurge' => true,
+                ],
+            ];
+
+            yield [
+                'rights' => $right,
+                'manageable_records' => $a_mangeable_record_id,
+                'A_record_type_rights' => [
+                    'canCreate' => true,
+                    'canUpdate' => true,
+                    'canDelete' => true,
+                    'canPurge' => true,
+                ],
+                'AAAA_record_type_rights' => [
+                    'canCreate' => false,
+                    'canUpdate' => false,
+                    'canDelete' => false,
+                    'canPurge' => false,
+                ],
+            ];
+        }
+    }
+
+    public function testDomainRecordCRUDRights()
+    {
+        $this->login();
+
+        $profile = $this->createItem(\Profile::class, [
+            "name" => 'testDomainRecordCRUDRightsProfile',
+            "interface" => "central",
+        ]);
+        $this->createItem(\User::class, [
+            'name' => 'testDomainRecordCRUDRights',
+            'password' => 'testDomainRecordCRUDRights',
+            'password2' => 'testDomainRecordCRUDRights',
+            '_profiles_id' => $profile->getID(),
+            '_entities_id' => $this->getTestRootEntity(true),
+        ], ['password', 'password2', '_profiles_id', '_entities_id']);
+
+        $profile_rights = new ProfileRight();
+        $profile_rights->getFromDBByCrit([
+            'profiles_id' => $profile->getID(),
+            'name' => 'domain',
+        ]);
+        $domain = $this->createItem(Domain::class, [
+            "name" => "DomainTest",
+            "entities_id" => $this->getTestRootEntity(true),
+        ]);
+
+        $a_domain_record_type = getItemByTypeName(DomainRecordType::class, 'A');
+        $aaaa_domain_record_type = getItemByTypeName(DomainRecordType::class, 'AAAA');
+
+        [$a_domain_record, $aaaa_domain_record] = $this->createItems(DomainRecord::class, [
+            [
+                'domains_id' => $domain->getID(),
+                'domainrecordtypes_id' => $a_domain_record_type->getID(),
+                'name' => 'a_domain_record',
+            ],
+            [
+                'domains_id' => $domain->getID(),
+                'domainrecordtypes_id' => $aaaa_domain_record_type->getID(),
+                'name' => 'aaaa_domain_record',
+            ],
+        ]);
+
+        foreach (self::testDomainRecordCRUDRightsProvider() as $i => $data) {
+            $this->login();
+            $this->updateItem(ProfileRight::class, $profile_rights->getID(), [
+                'rights' => $data['rights'],
+            ]);
+            $this->updateItem(\Profile::class, $profile->getID(), [
+                'managed_domainrecordtypes' => $data['manageable_records'],
+            ], ['managed_domainrecordtypes']);
+
+            $this->login('testDomainRecordCRUDRights', 'testDomainRecordCRUDRights');
+
+            // Test CREATE
+            $new_a_record = new DomainRecord();
+            $a_create_input = [
+                'domains_id' => $domain->getID(),
+                'domainrecordtypes_id' => $a_domain_record_type->getID(),
+            ];
+            $this->assertSame(
+                $data['A_record_type_rights']['canCreate'],
+                $new_a_record->can(-1, CREATE, $a_create_input),
+            );
+            $new_aaaa_record = new DomainRecord();
+            $aaaa_create_input = [
+                'domains_id' => $domain->getID(),
+                'domainrecordtypes_id' => $aaaa_domain_record_type->getID(),
+            ];
+            $this->assertSame(
+                $data['AAAA_record_type_rights']['canCreate'],
+                $new_aaaa_record->can(-1, CREATE, $aaaa_create_input),
+            );
+
+            // Test UPDATE
+            $this->assertSame(
+                $data['A_record_type_rights']['canUpdate'],
+                $a_domain_record->can($a_domain_record->getID(), UPDATE),
+            );
+            $this->assertSame(
+                $data['AAAA_record_type_rights']['canUpdate'],
+                $aaaa_domain_record->can($aaaa_domain_record->getID(), UPDATE),
+            );
+
+            // Test DELETE
+            $this->assertSame(
+                $data['A_record_type_rights']['canDelete'],
+                $a_domain_record->can($a_domain_record->getID(), DELETE),
+            );
+            $this->assertSame(
+                $data['AAAA_record_type_rights']['canDelete'],
+                $aaaa_domain_record->can($aaaa_domain_record->getID(), DELETE),
+            );
+
+            // Test PURGE
+            $this->assertSame(
+                $data['A_record_type_rights']['canPurge'],
+                $a_domain_record->can($a_domain_record->getID(), PURGE),
+            );
+            $this->assertSame(
+                $data['AAAA_record_type_rights']['canPurge'],
+                $aaaa_domain_record->can($aaaa_domain_record->getID(), PURGE),
+            );
+        }
     }
 }

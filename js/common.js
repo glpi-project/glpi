@@ -911,6 +911,10 @@ var templateSelection = function (selection) {
     }
     var _elt = $('<span></span>');
     _elt.html(_.escape(text));
+
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    selection.title = '\u2068' + text + '\u2069';
+
     return _elt;
 };
 
@@ -967,6 +971,9 @@ var templateItilStatus = function(option) {
             break;
     }
 
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
+
     return $(`<span><i class="itilstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
@@ -991,6 +998,9 @@ var templateValidation = function(option) {
             break;
     }
 
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
+
     return $(`<span><i class="validationstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
@@ -1007,6 +1017,9 @@ var templateItilPriority = function(option) {
     if (priority_color.length > 0) {
         color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}'></i>`;
     }
+
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
 
     return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
 };
@@ -2052,19 +2065,17 @@ window.displaySessionMessages = () => {
 
 // Add/remove a special data attribute to bootstrap's modals when they are
 // displayed/hidden.
-// This is needed for e2e testing as bootstrap have some compatibility issues
-// with cypress.
-// See https://github.com/cypress-io/cypress/issues/25202.
+// This is used by the e2e tests to wait for the end of the modal animations.
 document.addEventListener('shown.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'true');
+        modal.setAttribute('data-glpi-modal-shown', 'true');
     }
 });
 document.addEventListener('hidden.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
-        modal.setAttribute('data-cy-shown', 'false');
+        modal.setAttribute('data-glpi-modal-shown', 'false');
     }
 });
 

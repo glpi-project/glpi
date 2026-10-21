@@ -50,7 +50,12 @@ if (!$valid_obj || !($item_obj instanceof CommonItilObject_Item)) {
 switch ($_POST['action']) {
     case 'add':
         if (!empty($_POST['my_items'])) {
-            [$_POST['itemtype'], $_POST['items_id']] = explode('_', $_POST['my_items']);
+            $last_underscore = strrpos($_POST['my_items'], '_');
+            if ($last_underscore === false) {
+                throw new BadRequestHttpException();
+            }
+            $_POST['itemtype'] = substr($_POST['my_items'], 0, $last_underscore);
+            $_POST['items_id'] = substr($_POST['my_items'], $last_underscore + 1);
         }
         if (isset($_POST['itemtype']) && !empty($_POST['items_id'])) {
             $_POST['params']['items_id'][$_POST['itemtype']][$_POST['items_id']] = $_POST['items_id'];

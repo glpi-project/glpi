@@ -367,6 +367,36 @@ final class TilesManagerTest extends DbTestCase
         $this->assertEquals("/front/helpdesk.faq.php", $third_tile->getTileUrl());
     }
 
+    public function testTilesOrderCannotChangeTilesOfAnotherItem(): void
+    {
+        // Arrange: two profiles with their own tiles
+        $manager = $this->getManager();
+        $profile = $this->createNewHelpdeskProfile();
+        $other_profile = $this->createItem(Profile::class, [
+            'name' => 'Other helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+        $profile_tile_id = $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service",
+            'url'          => "https://glpi-project.org",
+        ]);
+        $other_tile_id = $manager->addTile($other_profile, ExternalPageTile::class, [
+            'title'        => "Support",
+            'description'  => "Link to teclib support",
+            'illustration' => "report-issue",
+            'url'          => "https://support.teclib.org",
+        ]);
+        $this->updateItem(Item_Tile::class, $other_tile_id, ['rank' => 10]);
+
+        // Act: set an order for the first profile that contains the tile of the other one
+        $manager->setOrderForItem($profile, [$other_tile_id, $profile_tile_id]);
+
+        // Assert: the tile of the other profile is not changed
+        $this->assertEquals(10, Item_Tile::getById($other_tile_id)->fields['rank']);
+    }
+
     public function testDeleteTile(): void
     {
         // Arrange: create a profile with some tiles

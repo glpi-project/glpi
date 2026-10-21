@@ -632,6 +632,11 @@ EOT;
 
         // Fill parameters from $_REQUEST
         foreach ($_REQUEST as $key => $value) {
+            // Reserved parameters that carry trusted internal scopes must never be seeded by a
+            // caller, otherwise the scope enforced by sub-resource routes could be bypassed.
+            if ($key === Search::MANDATORY_FILTER_PARAM) {
+                continue;
+            }
             $request->setParameter($key, $value);
         }
 
@@ -646,6 +651,10 @@ EOT;
                 $body = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
                 if (is_array($body)) {
                     foreach ($body as $key => $value) {
+                        // See above: a reserved internal scope parameter cannot be seeded by a caller.
+                        if ((string) $key === Search::MANDATORY_FILTER_PARAM) {
+                            continue;
+                        }
                         $request->setParameter((string) $key, $value);
                     }
                 } else {
@@ -789,11 +798,16 @@ EOT;
      */
     public function startTemporarySession(Request $request): void
     {
+        global $DB;
+
         $this->current_client = Server::validateAccessToken($request);
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = new User();
         $auth->user->getFromDB($this->current_client['user_id']);
+        if ($this->current_client['user_id']) {
+            $DB->setTimezoneForUser($auth->user);
+        }
         Session::init($auth);
         if ($request->getHeaderLine('Accept-Language')) {
             // Make sure language header is set in SERVER superglobal so that Session::getPreferredLanguage() works

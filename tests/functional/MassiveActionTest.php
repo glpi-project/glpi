@@ -39,6 +39,7 @@ use Change_Problem;
 use Change_Ticket;
 use CommonDBTM;
 use Contract;
+use DisplayPreference;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Group;
@@ -238,6 +239,8 @@ class MassiveActionTest extends DbTestCase
         bool $itemtype_is_compatible,
         bool $has_right
     ) {
+        $this->login();
+
         $base_comment = "test comment";
         $amendment = "test amendment";
         $old_session = $_SESSION['glpiactiveentities'] ?? [];
@@ -248,12 +251,16 @@ class MassiveActionTest extends DbTestCase
             $_SESSION['glpiactiveentities'] = [
                 $item->getEntityID(),
             ];
+        } else {
+            $_SESSION['glpiactiveentities'] = [
+                $item->getEntityID() + 1, // session is outside of scope
+            ];
         }
 
         // Check supplied params match the data
         $comment_exist = array_key_exists('comment', $item->fields);
         $this->assertSame($itemtype_is_compatible, $comment_exist);
-        $this->assertSame($has_right, $item->canUpdateItem());
+        $this->assertSame($has_right, $item->can($item->getID(), UPDATE));
 
         if ($itemtype_is_compatible && $has_right) {
             $expected_ok = 1;
@@ -442,13 +449,18 @@ class MassiveActionTest extends DbTestCase
         ];
 
         if ($has_right) {
-            $_SESSION['glpiactiveprofile'][$item::$rightname] = UPDATENOTE;
+            $_SESSION['glpiactiveprofile'][$item::$rightname] = READ | UPDATENOTE;
+        } else {
+            $_SESSION['glpiactiveprofile'][$item::$rightname] = READ;
         }
 
         // Check expected rights
         $this->assertSame(
             $has_right,
             (bool) Session::haveRight($item::$rightname, UPDATENOTE)
+        );
+        $this->assertTrue(
+            $item->can($item->getID(), READ)
         );
 
         if ($has_right) {
@@ -524,17 +536,32 @@ class MassiveActionTest extends DbTestCase
         array $input,
         bool $has_right
     ) {
+        $this->login();
+
         // Set up session rights
         $old_session = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
         if ($has_right) {
-            $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = ALLSTANDARDRIGHT;
+            $_SESSION['glpiactiveprofile'][Problem::$rightname] = ALLSTANDARDRIGHT + Problem::READALL;
+        } else {
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+            $_SESSION['glpiactiveprofile'][Problem::$rightname] = 0;
         }
 
-        // Default expectation: can't run
-        $expected_ok = 0;
-        $expected_ko = 0;
+        // Expectations
+        if ($item instanceof Ticket) {
+            $expected_ok = ($input['problems_id'] ?? -1) > 0 ? 1 : 0;
+            $expected_ko = ($input['problems_id'] ?? -1) <= 0 ? 1 : 0;
+        } else {
+            $expected_ok = 0;
+            $expected_ko = 1;
+        }
 
         // Check rights set up was successful
+        $this->assertSame(
+            $has_right,
+            (bool) Session::haveRight(Ticket::$rightname, UPDATE)
+        );
         $this->assertSame(
             $has_right,
             (bool) Session::haveRight(Problem::$rightname, UPDATE)
@@ -550,9 +577,6 @@ class MassiveActionTest extends DbTestCase
                 'entities_id' => $item->getEntityID(),
             ]);
             $this->assertGreaterThan(0, $input['problems_id']);
-
-            // Update expectation: this item should be OK
-            $expected_ok = 1;
         }
 
         // Execute action
@@ -609,9 +633,12 @@ class MassiveActionTest extends DbTestCase
         int    $expected_ok,
         int    $expected_ko
     ): void {
+        $this->login();
+
         // Grant Problem update right
         $old_right = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
-        $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = ALLSTANDARDRIGHT;
+        $_SESSION['glpiactiveprofile'][Problem::$rightname] = ALLSTANDARDRIGHT + Problem::READALL;
 
         $problem    = new Problem();
         $problem_id = $problem->add([
@@ -736,6 +763,7 @@ class MassiveActionTest extends DbTestCase
         $id = $ticket->add([
             'name'    => 'test',
             'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $ticket->getFromDB($id);
         $this->assertGreaterThan(0, $id);
@@ -794,7 +822,7 @@ class MassiveActionTest extends DbTestCase
 
             // Set up session rights
             if ($has_right) {
-                $this->login('tech', 'tech');
+                $this->login();
             } else {
                 $this->login('post-only', 'postonly');
             }
@@ -925,7 +953,7 @@ class MassiveActionTest extends DbTestCase
             0,
             $computer->add([
                 'name' => 'test',
-                'entities_id' => 1,
+                'entities_id' => $this->getTestRootEntity(true),
             ])
         );
 
@@ -935,7 +963,7 @@ class MassiveActionTest extends DbTestCase
             0,
             $manual_domain->add([
                 'name' => 'manual_domain',
-                'entities_id' => 1,
+                'entities_id' => $this->getTestRootEntity(true),
             ])
         );
 
@@ -985,7 +1013,6 @@ class MassiveActionTest extends DbTestCase
                 'is_deleted'            => false,
             ])
         );
-
 
         // Execute action to remove link between Computer and Manual Domain
         $this->processMassiveActionsForOneItemtype(
@@ -1115,6 +1142,60 @@ class MassiveActionTest extends DbTestCase
                 $row["action_class"],
             );
         }
+    }
+
+    public function testProcessMassiveActionsForOneItemtype_deleteDisplayPreferenceForUser(): void
+    {
+        $this->login();
+        $users_id = (int) Session::getLoginUserID();
+        $tech_id = getItemByTypeName(User::class, 'tech', true);
+
+        $displaypref = new DisplayPreference();
+        $displaypref->activatePerso(['itemtype' => 'Computer', 'users_id' => $users_id]);
+        $displaypref->activatePerso(['itemtype' => 'Computer', 'users_id' => $tech_id]);
+        $own_crit = ['users_id' => $users_id, 'itemtype' => 'Computer'];
+        $tech_crit = ['users_id' => $tech_id, 'itemtype' => 'Computer'];
+        $this->assertGreaterThan(0, countElementsInTable(DisplayPreference::getTable(), $own_crit));
+        $tech_count = countElementsInTable(DisplayPreference::getTable(), $tech_crit);
+        $this->assertGreaterThan(0, $tech_count);
+
+        // Another user's personal view cannot be deleted
+        $this->processMassiveActionsForOneItemtype(
+            'delete_for_user',
+            $displaypref,
+            ['Computer'],
+            ['users_id' => (string) $tech_id],
+            0,
+            1,
+            DisplayPreference::class
+        );
+        $this->assertSame($tech_count, countElementsInTable(DisplayPreference::getTable(), $tech_crit));
+
+        // Own personal view cannot be deleted without the PERSONAL right
+        $old_right = $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname];
+        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = DisplayPreference::GENERAL;
+        $this->processMassiveActionsForOneItemtype(
+            'delete_for_user',
+            $displaypref,
+            ['Computer'],
+            ['users_id' => (string) $users_id],
+            0,
+            1,
+            DisplayPreference::class
+        );
+        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = $old_right;
+        $this->assertGreaterThan(0, countElementsInTable(DisplayPreference::getTable(), $own_crit));
+
+        $this->processMassiveActionsForOneItemtype(
+            'delete_for_user',
+            $displaypref,
+            ['Computer'],
+            ['users_id' => (string) $users_id],
+            1,
+            0,
+            DisplayPreference::class
+        );
+        $this->assertSame(0, countElementsInTable(DisplayPreference::getTable(), $own_crit));
     }
 
     public function testProcessMassiveActionsForOneItemtype_updateDropdownOrCommonDBConnexity()
@@ -1859,5 +1940,70 @@ class MassiveActionTest extends DbTestCase
         } finally {
             $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_right;
         }
+    }
+
+    public static function reservationActionsProvider(): iterable
+    {
+        yield 'enable' => ['enable', false, 1];
+        yield 'disable' => ['disable', true, 0];
+        yield 'available' => ['available', true, 0];
+        yield 'unavailable' => ['unavailable', true, 1];
+    }
+
+    #[DataProvider('reservationActionsProvider')]
+    public function testProcessMassiveActionsForOneItemtype_reservationOutsideActiveEntities(
+        string $action,
+        bool $has_reservation_item,
+        int $is_active
+    ): void {
+        $this->login();
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'Computer outside active entities',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+        if ($has_reservation_item) {
+            $this->createItem(\ReservationItem::class, [
+                'itemtype'  => \Computer::class,
+                'items_id'  => $computer->getID(),
+                'is_active' => $is_active,
+            ]);
+        }
+
+        // The user can manage reservations, but not in the computer entity
+        $this->setEntity('_test_child_2', false);
+        $this->assertFalse($computer->can($computer->getID(), READ));
+
+        $this->processMassiveActionsForOneItemtype(
+            $action,
+            $computer,
+            [$computer->getID()],
+            [],
+            0,
+            1,
+            \Reservation::class
+        );
+
+        // Nothing must have changed on the computer reservation item
+        $reservation_item = new \ReservationItem();
+        $this->assertSame(
+            $has_reservation_item,
+            $reservation_item->getFromDBbyItem(\Computer::class, $computer->getID())
+        );
+        if ($has_reservation_item) {
+            $this->assertSame($is_active, (int) $reservation_item->fields['is_active']);
+        }
+
+        // The same action is done when the user can access the computer entity
+        $this->setEntity('_test_child_1', false);
+        $this->processMassiveActionsForOneItemtype(
+            $action,
+            $computer,
+            [$computer->getID()],
+            [],
+            1,
+            0,
+            \Reservation::class
+        );
     }
 }

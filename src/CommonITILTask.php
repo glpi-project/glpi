@@ -688,7 +688,17 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     return;
                 }
 
-                $this->updateParentStatus($this->input['_job'], $this->input);
+                // Editing a task must not reopen its parent, as in 10.0, unless the pending toggle
+                // is unchecked on a waiting parent.
+                $parent_status_input = $this->input;
+                if (
+                    !($parent_status_input['pending'] ?? 0)
+                    && $this->input['_job']->fields['status'] != CommonITILObject::WAITING
+                ) {
+                    unset($parent_status_input['pending']);
+                    $parent_status_input['_no_reopen'] = true;
+                }
+                $this->updateParentStatus($this->input['_job'], $parent_status_input);
 
                 if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
                     $options = ['task_id'    => $this->fields["id"],
@@ -1434,8 +1444,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $item->getTable() . '.begin'   => null,
                 $item->getTable() . '.actiontime' => ['>', 0],
                 //begin is replaced with creation tim minus duration
-                new QueryExpression($edate . " >= '" . $begin . "'"),
-                new QueryExpression($bdate . " <= '" . $end . "'"),
+                new QueryExpression($edate . " >= " . $DB::quoteValue($begin)),
+                new QueryExpression($bdate . " <= " . $DB::quoteValue($end)),
             ];
         } else {
             //std case: get tasks for current view dates

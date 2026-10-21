@@ -2665,6 +2665,68 @@ HTML;
         }
     }
 
+    public static function getDurationDropdownProvider(): iterable
+    {
+        yield 'step 5' => [5, [10, 15, 20, 25, 30, 595], [11]];
+        yield 'step 15' => [15, [15, 30, 45, 60, 585], [10, 20]];
+        yield 'step 30' => [30, [30, 60, 90, 570], [10, 15, 20, 45]];
+        yield 'step 60' => [60, [60, 120, 540], [10, 30, 90]];
+    }
+
+    #[DataProvider('getDurationDropdownProvider')]
+    public function testGetDurationDropdownUsesTimeStep(int $step, array $expected, array $unexpected): void
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['time_step'] = $step;
+
+        $values = Dropdown::getDurationDropdown();
+
+        // 1 to 9 minutes are always available, whatever the step
+        for ($i = 1; $i <= 9; $i++) {
+            $this->assertArrayHasKey($i * MINUTE_TIMESTAMP, $values);
+        }
+        foreach ($expected as $minutes) {
+            $this->assertArrayHasKey($minutes * MINUTE_TIMESTAMP, $values);
+        }
+        foreach ($unexpected as $minutes) {
+            $this->assertArrayNotHasKey($minutes * MINUTE_TIMESTAMP, $values);
+        }
+        $this->assertSame('0h09', $values[9 * MINUTE_TIMESTAMP]);
+        $this->assertSame('10h00', $values[10 * HOUR_TIMESTAMP]);
+        $this->assertSame('5 days', $values[5 * DAY_TIMESTAMP]);
+    }
+
+    public function testGetDurationDropdownKeepsCurrentValue(): void
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['time_step'] = 30;
+
+        // Duration saved with a previous step must remain selectable
+        $values = Dropdown::getDurationDropdown(45 * MINUTE_TIMESTAMP);
+        $this->assertSame('0h45', $values[45 * MINUTE_TIMESTAMP]);
+        $keys = array_keys($values);
+        $this->assertSame($keys, array_values(array_unique($keys)));
+        $sorted = $keys;
+        sort($sorted);
+        $this->assertSame($sorted, $keys);
+
+        // Value matching an existing entry is not duplicated nor relabelled
+        $this->assertSame(Dropdown::getDurationDropdown(), Dropdown::getDurationDropdown(HOUR_TIMESTAMP));
+    }
+
+    public function testGetDurationDropdownAcceptsFieldValues(): void
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['time_step'] = 30;
+
+        // Values are passed as raw DB fields from the task form
+        $default = Dropdown::getDurationDropdown();
+        $this->assertSame($default, Dropdown::getDurationDropdown(''));
+        $this->assertSame($default, Dropdown::getDurationDropdown(null));
+        $this->assertSame($default, Dropdown::getDurationDropdown('0'));
+        $this->assertSame('0h45', Dropdown::getDurationDropdown('2700')[45 * MINUTE_TIMESTAMP]);
+    }
+
     public function testGetLanguages()
     {
         global $CFG_GLPI;
@@ -3239,5 +3301,42 @@ HTML;
             }
         }
         $this->assertTrue($has_match);
+    }
+
+    public function testGetDropdownConnectRespectsAssignedRight(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+        $this->createItem(Monitor::class, [
+            'name'          => 'Connect monitor assigned to me',
+            'entities_id'   => $entities_id,
+            'users_id_tech' => Session::getLoginUserID(),
+        ]);
+        $this->createItem(Monitor::class, [
+            'name'          => 'Connect monitor of someone else',
+            'entities_id'   => $entities_id,
+            'users_id_tech' => getItemByTypeName(User::class, 'tech', true),
+        ]);
+
+        // The user can only see the monitors assigned to him
+        $_SESSION['glpiactiveprofile'][Monitor::$rightname] = READ_ASSIGNED;
+
+        $post = [
+            'fromtype'        => Computer::class,
+            'itemtype'        => Monitor::class,
+            'entity_restrict' => $entities_id,
+            'searchText'      => 'Connect monitor',
+            '_idor_token'     => Session::getNewIDORToken(Monitor::class, ['entity_restrict' => $entities_id]),
+        ];
+        $result = Dropdown::getDropdownConnect($post, false);
+
+        $names = [];
+        foreach ($result['results'] as $entry) {
+            foreach ($entry['children'] ?? [$entry] as $child) {
+                $names[] = $child['text'];
+            }
+        }
+        $this->assertContains('Connect monitor assigned to me', $names);
+        $this->assertNotContains('Connect monitor of someone else', $names);
     }
 }

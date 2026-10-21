@@ -465,10 +465,10 @@ class CommonGLPI implements CommonGLPIInterface
                     && $item->canCreate()
                 ) {
                     if ($item->maybeTemplate()) {
-                        $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . $type
+                        $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . rawurlencode($type)
                                           . '&add=1';
                         if (!in_array('template', $forbidden)) {
-                            $menu['links']['template'] = '/front/setup.templates.php?' . 'itemtype=' . $type
+                            $menu['links']['template'] = '/front/setup.templates.php?' . 'itemtype=' . rawurlencode($type)
                                                 . '&add=0';
                         }
                     } else {
@@ -818,7 +818,7 @@ class CommonGLPI implements CommonGLPIInterface
         global $CFG_GLPI;
 
         if (!empty($_GET['withtemplate'])) {
-            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . static::getType();
+            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . rawurlencode(static::getType());
         }
 
         if (

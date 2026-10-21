@@ -1267,6 +1267,23 @@ HTML,
         }
     }
 
+    public function testAddItemFromMessageCatchesInsertFailure(): void
+    {
+        $collector = new \MailCollector();
+
+        $item = new class extends \CommonDBTM {
+            public function add(array $input, $options = [], $history = true)
+            {
+                throw new \RuntimeException('Simulated DB insert failure');
+            }
+        };
+
+        $result = $this->callPrivateMethod($collector, 'addItemFromMessage', $item, []);
+
+        $this->assertFalse($result);
+        $this->hasPhpLogRecordThatContains('Simulated DB insert failure', LogLevel::ERROR);
+    }
+
     public static function mailServerProtocolsProvider()
     {
         return [
@@ -1747,6 +1764,37 @@ HTML,
             "\r\n",
             $extracted_content,
             'Extracted EML attachment must use CRLF line endings as required by RFC 2822'
+        );
+    }
+
+    /**
+     * See https://github.com/glpi-project/glpi/issues/20892
+     * The "To" header value used for rule criteria matching must contain every
+     * recipient, not just the first one, otherwise a "contains" criterion fails
+     * to match when the targeted address is not listed first.
+     */
+    public function testGetHeadersToContainsAllRecipients()
+    {
+        $raw = implode("\r\n", [
+            'From: sender@example.com',
+            'To: First Recipient <first@glpi-project.org>, Second Recipient <second@glpi-project.org>',
+            'Subject: Multiple recipients',
+            'Date: ' . date('r'),
+            'Message-ID: <multi-to-test@glpi-project.org>',
+            '',
+            'Body',
+            '',
+        ]);
+
+        $message = new Message(['raw' => $raw]);
+        $collector = new \MailCollector();
+        $headers = $collector->getHeaders($message);
+
+        $this->assertStringContainsString('first@glpi-project.org', $headers['to']);
+        $this->assertStringContainsString('second@glpi-project.org', $headers['to']);
+        $this->assertSame(
+            ['first@glpi-project.org', 'second@glpi-project.org'],
+            $headers['tos']
         );
     }
 

@@ -379,6 +379,12 @@ body.in_modal {
     }
 }
 
+// Remove contextual skip links from pages that do not contain their target
+body:not(:has(#search-results)) .skip-links .skip-link-search-results,
+body:not(:has(#itil-timeline)) .skip-links .skip-link-itil-timeline {
+    display: none;
+}
+
 table {
     &.table thead th {
         font-size: 0.625rem;
@@ -600,6 +606,18 @@ body pre {
     // Remove annoying margin from tinymce's last paragraph
     p:last-child {
         margin-bottom: 0;
+    }
+}
+
+.service-catalog-item {
+    &:hover {
+        color: var(--tblr-link-hover-color);
+    }
+
+    // Keep description links clickable above the title stretched link
+    .service-catalog-description a {
+        position: relative;
+        z-index: 2;
     }
 }
 

@@ -35,6 +35,7 @@
 namespace Glpi\Application;
 
 use Psr\Log\LogLevel;
+use Toolbox;
 use UnexpectedValueException;
 
 use function Safe\define;
@@ -257,21 +258,40 @@ enum Environment: string
         };
     }
 
-    public function shouldAddExtraE2EDataDuringInstallation(): bool
+    /**
+     * Get the options to pass to `password_hash()` and `password_needs_rehash()`.
+     *
+     * @return array{cost?: int}
+     */
+    public function getPasswordHashOptions(): array
     {
-        return
-            $this->shouldAddExtraCypressDataDuringInstallation()
-            || $this->shouldAddExtraPlaywrightDataDuringInstallation()
-        ;
+        // Specific for tests, should never be used anywhere else.
+        // The lowest bcrypt cost makes the hash computation and verification
+        // hundreds of times faster, which greatly reduces the tests duration.
+        return match ($this) {
+            default       => [],
+            self::TESTING => ['cost' => 4],
+        };
     }
 
+    /**
+     * @deprecated 11.0.12
+     */
+    public function shouldAddExtraE2EDataDuringInstallation(): bool
+    {
+        Toolbox::deprecated('Use `Environment::shouldAddExtraPlaywrightDataDuringInstallation()` instead.');
+
+        return $this->shouldAddExtraPlaywrightDataDuringInstallation();
+    }
+
+    /**
+     * @deprecated 11.0.12
+     */
     public function shouldAddExtraCypressDataDuringInstallation(): bool
     {
-        // Note: this will be removed when we switch to playwright.
-        return match ($this) {
-            default       => false,
-            self::TESTING => true,
-        };
+        Toolbox::deprecated('The Cypress data is no longer added during installation.');
+
+        return false;
     }
 
     public function shouldAddExtraPlaywrightDataDuringInstallation(): bool

@@ -105,6 +105,11 @@ describe('Dashboard', () => {
         expect(dashboard.current_name).toBe('current_dashboard');
     });
 
+    test('Init with an empty dashboard select', () => {
+        $('#dashboard-12345 .dashboard_select').empty();
+        expect(() => new GLPIDashboard({'rand': '12345'})).not.toThrow();
+    });
+
     test('saveMarkdown', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);
@@ -1370,6 +1375,27 @@ describe('Dashboard', () => {
             orientation: 'horizontal'
         });
         expect(window.sortable).toHaveBeenNthCalledWith(2, '.filters', 'disable');
+    });
+
+    test('initFilters does not mutate the cached filters', async () => {
+        const dashboard = new GLPIDashboard({'rand': '12345'});
+        const cached_filters = {'filter3': []};
+        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => cached_filters);
+        window.sortable = jest.fn().mockImplementation((el) => $(el));
+        window.AjaxMock.start();
+
+        dashboard.filters_selector = '.filters';
+        $('#dashboard-12345').append('<div class="filters"></div>');
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+            action: 'get_dashboard_filters',
+            filters: {'filter3': ''}
+        }, () => `<div class="new-filter-selector"></div>`));
+
+        dashboard.initFilters();
+        await new Promise(process.nextTick);
+
+        // regression: initFilters must not turn the cached empty array into a string
+        expect(cached_filters.filter3).toEqual([]);
     });
 
     test('getFiltersFromDB', () => {

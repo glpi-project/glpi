@@ -898,6 +898,50 @@ class Group extends CommonTreeDropdown
         return parent::getRawCompleteName();
     }
 
+    /**
+     * Memoized results of getGroupsAncestorsIds(), cleared on any group hierarchy
+     * change via resetGroupsAncestorsCache() (see updateLastGroupChange()).
+     *
+     * @var array<string, int[]>
+     */
+    private static array $groups_ancestors_cache = [];
+
+    /**
+     * Add the ancestors (parent groups) of the given groups to the list.
+     * Used so that visibility granted to a group also applies to members of its sub-groups.
+     *
+     * @param int[] $groups_id
+     *
+     * @return ($groups_id is non-empty-array ? non-empty-array<int> : array<int>)
+     */
+    public static function getGroupsAncestorsIds(array $groups_id): array
+    {
+        if ($groups_id === []) {
+            return $groups_id;
+        }
+
+        // getAncestorsOf() only caches lookups for a single ID; memoize here to
+        // avoid a fresh, uncached query on every call (e.g. once per item in a list).
+        sort($groups_id);
+        $ckey = implode(',', $groups_id);
+        if (!isset(self::$groups_ancestors_cache[$ckey])) {
+            self::$groups_ancestors_cache[$ckey] = array_unique(array_merge(
+                $groups_id,
+                getAncestorsOf(self::getTable(), $groups_id)
+            ));
+        }
+
+        return self::$groups_ancestors_cache[$ckey];
+    }
+
+    /**
+     * Clear the memoized ancestors computed by getGroupsAncestorsIds().
+     */
+    public static function resetGroupsAncestorsCache(): void
+    {
+        self::$groups_ancestors_cache = [];
+    }
+
     public static function getAnonymizedName(?int $entities_id = null): ?string
     {
         switch (Entity::getAnonymizeConfig($entities_id)) {
@@ -984,6 +1028,7 @@ class Group extends CommonTreeDropdown
     {
         global $GLPI_CACHE;
         $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
+        self::resetGroupsAncestorsCache();
 
         // Reload groups immediatly
         if (Session::getLoginUserID()) {

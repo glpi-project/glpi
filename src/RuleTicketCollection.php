@@ -71,8 +71,10 @@ class RuleTicketCollection extends RuleCommonITILObjectCollection
             $input['_in-reply-to'] = $input['_head']['in-reply-to'];
         }
 
-        // Pass To header if exists
-        if (isset($input['_head']['to'])) {
+        // Pass To header if exists. Match against every recipient individually
+        if (!empty($input['_head']['tos'])) {
+            $input['_to'] = $input['_head']['tos'];
+        } elseif (isset($input['_head']['to'])) {
             $input['_to'] = $input['_head']['to'];
         }
 

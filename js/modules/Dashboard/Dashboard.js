@@ -1269,7 +1269,8 @@ class GLPIDashboard {
             return;
         }
 
-        const filters = this.getFiltersFromDB();
+        // copy: avoid mutating the cached filters used by later ajax calls
+        const filters = { ...this.getFiltersFromDB() };
 
         // replace empty array by empty string to avoid jquery remove the corresponding key
         // when sending ajax query
@@ -1385,6 +1386,9 @@ class GLPIDashboard {
         }
 
         select.addEventListener('change', (event) => {
+            if (event.target.selectedIndex < 0) {
+                return;
+            }
             const tempSelect = document.createElement('select');
             const tempOption = document.createElement('option');
             tempOption.textContent = event.target.options[event.target.selectedIndex].text;

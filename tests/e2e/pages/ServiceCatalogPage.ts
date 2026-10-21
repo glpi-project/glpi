@@ -64,9 +64,24 @@ export class ServiceCatalogPage extends GlpiPage
         return this.page.getByRole('region', { name: name, exact: true });
     }
 
+    public getItemDescriptionLink(item_name: string, link_name: string): Locator
+    {
+        return this.getItemRegion(item_name)
+            .getByTestId('service-catalog-description')
+            .getByRole('link', { name: link_name });
+    }
+
     public async doGoToItem(name: string): Promise<void>
     {
         await this.getLink(name).click();
+    }
+
+    public async assertItemDescriptionLinkIsClickable(item_name: string, link_name: string, href: string): Promise<void>
+    {
+        const link = this.getItemDescriptionLink(item_name, link_name);
+        await expect(link).toHaveAttribute('href', href);
+        // Trial click fails if another element (e.g. the tile link) intercepts pointer events
+        await link.click({ trial: true });
     }
 
     public waitForItemsResponse(): Promise<Response>

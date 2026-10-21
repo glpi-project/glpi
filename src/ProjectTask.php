@@ -2013,8 +2013,8 @@ TWIG, $twig_params);
                 $ttask_table . '.plan_end_date'     => null,
                 $ttask_table . '.planned_duration'  => ['>', 0],
                 //begin is replaced with creation tim minus duration
-                new QueryExpression($edate . " >= '" . $begin . "'"),
-                new QueryExpression($bdate . " <= '" . $end . "'"),
+                new QueryExpression($edate . " >= " . $DB::quoteValue($begin)),
+                new QueryExpression($bdate . " <= " . $DB::quoteValue($end)),
             ]);
         } else {
             //std case: get tasks for current view dates
@@ -2051,6 +2051,9 @@ TWIG, $twig_params);
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $task->getFromResultSet($data);
+                if (!$task->can($task->getID(), READ)) {
+                    continue;
+                }
                 if (isset($data['notp_date'])) {
                     $data['plan_start_date'] = $data['notp_date'];
                     $data['plan_end_date'] = $data['notp_edate'];

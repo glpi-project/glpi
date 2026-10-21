@@ -139,9 +139,11 @@ class AssetTest extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
-        $this->expectExceptionMessage('Definition cannot be changed.');
+        // The item of another definition cannot be loaded, so it cannot be updated
         $asset_2 = new $classname_2();
-        $asset_2->update(['id' => $asset->getID(), 'name' => 'updated']);
+        $this->assertFalse($asset_2->update(['id' => $asset->getID(), 'name' => 'updated']));
+        $this->assertTrue($asset->getFromDB($asset->getID()));
+        $this->assertSame('new asset', $asset->fields['name']);
     }
 
     public function testSearchOptionsUnicity(): void
@@ -392,5 +394,76 @@ class AssetTest extends DbTestCase
             'is_active' => 0,
         ]);
         $this->assertFalse((new ($definition->getAssetClassName()))::canView());
+    }
+
+    public function testTemplateUrlsAreUrlEncoded(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $definition = $this->initAssetDefinition();
+        $this->login();
+
+        $class_name = $definition->getAssetClassName();
+        $encoded    = rawurlencode($class_name);
+
+        // A namespaced class name contains backslashes, which are unsafe in a raw query
+        // value; they must be percent-encoded in the generated template URLs.
+        $menu = $class_name::getMenuContent();
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=' . $encoded . '&add=1',
+            $menu['links']['add']
+        );
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=' . $encoded . '&add=0',
+            $menu['links']['template']
+        );
+        $this->assertStringNotContainsString('\\', $menu['links']['add']);
+        $this->assertStringNotContainsString('\\', $menu['links']['template']);
+
+        // The redirect back to the templates list after a template action encodes it too.
+        $saved_get = $_GET;
+        $_GET['withtemplate'] = 1;
+        try {
+            $redirect = (new $class_name())->getRedirectToListUrl();
+        } finally {
+            $_GET = $saved_get;
+        }
+        $this->assertSame(
+            $CFG_GLPI['root_doc'] . '/front/setup.templates.php?add=0&itemtype=' . $encoded,
+            $redirect
+        );
+        $this->assertStringNotContainsString('\\', $redirect);
+    }
+
+    public function testTemplateUrlLeavesPlainItemtypeUnchanged(): void
+    {
+        $this->login();
+
+        // A non-namespaced itemtype has nothing to encode and must be untouched.
+        $menu = \Computer::getMenuContent();
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=Computer&add=1',
+            $menu['links']['add']
+        );
+        $this->assertSame(
+            '/front/setup.templates.php?itemtype=Computer&add=0',
+            $menu['links']['template']
+        );
+    }
+
+    public function testCannotLoadItemOfAnotherDefinition(): void
+    {
+        $foo_classname = $this->initAssetDefinition()->getAssetClassName();
+        $bar_classname = $this->initAssetDefinition()->getAssetClassName();
+
+        $bar_asset = $this->createItem($bar_classname, ['name' => 'Bar asset', 'entities_id' => $this->getTestRootEntity(true)]);
+
+        // Definitions share the same table, an item must only be loaded by the class of its definition
+        $foo_asset = new $foo_classname();
+        $this->assertFalse($foo_asset->getFromDB($bar_asset->getID()));
+        $this->assertSame([], $foo_asset->fields);
+
+        $this->assertTrue((new $bar_classname())->getFromDB($bar_asset->getID()));
     }
 }

@@ -207,9 +207,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
             $restrict = getEntitiesRestrictCriteria('glpi_groups_rssfeeds', '', '', true);
             $orwhere[] = [
-                'glpi_groups_rssfeeds.groups_id' => count($_SESSION["glpigroups"])
-                                                      ? $_SESSION["glpigroups"]
-                                                      : [-1],
+                // A user member of a sub-group must also see RSS feeds made visible to a parent group
+                'glpi_groups_rssfeeds.groups_id' => Group::getGroupsAncestorsIds($_SESSION["glpigroups"]),
                 'OR' => [
                     'glpi_groups_rssfeeds.no_entity_restriction' => 1,
                 ] + $restrict,

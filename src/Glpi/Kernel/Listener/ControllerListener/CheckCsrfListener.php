@@ -35,6 +35,7 @@
 namespace Glpi\Kernel\Listener\ControllerListener;
 
 use Glpi\Http\SessionManager;
+use Glpi\Kernel\ListenersPriority;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +50,9 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::CONTROLLER => 'onKernelController'];
+        return [
+            KernelEvents::CONTROLLER => ['onKernelController', ListenersPriority::CONTROLLER_LISTENERS_PRIORITIES[self::class]],
+        ];
     }
 
     public function onKernelController(ControllerEvent $event): void

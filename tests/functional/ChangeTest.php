@@ -35,13 +35,17 @@
 namespace tests\units;
 
 use Change;
+use Change_Item;
 use Change_User;
+use ChangeValidation;
 use CommonITILActor;
 use CommonITILObject;
 use Computer;
 use Glpi\Tests\DbTestCase;
+use Item_Ticket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
+use Ticket;
 use User;
 
 /* Test for inc/change.class.php */
@@ -930,5 +934,201 @@ class ChangeTest extends DbTestCase
         foreach ($expected_config_values as $entity_id => $date) {
             $this->assertEquals($date, \Entity::getUsedConfig('inquest_config_change', $entity_id, 'max_closedate_change'));
         }
+    }
+
+    public function testGetListForItemRestrictWithoutReadAll(): void
+    {
+        global $DB;
+
+        $this->login();
+        $users_id = Session::getLoginUserID();
+        $other_users_id = getItemByTypeName(User::class, 'normal', true);
+        $entities_id = $this->getTestRootEntity(true);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+
+        $cases = [
+            'requester' => ['_users_id_requester' => $users_id, 'users_id_recipient' => $other_users_id],
+            'observer'  => ['_users_id_observer' => $users_id, 'users_id_recipient' => $other_users_id],
+            'assigned'  => ['_users_id_assign' => $users_id, 'users_id_recipient' => $other_users_id],
+            'recipient' => ['users_id_recipient' => $users_id],
+            'other'     => ['_users_id_observer' => $other_users_id, 'users_id_recipient' => $other_users_id],
+        ];
+        $ids = [];
+        foreach ($cases as $case => $input) {
+            $item = $this->createItem(Change::class, $input + [
+                'name'              => __FUNCTION__ . ' ' . $case,
+                'content'           => __FUNCTION__,
+                'entities_id'       => $entities_id,
+                '_skip_auto_assign' => true,
+            ], ['content']);
+            $this->createItem(Change_Item::class, [
+                'changes_id' => $item->getID(),
+                'itemtype'   => Computer::class,
+                'items_id'   => $computer->getID(),
+            ]);
+            $ids[$case] = $item->getID();
+        }
+
+        $get_listed_ids = static function () use ($DB, $computer): array {
+            $criteria = Change::getCommonCriteria();
+            $criteria['WHERE'] = Change::getListForItemRestrict($computer) + getEntitiesRestrictCriteria(Change::getTable());
+            return array_column(iterator_to_array($DB->request($criteria), false), 'id');
+        };
+
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY;
+        $this->assertEqualsCanonicalizing(
+            [$ids['requester'], $ids['observer'], $ids['assigned'], $ids['recipient']],
+            $get_listed_ids()
+        );
+
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY | Change::READALL;
+        $this->assertEqualsCanonicalizing(array_values($ids), $get_listed_ids());
+    }
+
+    private function createChangesForApproverTests(): array
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(only_id: true);
+        $approver    = getItemByTypeName(User::class, 'tech', true);
+        $other       = getItemByTypeName(User::class, 'normal', true);
+
+        $ids = [];
+        foreach (['approver' => $approver, 'other' => $other, 'none' => null] as $case => $target) {
+            $change = $this->createItem(Change::class, [
+                'name'              => __FUNCTION__ . ' ' . $case,
+                'content'           => __FUNCTION__,
+                'entities_id'       => $entities_id,
+                '_skip_auto_assign' => true,
+            ], ['content']);
+            if ($target !== null) {
+                $this->createItem(ChangeValidation::class, [
+                    'changes_id'      => $change->getID(),
+                    'itemtype_target' => User::class,
+                    'items_id_target' => $target,
+                ]);
+            }
+            $ids[$case] = $change->getID();
+        }
+
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY;
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = ChangeValidation::VALIDATE;
+        Session::changeActiveEntities($entities_id, true);
+
+        return $ids;
+    }
+
+    public function testApproverCanViewChange(): void
+    {
+        $ids = $this->createChangesForApproverTests();
+
+        $this->assertTrue(Change::canView());
+        $this->assertTrue($this->getChange($ids['approver'])->canViewItem());
+        $this->assertFalse($this->getChange($ids['other'])->canViewItem());
+        $this->assertFalse($this->getChange($ids['none'])->canViewItem());
+
+        // Without the approve right, being a target is not enough
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = CREATE;
+        $this->assertFalse($this->getChange($ids['approver'])->canViewItem());
+    }
+
+    public function testApproverOnlyCanView(): void
+    {
+        $this->createChangesForApproverTests();
+
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = 0;
+        $this->assertTrue(Change::canView());
+
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = 0;
+        $this->assertFalse(Change::canView());
+    }
+
+    public function testApproverSearchListsPendingChange(): void
+    {
+        $ids = $this->createChangesForApproverTests();
+
+        $search = function (): array {
+            $data = \Search::getDatas(Change::class, [
+                'criteria' => [
+                    ['field' => 1, 'searchtype' => 'contains', 'value' => 'createChangesForApproverTests'],
+                ],
+            ]);
+            return array_map(static fn($row) => (int) $row['raw']['id'], $data['data']['rows']);
+        };
+
+        $this->assertSame([$ids['approver']], $search());
+
+        // Actor visibility still applies in addition to the approval
+        $change = $this->getChange($ids['none']);
+        $this->login();
+        $this->createItem(Change_User::class, [
+            'changes_id' => $change->getID(),
+            'users_id'   => getItemByTypeName(User::class, 'tech', true),
+            'type'       => CommonITILActor::OBSERVER,
+        ]);
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile'][Change::$rightname] = Change::READMY;
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = ChangeValidation::VALIDATE;
+        Session::changeActiveEntities($this->getTestRootEntity(only_id: true), true);
+        $this->assertEqualsCanonicalizing([$ids['approver'], $ids['none']], $search());
+
+        // Without any approve right, only actor visibility remains
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = 0;
+        $this->assertSame([$ids['none']], $search());
+    }
+
+    private function getChange(int $id): Change
+    {
+        $change = new Change();
+        $this->assertTrue($change->getFromDB($id));
+        return $change;
+    }
+
+    public function testCreateFromTicketWithUnknownLinkedItemtype(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $this->createItem(Item_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'itemtype'   => Computer::class,
+            'items_id'   => $computer->getID(),
+        ]);
+        // Relation kept by the Formcreator migration, whose itemtype no longer exists
+        $DB->insert(Item_Ticket::getTable(), [
+            'tickets_id' => $ticket->getID(),
+            'itemtype'   => 'PluginFormcreatorFormAnswer',
+            'items_id'   => 1,
+        ]);
+
+        $change = $this->createItem(Change::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+            '_tickets_id' => $ticket->getID(),
+        ]);
+
+        // Only the valid linked item is copied
+        $links = iterator_to_array($DB->request([
+            'SELECT' => ['itemtype', 'items_id'],
+            'FROM'   => Change_Item::getTable(),
+            'WHERE'  => ['changes_id' => $change->getID()],
+        ]), false);
+        $this->assertSame([['itemtype' => Computer::class, 'items_id' => $computer->getID()]], $links);
     }
 }

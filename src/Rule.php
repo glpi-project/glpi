@@ -699,9 +699,21 @@ class Rule extends CommonDBTM
         switch ($ma->getAction()) {
             case 'export':
                 if (count($ids)) {
-                    $_SESSION['exportitems'] = $ids;
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                    $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item::class);
+                    $_SESSION['exportitems'] = [];
+                    foreach ($ids as $id) {
+                        if (!$item->can($id, READ)) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
+                        $_SESSION['exportitems'][$id] = $id;
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+
+                    if ($_SESSION['exportitems'] !== []) {
+                        $ma->setRedirect('rule.backup.php?action=download&itemtype=' . $item::class);
+                    }
                 }
                 break;
 
@@ -714,6 +726,12 @@ class Rule extends CommonDBTM
                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                 } elseif ($rulecollection->canUpdate()) {
                     foreach ($ids as $id) {
+                        if (!$item->can($id, UPDATE)) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         if ($item->getFromDB($id)) {
                             if ($rulecollection->moveRule($id, $input['ranking'], $input['move_type'])) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -1166,7 +1184,7 @@ TWIG, $twig_params);
                             $('#viewaction{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->ruleactionclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: action_id
                             });
                         }
@@ -1283,7 +1301,7 @@ TWIG, $twig_params);
                             $('#viewcriteria{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->rulecriteriaclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
-                                rules_id: $rules_id,
+                                {$this->rules_id_field}: $rules_id,
                                 id: criteria_id
                             });
                         }
@@ -3422,6 +3440,32 @@ TWIG, ['label' => $this->getTitle()]);
     public static function canPurge(): bool
     {
         return static::canUpdate();
+    }
+
+    public function canViewItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canViewItem();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canUpdateItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canPurgeItem();
+    }
+
+    /**
+     * Rules of all types share the same table, but each type has its own rights.
+     * A loaded rule must therefore be of the type it is accessed through.
+     */
+    private function isOfCurrentType(): bool
+    {
+        return static::class === self::class
+            || !isset($this->fields['sub_type'])
+            || $this->fields['sub_type'] === static::class;
     }
 
     public static function getIcon()

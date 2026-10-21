@@ -243,6 +243,67 @@ class DbUtilsTest extends DbTestCase
         }
     }
 
+    public function testIsGlpiClassFile()
+    {
+        $instance = new \DbUtils();
+
+        // A GLPI class
+        $this->assertTrue(
+            $instance->isGlpiClassFile((new \ReflectionClass(\Computer::class))->getFileName())
+        );
+
+        // A file that does not exist
+        $this->assertFalse($instance->isGlpiClassFile(GLPI_ROOT . '/src/ThisDoesNotExist.php'));
+
+        // A plugin installed in a directory located outside of the GLPI tree
+        $base        = sys_get_temp_dir() . '/' . uniqid('glpi_plugins_', false);
+        $plugins_dir = $base . '/plugins';
+        $class_file  = $plugins_dir . '/myplugin/inc/stuff.class.php';
+        mkdir(dirname($class_file), 0o755, true);
+        file_put_contents($class_file, '<?php');
+
+        // A sibling directory that only shares its prefix with the plugins directory
+        $sibling_dir  = $base . '/plugins_bak';
+        $sibling_file = $sibling_dir . '/myplugin/inc/stuff.class.php';
+        mkdir(dirname($sibling_file), 0o755, true);
+        file_put_contents($sibling_file, '<?php');
+
+        try {
+            $this->assertFalse(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [GLPI_ROOT . '/plugins'])
+            );
+            $this->assertTrue(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [GLPI_ROOT . '/plugins', $plugins_dir])
+            );
+
+            // A directory that does not exist must not make every file valid
+            $this->assertFalse(
+                $instance->isGlpiClassFile($class_file, GLPI_ROOT, [$plugins_dir . '/not_there'])
+            );
+
+            // A path prefix is not a parent directory
+            $this->assertFalse(
+                $instance->isGlpiClassFile($sibling_file, GLPI_ROOT, [$plugins_dir])
+            );
+            $this->assertTrue(
+                $instance->isGlpiClassFile($sibling_file, GLPI_ROOT, [$sibling_dir])
+            );
+
+            // The allowed directory itself is not a class file
+            $this->assertFalse(
+                $instance->isGlpiClassFile($plugins_dir, GLPI_ROOT, [$plugins_dir])
+            );
+        } finally {
+            foreach ([$class_file, $sibling_file] as $file) {
+                unlink($file);
+                rmdir(dirname($file));
+                rmdir(dirname($file, 2));
+                rmdir(dirname($file, 3));
+            }
+            rmdir($base);
+        }
+    }
+
     public function testGetTableForItemtypeDoesNotConflictWithGetItemTypeForTable()
     {
         $instance = new \DbUtils();
@@ -1794,5 +1855,46 @@ class DbUtilsTest extends DbTestCase
         $instance = new \DbUtils();
         $result = $instance->fixItemtypeCase($itemtype, vfsStream::url($name), [vfsStream::url("$name/plugins"), vfsStream::url("$name/marketplace")]);
         $this->assertEquals($expected, $result);
+    }
+
+    public function testGetAncestorsOfWithPartiallyCachedIds()
+    {
+        // Moving an entity requires an active session with the `entity` right
+        $this->login();
+
+        // Arrange: get a few entities and add a sub entity under `_test_child_2`
+        $test_root_entity   = getItemByTypeName('Entity', '_test_root_entity', true);
+        $test_child_entity1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $test_child_entity2 = getItemByTypeName('Entity', '_test_child_2', true);
+        $child_of_entity2   = $this->createItem(\Entity::class, [
+            'name'        => 'Sub entity of _test_child_2',
+            'entities_id' => $test_child_entity2,
+        ])->getID();
+
+        // Prepare the list of entities for which we will request the ancestors.
+        $items = [
+            0 => $test_root_entity,
+            // Using the id from $ent0 as the key is needed to trigger the
+            // specific regression from #25570.
+            $test_root_entity => $child_of_entity2,
+        ];
+
+        // Validate the expected result
+        $this->assertSame(
+            [0, $test_root_entity, $test_child_entity2], // Root + _test_root_entity + _test_child_2
+            array_values(getAncestorsOf('glpi_entities', $items)),
+        );
+
+        // Act: move `_test_child_2` under `_test_child_1`: this invalidates the
+        // ancestors cache of its children (see CommonTreeDropdown::regenerateTreeUnderID()),
+        // thus $child_of_entity2 is no longer cached while $test_root_entity still is.
+        $this->updateItem(\Entity::class, $test_child_entity2, ['entities_id' => $test_child_entity1]);
+
+        // Assert: Same as the preivous assert + _test_child_1 because we moved
+        // _test_child_2 under it so it is now an ancestor too.
+        $this->assertSame(
+            [0, $test_root_entity, $test_child_entity1, $test_child_entity2],
+            array_values(getAncestorsOf('glpi_entities', $items)),
+        );
     }
 }

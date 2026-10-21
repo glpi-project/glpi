@@ -284,6 +284,84 @@
             searchTree();
         });
 
+        // Fancytree's focus redraw detaches the button before "click" fires,
+        // so we block focus on mousedown and submit on mouseup instead.
+        (function() {
+            const container = document.getElementById('tree_entity{{ rand }}');
+            let pendingButton = null;
+            let submitted = false;
+
+            function submitEntityForm(btn) {
+                if (submitted) {
+                    return;
+                }
+                submitted = true;
+                const form = document.getElementById(btn.getAttribute('form'));
+                if (!form) {
+                    return;
+                }
+                let input = form.querySelector('input[name="id"]');
+                if (!input) {
+                    input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'id';
+                    form.appendChild(input);
+                }
+                input.value = btn.value;
+                form.requestSubmit();
+            }
+
+            let handledViaMouseup = false;
+
+            container.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) {
+                    // Only handle the primary (left) button; ignore right/middle clicks.
+                    return;
+                }
+                const btn = e.target.closest('button[type="submit"]');
+                if (!btn || !btn.getAttribute('form')) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                pendingButton = btn;
+            }, true);
+
+            // Commit only if the pointer is released back over the pressed
+            // button, so dragging away still cancels the click as usual.
+            document.addEventListener('mouseup', function(e) {
+                if (!pendingButton) {
+                    return;
+                }
+                const btn = pendingButton;
+                pendingButton = null;
+                const target = document.elementFromPoint(e.clientX, e.clientY);
+                if (target && target.closest('button[type="submit"]') === btn) {
+                    handledViaMouseup = true;
+                    submitEntityForm(btn);
+                }
+            }, true);
+
+            container.addEventListener('click', function(e) {
+                if (handledViaMouseup) {
+                    // Click that followed a mousedown we already handled: swallow it.
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    handledViaMouseup = false;
+                    return;
+                }
+                // Keyboard activation (Enter/Space) fires "click" with no
+                // preceding mousedown, so it's unaffected and handled here.
+                const btn = e.target.closest('button[type="submit"]');
+                if (!btn || !btn.getAttribute('form')) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                submitEntityForm(btn);
+            }, true);
+        })();
+
         // when the shortcut for entity form is called
         hotkeys('ctrl+alt+e, option+command+e', async function(e) {
             e.stopPropagation();

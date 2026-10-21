@@ -58,12 +58,20 @@ class WifiNetwork extends CommonDropdown
             ''          => '',
             'a'         => 'a',
             'b'         => 'b',
+            'g'         => 'g',
+            'n'         => 'n',
             'a/b'       => 'a/b',
             'a/b/g'     => 'a/b/g',
             'a/b/g/n'   => 'a/b/g/n',
             'a/b/g/n/y' => 'a/b/g/n/y',
+            'b/g/n'     => 'b/g/n',
+            'g/n'       => 'g/n',
             'ac'        => 'ac', // Wifi 5
+            'ad'        => 'ad',
+            'af'        => 'af',
+            'ah'        => 'ah',
             'ax'        => 'ax', // Wifi 6/6E
+            'y'         => 'y', // 802.11a on 3,7 GHz - United States only
             'be'        => 'be', // Wifi 7
             'bn'        => 'bn', // Wifi 8
         ];

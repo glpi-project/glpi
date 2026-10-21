@@ -279,6 +279,44 @@ final class DbUtils
 
 
     /**
+     * Check whether a class is declared by GLPI or by one of its plugins.
+     * Classes declared elsewhere, i.e. by a PHP extension, are not valid itemtypes.
+     *
+     * @param string $class_file
+     * @param string $root_dir
+     * @param string[] $plugins_dirs
+     *
+     * @return bool
+     */
+    public function isGlpiClassFile(
+        string $class_file,
+        $root_dir = GLPI_ROOT,
+        array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES
+    ): bool {
+        if (!is_file($class_file)) {
+            return false;
+        }
+        $real_class_file = realpath($class_file);
+
+        $allowed_dirs = array_merge(
+            [$root_dir, GLPI_PLUGIN_DOC_DIR],
+            $plugins_dirs
+        );
+
+        foreach ($allowed_dirs as $allowed_dir) {
+            if (!is_dir($allowed_dir)) {
+                continue;
+            }
+            if (str_starts_with($real_class_file, realpath($allowed_dir) . DIRECTORY_SEPARATOR)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
      * Return ItemType  for a table
      *
      * @param string $table table name
@@ -324,12 +362,7 @@ final class DbUtils
             $itemtype = null;
             if (class_exists($base_itemtype)) {
                 $class_file = (new ReflectionClass($base_itemtype))->getFileName();
-                $is_glpi_class = $class_file !== false && (
-                    str_starts_with(realpath($class_file), realpath(GLPI_ROOT))
-                    || str_starts_with(realpath($class_file), realpath(GLPI_MARKETPLACE_DIR))
-                    || str_starts_with(realpath($class_file), realpath(GLPI_PLUGIN_DOC_DIR))
-                );
-                if ($is_glpi_class) {
+                if ($class_file !== false && $this->isGlpiClassFile($class_file)) {
                     $itemtype = $base_itemtype;
                 }
             }
@@ -1172,10 +1205,10 @@ final class DbUtils
         } elseif ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
             $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
-            foreach ($ids_needed_to_fetch as $id) {
+            foreach ($ids_needed_to_fetch as $key => $id) {
                 if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;
-                    unset($ids_needed_to_fetch[$id]);
+                    unset($ids_needed_to_fetch[$key]);
                 }
             }
             // If we got everything from the cache, we can return the results now

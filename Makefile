@@ -289,31 +289,29 @@ rector: ## Run rector
 	$(PHP) php vendor/bin/rector $(c)
 .PHONY: rector
 
-cypress: ## Run cypress tests
-	@$(eval c ?=)
-	$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
-	$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
-	$(PHP) node_modules/.bin/cypress run --project tests $(c)
-.PHONY: cypress
-
-cypress-open: ## Open cypress UI
-	@$(eval c ?=)
-	$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
-	$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
-	$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
-.PHONY: cypress-open
-
 playwright: e2e-db-check ## Run playwright tests
 	@$(eval c ?=)
 	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
 	$(PLAYWRIGHT) test $(c)
 .PHONY: playwright
 
+playwright-isolated: e2e-db-check ## Run the isolated playwright tests (tests that change global data)
+	@$(eval c ?=)
+	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
+	$(PLAYWRIGHT) test -c playwright.isolated.config.ts $(c)
+.PHONY: playwright-isolated
+
 playwright-report: ## View playwright reports
 	@$(eval c ?=)
 	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
 	$(PLAYWRIGHT) show-report tests/e2e/results --host=0.0.0.0 $(c)
 .PHONY: playwright-report
+
+playwright-isolated-report: ## View the isolated playwright reports
+	@$(eval c ?=)
+	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
+	$(PLAYWRIGHT) show-report tests/e2e/results-isolated --host=0.0.0.0 $(c)
+.PHONY: playwright-isolated-report
 
 playwright-ui: e2e-db-check ## Open playwright's UI mode
 	@$(eval c ?=)

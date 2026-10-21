@@ -78,8 +78,8 @@ test.describe('Number form question type', () => {
         // Submit
         await form.getButton('Submit').click();
 
-        // Check the form was submitted
-        await expect(form.getAlert('Item successfully created')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(form.page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     };
 
     test('should be able to define an integer as default value', async ({

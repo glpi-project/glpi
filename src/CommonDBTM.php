@@ -389,7 +389,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param DBmysqlIterator $iter Iterator instance
      *
-     * @return iterable
+     * @return iterable<CommonDBTM>
      */
     public static function getFromIter(DBmysqlIterator $iter)
     {
@@ -2465,6 +2465,13 @@ class CommonDBTM extends CommonGLPI
      */
     public function canAddItem(string $type): bool
     {
+        if ($type === Document::class) {
+            // "One write is enough". Stricter itemtypes (e.g. no document on a closed
+            // ticket) override this method and keep their own rule.
+            return $this->can($this->getID(), UPDATE)
+                || (Session::haveRight(Document::$rightname, CREATE) && $this->can($this->getID(), READ));
+        }
+
         return $this->can($this->getID(), UPDATE);
     }
 
@@ -2861,7 +2868,8 @@ class CommonDBTM extends CommonGLPI
             && !static::isNewID($ID)
         ) {
             // Create item from template
-            // Check read right on the template
+            // Check right to create an item and read right on the template
+            $this->checkGlobal(CREATE);
             $this->check($ID, READ);
 
             // Restore saved input or template data
@@ -2872,19 +2880,48 @@ class CommonDBTM extends CommonGLPI
                 $input['entities_id'] = $_SESSION['glpiactive_entity'];
             }
 
-            // Check create right
-            $this->check(-1, CREATE, $input);
+            $input = $this->initObjectOnCreation($input);
         } elseif (static::isNewID($ID)) {
+            // Check create right
+            $this->checkGlobal(CREATE);
+
             // Restore saved input if available
             $input = $this->restoreInput($options);
-            // Create item
-            $this->check(-1, CREATE, $input);
+
+            $input = $this->initObjectOnCreation($input);
         } else {
             // Existing item
             $this->check($ID, READ);
         }
 
         return ($options['withtemplate'] ?? '');
+    }
+
+    /**
+     * Init object fields and fill default input fields.
+     *
+     * @param array<string, mixed>|null $input
+     * @return array<string, mixed>|null
+     */
+    public function initObjectOnCreation(?array $input): ?array
+    {
+        if (!isset($this->fields['id'])) {
+            // Only once
+            $this->getEmpty();
+        }
+
+        if (is_array($input)) {
+            $input = $this->addNeededInfoToInput($input);
+            // Copy input field to allow getEntityID() to work
+            // from entites_id field or from parent item ref
+            foreach ($input as $key => $val) {
+                if (isset($this->fields[$key])) {
+                    $this->fields[$key] = $val;
+                }
+            }
+        }
+
+        return $input;
     }
 
 
@@ -2972,21 +3009,10 @@ class CommonDBTM extends CommonGLPI
 
         // Create process
         if (static::isNewID($ID)) {
-            if (!isset($this->fields['id'])) {
-                // Only once
-                $this->getEmpty();
-            }
+            $input = $this->initObjectOnCreation($input);
 
+            // Store to be available for others functions
             if (is_array($input)) {
-                $input = $this->addNeededInfoToInput($input);
-                // Copy input field to allow getEntityID() to work
-                // from entites_id field or from parent item ref
-                foreach ($input as $key => $val) {
-                    if (isset($this->fields[$key])) {
-                        $this->fields[$key] = $val;
-                    }
-                }
-                // Store to be available for others functions
                 $this->input = $input;
             }
 
@@ -4418,7 +4444,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function getUnallowedFieldsForUnicity()
     {
-        return ['alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id'];
+        return ['alert', 'comment', 'date_mod', 'entities_id', 'id', 'is_recursive', 'items_id'];
     }
 
 
@@ -4436,13 +4462,12 @@ class CommonDBTM extends CommonGLPI
 
         $message = [];
         foreach ($msgs as $field => $value) {
+            $searchOption = FieldUnicity::getSearchOptionForField($this, $field);
             $table = getTableNameForForeignKeyField($field);
-            if ($table != '') {
-                $searchOption = $this->getSearchOptionByField('field', 'name', $table);
-            } else {
-                $searchOption = $this->getSearchOptionByField('field', $field);
+            if ($table !== '') {
+                $value = Dropdown::getDropdownName($table, $value);
             }
-            $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'], $value);
+            $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'] ?? $field, $value);
         }
 
         if ($unicity['action_refuse']) {
@@ -4506,6 +4531,26 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
+     * Locked field names that cleanLockeds() will strip from this update.
+     *
+     * @return string[]
+     */
+    private function getLockedFieldsForUnicityCheck(): array
+    {
+        if (
+            ($this->input['_skip_locks'] ?? false) === true
+            || (isset($this->input['_transfer']) && !($this->input['_lock_updated_fields'] ?? false))
+            || !$this->maybeDynamic()
+            || !isset($this->input['is_dynamic'])
+            || !$this->input['is_dynamic']
+        ) {
+            return [];
+        }
+
+        return (new Lockedfield())->getLockedNames(static::class, $this->fields['id']);
+    }
+
+    /**
      * Check field unicity before insert or update
      *
      * @param bool $add     true for insert, false for update (false by default)
@@ -4546,9 +4591,14 @@ class CommonDBTM extends CommonGLPI
 
         //Get all checks for this itemtype and this entity
         if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+            $locked_fields = $add ? [] : $this->getLockedFieldsForUnicityCheck();
+
             // Get input entities if set / else get object one
             if ($this instanceof User) {
                 $entities_id = 0; // Exception: user does not belong to an entity
+            } elseif (in_array('entities_id', $locked_fields, true)) {
+                // Locked entity: stays where it actually is, not where the input tries to move it.
+                $entities_id = $this->fields['entities_id'];
             } elseif (isset($this->input['entities_id'])) {
                 $entities_id = $this->input['entities_id'];
             } elseif (isset($this->fields['entities_id'])) {
@@ -4560,28 +4610,36 @@ class CommonDBTM extends CommonGLPI
             }
 
             $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
+
             foreach ($all_fields as $key => $fields) {
                 //If there's fields to check
                 if (!empty($fields) && !empty($fields['fields'])) {
                     $where    = [];
                     $continue = true;
+                    $effective_values = [];
                     foreach (explode(',', $fields['fields']) as $field) {
+                        // Locked field: check against the value that will actually remain stored.
+                        $value = (isset($this->input[$field]) && in_array($field, $locked_fields, true))
+                            ? ($this->fields[$field] ?? $this->input[$field])
+                            : ($this->input[$field] ?? null);
+                        $effective_values[$field] = $value;
+
                         if (
                             isset($this->input[$field]) //Field is set
                             //Standard field not null
                             && (((getTableNameForForeignKeyField($field) == '')
-                            && ($this->input[$field] != ''))
+                            && ($value != ''))
                             //Foreign key and value is not 0
                             || ((getTableNameForForeignKeyField($field) != '')
-                              && ($this->input[$field] > 0)))
+                              && ($value > 0)))
                             && !Fieldblacklist::isFieldBlacklisted(
                                 get_class($this),
                                 $entities_id,
                                 $field,
-                                $this->input[$field]
+                                $value
                             )
                         ) {
-                            $where[static::getTable() . '.' . $field] = $this->input[$field];
+                            $where[static::getTable() . '.' . $field] = $value;
                         } else {
                             $continue = false;
                         }
@@ -4615,7 +4673,7 @@ class CommonDBTM extends CommonGLPI
                                 || $p['add_event_on_duplicate']
                             ) {
                                 foreach (explode(',', $fields['fields']) as $field) {
-                                    $message[$field] = $this->input[$field];
+                                    $message[$field] = $effective_values[$field];
                                 }
 
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);

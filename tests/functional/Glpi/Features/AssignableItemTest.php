@@ -353,4 +353,35 @@ class AssignableItemTest extends DbTestCase
             array_values($class::getAssignableVisiblityCriteria())
         );
     }
+
+    /**
+     * canViewItem()/canUpdateItem() must not trigger a PHP warning when called
+     * outside of a classic user login, e.g. during agent inventory processing,
+     * where only `glpiinventoryuserrunning` is set in the session (`glpiID` is not).
+     *
+     * @param class-string<AssignableItem> $class
+     */
+    #[DataProvider('itemtypeProvider')]
+    public function testCanViewUpdateItemDuringInventory(string $class): void
+    {
+        $this->login();
+        $input = $this->getMinimalCreationInput($class);
+        $item = $this->createItem(
+            $class,
+            $input + [$class::getNameField() => __FUNCTION__]
+        );
+        $entities_id = $item->fields['entities_id'];
+
+        // Simulate the session state set during an agent inventory request:
+        // no classic user login, only the inventory pseudo-user and the
+        // item's entity are set. `glpiID` is deliberately left unset.
+        $this->logOut();
+        $_SESSION['glpiinventoryuserrunning'] = 'inventory';
+        $_SESSION['glpiactiveentities'] = [$entities_id];
+
+        // No explicit assertion is needed here: GLPITestCase::tearDown() fails
+        // the test if any PHP warning/notice was logged while calling these.
+        $item->canViewItem();
+        $item->canUpdateItem();
+    }
 }

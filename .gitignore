@@ -18,9 +18,6 @@
 phpunit.xml
 /tests/config/
 /tests/coverage/
-/tests/cypress/screenshots/
-/tests/cypress/downloads/
-/tests/cypress/videos/
 /tests/files/
 /tests/files-*/
 /tests/.env
@@ -55,6 +52,8 @@ phpstan.neon
 
 # Playwright
 /tests/e2e/results/
+/tests/e2e/results-isolated/
 /tests/e2e/output/
+/tests/e2e/output-isolated/
 /tests/e2e/.env.local
 !/tests/e2e/.env

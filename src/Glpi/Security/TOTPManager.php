@@ -38,6 +38,7 @@ namespace Glpi\Security;
 use DateInterval;
 use Entity;
 use Exception;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\AuthenticationFailedException;
 use GLPIKey;
@@ -54,6 +55,7 @@ use Symfony\Component\Cache\Adapter\Psr16Adapter;
 use Symfony\Component\RateLimiter\LimiterInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\RateLimiter\Storage\CacheStorage;
+use User;
 
 use function Safe\json_encode;
 
@@ -205,13 +207,13 @@ final class TOTPManager
      */
     public function disable2FAForUser(int $users_id): bool
     {
-        global $DB;
+        $user = User::getById($users_id);
 
-        return $DB->update('glpi_users', [
-            '2fa'   => null,
-        ], [
-            'id' => $users_id,
-        ]) !== false;
+        if ($user === false) {
+            return false;
+        }
+
+        return $user->update(['id' => $users_id, '2fa' => null]);
     }
 
     /**
@@ -349,7 +351,7 @@ final class TOTPManager
                 $code .= $code_chars[random_int(0, strlen($code_chars) - 1)];
             }
             $random_codes[] = $code;
-            $code_hashes[] = password_hash($code, PASSWORD_BCRYPT);
+            $code_hashes[] = password_hash($code, PASSWORD_BCRYPT, Environment::get()->getPasswordHashOptions());
         }
 
         $tfa = $DB->request([
@@ -587,6 +589,7 @@ final class TOTPManager
             TemplateRenderer::getInstance()->display('pages/2fa/2fa_new_secret.html.twig', [
                 'qrcode' => $qr,
                 'secret' => $secret,
+                'user_id' => $users_id,
             ]);
         }
     }
@@ -612,6 +615,7 @@ final class TOTPManager
             'secret' => $secret,
             'enforcement' => $this->get2FAEnforcement($users_id),
             'grace_period_days_left' => $this->getGracePeriodDaysLeft(),
+            'user_id' => $users_id,
         ]);
     }
 

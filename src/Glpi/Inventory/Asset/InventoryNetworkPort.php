@@ -39,6 +39,7 @@ namespace Glpi\Inventory\Asset;
 use Blacklist;
 use CommonDBTM;
 use DBmysqlIterator;
+use Dropdown;
 use FQDNLabel;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
@@ -50,9 +51,15 @@ use mysqli_stmt;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
+use NetworkPortEthernet;
+use NetworkPortFiberchannel;
+use NetworkPortWifi;
 use stdClass;
 use Toolbox;
 use Unmanaged;
+use WifiNetwork;
+
+use function Safe\preg_replace;
 
 trait InventoryNetworkPort
 {
@@ -440,7 +447,7 @@ trait InventoryNetworkPort
                 //handle instantiation type
                 if (property_exists($data, 'instantiation_type')) {
                     $type = $data->instantiation_type;
-                    //handle only ethernet and fiberchannel
+                    //handle only ethernet, fiberchannel and wifi
                     $this->handleInstantiation($type, $data, $keydb, true);
                 }
 
@@ -568,7 +575,7 @@ trait InventoryNetworkPort
     {
         global $DB;
 
-        if (!in_array($type, ['NetworkPortEthernet', 'NetworkPortFiberchannel'])) {
+        if (!in_array($type, [NetworkPortEthernet::class, NetworkPortFiberchannel::class, NetworkPortWifi::class])) {
             return;
         }
 
@@ -580,23 +587,52 @@ trait InventoryNetworkPort
         }
         $input['networkports_id'] = $ports_id;
 
-        if (property_exists($data, 'speed')) {
-            $input['speed'] = $data->speed;
-            $input['speed_other_value'] = $data->speed;
-        } elseif (property_exists($data, 'ifspeed') && $data->ifspeed > 0) {
-            // network equipment (SNMP) inventory only provides `ifspeed` (in bits/s),
-            // while the instantiation `speed` is expected in Mbit/s.
-            $speed = (int) ($data->ifspeed / 1000000);
-            // ignore out of range values (the `speed` column is a signed int):
-            // some interfaces report a saturated/garbage ifspeed (e.g. 4294967295000000).
-            if ($speed > 0 && $speed <= 2147483647) {
-                $input['speed'] = $speed;
-                $input['speed_other_value'] = $speed;
+        if ($type === NetworkPortWifi::class) {
+            if (property_exists($data, 'wifi_ssid') && (!empty($data->wifi_ssid) || (string) $data->wifi_ssid === '0')) {
+                $wifinetworks_id = Dropdown::importExternal(
+                    WifiNetwork::class,
+                    $data->wifi_ssid,
+                    $this->entities_id
+                );
+                if ($wifinetworks_id > 0) { //importExternal can return -1
+                    $input['wifinetworks_id'] = $wifinetworks_id;
+                }
             }
-        }
 
-        if (property_exists($data, 'wwn')) {
-            $input['wwn'] = $data->wwn;
+            //`mode` only accepts a limited set of values
+            if (property_exists($data, 'wifi_mode')) {
+                $modes = WifiNetwork::getWifiCardModes();
+                $mode = strtolower(trim((string) $data->wifi_mode));
+                if ($mode !== '' && array_key_exists($mode, $modes)) {
+                    $input['mode'] = $mode;
+                }
+            }
+
+            if (property_exists($data, 'wifi_version')) {
+                $version = $this->getWifiVersion((string) $data->wifi_version);
+                if ($version !== null) {
+                    $input['version'] = $version;
+                }
+            }
+        } else {
+            if (property_exists($data, 'speed')) {
+                $input['speed'] = $data->speed;
+                $input['speed_other_value'] = $data->speed;
+            } elseif (property_exists($data, 'ifspeed') && $data->ifspeed > 0) {
+                // network equipment (SNMP) inventory only provides `ifspeed` (in bits/s),
+                // while the instantiation `speed` is expected in Mbit/s.
+                $speed = (int) ($data->ifspeed / 1000000);
+                // ignore out of range values (the `speed` column is a signed int):
+                // some interfaces report a saturated/garbage ifspeed (e.g. 4294967295000000).
+                if ($speed > 0 && $speed <= 2147483647) {
+                    $input['speed'] = $speed;
+                    $input['speed_other_value'] = $speed;
+                }
+            }
+
+            if (property_exists($data, 'wwn')) {
+                $input['wwn'] = $data->wwn;
+            }
         }
 
         if (property_exists($data, 'mac')) {
@@ -640,6 +676,45 @@ trait InventoryNetworkPort
         } else {
             $instance->update($input);
         }
+    }
+
+    /**
+     * Get the Wi-Fi protocol version to store from the inventoried one
+     *
+     * Inventory reports the version the way the operating system does, prefixed with the
+     * standard name (`802.11`, `802.11ac`, `802.11abgn`, ...).
+     *
+     * @param string $value Inventoried version
+     *
+     * @return ?string Version to store, or null if it is not a known one
+     */
+    private function getWifiVersion(string $value): ?string
+    {
+        $versions = WifiNetwork::getWifiCardVersion();
+
+        //drop the standard name; `802.11` alone does not tell anything on the protocol
+        //also drop potential `ieee` prefix, and normalize to lowercase
+        $version = (string) preg_replace(
+            '/^(ieee[\s_-]*)?802\.11[\s_-]*/',
+            '',
+            strtolower(trim($value))
+        );
+
+        if ($version === '') {
+            return null;
+        }
+
+        if (array_key_exists($version, $versions)) {
+            return $version;
+        }
+
+        //protocols may be reported as a plain letters list (`abgn`)
+        $listed = implode('/', str_split($version));
+        if (array_key_exists($listed, $versions)) {
+            return $listed;
+        }
+
+        return null;
     }
 
     /**

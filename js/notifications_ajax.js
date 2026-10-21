@@ -46,6 +46,9 @@
         var _this = this;
         var _queue = $('<div></div>');
         var _queue_audio = $('<div></div>');
+        // Guard to avoid overlapping polling requests when the server is slow:
+        // a new poll is skipped while the previous one is still pending.
+        var _request_pending = false;
 
         this.options = $.extend({}, GLPINotificationsAjax.default, options);
 
@@ -114,6 +117,13 @@
                 return false;
             }
 
+            // Skip this poll if the previous request has not completed yet, so a
+            // slow server does not lead to overlapping requests piling up.
+            if (_request_pending) {
+                return;
+            }
+            _request_pending = true;
+
             var ajax = $.getJSON(`${CFG_GLPI.root_doc}/ajax/notifications_ajax.php`);
             ajax.done((data) => {
                 if (data) {
@@ -127,6 +137,9 @@
                     }
 
                 }
+            });
+            ajax.always(() => {
+                _request_pending = false;
             });
         };
 

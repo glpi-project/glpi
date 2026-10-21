@@ -34,22 +34,44 @@
 
 namespace tests\units;
 
+use Change;
+use Computer;
 use Config;
 use Contract;
+use Document;
+use Document_Item;
+use Entity;
+use GdImage;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Search\CriteriaFilter;
 use Glpi\Tests\DbTestCase;
+use GLPIMailer;
 use Group;
 use Group_User;
+use ITILFollowup;
+use ITILSolution;
+use NetworkPort;
+use NetworkPortEthernet;
 use Notification;
+use Notification_NotificationTemplate;
 use NotificationEvent;
+use NotificationEventMailing;
+use NotificationSetting;
 use NotificationTarget;
+use Problem;
+use Psr\Log\LogLevel;
 use QueuedNotification;
+use ReflectionClass;
 use Session;
 use Symfony\Component\Mailer\DelayedEnvelope;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
 use Symfony\Component\Mime\Part\DataPart;
+use Ticket;
+use TicketTask;
 use User;
+
+use function Safe\json_encode;
 
 /* Test for inc/notification.class.php */
 
@@ -72,7 +94,7 @@ class NotificationTest extends DbTestCase
         $this->assertEquals("global_signature", Notification::getMailingSignature($child_1));
         $this->assertEquals("global_signature", Notification::getMailingSignature($child_2));
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $this->assertTrue($entity->update([
             'id'                => $root,
             'mailing_signature' => "signature_root",
@@ -182,15 +204,15 @@ class NotificationTest extends DbTestCase
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $update_ticket_notif   = new Notification();
-        $this->assertTrue($update_ticket_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update']));
+        $this->assertTrue($update_ticket_notif->getFromDBByCrit(['itemtype' => Ticket::class, 'event' => 'update']));
         $update_followup_notif = new Notification();
-        $this->assertTrue($update_followup_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update_followup']));
+        $this->assertTrue($update_followup_notif->getFromDBByCrit(['itemtype' => Ticket::class, 'event' => 'update_followup']));
         $update_task_notif = new Notification();
-        $this->assertTrue($update_task_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update_task']));
+        $this->assertTrue($update_task_notif->getFromDBByCrit(['itemtype' => Ticket::class, 'event' => 'update_task']));
 
         // Create a ticket and attach documents to it
         $filename = $this->createUploadedImage($prefix = uniqid('', true));
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket_id = $ticket->add([
             'name'        => __FUNCTION__,
             'content'     => <<<HTML
@@ -214,12 +236,12 @@ HTML,
             ],
         ]);
         $this->assertGreaterThan(0, $ticket_id);
-        $ticket_img = new \Document();
+        $ticket_img = new Document();
         $this->assertTrue($ticket_img->getFromDBByCrit(['tag' => 'aaaaaaaa-aaaaaaaa-aaaaaaaaaaaaaa.00000000']));
 
         $ticket_doc = $this->createTxtDocument();
         $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'documents_id' => $ticket_doc->getID(),
                 'itemtype'     => $ticket->getType(),
@@ -229,7 +251,7 @@ HTML,
 
         // Create a followup and attach documents to it
         $filename = $this->createUploadedImage($prefix = uniqid('', true));
-        $followup = new \ITILFollowup();
+        $followup = new ITILFollowup();
         $followup_id = $followup->add([
             'itemtype'     => $ticket->getType(),
             'items_id'     => $ticket->getID(),
@@ -248,12 +270,12 @@ HTML,
             ],
         ]);
         $this->assertGreaterThan(0, $followup_id);
-        $followup_img = new \Document();
+        $followup_img = new Document();
         $this->assertTrue($followup_img->getFromDBByCrit(['tag' => 'bbbbbbbb-bbbbbbbb-bbbbbbbbbbbbbb.00000000']));
 
         $followup_doc = $this->createTxtDocument();
         $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'documents_id' => $followup_doc->getID(),
                 'itemtype'     => $followup->getType(),
@@ -263,7 +285,7 @@ HTML,
 
         // Create a task and attach documents to it
         $filename = $this->createUploadedImage($prefix = uniqid('', true));
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $task_id = $task->add([
             'tickets_id'  => $ticket->getID(),
             'content'     => <<<HTML
@@ -281,12 +303,12 @@ HTML,
             ],
         ]);
         $this->assertGreaterThan(0, $task_id);
-        $task_img = new \Document();
+        $task_img = new Document();
         $this->assertTrue($task_img->getFromDBByCrit(['tag' => 'cccccccc-cccccccc-cccccccccccccc.00000000']));
 
         $task_doc = $this->createTxtDocument();
         $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'documents_id' => $task_doc->getID(),
                 'itemtype'     => $task->getType(),
@@ -306,24 +328,24 @@ HTML,
 
             // No documents, inherited from global config
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_NO_DOCUMENT,
-                'notif_config'         => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'        => NotificationSetting::ATTACH_NO_DOCUMENT,
+                'notif_config'         => NotificationSetting::ATTACH_INHERIT,
                 'notification'         => $update_ticket_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $ticket,
                 'expected_attachments' => [],
             ];
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_NO_DOCUMENT,
-                'notif_config'         => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'        => NotificationSetting::ATTACH_NO_DOCUMENT,
+                'notif_config'         => NotificationSetting::ATTACH_INHERIT,
                 'notification'         => $update_followup_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $followup,
                 'expected_attachments' => [],
             ];
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_NO_DOCUMENT,
-                'notif_config'         => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'        => NotificationSetting::ATTACH_NO_DOCUMENT,
+                'notif_config'         => NotificationSetting::ATTACH_INHERIT,
                 'notification'         => $update_task_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $task,
@@ -332,24 +354,24 @@ HTML,
 
             // All documents, inherited from global config
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_ALL_DOCUMENTS,
-                'notif_config'         => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'        => NotificationSetting::ATTACH_ALL_DOCUMENTS,
+                'notif_config'         => NotificationSetting::ATTACH_INHERIT,
                 'notification'         => $update_ticket_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $ticket,
                 'expected_attachments' => array_merge($ticket_attachments, $followup_attachments, $task_attachments),
             ];
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_ALL_DOCUMENTS,
-                'notif_config'         => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'        => NotificationSetting::ATTACH_ALL_DOCUMENTS,
+                'notif_config'         => NotificationSetting::ATTACH_INHERIT,
                 'notification'         => $update_followup_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $followup,
                 'expected_attachments' => array_merge($ticket_attachments, $followup_attachments, $task_attachments),
             ];
             yield [
-                'global_config'      => \NotificationSetting::ATTACH_ALL_DOCUMENTS,
-                'notif_config'       => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'      => NotificationSetting::ATTACH_ALL_DOCUMENTS,
+                'notif_config'       => NotificationSetting::ATTACH_INHERIT,
                 'notification'       => $update_task_notif,
                 'send_html'          => $send_html,
                 'item_to_update'     => $task,
@@ -358,24 +380,24 @@ HTML,
 
             // Trigger documents only, inherited from global config
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY,
-                'notif_config'         => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'        => NotificationSetting::ATTACH_FROM_TRIGGER_ONLY,
+                'notif_config'         => NotificationSetting::ATTACH_INHERIT,
                 'notification'         => $update_ticket_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $ticket,
                 'expected_attachments' => $ticket_attachments,
             ];
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY,
-                'notif_config'         => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'        => NotificationSetting::ATTACH_FROM_TRIGGER_ONLY,
+                'notif_config'         => NotificationSetting::ATTACH_INHERIT,
                 'notification'         => $update_followup_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $followup,
                 'expected_attachments' => $followup_attachments,
             ];
             yield [
-                'global_config'       => \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY,
-                'notif_config'        => \NotificationSetting::ATTACH_INHERIT,
+                'global_config'       => NotificationSetting::ATTACH_FROM_TRIGGER_ONLY,
+                'notif_config'        => NotificationSetting::ATTACH_INHERIT,
                 'notification'        => $update_task_notif,
                 'send_html'           => $send_html,
                 'item_to_update'      => $task,
@@ -384,24 +406,24 @@ HTML,
 
             // No documents, defined by notification config
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_ALL_DOCUMENTS, // will be overriden
-                'notif_config'         => \NotificationSetting::ATTACH_NO_DOCUMENT,
+                'global_config'        => NotificationSetting::ATTACH_ALL_DOCUMENTS, // will be overriden
+                'notif_config'         => NotificationSetting::ATTACH_NO_DOCUMENT,
                 'notification'         => $update_ticket_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $ticket,
                 'expected_attachments' => [],
             ];
             yield [
-                'global_config'       => \NotificationSetting::ATTACH_ALL_DOCUMENTS, // will be overriden
-                'notif_config'        => \NotificationSetting::ATTACH_NO_DOCUMENT,
+                'global_config'       => NotificationSetting::ATTACH_ALL_DOCUMENTS, // will be overriden
+                'notif_config'        => NotificationSetting::ATTACH_NO_DOCUMENT,
                 'notification'        => $update_followup_notif,
                 'send_html'           => $send_html,
                 'item_to_update'      => $followup,
                 'expected_attachments' => [],
             ];
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_ALL_DOCUMENTS, // will be overriden
-                'notif_config'         => \NotificationSetting::ATTACH_NO_DOCUMENT,
+                'global_config'        => NotificationSetting::ATTACH_ALL_DOCUMENTS, // will be overriden
+                'notif_config'         => NotificationSetting::ATTACH_NO_DOCUMENT,
                 'notification'         => $update_task_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $task,
@@ -410,24 +432,24 @@ HTML,
 
             // All documents, defined by notification configig
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_NO_DOCUMENT, // will be overriden
-                'notif_config'         => \NotificationSetting::ATTACH_ALL_DOCUMENTS,
+                'global_config'        => NotificationSetting::ATTACH_NO_DOCUMENT, // will be overriden
+                'notif_config'         => NotificationSetting::ATTACH_ALL_DOCUMENTS,
                 'notification'         => $update_ticket_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $ticket,
                 'expected_attachments' => array_merge($ticket_attachments, $followup_attachments, $task_attachments),
             ];
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_NO_DOCUMENT, // will be overriden
-                'notif_config'         => \NotificationSetting::ATTACH_ALL_DOCUMENTS,
+                'global_config'        => NotificationSetting::ATTACH_NO_DOCUMENT, // will be overriden
+                'notif_config'         => NotificationSetting::ATTACH_ALL_DOCUMENTS,
                 'notification'         => $update_followup_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $followup,
                 'expected_attachments' => array_merge($ticket_attachments, $followup_attachments, $task_attachments),
             ];
             yield [
-                'global_config'        => \NotificationSetting::ATTACH_NO_DOCUMENT, // will be overriden
-                'notif_config'         => \NotificationSetting::ATTACH_ALL_DOCUMENTS,
+                'global_config'        => NotificationSetting::ATTACH_NO_DOCUMENT, // will be overriden
+                'notif_config'         => NotificationSetting::ATTACH_ALL_DOCUMENTS,
                 'notification'         => $update_task_notif,
                 'send_html'            => $send_html,
                 'item_to_update'       => $task,
@@ -446,7 +468,7 @@ HTML,
 
             protected function doSend(SentMessage $message): void
             {
-                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
+                $envelope_reflection = new ReflectionClass(DelayedEnvelope::class);
                 $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
             }
 
@@ -466,9 +488,9 @@ HTML,
     {
         $transport = $this->createCapturingTransport();
 
-        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
-        \NotificationEventMailing::send($queued_notifications);
-        \NotificationEventMailing::setMailer(null);
+        NotificationEventMailing::setMailer(new GLPIMailer($transport));
+        NotificationEventMailing::send($queued_notifications);
+        NotificationEventMailing::setMailer(null);
 
         return $transport->sent_email->getAttachments();
     }
@@ -491,7 +513,7 @@ HTML,
         ));
         $this->updateItem(Notification::class, $notification->getID(), [
             'is_active'        => 1,
-            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
+            'attach_documents' => NotificationSetting::ATTACH_INHERIT,
         ]);
     }
 
@@ -567,9 +589,9 @@ HTML,
             $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), $notif_crit);
             $this->assertCount(1, $queued_notifications);
 
-            \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
-            \NotificationEventMailing::send($queued_notifications);
-            \NotificationEventMailing::setMailer(null);
+            NotificationEventMailing::setMailer(new GLPIMailer($transport));
+            NotificationEventMailing::send($queued_notifications);
+            NotificationEventMailing::setMailer(null);
 
             $attachments = $transport->sent_email->getAttachments();
             $this->assertCount(count($expected_attachments), $attachments);
@@ -599,11 +621,11 @@ HTML,
 
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        foreach ([\Ticket::class, \Change::class, \Problem::class] as $itemtype) {
+        foreach ([Ticket::class, Change::class, Problem::class] as $itemtype) {
             // Arrange - Configure notifications
             $CFG_GLPI['use_notifications'] = true;
             $CFG_GLPI['notifications_mailing'] = true;
-            $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+            $CFG_GLPI['attach_ticket_documents_to_mail'] = NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
             $this->activateOnlyNotification($itemtype, 'solved');
             $this->assertTrue($DB->delete(QueuedNotification::getTable(), [new QueryExpression('true')]));
@@ -630,13 +652,13 @@ HTML,
 
             $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), $notification_crit));
 
-            $solution = $this->createItem(\ITILSolution::class, [
+            $solution = $this->createItem(ITILSolution::class, [
                 'itemtype' => $itemtype,
                 'items_id' => $itil_item->getID(),
                 'content'  => '<p>Solution with attachment</p>',
             ]);
 
-            $this->createItem(\Document_Item::class, [
+            $this->createItem(Document_Item::class, [
                 'documents_id' => $solution_doc->getID(),
                 'itemtype'     => $solution->getType(),
                 'items_id'     => $solution->getID(),
@@ -649,7 +671,7 @@ HTML,
             $this->assertCount(1, $queued_notifications);
 
             $queued = reset($queued_notifications);
-            $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
+            $this->assertEquals(ITILSolution::class, $queued['itemtype_trigger']);
             $this->assertEquals($solution->getID(), $queued['items_id_trigger']);
 
             // Act - Send queued notification and assert document is attached
@@ -671,9 +693,9 @@ HTML,
         // Arrange - Configure notifications
         $CFG_GLPI['use_notifications'] = true;
         $CFG_GLPI['notifications_mailing'] = true;
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
-        $this->activateOnlyNotification(\Ticket::class, 'closed');
+        $this->activateOnlyNotification(Ticket::class, 'closed');
 
         $notification_crit = [
             'is_deleted' => 0,
@@ -682,7 +704,7 @@ HTML,
         ];
 
         // Arrange - Create ticket with a solution, then a followup accepting it, and attach a document to the followup
-        $ticket = $this->createItem(\Ticket::class, [
+        $ticket = $this->createItem(Ticket::class, [
             'name'        => __FUNCTION__,
             'content'     => '<p>Test ticket</p>',
             'entities_id' => $entity,
@@ -693,8 +715,8 @@ HTML,
             ],
         ]);
 
-        $this->createItem(\ITILSolution::class, [
-            'itemtype' => \Ticket::class,
+        $this->createItem(ITILSolution::class, [
+            'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
             'content'  => '<p>Solution</p>',
         ]);
@@ -703,9 +725,9 @@ HTML,
 
         $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), $notification_crit));
 
-        $followup = new \ITILFollowup();
+        $followup = new ITILFollowup();
         $followup_id = $followup->add([
-            'itemtype'  => \Ticket::class,
+            'itemtype'  => Ticket::class,
             'items_id'  => $ticket->getID(),
             'content'   => 'Approving solution',
             'add_close' => 1,
@@ -713,7 +735,7 @@ HTML,
         $this->assertGreaterThan(0, $followup_id);
         $followup->getFromDB($followup_id);
 
-        $this->createItem(\Document_Item::class, [
+        $this->createItem(Document_Item::class, [
             'documents_id' => $followup_doc->getID(),
             'itemtype'     => $followup->getType(),
             'items_id'     => $followup->getID(),
@@ -726,7 +748,7 @@ HTML,
         $this->assertCount(1, $queued_notifications);
 
         $queued = reset($queued_notifications);
-        $this->assertEquals(\ITILFollowup::class, $queued['itemtype_trigger']);
+        $this->assertEquals(ITILFollowup::class, $queued['itemtype_trigger']);
         $this->assertEquals($followup->getID(), $queued['items_id_trigger']);
 
         // Act - Send queued notification and assert followup document is attached
@@ -747,7 +769,7 @@ HTML,
         // Arrange - Configure notifications
         $CFG_GLPI['use_notifications'] = true;
         $CFG_GLPI['notifications_mailing'] = true;
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
         $this->assertTrue($DB->update(
             Notification::getTable(),
@@ -756,7 +778,7 @@ HTML,
         ));
 
         $closed_notif = new Notification();
-        $this->assertTrue($closed_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'closed']));
+        $this->assertTrue($closed_notif->getFromDBByCrit(['itemtype' => Ticket::class, 'event' => 'closed']));
         $closed_template_link = $DB->request([
             'FROM'  => 'glpi_notifications_notificationtemplates',
             'WHERE' => ['notifications_id' => $closed_notif->getID()],
@@ -764,14 +786,14 @@ HTML,
 
         $rejectsolution_notif = $this->createItem(Notification::class, [
             'name'             => 'Solution rejected test',
-            'itemtype'         => \Ticket::class,
+            'itemtype'         => Ticket::class,
             'event'            => 'rejectsolution',
             'is_active'        => 1,
             'is_recursive'     => 1,
             'entities_id'      => 0,
-            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
+            'attach_documents' => NotificationSetting::ATTACH_INHERIT,
         ]);
-        $this->createItem(\Notification_NotificationTemplate::class, [
+        $this->createItem(Notification_NotificationTemplate::class, [
             'notifications_id'         => $rejectsolution_notif->getID(),
             'mode'                     => 'mailing',
             'notificationtemplates_id' => $closed_template_link['notificationtemplates_id'],
@@ -789,9 +811,9 @@ HTML,
         ];
 
         // Arrange - Create ticket with a solution, then a followup rejecting it, and attach a document to the followup
-        $this->updateItem(\Entity::class, $entity, ['autoclose_delay' => \Entity::CONFIG_NEVER]);
+        $this->updateItem(Entity::class, $entity, ['autoclose_delay' => Entity::CONFIG_NEVER]);
 
-        $ticket = $this->createItem(\Ticket::class, [
+        $ticket = $this->createItem(Ticket::class, [
             'name'        => __FUNCTION__,
             'content'     => '<p>Test ticket</p>',
             'entities_id' => $entity,
@@ -802,8 +824,8 @@ HTML,
             ],
         ]);
 
-        $this->createItem(\ITILSolution::class, [
-            'itemtype' => \Ticket::class,
+        $this->createItem(ITILSolution::class, [
+            'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
             'content'  => '<p>Solution</p>',
         ]);
@@ -812,9 +834,9 @@ HTML,
 
         $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), $notification_crit));
 
-        $followup = new \ITILFollowup();
+        $followup = new ITILFollowup();
         $followup_id = $followup->add([
-            'itemtype'   => \Ticket::class,
+            'itemtype'   => Ticket::class,
             'items_id'   => $ticket->getID(),
             'content'    => 'Rejecting solution',
             'add_reopen' => 1,
@@ -822,7 +844,7 @@ HTML,
         $this->assertGreaterThan(0, $followup_id);
         $followup->getFromDB($followup_id);
 
-        $this->createItem(\Document_Item::class, [
+        $this->createItem(Document_Item::class, [
             'documents_id' => $followup_doc->getID(),
             'itemtype'     => $followup->getType(),
             'items_id'     => $followup->getID(),
@@ -835,7 +857,7 @@ HTML,
         $this->assertCount(1, $queued_notifications);
 
         $queued = reset($queued_notifications);
-        $this->assertEquals(\ITILFollowup::class, $queued['itemtype_trigger']);
+        $this->assertEquals(ITILFollowup::class, $queued['itemtype_trigger']);
         $this->assertEquals($followup->getID(), $queued['items_id_trigger']);
 
         // Act - Send queued notification and assert followup document is attached
@@ -853,7 +875,7 @@ HTML,
         $filename = $prefix . uniqid('glpitest_', true) . '.png';
 
         $image = imagecreate(100, 100);
-        $this->assertInstanceOf(\GdImage::class, $image);
+        $this->assertInstanceOf(GdImage::class, $image);
         $this->assertIsInt(imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255)));
         $this->assertTrue(imagepng($image, GLPI_TMP_DIR . '/' . $filename));
 
@@ -1006,6 +1028,54 @@ HTML,
         $this->assertMatchesRegularExpression(
             '/<select[^>]*id=\'dropdown_itemtype\d+\'/',
             $output
+        );
+    }
+
+    public function testItemMatchFilterReturnsFalseWhenIndexNameHasNoSearchOption(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $notification = $this->createItem(Notification::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+            'itemtype'    => NetworkPortEthernet::class,
+            'event'       => 'new',
+            'is_active'   => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype'        => Notification::class,
+            'items_id'        => $notification->getID(),
+            'search_itemtype' => NetworkPortEthernet::class,
+            'search_criteria' => json_encode([
+                [
+                    'link'       => 'AND',
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ]),
+        ], ['search_criteria']);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $port = $this->createItem(NetworkPort::class, [
+            'itemtype'           => Computer::class,
+            'items_id'           => $computer->getID(),
+            'entities_id'        => $entity_id,
+            'instantiation_type' => NetworkPortEthernet::class,
+            'speed'              => 1000,
+            '_create_children'   => true,
+        ], ['speed']);
+        $ethernet = new NetworkPortEthernet();
+        $this->assertTrue($ethernet->getFromDBByCrit(['networkports_id' => $port->getID()]));
+
+        $this->assertFalse($notification->itemMatchFilter($ethernet));
+        $this->hasPhpLogRecordThatContains(
+            'Could not find networkports_id option for itemtype NetworkPortEthernet. Cannot use FilterableTrait on this itemtype.',
+            LogLevel::WARNING
         );
     }
 }

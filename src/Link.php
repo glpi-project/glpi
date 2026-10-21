@@ -712,7 +712,7 @@ TWIG, $buttons_params);
                     $file = reset($files);
                 }
                 $url             = $CFG_GLPI["root_doc"] . "/front/link.send.php?lID=" . $params['id']
-                                 . "&itemtype=" . $item::class
+                                 . "&itemtype=" . rawurlencode($item::class)
                                  . "&id=" . $item->getID() . "&rank=$key";
                 $newlink         = '<a href="' . htmlescape($url) . '" target="_blank">';
                 $newlink        .= "<i class='fs-2 ti ti-link me-2'></i>";

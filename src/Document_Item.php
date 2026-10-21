@@ -225,6 +225,11 @@ class Document_Item extends CommonDBRelation
 
     private function addToMergedTickets(): void
     {
+        // Ticket merge relationships must only be applied to ticket documents.
+        if ($this->fields['itemtype'] !== Ticket::class) {
+            return;
+        }
+
         $merged = Ticket::getMergedTickets($this->fields['items_id']);
         foreach ($merged as $ticket_id) {
             $input = $this->input;
@@ -570,8 +575,8 @@ TWIG, $twig_params);
             $entity   = $_SESSION["glpiactive_entity"];
 
             if ($item->isEntityAssign()) {
-                // Case of personal items : entity = -1 : create on active entity (Reminder case))
-                if ($item->getEntityID() >= 0) {
+                // Item's entity when the user may write there, otherwise their active entity.
+                if ($item->getEntityID() >= 0 && Session::haveAccessToEntity($item->getEntityID())) {
                     $entity = $item->getEntityID();
                 }
 
@@ -813,6 +818,14 @@ TWIG, $twig_params);
                 continue;
             }
             $doc_id = (int) $item->fields['documents_id'];
+
+            $document = new Document();
+            if (!$document->can($doc_id, UPDATE)) {
+                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                continue;
+            }
+
             $_SESSION['glpitransfer_list'][Document::class][$doc_id] = $doc_id;
             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
         }

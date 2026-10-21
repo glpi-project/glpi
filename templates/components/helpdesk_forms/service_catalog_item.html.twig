@@ -34,16 +34,8 @@
 {% set is_pinned = item.fields['is_pinned']|default(false) %}
 
 <div class="col-12 col-sm-6 col-md-4 d-flex">
-    <a
-        class="card mx-1 my-2 flex-grow-1 {{ is_pinned ? "border-menu" : "" }}"
-        {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
-            href="{{ item.getServiceCatalogLink() }}"
-        {% elseif item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
-            href="?{{ item.getChildrenUrlParameters() }}"
-            data-children-url-parameters="{{ item.getChildrenUrlParameters() }}"
-            data-composite-item
-        {% endif %}
-    >
+    {# The whole card is clickable through the title stretched link, so the description can contain its own links #}
+    <div class="card service-catalog-item position-relative mx-1 my-2 flex-grow-1 {{ is_pinned ? "border-menu" : "" }}">
         <section
             class="card-body"
             aria-labelledby="{{ unique_dom_id }}"
@@ -55,18 +47,29 @@
                 ) }}
                 <div class="ms-4">
                     <div class="d-flex mb-2 align-items-center">
-                        <h2
-                            id="{{ unique_dom_id }}"
-                            class="card-title mb-0"
+                        <a
+                            class="stretched-link text-reset text-decoration-none"
+                            {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
+                                href="{{ item.getServiceCatalogLink() }}"
+                            {% elseif item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
+                                href="?{{ item.getChildrenUrlParameters() }}"
+                                data-children-url-parameters="{{ item.getChildrenUrlParameters() }}"
+                                data-composite-item
+                            {% endif %}
                         >
-                            {{ item.getServiceCatalogItemTitle() }}
-                        </h2>
+                            <h2
+                                id="{{ unique_dom_id }}"
+                                class="card-title mb-0"
+                            >
+                                {{ item.getServiceCatalogItemTitle() }}
+                            </h2>
+                        </a>
                         {% if is_pinned %}
                             <i class="ti ti-pin ms-auto"></i>
                         {% endif %}
                     </div>
                     <div
-                        class="text-secondary remove-last-tinymce-margin"
+                        class="text-secondary remove-last-tinymce-margin service-catalog-description"
                         data-testid="service-catalog-description"
                     >
                         {{ item.getServiceCatalogItemDescription()|safe_html }}
@@ -74,5 +77,5 @@
                 </div>
             </div>
         </section>
-    </a>
+    </div>
 </div>

@@ -830,12 +830,20 @@ abstract class CommonDBConnexity extends CommonDBTM
                         return;
                     }
                     $input2[$peertype] = $input['peertype'];
+                    $peer_itemtype = $input['peertype'];
                 } else {
                     if ($peertype != $input['peertype']) {
                         $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         return;
                     }
+                    $peer_itemtype = $peertype;
+                }
+                $peer = getItemForItemtype($peer_itemtype);
+                if (!$peer || !$peer->getFromDB($input2[$peers_id])) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                    return;
                 }
                 foreach ($ids as $key) {
                     if (!$item->getFromDB($key)) {

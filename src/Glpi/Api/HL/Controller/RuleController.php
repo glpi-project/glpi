@@ -513,12 +513,9 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        $params = $request->getParameters();
-        $filter = $params['filter'] ?? '';
-        $filter .= ';sub_type==Rule' . $request->getAttribute('collection');
-        $params['filter'] = $filter;
+        $this->restrictSearch($request, 'sub_type==Rule' . $request->getAttribute('collection'));
 
-        return ResourceAccessor::searchBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $params);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -532,12 +529,9 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        $params = $request->getParameters();
-        $filter = $params['filter'] ?? '';
-        $filter .= ';sub_type==Rule' . $request->getAttribute('collection');
-        $params['filter'] = $filter;
+        $this->restrictSearch($request, 'sub_type==Rule' . $request->getAttribute('collection'));
 
-        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}/Criteria', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -554,12 +548,9 @@ final class RuleController extends AbstractController
             return $response;
         }
 
-        $params = $request->getParameters();
-        $filter = $params['filter'] ?? '';
-        $filter .= ';rule.id==' . $request->getAttribute('id');
-        $params['filter'] = $filter;
+        $this->restrictSearch($request, 'rule.id==' . $request->getAttribute('id'));
 
-        return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -574,12 +565,9 @@ final class RuleController extends AbstractController
             return $response;
         }
 
-        $params = $request->getParameters();
-        $filter = $params['filter'] ?? '';
-        $filter .= ';rule.id==' . $request->getAttribute('rule_id');
-        $params['filter'] = $filter;
+        $this->restrictSearch($request, 'rule.id==' . $request->getAttribute('rule_id'));
 
-        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}/Action', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -596,12 +584,9 @@ final class RuleController extends AbstractController
             return $response;
         }
 
-        $params = $request->getParameters();
-        $filter = $params['filter'] ?? '';
-        $filter .= ';rule.id==' . $request->getAttribute('id');
-        $params['filter'] = $filter;
+        $this->restrictSearch($request, 'rule.id==' . $request->getAttribute('id'));
 
-        return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -616,12 +601,9 @@ final class RuleController extends AbstractController
             return $response;
         }
 
-        $params = $request->getParameters();
-        $filter = $params['filter'] ?? '';
-        $filter .= ';rule.id==' . $request->getAttribute('rule_id');
-        $params['filter'] = $filter;
+        $this->restrictSearch($request, 'rule.id==' . $request->getAttribute('rule_id'));
 
-        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule', methods: ['POST'])]
