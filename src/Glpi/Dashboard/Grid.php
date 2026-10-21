@@ -1600,6 +1600,27 @@ HTML;
 
             foreach (
                 [
+                    'day'   => __("SLA compliance of solved tickets by day"),
+                    'week'  => __("SLA compliance of solved tickets by week"),
+                    'month' => __("SLA compliance of solved tickets by month"),
+                    'year'  => __("SLA compliance of solved tickets by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_by_sla_evolution_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsBySlaEvolution",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
+            foreach (
+                [
                     'open'  => __("Number of opened tickets by category and type"),
                     'close' => __("Number of closed tickets by category and type"),
                 ] as $case => $label
