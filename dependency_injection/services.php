@@ -84,6 +84,10 @@ return static function (ContainerConfigurator $container): void {
         'Twig\Components\\',
         $projectDir . '/src/Twig/Components'
     );
+    $services->load(
+        'Glpi\Security\ContentSecurityPolicy\\',
+        $projectDir . '/src/Glpi/Security/ContentSecurityPolicy'
+    );
     $services->set(ReAuthManager::class)
         ->factory([ReAuthManager::class, 'getInstance']);
 

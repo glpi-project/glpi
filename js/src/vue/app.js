@@ -73,6 +73,11 @@ const component_context = import.meta.webpackContext('.', {
 // eslint-disable-next-line no-global-assign
 __webpack_public_path__ = `${CFG_GLPI.root_doc + __webpack_public_path__}/`;
 
+// Lazy loaded chunks are injected as script tags and must carry the CSP nonce.
+/* global __webpack_nonce__ */
+// eslint-disable-next-line no-global-assign
+__webpack_nonce__ = CFG_GLPI.csp_nonce;
+
 const components = {};
 component_context.keys().forEach((f) => {
     // Ex: ./Debug/Toolbar.vue => DebugToolbar
