@@ -104,6 +104,27 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(page.getByRole('figure', { name: 'Diagram' })).toContainText('Done /u');
     });
 
+    test('Typing ```mermaid inserts a diagram, not a code block', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid input rule',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Content</p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.editor.clearContent();
+
+        await kb.editor.typeText('```mermaid ');
+        await expect(page.getByRole('tab', { name: 'Source' })).toHaveAttribute('aria-selected', 'true');
+        await kb.editor.typeText('flowchart TD\n    A --> Typed');
+        await page.getByRole('tab', { name: 'Diagram' }).click();
+        await expect(page.getByRole('figure', { name: 'Diagram' })).toContainText('Typed');
+    });
+
     test('Diagram opens on its source after its insertion only', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
@@ -214,6 +235,44 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await kb.editor.save();
         await expect(page.getByText('not a diagram', { exact: true })).toBeVisible();
         await expect(page.getByRole('tabpanel', { name: 'Diagram' })).toBeHidden();
+    });
+
+    test('Only the flowchart, sequence and state diagram types are drawn', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid diagram types',
+            entities_id: getWorkerEntityId(),
+            answer: [
+                mermaidAnswer('sequenceDiagram\n    Alice-&gt;&gt;Bob: Sequence label'),
+                mermaidAnswer('stateDiagram-v2\n    [*] --&gt; StateLabel'),
+                mermaidAnswer('gantt\n    section Gantt\n    Task: 2024-01-01, 1d'),
+            ].join(''),
+        });
+
+        await kb.goto(id);
+        const diagrams = page.getByRole('figure', { name: 'Diagram' });
+        // The diagrams are drawn one after the other, which is slow on a loaded runner.
+        await expect(diagrams.filter({ hasText: 'Sequence label' })).toBeVisible({ timeout: 15000 });
+        await expect(diagrams.filter({ hasText: 'StateLabel' })).toBeVisible();
+        await expect(diagrams).toHaveCount(2);
+        await expect(page.getByText('section Gantt')).toBeVisible();
+    });
+
+    test('Unsupported diagram type shows a message in edit mode', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid unsupported type',
+            entities_id: getWorkerEntityId(),
+            answer: mermaidAnswer('gantt\n    section Gantt\n    Task: 2024-01-01, 1d'),
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await expect(page.getByRole('tabpanel', { name: 'Diagram' })).toContainText('Unsupported diagram type');
     });
 
     test('Backspace and Delete keep the text and the diagram source apart', async ({ page, profile, api }) => {

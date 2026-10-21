@@ -12,6 +12,17 @@ const path = require('path');
 const libOutputPath = 'public/lib';
 const scssOutputPath = 'css/lib';
 
+// Mermaid diagram types shipped in the bundle, and the layout engines that none of them uses.
+// The names are the ones of Mermaid's internal chunks (`<name>-<hash>.mjs`).
+const mermaid_dist = path.resolve(__dirname, 'node_modules/mermaid/dist');
+const mermaid_types = ['flowDiagram', 'sequenceDiagram', 'stateDiagram-v2'];
+const mermaid_unused_layouts = ['cose-bilkent', 'elk', 'swimlanes'];
+for (const name of [...mermaid_types, ...mermaid_unused_layouts]) {
+    if (globSync(`${mermaid_dist}/chunks/mermaid.core/${name}-*.mjs`).length === 0) {
+        throw new Error(`Mermaid chunk '${name}' not found: update the Mermaid lists in .webpack.config.js.`);
+    }
+}
+
 /*
  * External libraries files build configuration.
  */
@@ -55,6 +66,11 @@ const config = {
                     path.resolve(__dirname, 'lib/blueimp/jquery-file-upload'),
                 ],
                 use: ['script-loader', 'strip-sourcemap-loader'],
+            },
+            {
+                // Keep the lazy-loaded diagram types in mermaid.js, and not in a chunk shared with other bundles.
+                include: mermaid_dist,
+                parser: { dynamicImportMode: 'eager' },
             },
             {
                 test: /\.json$/,
@@ -104,6 +120,20 @@ const config = {
     plugins: [
         new webpack.optimize.LimitChunkCountPlugin({
             maxChunks: 1,
+        }),
+        // Ship only the Mermaid diagram types a KB article needs: the others pull
+        // several MB of layout engines into the single-chunk bundle.
+        new webpack.NormalModuleReplacementPlugin(/(^|\/)(?!chunk-)[\w.-]+-[A-Z0-9]{8}\.mjs$/, (resource) => {
+            const issuer = resource.contextInfo.issuer ?? '';
+            if (!issuer.startsWith(mermaid_dist)) {
+                return;
+            }
+            const name = path.basename(resource.request).replace(/-[A-Z0-9]{8}\.mjs$/, '');
+            // The diagram types are loaded from the main file, the layout engines from internal chunks.
+            const is_unused_type = path.basename(issuer) === 'mermaid.core.mjs' && !mermaid_types.includes(name);
+            if (is_unused_type || mermaid_unused_layouts.includes(name)) {
+                resource.request = path.resolve(__dirname, 'lib/mermaid/unsupported-diagram.js');
+            }
         }),
         new webpack.ProvidePlugin(
             {

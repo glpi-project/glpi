@@ -40,7 +40,7 @@ import { renderMermaidFigure } from '/js/modules/Mermaid/MermaidRenderer.js';
  * where the diagram is not drawn.
  */
 
-const { Node } = TiptapCore;
+const { Node, textblockTypeInputRule } = TiptapCore;
 
 const PREVIEW_DELAY = 400;
 
@@ -205,6 +205,8 @@ function createMermaidNodeView({ node, editor, getPos }) {
 
 export const MermaidBlock = Node.create({
     name: 'mermaidBlock',
+    // Ahead of the code block, so that its ``` input rule does not catch ```mermaid.
+    priority: 101,
     group: 'block',
     content: 'text*',
     marks: '',
@@ -255,6 +257,16 @@ export const MermaidBlock = Node.create({
                 content: [{ type: 'text', text: source }],
             }),
         };
+    },
+
+    addInputRules() {
+        return [
+            textblockTypeInputRule({
+                find: /^```mermaid[\s\n]$/,
+                type: this.type,
+                getAttributes: { isNew: true },
+            }),
+        ];
     },
 
     addKeyboardShortcuts() {
