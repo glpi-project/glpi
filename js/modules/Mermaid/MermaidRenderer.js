@@ -88,6 +88,8 @@ export async function renderMermaidBlocks(root) {
         !handled_blocks.has(code)
         && code.closest('.ProseMirror') === null
         && !code.parentElement.nextElementSibling?.classList.contains('kb-mermaid-diagram')
+        // A revision diff marks its changes in the source, a drawing would hide them.
+        && code.querySelector('ins, del') === null
     ));
 
     for (const code of blocks) {
