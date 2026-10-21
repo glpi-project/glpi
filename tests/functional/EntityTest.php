@@ -1157,7 +1157,8 @@ class EntityTest extends DbTestCase
         $this->assertTrue($user->getFromDB($user->getID()));
         $this->assertEquals($user_nick, $user->fields['nickname']);
 
-        // Build test ticket
+        // Build test ticket, tech needs the ASSIGN right to set the assignee
+        $this->addRightToProfile('Technician', Ticket::$rightname, Ticket::ASSIGN);
         $this->login('tech', 'tech');
 
         //force set entity because $_SESSION['glpiactive_entity'] contains 0 without

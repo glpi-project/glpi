@@ -530,8 +530,8 @@ HTML,
         $tech_id     = getItemByTypeName('User', 'tech', true);
         $postonly_id = getItemByTypeName('User', 'post-only', true);
 
-        // create ticket
-        $this->login('post-only', 'postonly');
+        // create ticket, as an admin: post-only cannot assign
+        $this->login();
         $ticket = new Ticket();
         $ticket_id = (int) $ticket->add([
             'name'               => 'ticket title',

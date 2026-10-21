@@ -2732,6 +2732,9 @@ class SearchTest extends DbTestCase
 
     public function testProblems()
     {
+        // actors are only set with a session that has the right to set them
+        $this->login();
+
         $tech_users_id = getItemByTypeName('User', "tech", true);
 
         // reduce the right of tech profile
@@ -2788,6 +2791,9 @@ class SearchTest extends DbTestCase
 
     public function testChanges()
     {
+        // actors are only set with a session that has the right to set them
+        $this->login();
+
         $tech_users_id = getItemByTypeName('User', "tech", true);
 
         // reduce the right of tech profile

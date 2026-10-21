@@ -38,6 +38,7 @@ use Change;
 use CommonITILActor;
 use CommonITILObject;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\ITILActorAssertionsTrait;
 use Glpi\Tests\RuleBuilder;
 use Group;
 use Group_User;
@@ -59,6 +60,8 @@ use User;
  */
 class CommonITILObjectActorRightsTest extends DbTestCase
 {
+    use ITILActorAssertionsTrait;
+
     #[TestWith(['legacy'], 'legacy')]
     #[TestWith(['additional_array'], 'additional_array')]
     public function testSelfServiceCreatesTicketForHimself(string $format): void
@@ -71,7 +74,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, $this->buildActorInput($format, 'requester', User::class, $self_id) + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $self_id, CommonITILActor::REQUESTER), 'Self-Service user should be requester of his ticket');
+        $this->assertActorLinked($ticket, User::class, $self_id, CommonITILActor::REQUESTER, 'Self-Service user should be requester of his ticket');
     }
 
     #[TestWith(['legacy'], 'legacy')]
@@ -89,7 +92,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, $this->buildActorInput($format, 'requester', User::class, $new_requester->getID()) + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $new_requester->getID(), CommonITILActor::REQUESTER), 'Delegating user should be requester');
+        $this->assertActorLinked($ticket, User::class, $new_requester->getID(), CommonITILActor::REQUESTER, 'Delegating user should be requester');
     }
 
     /**
@@ -116,7 +119,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         );
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($ticket, User::class, $new_requester->getID(), CommonITILActor::REQUESTER), 'Requester without delegation should be ignored');
+        $this->assertActorNotLinked($ticket, User::class, $new_requester->getID(), CommonITILActor::REQUESTER, 'Requester without delegation should be ignored');
     }
 
     /**
@@ -140,8 +143,8 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, ['_users_id_requester' => [$self_id, $other_requester_id]] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $self_id, CommonITILActor::REQUESTER), 'Self-Service user should be requester of his ticket');
-        $this->assertFalse($this->isActorLinked($ticket, User::class, $other_requester_id, CommonITILActor::REQUESTER), 'Requester without delegation should be removed');
+        $this->assertActorLinked($ticket, User::class, $self_id, CommonITILActor::REQUESTER, 'Self-Service user should be requester of his ticket');
+        $this->assertActorNotLinked($ticket, User::class, $other_requester_id, CommonITILActor::REQUESTER, 'Requester without delegation should be removed');
     }
 
     #[DataProvider('itilClassProvider')]
@@ -156,7 +159,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $itil = $this->createItil($itil_class, ['_users_id_requester' => $new_requester->getID()]);
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $new_requester->getID(), CommonITILActor::REQUESTER), 'Requester should be set');
+        $this->assertActorLinked($itil, User::class, $new_requester->getID(), CommonITILActor::REQUESTER, 'Requester should be set');
     }
 
     public function testSelfServiceCreatesTicketWithObservers(): void
@@ -173,8 +176,8 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         ] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $new_observer_user->getID(), CommonITILActor::OBSERVER), 'Observer user should be set');
-        $this->assertTrue($this->isActorLinked($ticket, Group::class, $new_observer_group->getID(), CommonITILActor::OBSERVER), 'Observer group should be set');
+        $this->assertActorLinked($ticket, User::class, $new_observer_user->getID(), CommonITILActor::OBSERVER, 'Observer user should be set');
+        $this->assertActorLinked($ticket, Group::class, $new_observer_group->getID(), CommonITILActor::OBSERVER, 'Observer group should be set');
     }
 
     #[DataProvider('itilClassProvider')]
@@ -198,7 +201,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
 
         // --- assert ---
         foreach ($new_assignees as $actor_itemtype => $actor_id) {
-            $this->assertTrue($this->isActorLinked($itil, $actor_itemtype, $actor_id, CommonITILActor::ASSIGN), "$actor_itemtype assignee should be set");
+            $this->assertActorLinked($itil, $actor_itemtype, $actor_id, CommonITILActor::ASSIGN, "$actor_itemtype assignee should be set");
         }
     }
 
@@ -219,7 +222,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $itil = $this->createItil($itil_class, $this->buildActorInput($format, 'assign', $actor_itemtype, $new_assignee_id));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, $actor_itemtype, $new_assignee_id, CommonITILActor::ASSIGN), 'Assignee without assign right should be ignored');
+        $this->assertActorNotLinked($itil, $actor_itemtype, $new_assignee_id, CommonITILActor::ASSIGN, 'Assignee without assign right should be ignored');
     }
 
     #[TestWith(['legacy'], 'legacy')]
@@ -237,7 +240,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, $this->buildActorInput($format, 'assign', User::class, $self_id) + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN), 'Technician should be assigned');
+        $this->assertActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN, 'Technician should be assigned');
     }
 
     /**
@@ -260,7 +263,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, ['_users_id_assign' => $self_id] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN), 'Self-assignment without own right should be ignored');
+        $this->assertActorNotLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN, 'Self-assignment without own right should be ignored');
     }
 
     /**
@@ -283,8 +286,8 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, ['_users_id_assign' => [$self_id, $other_assignee_id]] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN), 'Technician should be assigned');
-        $this->assertFalse($this->isActorLinked($ticket, User::class, $other_assignee_id, CommonITILActor::ASSIGN), 'Other assignee without assign right should be removed');
+        $this->assertActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN, 'Technician should be assigned');
+        $this->assertActorNotLinked($ticket, User::class, $other_assignee_id, CommonITILActor::ASSIGN, 'Other assignee without assign right should be removed');
     }
 
     /**
@@ -315,7 +318,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         ] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($ticket, User::class, $other_assignee_id, CommonITILActor::ASSIGN), 'Other assignee without assign right should be removed');
+        $this->assertActorNotLinked($ticket, User::class, $other_assignee_id, CommonITILActor::ASSIGN, 'Other assignee without assign right should be removed');
         $link = $ticket->getActorObjectForItem(User::class);
         $this->assertTrue($link->getFromDBByCrit([
             $link::getItilObjectForeignKey() => $ticket->getID(),
@@ -338,7 +341,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $this->updateItem($itil_class, $itil->getID(), ['_users_id_assign' => $new_assignee_id]);
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN), 'Assignee should be set');
+        $this->assertActorLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN, 'Assignee should be set');
     }
 
     /**
@@ -359,7 +362,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $itil->update(['id' => $itil->getID()] + $this->buildActorInput($format, 'assign', $actor_itemtype, $new_assignee_id));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, $actor_itemtype, $new_assignee_id, CommonITILActor::ASSIGN), 'Assignee without assign right should be ignored');
+        $this->assertActorNotLinked($itil, $actor_itemtype, $new_assignee_id, CommonITILActor::ASSIGN, 'Assignee without assign right should be ignored');
     }
 
     /**
@@ -385,7 +388,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), ['_users_id_assign' => $self_id]);
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN), 'Technician should be assigned');
+        $this->assertActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN, 'Technician should be assigned');
     }
 
     /**
@@ -409,7 +412,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), ['_users_id_assign' => $self_id]);
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN), 'Self-assignment on an assigned ticket without steal right should be ignored');
+        $this->assertActorNotLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN, 'Self-assignment on an assigned ticket without steal right should be ignored');
     }
 
     /**
@@ -434,7 +437,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         ]);
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN), 'Technician should be assigned');
+        $this->assertActorLinked($ticket, User::class, $self_id, CommonITILActor::ASSIGN, 'Technician should be assigned');
     }
 
     #[DataProvider('itilClassProvider')]
@@ -453,7 +456,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         ]);
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, User::class, $initial_assignee_id, CommonITILActor::ASSIGN), 'Assignee should be removed');
+        $this->assertActorNotLinked($itil, User::class, $initial_assignee_id, CommonITILActor::ASSIGN, 'Assignee should be removed');
     }
 
     /**
@@ -479,7 +482,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         ]);
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $initial_assignee_id, CommonITILActor::ASSIGN), 'Assignee should not be removed without assign right');
+        $this->assertActorLinked($itil, User::class, $initial_assignee_id, CommonITILActor::ASSIGN, 'Assignee should not be removed without assign right');
     }
 
     #[DataProvider('itilClassProvider')]
@@ -499,8 +502,8 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         ]);
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $new_requester_id, CommonITILActor::REQUESTER), 'New requester should be set');
-        $this->assertFalse($this->isActorLinked($itil, User::class, $initial_requester_id, CommonITILActor::REQUESTER), 'Initial requester should be removed');
+        $this->assertActorLinked($itil, User::class, $new_requester_id, CommonITILActor::REQUESTER, 'New requester should be set');
+        $this->assertActorNotLinked($itil, User::class, $initial_requester_id, CommonITILActor::REQUESTER, 'Initial requester should be removed');
     }
 
     /**
@@ -527,8 +530,8 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         ]);
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($ticket, User::class, $new_requester_id, CommonITILActor::REQUESTER), 'New requester should be ignored');
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $initial_requester_id, CommonITILActor::REQUESTER), 'Initial requester should be kept');
+        $this->assertActorNotLinked($ticket, User::class, $new_requester_id, CommonITILActor::REQUESTER, 'New requester should be ignored');
+        $this->assertActorLinked($ticket, User::class, $initial_requester_id, CommonITILActor::REQUESTER, 'Initial requester should be kept');
     }
 
     #[DataProvider('itilClassProvider')]
@@ -544,7 +547,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $this->updateItem($itil_class, $itil->getID(), ['_users_id_observer' => $new_observer_id]);
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $new_observer_id, CommonITILActor::OBSERVER), 'Observer should be set');
+        $this->assertActorLinked($itil, User::class, $new_observer_id, CommonITILActor::OBSERVER, 'Observer should be set');
     }
 
     /**
@@ -569,7 +572,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $ticket->update(['id' => $ticket->getID()] + $this->buildActorInput($format, 'observer', $actor_itemtype, $new_observer_id));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($ticket, $actor_itemtype, $new_observer_id, CommonITILActor::OBSERVER), 'Observer added from the simplified interface should be ignored');
+        $this->assertActorNotLinked($ticket, $actor_itemtype, $new_observer_id, CommonITILActor::OBSERVER, 'Observer added from the simplified interface should be ignored');
     }
 
     /**
@@ -591,8 +594,8 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         ] + $this->getMinimalCreationInput(Ticket::class)));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $new_requester_id, CommonITILActor::REQUESTER), 'Requester should be kept');
-        $this->assertTrue($this->isActorLinked($ticket, User::class, $new_assignee_id, CommonITILActor::ASSIGN), 'Assignee should be kept');
+        $this->assertActorLinked($ticket, User::class, $new_requester_id, CommonITILActor::REQUESTER, 'Requester should be kept');
+        $this->assertActorLinked($ticket, User::class, $new_assignee_id, CommonITILActor::ASSIGN, 'Assignee should be kept');
     }
 
     /**
@@ -616,7 +619,7 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, ['name' => __FUNCTION__] + $this->getMinimalCreationInput(Ticket::class));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($ticket, Group::class, $new_assignee_group_id, CommonITILActor::ASSIGN), 'Group assigned by the rule should be kept');
+        $this->assertActorLinked($ticket, Group::class, $new_assignee_group_id, CommonITILActor::ASSIGN, 'Group assigned by the rule should be kept');
     }
 
     public static function itilClassProvider(): iterable
@@ -734,16 +737,6 @@ class CommonITILObjectActorRightsTest extends DbTestCase
         };
     }
 
-    private function isActorLinked(CommonITILObject $itil, string $actor_itemtype, int $actor_id, int $actor_type): bool
-    {
-        $link = $itil->getActorObjectForItem($actor_itemtype);
-
-        return countElementsInTable($link::getTable(), [
-            $link::getItilObjectForeignKey() => $itil->getID(),
-            $link->getActorForeignKey() => $actor_id,
-            'type' => $actor_type,
-        ]) > 0;
-    }
 
     private function getActorLinkId(CommonITILObject $itil, string $actor_itemtype, int $actor_id, int $actor_type): int
     {

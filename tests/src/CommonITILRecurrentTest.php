@@ -600,6 +600,9 @@ abstract class CommonITILRecurrentTest extends DbTestCase
 
     public function testCreateItem()
     {
+        // recurrent items are created by the cron, which sets actors without a user session
+        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+
         $provider = $this->createItemProvider();
         foreach ($provider as $row) {
             $predefined_fields = $row['predefined_fields'];
@@ -765,6 +768,9 @@ abstract class CommonITILRecurrentTest extends DbTestCase
 
     public function testTemplateIsSetOnCreatedItem(): void
     {
+        // recurrent items are created by the cron, which sets actors without a user session
+        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+
         // Arrange: create a template and a reccurent item
         $reccurent_class = $this->getChildClass();
         $template_class = $reccurent_class::getTemplateClass();

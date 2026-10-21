@@ -159,9 +159,11 @@ abstract class CommonITILTaskTestCase extends DbTestCase
                 'name' => 'My ITIL item',
                 'content' => __FUNCTION__,
                 'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
-                $actor_field => getItemByTypeName(\User::class, TU_USER, true),
             ]
         );
+        // the tech user may not set every actor (e.g. no ASSIGN right)
+        $this->login();
+        $this->updateItem($itil_class, $my_item->getID(), [$actor_field => getItemByTypeName(\User::class, TU_USER, true)]);
 
         $task_item = new $task_class();
         $task_input = [
@@ -259,9 +261,11 @@ abstract class CommonITILTaskTestCase extends DbTestCase
                 'name' => 'My ITIL item',
                 'content' => __FUNCTION__,
                 'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
-                $actor_field => $group->getID(),
             ]
         );
+        // the tech user may not set every actor (e.g. no ASSIGN right)
+        $this->login();
+        $this->updateItem($itil_class, $my_item->getID(), [$actor_field => $group->getID()]);
 
         $task_item = new $task_class();
         $task_input = [
