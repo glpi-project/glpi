@@ -1530,6 +1530,132 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testTicketsByAssignedGroupChanges(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $groups    = [];
+        foreach (['A', 'B', 'C'] as $letter) {
+            $groups[$letter] = $this->createItem(\Group::class, [
+                'name'        => "test dashboard group changes $letter",
+                'entities_id' => $entity_id,
+            ]);
+        }
+
+        $tickets_ids = [];
+        // Each step adds (+) or removes (-) a group of the given actor type
+        foreach (
+            [
+                'never changed' => [['+', 'A', \CommonITILActor::ASSIGN]],
+                'changed once'  => [['+', 'A', \CommonITILActor::ASSIGN], ['-', 'A', \CommonITILActor::ASSIGN], ['+', 'B', \CommonITILActor::ASSIGN]],
+                'changed twice' => [
+                    ['+', 'A', \CommonITILActor::ASSIGN],
+                    ['+', 'B', \CommonITILActor::ASSIGN],
+                    ['+', 'C', \CommonITILActor::ASSIGN],
+                    ['+', 'A', \CommonITILActor::REQUESTER],
+                    ['+', 'B', \CommonITILActor::OBSERVER],
+                ],
+                'no assigned group' => [['+', 'A', \CommonITILActor::REQUESTER], ['+', 'B', \CommonITILActor::REQUESTER]],
+            ] as $name => $steps
+        ) {
+            $ticket = $this->createItem(\Ticket::class, [
+                'name'        => "test dashboard group changes $name",
+                'content'     => 'blablabla',
+                'entities_id' => $entity_id,
+            ]);
+            foreach ($steps as [$action, $letter, $type]) {
+                $link = [
+                    'tickets_id' => $ticket->getID(),
+                    'groups_id'  => $groups[$letter]->getID(),
+                    'type'       => $type,
+                ];
+                if ($action === '+') {
+                    $this->createItem(\Group_Ticket::class, $link);
+                } else {
+                    $group_ticket = new \Group_Ticket();
+                    $this->assertTrue($group_ticket->getFromDBByCrit($link));
+                    $this->deleteItem(\Group_Ticket::class, $group_ticket->getID());
+                }
+            }
+            // A date far in the past so that no other ticket of the test database is counted
+            $DB->update(\Ticket::getTable(), [
+                'date'   => '2010-01-05 10:00:00',
+                'status' => $name === 'changed twice' ? \Ticket::SOLVED : \Ticket::INCOMING,
+            ], ['id' => $ticket->getID()]);
+            $tickets_ids[$name] = $ticket->getID();
+        }
+
+        $dates_filter = [DatesFilter::getId() => ['2010-01-01', '2010-01-31']];
+        $get_counts   = static fn(array $result): array => array_combine(
+            array_column($result['data'], 'label'),
+            array_column($result['data'], 'number')
+        );
+
+        // Requester and observer groups are not counted, tickets without assigned group neither
+        $result = Provider::ticketsByAssignedGroupChanges(['apply_filters' => $dates_filter]);
+        $this->assertSame(['0 changes' => 1, '1 change' => 1, '2 changes' => 1], $get_counts($result));
+        foreach ($result['data'] as $data) {
+            $this->assertSame('', $data['url']);
+        }
+
+        // A ticket matching several filter values is counted once, and its history is not counted several times
+        $filtered = Provider::ticketsByAssignedGroupChanges([
+            'apply_filters' => $dates_filter + [GroupTechFilter::getId() => array_map(static fn($group) => $group->getID(), array_values($groups))],
+        ]);
+        $this->assertSame(['0 changes' => 1, '1 change' => 1, '2 changes' => 1], $get_counts($filtered));
+
+        // Missing numbers of changes are filled with zero
+        $filtered = Provider::ticketsByAssignedGroupChanges([
+            'apply_filters' => $dates_filter + [GroupTechFilter::getId() => [$groups['C']->getID()]],
+        ]);
+        $this->assertSame(['0 changes' => 0, '1 change' => 0, '2 changes' => 1], $get_counts($filtered));
+
+        // The history is not exposed without the right to read it
+        $logs_right = $_SESSION['glpiactiveprofile'][\Log::$rightname];
+        $_SESSION['glpiactiveprofile'][\Log::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsByAssignedGroupChanges(['apply_filters' => $dates_filter])['data']['nodata'] ?? false);
+        $_SESSION['glpiactiveprofile'][\Log::$rightname] = $logs_right;
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsByAssignedGroupChanges(['apply_filters' => $dates_filter])['data']['nodata'] ?? false);
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsByAssignedGroupChanges(['apply_filters' => $dates_filter])['data']['nodata'] ?? false);
+
+        // The new tickets right alone only allows to see new tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $new_only = Provider::ticketsByAssignedGroupChanges(['apply_filters' => $dates_filter]);
+        $this->assertSame(['0 changes' => 1, '1 change' => 1], $get_counts($new_only), 'solved ticket must not be visible');
+
+        // The "my tickets" right only allows to see the tickets the user is actor of
+        $hidden_id = $tickets_ids['changed once'];
+        $DB->update(\Ticket::getTable(), ['users_id_recipient' => 0], ['id' => $hidden_id]);
+        $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $hidden_id]);
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READMY;
+        $mine = Provider::ticketsByAssignedGroupChanges(['apply_filters' => $dates_filter]);
+        $this->assertSame(['0 changes' => 1, '1 change' => 0, '2 changes' => 1], $get_counts($mine), 'ticket of another user must not be counted');
+    }
+
+    public function testFakeTicketsByAssignedGroupChanges(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsByAssignedGroupChanges');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsByAssignedGroupChanges(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertSame('0 changes', $result['data'][0]['label']);
+        foreach ($result['data'] as $data) {
+            $this->assertIsInt($data['number']);
+            $this->assertSame('', $data['url']);
+        }
+    }
+
     public function testTicketsByGroupAndStatus()
     {
         $this->login();
