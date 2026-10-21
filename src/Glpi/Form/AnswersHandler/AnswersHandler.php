@@ -311,6 +311,8 @@ final class AnswersHandler
      * @param Form       $form
      * @param AnswersSet $answers_set
      *
+     * @throws Exception If the data can't be saved
+     *
      * @return void
      */
     protected function updateAnswersSetIndex(Form $form, AnswersSet $answers_set): void
@@ -327,11 +329,16 @@ final class AnswersHandler
             return;
         }
 
-        $answers_set->update([
+        $input = [
             'id'    => $answers_set->getID(),
             'name'  => $form->getName() . " #$index",
             'index' => $index,
-        ]);
+        ];
+        if (!$answers_set->update($input)) {
+            throw new Exception(
+                "Failed to update answers index: " . json_encode($input)
+            );
+        }
     }
 
     /**
