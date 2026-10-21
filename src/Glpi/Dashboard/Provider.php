@@ -3088,7 +3088,7 @@ class Provider
     /**
      * Compute, for the tickets opened in each period, the average ratio between
      * the total duration of their tasks and their solve delay (in percent).
-     * Only solved tickets with at least one task are taken into account.
+     * Only solved tickets with at least one task visible by the current user are taken into account.
      * @param string $period 'day', 'week', 'month' or 'year'
      * @param array<string, mixed> $params
      * @return array<string, mixed>
@@ -3172,6 +3172,22 @@ class Provider
         $ticket_table = Ticket::getTable();
         $task_table   = TicketTask::getTable();
         Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        // Only the tasks the current user can see are summed, with the same rules as CommonITILTask::canViewItem()
+        $task_where = ["$task_table.tickets_id" => new QueryIdentifier("$ticket_table.id")];
+        if (!Session::haveRight(TicketTask::$rightname, TicketTask::SEEPRIVATE)) {
+            $visible_tasks = [
+                "$task_table.users_id"      => Session::getLoginUserID(),
+                "$task_table.users_id_tech" => Session::getLoginUserID(),
+            ];
+            if (Session::haveRight(TicketTask::$rightname, TicketTask::SEEPUBLIC)) {
+                $visible_tasks["$task_table.is_private"] = 0;
+            }
+            if (count($_SESSION['glpigroups'] ?? []) > 0) {
+                $visible_tasks["$task_table.groups_id_tech"] = $_SESSION['glpigroups'];
+            }
+            $task_where[] = ['OR' => $visible_tasks];
+        }
+
         // Tasks are summed in a subquery, so that the joins added by the visibility and the filters can't count them several times
         $tickets_criteria = array_merge_recursive(
             [
@@ -3183,7 +3199,7 @@ class Provider
                     new QuerySubQuery([
                         'SELECT' => QueryFunction::sum("$task_table.actiontime"),
                         'FROM'   => $task_table,
-                        'WHERE'  => ["$task_table.tickets_id" => new QueryIdentifier("$ticket_table.id")],
+                        'WHERE'  => $task_where,
                     ], 'actiontime'),
                 ],
                 'FROM'     => $ticket_table,

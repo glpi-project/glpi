@@ -1137,6 +1137,53 @@ class ProviderTest extends DbTestCase
         $this->assertCount(366, $long_range['data']['labels']);
         $this->assertSame('2010-12-31', end($long_range['data']['labels']));
 
+        // Only the tasks the user can see are summed: 4 tasks of 15 minutes on a ticket solved in 1 hour
+        $self_id     = \Session::getLoginUserID();
+        $other_id    = getItemByTypeName(User::class, 'tech', true);
+        $tech_group  = $this->createItem(\Group::class, ['name' => 'test actiontime tech group', 'entities_id' => $entity_id]);
+        $task_ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'test dashboard actiontime private tasks',
+            'content'     => 'blablabla',
+            'entities_id' => $entity_id,
+        ]);
+        foreach (
+            [
+                'public task of another user'      => [0, $other_id, 0],
+                'private task of another user'     => [1, $other_id, 0],
+                'private task assigned to me'      => [1, $self_id, 0],
+                'private task assigned to my group' => [1, $other_id, $tech_group->getID()],
+            ] as $content => [$is_private, $users_id_tech, $groups_id_tech]
+        ) {
+            $task = $this->createItem(\TicketTask::class, [
+                'tickets_id' => $task_ticket->getID(),
+                'content'    => $content,
+                'actiontime' => 900,
+                'is_private' => $is_private,
+            ]);
+            $DB->update(\TicketTask::getTable(), [
+                'users_id'       => $other_id,
+                'users_id_tech'  => $users_id_tech,
+                'groups_id_tech' => $groups_id_tech,
+            ], ['id' => $task->getID()]);
+        }
+        $DB->update(\Ticket::getTable(), [
+            'date'             => '2011-03-01 10:00:00',
+            'status'           => \Ticket::SOLVED,
+            'solve_delay_stat' => 3600,
+        ], ['id' => $task_ticket->getID()]);
+        $month_filters = ['apply_filters' => [DatesFilter::getId() => ['2011-03-01', '2011-03-31']]];
+        $get_percent   = static fn(): array => Provider::ticketsActionTimeVsSolveDelay('month', $month_filters)['data']['series'][0]['data'];
+
+        $this->assertSame([100.0], $get_percent(), 'all tasks are visible with the right to see private tasks');
+        $_SESSION['glpiactiveprofile'][\TicketTask::$rightname] = \TicketTask::SEEPUBLIC;
+        $_SESSION['glpigroups']                                 = [];
+        $this->assertSame([50.0], $get_percent(), 'private task of another user must not be summed');
+        $_SESSION['glpigroups'] = [$tech_group->getID()];
+        $this->assertSame([75.0], $get_percent(), 'private task assigned to a group of the user is visible');
+        $_SESSION['glpiactiveprofile'][\TicketTask::$rightname] = 0;
+        $_SESSION['glpigroups']                                 = [];
+        $this->assertSame([25.0], $get_percent(), 'without task right, only the tasks assigned to the user are visible');
+
         // Without any ticket right, nothing is exposed
         $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
         $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
