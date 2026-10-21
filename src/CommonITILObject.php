@@ -2512,6 +2512,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $tt->getFromDBWithData($tt->getID()); // We load the fields (predefined and readonly)
 
+        // Loop for actor fields: same enumeration as updateActors() - needed because actors can be defined in multiple ways
+        foreach (['requester', 'observer', 'assign'] as $role) {
+            foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
+                $readonly_field = sprintf('_%s_%s', getForeignKeyFieldForItemType($actor_itemtype), $role);
+                if (array_key_exists($readonly_field, $tt->readonly)) {
+                    $input = $this->removeReadonlyActorChanges($input, $existing_object, $actor_itemtype, $role);
+                }
+            }
+        }
+
+        // Simple loop, the field defined as readonly is reset or unset
         foreach (array_keys($tt->readonly) as $read_only_field) {
             if ($isAdd && array_key_exists($read_only_field, $tt->predefined)) {
                 $input[$read_only_field] = $tt->predefined[$read_only_field];
@@ -2524,6 +2535,65 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 unset($input[$read_only_field]);
             }
         }
+        return $input;
+    }
+
+    /**
+     * Remove from the input every change of a read-only actor field made through another format
+     * than its own key (`_<fk>_<type>`, handled by enforceReadonlyFields()).
+     *
+     * @param array<string, mixed>              $input
+     * @param class-string<User|Group|Supplier> $actor_itemtype
+     *
+     * @return array<string, mixed> filtered $input
+     */
+    private function removeReadonlyActorChanges(array $input, CommonITILObject $existing_object, string $actor_itemtype, string $role): array
+    {
+        $actor_key = sprintf('_%s_%s', getForeignKeyFieldForItemType($actor_itemtype), $role); // _<fk>_<type> ex _users_id_requester
+
+        // `_additional_*` keys, built as in updateActors()
+        $additional_key = $actor_itemtype === User::class
+            ? sprintf('_additional_%ss', $role)
+            : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $role); // ex _additional_requesters, _additional_groups_requesters
+        unset($input[$additional_key]);
+
+        // deletion of existing actors - ex _users_id_requester_deleted
+        unset($input[$actor_key . '_deleted']);
+
+        // single actor format (e.g. `_itil_assign` with `_type` => 'user') - ex _itil_requester
+        $single_actor_key = '_itil_' . $role;
+        if (
+            isset($input[$single_actor_key]['_type'])
+            && strcasecmp((string) $input[$single_actor_key]['_type'], $actor_itemtype) === 0
+        ) {
+            unset($input[$single_actor_key]);
+        }
+
+        // `actors`: drop submitted entries of this itemtype (any case), keep the stored ones on update
+        // ex $input['_actors']['requester']
+        if (isset($input['_actors']) && is_array($input['_actors']) && count($input['_actors'])) {
+            $actors = is_array($input['_actors'][$role] ?? null) ? $input['_actors'][$role] : [];
+            $actors = array_values(array_filter(
+                $actors,
+                static fn($actor) => !is_array($actor) || strcasecmp((string) ($actor['itemtype'] ?? ''), $actor_itemtype) !== 0
+            ));
+
+            if (!$existing_object->isNewItem()) {
+                $existing_object->loadActors();
+                $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($role)); // ex CommonITILActor::REQUESTER
+                foreach ($existing_object->getActorsForType($actor_type_value) as $existing_actor) {
+                    if ($existing_actor['itemtype'] === $actor_itemtype) {
+                        $actors[] = array_intersect_key(
+                            $existing_actor,
+                            array_flip(['itemtype', 'items_id', 'use_notification', 'alternative_email'])
+                        );
+                    }
+                }
+            }
+
+            $input['_actors'][$role] = $actors;
+        }
+
         return $input;
     }
 
@@ -11430,12 +11500,28 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Remove actors the current user hasn't the right to set
      *
+     * Called at the end of transformActorsInput(): `_actors` is already converted to the historical
+     * keys, and the rules have not run yet, so the `_additional_*` keys can only come from the user.
+     *
      * Handle
      * - historical format _<fk>_<type> (e.g. _users_id_requester )
-     * - rules format _additional_
-     * - _deleted entries
+     * - rules format _additional_ (e.g. _additional_requesters, _additional_groups_assigns)
+     * - _deleted entries (e.g. _users_id_assign_deleted)
      *
      * _actors key is not handled, no removal on it.
+     *
+     * Rights
+     * - assign: canAssign(), or canAssignToMe() for the current user only
+     * - requester, observer: allowed on creation (for Ticket requester users:
+     *   Ticket::canDelegateeCreateTicket()), can(UPDATE) on update
+     * - _deleted entries: same right as adding the actor, always removed on creation
+     *
+     * A forbidden actor is silently removed. No filtering for cron and for calls made with right
+     * checks disabled (Session::isRightChecksDisabled()).
+     *
+     * @param array<string, mixed> $input
+     *
+     * @return array<string, mixed> $input without the actor changes not allowed
      */
     private function removeActorChangesNotAllowed(array $input): array
     {

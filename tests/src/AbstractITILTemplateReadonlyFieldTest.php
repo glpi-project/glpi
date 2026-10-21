@@ -34,13 +34,16 @@
 
 namespace Glpi\Tests;
 
+use CommonITILActor;
 use CommonITILObject;
 use Glpi\Urgency;
+use Group;
 use ITILCategory;
 use ITILTemplate;
 use ITILTemplatePredefinedField;
 use ITILTemplateReadonlyField;
 use Ticket;
+use User;
 
 abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
 {
@@ -138,7 +141,23 @@ abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
                 return (string) $option['id'];
             }
         }
-        return null;
+
+        // actor fields have no matching search option
+        $num = array_search($field, $item::getTemplateClass()::getAllowedFields(), true);
+
+        return $num === false ? null : (string) $num;
+    }
+
+    private function getItilObjectInput(int $category_id): array
+    {
+        $itil_object = $this->getITILClass();
+        $input = $this->getMinimalCreationInput($itil_object::class) + ['itilcategories_id' => $category_id];
+        if ($itil_object instanceof Ticket) {
+            // the category template of a ticket depends on its type
+            $input['type'] = Ticket::INCIDENT_TYPE;
+        }
+
+        return $input;
     }
 
     public function setUp(): void
@@ -282,5 +301,255 @@ abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
 
         $this->assertEquals(Urgency::MEDIUM->value, $processed_input['urgency']); // Default value
         $this->assertEquals('Updated content', $processed_input['name']);
+    }
+
+    /**
+     * Update using `_users_id_assign`
+     */
+    public function testUpdateReadonlyAssigneeThroughHistoricalKeyIsIgnored(): void
+    {
+        // --- arrange ---
+        $itil_object = $this->getITILClass();
+        $category_id = $this->createTemplateAndCategory(['_users_id_assign']);
+        $item = $this->createItem($itil_object::class, $this->getItilObjectInput($category_id));
+        $new_assignee_id = getItemByTypeName(User::class, 'tech')->getID();
+        assert(!$item->isUser(CommonITILActor::ASSIGN, $new_assignee_id), 'the user must not be assigned before the update');
+
+        $new_name = 'Updated name';
+
+        // --- act ---
+        $input = $item->enforceReadonlyFields(['id' => $item->getID(), 'name' => $new_name, '_users_id_assign' => $new_assignee_id]);
+        $this->updateItem($itil_object::class, $item->getID(), $input);
+
+        // --- assert ---
+        $item = $this->reloadItem($item);
+        $this->assertFalse($item->isUser(CommonITILActor::ASSIGN, $new_assignee_id));
+    }
+
+    /**
+     * Update using `_additional_assigns`
+     */
+    public function testAddReadonlyAssigneeThroughAdditionalKey(): void
+    {
+        // --- arrange ---
+        $itil_object = $this->getITILClass();
+        $category_id = $this->createTemplateAndCategory(['_users_id_assign']);
+        $item = $this->createItem($itil_object::class, $this->getItilObjectInput($category_id));
+        $new_assignee_id = getItemByTypeName(User::class, 'tech')->getID();
+        assert(!$item->isUser(CommonITILActor::ASSIGN, $new_assignee_id), 'the user must not be assigned before the update');
+
+        $new_name = 'Updated name';
+
+        // --- act ---
+        $input = $item->enforceReadonlyFields(['id' => $item->getID(), 'name' => $new_name, '_additional_assigns' => [$new_assignee_id]]);
+        $this->updateItem($itil_object::class, $item->getID(), $input);
+
+        // --- assert ---
+        $item = $this->reloadItem($item);
+        $this->assertFalse($item->isUser(CommonITILActor::ASSIGN, $new_assignee_id));
+    }
+
+    /**
+     * Update using `_actors`
+     */
+    public function testAddReadonlyObserverThroughActors(): void
+    {
+        // --- arrange ---
+        $itil_object = $this->getITILClass();
+        $category_id = $this->createTemplateAndCategory(['_users_id_observer']);
+        $item = $this->createItem($itil_object::class, $this->getItilObjectInput($category_id));
+        $new_observer_id = getItemByTypeName(User::class, 'tech')->getID();
+        assert(!$item->isUser(CommonITILActor::OBSERVER, $new_observer_id), 'the user must not be an observer before the update');
+
+        $new_name = 'Updated name';
+
+        // --- act ---
+        $input = $item->enforceReadonlyFields([
+            'id'      => $item->getID(),
+            'name'    => $new_name,
+            '_actors' => [
+                'requester' => [],
+                'observer'  => [['itemtype' => User::class, 'items_id' => $new_observer_id]],
+                'assign'    => [],
+            ],
+        ]);
+        $this->updateItem($itil_object::class, $item->getID(), $input);
+
+        // --- assert ---
+        $item = $this->reloadItem($item);
+        $this->assertFalse($item->isUser(CommonITILActor::OBSERVER, $new_observer_id));
+    }
+
+    public function testRemoveReadonlyRequesterGroupThroughActors(): void
+    {
+        // --- arrange ---
+        $itil_object = $this->getITILClass();
+        $category_id = $this->createTemplateAndCategory(['_groups_id_requester']);
+        $initial_requester_group_id = getItemByTypeName(Group::class, '_test_group_1')->getID();
+        // add() does not apply read-only fields, only the form does
+        $item = $this->createItem($itil_object::class, $this->getItilObjectInput($category_id) + ['_groups_id_requester' => $initial_requester_group_id]);
+        assert($item->isGroup(CommonITILActor::REQUESTER, $initial_requester_group_id), 'the group must be a requester before trying to remove it');
+
+        $new_name = 'Updated name';
+
+        // --- act ---
+        $input = $item->enforceReadonlyFields([
+            'id'      => $item->getID(),
+            'name'    => $new_name,
+            '_actors' => [
+                'requester' => [],
+                'observer'  => [],
+                'assign'    => [],
+            ],
+        ]);
+        $this->updateItem($itil_object::class, $item->getID(), $input);
+
+        // --- assert ---
+        $item = $this->reloadItem($item);
+        $this->assertTrue($item->isGroup(CommonITILActor::REQUESTER, $initial_requester_group_id));
+    }
+
+    public function testRemoveReadonlyRequesterThroughForgedDeletedKey(): void
+    {
+        // --- arrange ---
+        $itil_object = $this->getITILClass();
+        $category_id = $this->createTemplateAndCategory(['_users_id_requester']);
+        $initial_requester_id = getItemByTypeName(User::class, 'normal')->getID();
+        // add() does not apply read-only fields, only the form does
+        $item = $this->createItem($itil_object::class, $this->getItilObjectInput($category_id) + ['_users_id_requester' => $initial_requester_id]);
+        $user_link = $item->getActorObjectForItem(User::class);
+        $is_link_found = $user_link->getFromDBByCrit([
+            $itil_object::getForeignKeyField() => $item->getID(),
+            'users_id'                         => $initial_requester_id,
+            'type'                             => CommonITILActor::REQUESTER,
+        ]);
+        assert($is_link_found, 'the requester link must exist to be targeted by the deletion');
+
+        $new_name = 'Updated name';
+
+        // --- act ---
+        $input = $item->enforceReadonlyFields([
+            'id'                          => $item->getID(),
+            'name'                        => $new_name,
+            '_users_id_requester_deleted' => [['itemtype' => User::class, 'id' => $user_link->getID()]],
+        ]);
+        $this->updateItem($itil_object::class, $item->getID(), $input);
+
+        // --- assert ---
+        $item = $this->reloadItem($item);
+        $this->assertTrue($item->isUser(CommonITILActor::REQUESTER, $initial_requester_id));
+    }
+
+    public function testCreateWithReadonlyAssigneeAppliesPredefinedAssignee(): void
+    {
+        // --- arrange ---
+        $predefined_assignee_id = getItemByTypeName(User::class, 'tech')->getID();
+        $new_assignee_id = getItemByTypeName(User::class, 'normal')->getID();
+        $category_id = $this->createTemplateAndCategory(['_users_id_assign'], ['_users_id_assign' => (string) $predefined_assignee_id]);
+
+        // --- act ---
+        $input = $this->getITILClass()->enforceReadonlyFields($this->getItilObjectInput($category_id) + ['_users_id_assign' => $new_assignee_id], true);
+        $item = $this->createItem($this->getITILClass()::class, $input);
+
+        // --- assert ---
+        $this->assertTrue($item->isUser(CommonITILActor::ASSIGN, $predefined_assignee_id)); // predefined user kept
+        $this->assertFalse($item->isUser(CommonITILActor::ASSIGN, $new_assignee_id)); // input assignee not applied
+    }
+
+    /**
+     * add using `_additional_groups_assigns`
+     */
+    public function testCreateWithReadonlyAssignedGroupThroughAdditionalKey(): void
+    {
+        // --- arrange ---
+        $category_id = $this->createTemplateAndCategory(['_groups_id_assign']);
+        $new_assigned_group_id = getItemByTypeName(Group::class, '_test_group_1')->getID();
+
+        // --- act ---
+        $input = $this->getITILClass()->enforceReadonlyFields($this->getItilObjectInput($category_id) + ['_additional_groups_assigns' => [$new_assigned_group_id]], true);
+        $item = $this->createItem($this->getITILClass()::class, $input);
+
+        // --- assert ---
+        $this->assertFalse($item->isGroup(CommonITILActor::ASSIGN, $new_assigned_group_id));
+    }
+
+    public function testCreateWithReadonlyAssigneeThroughActors(): void
+    {
+        // --- arrange ---
+        $category_id = $this->createTemplateAndCategory(['_users_id_assign']);
+        $new_assignee_id = getItemByTypeName(User::class, 'tech')->getID();
+
+        // --- act ---
+        $input = $this->getITILClass()->enforceReadonlyFields($this->getItilObjectInput($category_id) + [
+            '_actors' => [
+                'requester' => [],
+                'observer'  => [],
+                'assign'    => [['itemtype' => User::class, 'items_id' => $new_assignee_id]],
+            ],
+        ], true);
+        $item = $this->createItem($this->getITILClass()::class, $input);
+
+        // --- assert ---
+        $this->assertFalse($item->isUser(CommonITILActor::ASSIGN, $new_assignee_id));
+    }
+
+    public function testAddReadonlyAssigneeThroughActorsWithLowercaseItemtype(): void
+    {
+        // --- arrange ---
+        $itil_object = $this->getITILClass();
+        $category_id = $this->createTemplateAndCategory(['_users_id_assign']);
+        $item = $this->createItem($itil_object::class, $this->getItilObjectInput($category_id));
+        $new_assignee_id = getItemByTypeName(User::class, 'tech')->getID();
+        assert(!$item->isUser(CommonITILActor::ASSIGN, $new_assignee_id), 'the user must not be assigned before the update');
+
+        $new_name = 'Updated name';
+
+        // --- act ---
+        $input = $item->enforceReadonlyFields([
+            'id'      => $item->getID(),
+            'name'    => $new_name,
+            '_actors' => [
+                'requester' => [],
+                'observer'  => [],
+                // lowercase itemtype, accepted later by transformActorsInput()
+                'assign'    => [['itemtype' => 'user', 'items_id' => $new_assignee_id]],
+            ],
+        ]);
+        $this->updateItem($itil_object::class, $item->getID(), $input);
+
+        // --- assert ---
+        $item = $this->reloadItem($item);
+        $this->assertFalse($item->isUser(CommonITILActor::ASSIGN, $new_assignee_id));
+    }
+
+    /**
+     * Update using `_itil_assign`
+     *
+     * No creation counterpart: `_itil_<type>` keys are only applied on update, they set no actor
+     * on creation.
+     */
+    public function testAddReadonlyAssigneeThroughSingleActorKey(): void
+    {
+        // --- arrange ---
+        $itil_object = $this->getITILClass();
+        $category_id = $this->createTemplateAndCategory(['_users_id_assign']);
+        $item = $this->createItem($itil_object::class, $this->getItilObjectInput($category_id));
+        $new_assignee_id = getItemByTypeName(User::class, 'tech')->getID();
+        assert(!$item->isUser(CommonITILActor::ASSIGN, $new_assignee_id), 'the user must not be assigned before the update');
+
+        $new_name = 'Updated name';
+
+        // --- act ---
+        $input = $item->enforceReadonlyFields([
+            'id'           => $item->getID(),
+            'name'         => $new_name,
+            // single actor format (massive action, button), not sent by the main form
+            '_itil_assign' => ['_type' => 'user', 'users_id' => $new_assignee_id],
+        ]);
+        $this->updateItem($itil_object::class, $item->getID(), $input);
+
+        // --- assert ---
+        $item = $this->reloadItem($item);
+        $this->assertFalse($item->isUser(CommonITILActor::ASSIGN, $new_assignee_id));
     }
 }
