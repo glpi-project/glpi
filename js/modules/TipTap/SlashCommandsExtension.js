@@ -189,6 +189,11 @@ const SLASH_COMMANDS = [
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'codeBlock' }).run(),
     },
     {
+        title: __('Diagram'),
+        icon: 'ti ti-chart-dots-3',
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertMermaidBlock().run(),
+    },
+    {
         title: __('Table'),
         icon: 'ti ti-table',
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
