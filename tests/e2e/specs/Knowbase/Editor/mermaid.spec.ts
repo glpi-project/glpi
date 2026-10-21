@@ -257,6 +257,25 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(diagram).toContainText('Finish');
     });
 
+    test('Delete removes an empty diagram, as Backspace does', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid empty delete',
+            entities_id: getWorkerEntityId(),
+            answer: `<p>Before</p>${mermaidAnswer('')}`,
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        const source_tab = page.getByRole('tab', { name: 'Source' });
+        await source_tab.click();
+        await kb.editor.pressKey('Delete');
+        await expect(source_tab).toHaveCount(0);
+        await expect(page.getByText('Before', { exact: true })).toBeVisible();
+    });
+
     test('Revision diff shows the changed diagram source with its change marks', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);

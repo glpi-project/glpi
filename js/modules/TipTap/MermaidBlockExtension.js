@@ -308,9 +308,14 @@ export const MermaidBlock = Node.create({
             },
             Delete: () => {
                 const { empty, $anchor } = this.editor.state.selection;
-                // Do not join the block below into the source.
-                if (empty && $anchor.parent.type.name === this.name && $anchor.parentOffset === $anchor.parent.content.size) {
-                    return true;
+                if (empty && $anchor.parent.type.name === this.name) {
+                    if ($anchor.parent.textContent === '') {
+                        return this.editor.commands.clearNodes();
+                    }
+                    // Do not join the block below into the source.
+                    if ($anchor.parentOffset === $anchor.parent.content.size) {
+                        return true;
+                    }
                 }
                 return selectAdjacentDiagram(1);
             },
