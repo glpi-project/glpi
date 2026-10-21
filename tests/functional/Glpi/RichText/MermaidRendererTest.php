@@ -59,6 +59,10 @@ class MermaidRendererTest extends GLPITestCase
             'input'    => '<pre><code class="language-php">echo 1;</code></pre><pre><code>mermaid</code></pre>',
             'expected' => '<pre><code class="language-php">echo 1;</code></pre><pre><code>mermaid</code></pre>',
         ];
+        yield 'link added after its own block only' => [
+            'input'    => '<pre><code class="language-mermaid">A</code><br></pre><p>x</p><pre><code>B</code></pre>',
+            'expected' => '<pre><code class="language-mermaid">A</code><br></pre>' . self::LINK . '<p>x</p><pre><code>B</code></pre>',
+        ];
         yield 'inline code kept' => [
             'input'    => '<p><code class="language-mermaid">A --&gt; B</code></p>',
             'expected' => '<p><code class="language-mermaid">A --&gt; B</code></p>',

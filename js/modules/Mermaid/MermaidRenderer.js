@@ -65,10 +65,13 @@ async function loadMermaid() {
             // Diagrams are user content: strict mode sanitizes the labels and disables click callbacks.
             securityLevel: 'strict',
             theme,
-            // Mermaid defaults, plus the styles a diagram directive could use to inject CSS.
+            // The default ELK layout engine is not in the GLPI bundle (see .webpack.config.js).
+            layout: 'dagre',
+            // Mermaid defaults, plus the styles a diagram directive could use to inject CSS,
+            // the label sanitizer settings, and the layout, which can only be dagre.
             secure: [
                 'secure', 'securityLevel', 'startOnLoad', 'maxTextSize', 'suppressErrorRendering', 'maxEdges',
-                'themeCSS', 'themeVariables', 'fontFamily', 'altFontFamily',
+                'themeCSS', 'themeVariables', 'fontFamily', 'altFontFamily', 'layout', 'dompurifyConfig',
             ],
         });
     }
