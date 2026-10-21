@@ -892,7 +892,8 @@ abstract class CommonDBChild extends CommonDBConnexity
             $add_label          = htmlescape(sprintf(__('Add a new %s'), static::getTypeName()));
 
             // Beware : -1 is for the first element added ...
-            $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
+            $result = "&nbsp;";
+            $result .= Html::scriptBlock("var $child_count_js_var=2");
             $result .= "<button type='button' id='add" . $lower_name . "button' class='ti ti-plus cursor-pointer border-0 bg-transparent p-0 text-reset'"
               . " title=\"" . __s('Add') . "\" aria-label=\"" . $add_label . "\""
                 . " onClick=\"var row = $('#" . $div_id . "');

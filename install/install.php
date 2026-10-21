@@ -356,12 +356,10 @@ function step4(string $databasename, string $newdatabasename): void
         echo '</div>';
         echo '</div>';
 
-        echo <<<HTML
-            <script defer type="module">
-                import { init_database } from '/js/modules/GlpiInstall.js';
-                init_database();
-            </script>
-        HTML;
+        echo Html::scriptBlock(<<<JAVASCRIPT
+            import { init_database } from '/js/modules/GlpiInstall.js';
+            init_database();
+        JAVASCRIPT, type: "module");
     } else { // can't create config_db file
         echo "<p>" . __s('Impossible to write the database setup file') . "</p>";
         $prev_form($host, $user, $password);
