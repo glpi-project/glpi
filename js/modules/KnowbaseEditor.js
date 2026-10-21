@@ -38,6 +38,7 @@ import { SlashCommands, showImageDialog } from '/js/modules/TipTap/SlashCommands
 import { ResizableImage } from '/js/modules/TipTap/ResizableImageExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { MermaidBlock } from '/js/modules/TipTap/MermaidBlockExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { HeadingAnchors } from '/js/modules/TipTap/HeadingAnchorsExtension.js';
 import { post } from '/js/modules/Ajax.js';
@@ -184,6 +185,7 @@ class KnowbaseEditor {
             }),
             TableGrips,
             VideoEmbed,
+            MermaidBlock,
             CommentHighlight.configure({ anchors: this.#options.comment_anchors }),
             HeadingAnchors,
         ];
