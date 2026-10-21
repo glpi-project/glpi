@@ -45,7 +45,6 @@
 
         var _this = this;
         var _queue = $('<div></div>');
-        var _queue_audio = $('<div></div>');
         // Guard to avoid overlapping polling requests when the server is slow:
         // a new poll is skipped while the previous one is still pending.
         var _request_pending = false;
