@@ -83,8 +83,9 @@ final class KnowbaseItemController extends AbstractController
 
         $safe = RichText::getSafeHtml($kbitem->fields['answer'], false);
         $html = (new VideoEmbedRenderer())->renderAllAsLink($safe);
-        // Absolute, as this content may go into notifications.
-        $article_url = $CFG_GLPI['url_base'] . KnowbaseItem::getFormURLWithID($id, false);
+        // Absolute, as this content may go into notifications, and through the redirect page,
+        // which opens the article page of the reader's interface.
+        $article_url = $CFG_GLPI['url_base'] . '/index.php?redirect=' . rawurlencode('knowbaseitem_' . $id);
         return new Response((new MermaidRenderer())->addArticleLinks($html, $article_url));
     }
 

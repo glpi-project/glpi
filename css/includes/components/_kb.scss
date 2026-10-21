@@ -1335,7 +1335,9 @@ body.in_modal .kb-editor-reserved {
         border-radius: 0 0 var(--tblr-border-radius) var(--tblr-border-radius);
     }
 
-    &.is-source {
+    // Out of edit mode, a diagram that cannot be drawn shows its source, as in the read view.
+    &.is-source,
+    .ProseMirror[contenteditable="false"] &.is-invalid {
         .kb-mermaid-preview {
             display: none;
         }
@@ -1370,17 +1372,6 @@ body.in_modal .kb-editor-reserved {
     .kb-mermaid-preview {
         display: block;
         padding: 0;
-    }
-
-    // As in the read view, a diagram that cannot be drawn shows its source.
-    &.is-invalid {
-        .kb-mermaid-preview {
-            display: none;
-        }
-
-        pre.kb-mermaid-source {
-            display: block;
-        }
     }
 }
 

@@ -60,6 +60,8 @@ async function loadMermaid() {
         current_theme = theme;
         mermaid.initialize({
             startOnLoad: false,
+            // On error, throw only: do not leave an error SVG in the page.
+            suppressErrorRendering: true,
             // Diagrams are user content: strict mode sanitizes the labels and disables click callbacks.
             securityLevel: 'strict',
             theme,
@@ -78,13 +80,24 @@ async function loadMermaid() {
  * @returns {Promise<string>} SVG markup
  * @throws {Error} When the definition is invalid
  */
-export async function renderMermaidSvg(source) {
+async function renderMermaidSvg(source) {
     const mermaid = await loadMermaid();
-    // parse() gives a readable error, where render() would leave an error SVG in the page.
-    await mermaid.parse(source);
     render_count++;
     const { svg } = await mermaid.render(`kb-mermaid-${render_count}`, source);
     return svg;
+}
+
+/**
+ * @param {string} source - Mermaid diagram definition
+ * @returns {Promise<HTMLElement>} The diagram figure
+ * @throws {Error} When the definition is invalid
+ */
+export async function renderMermaidFigure(source) {
+    const figure = document.createElement('figure');
+    figure.className = 'kb-mermaid-diagram';
+    figure.setAttribute('aria-label', __('Diagram'));
+    figure.innerHTML = await renderMermaidSvg(source);
+    return figure;
 }
 
 /**
@@ -107,12 +120,7 @@ export async function renderMermaidBlocks(root) {
 
     for (const code of blocks) {
         try {
-            const svg = await renderMermaidSvg(code.textContent);
-            const figure = document.createElement('figure');
-            figure.className = 'kb-mermaid-diagram';
-            figure.setAttribute('aria-label', __('Diagram'));
-            figure.innerHTML = svg;
-            code.parentElement.after(figure);
+            code.parentElement.after(await renderMermaidFigure(code.textContent));
             code.parentElement.hidden = true;
         } catch {
             // Keep the source visible.

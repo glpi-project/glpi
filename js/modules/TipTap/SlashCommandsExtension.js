@@ -275,9 +275,13 @@ const SlashCommands = Extension.create({
                 char: '/',
                 allowSpaces: false,
                 startOfLine: false,
-                // Block the menu inside table cells to avoid nested tables/blocks.
+                // Block the menu inside table cells to avoid nested tables/blocks,
+                // and in code, where `/` is plain text.
                 allow: ({ state, range }) => {
                     const $from = state.doc.resolve(range.from);
+                    if ($from.parent.type.spec.code) {
+                        return false;
+                    }
                     for (let depth = $from.depth; depth > 0; depth--) {
                         if ($from.node(depth).type.name === 'table') {
                             return false;

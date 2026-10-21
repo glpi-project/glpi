@@ -32,7 +32,7 @@
 
 /* global TiptapCore */
 
-import { renderMermaidSvg } from '/js/modules/Mermaid/MermaidRenderer.js';
+import { renderMermaidFigure } from '/js/modules/Mermaid/MermaidRenderer.js';
 
 /**
  * Mermaid diagram Tiptap node. It is stored as a standard code block
@@ -151,11 +151,7 @@ function createMermaidNodeView({ node, editor, getPos }) {
             content.textContent = __('Empty diagram');
         } else {
             try {
-                const svg = await renderMermaidSvg(text);
-                content = document.createElement('figure');
-                content.className = 'kb-mermaid-diagram';
-                content.setAttribute('aria-label', __('Diagram'));
-                content.innerHTML = svg;
+                content = await renderMermaidFigure(text);
             } catch (error) {
                 content = document.createElement('p');
                 content.className = 'kb-mermaid-message is-error';
@@ -298,17 +294,26 @@ export const MermaidBlock = Node.create({
         return {
             Backspace: () => {
                 const { empty, $anchor } = this.editor.state.selection;
-                // Turn an empty diagram back into a paragraph, as for code blocks.
-                if (empty && $anchor.parent.type.name === this.name && $anchor.parent.textContent === '') {
-                    return this.editor.commands.clearNodes();
-                }
-                // Do not join the source into the block above.
-                if (empty && $anchor.parent.type.name === this.name && $anchor.parentOffset === 0) {
-                    return true;
+                if (empty && $anchor.parent.type.name === this.name) {
+                    // Turn an empty diagram back into a paragraph, as for code blocks.
+                    if ($anchor.parent.textContent === '') {
+                        return this.editor.commands.clearNodes();
+                    }
+                    // Do not join the source into the block above.
+                    if ($anchor.parentOffset === 0) {
+                        return true;
+                    }
                 }
                 return selectAdjacentDiagram(-1);
             },
-            Delete: () => selectAdjacentDiagram(1),
+            Delete: () => {
+                const { empty, $anchor } = this.editor.state.selection;
+                // Do not join the block below into the source.
+                if (empty && $anchor.parent.type.name === this.name && $anchor.parentOffset === $anchor.parent.content.size) {
+                    return true;
+                }
+                return selectAdjacentDiagram(1);
+            },
         };
     },
 });

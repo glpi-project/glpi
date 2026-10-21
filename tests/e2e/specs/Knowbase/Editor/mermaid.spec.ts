@@ -35,7 +35,10 @@ import { KnowbaseItemPage } from "../../../pages/KnowbaseItemPage";
 import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
 
-const DIAGRAM_ANSWER = '<pre><code class="language-mermaid">flowchart TD\n    A[Start] --&gt; B[Finish]</code></pre>';
+/** Stored form of a diagram, with its source already HTML-escaped. */
+const mermaidAnswer = (source: string) => `<pre><code class="language-mermaid">${source}</code></pre>`;
+
+const DIAGRAM_ANSWER = mermaidAnswer('flowchart TD\n    A[Start] --&gt; B[Finish]');
 
 test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
 
@@ -92,11 +95,13 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(source_tab).toHaveAttribute('aria-selected', 'true');
 
         await kb.editor.pressKey('Enter');
-        await kb.editor.typeText('    C --> D[Done]');
+        // A `/` in the source must not open the slash menu.
+        await kb.editor.typeText('    C --> D["Done /u"]');
+        await kb.slashMenu.assertHidden();
 
         await source_tab.press('ArrowLeft');
         await expect(page.getByRole('tab', { name: 'Diagram' })).toBeFocused();
-        await expect(page.getByRole('figure', { name: 'Diagram' })).toContainText('Done');
+        await expect(page.getByRole('figure', { name: 'Diagram' })).toContainText('Done /u');
     });
 
     test('Diagram opens on its source after its insertion only', async ({ page, profile, api }) => {
@@ -139,7 +144,7 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const id = await api.createItem('KnowbaseItem', {
             name: 'Mermaid many diagrams',
             entities_id: getWorkerEntityId(),
-            answer: labels.map((label) => `<pre><code class="language-mermaid">flowchart TD\n    A --&gt; ${label}</code></pre>`).join(''),
+            answer: labels.map((label) => mermaidAnswer(`flowchart TD\n    A --&gt; ${label}`)).join(''),
         });
 
         await kb.goto(id);
@@ -157,7 +162,7 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const id = await api.createItem('KnowbaseItem', {
             name: 'Mermaid directive',
             entities_id: getWorkerEntityId(),
-            answer: `<pre><code class="language-mermaid">${directive}\nflowchart TD\n    A[Start] --&gt; B[Finish]</code></pre>`,
+            answer: mermaidAnswer(`${directive}\nflowchart TD\n    A[Start] --&gt; B[Finish]`),
         });
 
         await kb.goto(id);
@@ -194,12 +199,14 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const id = await api.createItem('KnowbaseItem', {
             name: 'Mermaid invalid',
             entities_id: getWorkerEntityId(),
-            answer: '<pre><code class="language-mermaid">not a diagram</code></pre>',
+            answer: mermaidAnswer('not a diagram'),
         });
 
         await kb.goto(id);
         await expect(page.getByText('not a diagram')).toBeVisible();
         await expect(page.getByRole('figure', { name: 'Diagram' })).toHaveCount(0);
+        // Mermaid must not leave its own error drawing in the page.
+        await expect(page.getByText('Syntax error in text')).toHaveCount(0);
 
         await kb.editor.enterEditMode();
         await expect(page.getByRole('tabpanel', { name: 'Diagram' })).toContainText(/error|not a diagram/i);
@@ -238,6 +245,9 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await kb.placeCaretInEditMode('flowchart TD', 'start');
         await kb.editor.pressKey('Backspace');
         await expect(page.getByText('Before', { exact: true })).toBeVisible();
+        await kb.placeCaretInEditMode('B[Finish]', 'end');
+        await kb.editor.pressKey('Delete');
+        await expect(page.getByText('After', { exact: true })).toBeVisible();
         await page.getByRole('tab', { name: 'Diagram' }).click();
         await expect(diagram).toContainText('Finish');
 
@@ -252,9 +262,9 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const kb = new KnowbaseItemPage(page);
 
         // Old and new labels merge into a valid diagram (`A --> BC`) if the diff is drawn.
-        const diagram = (target: string) => `<pre><code class="language-mermaid">flowchart TD\n    A --&gt; ${target}</code></pre>`;
+        const diagram = (target: string) => mermaidAnswer(`flowchart TD\n    A --&gt; ${target}`);
         // The diagrams are drawn in order: once the unchanged one is drawn, the changed one was handled.
-        const unchanged = '<pre><code class="language-mermaid">flowchart TD\n    Kept</code></pre>';
+        const unchanged = mermaidAnswer('flowchart TD\n    Kept');
         const id = await api.createItem('KnowbaseItem', {
             name: 'Mermaid revision diff',
             entities_id: getWorkerEntityId(),
@@ -289,7 +299,8 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const response = await page.request.get(`/Knowbase/KnowbaseItem/${id}/Content`);
         const html = await response.text();
         expect(html).toContain('See the diagram in the article');
-        expect(html).toMatch(new RegExp(`href="https?://[^"]+/front/knowbaseitem\\.form\\.php\\?id=${id}"`));
+        // Through the redirect page, which opens the article in the interface of the reader.
+        expect(html).toMatch(new RegExp(`href="https?://[^"]+/index\\.php\\?redirect=knowbaseitem_${id}"`));
         expect(html).toContain('flowchart TD');
     });
 });
