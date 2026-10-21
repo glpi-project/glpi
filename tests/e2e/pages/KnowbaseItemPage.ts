@@ -517,16 +517,11 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * Put the caret at the start or the end of `text` inside the editor. The
-     * selectionchange is dispatched at once, so ProseMirror reads the caret
-     * before the next key, where a native caret move may be read too late.
+     * Put the caret at the start or the end of `text` inside the editor.
      */
     public async placeCaretInEditMode(text: string, at: 'start' | 'end'): Promise<void>
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- ProseMirror's own root, as TipTapEditorHelper uses
-        const editor = this.page.locator('.ProseMirror[contenteditable="true"]');
-        await editor.waitFor();
-        await editor.focus();
+        await this.editor.contentContainer.getByRole('textbox').focus();
         await this.selectTextIn('.ProseMirror[contenteditable="true"]', text, true, at);
     }
 

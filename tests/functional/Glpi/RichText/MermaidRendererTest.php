@@ -40,20 +40,20 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class MermaidRendererTest extends GLPITestCase
 {
-    private const LINK = '<p><a href="/front/knowbaseitem.form.php?id=12">See the diagram in the article</a></p>';
+    private const LINK = '<p><a href="http://localhost/glpi/front/knowbaseitem.form.php?id=12">See the diagram in the article</a></p>';
 
     /**
      * @return iterable<string, array{input: string, expected: string}>
      */
-    public static function renderAllAsLinkProvider(): iterable
+    public static function addArticleLinksProvider(): iterable
     {
-        yield 'diagram replaced by a link' => [
+        yield 'link added after the diagram source' => [
             'input'    => "<p>Before</p><pre><code class=\"language-mermaid\">flowchart TD\n    A --&gt; B</code></pre><p>After</p>",
-            'expected' => '<p>Before</p>' . self::LINK . '<p>After</p>',
+            'expected' => "<p>Before</p><pre><code class=\"language-mermaid\">flowchart TD\n    A --&gt; B</code></pre>" . self::LINK . '<p>After</p>',
         ];
-        yield 'each diagram replaced' => [
+        yield 'link added after each diagram' => [
             'input'    => '<pre><code class="language-mermaid">A</code></pre><pre><code class="language-mermaid">B</code></pre>',
-            'expected' => self::LINK . self::LINK,
+            'expected' => '<pre><code class="language-mermaid">A</code></pre>' . self::LINK . '<pre><code class="language-mermaid">B</code></pre>' . self::LINK,
         ];
         yield 'other code blocks kept' => [
             'input'    => '<pre><code class="language-php">echo 1;</code></pre><pre><code>mermaid</code></pre>',
@@ -65,20 +65,20 @@ class MermaidRendererTest extends GLPITestCase
         ];
     }
 
-    #[DataProvider('renderAllAsLinkProvider')]
-    public function testRenderAllAsLink(string $input, string $expected): void
+    #[DataProvider('addArticleLinksProvider')]
+    public function testAddArticleLinks(string $input, string $expected): void
     {
         $this->assertSame(
             $expected,
-            (new MermaidRenderer())->renderAllAsLink($input, '/front/knowbaseitem.form.php?id=12')
+            (new MermaidRenderer())->addArticleLinks($input, 'http://localhost/glpi/front/knowbaseitem.form.php?id=12')
         );
     }
 
-    public function testRenderAllAsLinkEscapesUrl(): void
+    public function testAddArticleLinksEscapesUrl(): void
     {
         $this->assertSame(
-            '<p><a href="/a?b=1&amp;c=&quot;x&quot;">See the diagram in the article</a></p>',
-            (new MermaidRenderer())->renderAllAsLink('<pre><code class="language-mermaid">A</code></pre>', '/a?b=1&c="x"')
+            '<pre><code class="language-mermaid">A</code></pre><p><a href="/a?b=1&amp;c=&quot;x&quot;">See the diagram in the article</a></p>',
+            (new MermaidRenderer())->addArticleLinks('<pre><code class="language-mermaid">A</code></pre>', '/a?b=1&c="x"')
         );
     }
 }

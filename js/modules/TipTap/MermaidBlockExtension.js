@@ -173,6 +173,20 @@ function createMermaidNodeView({ node, editor, getPos }) {
     showTab(node.attrs.isNew ? 'source' : 'preview');
     renderPreview();
 
+    // Open on the source once only, not each time the view is built again (undo, ...).
+    if (node.attrs.isNew) {
+        setTimeout(() => {
+            const pos = getPos();
+            if (editor.isDestroyed || typeof pos !== 'number') {
+                return;
+            }
+            const { tr } = editor.state;
+            editor.view.dispatch(
+                tr.setNodeMarkup(pos, undefined, { ...current_node.attrs, isNew: false }).setMeta('addToHistory', false)
+            );
+        });
+    }
+
     return {
         dom,
         contentDOM: code,
@@ -222,7 +236,7 @@ export const MermaidBlock = Node.create({
                 getAttrs: (dom) => (dom.querySelector(':scope > code.language-mermaid') ? null : false),
             },
             {
-                // Diagram drawn next to its source by the read view.
+                // Diagram drawn by the read view, in content copied from it.
                 tag: 'figure.kb-mermaid-diagram',
                 ignore: true,
             },
@@ -287,6 +301,10 @@ export const MermaidBlock = Node.create({
                 // Turn an empty diagram back into a paragraph, as for code blocks.
                 if (empty && $anchor.parent.type.name === this.name && $anchor.parent.textContent === '') {
                     return this.editor.commands.clearNodes();
+                }
+                // Do not join the source into the block above.
+                if (empty && $anchor.parent.type.name === this.name && $anchor.parentOffset === 0) {
+                    return true;
                 }
                 return selectAdjacentDiagram(-1);
             },
