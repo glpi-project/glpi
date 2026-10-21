@@ -53,6 +53,7 @@ use Glpi\Inventory\Inventory;
 use Glpi\Kernel\Kernel;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\ContentSecurityPolicy\NonceContext;
 use Glpi\Security\SecurityConfig;
 use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
@@ -4667,11 +4668,14 @@ HTML;
      * @psalm-taint-escape html
      * @psalm-taint-escape has_quotes
      */
-    public static function scriptBlock($script)
+    public static function scriptBlock($script, string $type = "text/javascript")
     {
-        $script = "\n" . '//<![CDATA[' . "\n\n" . $script . "\n\n" . '//]]>' . "\n";
-
-        return sprintf('<script type="text/javascript">%s</script>', $script);
+        return sprintf(
+            '<script type="%s" nonce="%s">%s</script>',
+            htmlescape($type),
+            htmlescape(NonceContext::getServiceInstance()->getNonce()),
+            $script,
+        );
     }
 
 
@@ -4711,7 +4715,12 @@ HTML;
         // Convert filesystem path to URL path (fix issues with Windows directory separator)
         $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
 
-        return sprintf('<script type="%s" src="%s"></script>', htmlescape($type), htmlescape($url));
+        return sprintf(
+            '<script type="%s" src="%s" nonce="%s"></script>',
+            htmlescape($type),
+            htmlescape($url),
+            htmlescape(NonceContext::getServiceInstance()->getNonce()),
+        );
     }
 
 
@@ -5741,8 +5750,14 @@ JS);
         }
         $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
 
+        // Set the nonce into the general config so it can be reused by ajax
+        // requests and webpack chunks.
+        $nonce = NonceContext::getServiceInstance()->getNonce();
+        $csp_nonce = \sprintf('CFG_GLPI.csp_nonce = %s;', json_encode($nonce));
+
         return self::scriptBlock("
             $cfg_glpi
+            $csp_nonce
             $plugins_path
         ");
     }

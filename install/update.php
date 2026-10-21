@@ -176,12 +176,10 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
             echo '</div>';
             echo '</div>';
 
-            echo <<<HTML
-                <script defer type="module">
-                    import { update_database } from '/js/modules/GlpiInstall.js';
-                    update_database();
-                </script>
-            HTML;
+            echo Html::scriptBlock(<<<JAVASCRIPT
+                import { update_database } from '/js/modules/GlpiInstall.js';
+                update_database();
+            JAVASCRIPT, type: "module");
         }
     } else {
         echo "<h3>";

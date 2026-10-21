@@ -626,30 +626,28 @@ TWIG, $twig_params);
             ],
         ]);
         $collection_classname = jsescape(static::class);
-        echo <<<HTML
-            <script>
-                $(() => {
-                    sortable('#rulelist tbody', {
-                        handle: '.grip-rule',
-                        placeholder: '<tr><td colspan="8" class="sortable-placeholder">&nbsp;</td></tr>'
-                    })[0].addEventListener('sortupdate', (e) => {
-                       const sort_detail = e.detail;
-                       const new_index = sort_detail.destination.index;
-                       const old_index = sort_detail.origin.index;
+        echo Html::scriptBlock(<<<JAVASCRIPT
+            $(() => {
+                sortable('#rulelist tbody', {
+                    handle: '.grip-rule',
+                    placeholder: '<tr><td colspan="8" class="sortable-placeholder">&nbsp;</td></tr>'
+                })[0].addEventListener('sortupdate', (e) => {
+                    const sort_detail = e.detail;
+                    const new_index = sort_detail.destination.index;
+                    const old_index = sort_detail.origin.index;
 
-                       $.post(CFG_GLPI['root_doc'] + '/ajax/rule.php', {
-                          'action': 'move_rule',
-                          'rule_id': sort_detail.item.dataset.id,
-                          'collection_classname':  "{$collection_classname}",
-                          'sort_action': (old_index > new_index) ? 'before' : 'after',
-                          'ref_id': sort_detail.destination.itemsBeforeUpdate[new_index].dataset.id,
-                       });
-
-                       displayAjaxMessageAfterRedirect();
+                    $.post(CFG_GLPI['root_doc'] + '/ajax/rule.php', {
+                        'action': 'move_rule',
+                        'rule_id': sort_detail.item.dataset.id,
+                        'collection_classname':  "{$collection_classname}",
+                        'sort_action': (old_index > new_index) ? 'before' : 'after',
+                        'ref_id': sort_detail.destination.itemsBeforeUpdate[new_index].dataset.id,
                     });
+
+                    displayAjaxMessageAfterRedirect();
                 });
-            </script>
-HTML;
+            });
+        JAVASCRIPT);
 
         $url = $CFG_GLPI["root_doc"];
         $url .= static::getRulesTestURL();

@@ -53,9 +53,7 @@ if (isset($_POST["update"])) {
     $link->check($_POST["id"], UPDATE);
 
     if ($link->update($_POST)) {
-        echo "<script type='text/javascript' >";
-        echo "window.parent.location.reload();";
-        echo "</script>";
+        echo Html::scriptBlock("window.parent.location.reload();");
     } else {
         Html::back();
     }

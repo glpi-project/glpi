@@ -1240,20 +1240,21 @@ abstract class CommonITILValidation extends CommonDBChild
 
                     $rand_id = htmlescape($item_id . $row_id . $rand);
 
+                    $inner_script = Html::scriptBlock(<<<JAVASCRIPT
+                        function viewEditValidation{$rand_id}() {
+                            glpi_ajax_dialog({
+                                url: CFG_GLPI.root_doc + "/ajax/viewsubitem.php",
+                                modalclass: 'modal-xl',
+                                params: $params_json,
+                            });
+                        };
+                    JAVASCRIPT);
                     $script = <<<HTML
                         <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
                               onclick="viewEditValidation{$rand_id}();"
                               id="viewvalidation{$rand_id}">
                         </span>
-                        <script>
-                            function viewEditValidation{$rand_id}() {
-                                glpi_ajax_dialog({
-                                    url: CFG_GLPI.root_doc + "/ajax/viewsubitem.php",
-                                    modalclass: 'modal-xl',
-                                    params: $params_json,
-                                });
-                            };
-                        </script>
+                        $inner_script
 HTML;
                 }
 

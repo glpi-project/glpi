@@ -2199,3 +2199,51 @@ if (typeof module !== 'undefined' && module.exports) {
         tableToDetails,
     };
 }
+
+/**
+ * Add `X-Glpi-Csp-Nonce` to ajax requests (both XMLHttpRequest, which jQuery relies on, and native fetch).
+ */
+(function () {
+    const nonce = CFG_GLPI.csp_nonce;
+    if (!nonce || window.glpi_csp_nonce_patched) {
+        return;
+    }
+
+    const header_name = 'X-Glpi-Csp-Nonce';
+
+    const isSameOrigin = (url) => {
+        try {
+            return new URL(String(url), window.location.href).origin === window.location.origin;
+        } catch {
+            // Invalid URL, let the native function handle the error.
+            return false;
+        }
+    };
+
+    // `XMLHttpRequest` requests, including jQuery ones: `$.ajax()`, `$.get()`,
+    // `$.post()`, `$(...).load()`, ...
+    const native_xhr_open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, ...args) {
+        native_xhr_open.call(this, method, url, ...args);
+        if (isSameOrigin(url)) {
+            // Never leak the nonce to another origin.
+            this.setRequestHeader(header_name, nonce);
+        }
+    };
+
+    // `fetch()` requests.
+    const native_fetch = window.fetch;
+    window.fetch = function (resource, options) {
+        const url = resource instanceof Request ? resource.url : resource;
+        if (!isSameOrigin(url)) {
+            // Never leak the nonce to another origin.
+            return native_fetch.call(this, resource, options);
+        }
+
+        const headers = new Headers(options?.headers ?? (resource instanceof Request ? resource.headers : undefined));
+        headers.set(header_name, nonce);
+        return native_fetch.call(this, resource, { ...options, headers: headers });
+    };
+
+    window.glpi_csp_nonce_patched = true;
+})();

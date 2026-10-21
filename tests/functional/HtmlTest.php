@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\Security\ContentSecurityPolicy\NonceContext;
 use Glpi\Tests\DbTestCase;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
@@ -532,7 +533,8 @@ class HtmlTest extends DbTestCase
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<script type="text/javascript" src="'
-         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
+         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"'
+         . ' nonce="' . NonceContext::getServiceInstance()->getNonce() . '"></script>';
 
         //create test files
         foreach ($fake_files as $fake_file) {
