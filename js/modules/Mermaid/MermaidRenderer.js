@@ -37,29 +37,40 @@
 
 let load_promise = null;
 let render_count = 0;
+let current_theme = null;
 
 /** Code elements of the read view that already got a rendering attempt. */
 const handled_blocks = new WeakSet();
 
 /**
- * @returns {Promise<object>} The initialized mermaid API
+ * @returns {Promise<object>} The initialized mermaid API, set to the current GLPI theme
  */
-function loadMermaid() {
+async function loadMermaid() {
     load_promise ??= import('/lib/mermaid.js')
-        .then(() => {
-            window.mermaid.initialize({
-                startOnLoad: false,
-                // Diagrams are user content: strict mode sanitizes the labels and disables click callbacks.
-                securityLevel: 'strict',
-                theme: document.documentElement.dataset.glpiThemeDark === '1' ? 'dark' : 'default',
-            });
-            return window.mermaid;
-        })
+        .then(() => window.mermaid)
         .catch((error) => {
             load_promise = null;
             throw error;
         });
-    return load_promise;
+    const mermaid = await load_promise;
+
+    // The theme can change without a page reload.
+    const theme = document.documentElement.dataset.glpiThemeDark === '1' ? 'dark' : 'default';
+    if (theme !== current_theme) {
+        current_theme = theme;
+        mermaid.initialize({
+            startOnLoad: false,
+            // Diagrams are user content: strict mode sanitizes the labels and disables click callbacks.
+            securityLevel: 'strict',
+            theme,
+            // Mermaid defaults, plus the styles a diagram directive could use to inject CSS.
+            secure: [
+                'secure', 'securityLevel', 'startOnLoad', 'maxTextSize', 'suppressErrorRendering', 'maxEdges',
+                'themeCSS', 'themeVariables', 'fontFamily', 'altFontFamily',
+            ],
+        });
+    }
+    return mermaid;
 }
 
 /**
@@ -78,7 +89,7 @@ export async function renderMermaidSvg(source) {
 
 /**
  * Draw a diagram after each Mermaid code block of the given read-only content.
- * The source block is hidden but kept, as the editor is built from this DOM.
+ * The source block is hidden but kept for the comment anchors, which use its text.
  * An invalid block stays visible as code.
  *
  * @param {HTMLElement} root
@@ -91,9 +102,10 @@ export async function renderMermaidBlocks(root) {
         // A revision diff marks its changes in the source, a drawing would hide them.
         && code.querySelector('ins, del') === null
     ));
+    // Mark them all now: a call that starts while this one waits must skip them.
+    blocks.forEach((code) => handled_blocks.add(code));
 
     for (const code of blocks) {
-        handled_blocks.add(code);
         try {
             const svg = await renderMermaidSvg(code.textContent);
             const figure = document.createElement('figure');
@@ -110,7 +122,8 @@ export async function renderMermaidBlocks(root) {
 
 /**
  * Render the Mermaid blocks of the given content now and each time it is replaced
- * (translation switch, revision diff, ...).
+ * (translation switch, revision diff, ...). Only its direct children are watched,
+ * so typing in the editor does not start a scan.
  *
  * @param {HTMLElement} root
  */
@@ -127,5 +140,5 @@ export function watchMermaidBlocks(root) {
             scheduled = false;
             renderMermaidBlocks(root);
         });
-    }).observe(root, { childList: true, subtree: true });
+    }).observe(root, { childList: true });
 }

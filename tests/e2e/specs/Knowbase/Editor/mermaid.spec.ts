@@ -99,6 +99,94 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(page.getByRole('figure', { name: 'Diagram' })).toContainText('Done');
     });
 
+    test('Diagram opens on its source after its insertion only', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid inserted then restored',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Content</p>',
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        await kb.editor.clearContent();
+
+        await kb.slashMenu.open();
+        await kb.slashMenu.selectByClick('Diagram');
+        await expect(page.getByRole('tab', { name: 'Source' })).toHaveAttribute('aria-selected', 'true');
+
+        const diagram_tab = page.getByRole('tab', { name: 'Diagram' });
+        const diagram = page.getByRole('figure', { name: 'Diagram' });
+        await diagram_tab.click();
+        await diagram.click();
+        await kb.editor.pressKey('Delete');
+        await expect(diagram).toHaveCount(0);
+
+        // Undo builds the block view again.
+        await kb.editor.pressKey('Control+z');
+        await expect(diagram).toBeVisible();
+        await expect(diagram_tab).toHaveAttribute('aria-selected', 'true');
+    });
+
+    test('Each diagram of an article is drawn once', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        // A drawn figure starts a new scan while the next diagrams are still being drawn.
+        const labels = ['One', 'Two', 'Three', 'Four'];
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid many diagrams',
+            entities_id: getWorkerEntityId(),
+            answer: labels.map((label) => `<pre><code class="language-mermaid">flowchart TD\n    A --&gt; ${label}</code></pre>`).join(''),
+        });
+
+        await kb.goto(id);
+        const diagrams = page.getByRole('figure', { name: 'Diagram' });
+        // The diagrams are drawn one after the other, which is slow on a loaded runner.
+        await expect(diagrams.filter({ hasText: 'Four' })).toBeVisible({ timeout: 15000 });
+        await expect(diagrams).toHaveCount(labels.length);
+    });
+
+    test('Diagram directive cannot change the styles', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const directive = '%%{init: {&quot;themeCSS&quot;: &quot;.nodeLabel {display: none}&quot;}}%%';
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid directive',
+            entities_id: getWorkerEntityId(),
+            answer: `<pre><code class="language-mermaid">${directive}\nflowchart TD\n    A[Start] --&gt; B[Finish]</code></pre>`,
+        });
+
+        await kb.goto(id);
+        await expect(page.getByRole('figure', { name: 'Diagram' }).getByText('Finish')).toBeVisible();
+    });
+
+    test('Diagram follows a theme change made without a page reload', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid theme change',
+            entities_id: getWorkerEntityId(),
+            answer: DIAGRAM_ANSWER,
+        });
+
+        await kb.goto(id);
+        const label = page.getByRole('figure', { name: 'Diagram' }).getByText('Finish');
+        await expect(label).toHaveCSS('color', 'rgb(51, 51, 51)');
+
+        // As the theme switcher of the debug bar does.
+        await page.evaluate(() => {
+            document.documentElement.dataset.glpiThemeDark = '1';
+        });
+        // The edit mode draws the diagram again.
+        await kb.editor.enterEditMode();
+        await expect(label).toHaveCSS('color', 'rgb(204, 204, 204)');
+    });
+
     test('Invalid diagram shows the error in edit mode and its source in read mode', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
@@ -121,7 +209,7 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(page.getByRole('tabpanel', { name: 'Diagram' })).toBeHidden();
     });
 
-    test('Backspace and Delete next to a diagram keep the text out of its source', async ({ page, profile, api }) => {
+    test('Backspace and Delete keep the text and the diagram source apart', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
 
@@ -144,6 +232,13 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await kb.placeCaretInEditMode('Before', 'end');
         await kb.editor.pressKey('Delete');
         await expect(page.getByText('Before', { exact: true })).toBeVisible();
+        await expect(diagram).toContainText('Finish');
+
+        await page.getByRole('tab', { name: 'Source' }).click();
+        await kb.placeCaretInEditMode('flowchart TD', 'start');
+        await kb.editor.pressKey('Backspace');
+        await expect(page.getByText('Before', { exact: true })).toBeVisible();
+        await page.getByRole('tab', { name: 'Diagram' }).click();
         await expect(diagram).toContainText('Finish');
 
         await kb.editor.save();
@@ -182,7 +277,7 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(content.getByRole('deletion')).toBeVisible();
     });
 
-    test('Diagram becomes a link to the article when the content is used in a ticket', async ({ page, profile, api }) => {
+    test('Diagram source gets an absolute link to the article when the content is used in a ticket', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
 
         const id = await api.createItem('KnowbaseItem', {
@@ -194,7 +289,7 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         const response = await page.request.get(`/Knowbase/KnowbaseItem/${id}/Content`);
         const html = await response.text();
         expect(html).toContain('See the diagram in the article');
-        expect(html).toContain(`knowbaseitem.form.php?id=${id}`);
-        expect(html).not.toContain('flowchart TD');
+        expect(html).toMatch(new RegExp(`href="https?://[^"]+/front/knowbaseitem\\.form\\.php\\?id=${id}"`));
+        expect(html).toContain('flowchart TD');
     });
 });

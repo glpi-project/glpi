@@ -47,9 +47,9 @@ final class MermaidRenderer
     /**
      * HTML fallback for callers that paste KB content into a rich-text editor
      * (e.g. the "Use as solution" workflow), where the diagram is not drawn:
-     * a link to the article replaces each diagram.
+     * the source stays as code, followed by a link to the article.
      */
-    public function renderAllAsLink(string $html, string $article_url): string
+    public function addArticleLinks(string $html, string $article_url): string
     {
         if (!str_contains($html, 'language-mermaid')) {
             return $html;
@@ -61,6 +61,6 @@ final class MermaidRenderer
             htmlescape(__('See the diagram in the article'))
         );
 
-        return preg_replace_callback(self::BLOCK_PATTERN, static fn(): string => $link, $html);
+        return preg_replace_callback(self::BLOCK_PATTERN, static fn(array $matches): string => $matches[0] . $link, $html);
     }
 }

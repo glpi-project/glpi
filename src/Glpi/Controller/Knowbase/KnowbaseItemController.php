@@ -70,6 +70,8 @@ final class KnowbaseItemController extends AbstractController
     )]
     public function content(Request $request): Response
     {
+        global $CFG_GLPI;
+
         $id = $request->attributes->getInt('knowbaseitems_id');
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
@@ -81,7 +83,9 @@ final class KnowbaseItemController extends AbstractController
 
         $safe = RichText::getSafeHtml($kbitem->fields['answer'], false);
         $html = (new VideoEmbedRenderer())->renderAllAsLink($safe);
-        return new Response((new MermaidRenderer())->renderAllAsLink($html, $kbitem->getLinkURL()));
+        // Absolute, as this content may go into notifications.
+        $article_url = $CFG_GLPI['url_base'] . KnowbaseItem::getFormURLWithID($id, false);
+        return new Response((new MermaidRenderer())->addArticleLinks($html, $article_url));
     }
 
     #[Route(
