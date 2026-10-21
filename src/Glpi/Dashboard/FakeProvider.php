@@ -827,6 +827,36 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsActionTimeVsSolveDelay(string $period = 'month', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $labels[] = match ($period) {
+                'day'   => date('Y-m-d', strtotime("-$i days")),
+                'week'  => date('o-\WW', strtotime("-$i weeks")),
+                'year'  => date('Y', strtotime("-$i years")),
+                default => date('Y-m', strtotime("-$i months")),
+            };
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => [
+                    [
+                        'name' => __("Tasks duration / solve delay (%)"),
+                        'data' => array_map(
+                            static fn(string $label) => self::getObscureNumberForString('actiontime' . $label, 40) + 10,
+                            $labels
+                        ),
+                    ],
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => "ti ti-stopwatch",
+        ];
+    }
+
     public static function nbTicketsActor(string $case = "", array $params = []): array
     {
         $default_params = [

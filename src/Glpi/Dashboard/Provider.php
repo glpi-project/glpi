@@ -71,6 +71,7 @@ use Session;
 use Stat;
 use Ticket;
 use Ticket_User;
+use TicketTask;
 use TicketValidation;
 use Toolbox;
 use User;
@@ -3078,6 +3079,159 @@ class Provider
             'data'  => [
                 'labels' => array_map('strval', array_keys($periods)),
                 'series' => $series,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Compute, for the tickets opened in each period, the average ratio between
+     * the total duration of their tasks and their solve delay (in percent).
+     * Only solved tickets with at least one task are taken into account.
+     * @param string $period 'day', 'week', 'month' or 'year'
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsActionTimeVsSolveDelay(string $period = 'month', array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => "ti ti-stopwatch",
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        // SQL and PHP formats must produce the same period keys (ISO weeks start on monday)
+        $periods_specs = [
+            'day'   => ['sql' => '%Y-%m-%d', 'php' => 'Y-m-d',  'start' => 'today',             'step' => '+1 day', 'unit' => 'day',   'default_range' => '-29 days'],
+            'week'  => ['sql' => '%x-W%v',   'php' => 'o-\WW',  'start' => 'monday this week',  'step' => '+1 week', 'unit' => 'week',  'default_range' => '-11 weeks'],
+            'month' => ['sql' => '%Y-%m',    'php' => 'Y-m',    'start' => 'first day of this month', 'step' => '+1 month', 'unit' => 'month', 'default_range' => '-11 months'],
+            'year'  => ['sql' => '%Y',       'php' => 'Y',      'start' => 'first day of january this year', 'step' => '+1 year', 'unit' => 'year', 'default_range' => '-4 years'],
+        ];
+        $spec = $periods_specs[$period] ?? $periods_specs['month'];
+        // Avoid unreadable charts and heavy queries on a long range with a short period
+        $max_periods = 366;
+
+        $no_data = [
+            'data'  => [
+                'labels' => [],
+                'series' => [],
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
+            return $no_data;
+        }
+
+        // The dates filter defines the displayed range, its periods are computed below
+        $range_end   = new DateTimeImmutable('today');
+        $range_begin = $range_end->modify($spec['default_range']);
+        $dates_value = $params['apply_filters'][DatesFilter::getId()] ?? null;
+        unset($params['apply_filters'][DatesFilter::getId()]);
+        if (is_array($dates_value) && count($dates_value) === 2) {
+            try {
+                $filter_begin = new DateTimeImmutable((string) $dates_value[0]);
+                $filter_end   = new DateTimeImmutable((string) $dates_value[1]);
+                [$range_begin, $range_end] = $filter_begin <= $filter_end
+                    ? [$filter_begin, $filter_end]
+                    : [$filter_end, $filter_begin];
+            } catch (\Exception) {
+                // keep default range if filter values are not parsable dates
+            }
+        }
+
+        // Split the range into periods, aligned on the period start
+        $periods      = [];
+        $period_start = $range_begin->modify($spec['start'])->setTime(0, 0);
+        $last_day     = $range_end->setTime(0, 0);
+        // Start at the first of the last periods, so a very long range doesn't build periods that would be dropped
+        $first_start  = $last_day->modify($spec['start'])->setTime(0, 0)
+            ->modify(sprintf('-%d %s', $max_periods - 1, $spec['unit']));
+        if ($period_start < $first_start) {
+            $period_start = $first_start;
+        }
+        while ($period_start <= $last_day) {
+            $next_start = $period_start->modify($spec['step']);
+            $periods[$period_start->format($spec['php'])] = [
+                'start' => $period_start->format('Y-m-d H:i:s'),
+                'end'   => $next_start->format('Y-m-d H:i:s'),
+            ];
+            $period_start = $next_start;
+        }
+        if (count($periods) === 0) {
+            return $no_data;
+        }
+
+        $ticket_table = Ticket::getTable();
+        $task_table   = TicketTask::getTable();
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        // Tasks are summed in a subquery, so that the joins added by the visibility and the filters can't count them several times
+        $tickets_criteria = array_merge_recursive(
+            [
+                'DISTINCT' => true,
+                'SELECT'   => [
+                    "$ticket_table.id",
+                    "$ticket_table.solve_delay_stat",
+                    QueryFunction::dateFormat("$ticket_table.date", $spec['sql'], 'period'),
+                    new QuerySubQuery([
+                        'SELECT' => QueryFunction::sum("$task_table.actiontime"),
+                        'FROM'   => $task_table,
+                        'WHERE'  => ["$task_table.tickets_id" => new QueryIdentifier("$ticket_table.id")],
+                    ], 'actiontime'),
+                ],
+                'FROM'     => $ticket_table,
+                'WHERE'    => [
+                    "$ticket_table.is_deleted"       => 0,
+                    "$ticket_table.solve_delay_stat" => ['>', 0],
+                    ["$ticket_table.date" => ['>=', reset($periods)['start']]],
+                    ["$ticket_table.date" => ['<', end($periods)['end']]],
+                ] + getEntitiesRestrictCriteria($ticket_table),
+            ],
+            $visibility_criteria,
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+
+        // Tickets without any task have a NULL action time, ignored by the average
+        $criteria = [
+            'SELECT'  => [
+                'ticket_times.period',
+                QueryFunction::round(
+                    QueryFunction::avg(new QueryExpression('`ticket_times`.`actiontime` * 100 / `ticket_times`.`solve_delay_stat`')),
+                    1,
+                    'time_percent'
+                ),
+            ],
+            'FROM'    => new QuerySubQuery($tickets_criteria, 'ticket_times'),
+            'GROUPBY' => ['ticket_times.period'],
+        ];
+
+        $percents = [];
+        foreach ($db->request($criteria) as $result) {
+            if ($result['time_percent'] !== null) {
+                $percents[$result['period']] = (float) $result['time_percent'];
+            }
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $serie = [
+            'name' => __("Tasks duration / solve delay (%)"),
+            'data' => [],
+        ];
+        foreach (array_keys($periods) as $period_key) {
+            $serie['data'][] = $percents[$period_key] ?? 0.0;
+        }
+
+        return [
+            'data'  => [
+                'labels' => array_map('strval', array_keys($periods)),
+                'series' => [$serie],
             ],
             'label' => $params['label'],
             'icon'  => $params['icon'],
