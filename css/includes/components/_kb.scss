@@ -1291,6 +1291,11 @@ body.in_modal .kb-editor-reserved {
     border: 1px solid var(--tblr-border-color);
     border-radius: var(--tblr-border-radius);
 
+    &.ProseMirror-selectednode {
+        outline: 2px solid var(--tblr-primary);
+        outline-offset: 2px;
+    }
+
     .kb-mermaid-tabs {
         display: flex;
         gap: 0.25rem;
@@ -1365,6 +1370,17 @@ body.in_modal .kb-editor-reserved {
     .kb-mermaid-preview {
         display: block;
         padding: 0;
+    }
+
+    // As in the read view, a diagram that cannot be drawn shows its source.
+    &.is-invalid {
+        .kb-mermaid-preview {
+            display: none;
+        }
+
+        pre.kb-mermaid-source {
+            display: block;
+        }
     }
 }
 

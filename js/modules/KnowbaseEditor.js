@@ -158,6 +158,8 @@ class KnowbaseEditor {
                     && !state.selection.empty
                     && (view.hasFocus() || this.#bubbleMenuElement.contains(document.activeElement))
                     && !editor.isActive('image')
+                    // Its formats do not apply to a diagram, and a heading would replace it.
+                    && !editor.isActive('mermaidBlock')
                     && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
                     placement: 'top',

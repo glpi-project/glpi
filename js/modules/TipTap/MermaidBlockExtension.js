@@ -105,6 +105,15 @@ function createMermaidNodeView({ node, editor, getPos }) {
         }
     });
 
+    // Without this, the browser puts the caret in the hidden source.
+    preview.addEventListener('mousedown', (event) => {
+        if (!editor.isEditable) {
+            return;
+        }
+        event.preventDefault();
+        editor.chain().focus().setNodeSelection(getPos()).run();
+    });
+
     dom.append(tablist, preview, source);
 
     /**
@@ -157,6 +166,7 @@ function createMermaidNodeView({ node, editor, getPos }) {
         // A slower render of an older source must not replace a newer one.
         if (current_render === render_id) {
             preview.replaceChildren(content);
+            dom.classList.toggle('is-invalid', content.tagName !== 'FIGURE');
         }
     }
 
@@ -238,15 +248,49 @@ export const MermaidBlock = Node.create({
     },
 
     addKeyboardShortcuts() {
+        /**
+         * Select the diagram next to the caret, in place of joining the current block
+         * into its source, which is hidden while the diagram is shown.
+         *
+         * @param {-1|1} direction - Look before (-1) or after (1) the current block
+         * @returns {boolean}
+         */
+        const selectAdjacentDiagram = (direction) => {
+            const { empty, $anchor } = this.editor.state.selection;
+            const at_edge = direction < 0 ? $anchor.parentOffset === 0 : $anchor.parentOffset === $anchor.parent.content.size;
+            if (!empty || $anchor.depth === 0 || !at_edge) {
+                return false;
+            }
+
+            const block_start = $anchor.before();
+            const block_end = $anchor.after();
+            const $edge = this.editor.state.doc.resolve(direction < 0 ? block_start : block_end);
+            const diagram = direction < 0 ? $edge.nodeBefore : $edge.nodeAfter;
+            if (diagram?.type.name !== this.name) {
+                return false;
+            }
+
+            const diagram_pos = direction < 0 ? block_start - diagram.nodeSize : block_end;
+            if ($anchor.parent.content.size > 0) {
+                return this.editor.commands.setNodeSelection(diagram_pos);
+            }
+            // Remove an empty block, as next to any other block.
+            return this.editor.chain()
+                .deleteRange({ from: block_start, to: block_end })
+                .setNodeSelection(direction < 0 ? diagram_pos : block_start)
+                .run();
+        };
+
         return {
-            // Turn an empty diagram back into a paragraph, as for code blocks.
             Backspace: () => {
                 const { empty, $anchor } = this.editor.state.selection;
-                if (!empty || $anchor.parent.type.name !== this.name || $anchor.parent.textContent !== '') {
-                    return false;
+                // Turn an empty diagram back into a paragraph, as for code blocks.
+                if (empty && $anchor.parent.type.name === this.name && $anchor.parent.textContent === '') {
+                    return this.editor.commands.clearNodes();
                 }
-                return this.editor.commands.clearNodes();
+                return selectAdjacentDiagram(-1);
             },
+            Delete: () => selectAdjacentDiagram(1),
         };
     },
 });

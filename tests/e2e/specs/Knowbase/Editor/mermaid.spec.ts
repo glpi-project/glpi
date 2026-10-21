@@ -115,6 +115,71 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
 
         await kb.editor.enterEditMode();
         await expect(page.getByRole('tabpanel', { name: 'Diagram' })).toContainText(/error|not a diagram/i);
+
+        await kb.editor.save();
+        await expect(page.getByText('not a diagram', { exact: true })).toBeVisible();
+        await expect(page.getByRole('tabpanel', { name: 'Diagram' })).toBeHidden();
+    });
+
+    test('Backspace and Delete next to a diagram keep the text out of its source', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid keyboard',
+            entities_id: getWorkerEntityId(),
+            answer: `<p>Before</p>${DIAGRAM_ANSWER}<p>After</p>`,
+        });
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+        const diagram = page.getByRole('figure', { name: 'Diagram' });
+        await expect(diagram).toContainText('Finish');
+
+        await kb.placeCaretInEditMode('After', 'start');
+        await kb.editor.pressKey('Backspace');
+        await expect(page.getByText('After', { exact: true })).toBeVisible();
+        await expect(diagram).toContainText('Finish');
+
+        await kb.placeCaretInEditMode('Before', 'end');
+        await kb.editor.pressKey('Delete');
+        await expect(page.getByText('Before', { exact: true })).toBeVisible();
+        await expect(diagram).toContainText('Finish');
+
+        await kb.editor.save();
+        await expect(page.getByText('Before', { exact: true })).toBeVisible();
+        await expect(page.getByText('After', { exact: true })).toBeVisible();
+        await expect(diagram).toContainText('Finish');
+    });
+
+    test('Revision diff shows the changed diagram source with its change marks', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        // Old and new labels merge into a valid diagram (`A --> BC`) if the diff is drawn.
+        const diagram = (target: string) => `<pre><code class="language-mermaid">flowchart TD\n    A --&gt; ${target}</code></pre>`;
+        // The diagrams are drawn in order: once the unchanged one is drawn, the changed one was handled.
+        const unchanged = '<pre><code class="language-mermaid">flowchart TD\n    Kept</code></pre>';
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid revision diff',
+            entities_id: getWorkerEntityId(),
+            answer: diagram('B') + unchanged,
+        });
+        await api.updateItem('KnowbaseItem', id, { answer: diagram('C') + unchanged });
+
+        await kb.goto(id);
+        await kb.articleActionsMenu.click();
+        await kb.getButton('History').click();
+        await page.getByTestId('history-event').nth(1).click();
+
+        const content = kb.editor.contentContainer;
+        const diagrams = content.getByRole('figure', { name: 'Diagram' });
+        await expect(page.getByRole('article')).toHaveClass(/kb-article--diff-mode/);
+        await expect(diagrams.filter({ hasText: 'Kept' })).toBeVisible();
+        await expect(diagrams).toHaveCount(1);
+        await expect(content.getByRole('deletion')).toHaveText('B');
+        await expect(content.getByRole('insertion')).toHaveText('C');
+        await expect(content.getByRole('deletion')).toBeVisible();
     });
 
     test('Diagram becomes a link to the article when the content is used in a ticket', async ({ page, profile, api }) => {

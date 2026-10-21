@@ -517,15 +517,30 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * Put the caret at the start or the end of `text` inside the editor. The
+     * selectionchange is dispatched at once, so ProseMirror reads the caret
+     * before the next key, where a native caret move may be read too late.
+     */
+    public async placeCaretInEditMode(text: string, at: 'start' | 'end'): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- ProseMirror's own root, as TipTapEditorHelper uses
+        const editor = this.page.locator('.ProseMirror[contenteditable="true"]');
+        await editor.waitFor();
+        await editor.focus();
+        await this.selectTextIn('.ProseMirror[contenteditable="true"]', text, true, at);
+    }
+
+    /**
      * Scripted Range shared by the read-mode and edit-mode selection helpers.
      */
     private async selectTextIn(
         container_selector: string,
         text: string,
         dispatch_selectionchange: boolean,
+        collapse_to: 'start' | 'end' | null = null,
     ): Promise<void>
     {
-        await this.page.evaluate(({ selector, needle, dispatch }) => {
+        await this.page.evaluate(({ selector, needle, dispatch, collapse }) => {
             const container = document.querySelector(selector);
             if (!container) {
                 return;
@@ -538,6 +553,9 @@ export class KnowbaseItemPage extends GlpiPage
                     const range = document.createRange();
                     range.setStart(node, idx);
                     range.setEnd(node, idx + needle.length);
+                    if (collapse !== null) {
+                        range.collapse(collapse === 'start');
+                    }
                     const selection = window.getSelection();
                     if (!selection) {
                         return;
@@ -551,7 +569,7 @@ export class KnowbaseItemPage extends GlpiPage
                 }
                 node = walker.nextNode();
             }
-        }, { selector: container_selector, needle: text, dispatch: dispatch_selectionchange });
+        }, { selector: container_selector, needle: text, dispatch: dispatch_selectionchange, collapse: collapse_to });
     }
 
     /**
