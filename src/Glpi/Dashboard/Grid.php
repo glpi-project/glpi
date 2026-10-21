@@ -1666,6 +1666,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_ticket_by_sla"] = [
+                'widgettype' => ['stackedbars', 'bars', 'stackedHBars', 'hBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of solved tickets by SLA"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsBySla",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             foreach (
                 [
                     'ITILCategory' => __("Top ticket's categories"),
