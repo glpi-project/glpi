@@ -7461,6 +7461,35 @@ HTML,
         $this->assertSame($tech_id, (int) $assigned_actors[0]['items_id']);
     }
 
+    public function testAssignToMeWithOwnRightOnlyIsDroppedWhenAlreadyAssigned(): void
+    {
+        $this->login();
+        $glpi_id = getItemByTypeName('User', 'glpi', true);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+            '_users_id_assign'    => $glpi_id,
+        ]);
+
+        $this->changeTechRights(['ticket' => Ticket::READALL + Ticket::OWN]);
+
+        $ticket->update([
+            'id'           => $ticket->getID(),
+            '_itil_assign' => [
+                '_type'            => 'user',
+                'users_id'         => Session::getLoginUserID(),
+                'use_notification' => 0,
+            ],
+        ]);
+        $ticket->getFromDB($ticket->getID());
+        $assigned_actors = array_values($ticket->getActorsForType(CommonITILActor::ASSIGN));
+        $this->assertCount(1, $assigned_actors);
+        $this->assertSame($glpi_id, (int) $assigned_actors[0]['items_id']);
+    }
+
     public static function mailCollectorFollowupSetAssigneeProvider(): array
     {
         return [
