@@ -30,38 +30,28 @@
  * ---------------------------------------------------------------------
  */
 
-import { randomUUID } from 'crypto';
 import { expect, test } from '../../fixtures/glpi_fixture';
-import { EntityPage } from '../../pages/EntityPage';
 import { Profiles } from '../../utils/Profiles';
 
-const xss_payload = '<script>throw new Error("XSS");</script>';
+test("CSP block injected scripts", async ({ profile, page }) => {
+    await profile.set(Profiles.SuperAdmin);
 
-test.describe('XSS tests for CRUD and search operations', () => {
-    test("Can't inject XSS into an item name", async ({ profile, page }) => {
-        await profile.set(Profiles.SuperAdmin);
-        const entity_page = new EntityPage(page);
-        const name = randomUUID() + xss_payload;
-
-        // Create an entity with an XSS payload in the name
-        await entity_page.gotoCreationPage();
-        await entity_page.name_input.fill(name);
-        await entity_page.add_button.click();
-
-        // Verify the success alert contains the name
-        const alert = page.getByRole('alert').filter({ hasText: 'Item successfully added' });
-        await expect(alert).toBeAttached();
-
-        // Go to the created entity via the link in the alert
-        await alert.getByRole('link').click();
-
-        // Check name is displayed correctly (XSS not executed)
-        await expect(entity_page.name_input).toHaveValue(name);
-
-        // Search for the entity and verify the XSS payload is shown as plain text
-        await page.goto(
-            `/front/entity.php?criteria[0][link]=AND&criteria[0][field]=14&criteria[0][searchtype]=contains&criteria[0][value]=${encodeURIComponent(name)}`
-        );
-        await expect(page.getByText(name)).toHaveCount(2);
+    // Watch for console errors
+    const csp_error = page.waitForEvent('console', {
+        // Chromium: "Content Security Policy", Firefox: "Content-Security-Policy"
+        predicate: (msg) => msg.type() === 'error' && /Content.Security.Policy/.test(msg.text()),
     });
+
+    // Watch for dialogs
+    const dialogs: string[] = [];
+    page.on('dialog', (dialog) => {
+        dialogs.push(dialog.message());
+        void dialog.dismiss();
+    });
+
+    // Trigger the potential XSS. The console should report the script was blocked
+    // and the payload had no effect (no dialogs were opened).
+    await page.goto('/test/xss?payload=<script>alert(1)</script>');
+    expect((await csp_error).text()).toContain('inline script');
+    expect(dialogs).toEqual([]);
 });
