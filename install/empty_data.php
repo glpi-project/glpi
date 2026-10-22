@@ -344,7 +344,6 @@ $empty_data_builder = new class {
             'use_notifications' => '0',
             'notifications_ajax' => '0',
             'notifications_ajax_check_interval' => '5',
-            'notifications_ajax_sound' => null,
             'notifications_ajax_icon_url' => '/pics/glpi.png',
             'notifications_ajax_expiration_delay' => '7',
             'dbversion' => 'FILLED AT INSTALL',
