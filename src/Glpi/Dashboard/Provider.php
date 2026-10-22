@@ -970,9 +970,37 @@ class Provider
             return $no_data;
         }
 
-        $search_criteria = self::getSearchFiltersCriteria($ticket_table, $params['apply_filters'])['criteria'] ?? [];
-        $url             = Ticket::getSearchURL();
-        $build_url       = (static fn(int $sla_id, int $is_late): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+        // The dates filter search is strict on its first day, while the count includes its first second:
+        // the dates are searched below with the same bounds as the count
+        $search_filters = $params['apply_filters'];
+        $dates_value    = $search_filters[DatesFilter::getId()] ?? null;
+        unset($search_filters[DatesFilter::getId()]);
+        $search_criteria = self::getSearchFiltersCriteria($ticket_table, $search_filters)['criteria'] ?? [];
+        // Some filters are searched with OR criteria (e.g. SLA time to own OR time to resolve),
+        // they are grouped so they can't bypass the other criteria of the search
+        if (count($search_criteria) > 0) {
+            $search_criteria = [['link' => 'AND', 'criteria' => $search_criteria]];
+        }
+        if (is_array($dates_value) && count($dates_value) === 2) {
+            try {
+                $search_criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'morethan',
+                    'value'      => (new DateTimeImmutable((string) $dates_value[0]))->setTime(0, 0)->modify('-1 second')->format('Y-m-d H:i:s'),
+                ];
+                $search_criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'lessthan',
+                    'value'      => (new DateTimeImmutable((string) $dates_value[1]))->setTime(0, 0)->modify('+1 day')->format('Y-m-d H:i:s'),
+                ];
+            } catch (\Exception) {
+                // keep the search without dates bounds if the filter values are not parsable dates
+            }
+        }
+        $url       = Ticket::getSearchURL();
+        $build_url = (static fn(int $sla_id, int $is_late): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
             'criteria' => array_merge([
                 [
                     'link'       => 'AND',

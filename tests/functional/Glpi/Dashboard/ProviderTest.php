@@ -668,10 +668,10 @@ class ProviderTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
         $slm       = $this->createItem(\SLM::class, ['name' => 'test dashboard tickets by sla']);
         $slas      = [];
-        foreach (['A', 'B'] as $letter) {
+        foreach (['A' => \SLM::TTR, 'B' => \SLM::TTR, 'C' => \SLM::TTO] as $letter => $type) {
             $slas[$letter] = $this->createItem(\SLA::class, [
                 'name'            => "test dashboard sla $letter",
-                'type'            => \SLM::TTR,
+                'type'            => $type,
                 'number_time'     => 4,
                 'definition_time' => 'hour',
                 'slms_id'         => $slm->getID(),
@@ -683,20 +683,27 @@ class ProviderTest extends DbTestCase
         foreach (
             [
                 'A on time'      => ['A', \Ticket::SOLVED, '2010-01-06 10:00:00', '2010-01-05 12:00:00'],
+                'A on time at midnight' => ['A', \Ticket::SOLVED, '2010-01-06 10:00:00', '2010-01-05 12:00:00', '2010-01-01 00:00:00'],
                 'A late solved'  => ['A', \Ticket::SOLVED, '2010-01-05 11:00:00', '2010-01-05 12:00:00'],
                 'A late closed'  => ['A', \Ticket::CLOSED, '2010-01-05 11:00:00', '2010-01-05 12:00:00'],
-                'B on time'      => ['B', \Ticket::CLOSED, '2010-01-06 10:00:00', '2010-01-05 12:00:00'],
+                'B on time'      => ['B', \Ticket::CLOSED, '2010-01-06 10:00:00', '2010-01-05 12:00:00', '2010-01-05 10:00:00', 'C'],
                 'B not solved'   => ['B', \Ticket::ASSIGNED, '2010-01-05 11:00:00', null],
                 'without SLA'    => [null, \Ticket::SOLVED, null, '2010-01-05 12:00:00'],
-            ] as $name => [$letter, $status, $time_to_resolve, $solvedate]
+                // Only its time to own SLA matches C, it is not solved
+                'A with C to own' => ['A', \Ticket::ASSIGNED, '2010-01-05 11:00:00', null, '2010-01-05 10:00:00', 'C'],
+            ] as $name => $values
         ) {
+            [$letter, $status, $time_to_resolve, $solvedate] = $values;
+            $date        = $values[4] ?? '2010-01-05 10:00:00';
+            $tto_letter  = $values[5] ?? null;
             $ticket = $this->createItem(\Ticket::class, [
                 'name'        => "test dashboard tickets by sla $name",
                 'content'     => 'blablabla',
                 'entities_id' => $entity_id,
             ]);
             $DB->update(\Ticket::getTable(), [
-                'date'            => '2010-01-05 10:00:00',
+                'date'            => $date,
+                'slas_id_tto'     => $tto_letter !== null ? $slas[$tto_letter]->getID() : 0,
                 'status'          => $status,
                 'slas_id_ttr'     => $letter !== null ? $slas[$letter]->getID() : 0,
                 'time_to_resolve' => $time_to_resolve,
@@ -718,12 +725,12 @@ class ProviderTest extends DbTestCase
         $result = Provider::ticketsBySla(['apply_filters' => $dates_filter]);
         $this->assertSame(['test dashboard sla A', 'test dashboard sla B'], $result['data']['labels']);
         // Both series are always returned, in a fixed order, so colors stay consistent
-        $this->assertSame(['On time' => [1, 1], 'Late' => [2, 0]], $get_values($result));
+        $this->assertSame(['On time' => [2, 1], 'Late' => [2, 0]], $get_values($result));
 
         // The search of a bar finds the tickets counted
         foreach (
             [
-                [0, 0, 1], // SLA A on time
+                [0, 0, 2], // SLA A on time, including the ticket created at the first second of the dates filter
                 [1, 0, 2], // SLA A late
                 [1, 1, 0], // SLA B late
             ] as [$serie_index, $label_index, $expected]
@@ -746,6 +753,15 @@ class ProviderTest extends DbTestCase
         $this->assertSame(['test dashboard sla B'], $filtered['data']['labels']);
         $this->assertSame(['On time' => [1], 'Late' => [0]], $get_values($filtered));
 
+        // The SLA filter matches the time to own SLA too
+        $filtered = Provider::ticketsBySla(['apply_filters' => $dates_filter + [SlaFilter::getId() => $slas['C']->getID()]]);
+        $this->assertSame(['test dashboard sla B'], $filtered['data']['labels']);
+        $this->assertSame(['On time' => [1], 'Late' => [0]], $get_values($filtered));
+        // It is searched as "time to own OR time to resolve", which must not bypass the other criteria of the bar
+        parse_str((string) parse_url($filtered['data']['series'][0]['data'][0]['url'], PHP_URL_QUERY), $search_params);
+        $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+        $this->assertSame(1, $search_data['data']['totalcount'], 'the not solved ticket with C to own must not be found');
+
         // Without any ticket right, nothing is exposed
         $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
         $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
@@ -765,7 +781,7 @@ class ProviderTest extends DbTestCase
         $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $hidden_id]);
         $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READMY;
         $mine = Provider::ticketsBySla(['apply_filters' => $dates_filter]);
-        $this->assertSame(['On time' => [1, 1], 'Late' => [1, 0]], $get_values($mine), 'ticket of another user must not be counted');
+        $this->assertSame(['On time' => [2, 1], 'Late' => [1, 0]], $get_values($mine), 'ticket of another user must not be counted');
     }
 
     public function testFakeTicketsBySla(): void
