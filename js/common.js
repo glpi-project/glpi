@@ -1340,17 +1340,6 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-/**
- * Returns CSRF token that can be used for AJAX requests.
- *
- * @deprecated
- * @returns {string}
- */
-function getAjaxCsrfToken() {
-    console.warn('Csrf protection is now handled without tokens.');
-    return "";
-}
-
 // init tooltips
 $(
     function() {
@@ -2195,7 +2184,6 @@ if (typeof module !== 'undefined' && module.exports) {
         setHasUnsavedChanges,
         hasUnsavedChanges,
         getFlatPickerLocale,
-        getAjaxCsrfToken,
         tableToDetails,
     };
 }

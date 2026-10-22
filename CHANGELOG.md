@@ -24,6 +24,13 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 
 #### Removed
+- `Session::getNewCSRFToken()`
+- `Session::validateCSRF()`
+- `Session::checkCSRF()`
+- `Session::cleanCSRFTokens()`
+- `csrf_token()` Twig function.
+- `getAjaxCsrfToken()` JavaScript function.
+- `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
 
 ## [12.0.1] unreleased
 

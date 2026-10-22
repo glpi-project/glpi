@@ -457,10 +457,6 @@
     {{ _inputs.hidden(name, value, options) }}
 {% endmacro %}
 
-{% macro csrfField() %}
-   {% do call('Toolbox::deprecated', ['Csrf protection is now handled without tokens.']) %}
-{% endmacro %}
-
 {% macro dropdownNumberField(name, value, label = '', options = {}) %}
     {% set options = {
         'rand': random(),
