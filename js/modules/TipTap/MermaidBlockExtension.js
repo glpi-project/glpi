@@ -111,7 +111,9 @@ function createMermaidNodeView({ node, editor, getPos }) {
             return;
         }
         event.preventDefault();
-        editor.chain().focus().setNodeSelection(getPos()).run();
+        editor.commands.setNodeSelection(getPos());
+        // The focus command waits for the next frame: a key pressed before it would go to the tab.
+        editor.view.focus();
     });
 
     dom.append(tablist, preview, source);
