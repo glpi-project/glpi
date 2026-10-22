@@ -1638,6 +1638,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_ticket_by_assigned_group_changes"] = [
+                'widgettype' => ['bar', 'hbar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by number of assigned group changes"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByAssignedGroupChanges",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["tickets_summary"] = [
                 'widgettype' => ['summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Ticket",

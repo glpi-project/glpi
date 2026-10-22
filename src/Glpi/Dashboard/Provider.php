@@ -63,6 +63,7 @@ use Group;
 use Group_Ticket;
 use Item_OperatingSystem;
 use Location;
+use Log;
 use OperatingSystem;
 use Profile_User;
 use Safe\DateTimeImmutable;
@@ -3474,6 +3475,104 @@ class Provider
         if (count($data) === 0) {
             $data = [
                 'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Count tickets grouped by the number of times their assigned group changed.
+     * The changes are read from the ticket history: each assigned group added after the first one
+     * is a change. Tickets that never had an assigned group are not counted.
+     * As it is built from the history, the right to read the history is required.
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByAssignedGroupChanges(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Group::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $no_data = [
+            'data'  => [
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null || !Log::canView()) {
+            return $no_data;
+        }
+
+        $ticket_table = Ticket::getTable();
+        $log_table    = Log::getTable();
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        // Group additions are counted in a subquery, so that the joins added by the visibility and the filters can't count them several times
+        $tickets_criteria = array_merge_recursive(
+            [
+                'DISTINCT' => true,
+                'SELECT'   => [
+                    "$ticket_table.id",
+                    new QuerySubQuery([
+                        'COUNT'  => 'cpt',
+                        'FROM'   => $log_table,
+                        'WHERE'  => [
+                            "$log_table.itemtype"         => Ticket::class,
+                            "$log_table.items_id"         => new QueryIdentifier("$ticket_table.id"),
+                            "$log_table.itemtype_link"    => Group::class,
+                            "$log_table.linked_action"    => Log::HISTORY_ADD_RELATION,
+                            // Assigned group, see CommonITILActor::getForceLogOption(): requester and observer groups have their own option
+                            "$log_table.id_search_option" => 8,
+                        ],
+                    ], 'nb_added_groups'),
+                ],
+                'FROM'     => $ticket_table,
+                'WHERE'    => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+            ],
+            $visibility_criteria,
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+
+        $criteria = [
+            'SELECT'  => ['ticket_groups.nb_added_groups'],
+            'COUNT'   => 'cpt',
+            'FROM'    => new QuerySubQuery($tickets_criteria, 'ticket_groups'),
+            'WHERE'   => ['ticket_groups.nb_added_groups' => ['>', 0]],
+            'GROUPBY' => ['ticket_groups.nb_added_groups'],
+        ];
+
+        $counts = [];
+        foreach ($db->request($criteria) as $result) {
+            $counts[(int) $result['nb_added_groups'] - 1] = (int) $result['cpt'];
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        if (count($counts) === 0) {
+            return $no_data;
+        }
+
+        // Fill the missing numbers of changes, so the bars stay in order without gaps
+        $data = [];
+        for ($nb_changes = 0; $nb_changes <= max(array_keys($counts)); $nb_changes++) {
+            $data[] = [
+                'number' => $counts[$nb_changes] ?? 0,
+                'label'  => sprintf(_n('%d change', '%d changes', $nb_changes), $nb_changes),
+                'url'    => '',
             ];
         }
 

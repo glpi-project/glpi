@@ -654,6 +654,25 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsByAssignedGroupChanges(array $params = []): array
+    {
+        $data = [];
+        // Fewer tickets as the number of changes grows
+        foreach ([60, 25, 10, 4, 1] as $nb_changes => $max) {
+            $data[] = [
+                'number' => self::getObscureNumberForString('group changes ' . $nb_changes, $max) + $max,
+                'label'  => sprintf(_n('%d change', '%d changes', $nb_changes), $nb_changes),
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Group::getIcon(),
+        ];
+    }
+
     public static function ticketsOpened(array $params = []): array
     {
         $data = [];
