@@ -1275,6 +1275,11 @@ body.in_modal .kb-editor-reserved {
 }
 
 // Mermaid diagram drawn from its source block
+// Without this, the highlight of a comment that quotes the source cannot be seen.
+pre.kb-mermaid-drawn:not(:has(.kb-comment-highlight)) {
+    display: none;
+}
+
 .kb-mermaid-diagram {
     margin: 0 0 0.75rem;
     overflow-x: auto;
@@ -1287,7 +1292,7 @@ body.in_modal .kb-editor-reserved {
 }
 
 .kb-mermaid-block {
-    margin-bottom: 0.75rem;
+    margin-block-end: 0.75rem;
     border: 1px solid var(--tblr-border-color);
     border-radius: var(--tblr-border-radius);
 
@@ -1300,7 +1305,7 @@ body.in_modal .kb-editor-reserved {
         display: flex;
         gap: 0.25rem;
         padding: 0.25rem;
-        border-bottom: 1px solid var(--tblr-border-color);
+        border-block-end: 1px solid var(--tblr-border-color);
     }
 
     .kb-mermaid-tab {

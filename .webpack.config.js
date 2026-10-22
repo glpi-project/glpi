@@ -17,6 +17,7 @@ const scssOutputPath = 'css/lib';
 const mermaid_dist = path.resolve(__dirname, 'node_modules/mermaid/dist');
 const mermaid_types = ['flowDiagram', 'sequenceDiagram', 'stateDiagram-v2'];
 const mermaid_unused_layouts = ['cose-bilkent', 'elk', 'swimlanes'];
+// Fail when a Mermaid upgrade renames one of these chunks: the replacement below would go wrong silently.
 for (const name of [...mermaid_types, ...mermaid_unused_layouts]) {
     if (globSync(`${mermaid_dist}/chunks/mermaid.core/${name}-*.mjs`).length === 0) {
         throw new Error(`Mermaid chunk '${name}' not found: update the Mermaid lists in .webpack.config.js.`);

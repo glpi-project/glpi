@@ -105,8 +105,8 @@ export async function renderMermaidFigure(source) {
 
 /**
  * Draw a diagram after each Mermaid code block of the given read-only content.
- * The source block is hidden but kept for the comment anchors, which use its text.
- * An invalid block stays visible as code.
+ * The source block is hidden but kept for the comment anchors, which use its text;
+ * it shows again when a comment quotes it. An invalid block stays visible as code.
  *
  * @param {HTMLElement} root
  */
@@ -124,7 +124,7 @@ export async function renderMermaidBlocks(root) {
     for (const code of blocks) {
         try {
             code.parentElement.after(await renderMermaidFigure(code.textContent));
-            code.parentElement.hidden = true;
+            code.parentElement.classList.add('kb-mermaid-drawn');
         } catch {
             // Keep the source visible.
         }

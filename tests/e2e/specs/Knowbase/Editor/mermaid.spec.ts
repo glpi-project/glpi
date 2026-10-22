@@ -335,6 +335,32 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(page.getByText('Before', { exact: true })).toBeVisible();
     });
 
+    test('Diagram source quoted by a comment stays visible with its highlight', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Mermaid commented source',
+            entities_id: getWorkerEntityId(),
+            answer: DIAGRAM_ANSWER,
+        });
+        await api.createItem('KnowbaseItem_Comment', {
+            knowbaseitems_id: id,
+            comment: 'Comment on the diagram source',
+            anchor_prefix: '',
+            anchor_exact: 'flowchart TD',
+            anchor_suffix: '',
+            anchor_occurrence: 0,
+        });
+
+        await kb.goto(id);
+        await kb.waitForArticleReady();
+
+        await expect(page.getByRole('figure', { name: 'Diagram' })).toContainText('Start');
+        await expect(kb.getCommentHighlights()).toHaveCount(1);
+        await expect(kb.getCommentHighlights()).toBeVisible();
+    });
+
     test('Revision diff shows the changed diagram source with its change marks', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
