@@ -69,6 +69,7 @@ use Profile_User;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\DatetimeException;
 use Session;
+use SLA;
 use Stat;
 use Ticket;
 use Ticket_User;
@@ -870,6 +871,179 @@ class Provider
             'label' => __('Tickets by SLA status and by technician group'),
             'data' => $data,
             'icon' => $params['icon'],
+        ];
+    }
+
+    /**
+     * Count solved and closed tickets grouped by their SLA (time to resolve),
+     * split between the tickets solved on time and the ones solved late.
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsBySla(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => "ti ti-stopwatch",
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $no_data = [
+            'data'  => [
+                'labels' => [],
+                'series' => [],
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
+            return $no_data;
+        }
+
+        // A dashboard status filter would be merged into the IN() list, intersect it with solved statuses instead
+        $solved_statuses  = array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray());
+        $queried_statuses = $solved_statuses;
+        $filtered_status  = (int) ($params['apply_filters'][TicketStatusFilter::getId()] ?? 0);
+        unset($params['apply_filters'][TicketStatusFilter::getId()]);
+        if ($filtered_status > 0) {
+            $queried_statuses = array_values(array_intersect($solved_statuses, [$filtered_status]));
+        }
+        if (count($queried_statuses) === 0) {
+            return $no_data;
+        }
+
+        $ticket_table = Ticket::getTable();
+        $sla_table    = SLA::getTable();
+        // Same computation as the "Time to resolve exceeded" search option
+        $late_expression = Ticket::generateSLAOLAComputation('time_to_resolve', $ticket_table);
+        if (!$late_expression instanceof QueryExpression) {
+            return $no_data;
+        }
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'     => [
+                    "$sla_table.id",
+                    "$sla_table.name",
+                    QueryFunction::if(
+                        condition: $late_expression,
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0'),
+                        alias: 'is_late'
+                    ),
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'       => $ticket_table,
+                'INNER JOIN' => [
+                    $sla_table => [
+                        'ON' => [
+                            $sla_table    => 'id',
+                            $ticket_table => 'slas_id_ttr',
+                        ],
+                    ],
+                ],
+                'WHERE'      => [
+                    "$ticket_table.is_deleted" => 0,
+                    "$ticket_table.status"     => $queried_statuses,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'    => ["$sla_table.id", "$sla_table.name", 'is_late'],
+                'ORDER'      => ["$sla_table.name", "$sla_table.id"],
+            ],
+            $visibility_criteria,
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+
+        $slas   = [];
+        $counts = [];
+        foreach ($db->request($criteria) as $result) {
+            $sla_id                                   = (int) $result['id'];
+            $slas[$sla_id]                            = $result['name'];
+            $counts[$sla_id][(int) $result['is_late']] = (int) $result['cpt'];
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        if (count($slas) === 0) {
+            return $no_data;
+        }
+
+        // The dates filter search is strict on its first day, while the count includes its first second:
+        // the dates are searched below with the same bounds as the count
+        $search_filters = $params['apply_filters'];
+        $dates_value    = $search_filters[DatesFilter::getId()] ?? null;
+        unset($search_filters[DatesFilter::getId()]);
+        $search_criteria = self::getSearchFiltersCriteria($ticket_table, $search_filters)['criteria'] ?? [];
+        // Some filters are searched with OR criteria (e.g. SLA time to own OR time to resolve),
+        // they are grouped so they can't bypass the other criteria of the search
+        if (count($search_criteria) > 0) {
+            $search_criteria = [['link' => 'AND', 'criteria' => $search_criteria]];
+        }
+        if (is_array($dates_value) && count($dates_value) === 2) {
+            try {
+                $search_criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'morethan',
+                    'value'      => (new DateTimeImmutable((string) $dates_value[0]))->setTime(0, 0)->modify('-1 second')->format('Y-m-d H:i:s'),
+                ];
+                $search_criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'lessthan',
+                    'value'      => (new DateTimeImmutable((string) $dates_value[1]))->setTime(0, 0)->modify('+1 day')->format('Y-m-d H:i:s'),
+                ];
+            } catch (\Exception) {
+                // keep the search without dates bounds if the filter values are not parsable dates
+            }
+        }
+        $url       = Ticket::getSearchURL();
+        $build_url = (static fn(int $sla_id, int $is_late): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+            'criteria' => array_merge([
+                [
+                    'link'       => 'AND',
+                    'field'      => 30, // SLA time to resolve
+                    'searchtype' => 'equals',
+                    'value'      => $sla_id,
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 82, // time to resolve exceeded
+                    'searchtype' => 'equals',
+                    'value'      => $is_late,
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 12, // status
+                    'searchtype' => 'equals',
+                    'value'      => $filtered_status > 0 ? $filtered_status : 'old',
+                ],
+            ], $search_criteria),
+            'reset'    => 'reset',
+        ]));
+
+        // Both series are always returned, in a fixed order, so colors stay consistent
+        $series = [];
+        foreach ([0 => __('On time'), 1 => __('Late')] as $is_late => $serie_name) {
+            $serie = ['name' => $serie_name, 'data' => []];
+            foreach (array_keys($slas) as $sla_id) {
+                $serie['data'][] = [
+                    'value' => $counts[$sla_id][$is_late] ?? 0,
+                    'url'   => $build_url($sla_id, $is_late),
+                ];
+            }
+            $series[] = $serie;
+        }
+
+        return [
+            'data'  => [
+                'labels' => array_values($slas),
+                'series' => $series,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
         ];
     }
 
