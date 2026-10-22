@@ -54,6 +54,7 @@ use NotificationTarget;
 use NotificationTargetTicket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use Profile;
 use Profile_User;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\DomCrawler\Crawler;
@@ -1132,6 +1133,8 @@ class EntityTest extends DbTestCase
         $user_obj->add([
             'name'     => 'test_anon_user',
             'password' => 'test_anon_user',
+            '_profiles_id' => getItemByTypeName(Profile::class, 'Technician', true),
+            '_entities_id' => $entity->getID(),
         ]);
 
         // Set user nickname

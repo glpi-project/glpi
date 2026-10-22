@@ -732,6 +732,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
                 $tickets_id = $ticket->add([
                     'name'    => 'test actors',
                     'content' => 'test actors',
+                    'entities_id' => $this->getTestRootEntity(true),
                     '_actors' => [
                         $actortype => [
                             [
@@ -1024,6 +1025,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $group_id1 = $group->add($group_input = [
             "name"         => "group1",
             "is_requester" => true,
+            "entities_id"  => $this->getTestRootEntity(true),
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
@@ -1031,6 +1033,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $group_id2 = $group->add($group_input = [
             "name"         => "group2",
             "is_requester" => true,
+            "entities_id"  => $this->getTestRootEntity(true),
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 

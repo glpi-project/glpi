@@ -63,6 +63,8 @@ use User;
  */
 abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
 {
+    use ITILActorAssertionsTrait;
+
     private const array FORMATS = ['legacy', 'additional', 'additional_array'];
 
     private const array ROLE_FLAGS = [
@@ -84,7 +86,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildActorInput($format, 'assign', Supplier::class, [$supplier_id]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Supplier::class, $supplier_id, CommonITILActor::ASSIGN), 'Supplier should be assigned');
+        $this->assertActorLinked($itil, Supplier::class, $supplier_id, CommonITILActor::ASSIGN, 'Supplier should be assigned');
     }
 
     /**
@@ -101,7 +103,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildActorInput($format, $role, Supplier::class, [$supplier_id]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Supplier::class, $supplier_id, $this->getActorType($role)), "Supplier as $role should be ignored");
+        $this->assertActorNotLinked($itil, Supplier::class, $supplier_id, $this->getActorType($role), "Supplier as $role should be ignored");
     }
 
     /**
@@ -118,7 +120,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildActorInput($format, $role, Group::class, [$group->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Group::class, $group->getID(), $this->getActorType($role)), "Group with the flag of the $role role should be set");
+        $this->assertActorLinked($itil, Group::class, $group->getID(), $this->getActorType($role), "Group with the flag of the $role role should be set");
     }
 
     /**
@@ -136,7 +138,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildActorInput($format, $role, Group::class, [$group->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Group::class, $group->getID(), $this->getActorType($role)), "Group without the flag of the $role role should be ignored");
+        $this->assertActorNotLinked($itil, Group::class, $group->getID(), $this->getActorType($role), "Group without the flag of the $role role should be ignored");
     }
 
     /**
@@ -153,7 +155,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true)] + $this->buildActorInput($format, 'requester', Group::class, [$group->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Group::class, $group->getID(), CommonITILActor::REQUESTER), 'Group of the same entity should be set');
+        $this->assertActorLinked($itil, Group::class, $group->getID(), CommonITILActor::REQUESTER, 'Group of the same entity should be set');
     }
 
     /**
@@ -172,7 +174,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => $itil_entity_id] + $this->buildActorInput($format, 'requester', Group::class, [$group->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Group::class, $group->getID(), CommonITILActor::REQUESTER), 'Recursive group of a parent entity should be set');
+        $this->assertActorLinked($itil, Group::class, $group->getID(), CommonITILActor::REQUESTER, 'Recursive group of a parent entity should be set');
     }
 
     /**
@@ -195,7 +197,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => $itil_entity->getID()] + $this->buildActorInput($format, 'requester', Group::class, [$group->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Group::class, $group->getID(), CommonITILActor::REQUESTER), 'Group of a sibling entity should be ignored');
+        $this->assertActorNotLinked($itil, Group::class, $group->getID(), CommonITILActor::REQUESTER, 'Group of a sibling entity should be ignored');
     }
 
     /**
@@ -214,7 +216,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => $itil_entity_id] + $this->buildActorInput($format, 'requester', Group::class, [$group->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Group::class, $group->getID(), CommonITILActor::REQUESTER), 'Non recursive group of a parent entity should be ignored');
+        $this->assertActorNotLinked($itil, Group::class, $group->getID(), CommonITILActor::REQUESTER, 'Non recursive group of a parent entity should be ignored');
     }
 
     /**
@@ -231,7 +233,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true)] + $this->buildActorInput($format, 'assign', Supplier::class, [$supplier->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Supplier::class, $supplier->getID(), CommonITILActor::ASSIGN), 'Supplier of the same entity should be assigned');
+        $this->assertActorLinked($itil, Supplier::class, $supplier->getID(), CommonITILActor::ASSIGN, 'Supplier of the same entity should be assigned');
     }
 
     /**
@@ -250,7 +252,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => $itil_entity_id] + $this->buildActorInput($format, 'assign', Supplier::class, [$supplier->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Supplier::class, $supplier->getID(), CommonITILActor::ASSIGN), 'Recursive supplier of a parent entity should be assigned');
+        $this->assertActorLinked($itil, Supplier::class, $supplier->getID(), CommonITILActor::ASSIGN, 'Recursive supplier of a parent entity should be assigned');
     }
 
     /**
@@ -273,7 +275,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => $itil_entity->getID()] + $this->buildActorInput($format, 'assign', Supplier::class, [$supplier->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Supplier::class, $supplier->getID(), CommonITILActor::ASSIGN), 'Supplier of a sibling entity should be ignored');
+        $this->assertActorNotLinked($itil, Supplier::class, $supplier->getID(), CommonITILActor::ASSIGN, 'Supplier of a sibling entity should be ignored');
     }
 
     /**
@@ -292,7 +294,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => $itil_entity_id] + $this->buildActorInput($format, 'assign', Supplier::class, [$supplier->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Supplier::class, $supplier->getID(), CommonITILActor::ASSIGN), 'Non recursive supplier of a parent entity should be ignored');
+        $this->assertActorNotLinked($itil, Supplier::class, $supplier->getID(), CommonITILActor::ASSIGN, 'Non recursive supplier of a parent entity should be ignored');
     }
 
     /**
@@ -312,8 +314,8 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildActorInput($format, 'requester', Group::class, [$non_eligible_group->getID(), $eligible_group->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Group::class, $eligible_group->getID(), CommonITILActor::REQUESTER), 'Group with the requester flag should be kept');
-        $this->assertFalse($this->isActorLinked($itil, Group::class, $non_eligible_group->getID(), CommonITILActor::REQUESTER), 'Group without the requester flag should be ignored');
+        $this->assertActorLinked($itil, Group::class, $eligible_group->getID(), CommonITILActor::REQUESTER, 'Group with the requester flag should be kept');
+        $this->assertActorNotLinked($itil, Group::class, $non_eligible_group->getID(), CommonITILActor::REQUESTER, 'Group without the requester flag should be ignored');
     }
 
     /**
@@ -332,7 +334,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildUserAssignInput($format, $tech_id));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $tech_id, CommonITILActor::ASSIGN), 'User with Ticket OWN should be assigned');
+        $this->assertActorLinked($itil, User::class, $tech_id, CommonITILActor::ASSIGN, 'User with Ticket OWN should be assigned');
     }
 
     /**
@@ -350,7 +352,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildUserAssignInput($format, $post_only_id));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, User::class, $post_only_id, CommonITILActor::ASSIGN), 'User without Ticket OWN should be ignored');
+        $this->assertActorNotLinked($itil, User::class, $post_only_id, CommonITILActor::ASSIGN, 'User without Ticket OWN should be ignored');
     }
 
     /**
@@ -372,7 +374,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => $itil_entity_id] + $this->buildUserAssignInput($format, $user->getID()));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, User::class, $user->getID(), CommonITILActor::ASSIGN), 'User with Ticket OWN in a sibling entity only should be ignored');
+        $this->assertActorNotLinked($itil, User::class, $user->getID(), CommonITILActor::ASSIGN, 'User with Ticket OWN in a sibling entity only should be ignored');
     }
 
     /**
@@ -391,7 +393,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil(['entities_id' => $itil_entity_id] + $this->buildUserAssignInput($format, $user->getID()));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $user->getID(), CommonITILActor::ASSIGN), 'User with Ticket OWN in a recursive parent entity should be assigned');
+        $this->assertActorLinked($itil, User::class, $user->getID(), CommonITILActor::ASSIGN, 'User with Ticket OWN in a recursive parent entity should be assigned');
     }
 
     /**
@@ -418,7 +420,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildUserAssignInput('legacy', $user->getID()));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, User::class, $user->getID(), CommonITILActor::ASSIGN), 'User assigning himself without Ticket OWN should be ignored');
+        $this->assertActorNotLinked($itil, User::class, $user->getID(), CommonITILActor::ASSIGN, 'User assigning himself without Ticket OWN should be ignored');
     }
 
     #[DataProvider('formatProvider')]
@@ -433,7 +435,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $this->updateItem($itil::class, $itil->getID(), $this->buildActorInput($format, 'assign', Supplier::class, [$new_supplier_id]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Supplier::class, $new_supplier_id, CommonITILActor::ASSIGN), 'Supplier should be assigned');
+        $this->assertActorLinked($itil, Supplier::class, $new_supplier_id, CommonITILActor::ASSIGN, 'Supplier should be assigned');
     }
 
     /**
@@ -452,7 +454,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil->update(['id' => $itil->getID()] + $this->buildActorInput($format, $role, Supplier::class, [$new_supplier_id]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Supplier::class, $new_supplier_id, $this->getActorType($role)), "Supplier as $role should be ignored");
+        $this->assertActorNotLinked($itil, Supplier::class, $new_supplier_id, $this->getActorType($role), "Supplier as $role should be ignored");
     }
 
     #[DataProvider('groupRoleFormatProvider')]
@@ -467,7 +469,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $this->updateItem($itil::class, $itil->getID(), $this->buildActorInput($format, $role, Group::class, [$new_group->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Group::class, $new_group->getID(), $this->getActorType($role)), "Group with the flag of the $role role should be set");
+        $this->assertActorLinked($itil, Group::class, $new_group->getID(), $this->getActorType($role), "Group with the flag of the $role role should be set");
     }
 
     /**
@@ -487,7 +489,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil->update(['id' => $itil->getID()] + $this->buildActorInput($format, $role, Group::class, [$new_group->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Group::class, $new_group->getID(), $this->getActorType($role)), "Group without the flag of the $role role should be ignored");
+        $this->assertActorNotLinked($itil, Group::class, $new_group->getID(), $this->getActorType($role), "Group without the flag of the $role role should be ignored");
     }
 
     /**
@@ -505,7 +507,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $this->updateItem($itil::class, $itil->getID(), $this->buildActorInput($format, 'requester', Group::class, [$new_group->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER), 'Recursive group of a parent entity should be set');
+        $this->assertActorLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER, 'Recursive group of a parent entity should be set');
     }
 
     /**
@@ -530,7 +532,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil->update(['id' => $itil->getID()] + $this->buildActorInput($format, 'requester', Group::class, [$new_group->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER), 'Group of a sibling entity should be ignored');
+        $this->assertActorNotLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER, 'Group of a sibling entity should be ignored');
     }
 
     /**
@@ -553,7 +555,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil->update(['id' => $itil->getID()] + $this->buildActorInput($format, 'requester', Group::class, [$new_group->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER), 'Non recursive group of a parent entity should be ignored');
+        $this->assertActorNotLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER, 'Non recursive group of a parent entity should be ignored');
     }
 
     /**
@@ -573,7 +575,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $this->updateItem($itil::class, $itil->getID(), $this->buildActorInput($format, 'assign', Supplier::class, [$new_supplier->getID()]));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, Supplier::class, $new_supplier->getID(), CommonITILActor::ASSIGN), 'Recursive supplier of a parent entity should be assigned');
+        $this->assertActorLinked($itil, Supplier::class, $new_supplier->getID(), CommonITILActor::ASSIGN, 'Recursive supplier of a parent entity should be assigned');
     }
 
     /**
@@ -598,7 +600,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil->update(['id' => $itil->getID()] + $this->buildActorInput($format, 'assign', Supplier::class, [$new_supplier->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Supplier::class, $new_supplier->getID(), CommonITILActor::ASSIGN), 'Supplier of a sibling entity should be ignored');
+        $this->assertActorNotLinked($itil, Supplier::class, $new_supplier->getID(), CommonITILActor::ASSIGN, 'Supplier of a sibling entity should be ignored');
     }
 
     /**
@@ -621,7 +623,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil->update(['id' => $itil->getID()] + $this->buildActorInput($format, 'assign', Supplier::class, [$new_supplier->getID()]));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, Supplier::class, $new_supplier->getID(), CommonITILActor::ASSIGN), 'Non recursive supplier of a parent entity should be ignored');
+        $this->assertActorNotLinked($itil, Supplier::class, $new_supplier->getID(), CommonITILActor::ASSIGN, 'Non recursive supplier of a parent entity should be ignored');
     }
 
     /**
@@ -640,7 +642,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $this->updateItem($itil::class, $itil->getID(), $this->buildUserAssignInput($format, $new_assignee_id));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN), 'User with Ticket OWN should be assigned');
+        $this->assertActorLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN, 'User with Ticket OWN should be assigned');
     }
 
     /**
@@ -660,7 +662,252 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil->update(['id' => $itil->getID()] + $this->buildUserAssignInput($format, $new_assignee_id));
 
         // --- assert ---
-        $this->assertFalse($this->isActorLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN), 'User without Ticket OWN should be ignored');
+        $this->assertActorNotLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN, 'User without Ticket OWN should be ignored');
+    }
+
+    /**
+     * Entities (_test_root_entity > _test_child_1, _test_child_2): ITIL object moved from _test_child_1 to _test_child_2, group in _test_child_2, not recursive.
+     *
+     * Super-admin session: the move is allowed, the group is evaluated on the new entity.
+     */
+    #[DataProvider('formatProvider')]
+    public function testMoveToAnotherEntityWithGroupOfThisEntity(string $format): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil = $this->createItil(['entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true)]);
+        $new_entity_id = getItemByTypeName(Entity::class, '_test_child_2', true);
+        assert(Session::haveAccessToEntity($new_entity_id), 'User must have access to the new entity: the move is legitimate');
+        $new_group = $this->createGroup('_test_child_2', 0, ['requester']);
+
+        // --- act ---
+        $this->updateItem($itil::class, $itil->getID(), ['entities_id' => $new_entity_id] + $this->buildActorInput($format, 'requester', Group::class, [$new_group->getID()]));
+
+        // --- assert ---
+        $itil->getFromDB($itil->getID());
+        $this->assertSame($new_entity_id, $itil->fields['entities_id'], 'ITIL object should be moved to the new entity');
+        $this->assertActorLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER, 'Group of the new entity should be set');
+    }
+
+    /**
+     * Entities (_test_root_entity > _test_child_1, _test_child_2): ITIL object in _test_child_1, group in _test_child_2, not recursive.
+     *
+     * Session limited to _test_child_1: `entities_id` = _test_child_2 is forged and not kept.
+     * The group must be evaluated on the entity actually kept, _test_child_1.
+     */
+    #[DataProvider('formatProvider')]
+    public function testCannotAddGroupOfInaccessibleEntityThroughForgedEntity(string $format): void
+    {
+        // --- arrange ---
+        $this->login();
+        $initial_entity_id = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $forged_entity_id = getItemByTypeName(Entity::class, '_test_child_2', true);
+        $itil = $this->createItil(['entities_id' => $initial_entity_id]);
+        $new_group = $this->createGroup('_test_child_2', 0, ['requester']);
+        $this->setEntity('_test_child_1', false);
+        assert(!Session::haveAccessToEntity($forged_entity_id), 'The session must not have access to the forged entity');
+
+        // --- act ---
+        // update() not checked: may fail when the whole input is filtered
+        $itil->update(['id' => $itil->getID(), 'entities_id' => $forged_entity_id] + $this->buildActorInput($format, 'requester', Group::class, [$new_group->getID()]));
+
+        // --- assert ---
+        $itil->getFromDB($itil->getID());
+        $this->assertSame($initial_entity_id, $itil->fields['entities_id'], 'ITIL object should stay in its entity');
+        $this->assertActorNotLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER, 'Group of the forged entity should be ignored');
+    }
+
+    /**
+     * Entities (_test_root_entity > _test_child_1, _test_child_2): ITIL object in _test_child_1, supplier in _test_child_2, not recursive.
+     *
+     * Session limited to _test_child_1: `entities_id` = _test_child_2 is forged and not kept.
+     * The supplier must be evaluated on the entity actually kept, _test_child_1.
+     */
+    #[DataProvider('formatProvider')]
+    public function testCannotAssignSupplierOfInaccessibleEntityThroughForgedEntity(string $format): void
+    {
+        // --- arrange ---
+        $this->login();
+        $initial_entity_id = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $forged_entity_id = getItemByTypeName(Entity::class, '_test_child_2', true);
+        $itil = $this->createItil(['entities_id' => $initial_entity_id]);
+        $new_supplier = $this->createSupplier('_test_child_2', 0);
+        $this->setEntity('_test_child_1', false);
+        assert(!Session::haveAccessToEntity($forged_entity_id), 'The session must not have access to the forged entity');
+
+        // --- act ---
+        // update() not checked: may fail when the whole input is filtered
+        $itil->update(['id' => $itil->getID(), 'entities_id' => $forged_entity_id] + $this->buildActorInput($format, 'assign', Supplier::class, [$new_supplier->getID()]));
+
+        // --- assert ---
+        $itil->getFromDB($itil->getID());
+        $this->assertSame($initial_entity_id, $itil->fields['entities_id'], 'ITIL object should stay in its entity');
+        $this->assertActorNotLinked($itil, Supplier::class, $new_supplier->getID(), CommonITILActor::ASSIGN, 'Supplier of the forged entity should be ignored');
+    }
+
+    /**
+     * Entities (_test_root_entity > _test_child_1, _test_child_2): ITIL object in _test_child_1, user with Ticket OWN in _test_child_2 only, not recursive.
+     *
+     * Session limited to _test_child_1: `entities_id` = _test_child_2 is forged and not kept.
+     * The user must be evaluated on the entity actually kept, _test_child_1.
+     */
+    #[DataProvider('formatProvider')]
+    public function testCannotAssignUserHavingOwnRightInInaccessibleEntityThroughForgedEntity(string $format): void
+    {
+        // --- arrange ---
+        $this->login();
+        $initial_entity_id = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $forged_entity_id = getItemByTypeName(Entity::class, '_test_child_2', true);
+        $itil = $this->createItil(['entities_id' => $initial_entity_id]);
+        $new_assignee = $this->createUserWithProfile(getItemByTypeName(Profile::class, 'Technician', true), '_test_child_2', 0);
+        assert(Profile::haveUserRight($new_assignee->getID(), 'ticket', Ticket::OWN, $forged_entity_id), 'User must have Ticket OWN in the forged entity');
+        assert(!Profile::haveUserRight($new_assignee->getID(), 'ticket', Ticket::OWN, $initial_entity_id), 'User must not have Ticket OWN in the entity of the ITIL object');
+        $this->setEntity('_test_child_1', false);
+        assert(!Session::haveAccessToEntity($forged_entity_id), 'The session must not have access to the forged entity');
+
+        // --- act ---
+        // update() not checked: may fail when the whole input is filtered
+        $itil->update(['id' => $itil->getID(), 'entities_id' => $forged_entity_id] + $this->buildUserAssignInput($format, $new_assignee->getID()));
+
+        // --- assert ---
+        $itil->getFromDB($itil->getID());
+        $this->assertSame($initial_entity_id, $itil->fields['entities_id'], 'ITIL object should stay in its entity');
+        $this->assertActorNotLinked($itil, User::class, $new_assignee->getID(), CommonITILActor::ASSIGN, 'User with Ticket OWN in the forged entity only should be ignored');
+    }
+
+    /**
+     * Same as testAddGroupHavingRoleFlag(), through the single actor key `_itil_<role>`.
+     *
+     * `_itil_<role>` (mass action "Add an actor", "Associate myself" buttons) is only handled on update: no creation test.
+     */
+    #[DataProvider('roleProvider')]
+    public function testAddGroupHavingRoleFlagThroughSingleActorKey(string $role): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil = $this->createItil();
+        $new_group = $this->createGroup('_test_root_entity', 0, [$role]);
+
+        // --- act ---
+        $this->updateItem($itil::class, $itil->getID(), $this->buildSingleActorInput($role, Group::class, $new_group->getID()));
+
+        // --- assert ---
+        $this->assertActorLinked($itil, Group::class, $new_group->getID(), $this->getActorType($role), "Group with the flag of the $role role should be set");
+    }
+
+    /**
+     * Same as testCannotAddGroupWithoutRoleFlag(), through the single actor key `_itil_<role>`.
+     *
+     * `_itil_<role>` (mass action "Add an actor", "Associate myself" buttons) is only handled on update: no creation test.
+     */
+    #[DataProvider('roleProvider')]
+    public function testCannotAddGroupWithoutRoleFlagThroughSingleActorKey(string $role): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil = $this->createItil();
+        $all_roles_except_tested_one = array_diff(array_keys(self::ROLE_FLAGS), [$role]);
+        $new_group = $this->createGroup('_test_root_entity', 0, $all_roles_except_tested_one);
+
+        // --- act ---
+        // update() not checked: may fail when the whole input is filtered
+        $itil->update(['id' => $itil->getID()] + $this->buildSingleActorInput($role, Group::class, $new_group->getID()));
+
+        // --- assert ---
+        $this->assertActorNotLinked($itil, Group::class, $new_group->getID(), $this->getActorType($role), "Group without the flag of the $role role should be ignored");
+    }
+
+    /**
+     * Entities (_test_root_entity > _test_child_1, _test_child_2): ITIL object in _test_child_1, group in its sibling _test_child_2, not recursive.
+     *
+     * Same as testCannotAddGroupOfSiblingEntity(), through the single actor key `_itil_requester`.
+     * `_itil_<role>` (mass action "Add an actor", "Associate myself" buttons) is only handled on update: no creation test.
+     */
+    public function testCannotAddGroupOfSiblingEntityThroughSingleActorKey(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil_entity = getItemByTypeName(Entity::class, '_test_child_1');
+        $group_entity = getItemByTypeName(Entity::class, '_test_child_2');
+        assert($itil_entity->fields['entities_id'] === $group_entity->fields['entities_id'], 'Both entities must have the same parent entity');
+        assert(!in_array($group_entity->getID(), getAncestorsOf(Entity::getTable(), $itil_entity->getID())), 'Group entity must not be a parent of the ITIL object entity');
+        $itil = $this->createItil(['entities_id' => $itil_entity->getID()]);
+        $new_group = $this->createGroup('_test_child_2', 0, array_keys(self::ROLE_FLAGS));
+
+        // --- act ---
+        // update() not checked: may fail when the whole input is filtered
+        $itil->update(['id' => $itil->getID()] + $this->buildSingleActorInput('requester', Group::class, $new_group->getID()));
+
+        // --- assert ---
+        $this->assertActorNotLinked($itil, Group::class, $new_group->getID(), CommonITILActor::REQUESTER, 'Group of a sibling entity should be ignored');
+    }
+
+    /**
+     * Entities (_test_root_entity > _test_child_1, _test_child_2): ITIL object in _test_child_1, group in its sibling _test_child_2, not recursive.
+     *
+     * Same as testCannotAddGroupOfSiblingEntityThroughSingleActorKey(), through the single actor key `_itil_assign`.
+     * `_itil_<role>` (mass action "Add an actor", "Associate myself" buttons) is only handled on update: no creation test.
+     * With the right to assign, the entity check of the actor link is skipped: only the eligibility check must reject the group.
+     */
+    public function testCannotAssignGroupOfSiblingEntityThroughSingleActorKey(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil_entity = getItemByTypeName(Entity::class, '_test_child_1');
+        $group_entity = getItemByTypeName(Entity::class, '_test_child_2');
+        assert($itil_entity->fields['entities_id'] === $group_entity->fields['entities_id'], 'Both entities must have the same parent entity');
+        assert(!in_array($group_entity->getID(), getAncestorsOf(Entity::getTable(), $itil_entity->getID())), 'Group entity must not be a parent of the ITIL object entity');
+        $itil = $this->createItil(['entities_id' => $itil_entity->getID()]);
+        assert($itil->canAssign(), 'User must have the right to assign: the entity check of the actor link is then skipped');
+        $new_group = $this->createGroup('_test_child_2', 0, array_keys(self::ROLE_FLAGS));
+
+        // --- act ---
+        // update() not checked: may fail when the whole input is filtered
+        $itil->update(['id' => $itil->getID()] + $this->buildSingleActorInput('assign', Group::class, $new_group->getID()));
+
+        // --- assert ---
+        $this->assertActorNotLinked($itil, Group::class, $new_group->getID(), CommonITILActor::ASSIGN, 'Group of a sibling entity should not be assigned');
+    }
+
+    /**
+     * Same as testAssignUserHavingOwnRight(), through the single actor key `_itil_assign`.
+     *
+     * `_itil_<role>` (mass action "Add an actor", "Associate myself" buttons) is only handled on update: no creation test.
+     */
+    public function testAssignUserHavingOwnRightThroughSingleActorKey(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil = $this->createItil();
+        $new_assignee_id = getItemByTypeName(User::class, 'tech', true);
+        assert(Profile::haveUserRight($new_assignee_id, 'ticket', Ticket::OWN, $itil->fields['entities_id']), 'tech must have Ticket OWN in the entity of the ITIL object');
+
+        // --- act ---
+        $this->updateItem($itil::class, $itil->getID(), $this->buildSingleActorInput('assign', User::class, $new_assignee_id));
+
+        // --- assert ---
+        $this->assertActorLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN, 'User with Ticket OWN should be assigned');
+    }
+
+    /**
+     * Same as testCannotAssignUserWithoutOwnRight(), through the single actor key `_itil_assign`.
+     *
+     * `_itil_<role>` (mass action "Add an actor", "Associate myself" buttons) is only handled on update: no creation test.
+     */
+    public function testCannotAssignUserWithoutOwnRightThroughSingleActorKey(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $itil = $this->createItil();
+        $new_assignee_id = getItemByTypeName(User::class, 'post-only', true);
+        assert(!Profile::haveUserRight($new_assignee_id, 'ticket', Ticket::OWN, $itil->fields['entities_id']), 'post-only must not have Ticket OWN in the entity of the ITIL object');
+
+        // --- act ---
+        // update() not checked: may fail when the whole input is filtered
+        $itil->update(['id' => $itil->getID()] + $this->buildSingleActorInput('assign', User::class, $new_assignee_id));
+
+        // --- assert ---
+        $this->assertActorNotLinked($itil, User::class, $new_assignee_id, CommonITILActor::ASSIGN, 'User without Ticket OWN should be ignored');
     }
 
     /**
@@ -679,7 +926,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
 
         // --- assert ---
         foreach ($non_eligible_requesters as $label => [$actor_itemtype, $actor_id]) {
-            $this->assertTrue($this->isActorLinked($itil, $actor_itemtype, $actor_id, CommonITILActor::REQUESTER), "$label should be kept in cron");
+            $this->assertActorLinked($itil, $actor_itemtype, $actor_id, CommonITILActor::REQUESTER, "$label should be kept in cron");
         }
     }
 
@@ -698,7 +945,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
 
         // --- assert ---
         foreach ($non_eligible_requesters as $label => [$actor_itemtype, $actor_id]) {
-            $this->assertTrue($this->isActorLinked($itil, $actor_itemtype, $actor_id, CommonITILActor::REQUESTER), "$label should be kept as system");
+            $this->assertActorLinked($itil, $actor_itemtype, $actor_id, CommonITILActor::REQUESTER, "$label should be kept as system");
         }
     }
 
@@ -718,7 +965,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         $itil = $this->createItil($this->buildUserAssignInput('legacy', $post_only_id));
 
         // --- assert ---
-        $this->assertTrue($this->isActorLinked($itil, User::class, $post_only_id, CommonITILActor::ASSIGN), 'User without Ticket OWN should be kept in cron');
+        $this->assertActorLinked($itil, User::class, $post_only_id, CommonITILActor::ASSIGN, 'User without Ticket OWN should be kept in cron');
     }
 
     /**
@@ -739,6 +986,16 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
     public static function supplierForbiddenRoleFormatProvider(): iterable
     {
         return self::buildRoleFormatCases(['requester', 'observer']);
+    }
+
+    /**
+     * Roles of the single actor key `_itil_<role>`, see buildSingleActorInput().
+     */
+    public static function roleProvider(): iterable
+    {
+        foreach (array_keys(self::ROLE_FLAGS) as $role) {
+            yield $role => ['role' => $role];
+        }
     }
 
     /**
@@ -763,7 +1020,7 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
     }
 
     /**
-     * @param string[] $enabled_roles roles whose flag is set, the flags of the other roles are unset
+     * @param string[] $enabled_roles roles whose flag is set (is_requester, etc), the flags of the other roles are unset
      */
     private function createGroup(string $entity_name, int $is_recursive, array $enabled_roles): Group
     {
@@ -861,6 +1118,21 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
     }
 
     /**
+     * Single actor key `_itil_<role>`, only handled on update.
+     * Handled actors: user and group for every role, supplier for `assign` only.
+     *
+     * @param string $role `requester`, `observer` or `assign`
+     * @param class-string<User|Group|Supplier> $actor_itemtype
+     */
+    private function buildSingleActorInput(string $role, string $actor_itemtype, int $actor_id): array
+    {
+        return ['_itil_' . $role => [
+            '_type' => strtolower($actor_itemtype),
+            getForeignKeyFieldForItemType($actor_itemtype) => $actor_id,
+        ]];
+    }
+
+    /**
      * @param string $role `requester`, `observer` or `assign`
      */
     private function getActorType(string $role): int
@@ -868,14 +1140,4 @@ abstract class AbstractCommonITILObjectActorEligibilityTest extends DbTestCase
         return constant(CommonITILActor::class . '::' . strtoupper($role));
     }
 
-    private function isActorLinked(CommonITILObject $itil, string $actor_itemtype, int $actor_id, int $actor_type): bool
-    {
-        $link = $itil->getActorObjectForItem($actor_itemtype);
-
-        return countElementsInTable($link::getTable(), [
-            $link::getItilObjectForeignKey() => $itil->getID(),
-            $link->getActorForeignKey() => $actor_id,
-            'type' => $actor_type,
-        ]) > 0;
-    }
 }

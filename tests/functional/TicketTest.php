@@ -707,6 +707,7 @@ class TicketTest extends DbTestCase
         $actor_types = ['requester', 'assign', 'observer'];
         foreach ($actor_types as $actor_type) {
             $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
+            $user_id = $actor_type === 'assign' ? getItemByTypeName(User::class, 'tech', true) : $postonly_user_id;
 
             // single email actor updated
             yield [
@@ -847,7 +848,7 @@ class TicketTest extends DbTestCase
                             ],
                             [
                                 'itemtype'          => User::class,
-                                'items_id'          => $postonly_user_id,
+                                'items_id'          => $user_id,
                                 'use_notification'  => 1,
                                 'alternative_email' => '',
                             ],
@@ -877,7 +878,7 @@ class TicketTest extends DbTestCase
                     [
                         'type'              => $actor_type_value,
                         'itemtype'          => User::class,
-                        'items_id'          => $postonly_user_id,
+                        'items_id'          => $user_id,
                         'use_notification'  => 1,
                         'alternative_email' => '',
                     ],
@@ -901,7 +902,7 @@ class TicketTest extends DbTestCase
                         $actor_type => [
                             [
                                 'itemtype'          => User::class,
-                                'items_id'          => $postonly_user_id,
+                                'items_id'          => $user_id,
                                 'use_notification'  => 1,
                                 'alternative_email' => '',
                             ],
@@ -931,7 +932,7 @@ class TicketTest extends DbTestCase
                     [
                         'type'              => $actor_type_value,
                         'itemtype'          => User::class,
-                        'items_id'          => $postonly_user_id,
+                        'items_id'          => $user_id,
                         'use_notification'  => 1,
                         'alternative_email' => '',
                     ],
@@ -3551,7 +3552,8 @@ class TicketTest extends DbTestCase
     {
         $this->login();
         $group = new Group();
-        $group_id = $group->add(['name' => 'Test group']);
+        // actors must be visible in the entity of the ticket
+        $group_id = $group->add(['name' => 'Test group', 'entities_id' => $this->getTestRootEntity(true)]);
         $this->assertGreaterThan(0, (int) $group_id);
 
         $group_user = new Group_User();
@@ -3699,6 +3701,7 @@ class TicketTest extends DbTestCase
                 $input + [
                     'name' => '',
                     'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
+                    'entities_id' => $this->getTestRootEntity(true),
                 ]
             );
             $this->assertGreaterThan(0, (int) $ticketId);
@@ -3735,6 +3738,7 @@ class TicketTest extends DbTestCase
                 [
                     'name' => '',
                     'content' => 'A ticket to check takeintoaccount_delay_stat computation state',
+                    'entities_id' => $this->getTestRootEntity(true),
                 ]
             );
             $this->assertGreaterThan(0, (int) $ticketId);
@@ -3779,7 +3783,8 @@ class TicketTest extends DbTestCase
     {
 
         $group = new Group();
-        $group_id = $group->add(['name' => 'Test group']);
+        // actors must be visible in the entity of the ticket
+        $group_id = $group->add(['name' => 'Test group', 'entities_id' => $this->getTestRootEntity(true)]);
         $this->assertGreaterThan(0, (int) $group_id);
 
         return [
@@ -3869,6 +3874,7 @@ class TicketTest extends DbTestCase
             $ticketId = (int) $ticket->add([
                 'name' => '',
                 'content' => 'A ticket to check status computation',
+                'entities_id' => $this->getTestRootEntity(true),
             ] + $input);
             $this->assertGreaterThan(0, $ticketId);
 
@@ -7492,7 +7498,8 @@ HTML,
         $ticket = $this->createItem(Ticket::class, [
             'name'                => __METHOD__,
             'content'             => __METHOD__,
-            'entities_id'         => 0,
+            // Ticket in the entity of its test actors (group and supplier), which must be visible there
+            'entities_id'         => $this->getTestRootEntity(true),
             '_skip_auto_assign'   => true,
             '_users_id_requester' => getItemByTypeName('User', 'normal', true),
         ]);
@@ -7535,7 +7542,8 @@ HTML,
         $ticket = $this->createItem(Ticket::class, [
             'name'                => __METHOD__,
             'content'             => __METHOD__,
-            'entities_id'         => 0,
+            // Ticket in the entity of its test actors (group and supplier), which must be visible there
+            'entities_id'         => $this->getTestRootEntity(true),
             '_skip_auto_assign'   => true,
             '_users_id_requester' => getItemByTypeName('User', 'normal', true),
             '_users_id_assign'    => $already_assigned ? getItemByTypeName('User', 'glpi', true) : 0,
@@ -11901,6 +11909,9 @@ HTML,
             'profiles_id' => $profile->getID(),
             'name'        => TicketValidation::$rightname,
         ]);
+
+        // the assignee needs the Ticket OWN right, reset by each provider case below
+        $this->addRightToProfile($profile->fields['name'], Ticket::$rightname, Ticket::OWN);
 
         $group = $this->createItem(Group::class, [
             'name' => 'testShowCentralListRights group',

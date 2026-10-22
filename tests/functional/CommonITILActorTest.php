@@ -56,6 +56,7 @@ class CommonITILActorTest extends DbTestCase
         $classes = [Ticket::class, Change::class, Problem::class];
 
         $user     = getItemByTypeName(User::class, 'post-only');
+        $assignee = getItemByTypeName(User::class, 'tech');
         $group    = getItemByTypeName(Group::class, '_test_group_1');
         $supplier = getItemByTypeName(Supplier::class, '_suplier01_name');
 
@@ -88,7 +89,7 @@ class CommonITILActorTest extends DbTestCase
 
             yield [
                 'obj_class' => $class,
-                'actor'     => $user,
+                'actor'     => $assignee,
                 'input_key' => 'assign',
                 'expected'  => '(Technician)',
             ];
