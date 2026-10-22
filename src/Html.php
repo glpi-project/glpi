@@ -38,7 +38,6 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Config\ConfigContainer;
 use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Console\Application;
 use Glpi\Dashboard\Dashboard;
