@@ -1818,6 +1818,27 @@ HTML;
                 ];
             }
 
+            foreach (
+                [
+                    'day'   => __("Tasks duration compared to solve delay by day"),
+                    'week'  => __("Tasks duration compared to solve delay by week"),
+                    'month' => __("Tasks duration compared to solve delay by month"),
+                    'year'  => __("Tasks duration compared to solve delay by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_actiontime_vs_solvedelay_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsActionTimeVsSolveDelay",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),

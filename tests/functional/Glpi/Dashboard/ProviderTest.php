@@ -1058,6 +1058,169 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testTicketsActionTimeVsSolveDelay(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id   = $this->getTestRootEntity(true);
+        $tickets_ids = [];
+        $group_a     = $this->createItem(\Group::class, ['name' => 'test actiontime group A', 'entities_id' => $entity_id]);
+        $group_b     = $this->createItem(\Group::class, ['name' => 'test actiontime group B', 'entities_id' => $entity_id]);
+
+        // Dates far in the past so that no other ticket of the test database is counted
+        foreach (
+            [
+                ['75% in week 1', '2010-01-05 10:00:00', 3600, [1800, 900], [$group_a, $group_b]],
+                ['50% in week 1', '2010-01-06 10:00:00', 7200, [3600], [$group_a]],
+                ['no task in week 2', '2010-01-12 10:00:00', 3600, [], [$group_a]],
+                ['not solved in week 2', '2010-01-13 10:00:00', 0, [1800], [$group_a]],
+                ['25% in week 3', '2010-01-19 10:00:00', 1000, [250, 0], [$group_b]],
+            ] as [$name, $date, $solve_delay, $actiontimes, $groups]
+        ) {
+            $ticket = $this->createItem(\Ticket::class, [
+                'name'        => "test dashboard actiontime $name",
+                'content'     => 'blablabla',
+                'entities_id' => $entity_id,
+            ]);
+            foreach ($actiontimes as $actiontime) {
+                $this->createItem(\TicketTask::class, [
+                    'tickets_id' => $ticket->getID(),
+                    'content'    => 'task',
+                    'actiontime' => $actiontime,
+                ]);
+            }
+            foreach ($groups as $group) {
+                $this->createItem(\Group_Ticket::class, [
+                    'tickets_id' => $ticket->getID(),
+                    'groups_id'  => $group->getID(),
+                    'type'       => \CommonITILActor::REQUESTER,
+                ]);
+            }
+            $DB->update(\Ticket::getTable(), [
+                'date'             => $date,
+                'status'           => $solve_delay > 0 ? \Ticket::SOLVED : \Ticket::INCOMING,
+                'solve_delay_stat' => $solve_delay,
+            ], ['id' => $ticket->getID()]);
+            $tickets_ids[$name] = $ticket->getID();
+        }
+
+        $week_filters = [DatesFilter::getId() => ['2010-01-06', '2010-01-20']];
+
+        $weeks = Provider::ticketsActionTimeVsSolveDelay('week', ['apply_filters' => $week_filters]);
+        $this->assertSame(['2010-W01', '2010-W02', '2010-W03'], $weeks['data']['labels']);
+        $this->assertCount(1, $weeks['data']['series']);
+        // Tickets without any task or not solved are ignored
+        $this->assertSame([62.5, 0.0, 25.0], $weeks['data']['series'][0]['data']);
+
+        $months = Provider::ticketsActionTimeVsSolveDelay('month', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-01-01', '2010-01-31']],
+        ]);
+        $this->assertSame(['2010-01'], $months['data']['labels']);
+        $this->assertSame([50.0], $months['data']['series'][0]['data']);
+
+        // A ticket matching several filter values is counted once, and its tasks are not counted several times
+        $filtered = Provider::ticketsActionTimeVsSolveDelay('week', [
+            'apply_filters' => $week_filters + [GroupRequesterFilter::getId() => [$group_a->getID(), $group_b->getID()]],
+        ]);
+        $this->assertSame([62.5, 0.0, 25.0], $filtered['data']['series'][0]['data']);
+
+        $filtered = Provider::ticketsActionTimeVsSolveDelay('week', [
+            'apply_filters' => $week_filters + [GroupRequesterFilter::getId() => [$group_b->getID()]],
+        ]);
+        $this->assertSame([75.0, 0.0, 25.0], $filtered['data']['series'][0]['data']);
+
+        // A long range with a short period is limited to the last periods
+        $long_range = Provider::ticketsActionTimeVsSolveDelay('day', [
+            'apply_filters' => [DatesFilter::getId() => ['2008-01-01', '2010-12-31']],
+        ]);
+        $this->assertCount(366, $long_range['data']['labels']);
+        $this->assertSame('2010-12-31', end($long_range['data']['labels']));
+
+        // Only the tasks the user can see are summed: 4 tasks of 15 minutes on a ticket solved in 1 hour
+        $self_id     = \Session::getLoginUserID();
+        $other_id    = getItemByTypeName(User::class, 'tech', true);
+        $tech_group  = $this->createItem(\Group::class, ['name' => 'test actiontime tech group', 'entities_id' => $entity_id]);
+        $task_ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'test dashboard actiontime private tasks',
+            'content'     => 'blablabla',
+            'entities_id' => $entity_id,
+        ]);
+        foreach (
+            [
+                'public task of another user'      => [0, $other_id, 0],
+                'private task of another user'     => [1, $other_id, 0],
+                'private task assigned to me'      => [1, $self_id, 0],
+                'private task assigned to my group' => [1, $other_id, $tech_group->getID()],
+            ] as $content => [$is_private, $users_id_tech, $groups_id_tech]
+        ) {
+            $task = $this->createItem(\TicketTask::class, [
+                'tickets_id' => $task_ticket->getID(),
+                'content'    => $content,
+                'actiontime' => 900,
+                'is_private' => $is_private,
+            ]);
+            $DB->update(\TicketTask::getTable(), [
+                'users_id'       => $other_id,
+                'users_id_tech'  => $users_id_tech,
+                'groups_id_tech' => $groups_id_tech,
+            ], ['id' => $task->getID()]);
+        }
+        $DB->update(\Ticket::getTable(), [
+            'date'             => '2011-03-01 10:00:00',
+            'status'           => \Ticket::SOLVED,
+            'solve_delay_stat' => 3600,
+        ], ['id' => $task_ticket->getID()]);
+        $month_filters = ['apply_filters' => [DatesFilter::getId() => ['2011-03-01', '2011-03-31']]];
+        $get_percent   = static fn(): array => Provider::ticketsActionTimeVsSolveDelay('month', $month_filters)['data']['series'][0]['data'];
+
+        $this->assertSame([100.0], $get_percent(), 'all tasks are visible with the right to see private tasks');
+        $_SESSION['glpiactiveprofile'][\TicketTask::$rightname] = \TicketTask::SEEPUBLIC;
+        $_SESSION['glpigroups']                                 = [];
+        $this->assertSame([50.0], $get_percent(), 'private task of another user must not be summed');
+        $_SESSION['glpigroups'] = [$tech_group->getID()];
+        $this->assertSame([75.0], $get_percent(), 'private task assigned to a group of the user is visible');
+        $_SESSION['glpiactiveprofile'][\TicketTask::$rightname] = 0;
+        $_SESSION['glpigroups']                                 = [];
+        $this->assertSame([25.0], $get_percent(), 'without task right, only the tasks assigned to the user are visible');
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsActionTimeVsSolveDelay('week', ['apply_filters' => $week_filters])['data']['nodata'] ?? false);
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsActionTimeVsSolveDelay('week', ['apply_filters' => $week_filters])['data']['nodata'] ?? false);
+
+        // The new tickets right alone only allows to see new tickets, which are not solved
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $new_only = Provider::ticketsActionTimeVsSolveDelay('week', ['apply_filters' => $week_filters]);
+        $this->assertSame([0.0, 0.0, 0.0], $new_only['data']['series'][0]['data'], 'solved tickets must not be visible');
+
+        // The "my tickets" right only allows to see the tickets the user is actor of
+        $hidden_id = $tickets_ids['75% in week 1'];
+        $DB->update(\Ticket::getTable(), ['users_id_recipient' => 0], ['id' => $hidden_id]);
+        $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $hidden_id]);
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READMY;
+        $mine = Provider::ticketsActionTimeVsSolveDelay('week', ['apply_filters' => $week_filters]);
+        $this->assertSame([50.0, 0.0, 25.0], $mine['data']['series'][0]['data'], 'ticket of another user must not be counted');
+    }
+
+    public function testFakeTicketsActionTimeVsSolveDelay(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsActionTimeVsSolveDelay');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        foreach (['day', 'week', 'month', 'year'] as $period) {
+            $result = FakeProvider::ticketsActionTimeVsSolveDelay($period, ['label' => 'test']);
+            $this->assertSame('test', $result['label']);
+            $this->assertCount(1, $result['data']['series']);
+            $this->assertCount(count($result['data']['labels']), $result['data']['series'][0]['data']);
+        }
+    }
+
 
     public function testTopTicketsCategories()
     {
