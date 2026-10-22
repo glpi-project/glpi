@@ -37,6 +37,7 @@
 
     {% if can_preview %}
         <div class="d-flex">
+            {# Set on the field container as some itemtypes have their own dropdown implementation #}
             {{ fields.dropdownField(
                 template.fields['itemtype'],
                 template.fields['itemtype']|itemtype_foreign_key,
@@ -44,13 +45,17 @@
                 template.fields['itemtype']|itemtype_name,
                 {
                     field_class: 'col-6',
-                    on_change: 'reloadTab("' ~ template.fields['itemtype']|itemtype_foreign_key ~ '="+this.value)',
+                    add_field_attribs: {
+                        'data-glpi-reload-tab-on-change': template.fields['itemtype']|itemtype_foreign_key ~ '=%value%',
+                    },
                 }
             ) }}
 
             {{ fields.htmlField('', call('NotificationEvent::dropdownEvents', [template.fields['itemtype'], {
                 value: get_saved_option('NotificationTemplateTranslation', template.fields['itemtype']|itemtype_foreign_key ~ '_event', ''),
-                on_change: 'reloadTab("' ~ template.fields['itemtype']|itemtype_foreign_key ~ '_event="+this.value)',
+                add_data_attributes: {
+                    'glpi-reload-tab-on-change': template.fields['itemtype']|itemtype_foreign_key ~ '_event=%value%',
+                },
                 display: false
             }]), 'NotificationEvent'|itemtype_name(1), {
                 field_class: 'col-6'

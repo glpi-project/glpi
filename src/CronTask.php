@@ -1274,7 +1274,7 @@ class CronTask extends CommonDBTM
                 'itemtype' => CronTaskLog::class,
                 'id'       => $data['id'],
                 'date'     => sprintf(
-                    '<a href="javascript:reloadTab(\'crontasklogs_id=%s\');">%s</a>',
+                    '<a href="#" data-glpi-reload-tab="crontasklogs_id=%s">%s</a>',
                     (int) $data['crontasklogs_id'],
                     htmlescape(Html::convDateTime($data['date']))
                 ),
@@ -1319,7 +1319,7 @@ class CronTask extends CommonDBTM
 
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <div class="my-2 text-center">
-                <button class="btn btn-outline-secondary" onclick="reloadTab('crontasklogs_id=0')">
+                <button type="button" class="btn btn-outline-secondary" data-glpi-reload-tab="crontasklogs_id=0">
                     {{ msg }}
                 </button>
             </div>

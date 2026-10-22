@@ -45,8 +45,10 @@
 
 {% set href_separator = '?' in href ? '&' : '?' %}
 {% set href = href ~ href_separator ~ "start=%start%" ~ additional_params %}
+{% set tab_params = null %}
 {% if is_tab is defined and is_tab == true %}
-   {% set href = "javascript:reloadTab('start=%start%" ~ additional_params ~ "');" %}
+   {% set tab_params = "start=%start%" ~ additional_params %}
+   {% set href = '#' %}
 {% endif %}
 {% if limit is not defined %}
     {% set limit = user_pref('list_limit') %}
@@ -126,12 +128,12 @@
             {% set is_last_page = forward >= count %}
 
             <li class="page-item {% if is_first_page %}disabled{% endif %}">
-                <a class="page-link d-flex page-link-start" href="{{ href|replace({'%start%': 0}) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Start') }}" data-start="0" {% if is_first_page %}aria-disabled="true"{% endif %}>
+                <a class="page-link d-flex page-link-start" href="{{ href|replace({'%start%': 0}) }}"{% if tab_params %} data-glpi-reload-tab="{{ tab_params|replace({'%start%': 0}) }}"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Start') }}" data-start="0" {% if is_first_page %}aria-disabled="true"{% endif %}>
                     <i class="ti ti-chevrons-left" aria-hidden="true"></i>
                 </a>
             </li>
             <li class="page-item {% if is_first_page %}disabled{% endif %}">
-                <a class="page-link d-flex page-link-prev" href="{{ href|replace({'%start%': back}) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Previous') }}" data-start="{{ back }}" {% if is_first_page %}aria-disabled="true"{% endif %}>
+                <a class="page-link d-flex page-link-prev" href="{{ href|replace({'%start%': back}) }}"{% if tab_params %} data-glpi-reload-tab="{{ tab_params|replace({'%start%': back}) }}"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Previous') }}" data-start="{{ back }}" {% if is_first_page %}aria-disabled="true"{% endif %}>
                     <i class="ti ti-chevron-left" aria-hidden="true"></i>
                 </a>
             </li>
@@ -148,7 +150,7 @@
                     {% if current_page - adjacents <= page and current_page + adjacents >= page %}
                         {% set page_start = (page - 1) * limit %}
                         <li class="d-none d-sm-block page-item {% if page == current_page %}active selected{% endif %}">
-                            <a class="page-link page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
+                            <a class="page-link page-link-num" href="{{ href|replace({'%start%': page_start}) }}"{% if tab_params %} data-glpi-reload-tab="{{ tab_params|replace({'%start%': page_start}) }}"{% endif %} data-start="{{ page_start }}">{{ page }}</a>
                         </li>
                         {% if current_page + adjacents == page %}
                         {% set skip_adjacents = false %}
@@ -163,12 +165,12 @@
             {% endif %}
 
             <li class="page-item {% if is_last_page %}disabled{% endif %}">
-                <a class="page-link d-flex page-link-next" href="{{ href|replace({'%start%': forward}) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Next') }}" data-start="{{ forward }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
+                <a class="page-link d-flex page-link-next" href="{{ href|replace({'%start%': forward}) }}"{% if tab_params %} data-glpi-reload-tab="{{ tab_params|replace({'%start%': forward}) }}"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Next') }}" data-start="{{ forward }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
                     <i class="ti ti-chevron-right" aria-hidden="true"></i>
                 </a>
             </li>
             <li class="page-item {% if is_last_page %}disabled{% endif %}">
-                <a class="page-link d-flex page-link-last" href="{{ href|replace({'%start%': end}) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('End') }}" data-start="{{ end }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
+                <a class="page-link d-flex page-link-last" href="{{ href|replace({'%start%': end}) }}"{% if tab_params %} data-glpi-reload-tab="{{ tab_params|replace({'%start%': end}) }}"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('End') }}" data-start="{{ end }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
                     <i class="ti ti-chevrons-right" aria-hidden="true"></i>
                 </a>
             </li>

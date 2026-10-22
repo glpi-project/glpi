@@ -2827,10 +2827,11 @@ HTML;
      *
      * @param string $onchange  Optional, for ajax (default '')
      * @param bool $display
+     * @param array<string, mixed> $options Additional options passed to Dropdown::showFromArray()
      *
      * @return ($display is true ? int : string)
      */
-    public static function showListLimit($onchange = '', $display = true)
+    public static function showListLimit($onchange = '', $display = true, array $options = [])
     {
         global $CFG_GLPI;
 
@@ -2870,10 +2871,11 @@ HTML;
         return self::showFromArray(
             'glpilist_limit',
             $values,
-            ['on_change' => $onchange,
+            array_merge([
+                'on_change' => $onchange,
                 'value'     => $list_limit,
                 'display'   => $display,
-            ]
+            ], $options)
         );
     }
 

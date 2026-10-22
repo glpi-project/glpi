@@ -514,7 +514,7 @@ class CronTaskTest extends DbTestCase
         ob_start();
         $crontask->showHistory();
         $html = ob_get_clean();
-        $this->assertStringContainsString("crontasklogs_id={$start_log->getID()}'", $html);
+        $this->assertStringContainsString("data-glpi-reload-tab=\"crontasklogs_id={$start_log->getID()}\"", $html);
 
         // The detail of the run must display the logs added during the run
         $_GET['crontasklogs_id'] = $start_log->getID();

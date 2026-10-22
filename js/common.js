@@ -42,6 +42,7 @@
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 /* global _ */
 /* global uploaded_images, removeFailedUploadImage */
+/* global reloadTab */
 
 var timeoutglobalvar;
 
@@ -1545,6 +1546,16 @@ $(() => {
             navigator.clipboard.writeText(text);
             glpi_toast_info(__("Copied to clipboard"));
         }
+    });
+
+    // Reload the active tab with the given query parameters
+    $(document).on('click', '[data-glpi-reload-tab]', function(e) {
+        e.preventDefault();
+        reloadTab($(this).attr('data-glpi-reload-tab'));
+    });
+    // Same on change, with `%value%` replaced by the field value (attribute may be on an ancestor)
+    $(document).on('change', '[data-glpi-reload-tab-on-change]', function(e) {
+        reloadTab($(this).attr('data-glpi-reload-tab-on-change').replace('%value%', encodeURIComponent($(e.target).val() ?? '')));
     });
 });
 

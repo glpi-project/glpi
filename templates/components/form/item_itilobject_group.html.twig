@@ -37,6 +37,8 @@
     tree,
     __('Show child groups objects'),
     {
-        'on_change': 'reloadTab("start=0&tree="+this.value)'
+        'add_data_attributes': {
+            'glpi-reload-tab-on-change': 'start=0&tree=%value%',
+        }
     }
 ) }}

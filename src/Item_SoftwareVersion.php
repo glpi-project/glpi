@@ -746,7 +746,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             foreach ($columns as $key => $val) {
                 $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">";
                 $header_end .= $key !== 'lname'
-                    ? "<a href='javascript:reloadTab(\"sort=$key&amp;order=" . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>" . htmlescape($val) . "</a>"
+                    ? "<a href='#' data-glpi-reload-tab='" . htmlescape("sort=$key&order=" . (($order == "ASC") ? "DESC" : "ASC") . "&start=0") . "'>" . htmlescape($val) . "</a>"
                     : htmlescape($val);
                 $header_end .= "</th>";
             }
@@ -1081,7 +1081,9 @@ class Item_SoftwareVersion extends CommonDBRelation
         SoftwareCategory::dropdown(['value'      => $crit,
             'toadd'      => ['-1' =>  __('All categories')],
             'emptylabel' => __('Uncategorized software'),
-            'on_change'  => 'reloadTab("start=0&criterion="+this.value)',
+            'specific_tags' => [
+                'data-glpi-reload-tab-on-change' => 'start=0&criterion=%value%',
+            ],
         ]);
         echo "</td></tr></table></div>";
         $number = count($iterator);
