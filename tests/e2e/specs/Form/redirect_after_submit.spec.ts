@@ -67,10 +67,6 @@ async function createFormWithQuestion(api: Api): Promise<number>
  *
  * When the value matches the global default, GLPI stores `NULL` for the user
  * preference, so restoring the initial value also restores the initial state.
- *
- * The preference form is not an AJAX endpoint, thus GLPI destroys the CSRF
- * token once validated: the shared token of the `CsrfFetcher` service can't be
- * used, a new one is read from the preference page instead.
  */
 async function setBackcreatedPreference(
     request: APIRequestContext,

@@ -67,16 +67,10 @@ async function openHelpdeskHomeWithLanguage(
     // can't be changed through the menu: its labels are translated. The request
     // context of the page shares its cookies with the browser, thus it acts on
     // the same session.
-    const csrf_token = await anonymous_page.evaluate(
-        () => document
-            .querySelector('meta[property="glpi:csrf_token"]')
-            ?.getAttribute('content') ?? ''
-    );
     const response = await anonymous_page.request.post('/Session/ChangeProfile', {
         form: { id: Profiles.SelfService },
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
-            'X-Glpi-Csrf-Token': csrf_token,
         },
     });
     expect(response.ok()).toBe(true);
