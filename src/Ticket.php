@@ -1717,14 +1717,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         if (
             !isset($input[TicketTemplate::getForeignKeyField()])
             && (int) $input['itilcategories_id'] > 0
-            && in_array((int) $input['type'], [self::INCIDENT_TYPE, self::DEMAND_TYPE], true)
         ) {
-            $category = ITILCategory::getById((int) $input['itilcategories_id']);
-            if ($category !== false) {
-                $template_id = (int) $category->fields[$this->getTemplateFieldName((int) $input['type'])];
-                if ($template_id > 0 && TicketTemplate::getById($template_id) !== false) {
-                    $input[TicketTemplate::getForeignKeyField()] = $template_id;
-                }
+            $tt = $this->getITILTemplateFromInput($input);
+            if ($tt !== null && $tt->getID() > 0) {
+                $input[TicketTemplate::getForeignKeyField()] = $tt->getID();
             }
         }
 
