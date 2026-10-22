@@ -2538,6 +2538,159 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testTicketsBySlaEvolution(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $slm       = $this->createItem(\SLM::class, ['name' => 'test dashboard sla evolution']);
+        $sla       = $this->createItem(\SLA::class, [
+            'name'            => 'test dashboard sla evolution',
+            'type'            => \SLM::TTR,
+            'number_time'     => 4,
+            'definition_time' => 'hour',
+            'slms_id'         => $slm->getID(),
+        ]);
+        $sla_to_own = $this->createItem(\SLA::class, [
+            'name'            => 'test dashboard sla evolution to own',
+            'type'            => \SLM::TTO,
+            'number_time'     => 1,
+            'definition_time' => 'hour',
+            'slms_id'         => $slm->getID(),
+        ]);
+        // Tickets having the time to own SLA
+        $with_sla_to_own = ['week 1 on time', 'week 2 not solved'];
+
+        $tickets_ids = [];
+        // Dates far in the past so that no other ticket of the test database is counted
+        foreach (
+            [
+                'week 1 on time'          => ['2010-01-05 10:00:00', true, \Ticket::SOLVED, false],
+                'week 1 late'             => ['2010-01-05 10:00:00', true, \Ticket::CLOSED, true],
+                'week 2 on time midnight' => ['2010-01-11 00:00:00', true, \Ticket::CLOSED, false],
+                'week 2 late'             => ['2010-01-12 10:00:00', true, \Ticket::SOLVED, true],
+                'week 2 late again'       => ['2010-01-13 10:00:00', true, \Ticket::SOLVED, true],
+                'week 2 without SLA'      => ['2010-01-13 10:00:00', false, \Ticket::SOLVED, true],
+                'week 2 not solved'       => ['2010-01-13 10:00:00', true, \Ticket::ASSIGNED, true],
+            ] as $name => [$date, $with_sla, $status, $is_late]
+        ) {
+            $ticket = $this->createItem(\Ticket::class, [
+                'name'        => "test dashboard sla evolution $name",
+                'content'     => 'blablabla',
+                'entities_id' => $entity_id,
+            ]);
+            $open_ts = strtotime($date);
+            $DB->update(\Ticket::getTable(), [
+                'date'            => $date,
+                'status'          => $status,
+                'slas_id_ttr'     => $with_sla ? $sla->getID() : 0,
+                'slas_id_tto'     => in_array($name, $with_sla_to_own, true) ? $sla_to_own->getID() : 0,
+                'time_to_resolve' => date('Y-m-d H:i:s', $open_ts + 4 * HOUR_TIMESTAMP),
+                'solvedate'       => $status === \Ticket::ASSIGNED ? null : date('Y-m-d H:i:s', $open_ts + ($is_late ? 5 : 3) * HOUR_TIMESTAMP),
+            ], ['id' => $ticket->getID()]);
+            $tickets_ids[$name] = $ticket->getID();
+        }
+
+        $week_filters = [DatesFilter::getId() => ['2010-01-06', '2010-01-20']];
+        $get_values   = static function (array $result): array {
+            $values = [];
+            foreach ($result['data']['series'] as $serie) {
+                $values[$serie['name']] = array_column($serie['data'], 'value');
+            }
+            return $values;
+        };
+
+        // Only solved and closed tickets with a SLA are counted, by their opening period
+        $weeks = Provider::ticketsBySlaEvolution('week', ['apply_filters' => $week_filters]);
+        $this->assertSame(['2010-W01', '2010-W02', '2010-W03'], $weeks['data']['labels']);
+        // Both series are always returned, in a fixed order, so colors stay consistent
+        $this->assertSame(['On time' => [1, 1, 0], 'Late' => [1, 2, 0]], $get_values($weeks));
+
+        $months = Provider::ticketsBySlaEvolution('month', [
+            'apply_filters' => [DatesFilter::getId() => ['2010-01-01', '2010-01-31']],
+        ]);
+        $this->assertSame(['2010-01'], $months['data']['labels']);
+        $this->assertSame(['On time' => [2], 'Late' => [3]], $get_values($months));
+
+        // The search of a period finds the tickets counted, including the one created exactly at the period start
+        foreach (
+            [
+                [0, 0, 1], // week 1 on time
+                [0, 1, 1], // week 2 on time, at midnight
+                [1, 1, 2], // week 2 late
+            ] as [$serie_index, $period_index, $expected]
+        ) {
+            $url = $weeks['data']['series'][$serie_index]['data'][$period_index]['url'];
+            parse_str((string) parse_url($url, PHP_URL_QUERY), $search_params);
+            $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+            $this->assertSame($expected, $search_data['data']['totalcount'], $url);
+        }
+
+        // The status filter is intersected with the solved statuses
+        $closed = Provider::ticketsBySlaEvolution('week', [
+            'apply_filters' => $week_filters + [TicketStatusFilter::getId() => \Ticket::CLOSED],
+        ]);
+        $this->assertSame(['On time' => [0, 1, 0], 'Late' => [1, 0, 0]], $get_values($closed));
+        $this->assertTrue(Provider::ticketsBySlaEvolution('week', [
+            'apply_filters' => $week_filters + [TicketStatusFilter::getId() => \Ticket::ASSIGNED],
+        ])['data']['nodata'] ?? false);
+
+        // The SLA filter is searched as "time to own OR time to resolve", which must not bypass the other criteria of the point
+        $filtered = Provider::ticketsBySlaEvolution('week', [
+            'apply_filters' => $week_filters + [SlaFilter::getId() => $sla_to_own->getID()],
+        ]);
+        $this->assertSame(['On time' => [1, 0, 0], 'Late' => [0, 0, 0]], $get_values($filtered));
+        parse_str((string) parse_url($filtered['data']['series'][0]['data'][0]['url'], PHP_URL_QUERY), $search_params);
+        $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+        $this->assertSame(1, $search_data['data']['totalcount'], 'the not solved ticket with the SLA to own must not be found');
+
+        // A long range with a short period is limited to the last periods
+        $long_range = Provider::ticketsBySlaEvolution('day', [
+            'apply_filters' => [DatesFilter::getId() => ['2008-01-01', '2010-12-31']],
+        ]);
+        $this->assertCount(366, $long_range['data']['labels']);
+        $this->assertSame('2010-12-31', end($long_range['data']['labels']));
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsBySlaEvolution('week', ['apply_filters' => $week_filters])['data']['nodata'] ?? false);
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsBySlaEvolution('week', ['apply_filters' => $week_filters])['data']['nodata'] ?? false);
+
+        // The new tickets right alone only allows to see new tickets, which are not solved
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $new_only = Provider::ticketsBySlaEvolution('week', ['apply_filters' => $week_filters]);
+        $this->assertSame(['On time' => [0, 0, 0], 'Late' => [0, 0, 0]], $get_values($new_only), 'solved tickets must not be visible');
+
+        // The "my tickets" right only allows to see the tickets the user is actor of
+        $hidden_id = $tickets_ids['week 2 late again'];
+        $DB->update(\Ticket::getTable(), ['users_id_recipient' => 0], ['id' => $hidden_id]);
+        $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $hidden_id]);
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READMY;
+        $mine = Provider::ticketsBySlaEvolution('week', ['apply_filters' => $week_filters]);
+        $this->assertSame(['On time' => [1, 1, 0], 'Late' => [1, 1, 0]], $get_values($mine), 'ticket of another user must not be counted');
+    }
+
+    public function testFakeTicketsBySlaEvolution(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsBySlaEvolution');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        foreach (['day', 'week', 'month', 'year'] as $period) {
+            $result = FakeProvider::ticketsBySlaEvolution($period, ['label' => 'test']);
+            $this->assertSame('test', $result['label']);
+            $this->assertCount(2, $result['data']['series']);
+            foreach ($result['data']['series'] as $serie) {
+                $this->assertCount(count($result['data']['labels']), $serie['data']);
+            }
+        }
+    }
+
     public function testTicketsByCategoryAndType(): void
     {
         $this->login();

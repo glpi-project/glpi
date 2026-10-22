@@ -544,6 +544,39 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsBySlaEvolution(string $period = 'month', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $labels[] = match ($period) {
+                'day'   => date('Y-m-d', strtotime("-$i days")),
+                'week'  => date('o-\WW', strtotime("-$i weeks")),
+                'year'  => date('Y', strtotime("-$i years")),
+                default => date('Y-m', strtotime("-$i months")),
+            };
+        }
+
+        $series = [];
+        foreach ([__('On time') => 60, __('Late') => 15] as $serie_name => $max) {
+            $series[] = [
+                'name' => $serie_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($serie_name . $label, $max) + 5, 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => 'ti ti-stopwatch',
+        ];
+    }
+
     public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
         $item_counts = self::getItemCount();
