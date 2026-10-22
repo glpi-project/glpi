@@ -39,6 +39,7 @@ use Document_Item;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\ResourceAccessor;
+use Glpi\Http\JSONResponse;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -369,5 +370,90 @@ class ResourceAccessorTest extends DbTestCase
             'itemtype' => Ticket::class,
             'timeline_position' => CommonITILObject::NO_TIMELINE,
         ]));
+    }
+
+    private function savePictureFixture(): string
+    {
+        $picture_path = \Toolbox::savePicture(GLPI_ROOT . '/tests/fixtures/uploads/bar.png', '', true);
+        $this->assertIsString($picture_path);
+        $this->assertFileExists(GLPI_PICTURE_DIR . '/' . $picture_path);
+        return $picture_path;
+    }
+
+    public function testDeletePictureDeferrableDeletesImmediatelyWithoutScope(): void
+    {
+        $picture_path = $this->savePictureFixture();
+
+        $this->assertTrue(FileManager::deletePictureDeferrable($picture_path));
+        $this->assertFileDoesNotExist(GLPI_PICTURE_DIR . '/' . $picture_path);
+    }
+
+    public function testDeletePictureDeferrableDefersWithinScope(): void
+    {
+        $outer_picture_path = $this->savePictureFixture();
+        $inner_picture_path = $this->savePictureFixture();
+
+        FileManager::beginDeferredPictureDeletions();
+        try {
+            $this->assertTrue(FileManager::deletePictureDeferrable($outer_picture_path));
+
+            // Nested scopes only collect their own deletions
+            FileManager::beginDeferredPictureDeletions();
+            $this->assertTrue(FileManager::deletePictureDeferrable($inner_picture_path));
+            $this->assertSame([$inner_picture_path], FileManager::endDeferredPictureDeletions());
+        } finally {
+            $deferred = FileManager::endDeferredPictureDeletions();
+        }
+
+        $this->assertSame([$outer_picture_path], $deferred);
+        $this->assertFileExists(GLPI_PICTURE_DIR . '/' . $outer_picture_path);
+        $this->assertFileExists(GLPI_PICTURE_DIR . '/' . $inner_picture_path);
+        // Scope is closed so nothing is left to collect
+        $this->assertSame([], FileManager::endDeferredPictureDeletions());
+
+        FileManager::deletePicture($outer_picture_path);
+        FileManager::deletePicture($inner_picture_path);
+    }
+
+    public function testDeferredPictureDeletionKeptOnRollback(): void
+    {
+        $picture_path = $this->savePictureFixture();
+
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'runCreateOrUpdateTransaction');
+        $result = $rm->invoke(null, static function (array &$rollback_journal) use ($picture_path) {
+            FileManager::deletePictureDeferrable($picture_path);
+            return new JSONResponse(['error' => 'later failure'], 400);
+        });
+
+        $this->assertInstanceOf(JSONResponse::class, $result);
+        $this->assertFileExists(GLPI_PICTURE_DIR . '/' . $picture_path);
+        // The scope must not leak past the transaction
+        $this->assertSame([], FileManager::endDeferredPictureDeletions());
+
+        // Same when the action throws
+        $result = $rm->invoke(null, static function (array &$rollback_journal) use ($picture_path) {
+            FileManager::deletePictureDeferrable($picture_path);
+            throw new RuntimeException('later failure');
+        });
+        $this->assertInstanceOf(JSONResponse::class, $result);
+        $this->assertFileExists(GLPI_PICTURE_DIR . '/' . $picture_path);
+        $this->assertSame([], FileManager::endDeferredPictureDeletions());
+
+        FileManager::deletePicture($picture_path);
+    }
+
+    public function testDeferredPictureDeletionAppliedOnCommit(): void
+    {
+        $picture_path = $this->savePictureFixture();
+
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'runCreateOrUpdateTransaction');
+        $result = $rm->invoke(null, static function (array &$rollback_journal) use ($picture_path) {
+            FileManager::deletePictureDeferrable($picture_path);
+            // Still on disk until the transaction commits
+            return file_exists(GLPI_PICTURE_DIR . '/' . $picture_path) ? 42 : 0;
+        });
+
+        $this->assertSame(42, $result);
+        $this->assertFileDoesNotExist(GLPI_PICTURE_DIR . '/' . $picture_path);
     }
 }

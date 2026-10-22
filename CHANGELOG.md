@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.12] unreleased
 
 ### Added
+- Many previously missing properties in previously existing High-Level API schemas have been added to High-Level API v2.4.
 
 ### Changed
 - The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.

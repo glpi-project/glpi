@@ -81,12 +81,16 @@ use LineOperator;
 use LineType;
 use Location;
 use Manufacturer;
+use Software;
 use SoftwareLicense;
 use SoftwareLicenseType;
+use SoftwareVersion;
 use State;
 use Supplier;
 use SupplierType;
+use Toolbox;
 use User;
+use UserTitle;
 
 #[Route(path: '/Management', tags: ['Management'])]
 final class ManagementController extends AbstractController
@@ -338,6 +342,7 @@ final class ManagementController extends AbstractController
                     ],
                     'autoupdatesystem' => self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'version' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
                 ],
             ],
             'Contact' => [
@@ -357,6 +362,48 @@ final class ManagementController extends AbstractController
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: ContactType::class, full_schema: 'ContactType'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'firstname' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'registration_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'phone' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'phone2' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'mobile' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'fax' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'email' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'usertitle' => self::getDropdownTypeSchema(class: UserTitle::class, full_schema: 'UserTitle', params: ['x-version-introduced' => '2.4.0']),
+                    'address' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.4.0'],
+                    'postcode' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'town' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'state' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'country' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'pictures_upload' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                            'writeOnly' => true,
+                            'x-input-field' => 'pictures',
+                            'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+                        ],
+                    ],
+                    'pictures_remove' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => ['type' => Doc\Schema::TYPE_STRING, 'writeOnly' => true],
+                    ],
+                    'pictures' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-mapped-from' => 'pictures',
+                            'x-mapper' => static function ($v) {
+                                $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                                return array_map(static fn($picture) => Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
+                            },
+                            'readOnly' => true,
+                        ],
+                    ],
                 ],
             ],
             'Contract' => [
@@ -545,6 +592,17 @@ EOT,
                         full_schema: 'DatabaseInstance',
                         params: ['x-version-introduced' => '2.2'],
                     ),
+                    'size' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-version-introduced' => '2.4.0'],
+                    'is_onbackup' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0'],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0'],
+                    'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0'],
+                    'date_update' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.4.0'],
+                    'date_last_backup' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-field' => 'date_lastbackup',
+                        'x-version-introduced' => '2.4.0',
+                    ],
                 ],
             ],
             'DatabaseInstance' => [
@@ -589,6 +647,8 @@ EOT,
                         class: Database::class,
                         full_schema: 'Database',
                     ),
+                    'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0'],
+                    'autoupdatesystem' => self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem', params: ['x-version-introduced' => '2.4.0']),
                 ],
             ],
             'DataCenter' => [
@@ -769,6 +829,46 @@ EOT,
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'readOnly' => true,
                     ],
+                    'software' => self::getDropdownTypeSchema(class: Software::class, full_schema: 'Software', params: ['x-version-introduced' => '2.4.0']),
+                    'parent' => self::getDropdownTypeSchema(class: SoftwareLicense::class, full_schema: 'License', params: ['x-version-introduced' => '2.4.0']),
+                    'version_buy' => self::getDropdownTypeSchema(class: SoftwareVersion::class, field: 'softwareversions_id_buy', full_schema: 'SoftwareVersion', params: ['x-version-introduced' => '2.4.0']),
+                    'version_use' => self::getDropdownTypeSchema(class: SoftwareVersion::class, field: 'softwareversions_id_use', full_schema: 'SoftwareVersion', params: ['x-version-introduced' => '2.4.0']),
+                    'date_expiration' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE, 'x-field' => 'expire', 'x-version-introduced' => '2.4.0'],
+                    'number' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-version-introduced' => '2.4.0'],
+                    'allow_overquota' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0'],
+                    'is_valid' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0', 'readOnly' => true],
+                    'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0'],
+                    'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0'],
+                    'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'pictures_upload' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                            'writeOnly' => true,
+                            'x-input-field' => 'pictures',
+                            'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+                        ],
+                    ],
+                    'pictures_remove' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => ['type' => Doc\Schema::TYPE_STRING, 'writeOnly' => true],
+                    ],
+                    'pictures' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-mapped-from' => 'pictures',
+                            'x-mapper' => static function ($v) {
+                                $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                                return array_map(static fn($picture) => Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
+                            },
+                            'readOnly' => true,
+                        ],
+                    ],
                 ],
             ],
             'Line' => [
@@ -831,6 +931,46 @@ EOT,
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: SupplierType::class, full_schema: 'SupplierType'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'registration_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'address' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.4.0'],
+                    'postcode' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'town' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'state' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'country' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'website' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'email' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'phone' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'phonenumber', 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'fax' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.4.0'],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.4.0'],
+                    'pictures_upload' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                            'writeOnly' => true,
+                            'x-input-field' => 'pictures',
+                            'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+                        ],
+                    ],
+                    'pictures_remove' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => ['type' => Doc\Schema::TYPE_STRING, 'writeOnly' => true],
+                    ],
+                    'pictures' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-mapped-from' => 'pictures',
+                            'x-mapper' => static function ($v) {
+                                $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                                return array_map(static fn($picture) => Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
+                            },
+                            'readOnly' => true,
+                        ],
+                    ],
                 ],
             ],
         ];

@@ -662,8 +662,17 @@ final class ResourceAccessor
         $DB->beginTransaction();
         $rollback_journal = self::newRollbackJournal();
         $must_roll_back = true;
+        // Item hooks (e.g. AssetImage) can't access the journal, so picture deletions they request are collected here
+        FileManager::beginDeferredPictureDeletions();
         try {
-            $result = $action($rollback_journal);
+            try {
+                $result = $action($rollback_journal);
+            } finally {
+                $rollback_journal['deferred_picture_deletions'] = array_merge(
+                    $rollback_journal['deferred_picture_deletions'],
+                    FileManager::endDeferredPictureDeletions()
+                );
+            }
             if ($result instanceof Response) {
                 return $result;
             }
