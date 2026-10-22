@@ -5706,45 +5706,6 @@ JS);
         }
     }
 
-
-    /**
-     * transfer some var of php to javascript
-     * (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
-     *
-     * @param bool $full if false, don't expose all variables from CFG_GLPI (only url_base & root_doc)
-     *
-     * @since 9.5
-     * @return string
-     */
-    public static function getCoreVariablesForJavascript(bool $full = false)
-    {
-        /** @var ConfigContainer $CFG_GLPI */
-        global $CFG_GLPI;
-
-        // prevent leak of data for non logged sessions
-        $full = $full && (Session::getLoginUserID(true) !== false);
-
-        $cfg_glpi = "var CFG_GLPI  = {
-            'url_base': '" . jsescape((isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')) . "',
-            'root_doc': '" . jsescape($CFG_GLPI["root_doc"]) . "',
-        };";
-
-        if ($full) {
-            $cfg_glpi = "var CFG_GLPI  = " . json_encode($CFG_GLPI->getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
-        }
-
-        $plugins_path = [];
-        foreach (Plugin::getPlugins() as $key) {
-            $plugins_path[$key] = "/plugins/{$key}";
-        }
-        $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
-
-        return self::scriptBlock("
-            $cfg_glpi
-            $plugins_path
-        ");
-    }
-
     /**
      * Get a stylesheet or javascript path, minified if any
      * Return minified path if minified file exists and not in
