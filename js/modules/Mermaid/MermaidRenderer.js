@@ -54,7 +54,7 @@ async function loadMermaid() {
         });
     const mermaid = await load_promise;
 
-    // The theme can change without a page reload.
+    // Only the next drawing follows a theme change: drawn diagrams keep their colors.
     const theme = document.documentElement.dataset.glpiThemeDark === '1' ? 'dark' : 'default';
     if (theme !== current_theme) {
         current_theme = theme;

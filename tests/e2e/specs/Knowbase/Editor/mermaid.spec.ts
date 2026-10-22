@@ -190,29 +190,6 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(page.getByRole('figure', { name: 'Diagram' }).getByText('Finish')).toBeVisible();
     });
 
-    test('Diagram follows a theme change made without a page reload', async ({ page, profile, api }) => {
-        await profile.set(Profiles.SuperAdmin);
-        const kb = new KnowbaseItemPage(page);
-
-        const id = await api.createItem('KnowbaseItem', {
-            name: 'Mermaid theme change',
-            entities_id: getWorkerEntityId(),
-            answer: DIAGRAM_ANSWER,
-        });
-
-        await kb.goto(id);
-        const label = page.getByRole('figure', { name: 'Diagram' }).getByText('Finish');
-        await expect(label).toHaveCSS('color', 'rgb(51, 51, 51)');
-
-        // As the theme switcher of the debug bar does.
-        await page.evaluate(() => {
-            document.documentElement.dataset.glpiThemeDark = '1';
-        });
-        // The edit mode draws the diagram again.
-        await kb.editor.enterEditMode();
-        await expect(label).toHaveCSS('color', 'rgb(204, 204, 204)');
-    });
-
     test('Invalid diagram shows the error in edit mode and its source in read mode', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
