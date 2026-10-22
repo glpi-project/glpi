@@ -45,6 +45,48 @@ use function Safe\preg_replace_callback;
 
 final class FormTagsManager
 {
+    /**
+     * Singleton instance.
+     */
+    private static ?FormTagsManager $instance = null;
+
+    /**
+     * Providers registered by plugins, indexed by their class name.
+     *
+     * This property is static to make sure that registered providers are also
+     * available to the instances that are not retrieved using `getInstance()`.
+     *
+     * @var array<class-string<TagProviderInterface>, TagProviderInterface>
+     */
+    private static array $plugins_providers = [];
+
+    /**
+     * Singleton access method.
+     *
+     * @return FormTagsManager
+     */
+    public static function getInstance(): FormTagsManager
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * Register a tag provider from a plugin.
+     * Its tags will be available in the form tags autocompletion and their
+     * content will be computed using the given provider instance.
+     *
+     * @param TagProviderInterface $provider
+     * @return void
+     */
+    public function registerPluginTagProvider(
+        TagProviderInterface $provider
+    ): void {
+        self::$plugins_providers[$provider::class] = $provider;
+    }
+
     public function getTags(Form $form, string $filter = ""): array
     {
         $tags = [];
@@ -57,9 +99,11 @@ final class FormTagsManager
 
     public function refreshTagsContent(string $content): string
     {
+        $providers = $this->getTagProvidersByClass();
+
         return preg_replace_callback(
             '/<span(?=[^>]*\bdata-form-tag="true")[^>]*>.*?<\/span>/',
-            function ($match) {
+            function ($match) use ($providers) {
                 $tag = $match[0];
 
                 // Extract value.
@@ -70,18 +114,11 @@ final class FormTagsManager
 
                 // Extract provider.
                 preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
-                if (
-                    $provider_match === []
-                    || !is_a(
-                        $provider_match[1],
-                        TagProviderInterface::class,
-                        true
-                    )
-                ) {
+                $provider = $providers[$provider_match[1] ?? ''] ?? null;
+                if ($provider === null) {
                     return "";
                 }
 
-                $provider = new $provider_match[1]();
                 $tag = $provider->getTagFromRawValue($value_match[1]);
                 if ($tag === null) {
                     return "";
@@ -96,9 +133,11 @@ final class FormTagsManager
         string $content,
         AnswersSet $answers_set
     ): string {
+        $providers = $this->getTagProvidersByClass();
+
         return preg_replace_callback(
             '/<span(?=[^>]*\bdata-form-tag="true")[^>]*>.*?<\/span>/',
-            function ($match) use ($answers_set) {
+            function ($match) use ($answers_set, $providers) {
                 $tag = $match[0];
 
                 // Extract value.
@@ -109,18 +148,11 @@ final class FormTagsManager
 
                 // Extract provider.
                 preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
-                if (
-                    $provider_match === []
-                    || !is_a(
-                        $provider_match[1],
-                        TagProviderInterface::class,
-                        true
-                    )
-                ) {
+                $provider = $providers[$provider_match[1] ?? ''] ?? null;
+                if ($provider === null) {
                     return "";
                 }
 
-                $provider = new $provider_match[1]();
                 return $provider->getTagContentForValue(
                     $value_match[1],
                     $answers_set
@@ -130,6 +162,12 @@ final class FormTagsManager
         );
     }
 
+    /**
+     * Get all available tag providers (core providers and providers
+     * registered by plugins).
+     *
+     * @return TagProviderInterface[]
+     */
     public function getTagProviders(): array
     {
         return $this->removeInvalidProviders([
@@ -140,6 +178,7 @@ final class FormTagsManager
             new CommentTitleTagProvider(),
             new CommentDescriptionTagProvider(),
             new FullFormTagProvider(),
+            ...array_values(self::$plugins_providers),
         ]);
     }
 
@@ -171,6 +210,19 @@ final class FormTagsManager
         }
 
         return $subject;
+    }
+
+    /**
+     * @return array<class-string<TagProviderInterface>, TagProviderInterface>
+     */
+    private function getTagProvidersByClass(): array
+    {
+        $providers = [];
+        foreach ($this->getTagProviders() as $provider) {
+            $providers[$provider::class] = $provider;
+        }
+
+        return $providers;
     }
 
     private function removeInvalidProviders(array $providers): array
