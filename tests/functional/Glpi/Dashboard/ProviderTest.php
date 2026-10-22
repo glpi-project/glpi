@@ -41,6 +41,7 @@ use Glpi\Dashboard\Filters\DatesFilter;
 use Glpi\Dashboard\Filters\GroupRequesterFilter;
 use Glpi\Dashboard\Filters\GroupTechFilter;
 use Glpi\Dashboard\Filters\ItilCategoryFilter;
+use Glpi\Dashboard\Filters\SlaFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Filters\UserTechFilter;
 use Glpi\Dashboard\Provider;
@@ -2123,6 +2124,15 @@ class ProviderTest extends DbTestCase
             'definition_time' => 'hour',
             'slms_id'         => $slm->getID(),
         ]);
+        $sla_to_own = $this->createItem(\SLA::class, [
+            'name'            => 'test dashboard sla evolution to own',
+            'type'            => \SLM::TTO,
+            'number_time'     => 1,
+            'definition_time' => 'hour',
+            'slms_id'         => $slm->getID(),
+        ]);
+        // Tickets having the time to own SLA
+        $with_sla_to_own = ['week 1 on time', 'week 2 not solved'];
 
         $tickets_ids = [];
         // Dates far in the past so that no other ticket of the test database is counted
@@ -2147,6 +2157,7 @@ class ProviderTest extends DbTestCase
                 'date'            => $date,
                 'status'          => $status,
                 'slas_id_ttr'     => $with_sla ? $sla->getID() : 0,
+                'slas_id_tto'     => in_array($name, $with_sla_to_own, true) ? $sla_to_own->getID() : 0,
                 'time_to_resolve' => date('Y-m-d H:i:s', $open_ts + 4 * HOUR_TIMESTAMP),
                 'solvedate'       => $status === \Ticket::ASSIGNED ? null : date('Y-m-d H:i:s', $open_ts + ($is_late ? 5 : 3) * HOUR_TIMESTAMP),
             ], ['id' => $ticket->getID()]);
@@ -2196,6 +2207,15 @@ class ProviderTest extends DbTestCase
         $this->assertTrue(Provider::ticketsBySlaEvolution('week', [
             'apply_filters' => $week_filters + [TicketStatusFilter::getId() => \Ticket::ASSIGNED],
         ])['data']['nodata'] ?? false);
+
+        // The SLA filter is searched as "time to own OR time to resolve", which must not bypass the other criteria of the point
+        $filtered = Provider::ticketsBySlaEvolution('week', [
+            'apply_filters' => $week_filters + [SlaFilter::getId() => $sla_to_own->getID()],
+        ]);
+        $this->assertSame(['On time' => [1, 0, 0], 'Late' => [0, 0, 0]], $get_values($filtered));
+        parse_str((string) parse_url($filtered['data']['series'][0]['data'][0]['url'], PHP_URL_QUERY), $search_params);
+        $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+        $this->assertSame(1, $search_data['data']['totalcount'], 'the not solved ticket with the SLA to own must not be found');
 
         // A long range with a short period is limited to the last periods
         $long_range = Provider::ticketsBySlaEvolution('day', [

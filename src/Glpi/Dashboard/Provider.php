@@ -2228,8 +2228,13 @@ class Provider
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 
         $search_criteria = self::getSearchFiltersCriteria($ticket_table, $params['apply_filters'])['criteria'] ?? [];
-        $url             = Ticket::getSearchURL();
-        $build_url       = (static fn(int $is_late, array $dates): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+        // Some filters are searched with OR criteria (e.g. SLA time to own OR time to resolve),
+        // they are grouped so they can't bypass the other criteria of the search
+        if (count($search_criteria) > 0) {
+            $search_criteria = [['link' => 'AND', 'criteria' => $search_criteria]];
+        }
+        $url       = Ticket::getSearchURL();
+        $build_url = (static fn(int $is_late, array $dates): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
             'criteria' => array_merge([
                 [
                     'link'       => 'AND',
