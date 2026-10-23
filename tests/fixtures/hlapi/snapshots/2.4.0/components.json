@@ -2391,6 +2391,73 @@
                         },
                         "x-full-schema": "Cartridge"
                     }
+                },
+                "reference": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "location": {
+                    "type": "object",
+                    "x-itemtype": "Location",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Location"
+                },
+                "manufacturer": {
+                    "type": "object",
+                    "x-itemtype": "Manufacturer",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Manufacturer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "alarm_threshold": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "stock_target": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "pictures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "readOnly": true
+                    }
                 }
             }
         },
@@ -3197,6 +3264,26 @@
                         },
                         "x-full-schema": "ChangeCost"
                     }
+                },
+                "impact_content": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "control_list_content": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "rollout_plan_content": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "backout_plan_content": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "checklist_content": {
+                    "type": "string",
+                    "format": "html"
                 }
             },
             "x-itemtype": "Change"
@@ -4033,6 +4120,10 @@
                 },
                 "is_deleted": {
                     "type": "boolean"
+                },
+                "version": {
+                    "type": "string",
+                    "maxLength": 255
                 }
             }
         },
@@ -4808,6 +4899,77 @@
                         },
                         "x-full-schema": "Consumable"
                     }
+                },
+                "reference": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "location": {
+                    "type": "object",
+                    "x-itemtype": "Location",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Location"
+                },
+                "manufacturer": {
+                    "type": "object",
+                    "x-itemtype": "Manufacturer",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Manufacturer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "alarm_threshold": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "stock_target": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "otherserial": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "pictures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "readOnly": true
+                    }
                 }
             }
         },
@@ -4893,6 +5055,90 @@
                 },
                 "is_deleted": {
                     "type": "boolean"
+                },
+                "firstname": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "registration_number": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "phone": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "phone2": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "mobile": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "fax": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "email": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "usertitle": {
+                    "type": "object",
+                    "x-itemtype": "UserTitle",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "UserTitle"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "postcode": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "town": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "state": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "country": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "pictures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "readOnly": true
+                    }
                 }
             }
         },
@@ -5542,6 +5788,25 @@
                 "date_mod": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "cell_width": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 40
+                },
+                "cell_height": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 40
+                },
+                "blueprint_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "blueprint": {
+                    "type": "string",
+                    "readOnly": true
                 }
             }
         },
@@ -5913,6 +6178,27 @@
                         }
                     },
                     "x-full-schema": "DatabaseInstance"
+                },
+                "size": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "is_onbackup": {
+                    "type": "boolean"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "is_dynamic": {
+                    "type": "boolean"
+                },
+                "date_update": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "date_last_backup": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             }
         },
@@ -6121,6 +6407,24 @@
                         },
                         "x-full-schema": "Database"
                     }
+                },
+                "is_helpdesk_visible": {
+                    "type": "boolean"
+                },
+                "autoupdatesystem": {
+                    "type": "object",
+                    "x-itemtype": "AutoUpdateSystem",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "AutoUpdateSystem"
                 }
             }
         },
@@ -11776,6 +12080,113 @@
                 "level": {
                     "type": "integer",
                     "readOnly": true
+                },
+                "software": {
+                    "type": "object",
+                    "x-itemtype": "Software",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Software"
+                },
+                "parent": {
+                    "type": "object",
+                    "x-itemtype": "SoftwareLicense",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "License"
+                },
+                "version_buy": {
+                    "type": "object",
+                    "x-itemtype": "SoftwareVersion",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "SoftwareVersion"
+                },
+                "version_use": {
+                    "type": "object",
+                    "x-itemtype": "SoftwareVersion",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "SoftwareVersion"
+                },
+                "date_expiration": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "number": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "allow_overquota": {
+                    "type": "boolean"
+                },
+                "is_valid": {
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "is_helpdesk_visible": {
+                    "type": "boolean"
+                },
+                "is_template": {
+                    "type": "boolean"
+                },
+                "template_name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "pictures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "readOnly": true
+                    }
                 }
             }
         },
@@ -17545,6 +17956,18 @@
                         }
                     },
                     "x-full-schema": "SNMPCredential"
+                },
+                "memory_size": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "init_pages_counter": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "last_pages_counter": {
+                    "type": "integer",
+                    "format": "int32"
                 }
             }
         },
@@ -17877,6 +18300,18 @@
                         },
                         "x-full-schema": "ProblemCost"
                     }
+                },
+                "impact_content": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "cause_content": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "symptom_content": {
+                    "type": "string",
+                    "format": "html"
                 }
             },
             "x-itemtype": "Problem"
@@ -23618,6 +24053,113 @@
                 "level": {
                     "type": "integer",
                     "readOnly": true
+                },
+                "software": {
+                    "type": "object",
+                    "x-itemtype": "Software",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Software"
+                },
+                "parent": {
+                    "type": "object",
+                    "x-itemtype": "SoftwareLicense",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "SoftwareLicense"
+                },
+                "version_buy": {
+                    "type": "object",
+                    "x-itemtype": "SoftwareVersion",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "SoftwareVersion"
+                },
+                "version_use": {
+                    "type": "object",
+                    "x-itemtype": "SoftwareVersion",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "SoftwareVersion"
+                },
+                "date_expiration": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "number": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "allow_overquota": {
+                    "type": "boolean"
+                },
+                "is_valid": {
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "is_helpdesk_visible": {
+                    "type": "boolean"
+                },
+                "is_template": {
+                    "type": "boolean"
+                },
+                "template_name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "pictures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "readOnly": true
+                    }
                 }
             }
         },
@@ -24471,6 +25013,70 @@
                 },
                 "is_deleted": {
                     "type": "boolean"
+                },
+                "registration_number": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "address": {
+                    "type": "string"
+                },
+                "postcode": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "town": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "state": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "country": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "website": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "email": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "phone": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "fax": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "pictures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "readOnly": true
+                    }
                 }
             }
         },
