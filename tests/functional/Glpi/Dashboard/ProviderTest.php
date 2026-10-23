@@ -1100,6 +1100,86 @@ class ProviderTest extends DbTestCase
 
         $this->assertGreaterThan(0, $nb_items);
     }
+
+    public function testTicketsOpenedAndClosed(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $category  = $this->createItem(\ITILCategory::class, ['name' => 'test dashboard tickets opened and closed']);
+        foreach (
+            [
+                // the first second of the dates filter is included
+                [\Ticket::INCOMING, '2011-06-01 00:00:00', 0],
+                [\Ticket::ASSIGNED, '2011-06-10 10:00:00', 0],
+                [\Ticket::WAITING, '2011-06-30 23:59:59', 0],
+                [\Ticket::SOLVED, '2011-06-15 10:00:00', 0],
+                [\Ticket::CLOSED, '2011-06-15 10:00:00', 0],
+                // outside the dates filter
+                [\Ticket::CLOSED, '2011-07-01 00:00:00', 0],
+                // deleted
+                [\Ticket::INCOMING, '2011-06-15 10:00:00', 1],
+            ] as $index => [$status, $date, $is_deleted]
+        ) {
+            $ticket = $this->createItem(\Ticket::class, [
+                'name'              => "test dashboard tickets opened and closed $index",
+                'content'           => 'blablabla',
+                'entities_id'       => $entity_id,
+                'itilcategories_id' => $category->getID(),
+            ]);
+            $DB->update(\Ticket::getTable(), [
+                'date'       => $date,
+                'status'     => $status,
+                'is_deleted' => $is_deleted,
+            ], ['id' => $ticket->getID()]);
+        }
+
+        $params = ['apply_filters' => [
+            ItilCategoryFilter::getId() => $category->getID(),
+            DatesFilter::getId()        => ['2011-06-01', '2011-06-30'],
+        ]];
+        $get_numbers = static fn(array $result): array => array_column($result['data'], 'number', 'label');
+
+        $result = Provider::ticketsOpenedAndClosed($params);
+        $this->assertSame(['Not solved' => 3, 'Solved + Closed' => 2], $get_numbers($result));
+
+        // The search of a slice finds the tickets counted
+        foreach ($result['data'] as $slice) {
+            parse_str((string) parse_url($slice['url'], PHP_URL_QUERY), $search_params);
+            $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+            $this->assertSame($slice['number'], $search_data['data']['totalcount'], $slice['url']);
+        }
+
+        // Both slices are kept when one of them is empty
+        $solved = Provider::ticketsOpenedAndClosed(['apply_filters' => $params['apply_filters'] + [
+            TicketStatusFilter::getId() => \Ticket::SOLVED,
+        ]]);
+        $this->assertSame(['Not solved' => 0, 'Solved + Closed' => 1], $get_numbers($solved));
+
+        // No ticket in the period
+        $this->assertTrue(Provider::ticketsOpenedAndClosed(['apply_filters' => [
+            ItilCategoryFilter::getId() => $category->getID(),
+            DatesFilter::getId()        => ['2012-01-01', '2012-01-31'],
+        ]])['data']['nodata'] ?? false);
+
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+
+        // The new tickets right alone only allows to see new tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $this->assertSame(
+            ['Not solved' => 1, 'Solved + Closed' => 0],
+            $get_numbers(Provider::ticketsOpenedAndClosed($params))
+        );
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsOpenedAndClosed($params)['data']['nodata'] ?? false);
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsOpenedAndClosed($params)['data']['nodata'] ?? false);
+    }
     public function testTicketsOpened()
     {
         $result = Provider::ticketsOpened();

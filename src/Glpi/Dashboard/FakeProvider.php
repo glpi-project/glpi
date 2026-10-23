@@ -524,6 +524,26 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsOpenedAndClosed(array $params = []): array
+    {
+        return [
+            'data'  => [
+                [
+                    'number' => 318,
+                    'label'  => _x('status', 'Not solved'),
+                    'url'    => '',
+                ],
+                [
+                    'number' => 1247,
+                    'label'  => _x('status', 'Solved + Closed'),
+                    'url'    => '',
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
     public static function ticketsBacklog(string $period = 'month', array $params = []): array
     {
         $labels = [];

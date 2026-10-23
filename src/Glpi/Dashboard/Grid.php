@@ -1764,6 +1764,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_ticket_opened_and_closed"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of not solved and solved tickets"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpenedAndClosed",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["report_ticket_by_assigned_group_and_statuses"] = [
                 'widgettype' => ['stackedHBars', 'hBars'],
                 'itemtype'   => "\\Ticket",
