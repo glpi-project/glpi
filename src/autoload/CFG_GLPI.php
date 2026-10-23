@@ -142,9 +142,10 @@ $CFG_GLPI['infocom_types']                = [Cartridge::class, CartridgeItem::cl
     DatabaseInstance::class, Cable::class,
 ];
 
-$CFG_GLPI['reservation_types']            = [Computer::class, Monitor::class, NetworkEquipment::class,
+$reservation_types = [Computer::class, Monitor::class, NetworkEquipment::class,
     Peripheral::class, Phone::class, Printer::class, Software::class, Rack::class,
 ];
+$CFG_GLPI['reservation_types']            = $reservation_types;
 
 $CFG_GLPI['assignable_types'] = [
     Appliance::class,
@@ -530,7 +531,7 @@ $CFG_GLPI['javascript'] = [
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)
-foreach ($CFG_GLPI['reservation_types'] as $reservation_type) {
+foreach ($reservation_types as $reservation_type) {
     $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] = array_merge(
         $CFG_GLPI['javascript']['assets'][strtolower($reservation_type)] ?? [],
         $reservations_libs
