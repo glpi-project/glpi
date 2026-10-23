@@ -1773,6 +1773,29 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
             ];
 
+            foreach (
+                [
+                    'windows_version' => ['windows', 'version', __("Number of Windows computers by version")],
+                    'linux_version'   => ['linux', 'version', __("Number of Linux computers by version")],
+                    'linux_name'      => ['linux', 'name', __("Number of Linux computers by distribution")],
+                    'macos_version'   => ['macos', 'version', __("Number of macOS computers by version")],
+                    'macos_major'     => ['macos', 'major', __("Number of macOS computers by major version")],
+                ] as $key => [$family, $group_by, $label]
+            ) {
+                $cards["report_computers_by_os_$key"] = [
+                    'widgettype' => ['hbar', 'bar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                    'itemtype'   => "\\Computer",
+                    'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::computersByOperatingSystemVersion",
+                    'args'       => [
+                        'family'   => $family,
+                        'group_by' => $group_by,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+                ];
+            }
+
             $cards["report_computers_by_age"] = [
                 'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Computer",
