@@ -1882,6 +1882,14 @@ HTML;
                     'where'     => 'ticket_12345_Ticket$main#TicketValidation_1',
                     'result'    => $root_doc . '/front/ticket.form.php?id=12345&forcetab=Ticket$main#TicketValidation_1',
                 ];
+
+                // Redirect to a knowledge base article.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'knowbaseitem_42',
+                    'result'    => $root_doc . ($interface === 'central' ? '/front/knowbaseitem.form.php?id=42&' : '/front/helpdesk.faq.php?id=42&'),
+                ];
             }
         }
     }

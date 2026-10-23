@@ -189,6 +189,11 @@ const SLASH_COMMANDS = [
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'codeBlock' }).run(),
     },
     {
+        title: __('Diagram'),
+        icon: 'ti ti-chart-dots-3',
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertMermaidBlock().run(),
+    },
+    {
         title: __('Table'),
         icon: 'ti ti-table',
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
@@ -270,9 +275,13 @@ const SlashCommands = Extension.create({
                 char: '/',
                 allowSpaces: false,
                 startOfLine: false,
-                // Block the menu inside table cells to avoid nested tables/blocks.
+                // Block the menu inside table cells to avoid nested tables/blocks,
+                // and in code, where `/` is plain text.
                 allow: ({ state, range }) => {
                     const $from = state.doc.resolve(range.from);
+                    if ($from.parent.type.spec.code) {
+                        return false;
+                    }
                     for (let depth = $from.depth; depth > 0; depth--) {
                         if ($from.node(depth).type.name === 'table') {
                             return false;
