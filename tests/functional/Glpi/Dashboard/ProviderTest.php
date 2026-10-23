@@ -42,6 +42,7 @@ use Glpi\Dashboard\Filters\GroupRequesterFilter;
 use Glpi\Dashboard\Filters\GroupTechFilter;
 use Glpi\Dashboard\Filters\ItilCategoryFilter;
 use Glpi\Dashboard\Filters\SlaFilter;
+use Glpi\Dashboard\Filters\StateFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Filters\UserTechFilter;
 use Glpi\Dashboard\Provider;
@@ -1511,6 +1512,97 @@ class ProviderTest extends DbTestCase
         }
 
         $this->assertGreaterThan(0, $nb_items);
+    }
+
+    public function testComputersByAgentVersion(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id  = $this->getTestRootEntity(true);
+        $state      = $this->createItem(\State::class, ['name' => 'test dashboard agent version state']);
+        $agent_type = new \AgentType();
+        $this->assertTrue($agent_type->getFromDBByCrit(['name' => 'Core']));
+
+        $add_agent = static function (string $itemtype, int $items_id, string $version) use ($DB, $entity_id, $agent_type): void {
+            static $nb = 0;
+            $nb++;
+            $DB->insert(\Agent::getTable(), [
+                'deviceid'      => "test-dashboard-agent-version-$nb",
+                'name'          => "test dashboard agent $nb",
+                'entities_id'   => $entity_id,
+                'agenttypes_id' => $agent_type->getID(),
+                'itemtype'      => $itemtype,
+                'items_id'      => $items_id,
+                'version'       => $version,
+            ]);
+        };
+
+        $computers = [];
+        foreach (
+            [
+                // computer => [agent version, null without agent, is the computer deleted]
+                'recent 1'     => ['1.11', false],
+                'recent 2'     => ['1.11', false],
+                'older'        => ['1.10', false],
+                'oldest'       => ['1.9', false],
+                'no version'   => ['', false],
+                'no agent'     => [null, false],
+                'deleted'      => ['1.11', true],
+            ] as $name => [$version, $is_deleted]
+        ) {
+            $computer = $this->createItem(\Computer::class, [
+                'name'        => "test dashboard computer agent $name",
+                'entities_id' => $entity_id,
+                'states_id'   => $state->getID(),
+                'is_deleted'  => (int) $is_deleted,
+            ]);
+            $computers[$name] = $computer->getID();
+            if ($version !== null) {
+                $add_agent(\Computer::class, $computer->getID(), $version);
+            }
+        }
+        // An agent of another kind of asset with the same id must not be counted
+        $add_agent(\Phone::class, $computers['older'], '1.9');
+
+        // The state filter restricts the computers to the ones of this test
+        $params     = ['apply_filters' => [StateFilter::getId() => [$state->getID()]]];
+        $get_values = static fn(array $result): array => array_combine(
+            array_column($result['data'], 'label'),
+            array_column($result['data'], 'number')
+        );
+
+        // Biggest counts first, then the most recent versions first
+        $result = Provider::computersByAgentVersion($params);
+        $this->assertSame(['1.11' => 2, '1.10' => 1, '1.9' => 1, 'None' => 1], $get_values($result));
+
+        // The search of an entry finds the computers counted
+        foreach ($result['data'] as $entry) {
+            parse_str((string) parse_url($entry['url'], PHP_URL_QUERY), $search_params);
+            $search_data = \Search::getDatas(\Computer::class, \Search::manageParams(\Computer::class, $search_params));
+            $this->assertSame($entry['number'], $search_data['data']['totalcount'], $entry['label']);
+        }
+
+        // Without the computer or the agent right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Agent::$rightname] = 0;
+        $this->assertTrue(Provider::computersByAgentVersion($params)['data']['nodata'] ?? false);
+        $_SESSION['glpiactiveprofile'][\Agent::$rightname]    = READ;
+        $_SESSION['glpiactiveprofile'][\Computer::$rightname] = 0;
+        $this->assertTrue(Provider::computersByAgentVersion($params)['data']['nodata'] ?? false);
+    }
+
+    public function testFakeComputersByAgentVersion(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'computersByAgentVersion');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::computersByAgentVersion(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertNotEmpty($result['data']);
+        foreach ($result['data'] as $entry) {
+            $this->assertArrayHasKey('url', $entry);
+        }
     }
 
     public function testComputersByAge()

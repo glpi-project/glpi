@@ -1764,6 +1764,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["report_computers_by_agent_version"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by agent version"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByAgentVersion",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
             $cards["report_computers_by_os"] = [
                 'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Computer",
