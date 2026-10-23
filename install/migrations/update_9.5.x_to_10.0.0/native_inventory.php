@@ -39,6 +39,7 @@
  */
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\Result;
 use Glpi\Exception\Database\StatementException;
 use Glpi\Inventory\Conf;
 
@@ -520,9 +521,9 @@ if (!$DB->tableExists('glpi_printerlogs')) {
                 $DB->quoteName('date')
             )
         );
-        /** @var mysqli_result $request */
+        /** @var Result $request */
         $request = $DB->doQuery($to_preserve_sql->getValue());
-        $to_preserve_result = $request->fetch_all(MYSQLI_ASSOC);
+        $to_preserve_result = $request->fetchAllAssoc();
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->delete(
                 'glpi_printerlogs',
@@ -602,9 +603,9 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
                 $DB->quoteName('date')
             )
         );
-        /** @var mysqli_result $request */
+        /** @var Result $request */
         $request = $DB->doQuery($to_preserve_sql->getValue());
-        $to_preserve_result = $request->fetch_all(MYSQLI_ASSOC);
+        $to_preserve_result = $request->fetchAllAssoc();
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->delete(
                 'glpi_networkportmetrics',

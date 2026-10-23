@@ -38,6 +38,8 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\DBAL\Result;
+use Glpi\DBAL\Statement;
 use Glpi\Exception\Database\StatementException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -59,7 +61,8 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $this->expectExceptionObject(
             new \RuntimeException(
-                "MySQL prepare error: Table '{$DB->dbdefault}.fakeTable' doesn't exist (1146) in SQL query \"SELECT * FROM `fakeTable`\"."
+                "MySQL prepare error: Table '{$DB->dbdefault}.fakeTable' doesn't exist (1146) in SQL query \"SELECT * FROM `fakeTable`\".",
+                1146
             )
         );
         $DB->request(['FROM' => 'fakeTable']);
@@ -1918,21 +1921,25 @@ class DBmysqlIteratorTest extends DbTestCase
     #[DataProvider('resultProvider')]
     public function testAutoUnsanitize(array $db_data, array $result): void
     {
-        //PHPUnit cannot mock native functions.
-        $mysqli_result = $this->createMock(\mysqli_result::class);
-        $mysqli_result->method('fetch_assoc')->willReturn($db_data);
-        $mysqli_result->method('data_seek')->willReturn(true);
-        $mysqli_stmt = $this->createMock(\mysqli_stmt::class);
-        $mysqli_stmt->method('execute')->willReturn(true);
-
         $db = $this->getMockBuilder(\DBMysql::class)
-            ->onlyMethods(['connect', 'doQuery', 'numrows', 'prepare', 'executeStatement', 'getStatementResult'])
+            ->onlyMethods(['connect', 'getConnection', 'prepare', 'executeStatement'])
             ->getMock();
-        $db->method('doQuery')->willReturn($mysqli_result);
-        $db->method('numrows')->willReturn(1);
-        $db->method('prepare')->willReturn($mysqli_stmt);
-        $db->method('executeStatement')->willReturnCallback(static function (): void {});
-        $db->method('getStatementResult')->willReturn($mysqli_result);
+        // Connection is only used to build the query
+        $db->method('getConnection')->willReturn($this->getDbConnection());
+        $db->method('prepare')->willReturnCallback(
+            fn(string $query) => new Statement($this->createStub(\Doctrine\DBAL\Statement::class), $query)
+        );
+        $db->method('executeStatement')->willReturnCallback(
+            static function (Statement $stmt) use ($db_data): void {
+                $stmt->setExecutionState(
+                    new Result(
+                        [array_values($db_data)],
+                        array_map(static fn(string $name) => ['name' => $name, 'table' => 'glpi_mocks'], array_keys($db_data))
+                    ),
+                    1
+                );
+            }
+        );
 
         // Check result with active unsanitization
         $db->setMustUnsanitizeData(true);

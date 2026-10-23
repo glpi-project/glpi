@@ -33,6 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Exception as DriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Result as DoctrineResult;
+use Doctrine\DBAL\SQL\Parser\Visitor;
+use Doctrine\DBAL\Statement as DoctrineStatement;
+use Glpi\DBAL\Doctrine\ConnectionFactory;
+use Glpi\DBAL\Doctrine\ConnectionParamsFactory;
 use Glpi\DBAL\Parts\BasePart;
 use Glpi\DBAL\Parts\Delete;
 use Glpi\DBAL\Parts\Insert;
@@ -42,6 +51,8 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\DBAL\Result;
+use Glpi\DBAL\Statement;
 use Glpi\Debug\Profile;
 use Glpi\Exception\Database\QueryException;
 use Glpi\Exception\Database\StatementException;
@@ -52,7 +63,6 @@ use Safe\DateTime;
 use function Safe\filesize;
 use function Safe\fopen;
 use function Safe\fread;
-use function Safe\ini_get;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\preg_split;
@@ -88,9 +98,14 @@ class DBmysql
     public $dbdefault          = "";
 
     /**
-     * The database handler
+     * The database connection.
      */
-    protected mysqli $dbh;
+    protected Connection $connection;
+
+    /**
+     * Error raised by the last connection attempt, if it failed.
+     */
+    private ?DBALException $connection_error = null;
 
     /**
      * Replica management
@@ -203,26 +218,6 @@ class DBmysql
 
     private bool $cache_disabled = false;
 
-    /**
-     * Maps prepared statements to their original SQL query string.
-     *
-     * Keyed by the mysqli_stmt object so each statement carries its own query
-     * (no shared connection-level state), with automatic cleanup once the
-     * statement is garbage collected.
-     *
-     * @var ?WeakMap<mysqli_stmt, string>
-     */
-    private ?WeakMap $statement_queries = null;
-
-    /**
-     * Number of the debug profile SQL query data registered on the last execution of each prepared statement.
-     *
-     * Used to add the warnings that are only known once the statement result set has been read.
-     *
-     * @var ?WeakMap<mysqli_stmt, int>
-     */
-    private ?WeakMap $statement_profile_queries = null;
-
     private DBmysqlIterator $iterator;
 
     /**
@@ -239,8 +234,6 @@ class DBmysql
      */
     private array $field_cache = [];
 
-    private int $transaction_level = 0;
-
     /**
      * Indicates whether the data fetched from DB must be unsanitized.
      */
@@ -248,16 +241,30 @@ class DBmysql
     private int $affected_rows = 0;
 
     /**
+     * MySQL error code returned for statements that cannot be prepared.
+     */
+    private const ER_UNSUPPORTED_PS = 1295;
+
+    /**
+     * DBAL parameter types matching the legacy `mysqli` types.
+     */
+    private const PARAMETER_TYPES = [
+        'i' => ParameterType::INTEGER,
+        'd' => ParameterType::STRING,
+        's' => ParameterType::STRING,
+        'b' => ParameterType::LARGE_OBJECT,
+    ];
+
+    /**
      * Constructor / Connect to the MySQL Database
      *
-     * @param int $choice host number (default NULL)
+     * @param int         $choice     host number (default NULL)
+     * @param ?Connection $connection Connection to use; when not provided, a connection is created from the current settings
      *
      * @return void
      */
-    public function __construct($choice = null)
+    public function __construct($choice = null, ?Connection $connection = null)
     {
-        $this->statement_queries = new WeakMap();
-
         // Handle separate DB instances per worker for unit tests (when enabled)
         // First runner will use the existing `glpi` database
         // Second runner will use `glpi_2`
@@ -268,7 +275,11 @@ class DBmysql
             $this->dbdefault = $this->dbdefault . '_' . $test_token;
         }
 
-        $this->connect($choice);
+        if ($connection !== null) {
+            $this->setConnection($connection);
+        } else {
+            $this->connect($choice);
+        }
     }
 
     /**
@@ -281,59 +292,62 @@ class DBmysql
      */
     public function connect($choice = null)
     {
+        $this->setConnection(
+            ConnectionFactory::create(ConnectionParamsFactory::fromProperties(get_object_vars($this), $choice))
+        );
+    }
+
+    /**
+     * Use the given connection, and establish it.
+     */
+    private function setConnection(Connection $connection): void
+    {
+        $this->connection = $connection;
+        $this->connection_error = null;
         $this->connected = false;
 
-        // Do not trigger errors nor throw exceptions at PHP level
-        // as we already extract error and log while fetching result.
-        mysqli_report(MYSQLI_REPORT_OFF);
-
-        $this->dbh = @new mysqli();
-        if ($this->dbssl) {
-            $this->dbh->ssl_set(
-                $this->dbsslkey,
-                $this->dbsslcert,
-                $this->dbsslca,
-                $this->dbsslcapath,
-                $this->dbsslcacipher
-            );
+        try {
+            // Connections are lazy, force it to be established to know whether the database is reachable.
+            $connection->getNativeConnection();
+        } catch (DBALException $e) {
+            $this->connection_error = $e;
+            return;
         }
 
-        if (is_array($this->dbhost)) {
-            // Round robin choice
-            $i    = ($choice ?? mt_rand(0, count($this->dbhost) - 1));
-            $host = $this->dbhost[$i];
-        } else {
-            $host = $this->dbhost;
+        $this->connected = true;
+
+        $this->setTimezone(date_default_timezone_get());
+    }
+
+    /**
+     * Get the Doctrine DBAL connection.
+     */
+    public function getConnection(): Connection
+    {
+        return $this->connection;
+    }
+
+    /**
+     * Get the native `mysqli` connection, for features that are not provided by Doctrine DBAL.
+     */
+    private function getNativeConnection(): mysqli
+    {
+        $native_connection = $this->connection->getNativeConnection();
+        if (!$native_connection instanceof mysqli) {
+            throw new LogicException('A `mysqli` connection is expected.');
         }
+        return $native_connection;
+    }
 
-        // Add timeout option to avoid infinite connection
-        $this->dbh->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
-
-        $hostport = explode(":", $host);
-        if (count($hostport) < 2) {
-            // Host
-            @$this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
-        } elseif (intval($hostport[1]) > 0) {
-            // Host:port
-            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, (int) $hostport[1]);
-        } else {
-            // :Socket
-            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, (int) ini_get('mysqli.default_port'), $hostport[1]);
-        }
-
-        if (!$this->dbh->connect_error) {
-            $this->setConnectionCharset();
-
-            // force mysqlnd to return int and float types correctly (not as strings)
-            $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
-
-            // Remove ONLY_FULL_GROUP_BY from SQL mode
-            $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
-
-            $this->connected = true;
-
-            $this->setTimezone(date_default_timezone_get());
-        }
+    /**
+     * Get the message and the code of the driver error that caused the given exception.
+     *
+     * @return array{string, int}
+     */
+    private static function getDriverError(DBALException $exception): array
+    {
+        $driver_exception = $exception->getPrevious() instanceof DriverException ? $exception->getPrevious() : $exception;
+        return [$driver_exception->getMessage(), (int) $driver_exception->getCode()];
     }
 
     /**
@@ -348,7 +362,7 @@ class DBmysql
      */
     public function escape($string)
     {
-        return $this->dbh->real_escape_string((string) $string);
+        return $this->getNativeConnection()->real_escape_string((string) $string);
     }
 
     /**
@@ -358,9 +372,9 @@ class DBmysql
      *
      * @param string|BasePart $query Query to execute
      *
-     * @return mysqli_result|true Returns true for add/delete/update; and mysqli_result for select
+     * @return Result|true Returns true for add/delete/update; and Result for select
      */
-    public function doQuery(BasePart|string $query): true|mysqli_result
+    public function doQuery(BasePart|string $query): true|Result
     {
         $is_stmt = false;
         if ($query instanceof BasePart) {
@@ -384,27 +398,27 @@ class DBmysql
         if ($is_stmt) {
             $stmt = $this->prepare($query);
             $this->executeStatement($stmt, $params);
-            $this->affected_rows = (int) $stmt->affected_rows;
+            $this->affected_rows = $stmt->getAffectedRows();
 
-            // getStatementResult() returns a mysqli_result for SELECT queries, and
-            // false for queries that do not produce a result set (add/delete/update).
-            $res = $this->getStatementResult($stmt);
-            if ($res === false) {
-                $res = true;
-            }
+            // There is no result set for queries like add/delete/update.
+            $res = $stmt->getResult() ?? true;
         } else {
-            $res = $this->dbh->query($query);
-            if (!$res) {
-                throw new QueryException(
-                    sprintf(
-                        'MySQL query error: %s (%d) in SQL query "%s".',
-                        $this->dbh->error,
-                        $this->dbh->errno,
-                        $query
-                    )
-                );
+            try {
+                $result = $this->connection->executeQuery($query);
+                $this->affected_rows = (int) $result->rowCount();
+                $res = $this->buildResult($result) ?? true;
+            } catch (DBALException $e) {
+                if (self::getDriverError($e)[1] !== self::ER_UNSUPPORTED_PS) {
+                    throw $this->createQueryException($query, $e);
+                }
+                // Statement cannot be prepared, execute it using the text protocol.
+                try {
+                    $this->affected_rows = (int) $this->connection->executeStatement($query);
+                    $res = true;
+                } catch (DBALException $e) {
+                    throw $this->createQueryException($query, $e);
+                }
             }
-            $this->affected_rows = (int) $this->dbh->affected_rows;
         }
 
         $duration = (microtime(true) - $start_time) * 1000;
@@ -413,7 +427,7 @@ class DBmysql
         $debug_data['rows'] = $this->getAffectedRows();
 
         // Trigger warning errors if any SQL warnings was produced by the query
-        // (prepared statements warnings are checked by executeStatement() and getStatementResult() methods)
+        // (prepared statements warnings are checked by executeStatement() method, once rows have been read)
         if (!$is_stmt) {
             $debug_data['warnings'] = $this->getSQLWarnings($query);
         }
@@ -434,6 +448,15 @@ class DBmysql
             $this->execution_time = $duration;
         }
         return $res;
+    }
+
+    private function createQueryException(string $query, DBALException $exception): QueryException
+    {
+        [$message, $code] = self::getDriverError($exception);
+        return new QueryException(
+            sprintf('MySQL query error: %s (%d) in SQL query "%s".', $message, $code, $query),
+            previous: $exception
+        );
     }
 
     private function getSQLWarnings(string $query): string
@@ -465,32 +488,47 @@ class DBmysql
      *
      * @param string $query Query to prepare
      *
-     * @return mysqli_stmt
+     * @return Statement
      */
     public function prepare($query)
     {
-        $res = $this->dbh->prepare($query);
-        if (!$res) {
-            throw new StatementException(
-                sprintf(
-                    'MySQL prepare error: %s (%d) in SQL query "%s".',
-                    $this->dbh->error,
-                    $this->dbh->errno,
-                    $query
-                )
-            );
+        try {
+            $statement = $this->connection->prepare($query);
+        } catch (DBALException $e) {
+            [$message, $code] = self::getDriverError($e);
+            throw new StatementException(sprintf('MySQL prepare error: %s (%d) in SQL query "%s".', $message, $code, $query), $code, $e);
         }
-        // Some subclasses wrap an existing mysqli handle without calling
-        // parent::__construct(), so the WeakMap may not be initialized yet.
-        $this->statement_queries ??= new WeakMap();
-        $this->statement_queries[$res] = $query;
-        return $res;
+        return new Statement($statement, $query);
+    }
+
+    /**
+     * Buffer a Doctrine DBAL result into a GLPI result.
+     *
+     * @return ?Result `null` if the query did not produce a result set (add/delete/update)
+     */
+    private function buildResult(DoctrineResult $res): ?Result
+    {
+        $column_count = $res->columnCount();
+        if ($column_count === 0) {
+            $res->free();
+            return null;
+        }
+
+        $columns = [];
+        for ($i = 0; $i < $column_count; $i++) {
+            // Source table is not exposed by Doctrine DBAL.
+            $columns[] = ['name' => $res->getColumnName($i), 'table' => ''];
+        }
+        $rows = $res->fetchAllNumeric();
+        $res->free();
+
+        return new Result($rows, $columns);
     }
 
     /**
      * Give result from a SQL result
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      * @param int           $i      Row offset to give
      * @param string|int    $field  Field to give
      *
@@ -499,7 +537,7 @@ class DBmysql
     public function result($result, $i, $field)
     {
         if (
-            $result && ($result->data_seek($i))
+            $result && ($result->seek($i))
             && ($data = $this->fetchArray($result))
             && isset($data[$field])
         ) {
@@ -511,75 +549,75 @@ class DBmysql
     /**
      * Number of rows
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      *
      * @return int number of rows
      */
     public function numrows($result)
     {
-        return (int) $result->num_rows;
+        return $result->numRows();
     }
 
     /**
      * Fetch array of the next row of a Mysql query
      * Please prefer fetchRow or fetchAssoc
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      *
      * @return string[]|null array results
      */
     public function fetchArray($result)
     {
-        return $this->decodeFetchResult($result->fetch_array());
+        return $this->decodeFetchResult($result->fetchArray());
     }
 
     /**
      * Fetch row of the next row of a Mysql query
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      *
      * @return mixed|null result row
      */
     public function fetchRow($result)
     {
-        return $this->decodeFetchResult($result->fetch_row());
+        return $this->decodeFetchResult($result->fetchRow());
     }
 
     /**
      * Fetch assoc of the next row of a Mysql query
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      *
      * @return string[]|null result associative array
      */
     public function fetchAssoc($result)
     {
-        return $this->decodeFetchResult($result->fetch_assoc());
+        return $this->decodeFetchResult($result->fetchAssoc());
     }
 
     /**
      * Fetch object of the next row of an SQL query
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      *
      * @return object|null
      */
     public function fetchObject($result)
     {
-        return $this->decodeFetchResult($result->fetch_object());
+        return $this->decodeFetchResult($result->fetchObject());
     }
 
     /**
      * Move current pointer of a Mysql result to the specific row
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      * @param int       $num    Row to move current pointer
      *
      * @return bool
      */
     public function dataSeek($result, $num)
     {
-        return $result->data_seek($num);
+        return $result->seek($num);
     }
 
     /**
@@ -589,45 +627,39 @@ class DBmysql
      */
     public function insertId()
     {
-        $insert_id = $this->dbh->insert_id;
-
-        if ($insert_id === 0) {
+        try {
+            return $this->connection->lastInsertId();
+        } catch (DBALException) {
             // See https://www.php.net/manual/en/mysqli.insert-id.php
-            // `$this->dbh->insert_id` will return 0 value if `INSERT` statement did not change the `AUTO_INCREMENT` value.
+            // There is no identity value if `INSERT` statement did not change the `AUTO_INCREMENT` value.
             // We have to retrieve it manually via `LAST_INSERT_ID()`.
-            /** @var mysqli_result $request */
-            $request = $this->dbh->query('SELECT LAST_INSERT_ID()');
-            /** @var array<int,mixed> $row */
-            $row = $request->fetch_row();
-            $insert_id = $row[0];
+            return $this->connection->fetchOne('SELECT LAST_INSERT_ID()');
         }
-        return $insert_id;
     }
 
     /**
      * Give number of fields of a Mysql result
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      *
      * @return int number of fields
      */
     public function numFields($result)
     {
-        return $result->field_count;
+        return $result->numFields();
     }
 
     /**
      * Give name of a field of a Mysql result
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      * @param int       $nb     ID of the field
      *
      * @return string name of the field
      */
     public function fieldName($result, $nb)
     {
-        $finfo = $result->fetch_fields();
-        return $finfo[$nb]->name;
+        return $result->getColumns()[$nb]['name'];
     }
 
 
@@ -871,7 +903,7 @@ class DBmysql
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
             return $this->field_cache[$table];
         }
-        /** @var mysqli_result $result */
+        /** @var Result $result */
         $result = $this->doQuery(sprintf("SHOW COLUMNS FROM %s", self::quoteName($table)));
         if ($this->numrows($result) > 0) {
             $this->field_cache[$table] = [];
@@ -913,7 +945,7 @@ class DBmysql
 
     /**
      * Get number of affected rows in previous MySQL operation
-     * Rely on a class variable since GLPI v12 and statements usage, as $this->dbh->affected_rows is not reliable when statements are used.
+     * Rely on a class variable since GLPI v12 and statements usage, as the connection affected rows count is not reliable when statements are used.
      *
      * @return int number of affected rows on success, and -1 if the last query failed.
      */
@@ -925,7 +957,7 @@ class DBmysql
     /**
      * Free result memory
      *
-     * @param mysqli_result $result MySQL result handler
+     * @param Result $result Query result
      *
      * @return bool
      */
@@ -942,7 +974,10 @@ class DBmysql
      */
     public function errno()
     {
-        return $this->dbh->errno;
+        if (!$this->connected) {
+            return $this->connection_error !== null ? self::getDriverError($this->connection_error)[1] : 0;
+        }
+        return $this->getNativeConnection()->errno;
     }
 
     /**
@@ -952,7 +987,10 @@ class DBmysql
      */
     public function error()
     {
-        return $this->dbh->error;
+        if (!$this->connected) {
+            return $this->connection_error !== null ? self::getDriverError($this->connection_error)[0] : '';
+        }
+        return $this->getNativeConnection()->error;
     }
 
     /**
@@ -962,8 +1000,9 @@ class DBmysql
      */
     public function close()
     {
-        if ($this->connected && isset($this->dbh)) {
-            return $this->dbh->close();
+        if ($this->connected) {
+            $this->connection->close();
+            return true;
         }
         return false;
     }
@@ -1063,17 +1102,17 @@ class DBmysql
     {
         // No translation, used in sysinfo
         $ret = [];
-        /** @var mysqli_result $req */
+        /** @var Result $req */
         $req = $this->doQuery("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
-        if (($data = $req->fetch_array())) {
+        if (($data = $req->fetchArray())) {
             if ($data['stype']) {
                 $ret['Server Software'] = $data['stype'];
             }
             if ($data['vers']) {
                 $ret['Server Version'] = $data['vers'];
             } else {
-                $ret['Server Version'] = $this->dbh->server_info;
+                $ret['Server Version'] = $this->getNativeConnection()->server_info;
             }
             if ($data['mode']) {
                 $ret['Server SQL Mode'] = $data['mode'];
@@ -1082,7 +1121,7 @@ class DBmysql
             }
         }
         $ret['Parameters'] = $this->dbuser . "@" . $this->dbhost . "/" . $this->dbdefault;
-        $ret['Host info']  = $this->dbh->host_info;
+        $ret['Host info']  = $this->getNativeConnection()->host_info;
 
         return $ret;
     }
@@ -1100,7 +1139,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK($name, 0)";
-        /** @var mysqli_result $result */
+        /** @var Result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1120,7 +1159,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK($name)";
-        /** @var mysqli_result $result */
+        /** @var Result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1344,7 +1383,7 @@ class DBmysql
         $query = $this->buildInsert($table, $params);
         $stmt = $this->prepare($query->getQuery());
         $this->executeStatement($stmt, $query->getParams());
-        $this->affected_rows = (int) $stmt->affected_rows;
+        $this->affected_rows = $stmt->getAffectedRows();
         return true;
     }
 
@@ -1466,7 +1505,7 @@ class DBmysql
         $query = $this->buildUpdate($table, $params, $where, $joins);
         $stmt = $this->prepare($query->getQuery());
         $this->executeStatement($stmt, $query->getParams());
-        $this->affected_rows = (int) $stmt->affected_rows;
+        $this->affected_rows = $stmt->getAffectedRows();
         return true;
     }
 
@@ -1487,7 +1526,7 @@ class DBmysql
         $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
         $stmt = $this->prepare($query->getQuery());
         $this->executeStatement($stmt, $query->getParams());
-        $this->affected_rows = (int) $stmt->affected_rows;
+        $this->affected_rows = $stmt->getAffectedRows();
         return true;
     }
 
@@ -1559,7 +1598,7 @@ class DBmysql
         $query = $this->buildDelete($table, $where, $joins);
         $stmt = $this->prepare($query->getQuery());
         $this->executeStatement($stmt, $query->getParams());
-        $this->affected_rows = (int) $stmt->affected_rows;
+        $this->affected_rows = $stmt->getAffectedRows();
         return true;
     }
 
@@ -1644,10 +1683,10 @@ class DBmysql
      */
     public function getVersion()
     {
-        /** @var mysqli_result $res */
+        /** @var Result $res */
         $res = $this->doQuery('SELECT version()');
         /** @var array<string,mixed> $req */
-        $req = $res->fetch_array();
+        $req = $res->fetchArray();
         $raw = $req['version()'];
         return $raw;
     }
@@ -1670,57 +1709,20 @@ class DBmysql
 
     private function isInTransaction(): bool
     {
-        return $this->transaction_level > 0;
-    }
-
-    private function isInNestedTransaction(): bool
-    {
-        return $this->transaction_level > 1;
-    }
-
-    private function formatSavePointName(int $level): string
-    {
-        // If we use a save point it means this is at least the second
-        // transaction, for example:
-        // 0 -> no transaction
-        // 1 -> start transaction
-        // 2 -> set save point
-        // We want the name of the first savepoint to be "savepoint_0", thus
-        // we need to remove 2 from the current transaction level.
-        $level -= 2;
-        return "savepoint_" . $level;
+        return $this->connection->isTransactionActive();
     }
 
     /**
-     * Use instead of `formatSavePointName` when running raw queries.
-     * This is needed because there are no methods in the mysqli object to
-     * rollback a savepoint so a raw query is needed.
-     */
-    private function formatAndQuoteSavePointName(int $level): string
-    {
-        return static::quoteName($this->formatSavePointName($level));
-    }
-
-    /**
-     * Starts a transaction
+     * Starts a transaction.
+     *
+     * Nested transactions are handled by Doctrine DBAL, using savepoints.
      */
     public function beginTransaction(): void
     {
-        if (!$this->isInTransaction()) {
-            // No transaction underway, simply start a fresh one.
-            $success = $this->dbh->begin_transaction();
-        } else {
-            // A transaction is already underway, create a new savepoint.
-            $savepoint = $this->formatSavePointName(
-                $this->transaction_level + 1
-            );
-            $success = $this->dbh->savepoint($savepoint);
-        }
-
-        if ($success) {
-            $this->transaction_level++;
-        } else {
-            throw new RuntimeException("Failed to start transaction.");
+        try {
+            $this->connection->beginTransaction();
+        } catch (DBALException $e) {
+            throw new RuntimeException("Failed to start transaction.", 0, $e);
         }
     }
 
@@ -1733,20 +1735,10 @@ class DBmysql
             throw new RuntimeException("Not in a transaction.");
         }
 
-        if (!$this->isInNestedTransaction()) {
-            // A simple transaction is underway, commit its data.
-            $success = $this->dbh->commit();
-        } else {
-            // A nested transaction is already underway, release the current savepoint.
-            $savepoint = $this->formatSavePointName($this->transaction_level);
-            $success = $this->dbh->release_savepoint($savepoint);
-        }
-
-        if ($success) {
-            $this->transaction_level--;
-        } else {
-            $exception = new RuntimeException("Failed to commit transaction.");
-            ;
+        try {
+            $this->connection->commit();
+        } catch (DBALException $e) {
+            $exception = new RuntimeException("Failed to commit transaction.", 0, $e);
 
             // Error is logged here since it is likely to caught and silented by the caller.
             // It may result in being logged twice, but it is probalby preferable than risking having it not logged
@@ -1770,32 +1762,21 @@ class DBmysql
             throw new RuntimeException("Not in a transaction.");
         }
 
-        if (!$this->isInNestedTransaction()) {
-            // A simple transaction is underway, roll it back.
-            $success = $this->dbh->rollback();
-            if ($success) {
-                $this->transaction_level--;
-            } else {
-                $exception = new RuntimeException("Failed to rollback transaction.");
+        try {
+            $this->connection->rollBack();
+        } catch (DBALException $e) {
+            $exception = new RuntimeException("Failed to rollback transaction.", 0, $e);
 
-                // Error is logged here since it is likely to caught and silented by the caller.
-                // It may result in being logged twice, but it is probalby preferable than risking having it not logged
-                // at all for a few specific cases.
-                global $PHPLOGGER;
-                $PHPLOGGER->error(
-                    'An error occurred during DB transaction rollback.',
-                    ['exception' => $exception]
-                );
-
-                throw $exception;
-            }
-        } else {
-            // A nested transaction is already underway, rollback to current savepoint.
-            $savepoint = $this->formatAndQuoteSavePointName(
-                $this->transaction_level
+            // Error is logged here since it is likely to caught and silented by the caller.
+            // It may result in being logged twice, but it is probalby preferable than risking having it not logged
+            // at all for a few specific cases.
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                'An error occurred during DB transaction rollback.',
+                ['exception' => $exception]
             );
-            $this->doQuery("ROLLBACK TO $savepoint");
-            $this->transaction_level--;
+
+            throw $exception;
         }
     }
 
@@ -1818,7 +1799,7 @@ class DBmysql
         //setup timezone
         if ($this->use_timezones) {
             date_default_timezone_set($timezone);
-            $this->dbh->query(sprintf("SET SESSION time_zone = %s", $this->quote($timezone)));
+            $this->connection->executeStatement(sprintf("SET SESSION time_zone = %s", $this->quote($timezone)));
             $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
         }
         return $this;
@@ -1893,8 +1874,7 @@ class DBmysql
      */
     public function quote($value, int $type = 2/*\PDO::PARAM_STR*/)
     {
-        return "'" . $this->escape($value) . "'";
-        //return $this->dbh->quote($value, $type);
+        return $this->connection->quote((string) $value);
     }
 
     /**
@@ -2000,7 +1980,8 @@ class DBmysql
     {
         $warnings = [];
 
-        if ($this->dbh->warning_count > 0 && $warnings_result = $this->dbh->query('SHOW WARNINGS')) {
+        $native_connection = $this->getNativeConnection();
+        if ($native_connection->warning_count > 0 && $warnings_result = $native_connection->query('SHOW WARNINGS')) {
             // Warnings to exclude
             $excludes = [];
 
@@ -2035,106 +2016,88 @@ class DBmysql
      */
     public function setConnectionCharset(): void
     {
-        DBConnection::setConnectionCharset($this->dbh, $this->use_utf8mb4);
-    }
-
-    /**
-     * Returns the original SQL query string associated with a prepared statement.
-     *
-     * @param mysqli_stmt $stmt Statement prepared through self::prepare()
-     *
-     * @return string The query string, or an empty string if the statement was not tracked.
-     */
-    private function getStatementQuery(mysqli_stmt $stmt): string
-    {
-        return $this->statement_queries[$stmt] ?? '';
+        DBConnection::setConnectionCharset($this->getNativeConnection(), $this->use_utf8mb4);
     }
 
     /**
      * Binds parameters to a prepared statement
      *
-     * @param mysqli_stmt $stmt   Statement to bind parameters to
+     * @param DoctrineStatement $stmt   Statement to bind parameters to
+     * @param string $query  SQL query of the statement
      * @param array<int|string, mixed> $params Parameters to bind
-     * @param list<'i'|'d'|'s'>|null $types  Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
+     * @param string|list<'i'|'d'|'s'|'b'>|null $types  Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
      *
      * @return void
      */
-    private function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
+    private function bindStatementParams(DoctrineStatement $stmt, string $query, array $params, string|array|null $types = null): void
     {
-        // Rely on the server count: a "?" inside a quoted literal is not a placeholder.
-        if ($stmt->param_count !== count($params)) {
+        $placeholders_count = $this->countPositionalParameters($query);
+        if ($placeholders_count !== count($params)) {
             throw new StatementException(
                 sprintf(
                     'Number of placeholders (%d) in SQL statement does not match number of values (%d). SQL: %s',
-                    $stmt->param_count,
+                    $placeholders_count,
                     count($params),
-                    $this->getStatementQuery($stmt)
+                    $query
                 )
             );
         }
 
-        if (count($params) === 0) {
-            return;
+        if (is_string($types)) {
+            $types = str_split($types);
         }
-        $params = array_values($params); //no need for the keys
-        foreach ($params as &$param) {
+
+        foreach (array_values($params) as $index => $param) {
             if ($param === false) {
                 $param = 0;
             }
-        }
-
-        if ($types === null) {
-            //no types specified, assume all strings
-            $types = str_pad('', count($params), 's');
-        } elseif (is_array($types)) {
-            $types = implode('', $types);
-        }
-
-        $query = $this->getStatementQuery($stmt);
-        try {
-            if (false === $stmt->bind_param($types, ...$params)) {
-                throw new StatementException(
-                    sprintf(
-                        'Error binding params in SQL query "%s": %s (%d).',
-                        $query,
-                        $stmt->error,
-                        $stmt->errno
-                    ),
-                    $stmt->errno
-                );
-            }
-        } catch (ArgumentCountError $e) {
-            $scount = substr_count($query, '?');
-            $vcount = count($params);
-            throw new StatementException(
-                sprintf(
-                    "Number of placeholders (%d) in SQL statement does not match number of values (%d).\n     SQL query:\n%s\n    Parameters:\n%s",
-                    $scount,
-                    $vcount,
-                    $query,
-                    var_export($params, true)
-                ),
-                $e->getCode(),
-                $e
+            $type = $types[$index] ?? 's';
+            $stmt->bindValue(
+                $index + 1,
+                $param,
+                self::PARAMETER_TYPES[$type] ?? throw new StatementException(sprintf('Invalid parameter type "%s".', $type))
             );
         }
     }
 
     /**
+     * Count the positional parameters (`?`) of a query.
+     * Question marks that are part of a string literal or of an identifier are not counted.
+     */
+    private function countPositionalParameters(string $query): int
+    {
+        $visitor = new class implements Visitor {
+            public int $count = 0;
+
+            public function acceptPositionalParameter(string $sql): void
+            {
+                $this->count++;
+            }
+
+            public function acceptNamedParameter(string $sql): void {}
+
+            public function acceptOther(string $sql): void {}
+        };
+        $this->connection->getDatabasePlatform()->createSQLParser()->parse($query, $visitor);
+
+        return $visitor->count;
+    }
+
+    /**
      * Executes a prepared statement
      *
-     * Warnings raised while the rows are read (e.g. implicit casts in WHERE clauses) are not known yet
-     * when the statement is executed, so the result set must be retrieved using self::getStatementResult().
+     * Its result set, if any, is then available through {@link Statement::getResult()}.
      *
-     * @param mysqli_stmt $stmt Statement to execute
+     * @param Statement $stmt Statement to execute
      * @param ?array<int|string, mixed> $params Parameters to bind
      * @param list<'i'|'d'|'s'>|null $types Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
      *
      * @return void
      */
-    public function executeStatement(mysqli_stmt $stmt, ?array $params = null, ?array $types = null): void
+    public function executeStatement(Statement $stmt, ?array $params = null, ?array $types = null): void
     {
-        $query = $this->getStatementQuery($stmt);
+        $query = $stmt->getQuery();
+        $handle = $stmt->getHandle();
         $debug_data = [
             'query' => $query,
             'time' => 0,
@@ -2146,27 +2109,29 @@ class DBmysql
         $start_time = microtime(true);
 
         if ($params !== null) {
-            $this->bindStatementParams($stmt, $params, $types);
+            $this->bindStatementParams($handle, $query, $params, $types);
         }
-        if (!$stmt->execute()) {
+        try {
+            $res = $handle->executeQuery();
+        } catch (DBALException $e) {
+            [$message, $code] = self::getDriverError($e);
             throw new StatementException(
-                sprintf(
-                    'MySQL statement error: %s (%d) in SQL query "%s".',
-                    $stmt->error,
-                    $stmt->errno,
-                    $query
-                ),
-                $stmt->errno
+                sprintf('MySQL statement error: %s (%d) in SQL query "%s".', $message, $code, $query),
+                $code,
+                $e
             );
         }
 
+        $affected_rows = (int) $res->rowCount();
+        $stmt->setExecutionState($this->buildResult($res), $affected_rows);
+
         $duration = (microtime(true) - $start_time) * 1000;
         $debug_data['time'] = $duration;
-        $debug_data['rows'] = (int) $stmt->affected_rows;
+        $debug_data['rows'] = $affected_rows;
         $debug_data['warnings'] = $this->getSQLWarnings($query);
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
-            $profile_query_num = Profile::getCurrent()->addSQLQueryData(
+            Profile::getCurrent()->addSQLQueryData(
                 $debug_data['query'],
                 $params,
                 $debug_data['time'],
@@ -2174,36 +2139,22 @@ class DBmysql
                 $debug_data['errors'],
                 $debug_data['warnings']
             );
-            if ($profile_query_num !== null) {
-                $this->statement_profile_queries ??= new WeakMap();
-                $this->statement_profile_queries[$stmt] = $profile_query_num;
-            }
         }
     }
 
     /**
-     * Get the result set of an executed prepared statement, and check the SQL warnings it produced.
+     * Get the result set of an executed prepared statement.
      *
-     * @param mysqli_stmt $stmt Executed statement
+     * Rows are buffered when the statement is executed, and SQL warnings they produced
+     * are checked at that time.
      *
-     * @return mysqli_result|false A result for queries that produce a result set (e.g. SELECT), false otherwise
+     * @param Statement $stmt Executed statement
+     *
+     * @return Result|false A result for queries that produce a result set (e.g. SELECT), false otherwise
      */
-    public function getStatementResult(mysqli_stmt $stmt): mysqli_result|false
+    public function getStatementResult(Statement $stmt): Result|false
     {
-        $res = $stmt->get_result();
-        if ($res !== false) {
-            // Warnings are sent by the server after the rows, they are only available once the result set has been read
-            $warnings = $this->getSQLWarnings($this->getStatementQuery($stmt));
-
-            $profile_query_num = $this->statement_profile_queries[$stmt] ?? null;
-            if ($profile_query_num !== null) {
-                unset($this->statement_profile_queries[$stmt]);
-                if ($warnings !== '') {
-                    Profile::getCurrent()->addSQLQueryWarnings($profile_query_num, $warnings);
-                }
-            }
-        }
-        return $res;
+        return $stmt->getResult() ?? false;
     }
 
     /**
@@ -2213,7 +2164,7 @@ class DBmysql
      * used to show before queries were turned into prepared statements. Placeholders
      * are filled left-to-right; keys are ignored, just like self::bindStatementParams()
      * does. This is only an approximation of what the server executed: values are
-     * rendered the way they read best, not the way mysqli coerces them.
+     * rendered the way they read best, not the way the driver coerces them.
      *
      * Values are appended to an output buffer instead of being substituted in place, so
      * a `?` inside a value can never be mistaken for the next placeholder.
@@ -2434,10 +2385,10 @@ class DBmysql
             static::quoteName('Variable_name'),
             implode(', ', array_map([$this, 'quote'], $variables))
         );
-        /** @var mysqli_result $result */
+        /** @var Result $result */
         $result = $this->doQuery($query);
         $values = [];
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $result->fetchAssoc()) {
             $values[$row['Variable_name']] = $row['Value'];
         }
         return $values;

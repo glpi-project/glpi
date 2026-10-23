@@ -40,6 +40,7 @@ use DBConnection;
 use DBmysql;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Exception\EarlyExitException;
+use Glpi\DBAL\Doctrine\ConnectionFactory;
 use Glpi\System\Requirement\DbTimezones;
 use mysqli;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -628,7 +629,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
              */
             public function __construct($dbh)
             {
-                $this->dbh = $dbh;
+                parent::__construct(null, ConnectionFactory::createFromNativeConnection($dbh));
             }
         };
         $timezones_requirement = new DbTimezones($db);

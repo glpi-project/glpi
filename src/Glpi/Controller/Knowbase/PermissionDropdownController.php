@@ -35,6 +35,8 @@
 namespace Glpi\Controller\Knowbase;
 
 use CommonDBTM;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Controller\AbstractController;
@@ -51,6 +53,8 @@ use User;
 
 final class PermissionDropdownController extends AbstractController
 {
+    public function __construct(private readonly Connection $connection) {}
+
     #[Route(
         "/Knowbase/PermissionDropdown",
         name: "knowbase_permission_dropdown",
@@ -163,21 +167,16 @@ final class PermissionDropdownController extends AbstractController
         string $field,
         int $knowbaseitems_id
     ): array {
-        /** @var \DBmysql $DB */
-        global $DB;
+        $query_builder = $this->connection->createQueryBuilder();
+        $ids = $query_builder
+            ->select($this->connection->quoteSingleIdentifier($field))
+            ->from($this->connection->quoteSingleIdentifier($relation_class::getTable()))
+            ->where($query_builder->expr()->eq(
+                'knowbaseitems_id',
+                $query_builder->createNamedParameter($knowbaseitems_id, ParameterType::INTEGER)
+            ))
+            ->fetchFirstColumn();
 
-        $used = [];
-        $iterator = $DB->request([
-            'SELECT' => $field,
-            'FROM'   => $relation_class::getTable(),
-            'WHERE'  => ['knowbaseitems_id' => $knowbaseitems_id],
-        ]);
-        foreach ($iterator as $row) {
-            if ($row[$field] !== null) {
-                $used[] = (int) $row[$field];
-            }
-        }
-
-        return $used;
+        return array_values(array_map(intval(...), array_filter($ids, static fn($id) => $id !== null)));
     }
 }

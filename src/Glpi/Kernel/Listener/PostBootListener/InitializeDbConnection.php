@@ -35,13 +35,22 @@
 namespace Glpi\Kernel\Listener\PostBootListener;
 
 use DBConnection;
+use Doctrine\DBAL\Connection;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final readonly class InitializeDbConnection implements EventSubscriberInterface
 {
+    public function __construct(
+        #[Autowire(service: 'doctrine.dbal.default_connection')]
+        private Connection $main_connection,
+        #[Autowire(service: 'doctrine.dbal.replica_connection')]
+        private Connection $replica_connection,
+    ) {}
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -59,7 +68,7 @@ final readonly class InitializeDbConnection implements EventSubscriberInterface
             include_once(GLPI_CONFIG_DIR . '/config_db.php');
 
             if (\class_exists('DB', false)) {
-                DBConnection::establishDBConnection(false, false);
+                DBConnection::establishDBConnection(false, false, $this->main_connection, $this->replica_connection);
 
                 if ($DB->connected && $DB->tableExists('glpi_configs')) {
                     // Indicates whether the existing DB data must be unsanitized on read operations,
