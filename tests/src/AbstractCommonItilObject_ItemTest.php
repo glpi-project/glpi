@@ -38,8 +38,10 @@ use CommonITILObject;
 use CommonItilObject_Item;
 use Computer;
 use DeviceSimcard;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Form\Form;
 use Item_DeviceSimcard;
+use Monitor;
 use User;
 
 abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
@@ -163,6 +165,51 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
         $this->assertEmpty(
             array_filter($errors, static fn(string $e): bool => str_contains($e, 'Undefined array key "name"')),
         );
+    }
+
+    public function testShowListForItemWithLinkedItems(): void
+    {
+        $itil_itemtype = $this->getTestedClass()::$itemtype_1;
+        if (!is_subclass_of($itil_itemtype, CommonITILObject::class)) {
+            $this->markTestSkipped('This test is only for ITIL items');
+        }
+
+        $this->login();
+        $entity = $this->getTestRootEntity(true);
+
+        // Computer connected to a monitor
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $monitor = $this->createItem(Monitor::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(Asset_PeripheralAsset::class, [
+            'itemtype_asset'      => Computer::class,
+            'items_id_asset'      => $computer->getID(),
+            'itemtype_peripheral' => Monitor::class,
+            'items_id_peripheral' => $monitor->getID(),
+        ]);
+
+        // ITIL object linked to the monitor only
+        $itil_item = $this->createItem($itil_itemtype, [
+            'name'        => __FUNCTION__ . ' on monitor',
+            'content'     => 'test',
+            'entities_id' => $entity,
+        ], ['content']);
+        $this->createItem($this->getTestedClass(), [
+            $itil_itemtype::getForeignKeyField() => $itil_item->getID(),
+            'itemtype'                           => Monitor::class,
+            'items_id'                           => $monitor->getID(),
+        ]);
+
+        ob_start();
+        $this->getTestedClass()::showListForItem($computer);
+        $out = ob_get_clean();
+
+        $this->assertStringContainsString(__FUNCTION__ . ' on monitor', $out);
     }
 
     public function testGetTabNameForItemUser(): void
