@@ -35,6 +35,7 @@
 namespace Glpi\Controller\Security;
 
 use Config;
+use Doctrine\DBAL\Connection;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
@@ -49,6 +50,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SessionTrackerController extends AbstractController
 {
+    public function __construct(private readonly Connection $connection) {}
+
     #[Route(
         path: "/Security/Session/{login_session_uid}/Revoke",
         name: "security_sessions_revoke",
@@ -57,17 +60,18 @@ final class SessionTrackerController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function revokeSession(Request $request): Response
     {
-        global $DB;
-
         $login_session_uid = $request->attributes->getString('login_session_uid');
-        $it = $DB->request([
-            'SELECT' => ['users_id'],
-            'FROM' => 'glpi_users_sessions',
-            'WHERE' => ['login_session_uid' => $login_session_uid],
-            'LIMIT' => 1,
-        ]);
-        $session = $it->current();
-        $users_id = $session['users_id'] ?? null;
+
+        $query_builder = $this->connection->createQueryBuilder();
+        $users_id = $query_builder
+            ->select('users_id')
+            ->from('glpi_users_sessions')
+            ->where($query_builder->expr()->eq('login_session_uid', $query_builder->createNamedParameter($login_session_uid)))
+            ->setMaxResults(1)
+            ->fetchOne();
+        if ($users_id === false) {
+            $users_id = null;
+        }
 
         if ($users_id !== Session::getLoginUserID() && !Config::canUpdate()) {
             throw new AccessDeniedHttpException();

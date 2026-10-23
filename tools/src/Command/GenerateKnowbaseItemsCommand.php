@@ -37,6 +37,7 @@ namespace Glpi\Tools\Command;
 use Entity_KnowbaseItem;
 use Glpi\Console\AbstractCommand;
 use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\Statement;
 use Glpi\UI\IllustrationManager;
 use Group_KnowbaseItem;
 use KnowbaseItem;
@@ -48,7 +49,6 @@ use KnowbaseItem_Profile;
 use KnowbaseItem_Revision;
 use KnowbaseItem_User;
 use KnowbaseItemTranslation;
-use mysqli_stmt;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -143,9 +143,9 @@ final class GenerateKnowbaseItemsCommand extends AbstractCommand
     /** @var string[] Available illustration ids, empty when assets are not built. */
     private array $illustrations = [];
 
-    private mysqli_stmt $article_stmt;
-    private mysqli_stmt $link_stmt;
-    private mysqli_stmt $visibility_stmt;
+    private Statement $article_stmt;
+    private Statement $link_stmt;
+    private Statement $visibility_stmt;
 
     private bool $in_transaction = false;
     private int $pending_rows = 0;

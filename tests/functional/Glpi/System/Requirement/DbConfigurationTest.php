@@ -123,12 +123,7 @@ class DbConfigurationTest extends GLPITestCase
                     foreach ($matches['name'] as $name) {
                         $row[$name] = $variables[$name] ?? null;
                     }
-                    $res = $this->getMockBuilder(\mysqli_result::class)
-                        ->disableOriginalConstructor()
-                        ->onlyMethods(['fetch_assoc'])
-                        ->getMock();
-                    $res->method('fetch_assoc')->willReturn($row);
-                    return $res;
+                    return $this->buildDbResult([$row]);
                 }
                 return false;
             }

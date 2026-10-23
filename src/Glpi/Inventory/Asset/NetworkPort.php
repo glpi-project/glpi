@@ -39,11 +39,11 @@ namespace Glpi\Inventory\Asset;
 use CommonDBTM;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\Statement;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
 use Glpi\Inventory\MainAsset\NetworkEquipment;
 use Glpi\Inventory\MainAsset\Printer;
-use mysqli_stmt;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPort_NetworkPort;
 use NetworkPort_Vlan;
@@ -74,8 +74,8 @@ class NetworkPort extends InventoryAsset
     private array $connection_ports = [];
     private stdClass $current_port;
     private stdClass $current_connection;
-    private mysqli_stmt $vlan_stmt;
-    private mysqli_stmt $pvlan_stmt;
+    private Statement $vlan_stmt;
+    private Statement $pvlan_stmt;
     protected Conf $conf;
 
     public function prepare(): array

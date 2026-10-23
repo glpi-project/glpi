@@ -37,6 +37,7 @@ require_once(__DIR__ . '/../front/_check_webserver_config.php');
 
 use Glpi\Application\View\ScriptType;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\Doctrine\ConnectionFactory;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
@@ -197,7 +198,7 @@ function step3(string $host, string $user, string $password, string $update): vo
         $db = new class ($link) extends DBmysql {
             public function __construct(mysqli $dbh)
             {
-                $this->dbh = $dbh;
+                parent::__construct(null, ConnectionFactory::createFromNativeConnection($dbh));
             }
         };
 
@@ -296,7 +297,7 @@ function step4(string $databasename, string $newdatabasename): void
     $db = new class ($link) extends DBmysql {
         public function __construct(mysqli $dbh)
         {
-            $this->dbh = $dbh;
+            parent::__construct(null, ConnectionFactory::createFromNativeConnection($dbh));
         }
     };
     $timezones_requirement = new DbTimezones($db);

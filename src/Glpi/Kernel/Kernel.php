@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
 use Glpi\DependencyInjection\Compiler\RemoveUnwantedTwigExtensionsPass;
@@ -152,6 +153,7 @@ final class Kernel extends BaseKernel
         $bundles[] = new FrameworkBundle();
         $bundles[] = new TwigBundle();
         $bundles[] = new TwigComponentBundle();
+        $bundles[] = new DoctrineBundle();
 
         if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             $dev_bundles_classes = [
@@ -260,6 +262,7 @@ final class Kernel extends BaseKernel
         $container->import($projectDir . '/dependency_injection/services.php', 'php');
         $container->import($projectDir . '/dependency_injection/twig.php', 'php');
         $container->import($projectDir . '/dependency_injection/twig_component.php', 'php');
+        $container->import($projectDir . '/dependency_injection/doctrine.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }
 

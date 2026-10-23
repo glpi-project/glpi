@@ -38,10 +38,10 @@ use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\Result;
 use Glpi\Debug\Profile;
 use Glpi\Exception\Database\StatementException;
 use Glpi\Tests\GLPITestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
@@ -553,7 +553,7 @@ class DBTest extends GLPITestCase
 
     /**
      * A BasePart that produces a result set (a SELECT) must make doQuery()
-     * return the corresponding mysqli_result, with its parameters bound.
+     * return the corresponding result, with its parameters bound.
      */
     public function testDoQueryWithBasePartReturningResult()
     {
@@ -564,8 +564,8 @@ class DBTest extends GLPITestCase
             ->setParams([42]);
 
         $result = $db->doQuery($select);
-        $this->assertInstanceOf(\mysqli_result::class, $result);
-        $this->assertSame('42', $result->fetch_assoc()['value']);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame('42', $result->fetchAssoc()['value']);
     }
 
     public function testListTables()
@@ -1116,13 +1116,6 @@ SQL,
                 'expected' => null,
             ];
 
-            // Fetch failed => false.
-            yield [
-                'method'   => $method,
-                'row'      => false,
-                'expected' => false,
-            ];
-
             // Data produced by GLPI <= 10.0 XSS cleaning process.
             yield [
                 'method'   => $method,
@@ -1170,26 +1163,28 @@ SQL,
         }
     }
 
-    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('fetchResultProvider')]
-    public function testDecodeFetchResult(string $method, mixed $row, mixed $expected)
+    public function testDecodeFetchResult(string $method, ?array $row, ?array $expected)
     {
-        if ($method === 'fetchObject') {
-            $row = is_array($row) ? (object) $row : $row;
-            $expected = is_array($expected) ? (object) $expected : $expected;
-        }
-
-        $mysqli_result = $this->createMock(\mysqli_result::class);
-        $mysqli_method = strtolower(preg_replace('/[A-Z]/', '_$0', $method)); // e.g. fetchArray -> fetch_array
-        $mysqli_result->method($mysqli_method)->willReturn($row);
+        $build_result = static fn() => new Result(
+            $row === null ? [] : [array_values($row)],
+            array_map(static fn(string $name) => ['name' => $name, 'table' => 'glpi_mocks'], array_keys($row ?? []))
+        );
+        $format = static fn(?array $values) => match (true) {
+            $values === null          => null,
+            $method === 'fetchArray'  => array_values($values) + $values,
+            $method === 'fetchRow'    => array_values($values),
+            $method === 'fetchObject' => (object) $values,
+            default                   => $values,
+        };
 
         $instance = new \DB();
 
         $instance->setMustUnsanitizeData(true);
-        $this->assertEquals($expected, $instance->{$method}($mysqli_result));
+        $this->assertEquals($format($expected), $instance->{$method}($build_result()));
 
         $instance->setMustUnsanitizeData(false);
-        $this->assertEquals($row, $instance->{$method}($mysqli_result));
+        $this->assertEquals($format($row), $instance->{$method}($build_result()));
     }
 
     public static function dataDrop()
@@ -1241,5 +1236,19 @@ SQL,
         $this->expectException(StatementException::class);
         $this->expectExceptionMessage('Number of placeholders (1) in SQL statement does not match number of values (2).');
         $instance->executeStatement($stmt, [1, 2]);
+    }
+
+    public function testExecuteStatementIgnoresQuotedQuestionMarks(): void
+    {
+        $instance = new \DB();
+        $stmt = $instance->prepare(
+            "SELECT ? AS `a?`, 'x?y' AS `b`, 'it''s?' AS `c`, 'back\\'slash?' AS `d`, \"double?\" AS `e`, ? AS `f`"
+        );
+        $instance->executeStatement($stmt, ['first', 'last']);
+
+        $this->assertSame(
+            ['a?' => 'first', 'b' => 'x?y', 'c' => "it's?", 'd' => "back'slash?", 'e' => 'double?', 'f' => 'last'],
+            $stmt->getResult()?->fetchAssoc()
+        );
     }
 }
