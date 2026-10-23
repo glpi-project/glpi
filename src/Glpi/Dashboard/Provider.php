@@ -66,6 +66,7 @@ use Item_OperatingSystem;
 use Location;
 use Log;
 use OperatingSystem;
+use OperatingSystemVersion;
 use Profile_User;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\DatetimeException;
@@ -80,6 +81,7 @@ use Toolbox;
 use User;
 
 use function Safe\mktime;
+use function Safe\preg_match;
 use function Safe\strtotime;
 
 /**
@@ -1545,6 +1547,196 @@ class Provider
         if (count($data) === 0) {
             $data = [
                 'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Count number of computers of an operating system family (Windows, Linux or macOS),
+     * grouped by operating system and version, by operating system only, or by major version.
+     *
+     * @param string $family 'windows', 'linux' or 'macos', matched on the operating system name
+     * @param string $group_by 'version', 'name' or 'major' (major version, e.g. "14" or "10.15" for macOS)
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public static function computersByOperatingSystemVersion(
+        string $family = 'windows',
+        string $group_by = 'version',
+        array $params = []
+    ): array {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Computer::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $no_data = [
+            'data'  => [
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        $families_names = [
+            'windows' => ['Windows'],
+            'linux'   => ['Linux', 'Ubuntu', 'Debian', 'Fedora', 'openSUSE'],
+            'macos'   => ['Mac OS', 'macOS'],
+        ];
+        if (!isset($families_names[$family]) || !in_array($group_by, ['version', 'name', 'major'], true) || !Computer::canView()) {
+            return $no_data;
+        }
+
+        $c_table          = Computer::getTable();
+        $ios_table        = Item_OperatingSystem::getTable();
+        $os_table         = OperatingSystem::getTable();
+        $os_version_table = OperatingSystemVersion::getTable();
+
+        $family_where = [];
+        foreach ($families_names[$family] as $name) {
+            $family_where[] = ["$os_table.name" => ['LIKE', '%' . $name . '%']];
+        }
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'     => [
+                    "$os_table.id AS os_id",
+                    "$os_table.name AS os_name",
+                    "$os_version_table.id AS version_id",
+                    "$os_version_table.name AS version_name",
+                    'COUNT DISTINCT' => "$c_table.id AS cpt",
+                ],
+                'FROM'       => $c_table,
+                'INNER JOIN' => [
+                    $ios_table => [
+                        'ON' => [
+                            $ios_table => 'items_id',
+                            $c_table   => 'id',
+                            [
+                                'AND' => [
+                                    "$ios_table.itemtype" => Computer::class,
+                                ],
+                            ],
+                        ],
+                    ],
+                    $os_table => [
+                        'ON' => [
+                            $os_table  => 'id',
+                            $ios_table => 'operatingsystems_id',
+                        ],
+                    ],
+                ],
+                'LEFT JOIN'  => [
+                    $os_version_table => [
+                        'ON' => [
+                            $os_version_table => 'id',
+                            $ios_table        => 'operatingsystemversions_id',
+                        ],
+                    ],
+                ],
+                'WHERE'      => [
+                    "$c_table.is_deleted"  => 0,
+                    "$c_table.is_template" => 0,
+                    ['OR' => $family_where],
+                ] + getEntitiesRestrictCriteria($c_table, '', '', true),
+                'GROUPBY'    => $group_by === 'name'
+                    ? ["$os_table.id", "$os_table.name"]
+                    : ["$os_table.id", "$os_table.name", "$os_version_table.id", "$os_version_table.name"],
+            ],
+            self::getFiltersCriteria($c_table, $params['apply_filters'])
+        );
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        // Each entry gets its count and the versions to search
+        $entries = [];
+        foreach ($db->request($criteria) as $result) {
+            $os_id        = (int) $result['os_id'];
+            $version_id   = (int) ($result['version_id'] ?? 0);
+            $version_name = (string) ($result['version_name'] ?? '');
+            switch ($group_by) {
+                case 'name':
+                    $key   = (string) $os_id;
+                    $label = $result['os_name'];
+                    break;
+                case 'major':
+                    // macOS 10.x major versions are "10.x", the next ones are "11", "12"...
+                    $major = preg_match('/^\s*(10\.\d+|\d+)/', $version_name, $matches) ? $matches[1] : '';
+                    $key   = $os_id . '-' . $major;
+                    $label = $major !== '' ? sprintf('%s %s', $result['os_name'], $major) : sprintf(__('%1$s (%2$s)'), $result['os_name'], __('None'));
+                    break;
+                default:
+                    $key   = $os_id . '-' . $version_id;
+                    $label = $version_name !== '' ? sprintf('%s %s', $result['os_name'], $version_name) : sprintf(__('%1$s (%2$s)'), $result['os_name'], __('None'));
+                    break;
+            }
+            $entries[$key] ??= [
+                'label'       => $label,
+                'number'      => 0,
+                'os_id'       => $os_id,
+                'version_ids' => [],
+            ];
+            $entries[$key]['number']       += (int) $result['cpt'];
+            $entries[$key]['version_ids'][] = $version_id;
+        }
+
+        if (count($entries) === 0) {
+            return $no_data;
+        }
+
+        usort(
+            $entries,
+            static fn(array $a, array $b): int => ($b['number'] <=> $a['number']) ?: strcmp($a['label'], $b['label'])
+        );
+
+        $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
+        // Some filters may be searched with OR criteria, they are grouped so they can't bypass the other criteria
+        if (count($search_criteria) > 0) {
+            $search_criteria = [['link' => 'AND', 'criteria' => $search_criteria]];
+        }
+        $url = Computer::getSearchURL();
+
+        $data = [];
+        foreach ($entries as $entry) {
+            $entry_criteria = [
+                [
+                    'link'       => 'AND',
+                    'field'      => 45, // operating system name
+                    'searchtype' => 'equals',
+                    'value'      => $entry['os_id'],
+                ],
+            ];
+            if ($group_by !== 'name') {
+                $versions_criteria = [];
+                foreach (array_unique($entry['version_ids']) as $version_id) {
+                    $versions_criteria[] = [
+                        'link'       => 'OR',
+                        'field'      => 46, // operating system version
+                        'searchtype' => 'equals',
+                        'value'      => $version_id,
+                    ];
+                }
+                $entry_criteria[] = ['link' => 'AND', 'criteria' => $versions_criteria];
+            }
+
+            $data[] = [
+                'number' => $entry['number'],
+                'label'  => $entry['label'],
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => array_merge($entry_criteria, $search_criteria),
+                    'reset'    => 'reset',
+                ]),
             ];
         }
 

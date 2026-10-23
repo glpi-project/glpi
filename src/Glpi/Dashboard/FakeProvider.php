@@ -699,6 +699,33 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function computersByOperatingSystemVersion(string $family = 'windows', string $group_by = 'version', array $params = []): array
+    {
+        $labels = match ($family . '-' . $group_by) {
+            'linux-name'    => ['Ubuntu', 'Debian GNU/Linux', 'Red Hat Enterprise Linux', 'Rocky Linux'],
+            'linux-version' => ['Ubuntu 24.04', 'Ubuntu 22.04', 'Debian GNU/Linux 12', 'Red Hat Enterprise Linux 9.4'],
+            'macos-major'   => ['macOS 15', 'macOS 14', 'macOS 13', 'Mac OS X 10.15'],
+            'macos-version' => ['macOS 15.1', 'macOS 14.7', 'macOS 13.6', 'Mac OS X 10.15.7'],
+            default         => ['Microsoft Windows 11 Professionnel 23H2', 'Microsoft Windows 11 Professionnel 24H2', 'Microsoft Windows 10 Professionnel 22H2', 'Microsoft Windows Server 2022 Standard'],
+        };
+
+        $data = [];
+        foreach ($labels as $label) {
+            $data[] = [
+                'number' => self::getObscureNumberForString($label, 300),
+                'label'  => $label,
+                'url'    => '#',
+            ];
+        }
+        usort($data, static fn(array $a, array $b): int => $b['number'] <=> $a['number']);
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Computer::getIcon(),
+        ];
+    }
+
     public static function ticketsByCategoryAndEntity(array $params = []): array
     {
         $labels = [];
