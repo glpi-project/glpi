@@ -798,6 +798,161 @@ class ProviderTest extends DbTestCase
         }
     }
 
+    public function testTicketsBySlaAndCategory(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $slm       = $this->createItem(\SLM::class, ['name' => 'test dashboard tickets by sla and category']);
+        $sla       = $this->createItem(\SLA::class, [
+            'name'            => 'test dashboard sla and category',
+            'type'            => \SLM::TTR,
+            'number_time'     => 4,
+            'definition_time' => 'hour',
+            'slms_id'         => $slm->getID(),
+        ]);
+        $sla_to_own = $this->createItem(\SLA::class, [
+            'name'            => 'test dashboard sla and category to own',
+            'type'            => \SLM::TTO,
+            'number_time'     => 4,
+            'definition_time' => 'hour',
+            'slms_id'         => $slm->getID(),
+        ]);
+        $parent_category = $this->createItem(\ITILCategory::class, ['name' => 'test sla parent']);
+        $categories      = [
+            'child' => $this->createItem(\ITILCategory::class, [
+                'name'              => 'test sla child',
+                'itilcategories_id' => $parent_category->getID(),
+            ])->getID(),
+            'other' => $this->createItem(\ITILCategory::class, ['name' => 'test sla other'])->getID(),
+            'none'  => 0,
+        ];
+
+        $tickets_ids = [];
+        // Dates far in the past so that no other ticket of the test database is counted
+        foreach (
+            [
+                'child on time'           => ['child', true, \Ticket::SOLVED, '2010-01-06 10:00:00', '2010-01-05 12:00:00'],
+                'child on time midnight'  => ['child', true, \Ticket::CLOSED, '2010-01-06 10:00:00', '2010-01-05 12:00:00', '2010-01-01 00:00:00'],
+                'child late'              => ['child', true, \Ticket::SOLVED, '2010-01-05 11:00:00', '2010-01-05 12:00:00'],
+                'child not solved'        => ['child', true, \Ticket::ASSIGNED, '2010-01-05 11:00:00', null],
+                'child without SLA'       => ['child', false, \Ticket::SOLVED, null, '2010-01-05 12:00:00'],
+                // Only its time to own SLA is filtered, it is not solved
+                'child to own not solved' => ['child', true, \Ticket::ASSIGNED, '2010-01-05 11:00:00', null, '2010-01-05 10:00:00', true],
+                'child to own on time'    => ['child', true, \Ticket::SOLVED, '2010-01-06 10:00:00', '2010-01-05 12:00:00', '2010-01-05 10:00:00', true],
+                'other on time'           => ['other', true, \Ticket::SOLVED, '2010-01-06 10:00:00', '2010-01-05 12:00:00'],
+                'other late 1'            => ['other', true, \Ticket::SOLVED, '2010-01-05 11:00:00', '2010-01-05 12:00:00'],
+                'other late 2'            => ['other', true, \Ticket::CLOSED, '2010-01-05 11:00:00', '2010-01-05 12:00:00'],
+                'other late 3'            => ['other', true, \Ticket::CLOSED, '2010-01-05 11:00:00', '2010-01-05 12:00:00'],
+                'none late'               => ['none', true, \Ticket::SOLVED, '2010-01-05 11:00:00', '2010-01-05 12:00:00'],
+            ] as $name => $values
+        ) {
+            [$category, $with_sla, $status, $time_to_resolve, $solvedate] = $values;
+            $ticket = $this->createItem(\Ticket::class, [
+                'name'        => "test dashboard tickets by sla and category $name",
+                'content'     => 'blablabla',
+                'entities_id' => $entity_id,
+            ]);
+            $DB->update(\Ticket::getTable(), [
+                'date'              => $values[5] ?? '2010-01-05 10:00:00',
+                'itilcategories_id' => $categories[$category],
+                'status'            => $status,
+                'slas_id_ttr'       => $with_sla ? $sla->getID() : 0,
+                'slas_id_tto'       => ($values[6] ?? false) ? $sla_to_own->getID() : 0,
+                'time_to_resolve'   => $time_to_resolve,
+                'solvedate'         => $solvedate,
+            ], ['id' => $ticket->getID()]);
+            $tickets_ids[$name] = $ticket->getID();
+        }
+
+        $dates_filter = [DatesFilter::getId() => ['2010-01-01', '2010-01-31']];
+        $get_values   = static function (array $result): array {
+            $values = [];
+            foreach ($result['data']['series'] as $serie) {
+                $values[$serie['name']] = array_column($serie['data'], 'value');
+            }
+            return $values;
+        };
+        $search_count = static function (string $url): int {
+            parse_str((string) parse_url($url, PHP_URL_QUERY), $search_params);
+            $search_data = \Search::getDatas(\Ticket::class, \Search::manageParams(\Ticket::class, $search_params));
+            return $search_data['data']['totalcount'];
+        };
+
+        // Only solved and closed tickets with a SLA are counted, the top categories are the last ones
+        $result = Provider::ticketsBySlaAndCategory(['apply_filters' => $dates_filter]);
+        $this->assertSame(['None', 'test sla parent > test sla child', 'test sla other'], $result['data']['labels']);
+        // Both series are always returned, in a fixed order, so colors stay consistent
+        $this->assertSame(['On time' => [0, 3, 1], 'Late' => [1, 1, 3]], $get_values($result));
+
+        // The search of a bar finds the tickets counted
+        foreach (
+            [
+                [0, 1, 3], // child on time, including the ticket created at the first second of the dates filter
+                [1, 2, 3], // other late
+                [1, 0, 1], // late without category
+            ] as [$serie_index, $label_index, $expected]
+        ) {
+            $url = $result['data']['series'][$serie_index]['data'][$label_index]['url'];
+            $this->assertSame($expected, $search_count($url), $url);
+        }
+
+        // The status filter is intersected with the solved statuses
+        $closed = Provider::ticketsBySlaAndCategory(['apply_filters' => $dates_filter + [TicketStatusFilter::getId() => \Ticket::CLOSED]]);
+        $this->assertSame(['test sla parent > test sla child', 'test sla other'], $closed['data']['labels']);
+        $this->assertSame(['On time' => [1, 0], 'Late' => [0, 2]], $get_values($closed));
+        $this->assertTrue(Provider::ticketsBySlaAndCategory([
+            'apply_filters' => $dates_filter + [TicketStatusFilter::getId() => \Ticket::ASSIGNED],
+        ])['data']['nodata'] ?? false);
+
+        // The category filter includes the sub categories
+        $filtered = Provider::ticketsBySlaAndCategory(['apply_filters' => $dates_filter + [ItilCategoryFilter::getId() => $parent_category->getID()]]);
+        $this->assertSame(['test sla parent > test sla child'], $filtered['data']['labels']);
+        $this->assertSame(['On time' => [3], 'Late' => [1]], $get_values($filtered));
+
+        // The SLA filter matches the time to own SLA, searched as "time to own OR time to resolve",
+        // which must not bypass the other criteria of the bar
+        $filtered = Provider::ticketsBySlaAndCategory(['apply_filters' => $dates_filter + [SlaFilter::getId() => $sla_to_own->getID()]]);
+        $this->assertSame(['On time' => [1], 'Late' => [0]], $get_values($filtered));
+        $this->assertSame(1, $search_count($filtered['data']['series'][0]['data'][0]['url']), 'the not solved ticket with the SLA to own must not be found');
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname]           = 0;
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $this->assertTrue(Provider::ticketsBySlaAndCategory(['apply_filters' => $dates_filter])['data']['nodata'] ?? false);
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        $this->assertTrue(Provider::ticketsBySlaAndCategory(['apply_filters' => $dates_filter])['data']['nodata'] ?? false);
+
+        // The new tickets right alone only allows to see new tickets, which are not solved
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        $this->assertTrue(Provider::ticketsBySlaAndCategory(['apply_filters' => $dates_filter])['data']['nodata'] ?? false);
+
+        // The "my tickets" right only allows to see the tickets the user is actor of
+        $hidden_id = $tickets_ids['none late'];
+        $DB->update(\Ticket::getTable(), ['users_id_recipient' => 0], ['id' => $hidden_id]);
+        $DB->delete(\Ticket_User::getTable(), ['tickets_id' => $hidden_id]);
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READMY;
+        $mine = Provider::ticketsBySlaAndCategory(['apply_filters' => $dates_filter]);
+        $this->assertSame(['test sla parent > test sla child', 'test sla other'], $mine['data']['labels'], 'ticket of another user must not be counted');
+    }
+
+    public function testFakeTicketsBySlaAndCategory(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'ticketsBySlaAndCategory');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::ticketsBySlaAndCategory(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertCount(2, $result['data']['series']);
+        foreach ($result['data']['series'] as $serie) {
+            $this->assertCount(count($result['data']['labels']), $serie['data']);
+        }
+    }
+
     public static function itemProvider()
     {
         return [
