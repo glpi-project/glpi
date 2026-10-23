@@ -590,11 +590,18 @@ TWIG, $twig_params);
      */
     public static function countForItemAndLinked(CommonDBTM $item)
     {
-        // Direct links
-        $nb = parent::countForItem($item);
+        global $DB;
+
+        $itil_table = static::$itemtype_1::getTable();
+
+        // Direct links, trashed ITIL objects are not displayed in the list
+        $params = static::getListForItemParams($item);
+        unset($params['SELECT'], $params['ORDER']);
+        $params['COUNT'] = 'cpt';
+        $params['WHERE'][$itil_table . '.is_deleted'] = 0;
+        $nb = (int) $DB->request($params)->current()['cpt'];
 
         // Linked items
-        $itil_table = static::$itemtype_1::getTable();
         $linkeditems = $item->getLinkedItems();
         foreach ($linkeditems as $type => $ids) {
             $type_item = getItemForItemtype($type);
