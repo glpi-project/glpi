@@ -59,4 +59,19 @@ class Item_DevicePowerSupply extends Item_Devices
             'serial' => 'equal',
         ];
     }
+
+    public function cleanDBonPurge()
+    {
+        global $DB;
+
+        $DB->update(
+            Plug::getTable(),
+            [
+                Plug::POWER_SUPPLY_FIELD => 0,
+            ],
+            [Plug::POWER_SUPPLY_FIELD => $this->getID()]
+        );
+
+        parent::cleanDBonPurge();
+    }
 }
