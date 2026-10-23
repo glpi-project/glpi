@@ -49,6 +49,7 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class QuestionTest extends DbTestCase
@@ -208,5 +209,28 @@ class QuestionTest extends DbTestCase
 
         // Assert: the conditions should be deleted
         $this->assertEmpty($question->getConfiguredValidationConditionsData());
+    }
+
+    public function testCloneKeyInInputDoesNotSkipExtraDataValidation(): void
+    {
+        // Arrange: create a form with a section
+        $builder = new FormBuilder();
+        $builder->addSection("My section");
+        $form = $this->createForm($builder);
+        $section = current($form->getSections());
+
+        // Assert: invalid extra data must still be refused
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid extra data for question");
+
+        // Act: add a question with invalid extra data and a `clone` key in
+        // the input, which is not a clone made by `Clonable::clone()`
+        (new Question())->add([
+            'forms_sections_id' => $section->getID(),
+            'name'              => "My question",
+            'type'              => QuestionTypeShortText::class,
+            'extra_data'        => '{"options":{"yes":"Yes"}}',
+            'clone'             => true,
+        ]);
     }
 }
