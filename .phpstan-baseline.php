@@ -674,12 +674,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/report.dynamic.php',
 ];
 $ignoreErrors[] = [
-    'message' => '#^Parameter \\#1 \\$itemtype of static method Search\\:\\:showList\\(\\) expects class\\-string\\<AllAssets\\|CommonDBTM\\>, class\\-string\\<AllAssets\\|CommonDBTM|\\Stat\\> given.$#',
-    'identifier' => 'argument.type',
-    'count' => 1,
-    'path' => __DIR__ . '/front/report.dynamic.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$by_itemtype of static method Report\\:\\:showNetworkReport\\(\\) expects \'Glpi\\\\\\\\Socket\'\\|\'Location\'\\|\'NetworkEquioment\'\\|null, \'Glpi\\\\\\\\Socket\'\\|\'Location\'\\|\'NetworkEquipment\'\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
