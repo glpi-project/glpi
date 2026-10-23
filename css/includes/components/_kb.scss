@@ -1378,6 +1378,11 @@ pre.kb-mermaid-drawn:not(:has(.kb-comment-highlight)) {
         display: block;
         padding: 0;
     }
+
+    // As in the read view, the highlight of a comment that quotes the source must be seen.
+    pre.kb-mermaid-source:has(.kb-comment-highlight) {
+        display: block;
+    }
 }
 
 .visibility-type-col .select2-selection {

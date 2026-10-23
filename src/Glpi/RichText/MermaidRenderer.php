@@ -42,7 +42,7 @@ use function Safe\preg_replace_callback;
  */
 final class MermaidRenderer
 {
-    private const BLOCK_PATTERN = '#<pre\b[^>]*>\s*<code\b[^>]*\bclass="[^"]*\blanguage-mermaid\b[^"]*"[^>]*>(?:(?!</pre>).)*</pre>#is';
+    private const BLOCK_PATTERN = '#<pre\b[^>]*>\s*<code\b[^>]*\bclass="[^"]*\blanguage-mermaid\b[^"]*"[^>]*>(?:(?!</pre>).)*+</pre>#is';
 
     /**
      * HTML fallback for callers that paste KB content into a rich-text editor
