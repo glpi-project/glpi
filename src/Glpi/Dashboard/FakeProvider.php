@@ -726,6 +726,24 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function computersByMonitorsNumber(array $params = []): array
+    {
+        $data = [];
+        foreach ([0 => 120, 1 => 600, 2 => 300, 3 => 40] as $nb_monitors => $max) {
+            $data[] = [
+                'number' => self::getObscureNumberForString('monitors' . $nb_monitors, $max),
+                'label'  => sprintf(_n('%d monitor', '%d monitors', $nb_monitors), $nb_monitors),
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Monitor::getIcon(),
+        ];
+    }
+
     public static function ticketsByCategoryAndEntity(array $params = []): array
     {
         $labels = [];

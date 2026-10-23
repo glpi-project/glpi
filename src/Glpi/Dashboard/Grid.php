@@ -1832,6 +1832,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
             ];
 
+            $cards["report_computers_by_monitors_number"] = [
+                'widgettype' => ['bar', 'hbar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by number of monitors"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByMonitorsNumber",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
             $cards["report_ticket_by_group_and_status"] = [
                 'widgettype' => ['hBars', 'stackedHBars'],
                 'itemtype'   => "\\Ticket",
