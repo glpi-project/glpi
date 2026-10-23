@@ -785,7 +785,12 @@ TWIG, $twig_params);
         if (count($linkeditems)) {
             foreach ($linkeditems as $ltype => $tab) {
                 foreach ($tab as $lID) {
-                    $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
+                    $restrict[] = [
+                        'AND' => [
+                            static::getTable() . '.' . static::$itemtype_2 => $ltype,
+                            static::getTable() . '.' . static::$items_id_2 => $lID,
+                        ],
+                    ];
                 }
             }
         }
