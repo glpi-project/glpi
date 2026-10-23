@@ -1886,6 +1886,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = '_users_id_assign';
                     $allowed_fields[] = '_groups_id_assign';
                     $allowed_fields[] = '_suppliers_id_assign';
+                    $allowed_fields[] = '_users_id_assign_deleted';
+                    $allowed_fields[] = '_groups_id_assign_deleted';
+                    $allowed_fields[] = '_suppliers_id_assign_deleted';
                 }
 
                 // Can only update initial fields if no followup or task already added
@@ -9757,6 +9760,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // Process deleted actors
         foreach ($actor_types as $actor_type) {
+            $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
             foreach ($actor_itemtypes as $actor_itemtype) {
                 $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
                 $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
@@ -9765,8 +9769,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     ? $this->input[$actors_deleted_input_key]
                     : [];
                 foreach ($deleted as $actor) {
-                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-                    $actor_obj->delete(['id' => $actor['id']]);
+                    $actor_obj = $this->getActorObjectForItem($actor_itemtype);
+                    // Only delete actors of the current item with the expected type
+                    if (
+                        $actor_obj->getFromDB($actor['id'])
+                        && (int) $actor_obj->fields[static::getForeignKeyField()] === $this->getID()
+                        && (int) $actor_obj->fields['type'] === $actor_type_value
+                    ) {
+                        $actor_obj->delete(['id' => $actor['id']]);
+                    }
                 }
             }
         }
