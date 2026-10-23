@@ -280,6 +280,217 @@ class PlanningTest extends DbTestCase
         ]));
     }
 
+    /**
+     * @return array{0: \ProjectTask, 1: int, 2: int}
+     */
+    private function createProjectTaskWithTeamUser(): array
+    {
+        $project = $this->createItem('Project', [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $task = $this->createItem('ProjectTask', [
+            'name'        => __FUNCTION__,
+            'projects_id' => $project->getID(),
+            'entities_id' => $this->getTestRootEntity(true),
+            'plan_start_date' => '2020-01-01 00:00:00',
+            'plan_end_date'   => '2020-01-01 01:00:00',
+        ]);
+
+        $old_user_id = (int) getItemByTypeName('User', 'glpi', true);
+        $new_user_id = (int) getItemByTypeName('User', TU_USER, true);
+
+        $this->createItem('ProjectTaskTeam', [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $old_user_id,
+        ]);
+
+        return [$task, $old_user_id, $new_user_id];
+    }
+
+    public static function invalidProjectTaskActorsProvider(): iterable
+    {
+        yield 'null old actor' => [[
+            'old_actor_itemtype' => null,
+            'old_actor_items_id' => null,
+        ]];
+        yield 'empty old actor' => [[
+            'old_actor_itemtype' => '',
+            'old_actor_items_id' => '',
+        ]];
+        yield 'missing old actor keys' => [[]];
+        yield 'invalid old actor itemtype' => [[
+            'old_actor_itemtype' => 'InvalidType',
+            'old_actor_items_id' => 1,
+        ]];
+        yield 'old actor does not exist' => [[
+            'old_actor_itemtype' => 'User',
+            'old_actor_items_id' => 99999999,
+        ]];
+        yield 'old actor has no team relation' => [[
+            'old_actor_itemtype' => 'Group',
+            'old_actor_items_id' => 99999999,
+        ]];
+    }
+
+    #[DataProvider('invalidProjectTaskActorsProvider')]
+    public function testUpdateEventTimesProjectTaskInvalidOldActor(array $old_actor): void
+    {
+        $this->login();
+
+        [$task, $old_user_id, $new_user_id] = $this->createProjectTaskWithTeamUser();
+
+        // Must not throw, and must not alter the team relation
+        $this->assertTrue(\Planning::updateEventTimes([
+            'itemtype'           => 'ProjectTask',
+            'items_id'           => $task->getID(),
+            'start'              => '2020-01-02 00:00:00',
+            'end'                => '2020-01-02 01:00:00',
+            'new_actor_itemtype' => 'User',
+            'new_actor_items_id' => $new_user_id,
+        ] + $old_actor));
+
+        $this->assertTrue($task->getFromDB($task->getID()));
+        $this->assertEquals('2020-01-02 00:00:00', $task->fields['plan_start_date']);
+
+        $team = new \ProjectTaskTeam();
+        $this->assertTrue($team->getFromDBByCrit([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $old_user_id,
+        ]));
+        $this->assertFalse($team->getFromDBByCrit([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $new_user_id,
+        ]));
+    }
+
+    public function testUpdateEventTimesProjectTaskInvalidNewActor(): void
+    {
+        $this->login();
+
+        [$task, $old_user_id] = $this->createProjectTaskWithTeamUser();
+
+        foreach (['InvalidType', 'User'] as $new_itemtype) {
+            // Must not throw, and must not alter the team relation
+            $this->assertTrue(\Planning::updateEventTimes([
+                'itemtype'           => 'ProjectTask',
+                'items_id'           => $task->getID(),
+                'start'              => '2020-01-02 00:00:00',
+                'end'                => '2020-01-02 01:00:00',
+                'old_actor_itemtype' => 'User',
+                'old_actor_items_id' => $old_user_id,
+                'new_actor_itemtype' => $new_itemtype,
+                'new_actor_items_id' => 99999999,
+            ]));
+
+            $team = new \ProjectTaskTeam();
+            $this->assertTrue($team->getFromDBByCrit([
+                'projecttasks_id' => $task->getID(),
+                'itemtype'        => 'User',
+                'items_id'        => $old_user_id,
+            ]));
+        }
+    }
+
+    public function testUpdateEventTimesProjectTaskMoveActor(): void
+    {
+        $this->login();
+
+        [$task, $old_user_id, $new_user_id] = $this->createProjectTaskWithTeamUser();
+
+        $this->assertTrue(\Planning::updateEventTimes([
+            'itemtype'           => 'ProjectTask',
+            'items_id'           => $task->getID(),
+            'start'              => '2020-01-02 00:00:00',
+            'end'                => '2020-01-02 01:00:00',
+            'old_actor_itemtype' => 'User',
+            'old_actor_items_id' => $old_user_id,
+            'new_actor_itemtype' => 'User',
+            'new_actor_items_id' => $new_user_id,
+        ]));
+
+        // Relation was moved to the new actor
+        $team = new \ProjectTaskTeam();
+        $this->assertFalse($team->getFromDBByCrit([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $old_user_id,
+        ]));
+        $this->assertTrue($team->getFromDBByCrit([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $new_user_id,
+        ]));
+    }
+
+    public function testUpdateEventTimesProjectTaskSameActorKeepsTeam(): void
+    {
+        $this->login();
+
+        [$task, $old_user_id] = $this->createProjectTaskWithTeamUser();
+
+        // Time-only change: old and new actors are identical
+        $this->assertTrue(\Planning::updateEventTimes([
+            'itemtype'           => 'ProjectTask',
+            'items_id'           => $task->getID(),
+            'start'              => '2020-01-02 00:00:00',
+            'end'                => '2020-01-02 01:00:00',
+            'old_actor_itemtype' => 'User',
+            'old_actor_items_id' => $old_user_id,
+            'new_actor_itemtype' => 'User',
+            'new_actor_items_id' => $old_user_id,
+        ]));
+
+        $this->assertTrue($task->getFromDB($task->getID()));
+        $this->assertEquals('2020-01-02 00:00:00', $task->fields['plan_start_date']);
+
+        $team = new \ProjectTaskTeam();
+        $this->assertTrue($team->getFromDBByCrit([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $old_user_id,
+        ]));
+    }
+
+    public function testUpdateEventTimesProjectTaskMoveToExistingActor(): void
+    {
+        $this->login();
+
+        [$task, $old_user_id, $new_user_id] = $this->createProjectTaskWithTeamUser();
+        $this->createItem('ProjectTaskTeam', [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $new_user_id,
+        ]);
+
+        $this->assertTrue(\Planning::updateEventTimes([
+            'itemtype'           => 'ProjectTask',
+            'items_id'           => $task->getID(),
+            'start'              => '2020-01-02 00:00:00',
+            'end'                => '2020-01-02 01:00:00',
+            'old_actor_itemtype' => 'User',
+            'old_actor_items_id' => $old_user_id,
+            'new_actor_itemtype' => 'User',
+            'new_actor_items_id' => $new_user_id,
+        ]));
+
+        // Old relation deleted, existing new relation kept
+        $team = new \ProjectTaskTeam();
+        $this->assertFalse($team->getFromDBByCrit([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $old_user_id,
+        ]));
+        $this->assertTrue($team->getFromDBByCrit([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $new_user_id,
+        ]));
+    }
+
     public function testAllDayEvents()
     {
         $this->login();
