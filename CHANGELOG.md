@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [13.0.0] unreleased
 
 ### Added
+- Documents, contracts and notes on cables.
 
 ### Changes
 
