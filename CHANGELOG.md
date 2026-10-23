@@ -31,6 +31,7 @@ The present file will list all changes made to the project; according to the
 - `csrf_token()` Twig function.
 - `getAjaxCsrfToken()` JavaScript function.
 - `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
+- Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig`.
 
 ## [12.0.1] unreleased
 
