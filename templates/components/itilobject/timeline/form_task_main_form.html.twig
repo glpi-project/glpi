@@ -298,7 +298,7 @@
                         showPlanUpdate{{ rand }}();
                     </script>
                     <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
-                            onclick="return confirm('{{ __('Confirm the deletion of planning?')|e('js') }}');">
+                            data-glpi-confirm="{{ __('Confirm the deletion of planning?') }}">
                         <i class="fas ti ti-calendar-off" aria-hidden="true"></i>
                         <span>{{ __('Unplan') }}</span>
                     </button>
@@ -388,7 +388,7 @@
 
             {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                 <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                        onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
+                        data-glpi-confirm="{{ __('Confirm the final deletion?') }}">
                 <i class="ti ti-trash" aria-hidden="true"></i>
                 <span>{{ _x('button', 'Delete permanently') }}</span>
                 </button>
