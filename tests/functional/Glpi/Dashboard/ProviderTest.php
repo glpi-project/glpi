@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Dashboard;
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
 use Glpi\Dashboard\FakeProvider;
@@ -42,6 +43,7 @@ use Glpi\Dashboard\Filters\GroupRequesterFilter;
 use Glpi\Dashboard\Filters\GroupTechFilter;
 use Glpi\Dashboard\Filters\ItilCategoryFilter;
 use Glpi\Dashboard\Filters\SlaFilter;
+use Glpi\Dashboard\Filters\StateFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Filters\UserTechFilter;
 use Glpi\Dashboard\Provider;
@@ -1511,6 +1513,87 @@ class ProviderTest extends DbTestCase
         }
 
         $this->assertGreaterThan(0, $nb_items);
+    }
+
+    public function testComputersByMonitorsNumber(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $state     = $this->createItem(\State::class, ['name' => 'test dashboard monitors state']);
+
+        foreach (
+            [
+                // computer => [monitors, deleted monitors, template monitors, is the computer deleted]
+                'no monitor'          => [0, 0, 0, false],
+                'one monitor'         => [1, 0, 0, false],
+                'one other monitor'   => [1, 1, 1, false],
+                'three monitors'      => [3, 0, 0, false],
+                'deleted computer'    => [2, 0, 0, true],
+            ] as $name => [$nb_monitors, $nb_deleted, $nb_templates, $is_deleted]
+        ) {
+            $computer = $this->createItem(\Computer::class, [
+                'name'        => "test dashboard computer $name",
+                'entities_id' => $entity_id,
+                'states_id'   => $state->getID(),
+                'is_deleted'  => (int) $is_deleted,
+            ]);
+            for ($i = 0; $i < $nb_monitors + $nb_deleted + $nb_templates; $i++) {
+                $monitor = $this->createItem(\Monitor::class, [
+                    'name'        => "test dashboard monitor $name $i",
+                    'entities_id' => $entity_id,
+                    'is_deleted'  => (int) ($i >= $nb_monitors && $i < $nb_monitors + $nb_deleted),
+                    'is_template' => (int) ($i >= $nb_monitors + $nb_deleted),
+                ]);
+                $this->assertTrue($DB->insert(Asset_PeripheralAsset::getTable(), [
+                    'itemtype_asset'      => \Computer::class,
+                    'items_id_asset'      => $computer->getID(),
+                    'itemtype_peripheral' => \Monitor::class,
+                    'items_id_peripheral' => $monitor->getID(),
+                ]));
+            }
+        }
+
+        // The state filter restricts the computers to the ones of this test
+        $params     = ['apply_filters' => [StateFilter::getId() => [$state->getID()]]];
+        $get_values = static fn(array $result): array => array_combine(
+            array_column($result['data'], 'label'),
+            array_column($result['data'], 'number')
+        );
+
+        // Deleted and template monitors are not counted, nor deleted computers, the missing numbers are filled
+        $result = Provider::computersByMonitorsNumber($params);
+        $this->assertSame([
+            '0 monitors' => 1,
+            '1 monitor'  => 2,
+            '2 monitors' => 0,
+            '3 monitors' => 1,
+        ], $get_values($result));
+        foreach ($result['data'] as $entry) {
+            $this->assertSame('', $entry['url']);
+        }
+
+        // Without the computer or the monitor right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Monitor::$rightname] = 0;
+        $this->assertTrue(Provider::computersByMonitorsNumber($params)['data']['nodata'] ?? false);
+        $_SESSION['glpiactiveprofile'][\Monitor::$rightname]  = READ;
+        $_SESSION['glpiactiveprofile'][\Computer::$rightname] = 0;
+        $this->assertTrue(Provider::computersByMonitorsNumber($params)['data']['nodata'] ?? false);
+    }
+
+    public function testFakeComputersByMonitorsNumber(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'computersByMonitorsNumber');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        $result = FakeProvider::computersByMonitorsNumber(['label' => 'test']);
+        $this->assertSame('test', $result['label']);
+        $this->assertNotEmpty($result['data']);
+        foreach ($result['data'] as $entry) {
+            $this->assertArrayHasKey('url', $entry);
+        }
     }
 
     public function testComputersByAge()
