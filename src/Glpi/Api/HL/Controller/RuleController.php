@@ -99,7 +99,7 @@ final class RuleController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
-                    'rule' => self::getDropdownTypeSchema(class: Rule::class, full_schema: 'Rule') + ['writeOnly' => true],
+                    'rule' => self::getDropdownTypeSchema(class: Rule::class, full_schema: 'Rule', params: ['writeOnly' => true]),
                     'criteria' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The criteria to use. See /Rule/Collection/{collection}/CriteriaCriteria for a complete list of criteria.',
@@ -184,7 +184,7 @@ final class RuleController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
-                    'rule' => self::getDropdownTypeSchema(class: Rule::class, full_schema: 'Rule') + ['writeOnly' => true],
+                    'rule' => self::getDropdownTypeSchema(class: Rule::class, full_schema: 'Rule', params: ['writeOnly' => true]),
                     'action_type' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The action to perform. See /Rule/Collection/{collection}/ActionType for a complete list of actions.',
@@ -242,36 +242,24 @@ final class RuleController extends AbstractController
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
                 ],
-                'criteria' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'readOnly' => true,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'RuleCriteria',
-                        'x-join' => [
-                            'table' => 'glpi_rulecriterias',
-                            'fkey' => 'id',
-                            'field' => 'rules_id',
-                            'primary-property' => 'id',
-                        ],
-                        'properties' => array_filter($schemas['RuleCriteria']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY),
-                    ],
-                ],
-                'actions' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'readOnly' => true,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'RuleAction',
-                        'x-join' => [
-                            'table' => 'glpi_ruleactions',
-                            'fkey' => 'id',
-                            'field' => 'rules_id',
-                            'primary-property' => 'id',
-                        ],
-                        'properties' => array_filter($schemas['RuleAction']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY),
-                    ],
-                ],
+                'criteria' => self::getChildrenTypeSchema(
+                    parent_class: Rule::class,
+                    class: RuleCriteria::class,
+                    name_field: null,
+                    full_schema: 'RuleCriteria',
+                    params: [
+                        'additional_properties' => array_filter($schemas['RuleCriteria']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY),
+                    ]
+                ),
+                'actions' => self::getChildrenTypeSchema(
+                    parent_class: Rule::class,
+                    class: RuleAction::class,
+                    name_field: null,
+                    full_schema: 'RuleAction',
+                    params: [
+                        'additional_properties' => array_filter($schemas['RuleAction']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY),
+                    ]
+                ),
                 'date_creation' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,

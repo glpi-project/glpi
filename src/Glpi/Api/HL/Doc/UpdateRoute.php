@@ -49,6 +49,8 @@ class UpdateRoute extends Route
                     schema: new SchemaReference($schema_name),
                     location: Parameter::LOCATION_BODY,
                 ),
+                new ParameterReference('If-Modified-Since'),
+                new ParameterReference('If-Unmodified-Since'),
             ],
             responses: [
                 new Response(

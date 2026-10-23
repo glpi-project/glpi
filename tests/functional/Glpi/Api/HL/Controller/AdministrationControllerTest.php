@@ -39,6 +39,7 @@ use Glpi\Event;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use UserEmail;
 
 class AdministrationControllerTest extends HLAPITestCase
 {
@@ -289,6 +290,13 @@ class AdministrationControllerTest extends HLAPITestCase
         ], [
             'id' => $user_id,
         ]);
+    }
+
+    private function getPicturePathFromUrl(string $picture_url): string
+    {
+        $this->assertStringContainsString('_pictures%2F', $picture_url);
+        $reference = substr($picture_url, strpos($picture_url, '_pictures%2F') + strlen('_pictures%2F'));
+        return GLPI_PICTURE_DIR . '/' . urldecode($reference);
     }
 
     public function testGetMyPicture()
@@ -753,5 +761,221 @@ class AdministrationControllerTest extends HLAPITestCase
             create_params: $create_params,
             extra_options: ['skip_update_test' => $itemtype === 'ApprovalSubstitute']
         );
+    }
+
+    public function testCRUDUserEmails(): void
+    {
+        $this->login();
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        $this->api->autoTestCRUD(
+            endpoint: "/Administration/User/$users_id/Email",
+            create_params: [
+                'user' => $users_id,
+                'email' => TU_USER . '@example.com',
+                'is_default' => 0,
+            ],
+            extra_options: ['skip_update_test' => true],
+        );
+    }
+
+    public function testCRUDNoRightsUserEmails(): void
+    {
+        global $DB;
+
+        $this->login('post-only', 'postonly');
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        $DB->insert(UserEmail::getTable(), [
+            'users_id' => $users_id,
+            'email' => TU_USER . '@example.com',
+            'is_default' => 0,
+        ]);
+        $useremail_id = $DB->insertId();
+
+        $this->api->call(new Request('GET', "/Administration/User/$users_id"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $this->api->call(new Request('GET', "/Administration/User/$users_id/Email/$useremail_id"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $create_request = new Request('POST', "/Administration/User/$users_id/Email");
+        $create_request->setParameter('email', TU_USER . '@example.com');
+        $this->api->call($create_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $this->api->call(new Request('DELETE', "/Administration/User/$users_id/Email/$useremail_id"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+    }
+
+    public function testAddDuplicateUserEmail()
+    {
+        $this->login();
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        $create_request = new Request('POST', "/Administration/User/$users_id/Email");
+        $create_request->setParameter('email', TU_USER . '@example.com');
+        // First call should succeed
+        $this->api->call($create_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+        // Second call should fail with a 409 status
+        $this->api->call($create_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->status(fn($status) => $this->assertEquals(409, $status));
+        });
+    }
+
+    public function testCreateUserWithPicture(): void
+    {
+        $bar_file_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+        $bar_file_content = file_get_contents($bar_file_path);
+
+        $this->login();
+
+        // multipart form data request with the document item's name, the file, and the entity ID
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="username"
+
+userwithpic
+-----boundary
+Content-Disposition: form-data; name="label"
+
+Car
+-----boundary
+Content-Disposition: form-data; name="picture_upload"; filename="bar.png"
+
+$bar_file_content
+-----boundary
+Content-Disposition: form-data; name="password"
+
+testuser
+-----boundary
+Content-Disposition: form-data; name="password2"
+
+testuser
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Administration/User', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertNotEmpty($content['picture']);
+                    $this->assertStringNotContainsString('picture.png', $content['picture']);
+                });
+        });
+
+        $this->api->call(new Request('GET', $new_location . '/Picture'), function ($call) {
+            $call->response
+                ->isOK()
+                ->content(function ($content) {
+                    $this->assertNotEmpty($content);
+                });
+        });
+    }
+
+    public function testUpdateUserPictureDeletesPreviousFile(): void
+    {
+        $first_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.png');
+        $second_picture_content = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+
+        $this->login();
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="username"
+
+{$this->getUniqueString()}
+-----boundary
+Content-Disposition: form-data; name="label"
+
+Car
+-----boundary
+Content-Disposition: form-data; name="picture_upload"; filename="bar.png"
+
+$first_picture_content
+-----boundary
+Content-Disposition: form-data; name="password"
+
+testuser
+-----boundary
+Content-Disposition: form-data; name="password2"
+
+testuser
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Administration/User', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        $original_picture_path = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$original_picture_path) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$original_picture_path) {
+                    $original_picture_path = $this->getPicturePathFromUrl($content['picture']);
+                });
+        });
+
+        $this->assertNotNull($original_picture_path);
+        $this->assertFileExists($original_picture_path);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="picture_upload"; filename="foo.png"
+
+$second_picture_content
+-----boundary--
+EOT;
+
+        $request = new Request('PATCH', $new_location, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $updated_picture_path = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$updated_picture_path) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$updated_picture_path) {
+                    $updated_picture_path = $this->getPicturePathFromUrl($content['picture']);
+                });
+        });
+
+        $this->assertNotNull($updated_picture_path);
+        $this->assertNotSame($original_picture_path, $updated_picture_path);
+        $this->assertFileDoesNotExist($original_picture_path);
+        $this->assertFileExists($updated_picture_path);
     }
 }

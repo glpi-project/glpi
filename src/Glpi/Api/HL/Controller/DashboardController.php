@@ -80,7 +80,7 @@ final class DashboardController extends AbstractController
                 $all_widgets = array_merge($all_widgets, $card['widgettype']);
             }
         }
-        $all_widgets = array_unique(array_filter($all_widgets));
+        $all_widgets = array_values(array_unique(array_filter($all_widgets)));
 
         $known_filters = array_map(static fn($f) => $f::getId(), Dashboard\Filter::getRegisteredFilterClasses());
 
@@ -107,46 +107,22 @@ final class DashboardController extends AbstractController
                         'enum' => $known_contexts,
                     ],
                     'user' => self::getDropdownTypeSchema(class: \User::class, full_schema: 'User'),
-                    'filters' => [
-                        'x-version-introduced' => '2.3.0',
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'DashboardFilter',
-                            'x-join' => [
-                                'table' => Dashboard\Filter::getTable(),
-                                'fkey' => 'id',
-                                'field' => 'dashboards_dashboards_id',
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'readOnly' => true,
-                                ],
-                            ],
-                        ],
-                    ],
-                    'items' => [
-                        'x-version-introduced' => '2.3.0',
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'DashboardItem',
-                            'x-join' => [
-                                'table' => Dashboard\Item::getTable(),
-                                'fkey' => 'id',
-                                'field' => 'dashboards_dashboards_id',
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'readOnly' => true,
-                                ],
-                            ],
-                        ],
-                    ],
+                    'filters' => self::getChildrenTypeSchema(
+                        parent_class: Dashboard\Dashboard::class,
+                        class: Dashboard\Filter::class,
+                        name_field: null,
+                        full_schema: 'DashboardFilter',
+                        graphql_only: true,
+                        params: ['x-version-introduced' => '2.3.0']
+                    ),
+                    'items' => self::getChildrenTypeSchema(
+                        parent_class: Dashboard\Dashboard::class,
+                        class: Dashboard\Item::class,
+                        name_field: null,
+                        full_schema: 'DashboardItem',
+                        graphql_only: true,
+                        params: ['x-version-introduced' => '2.3.0']
+                    ),
                 ],
             ],
             'DashboardFilter' => [

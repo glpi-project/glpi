@@ -77,10 +77,25 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 - System requirements now check that the security key files (`glpicrypt.key`, `oauth.pem` and `oauth.pub`) can be read, or created when missing.
+- New schemas/endpoints for Service Catalog information in High-Level API v2.4.
+- New schemas/endpoints for reminder translations in High-Level API v2.4.
+- New endpoints for viewing, adding and deleting emails for other users in High-Level API v2.4.
+- Endpoints to add or remove relations for links between assets and appliances in High-Level API v2.4.
+- New schemas/endpoints for custom asset definitions and fields in High-Level API v2.4.
+- New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
+- `supervisor` property added for `User` schema in High-Level API v2.4.
+- Support for `If-Modified-Since` and `If-Unmodified-Since` HTTP headers for some types of requests in High-Level API. This is not controlled by the API version.
+- Support for `multipart/form-data` requests in the High-Level API (not version-specific).
+- New schema properties to enable file/picture uploads in the High-Level API v2.4.
+  To remove a file/picture from fields that accept a single file/picture, you can send an empty string for the field.
+  File uploads also work with the existing update (PATCH) endpoints.
+- New schema properties to enable the selective removal of files/pictures for fields that accept multiple files/pictures in the High-Level API v2.4.
+- Support for converting inline images in rich text fields to attachments in the High-Level API v2.4.
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
 - Fixed import of exported forms containing a condition on an item dropdown with no item selected.
+- Changing the format of High-Level API responses for GET endpoints via the `Accept` header no longer changes the format of non-success responses.
 
 ### Deprecated
 
@@ -111,6 +126,11 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- `x-singleton` HLAPI schema property used as a hint for the GraphQL schema generator to create a query that returns a single item, instead of generating a search query.
+- `x-graphql-resolver` HLAPI schema property used as a hint for the GraphQL schema generator to specify a custom resolver for a schema or property.
+  Its use is not necessary unless there are extremely specific, complex requirements for data fetching where it is not possible to use the default resolvers.
+  As a general rule, if you can use the `ResourceAccessor` methods in your REST endpoints, then this property should not be needed.
+- `anyOf` HLAPI schema property used to indicate that a property can be one of multiple types. This is used in combination with the `x-graphql-resolver` property to specify a custom resolver that can return different types of data based on the context of the request.
 
 #### Changes
 

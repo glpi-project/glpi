@@ -508,6 +508,7 @@ HTML;
                 'Content-Type', 'Authorization', 'Origin', 'Accept',
                 'GLPI-API-Version', 'GLPI-Profile', 'GLPI-Entity', 'GLPI-Entity-Recursive',
                 'X-Debug-Mode', 'X-Requested-With', 'Accept-Language', 'Accept-Encoding', 'User-Agent',
+                'If-Modified-Since', 'If-Unmodified-Since',
             ];
             if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
                 $response_headers['Access-Control-Allow-Headers'][] = 'XDEBUG_TRIGGER';
