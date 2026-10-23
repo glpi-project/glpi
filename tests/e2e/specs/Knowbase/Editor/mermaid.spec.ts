@@ -336,6 +336,11 @@ test.describe('Knowledge Base Editor - Mermaid diagrams', () => {
         await expect(page.getByRole('figure', { name: 'Diagram' })).toContainText('Start');
         await expect(kb.getCommentHighlights()).toHaveCount(1);
         await expect(kb.getCommentHighlights()).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        await kb.editor.save();
+        await expect(kb.getCommentHighlights()).toHaveCount(1);
+        await expect(kb.getCommentHighlights()).toBeVisible();
     });
 
     test('Revision diff shows the changed diagram source with its change marks', async ({ page, profile, api }) => {

@@ -136,6 +136,12 @@ const config = {
                 resource.request = path.resolve(__dirname, 'lib/mermaid/unsupported-diagram.js');
             }
         }),
+        // KaTeX serves only for $$ math in Mermaid labels, and its CSS is not loaded.
+        new webpack.NormalModuleReplacementPlugin(/^katex$/, (resource) => {
+            if ((resource.contextInfo.issuer ?? '').startsWith(mermaid_dist)) {
+                resource.request = path.resolve(__dirname, 'lib/mermaid/no-katex.js');
+            }
+        }),
         new webpack.ProvidePlugin(
             {
                 process: 'process/browser.js', // required by some libs (including `popper.js`)

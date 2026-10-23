@@ -78,6 +78,16 @@ class MermaidRendererTest extends GLPITestCase
         );
     }
 
+    public function testAddArticleLinksWithLargeSource(): void
+    {
+        $block = '<pre><code class="language-mermaid">' . str_repeat('A --&gt; B', 10000) . '</code></pre>';
+
+        $this->assertSame(
+            $block . self::LINK,
+            (new MermaidRenderer())->addArticleLinks($block, 'http://localhost/glpi/front/knowbaseitem.form.php?id=12')
+        );
+    }
+
     public function testAddArticleLinksEscapesUrl(): void
     {
         $this->assertSame(
