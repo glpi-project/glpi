@@ -1198,6 +1198,15 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
+            return [
+                'data'  => ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
         $t_table  = Ticket::getTable();
         $statuses = Ticket::getAllStatusArray();
 
@@ -1215,8 +1224,7 @@ class Provider
                 'GROUPBY' => "$t_table.status",
                 'ORDERBY' => "$t_table.status ASC",
             ],
-            // limit count for profiles with limited rights
-            Ticket::getCriteriaFromProfile(),
+            $visibility_criteria,
             self::getFiltersCriteria($t_table, $params['apply_filters'])
         );
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
@@ -1374,7 +1382,7 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
-        $visibility_criteria = self::getVisibleTicketsCriteria();
+        $visibility_criteria = self::getTicketVisibilityCriteria();
         if ($visibility_criteria === null) {
             return [
                 'data'  => [
@@ -1483,7 +1491,7 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
-        $visibility_criteria = self::getVisibleTicketsCriteria();
+        $visibility_criteria = self::getTicketVisibilityCriteria();
         if ($visibility_criteria === null) {
             return [
                 'data'  => [
@@ -1601,8 +1609,8 @@ class Provider
             'icon'  => $params['icon'],
         ];
 
-        // Without any ticket right, the profile criteria don't restrict anything
-        if (!Ticket::canView()) {
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
             return $no_data;
         }
 
@@ -1622,7 +1630,7 @@ class Provider
                 ] + getEntitiesRestrictCriteria($ticket_table),
                 'GROUPBY' => "$ticket_table.itilcategories_id",
             ],
-            Ticket::getCriteriaFromProfile(),
+            $visibility_criteria,
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
         $iterator = $db->request($criteria);
@@ -1738,8 +1746,8 @@ class Provider
             'series' => [],
         ];
 
-        // Without any ticket right, the profile criteria don't restrict anything
-        if (!Ticket::canView()) {
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
             return [
                 'data'  => $data + ['nodata' => true],
                 'label' => $params['label'],
@@ -1785,7 +1793,7 @@ class Provider
                     'GROUPBY'   => ["$category_table.id", "$ticket_table.status"],
                     'ORDERBY'   => "$category_table.completename",
                 ],
-                Ticket::getCriteriaFromProfile(),
+                $visibility_criteria,
                 self::getFiltersCriteria($ticket_table, $params['apply_filters'])
             );
             $iterator = $db->request($criteria);
@@ -1842,8 +1850,8 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
-        // Without any ticket right, the profile criteria don't restrict anything
-        if (!Ticket::canView()) {
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
             return [
                 'data'  => ['nodata' => true],
                 'label' => $params['label'],
@@ -1897,7 +1905,7 @@ class Provider
                 'ORDERBY'   => "cpt DESC",
                 'LIMIT'     => $params['limit'],
             ],
-            Ticket::getCriteriaFromProfile(),
+            $visibility_criteria,
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
         $iterator = $db->request($criteria);
@@ -2127,8 +2135,8 @@ class Provider
             'icon'  => $params['icon'],
         ];
 
-        // Without any ticket right, the profile criteria don't restrict anything
-        if (!Ticket::canView()) {
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
             return $no_data;
         }
 
@@ -2178,7 +2186,7 @@ class Provider
                     "$ticket_table.is_deleted" => 0,
                 ] + getEntitiesRestrictCriteria($ticket_table),
             ],
-            Ticket::getCriteriaFromProfile(),
+            $visibility_criteria,
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
 
@@ -2503,28 +2511,17 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
-        // The profile criteria don't restrict anything for a profile that only has the UPDATE right,
-        // only the READNEWTICKET right (handled with READASSIGN only), or no right at all
-        $visibility_criteria = [];
-        if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-            $visibility_criteria = Ticket::getCriteriaFromProfile();
-            if (
-                Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)
-                && !Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)
-            ) {
-                $visibility_criteria['WHERE'][0]['OR'][] = [Ticket::getTable() . '.status' => Ticket::INCOMING];
-            }
-            if (!isset($visibility_criteria['WHERE'])) {
-                return [
-                    'data'  => [
-                        'labels' => [],
-                        'series' => [],
-                        'nodata' => true,
-                    ],
-                    'label' => $params['label'],
-                    'icon'  => $params['icon'],
-                ];
-            }
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
+            return [
+                'data'  => [
+                    'labels' => [],
+                    'series' => [],
+                    'nodata' => true,
+                ],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
         }
 
         $ticket_table       = Ticket::getTable();
@@ -2610,31 +2607,6 @@ class Provider
     }
 
     /**
-     * Get the criteria restricting tickets to the ones the current user can see.
-     *
-     * Ticket::getCriteriaFromProfile() returns no restriction for a profile that only has
-     * the UPDATE right, only the READNEWTICKET right (handled with READASSIGN only), or no right at all.
-     *
-     * @return array<string, mixed>|null criteria to merge into the query, null if no ticket is visible
-     */
-    private static function getVisibleTicketsCriteria(): ?array
-    {
-        if (Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-            return [];
-        }
-
-        $criteria = Ticket::getCriteriaFromProfile();
-        if (
-            Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)
-            && !Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)
-        ) {
-            $criteria['WHERE'][0]['OR'][] = [Ticket::getTable() . '.status' => Ticket::INCOMING];
-        }
-
-        return isset($criteria['WHERE']) ? $criteria : null;
-    }
-
-    /**
      * Count tickets grouped by their assigned group, with one serie per status.
      * A ticket assigned to several groups is counted in each of them,
      * tickets without any assigned group are counted in a "None" row.
@@ -2662,7 +2634,7 @@ class Provider
             'icon'  => $params['icon'],
         ];
 
-        $visibility_criteria = self::getVisibleTicketsCriteria();
+        $visibility_criteria = self::getTicketVisibilityCriteria();
         if ($visibility_criteria === null) {
             return $no_data;
         }
@@ -3327,20 +3299,9 @@ class Provider
             'icon'  => $params['icon'],
         ];
 
-        // The profile criteria don't restrict anything for a profile that only has the UPDATE right,
-        // only the READNEWTICKET right (handled with READASSIGN only), or no right at all
-        $visibility_criteria = [];
-        if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-            $visibility_criteria = Ticket::getCriteriaFromProfile();
-            if (
-                Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)
-                && !Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)
-            ) {
-                $visibility_criteria['WHERE'][0]['OR'][] = [Ticket::getTable() . '.status' => Ticket::INCOMING];
-            }
-            if (!isset($visibility_criteria['WHERE'])) {
-                return $no_data;
-            }
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
+            return $no_data;
         }
 
         // The dates filter defines the displayed range, its periods are computed below

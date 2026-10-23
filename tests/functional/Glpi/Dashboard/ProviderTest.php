@@ -908,6 +908,87 @@ class ProviderTest extends DbTestCase
     }
 
 
+    public function testTicketCardsVisibility(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $category  = $this->createItem(\ITILCategory::class, ['name' => 'test dashboard tickets visibility']);
+        foreach ([\Ticket::INCOMING, \Ticket::ASSIGNED] as $status) {
+            $ticket = $this->createItem(\Ticket::class, [
+                'name'              => "test dashboard tickets visibility $status",
+                'content'           => 'blablabla',
+                'entities_id'       => $entity_id,
+                'itilcategories_id' => $category->getID(),
+            ]);
+            $DB->update(\Ticket::getTable(), [
+                'date'   => '2011-06-15 10:00:00',
+                'status' => $status,
+            ], ['id' => $ticket->getID()]);
+        }
+
+        // The category filter restricts the cards to the tickets of this test
+        $params = ['apply_filters' => [
+            ItilCategoryFilter::getId() => $category->getID(),
+            DatesFilter::getId()        => ['2011-06-01', '2011-06-30'],
+        ]];
+        $sum_numbers = static fn(array $data): int => array_sum(array_column($data, 'number'));
+        $sum_series  = static fn(array $data): int => array_sum(array_map(
+            static fn(array $serie): int => array_sum(array_map(
+                static fn(mixed $value): int => (int) (is_array($value) ? $value['value'] : $value),
+                $serie['data']
+            )),
+            $data['series']
+        ));
+        // Number of tickets counted by each card, null when the card has no data
+        $cards = [
+            'ticketsByStatus'                  => static fn(): array => Provider::ticketsByStatus($params)['data'],
+            'ticketsByCategoryTree'            => static fn(): array => Provider::ticketsByCategoryTree($params)['data'],
+            'ticketsByRequesterLocation'       => static fn(): array => Provider::ticketsByRequesterLocation($params)['data'],
+            'openedTicketsByCategoryAndStatus' => static fn(): array => Provider::openedTicketsByCategoryAndStatus($params)['data'],
+            'ticketsBacklog'                   => static function () use ($params): array {
+                $data = Provider::ticketsBacklog('month', $params)['data'];
+                // Only the opened tickets serie, the other ones count the same tickets again
+                if (isset($data['series'][0])) {
+                    $data['series'] = [$data['series'][0]];
+                }
+                return $data;
+            },
+        ];
+        $count = static function (string $card) use ($cards, $sum_numbers, $sum_series): ?int {
+            $data = $cards[$card]();
+            if ($data['nodata'] ?? false) {
+                return null;
+            }
+            return isset($data['series']) ? $sum_series($data) : $sum_numbers($data);
+        };
+
+        foreach (array_keys($cards) as $card) {
+            $this->assertSame(2, $count($card), "$card: both tickets are visible with all rights");
+        }
+
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+
+        // The update right alone doesn't allow to see tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = UPDATE;
+        foreach (array_keys($cards) as $card) {
+            $this->assertNull($count($card), "$card: no ticket is visible with the update right only");
+        }
+
+        // The new tickets right alone only allows to see new tickets
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = \Ticket::READNEWTICKET;
+        foreach (array_keys($cards) as $card) {
+            $this->assertSame(1, $count($card), "$card: only the new ticket is visible with the new tickets right only");
+        }
+
+        // Without any ticket right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Ticket::$rightname] = 0;
+        foreach (array_keys($cards) as $card) {
+            $this->assertNull($count($card), "$card: no ticket is visible without ticket right");
+        }
+    }
+
     public function testTicketsByStatus()
     {
         $this->login();
