@@ -746,7 +746,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             foreach ($columns as $key => $val) {
                 $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">";
                 $header_end .= $key !== 'lname'
-                    ? "<a href='#' data-glpi-reload-tab='" . htmlescape("sort=$key&order=" . (($order == "ASC") ? "DESC" : "ASC") . "&start=0") . "'>" . htmlescape($val) . "</a>"
+                    ? "<button type='button' class='btn-as-link' data-glpi-reload-tab='" . htmlescape("sort=$key&order=" . (($order == "ASC") ? "DESC" : "ASC") . "&start=0") . "'>" . htmlescape($val) . "</button>"
                     : htmlescape($val);
                 $header_end .= "</th>";
             }

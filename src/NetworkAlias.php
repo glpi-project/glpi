@@ -146,7 +146,7 @@ class NetworkAlias extends FQDNLabel
 
         $content = htmlescape(self::getTypeName());
         if (isset($options['column_reload_params'][$column_name])) {
-            $content = "<a href='#' data-glpi-reload-tab='" . htmlescape($options['column_reload_params'][$column_name]) . "'>$content</a>";
+            $content = "<button type='button' class='btn-as-link' data-glpi-reload-tab='" . htmlescape($options['column_reload_params'][$column_name]) . "'>$content</button>";
         }
         $this_header = $base->addHeader($column_name, $content, $super, $father);
         $this_header->setItemType('NetworkAlias');
@@ -382,10 +382,10 @@ class NetworkAlias extends FQDNLabel
 
             echo "<table class='tab_cadre_fixe'><tr>";
 
-            echo "<th><a href='#' data-glpi-reload-tab='order=alias'>" . htmlescape(self::getTypeName(1))
-              . "</a></th>"; // Alias
-            echo "<th><a href='#' data-glpi-reload-tab='order=realname'>" . __s("Computer's name")
-              . "</a></th>";
+            echo "<th><button type='button' class='btn-as-link' data-glpi-reload-tab='order=alias'>" . htmlescape(self::getTypeName(1))
+              . "</button></th>"; // Alias
+            echo "<th><button type='button' class='btn-as-link' data-glpi-reload-tab='order=realname'>" . __s("Computer's name")
+              . "</button></th>";
             echo "<th>" . __s('Comments') . "</th>";
             echo "</tr>";
 

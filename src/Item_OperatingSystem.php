@@ -245,8 +245,8 @@ class Item_OperatingSystem extends CommonDBRelation
         foreach ($columns as $key => $val) {
             $val = htmlescape($val);
             $header_end .= "<th" . ($sort == $key ? " class='order_$order'" : '') . ">"
-                        . "<a href='#' data-glpi-reload-tab='"
-                          . htmlescape("sort=$key&order=" . (($order == "ASC") ? "DESC" : "ASC") . "&start=0") . "'>$val</a></th>";
+                        . "<button type='button' class='btn-as-link' data-glpi-reload-tab='"
+                          . htmlescape("sort=$key&order=" . (($order == "ASC") ? "DESC" : "ASC") . "&start=0") . "'>$val</button></th>";
         }
 
         $header_end .= "</tr>";

@@ -465,9 +465,9 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
         if (!isset($options['dont_display'][$column_name])) {
             $content = htmlescape(self::getTypeName());
             if (isset($options['column_reload_params'][$column_name])) {
-                $content = '<a href="#" data-glpi-reload-tab="' . htmlescape($options['column_reload_params'][$column_name]) . '">'
+                $content = '<button type="button" class="btn-as-link" data-glpi-reload-tab="' . htmlescape($options['column_reload_params'][$column_name]) . '">'
                     . $content
-                    . '</a>';
+                    . '</button>';
             }
             $father = $base->addHeader($column_name, $content, $super, $father);
             $father->setItemType('NetworkName');

@@ -1274,7 +1274,7 @@ class CronTask extends CommonDBTM
                 'itemtype' => CronTaskLog::class,
                 'id'       => $data['id'],
                 'date'     => sprintf(
-                    '<a href="#" data-glpi-reload-tab="crontasklogs_id=%s">%s</a>',
+                    '<button type="button" class="btn-as-link" data-glpi-reload-tab="crontasklogs_id=%s">%s</button>',
                     (int) $data['crontasklogs_id'],
                     htmlescape(Html::convDateTime($data['date']))
                 ),

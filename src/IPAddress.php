@@ -1117,7 +1117,7 @@ class IPAddress extends CommonDBChild
 
             $content = htmlescape(self::getTypeName());
             if (isset($options['column_reload_params'][$column_name])) {
-                $content = "<a href='#' data-glpi-reload-tab='" . htmlescape($options['column_reload_params'][$column_name]) . "'>$content</a>";
+                $content = "<button type='button' class='btn-as-link' data-glpi-reload-tab='" . htmlescape($options['column_reload_params'][$column_name]) . "'>$content</button>";
             }
 
             $father = $base->addHeader($column_name, $content, $super, $father);

@@ -1549,8 +1549,7 @@ $(() => {
     });
 
     // Reload the active tab with the given query parameters
-    $(document).on('click', '[data-glpi-reload-tab]', function(e) {
-        e.preventDefault();
+    $(document).on('click', '[data-glpi-reload-tab]', function() {
         reloadTab($(this).attr('data-glpi-reload-tab'));
     });
     // Same on change, with `%value%` replaced by the field value (attribute may be on an ancestor)
