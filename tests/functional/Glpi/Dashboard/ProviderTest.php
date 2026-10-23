@@ -42,6 +42,7 @@ use Glpi\Dashboard\Filters\GroupRequesterFilter;
 use Glpi\Dashboard\Filters\GroupTechFilter;
 use Glpi\Dashboard\Filters\ItilCategoryFilter;
 use Glpi\Dashboard\Filters\SlaFilter;
+use Glpi\Dashboard\Filters\StateFilter;
 use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Dashboard\Filters\UserTechFilter;
 use Glpi\Dashboard\Provider;
@@ -1511,6 +1512,134 @@ class ProviderTest extends DbTestCase
         }
 
         $this->assertGreaterThan(0, $nb_items);
+    }
+
+    public function testComputersByOperatingSystemVersion(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+        $state     = $this->createItem(\State::class, ['name' => 'test dashboard os version state']);
+
+        $oses     = [];
+        $versions = [];
+        foreach (
+            [
+                // os => [version => [number of computers, deleted computers, template computers, computers with the state]]
+                'test dashboard Microsoft Windows 11' => ['23H2' => [2, 1, 1, 1], '24H2' => [1, 0, 0, 0], '' => [1, 0, 0, 0]],
+                'test dashboard Ubuntu'               => ['24.04' => [2, 0, 0, 0]],
+                'test dashboard Debian GNU/Linux'     => ['12' => [1, 0, 0, 1]],
+                'test dashboard macOS'                => ['14.5' => [1, 0, 0, 0], '14.6' => [2, 0, 0, 0], '15.1' => [1, 0, 0, 0]],
+                'test dashboard Mac OS X'             => ['10.15.7' => [1, 0, 0, 0]],
+            ] as $os_name => $os_versions
+        ) {
+            $oses[$os_name] = $this->createItem(\OperatingSystem::class, ['name' => $os_name])->getID();
+            foreach ($os_versions as $version_name => [$nb, $nb_deleted, $nb_templates, $nb_with_state]) {
+                $version_id = 0;
+                if ($version_name !== '') {
+                    $versions[$version_name] ??= $this->createItem(\OperatingSystemVersion::class, ['name' => $version_name])->getID();
+                    $version_id = $versions[$version_name];
+                }
+                for ($i = 0; $i < $nb + $nb_deleted + $nb_templates; $i++) {
+                    $computer = $this->createItem(\Computer::class, [
+                        'name'        => "test dashboard computer $os_name $version_name $i",
+                        'entities_id' => $entity_id,
+                        'is_deleted'  => (int) ($i >= $nb && $i < $nb + $nb_deleted),
+                        'is_template' => (int) ($i >= $nb + $nb_deleted),
+                        'states_id'   => $i < $nb_with_state ? $state->getID() : 0,
+                    ]);
+                    $this->createItem(\Item_OperatingSystem::class, [
+                        'itemtype'                   => \Computer::class,
+                        'items_id'                   => $computer->getID(),
+                        'operatingsystems_id'        => $oses[$os_name],
+                        'operatingsystemversions_id' => $version_id,
+                    ]);
+                }
+            }
+        }
+
+        // Only the operating systems of this test are checked, other computers may exist in the test database
+        $get_values = static function (array $result): array {
+            $values = [];
+            foreach ($result['data'] as $entry) {
+                if (str_contains($entry['label'], 'test dashboard')) {
+                    $values[$entry['label']] = $entry['number'];
+                }
+            }
+            return $values;
+        };
+        $search_count = static function (string $url): int {
+            parse_str((string) parse_url($url, PHP_URL_QUERY), $search_params);
+            $search_data = \Search::getDatas(\Computer::class, \Search::manageParams(\Computer::class, $search_params));
+            return $search_data['data']['totalcount'];
+        };
+
+        // Deleted and template computers are not counted, the biggest counts first
+        $windows = Provider::computersByOperatingSystemVersion('windows', 'version');
+        $this->assertSame([
+            'test dashboard Microsoft Windows 11 23H2'   => 2,
+            'test dashboard Microsoft Windows 11 (None)' => 1,
+            'test dashboard Microsoft Windows 11 24H2'   => 1,
+        ], $get_values($windows));
+        foreach ($windows['data'] as $entry) {
+            if (str_contains($entry['label'], 'test dashboard')) {
+                $this->assertSame($entry['number'], $search_count($entry['url']), $entry['label']);
+            }
+        }
+
+        $this->assertSame([
+            'test dashboard Ubuntu 24.04'        => 2,
+            'test dashboard Debian GNU/Linux 12' => 1,
+        ], $get_values(Provider::computersByOperatingSystemVersion('linux', 'version')));
+
+        $distributions = Provider::computersByOperatingSystemVersion('linux', 'name');
+        $this->assertSame([
+            'test dashboard Ubuntu'           => 2,
+            'test dashboard Debian GNU/Linux' => 1,
+        ], $get_values($distributions));
+
+        // macOS 10.x major versions are "10.x", the next ones are "11", "12"...
+        $majors = Provider::computersByOperatingSystemVersion('macos', 'major');
+        $this->assertSame([
+            'test dashboard macOS 14'          => 3,
+            'test dashboard Mac OS X 10.15'    => 1,
+            'test dashboard macOS 15'          => 1,
+        ], $get_values($majors));
+        foreach (array_merge($distributions['data'], $majors['data']) as $entry) {
+            if (str_contains($entry['label'], 'test dashboard')) {
+                $this->assertSame($entry['number'], $search_count($entry['url']), $entry['label']);
+            }
+        }
+
+        // The dashboard filters are applied
+        $filtered = Provider::computersByOperatingSystemVersion('windows', 'version', [
+            'apply_filters' => [StateFilter::getId() => [$state->getID()]],
+        ]);
+        $this->assertSame(['test dashboard Microsoft Windows 11 23H2' => 1], $get_values($filtered));
+        $this->assertSame(1, $search_count($filtered['data'][0]['url']));
+
+        // Unknown family or grouping
+        $this->assertTrue(Provider::computersByOperatingSystemVersion('beos', 'version')['data']['nodata'] ?? false);
+        $this->assertTrue(Provider::computersByOperatingSystemVersion('windows', 'kernel')['data']['nodata'] ?? false);
+
+        // Without the computer right, nothing is exposed
+        $_SESSION['glpiactiveprofile'][\Computer::$rightname] = 0;
+        $this->assertTrue(Provider::computersByOperatingSystemVersion('windows', 'version')['data']['nodata'] ?? false);
+    }
+
+    public function testFakeComputersByOperatingSystemVersion(): void
+    {
+        // Demo mode must not run the real query
+        $method = new \ReflectionMethod(FakeProvider::class, 'computersByOperatingSystemVersion');
+        $this->assertSame(FakeProvider::class, $method->getDeclaringClass()->getName());
+
+        foreach (['windows' => 'version', 'linux' => 'name', 'macos' => 'major'] as $family => $group_by) {
+            $result = FakeProvider::computersByOperatingSystemVersion($family, $group_by, ['label' => 'test']);
+            $this->assertSame('test', $result['label']);
+            $this->assertNotEmpty($result['data']);
+            foreach ($result['data'] as $entry) {
+                $this->assertArrayHasKey('url', $entry);
+            }
+        }
     }
 
     public function testComputersByAge()
