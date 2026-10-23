@@ -52,6 +52,7 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
+use DBmysql;
 use Document_Item;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
@@ -60,6 +61,8 @@ use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
+use Glpi\Api\HL\Search\PolymorphicJoin;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -710,15 +713,7 @@ final class ITILController extends AbstractController
                     },
                     'items' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
-                        //TODO remove mapper and properties. only exists for REST.
-                        'x-mapped-from' => 'id',
-                        'x-mapper' => function ($v) use ($api_version, $itil_type) {
-                            $item = $itil_type::getById($v);
-                            if ($item) {
-                                return self::getCleanTeam($item, $api_version);
-                            }
-                            return [];
-                        },
+                        'x-join' => self::getTeamPolymorphicJoin($itil_type),
                         'oneOf' => ['UserTeamMember', 'GroupTeamMember', 'SupplierTeamMember'],
                         'discriminator' => [
                             'propertyName' => '_type',
@@ -732,9 +727,24 @@ final class ITILController extends AbstractController
                             '_type' => ['type' => Doc\Schema::TYPE_STRING],
                             'id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'readOnly' => true],
                             'role' => ['type' => Doc\Schema::TYPE_STRING, 'enum' => ['requester', 'assigned', 'observer', null]],
-                            'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
-                            'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
-                            'supplier' => self::getDropdownTypeSchema(class: Supplier::class, full_schema: 'Supplier'),
+                            'user' => self::getTeamMemberObjectSchema(
+                                schema: self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                                id_column: 'users_id',
+                                name_property: 'username',
+                                name_column: 'user_name'
+                            ),
+                            'group' => self::getTeamMemberObjectSchema(
+                                schema: self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                                id_column: 'groups_id',
+                                name_property: 'name',
+                                name_column: 'group_name'
+                            ),
+                            'supplier' => self::getTeamMemberObjectSchema(
+                                schema: self::getDropdownTypeSchema(class: Supplier::class, full_schema: 'Supplier'),
+                                id_column: 'suppliers_id',
+                                name_property: 'name',
+                                name_column: 'supplier_name'
+                            ),
                         ],
                     ],
                 ];
@@ -2331,6 +2341,85 @@ EOT,
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
         return ResourceAccessor::deleteBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $request->getParameters());
+    }
+
+    /**
+     * Get the polymorphic join definition for the team members of an ITIL object.
+     * Each type of team member comes from a different link table.
+     * @param class-string<CommonITILObject> $itil_type
+     * @return array<string, mixed>
+     * @see PolymorphicJoin
+     */
+    private static function getTeamPolymorphicJoin(string $itil_type): array
+    {
+        $item = getItemForItemtype($itil_type);
+        if (!$item instanceof CommonITILObject) {
+            throw new RuntimeException(sprintf('Unexpected type `%s`.', $itil_type));
+        }
+        $branch_alias = PolymorphicJoin::BRANCH_TABLE_ALIAS;
+
+        $role_cases = '';
+        foreach ([Team::ROLE_REQUESTER, Team::ROLE_ASSIGNED, Team::ROLE_OBSERVER] as $role) {
+            $role_cases .= sprintf(' WHEN %d THEN %s', $role, DBmysql::quoteValue(self::getRoleName($role)));
+        }
+        $role_expression = new QueryExpression('CASE ' . DBmysql::quoteName("{$branch_alias}.type") . $role_cases . ' END');
+
+        /** @var array<string, array{property: string, class: class-string<CommonDBTM>, link_class: class-string<CommonDBTM>}> $members */
+        $members = [
+            'UserTeamMember' => ['property' => 'user', 'class' => User::class, 'link_class' => $item->userlinkclass],
+            'GroupTeamMember' => ['property' => 'group', 'class' => Group::class, 'link_class' => $item->grouplinkclass],
+            'SupplierTeamMember' => ['property' => 'supplier', 'class' => Supplier::class, 'link_class' => $item->supplierlinkclass],
+        ];
+        $branches = [];
+        foreach ($members as $schema_name => $member) {
+            $member_fkey = $member['class']::getForeignKeyField();
+            $branches[$schema_name] = [
+                'table' => $member['link_class']::getTable(),
+                'field' => $itil_type::getForeignKeyField(),
+                // Like CommonITILObject::getTeam(), only keep links to existing members
+                'joins' => [
+                    'INNER JOIN' => [
+                        $member['class']::getTable() . ' AS member' => [
+                            'ON' => [
+                                'member' => 'id',
+                                $branch_alias => $member_fkey,
+                            ],
+                        ],
+                    ],
+                ],
+                'columns' => [
+                    'id' => "{$branch_alias}.id",
+                    'role' => $role_expression,
+                    $member_fkey => "{$branch_alias}.{$member_fkey}",
+                    "{$member['property']}_name" => 'member.name',
+                    PolymorphicJoin::ORDER_COLUMN => 'member.name',
+                ],
+                'properties' => ['_type', 'id', 'role', $member['property']],
+            ];
+        }
+
+        return [
+            'fkey' => 'id',
+            'branches' => $branches,
+        ];
+    }
+
+    /**
+     * Get the schema for the member object (user, group or supplier) of a team member.
+     * The data comes from the columns of the team polymorphic join rather than a separate join.
+     * @param array<string, mixed> $schema The dropdown type schema for the member
+     * @param string $id_column The column of the polymorphic join containing the member ID
+     * @param string $name_property The property containing the member name
+     * @param string $name_column The column of the polymorphic join containing the member name
+     * @return array<string, mixed>
+     * @see self::getTeamPolymorphicJoin()
+     */
+    private static function getTeamMemberObjectSchema(array $schema, string $id_column, string $name_property, string $name_column): array
+    {
+        unset($schema['x-join'], $schema['x-field']);
+        $schema['properties']['id']['x-field'] = $id_column;
+        $schema['properties'][$name_property]['x-field'] = $name_column;
+        return $schema;
     }
 
     /**

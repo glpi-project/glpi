@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 ## [12.0.1] unreleased
 
 ### Added
+- The `team` property of `Ticket`, `Change` and `Problem` can be used in RSQL filters and for sorting in High-Level API v3.
 
 ### Changed
 

@@ -38,7 +38,9 @@ namespace Glpi\Api\HL\Doc;
 use ArrayAccess;
 use CommonGLPI;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\Search\PolymorphicJoin;
 use Glpi\Toolbox\ArrayPathAccessor;
+use RuntimeException;
 use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
@@ -273,6 +275,15 @@ class Schema implements ArrayAccess
                     'parent_type' => self::TYPE_ARRAY,
                     'x-full-schema' => $prop['items']['x-full-schema'] ?? null,
                 ];
+                if (PolymorphicJoin::isPolymorphicJoin($new_join)) {
+                    if ($prefix !== '') {
+                        throw new RuntimeException("Polymorphic joins are only supported for top-level properties ({$prefix}{$name})");
+                    }
+                    // All data for the items comes from the branches, so nested objects are not joined separately
+                    $new_join['discriminator'] = $prop['items']['discriminator']['propertyName'] ?? null;
+                    $joins[$name] = $new_join;
+                    continue;
+                }
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 if (array_key_exists('properties', $prop['items'])) {
                     $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.', $new_join);
