@@ -36,7 +36,6 @@
 {% set reload_tab = reload_tab|default(false) %}
 {% set as_modal = as_modal|default(false) %}
 {% set add_new_label = add_new_label|default(__('Add')) %}
-{% set add_new_inline = add_new_inline|default(false) %}
 
 {% if as_modal %}
 <div class="modal fade" id="{{ subitem_container_id ~ '_modal' }}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -48,7 +47,7 @@
             </div>
             <div class="modal-body overflow-auto mb-n5">
 {% endif %}
-<div id='{{ subitem_container_id }}'></div>
+<div id='{{ subitem_container_id }}' class="subitem-container"></div>
 {% if as_modal %}
             </div>
         </div>
@@ -124,10 +123,10 @@
     });
 </script>
 {% if cancreate %}
-    {% include 'components/tab/addlink_block.html.twig' with {
-        add_link: 'javascript:return false;',
-        button_label: add_new_label,
-        button_id: 'addsubitem' ~ rand,
-        button_class: 'btn ' ~ add_new_btn_class|default('btn-primary') ~ ' ms-1'
-    } %}
+    <div class="d-flex mb-3 subitem-add-block">
+        <button type="button" id="addsubitem{{ rand }}" class="btn {{ add_new_btn_class|default('btn-primary') }} ms-1">
+            <i class="ti ti-plus" aria-hidden="true"></i>
+            <span>{{ add_new_label }}</span>
+        </button>
+    </div>
 {% endif %}
