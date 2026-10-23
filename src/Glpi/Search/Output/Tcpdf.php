@@ -77,7 +77,7 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
                     '|padding-left:\dpx;|',
                 ],
                 [
-                    'table { width: 100%; } td { padding: 1pt 2pt; }</style>',
+                    'table { width: 100%; } th, td { padding: 1pt 2pt; }</style>',
                     '"',
                     '',
                 ],
