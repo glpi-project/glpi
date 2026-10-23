@@ -18602,12 +18602,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:printCleanArray\\(\\) has parameter \\$tab with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Html\\:\\:printPager\\(\\) has parameter \\$item_type_output_param with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
