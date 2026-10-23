@@ -1886,6 +1886,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = '_users_id_assign';
                     $allowed_fields[] = '_groups_id_assign';
                     $allowed_fields[] = '_suppliers_id_assign';
+                    $allowed_fields[] = '_users_id_assign_deleted';
+                    $allowed_fields[] = '_groups_id_assign_deleted';
+                    $allowed_fields[] = '_suppliers_id_assign_deleted';
                 }
 
                 // Can only update initial fields if no followup or task already added

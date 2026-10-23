@@ -6024,6 +6024,67 @@ HTML,
         $this->assertEquals(0, $ticket->countUsers(CommonITILActor::REQUESTER));
     }
 
+    public function testRemoveAssignWithoutUpdateRight()
+    {
+        $this->login();
+
+        $ticket = new Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testRemoveAssignWithoutUpdateRight',
+            'content' => 'testRemoveAssignWithoutUpdateRight',
+            '_skip_auto_assign' => true,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'itemtype'  => 'Group',
+                        'items_id'  => getItemByTypeName('Group', '_test_group_1', true),
+                    ],
+                    [
+                        'itemtype'  => 'Supplier',
+                        'items_id'  => getItemByTypeName('Supplier', '_suplier01_name', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $ticket->loadActors();
+        $this->assertEquals(1, $ticket->countUsers(CommonITILActor::ASSIGN));
+        $this->assertEquals(1, $ticket->countGroups(CommonITILActor::ASSIGN));
+        $this->assertEquals(1, $ticket->countSuppliers(CommonITILActor::ASSIGN));
+
+        $this->changeTechRight(Ticket::ASSIGN | Ticket::READALL);
+        $this->assertFalse($ticket->canUpdateItem());
+        $this->assertTrue((bool) $ticket->canAssign());
+        $this->assertTrue($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'glpi', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]));
+        $ticket->loadActors();
+        // Verify new assignee was added and previous assignees were removed
+        $this->assertEquals(1, $ticket->countUsers(CommonITILActor::ASSIGN));
+        $this->assertTrue($ticket->isUser(CommonITILActor::ASSIGN, getItemByTypeName('User', 'glpi', true)));
+        $this->assertEquals(0, $ticket->countGroups(CommonITILActor::ASSIGN));
+        $this->assertEquals(0, $ticket->countSuppliers(CommonITILActor::ASSIGN));
+    }
+
     public function testAddAssignWithoutAssignRight()
     {
         $this->login();
