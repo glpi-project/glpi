@@ -2064,6 +2064,138 @@ class Provider
     }
 
     /**
+     * Count tickets in two slices: not solved yet (new, processing, pending) and solved or closed.
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public static function ticketsOpenedAndClosed(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
+            return [
+                'data'  => ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
+        $t_table = Ticket::getTable();
+        $slices  = [
+            'notold' => [
+                'label'    => _x('status', 'Not solved'),
+                'statuses' => Ticket::getNotSolvedStatusArray(),
+            ],
+            'old'    => [
+                'label'    => _x('status', 'Solved + Closed'),
+                'statuses' => array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray()),
+            ],
+        ];
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'  => [
+                    "$t_table.status AS status",
+                    'COUNT DISTINCT' => "$t_table.id AS cpt",
+                ],
+                'FROM'    => $t_table,
+                'WHERE'   => [
+                    "$t_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($t_table),
+                'GROUPBY' => "$t_table.status",
+            ],
+            $visibility_criteria,
+            self::getFiltersCriteria($t_table, $params['apply_filters'])
+        );
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $counts = array_fill_keys(array_keys($slices), 0);
+        foreach ($db->request($criteria) as $result) {
+            foreach ($slices as $key => $slice) {
+                if (in_array((int) $result['status'], $slice['statuses'], true)) {
+                    $counts[$key] += (int) $result['cpt'];
+                }
+            }
+        }
+
+        if (array_sum($counts) === 0) {
+            return [
+                'data'  => ['nodata' => true],
+                'label' => $params['label'],
+                'icon'  => $params['icon'],
+            ];
+        }
+
+        // The dates filter search is strict on its first day, while the count includes its first second:
+        // the dates are searched below with the same bounds as the count
+        $search_filters = $params['apply_filters'];
+        $dates_value    = $search_filters[DatesFilter::getId()] ?? null;
+        unset($search_filters[DatesFilter::getId()]);
+        $search_criteria = self::getSearchFiltersCriteria($t_table, $search_filters)['criteria'] ?? [];
+        // Some filters are searched with OR criteria (e.g. SLA time to own OR time to resolve),
+        // they are grouped so they can't bypass the other criteria of the search
+        if (count($search_criteria) > 0) {
+            $search_criteria = [['link' => 'AND', 'criteria' => $search_criteria]];
+        }
+        if (is_array($dates_value) && count($dates_value) === 2) {
+            try {
+                $search_criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'morethan',
+                    'value'      => (new DateTimeImmutable((string) $dates_value[0]))->setTime(0, 0)->modify('-1 second')->format('Y-m-d H:i:s'),
+                ];
+                $search_criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'lessthan',
+                    'value'      => (new DateTimeImmutable((string) $dates_value[1]))->setTime(0, 0)->modify('+1 day')->format('Y-m-d H:i:s'),
+                ];
+            } catch (\Exception) {
+                // keep the search without dates bounds if the filter values are not parsable dates
+            }
+        }
+        $url = Ticket::getSearchURL();
+
+        $data = [];
+        foreach ($slices as $key => $slice) {
+            $slice_criteria = $search_criteria;
+            $slice_criteria[] = [
+                'link'       => 'AND',
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => $key,
+            ];
+
+            $data[] = [
+                'number' => $counts[$key],
+                'label'  => $slice['label'],
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => $slice_criteria,
+                    'reset'    => 'reset',
+                ]),
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
      * Get the criteria restricting tickets to the ones the current user can see.
      *
      * Ticket::getCriteriaFromProfile() returns no restriction for a profile that only has
