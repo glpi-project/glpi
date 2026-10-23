@@ -3541,12 +3541,12 @@ JAVASCRIPT
 
         // Back and fast backward button
         if (!$start == 0) {
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'
+            $out .= "<th class='left'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=0" . $additional_params) . "'
                      data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\">
-                     <i class='ti ti-chevrons-left' aria-hidden='true'></i></a></th>";
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'
+                     <i class='ti ti-chevrons-left' aria-hidden='true'></i></button></th>";
+            $out .= "<th class='left'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$back" . $additional_params) . "'
                      data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\">
-                     <i class='ti ti-chevron-left' aria-hidden='true'></i></a></th>";
+                     <i class='ti ti-chevron-left' aria-hidden='true'></i></button></th>";
         }
 
         $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3565,12 +3565,12 @@ JAVASCRIPT
 
         // Forward and fast forward button
         if ($forward < $numrows) {
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'
+            $out .= "<th class='right'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$forward" . $additional_params) . "'
                      data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\">
-                     <i class='ti ti-chevron-right' aria-hidden='true'></i></a></th>";
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'
+                     <i class='ti ti-chevron-right' aria-hidden='true'></i></button></th>";
+            $out .= "<th class='right'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$end" . $additional_params) . "'
                      data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\">
-                     <i class='ti ti-chevrons-right' aria-hidden='true'></i></a></th>";
+                     <i class='ti ti-chevrons-right' aria-hidden='true'></i></button></th>";
         }
 
         // End pager
@@ -3830,7 +3830,11 @@ JAVASCRIPT
         } else {
             $out .= "<form method='POST' action =''>\n";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"" . jsescape($additional_params) . "\")", false);
+            $out .= Dropdown::showListLimit('', false, [
+                'add_data_attributes' => [
+                    'glpi-reload-tab-on-change' => 'glpilist_limit=%value%' . $additional_params,
+                ],
+            ]);
         }
         $out .= Html::closeForm(false);
 

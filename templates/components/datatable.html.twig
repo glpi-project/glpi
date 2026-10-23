@@ -182,16 +182,16 @@
                                 {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
                             {% endif %}
 
-                            {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
+                            {% set sort_params = "sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params %}
 
                             <th scope="col">
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    <a href="{{ sort_href }}">
+                                    <button type="button" class="btn-as-link" data-glpi-reload-tab="{{ sort_params }}">
                                     <i class="{{ sort_icon }}" aria-hidden="true"></i>
                                 {% endif %}
                                 <span>{{ raw_header ? column_label|raw : column_label }}</span>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    </a>
+                                    </button>
                                 {% endif %}
                             </th>
                         {% endfor %}
