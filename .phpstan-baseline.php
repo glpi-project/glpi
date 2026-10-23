@@ -18158,12 +18158,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, array\\<int\\|string, array\\<int\\|string, list\\<string\\>\\|string\\>\\|int\\|string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/autoload/CFG_GLPI.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function getItemForItemtype\\(\\) should return \\(T of CommonDBTM\\)\\|false but returns CommonDBTM\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
