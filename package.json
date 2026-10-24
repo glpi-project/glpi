@@ -23,7 +23,7 @@
         "@fullcalendar/timeline": "^6.1.20",
         "@fullcalendar/vue3": "^6.1.21",
         "@glpi-project/illustrations": "^0.9.1",
-        "@tabler/core": "^1.4.0",
+        "@tabler/core": "^1.6.1",
         "@tabler/icons-webfont": "^3.35.0",
         "@tiptap/core": "^3.31.3",
         "@tiptap/extension-bubble-menu": "^3.31.3",
