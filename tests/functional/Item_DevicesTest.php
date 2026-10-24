@@ -212,4 +212,65 @@ class Item_DevicesTest extends DbTestCase
 
         $this->assertFalse($item_firmware->getFromDB($item_firmware_id));
     }
+
+    public static function specificityValueProvider(): iterable
+    {
+        yield 'value without an adaptive unit' => [
+            'value' => 1234,
+            'attributes' => [],
+            'expected' => '1234',
+        ];
+
+        yield 'memory below one GiB' => [
+            'value' => 512,
+            'attributes' => ['display_unit' => 'binary_size'],
+            'expected' => '512 MiB',
+        ];
+
+        yield 'memory at the GiB boundary' => [
+            'value' => 1024,
+            'attributes' => ['display_unit' => 'binary_size'],
+            'expected' => '1 GiB',
+        ];
+
+        yield 'disk capacity in TiB' => [
+            'value' => 1_876_951,
+            'attributes' => ['display_unit' => 'binary_size'],
+            'expected' => '1.79 TiB',
+        ];
+
+        yield 'frequency below one GHz' => [
+            'value' => 800,
+            'attributes' => ['display_unit' => 'frequency'],
+            'expected' => '800 MHz',
+        ];
+
+        yield 'frequency in GHz' => [
+            'value' => 2300,
+            'attributes' => ['display_unit' => 'frequency'],
+            'expected' => '2.3 GHz',
+        ];
+    }
+
+    #[DataProvider('specificityValueProvider')]
+    public function testFormatSpecificityValue(int|float|string $value, array $attributes, string $expected): void
+    {
+        $this->assertSame($expected, Item_Devices::formatSpecificityValue($value, $attributes));
+    }
+
+    public function testAdaptiveDisplayUnitsAreConfigured(): void
+    {
+        $this->assertSame(
+            'binary_size',
+            \Item_DeviceHardDrive::getSpecificities()['capacity']['display_unit']
+        );
+        $this->assertSame(
+            'binary_size',
+            \Item_DeviceMemory::getSpecificities()['size']['display_unit']
+        );
+        $this->assertSame(
+            'frequency',
+            \Item_DeviceProcessor::getSpecificities()['frequency']['display_unit']
+        );
+    }
 }
