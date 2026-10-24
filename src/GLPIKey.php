@@ -232,8 +232,6 @@ class GLPIKey
      */
     public function generate(bool $update_db = true): bool
     {
-        global $DB;
-
         // Check ability to create/update key file.
         if (
             (file_exists($this->keyfile) && !is_writable($this->keyfile))
@@ -254,7 +252,15 @@ class GLPIKey
             }
         }
 
-        $key = sodium_crypto_aead_chacha20poly1305_ietf_keygen();
+        // Generate a random key.
+        //
+        // The `%` char is used by the Symfony DI system to reference configuration parameters.
+        // Its presence in the generated key may trigger an issue, see https://github.com/glpi-project/glpi/issues/22076 .
+        // Generating keys without any `%` char prevents this kind of issues.
+        do {
+            $key = sodium_crypto_aead_chacha20poly1305_ietf_keygen();
+        } while (str_contains($key, '%'));
+
         try {
             $written_bytes = file_put_contents($this->keyfile, $key);
         } catch (FilesystemException $e) {
