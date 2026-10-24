@@ -39,6 +39,7 @@ use ArrayAccess;
 use CommonGLPI;
 use Glpi\Api\HL\Router;
 use Glpi\Toolbox\ArrayPathAccessor;
+use GLPIKey;
 use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
@@ -493,7 +494,7 @@ class Schema implements ArrayAccess
 
     /**
      * @param mixed $value
-     * @param array{type: string, format?:string} $prop
+     * @param array{type: string, format?: string, x-encrypted?: bool} $prop
      * @return mixed
      * @throws DatetimeException
      */
@@ -508,9 +509,12 @@ class Schema implements ArrayAccess
             default => $value
         };
 
-        // If the value is a datetime, cast to RFC3339
         if (isset($prop['format']) && $prop['format'] === self::FORMAT_STRING_DATE_TIME) {
+            // If the value is a datetime, cast to RFC3339
             $value = date(DATE_RFC3339, strtotime($value));
+        } elseif (isset($prop['type']) && $prop['type'] === self::TYPE_STRING && ($prop['x-encrypted'] ?? false)) {
+            // Property is marked for auto-decryption
+            $value = (new GLPIKey())->decrypt($value);
         }
         return $value;
     }
