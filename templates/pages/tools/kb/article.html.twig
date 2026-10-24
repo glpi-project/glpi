@@ -52,46 +52,48 @@
         data-glpi-knowbase-article-content
     >
         {# Translation mode alert #}
-        <div
-            class="alert alert-info d-none align-items-center mb-3 gap-1"
-            data-testid="translation-mode-alert"
-            data-glpi-kb-translation-alert
-        >
-            <i class="ti ti-language me-2 fs-3" aria-hidden="true"></i>
-            <span>{{ __("Translation mode enabled, currently editing") }}</span>
-            <select
-                class="form-select form-select-sm d-inline-block w-auto ms-2 me-auto"
-                data-testid="translation-language-select"
-                data-glpi-kb-translation-language
+        {% if can_edit %}
+            <div
+                class="alert alert-info d-none align-items-center mb-3 gap-1"
+                data-testid="translation-mode-alert"
+                data-glpi-kb-translation-alert
             >
-            </select>
-            <button
-                type="button"
-                class="btn btn-sm btn-ghost-danger d-none"
-                data-testid="translation-delete-btn"
-                data-glpi-kb-translation-delete title="{{ __('Delete this translation') }}"
-            >
-                <i class="ti ti-trash" aria-hidden="true"></i>
-            </button>
-            <button
-                type="button"
-                class="btn btn-sm btn-primary me-2"
-                data-testid="translation-save-btn"
-                data-glpi-kb-translation-save
-            >
-                <i class="ti ti-device-floppy me-1" aria-hidden="true"></i>{{ __('Save') }}
-            </button>
-            <button
-                type="button"
-                class="btn-close"
-                data-testid="translation-mode-close"
-                data-glpi-kb-translation-close
-                aria-label="{{ __('Close') }}"
-            ></button>
-        </div>
+                <i class="ti ti-language me-2 fs-3" aria-hidden="true"></i>
+                <span>{{ __("Translation mode enabled, currently editing") }}</span>
+                <select
+                    class="form-select form-select-sm d-inline-block w-auto ms-2 me-auto"
+                    data-testid="translation-language-select"
+                    data-glpi-kb-translation-language
+                >
+                </select>
+                <button
+                    type="button"
+                    class="btn btn-sm btn-ghost-danger d-none"
+                    data-testid="translation-delete-btn"
+                    data-glpi-kb-translation-delete title="{{ __('Delete this translation') }}"
+                >
+                    <i class="ti ti-trash" aria-hidden="true"></i>
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-sm btn-primary me-2"
+                    data-testid="translation-save-btn"
+                    data-glpi-kb-translation-save
+                >
+                    <i class="ti ti-device-floppy me-1" aria-hidden="true"></i>{{ __('Save') }}
+                </button>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-testid="translation-mode-close"
+                    data-glpi-kb-translation-close
+                    aria-label="{{ __('Close') }}"
+                ></button>
+            </div>
+        {% endif %}
 
         <div class="d-flex align-items-center mb-1 mt-1">
-            {% if mode == 'add' or mode == 'edit' or mode == 'view' %}
+            {% if can_edit %}
                 {# Hide container in view mode when no illustration is set;
                    JS will reveal it when switching to edit mode. #}
                 <div
@@ -106,6 +108,11 @@
                         'editable': false,
                         'allow_empty': true,
                     }, with_context: false) }}
+                </div>
+            {% elseif illustration is not empty %}
+                {# Readers get the preview alone, without the picker and its upload form. #}
+                <div class="me-2 flex-shrink-0 kb-illustration-preview d-flex align-items-center justify-content-center rounded">
+                    {{ render_illustration(illustration, 36) }}
                 </div>
             {% endif %}
             <h1

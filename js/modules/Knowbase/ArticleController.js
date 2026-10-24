@@ -185,7 +185,8 @@ export class GlpiKnowbaseArticleController
         this.#initRecursiveToggle();
         this.#initCommentAnchors();
 
-        if (mode === "edit") {
+        // The translation bar is only rendered for editors.
+        if (mode === "edit" && container.dataset.glpiKbCanEdit === 'true') {
             this.#default_language = container.dataset.glpiKbDefaultLanguage;
             this.#existing_translations = JSON.parse(
                 container.dataset.glpiKbExistingTranslations
