@@ -456,6 +456,9 @@ class Html
      **/
     public static function redirect($dest, $http_response_code = 302): never
     {
+        if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal'] && strpos($dest, '_in_modal=') === false) {
+            $dest .= (strpos($dest, '?') !== false ? '&' : '?') . '_in_modal=1';
+        }
         throw new RedirectException($dest, $http_response_code);
     }
 
