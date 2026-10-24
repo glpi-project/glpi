@@ -9,6 +9,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- New `is_body_disclosed` propery for `QueuedNotification` in High-Level API v3.0.0 to indicate if the body of the notification is disclosed to the recipient. If undisclosed, the text and html content will be an empty string.
 
 ### Deprecated
 
