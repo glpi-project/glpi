@@ -261,6 +261,26 @@ EOT;
                     'minimum' => 0,
                 ],
             ],
+            'cursor' => [
+                'name' => 'cursor',
+                'in' => Doc\Parameter::LOCATION_QUERY,
+                'description' => 'Cursor token for cursor-based pagination taken from the GLPI-Previous-Cursor or GLPI-Next-Cursor response header of a previous request. Replaces the start parameter. The same filter and sort parameters as the request the cursor came from must be used.',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                ],
+            ],
+            'cursor_adjacent_pages' => [
+                'name' => 'cursor_adjacent_pages',
+                'in' => Doc\Parameter::LOCATION_QUERY,
+                'description' => 'The number of pages (up to ' . Search::MAX_CURSOR_ADJACENT_PAGES . ') before and after the current page to generate cursors for, so a paginator can link to pages other than the previous and next. Requires the limit parameter. The cursors are returned as a JSON object in the GLPI-Adjacent-Cursors response header, keyed by the page offset relative to the current page (e.g. "-2", "-1", "1", "2"). Pages that do not exist are omitted.',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'default' => 0,
+                    'minimum' => 0,
+                    'maximum' => Search::MAX_CURSOR_ADJACENT_PAGES,
+                ],
+            ],
             'sort' => [
                 'name' => 'sort',
                 'in' => Doc\Parameter::LOCATION_QUERY,
