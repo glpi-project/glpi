@@ -73,9 +73,17 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
             $document_row['filepath']
         ));
 
+        // Keep track of each status count, for the final summary
+        $summary = [
+            self::DOCUMENT_OK              => 0,
+            self::ERROR_MISSING_FILE       => 0,
+            self::ERROR_UNEXPECTED_CONTENT => 0,
+        ];
+
         $count = $this->countDocuments();
         foreach ($this->iterate($data, $progress_message, $count) as $document_row) {
             $status = $this->validateDocument($document_row);
+            $summary[$status]++;
 
             if ($status != self::DOCUMENT_OK) {
                 $this->outputMessage(
@@ -85,6 +93,8 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
                 $has_error = true;
             }
         }
+
+        $this->outputSummary($summary);
 
         return $has_error ? Command::FAILURE : Command::SUCCESS;
     }
@@ -145,6 +155,39 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
 
         // All good
         return self::DOCUMENT_OK;
+    }
+
+    /**
+     * Output the summary of the checked documents
+     *
+     * @param array<int, int> $summary Number of documents for each status
+     *
+     * @return void
+     */
+    protected function outputSummary(array $summary): void
+    {
+        $this->output->writeln('', OutputInterface::VERBOSITY_QUIET);
+        $this->output->writeln('<info>' . __('Summary') . '</info>', OutputInterface::VERBOSITY_QUIET);
+        $this->output->writeln(
+            sprintf(__('Checked documents: %d'), array_sum($summary)),
+            OutputInterface::VERBOSITY_QUIET
+        );
+        $this->output->writeln(
+            sprintf(__('Valid documents: %d'), $summary[self::DOCUMENT_OK]),
+            OutputInterface::VERBOSITY_QUIET
+        );
+
+        $errors = [
+            self::ERROR_MISSING_FILE       => __('File not found'),
+            self::ERROR_UNEXPECTED_CONTENT => __('Invalid checksum'),
+        ];
+        foreach ($errors as $type => $label) {
+            $tag = $summary[$type] > 0 ? 'error' : 'info';
+            $this->output->writeln(
+                sprintf('<%s>%s: %d</%s>', $tag, $label, $summary[$type], $tag),
+                OutputInterface::VERBOSITY_QUIET
+            );
+        }
     }
 
     /**
