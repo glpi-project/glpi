@@ -410,4 +410,58 @@ class CableTest extends DbTestCase
         ];
         $this->assertEquals($expected, $current_cable);
     }
+
+    public function testDocumentsContractsAndNotes(): void
+    {
+        $this->login();
+
+        $entities_id = $this->getTestRootEntity(true);
+        $cable = $this->createItem(\Cable::class, [
+            'name'        => 'cable with relations',
+            'entities_id' => $entities_id,
+        ]);
+
+        $tabs = $cable->defineTabs();
+        $this->assertArrayHasKey('Contract_Item$1', $tabs);
+        $this->assertArrayHasKey('Document_Item$1', $tabs);
+        $this->assertArrayHasKey('Notepad$1', $tabs);
+
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'cable document',
+            'entities_id' => $entities_id,
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Cable::class,
+            'items_id'     => $cable->getID(),
+        ]);
+
+        $contract = $this->createItem(\Contract::class, [
+            'name'        => 'cable contract',
+            'entities_id' => $entities_id,
+        ]);
+        $this->createItem(\Contract_Item::class, [
+            'contracts_id' => $contract->getID(),
+            'itemtype'     => \Cable::class,
+            'items_id'     => $cable->getID(),
+        ]);
+
+        $this->createItem(\Notepad::class, [
+            'itemtype' => \Cable::class,
+            'items_id' => $cable->getID(),
+            'content'  => 'cable note',
+        ]);
+
+        // Relations must be cloned with the cable
+        $clone_id = $cable->clone();
+        $this->assertGreaterThan(0, $clone_id);
+
+        foreach ([\Document_Item::class, \Contract_Item::class, \Notepad::class] as $relation) {
+            $this->assertEquals(
+                1,
+                countElementsInTable($relation::getTable(), ['itemtype' => \Cable::class, 'items_id' => $clone_id]),
+                $relation
+            );
+        }
+    }
 }
