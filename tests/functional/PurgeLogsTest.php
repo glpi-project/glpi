@@ -104,4 +104,75 @@ class PurgeLogsTest extends DbTestCase
         // Refused equipment itself must not be purged
         $this->assertTrue((new RefusedEquipment())->getFromDB($refused->getID()));
     }
+
+    public function testPurgeDevices(): void
+    {
+        global $CFG_GLPI;
+
+        $computer    = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $old_date    = date('Y-m-d H:i:s', strtotime('-2 months'));
+        $recent_date = date('Y-m-d H:i:s');
+
+        $logs = [];
+        foreach (
+            [
+                Log::HISTORY_ADD_DEVICE,
+                Log::HISTORY_UPDATE_DEVICE,
+                Log::HISTORY_DELETE_DEVICE,
+                Log::HISTORY_CONNECT_DEVICE,
+                Log::HISTORY_DISCONNECT_DEVICE,
+            ] as $action
+        ) {
+            $logs[$action] = [
+                'old'    => $this->addLog(Computer::class, $computer, $old_date, $action),
+                'recent' => $this->addLog(Computer::class, $computer, $recent_date, $action),
+            ];
+        }
+
+        $CFG_GLPI['purge_adddevice']        = 1;
+        $CFG_GLPI['purge_updatedevice']     = 1;
+        $CFG_GLPI['purge_deletedevice']     = Config::KEEP_ALL;
+        $CFG_GLPI['purge_connectdevice']    = Config::DELETE_ALL;
+        $CFG_GLPI['purge_disconnectdevice'] = 3;
+
+        PurgeLogs::purgeDevices();
+
+        $expected = [
+            Log::HISTORY_ADD_DEVICE        => ['old' => false, 'recent' => true],
+            Log::HISTORY_UPDATE_DEVICE     => ['old' => false, 'recent' => true],
+            Log::HISTORY_DELETE_DEVICE     => ['old' => true,  'recent' => true],
+            Log::HISTORY_CONNECT_DEVICE    => ['old' => false, 'recent' => false],
+            Log::HISTORY_DISCONNECT_DEVICE => ['old' => true,  'recent' => true],
+        ];
+        foreach ($expected as $action => $exists) {
+            foreach ($exists as $age => $should_exist) {
+                $this->assertSame(
+                    $should_exist,
+                    (new Log())->getFromDB($logs[$action][$age]),
+                    sprintf('Unexpected state for %s log of action %d', $age, $action)
+                );
+            }
+        }
+    }
+
+    public function testPurgeOthers(): void
+    {
+        global $CFG_GLPI;
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $old_date = date('Y-m-d H:i:s', strtotime('-2 months'));
+
+        $comments_log = $this->addLog(Computer::class, $computer, $old_date, 0, 16);
+        $datemod_log  = $this->addLog(Computer::class, $computer, $old_date, 0, 19);
+        $other_log    = $this->addLog(Computer::class, $computer, $old_date, 0, 1);
+
+        $CFG_GLPI['purge_comments'] = 1;
+        $CFG_GLPI['purge_datemod']  = 1;
+
+        PurgeLogs::purgeOthers();
+
+        $this->assertFalse((new Log())->getFromDB($comments_log));
+        $this->assertFalse((new Log())->getFromDB($datemod_log));
+        $this->assertTrue((new Log())->getFromDB($other_log));
+    }
 }
