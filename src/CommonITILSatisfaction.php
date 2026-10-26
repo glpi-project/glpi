@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
+use Glpi\Toolbox\URL;
 
 use function Safe\preg_replace;
 use function Safe\strtotime;
@@ -159,7 +160,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         if ((int) $this->fields["type"] === self::TYPE_EXTERNAL) {
             $url = Entity::generateLinkSatisfaction($item);
             TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
-                'url' => $url,
+                'url' => URL::sanitizeURL($url),
             ]);
         } else { // for internal inquest => form
             $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::class));
