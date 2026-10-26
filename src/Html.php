@@ -1682,9 +1682,8 @@ TWIG,
         }
 
         $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
-                      title='" . __s('Check all as') . "'
                       name='_checkall_$rand' id='checkall_$rand'
-                      onclick= \"if ( checkAsCheckboxes(this, '" . htmlescape(jsescape($container_id)) . "', '.massive_action_checkbox')) {return true;}\">";
+                      data-glpi-check-all='" . htmlescape($container_id) . "'>";
 
         // permit to shift select checkboxes
         $out .= Html::scriptBlock("\$(function() {\$('#" . jsescape($container_id) . " input[type=\"checkbox\"]').shiftSelectable();});");

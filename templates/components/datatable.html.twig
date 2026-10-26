@@ -168,7 +168,7 @@
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
                                         value="" aria-label="{{ __('Check all') }}"
-                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container']|e('js') }}', '.massive_action_checkbox');" />
+                                        data-glpi-check-all="{{ massiveactionparams['container'] }}" />
                                 </div>
                             </th>
                         {% endif %}
