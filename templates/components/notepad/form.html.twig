@@ -159,7 +159,7 @@
                                         name="purge"
                                         type="submit"
                                         value="1"
-                                        onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                                        data-glpi-confirm="{{ __('Confirm the final deletion?') }}"
                                         data-id="{{ id }}"
                                         aria-label="{{ __("Delete") }}"
                                     >
@@ -235,7 +235,7 @@
 
                                     <div class="modal-footer">
                                         <button class="btn btn-outline-danger" type="submit" name="purge" value="1"
-                                                onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                                                data-glpi-confirm="{{ __('Confirm the final deletion?') }}"
                                                 data-bs-toggle="tooltip" data-bs-position="top"
                                                 title="{{ _x('button', 'Delete permanently') }}">
                                             <i class="ti ti-trash" aria-hidden="true"></i>
