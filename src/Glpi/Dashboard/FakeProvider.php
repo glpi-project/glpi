@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use Agent;
 use CommonDBTM;
 use CommonDevice;
 use CommonITILObject;
@@ -632,6 +633,24 @@ final class FakeProvider extends Provider
             'data'  => $data,
             'label' => $params['label'],
             'icon'  => $fk_item::getIcon(),
+        ];
+    }
+
+    public static function computersByAgentVersion(array $params = []): array
+    {
+        $data = [];
+        foreach (['1.11' => 800, '1.10' => 300, '1.9' => 120, '1.7.3' => 40] as $version => $max) {
+            $data[] = [
+                'number' => self::getObscureNumberForString('agent' . $version, $max),
+                'label'  => (string) $version,
+                'url'    => '#',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Agent::getIcon(),
         ];
     }
 

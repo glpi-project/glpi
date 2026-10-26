@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use Agent;
 use CommonDBTM;
 use CommonDevice;
 use CommonITILActor;
@@ -4303,6 +4304,119 @@ class Provider
                 'number' => $counts[$nb_changes] ?? 0,
                 'label'  => sprintf(_n('%d change', '%d changes', $nb_changes), $nb_changes),
                 'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Count computers grouped by the version of their inventory agent.
+     * Computers without agent are not counted.
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function computersByAgentVersion(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Agent::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $no_data = [
+            'data'  => [
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        if (!Computer::canView() || !Agent::canView()) {
+            return $no_data;
+        }
+
+        $c_table     = Computer::getTable();
+        $agent_table = Agent::getTable();
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'     => [
+                    "$agent_table.version",
+                    'COUNT DISTINCT' => "$c_table.id AS cpt",
+                ],
+                'FROM'       => $c_table,
+                'INNER JOIN' => [
+                    $agent_table => [
+                        'ON' => [
+                            $agent_table => 'items_id',
+                            $c_table     => 'id',
+                            [
+                                'AND' => [
+                                    "$agent_table.itemtype" => Computer::class,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'WHERE'      => [
+                    "$c_table.is_deleted"  => 0,
+                    "$c_table.is_template" => 0,
+                ] + getEntitiesRestrictCriteria($c_table, '', '', true),
+                'GROUPBY'    => ["$agent_table.version"],
+            ],
+            self::getFiltersCriteria($c_table, $params['apply_filters'])
+        );
+
+        $counts = [];
+        foreach ($db->request($criteria) as $result) {
+            $version          = (string) ($result['version'] ?? '');
+            $counts[$version] = ($counts[$version] ?? 0) + (int) $result['cpt'];
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        if (count($counts) === 0) {
+            return $no_data;
+        }
+
+        // Biggest counts first, then the most recent versions first
+        $versions = array_keys($counts);
+        usort(
+            $versions,
+            static fn(int|string $a, int|string $b): int => ($counts[$b] <=> $counts[$a]) ?: version_compare((string) $b, (string) $a)
+        );
+
+        $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
+        // Some filters may be searched with OR criteria, they are grouped so they can't bypass the other criteria
+        if (count($search_criteria) > 0) {
+            $search_criteria = [['link' => 'AND', 'criteria' => $search_criteria]];
+        }
+        $url = Computer::getSearchURL();
+
+        $data = [];
+        foreach ($versions as $version) {
+            $version = (string) $version;
+            $data[] = [
+                'number' => $counts[$version],
+                'label'  => $version !== '' ? $version : __('None'),
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => array_merge([
+                        [
+                            'link'       => 'AND',
+                            'field'      => 903, // agent version
+                            'searchtype' => 'contains',
+                            'value'      => '^' . $version . '$',
+                        ],
+                    ], $search_criteria),
+                    'reset'    => 'reset',
+                ]),
             ];
         }
 
