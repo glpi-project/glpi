@@ -1047,6 +1047,194 @@ class Provider
         ];
     }
 
+    /**
+     * Count solved and closed tickets with a SLA (time to resolve) grouped by their category,
+     * split between the tickets solved on time and the ones solved late.
+     * Categories are sorted by ascending number of tickets: the widget limit keeps the last ones,
+     * so the top categories are displayed.
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsBySlaAndCategory(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => "ti ti-stopwatch",
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $no_data = [
+            'data'  => [
+                'labels' => [],
+                'series' => [],
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        $visibility_criteria = self::getTicketVisibilityCriteria();
+        if ($visibility_criteria === null) {
+            return $no_data;
+        }
+
+        // A dashboard status filter would be merged into the IN() list, intersect it with solved statuses instead
+        $solved_statuses  = array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray());
+        $queried_statuses = $solved_statuses;
+        $filtered_status  = (int) ($params['apply_filters'][TicketStatusFilter::getId()] ?? 0);
+        unset($params['apply_filters'][TicketStatusFilter::getId()]);
+        if ($filtered_status > 0) {
+            $queried_statuses = array_values(array_intersect($solved_statuses, [$filtered_status]));
+        }
+        if (count($queried_statuses) === 0) {
+            return $no_data;
+        }
+
+        $ticket_table   = Ticket::getTable();
+        $category_table = \ITILCategory::getTable();
+        // Same computation as the "Time to resolve exceeded" search option
+        $late_expression = Ticket::generateSLAOLAComputation('time_to_resolve', $ticket_table);
+        if (!$late_expression instanceof QueryExpression) {
+            return $no_data;
+        }
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$category_table.id AS category_id",
+                    "$category_table.completename AS category_name",
+                    QueryFunction::if(
+                        condition: $late_expression,
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0'),
+                        alias: 'is_late'
+                    ),
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'      => $ticket_table,
+                'LEFT JOIN' => [
+                    $category_table => [
+                        'ON' => [
+                            $category_table => 'id',
+                            $ticket_table   => 'itilcategories_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted"  => 0,
+                    "$ticket_table.status"      => $queried_statuses,
+                    "$ticket_table.slas_id_ttr" => ['>', 0],
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => ["$category_table.id", "$category_table.completename", 'is_late'],
+            ],
+            $visibility_criteria,
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+
+        $categories = [];
+        $counts     = [];
+        foreach ($db->request($criteria) as $result) {
+            $category_id                                   = (int) ($result['category_id'] ?? 0);
+            $categories[$category_id]                      = $result['category_name'] ?? __('None');
+            $counts[$category_id][(int) $result['is_late']] = (int) $result['cpt'];
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        if (count($categories) === 0) {
+            return $no_data;
+        }
+
+        // Ascending number of tickets, then descending name so the names are alphabetical from the top of a horizontal chart
+        $category_ids = array_keys($categories);
+        usort(
+            $category_ids,
+            static fn(int $a, int $b): int => (array_sum($counts[$a]) <=> array_sum($counts[$b]))
+                ?: strcmp($categories[$b], $categories[$a])
+        );
+
+        // The dates filter search is strict on its first day, while the count includes its first second:
+        // the dates are searched below with the same bounds as the count
+        $search_filters = $params['apply_filters'];
+        $dates_value    = $search_filters[DatesFilter::getId()] ?? null;
+        unset($search_filters[DatesFilter::getId()]);
+        $search_criteria = self::getSearchFiltersCriteria($ticket_table, $search_filters)['criteria'] ?? [];
+        // Some filters are searched with OR criteria (e.g. SLA time to own OR time to resolve),
+        // they are grouped so they can't bypass the other criteria of the search
+        if (count($search_criteria) > 0) {
+            $search_criteria = [['link' => 'AND', 'criteria' => $search_criteria]];
+        }
+        if (is_array($dates_value) && count($dates_value) === 2) {
+            try {
+                $search_criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'morethan',
+                    'value'      => (new DateTimeImmutable((string) $dates_value[0]))->setTime(0, 0)->modify('-1 second')->format('Y-m-d H:i:s'),
+                ];
+                $search_criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => 15, // creation date
+                    'searchtype' => 'lessthan',
+                    'value'      => (new DateTimeImmutable((string) $dates_value[1]))->setTime(0, 0)->modify('+1 day')->format('Y-m-d H:i:s'),
+                ];
+            } catch (\Exception) {
+                // keep the search without dates bounds if the filter values are not parsable dates
+            }
+        }
+        $url       = Ticket::getSearchURL();
+        $build_url = (static fn(int $category_id, int $is_late): string => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+            'criteria' => array_merge([
+                [
+                    'link'       => 'AND',
+                    'field'      => 7, // category
+                    'searchtype' => 'equals',
+                    'value'      => $category_id,
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 30, // SLA time to resolve
+                    'searchtype' => 'notequals',
+                    'value'      => 0,
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 82, // time to resolve exceeded
+                    'searchtype' => 'equals',
+                    'value'      => $is_late,
+                ], [
+                    'link'       => 'AND',
+                    'field'      => 12, // status
+                    'searchtype' => 'equals',
+                    'value'      => $filtered_status > 0 ? $filtered_status : 'old',
+                ],
+            ], $search_criteria),
+            'reset'    => 'reset',
+        ]));
+
+        // Both series are always returned, in a fixed order, so colors stay consistent
+        $series = [];
+        foreach ([0 => __('On time'), 1 => __('Late')] as $is_late => $serie_name) {
+            $serie = ['name' => $serie_name, 'data' => []];
+            foreach ($category_ids as $category_id) {
+                $serie['data'][] = [
+                    'value' => $counts[$category_id][$is_late] ?? 0,
+                    'url'   => $build_url($category_id, $is_late),
+                ];
+            }
+            $series[] = $serie;
+        }
+
+        return [
+            'data'  => [
+                'labels' => array_map(static fn(int $category_id): string => $categories[$category_id], $category_ids),
+                'series' => $series,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
 
     /**
      * Get multiple counts of computer by a specific foreign key

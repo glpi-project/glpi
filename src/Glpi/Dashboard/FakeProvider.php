@@ -338,6 +338,36 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsBySlaAndCategory(array $params = []): array
+    {
+        $labels = [
+            _x('fake_data', 'Software > Office suite'),
+            _x('fake_data', 'Hardware > Printer'),
+            _x('fake_data', 'Network > VPN'),
+            _x('fake_data', 'Hardware > Laptop'),
+        ];
+
+        $series = [];
+        foreach ([__('On time') => 60, __('Late') => 15] as $serie_name => $max) {
+            $series[] = [
+                'name' => $serie_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($serie_name . $label, $max), 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => 'ti ti-stopwatch',
+        ];
+    }
+
     public static function ticketsByCategoryTree(array $params = []): array
     {
         $tree = [
