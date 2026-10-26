@@ -355,16 +355,12 @@ class PurgeLogs extends CommonDBTM
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_refusedequipment']);
         if ($month) {
-            $refused = new RefusedEquipment();
-            $iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM' => RefusedEquipment::getTable(),
-            ] + $month);
-
-            foreach ($iterator as $row) {
-                //purge each one
-                $refused->delete($row, true);
-            }
+            $DB->delete(
+                'glpi_logs',
+                [
+                    'itemtype' => RefusedEquipment::class,
+                ] + $month
+            );
         }
     }
 
