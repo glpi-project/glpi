@@ -48,17 +48,23 @@ class PurgeLogsTest extends DbTestCase
     /**
      * Insert a log entry and return its ID.
      */
-    private function addLog(string $itemtype, int $items_id, string $date_mod): int
-    {
+    private function addLog(
+        string $itemtype,
+        int $items_id,
+        string $date_mod,
+        int $linked_action = Log::HISTORY_LOG_SIMPLE_MESSAGE,
+        int $id_search_option = 0
+    ): int {
         global $DB;
 
         $DB->insert(
             'glpi_logs',
             [
-                'itemtype'      => $itemtype,
-                'items_id'      => $items_id,
-                'linked_action' => Log::HISTORY_LOG_SIMPLE_MESSAGE,
-                'date_mod'      => $date_mod,
+                'itemtype'         => $itemtype,
+                'items_id'         => $items_id,
+                'linked_action'    => $linked_action,
+                'id_search_option' => $id_search_option,
+                'date_mod'         => $date_mod,
             ]
         );
         return $DB->insertId();
