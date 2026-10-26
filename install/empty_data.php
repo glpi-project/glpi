@@ -3326,6 +3326,13 @@ $empty_data_builder = new class {
                 'event' => 'planningrecall',
                 'is_recursive' => 1,
                 'is_active' => 1,
+            ], [
+                'id' => 84,
+                'name' => 'Alert Ticket not closed',
+                'itemtype' => 'Ticket',
+                'event' => 'alertnotclosed_ticket',
+                'is_recursive' => 1,
+                'is_active' => 0,
             ],
         ];
 
@@ -3745,6 +3752,11 @@ $empty_data_builder = new class {
                 'notifications_id'         => '83',
                 'mode'                     => 'mailing',
                 'notificationtemplates_id' => 22,
+            ], [
+                'id'                       => 84,
+                'notifications_id'         => '84',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 4,
             ],
         ];
 
@@ -4709,6 +4721,16 @@ $empty_data_builder = new class {
                 'items_id'         => '32',
                 'type'             => '1',
                 'notifications_id' => '83',
+            ], [
+                'id'               => '196',
+                'items_id'         => '2',
+                'type'             => '1',
+                'notifications_id' => '84',
+            ], [
+                'id'               => '197',
+                'items_id'         => '9',
+                'type'             => '1',
+                'notifications_id' => '84',
             ],
         ];
 

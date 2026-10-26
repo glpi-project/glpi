@@ -139,6 +139,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'closed'            => __('Closing of the ticket'),
             'delete'            => __('Deletion of a ticket'),
             'alertnotclosed'    => __('Not solved tickets'),
+            'alertnotclosed_ticket' => __('Not solved ticket'),
             'recall'            => __('Automatic reminders of SLAs'),
             'recall_ola'        => __('Automatic reminders of OLAs'),
             'satisfaction'      => __('Satisfaction survey'),
