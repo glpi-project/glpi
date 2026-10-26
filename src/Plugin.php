@@ -1262,7 +1262,7 @@ class Plugin extends CommonDBTM
                                 mb_strtolower(_x('button', 'Enable')),
                                 ['id' => $ID],
                                 '',
-                                'class="pointer"'
+                                'class="pointer btn-as-link"'
                             ),
                             __s('Do you want to %activate_link it?')
                         );

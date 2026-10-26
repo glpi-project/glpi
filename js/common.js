@@ -374,6 +374,18 @@ function submitGetLink(target, fields) {
     document.body.removeChild(myForm);
 }
 
+document.addEventListener('click', (e) => {
+    const element = e.target.closest('[data-glpi-submit-get-link]');
+    if (element === null || e.defaultPrevented) {
+        return;
+    }
+    e.preventDefault();
+    submitGetLink(
+        element.dataset.glpiSubmitGetLink,
+        JSON.parse(element.dataset.glpiSubmitGetLinkFields ?? '{}')
+    );
+});
+
 
 /**
  * @since 0.85
