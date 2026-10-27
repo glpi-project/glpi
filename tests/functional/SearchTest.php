@@ -50,6 +50,7 @@ use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\Operator;
 use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
@@ -2060,6 +2061,25 @@ class SearchTest extends DbTestCase
                 . "ON (`glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id`) "
                 . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48` "
                 . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id`)",
+                'values' => [],
+            ],
+            ],
+
+            'identifier in condition' => [[
+                'itemtype'           => 'Project',
+                'table'              => \ProjectCost::getTable(),
+                'field'              => 'totalcost',
+                'linkfield'          => 'id',
+                'meta'               => false,
+                'meta_type'          => null,
+                'joinparams'         => [
+                    'jointype'          => 'child',
+                    'specific_itemtype' => 'ProjectCost',
+                    'condition'         => ['NEWTABLE.projects_id' => new QueryIdentifier('REFTABLE.id')],
+                ],
+                'sql' => "LEFT JOIN `glpi_projectcosts` AS `glpi_projectcosts_id_b38f47c1f4565c89cd093fce31833f33`
+                        ON (`glpi_projects`.`id` = `glpi_projectcosts_id_b38f47c1f4565c89cd093fce31833f33`.`projects_id`
+                        AND `glpi_projectcosts_id_b38f47c1f4565c89cd093fce31833f33`.`projects_id` = `glpi_projects`.`id`)",
                 'values' => [],
             ],
             ],
