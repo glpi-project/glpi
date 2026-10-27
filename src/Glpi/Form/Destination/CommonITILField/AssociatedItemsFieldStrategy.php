@@ -80,7 +80,7 @@ enum AssociatedItemsFieldStrategy: string
             return false;
         }
 
-        if (!isset($value['items_id']) || !is_numeric($value['items_id'])) {
+        if (!isset($value['items_id']) || !is_numeric($value['items_id']) || $value['items_id'] <= 0) {
             return false;
         }
 

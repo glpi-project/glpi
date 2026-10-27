@@ -317,6 +317,11 @@ class Document_Item extends CommonDBRelation
 
     private function addToMergedTickets(): void
     {
+        // Ticket merge relationships must only be applied to ticket documents.
+        if ($this->fields['itemtype'] !== Ticket::class) {
+            return;
+        }
+
         $merged = Ticket::getMergedTickets($this->fields['items_id']);
         foreach ($merged as $ticket_id) {
             $input = $this->input;

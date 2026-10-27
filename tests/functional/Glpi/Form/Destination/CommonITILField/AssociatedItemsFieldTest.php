@@ -394,6 +394,40 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         }
     }
 
+    public function testAssociatedItemsFromLastValidAnswerIgnoresEmptyItemQuestion(): void
+    {
+        $this->login();
+
+        $computers = $this->createComputers(1);
+        $form = $this->createAndGetFormWithMultipleItemQuestions();
+
+        // The last Item question is left on its empty choice ('-1'), it must
+        // not hide the previous valid answer
+        $this->sendFormAndAssertAssociatedItems(
+            form: $form,
+            config: new AssociatedItemsFieldConfig(
+                strategies: [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
+            ),
+            answers: [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Computer" => [
+                    'itemtype' => Computer::getType(),
+                    'items_ids' => ['-1'],
+                ],
+            ],
+            expected_associated_items: [
+                Computer::getType() => [
+                    $computers[0]->getID() => $computers[0]->getID(),
+                ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
+            ]
+        );
+    }
+
     public function testAssociatedItemsFromAllValidAnswers(): void
     {
         $this->login();

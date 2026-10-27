@@ -270,6 +270,8 @@ The present file will list all changes made to the project; according to the
 
 - Webhooks on ITIL tasks now match the entity of their parent item. A non-recursive task webhook defined in the root entity is no longer triggered by tasks of sub-entities: enable "Sub-entities" on the webhook to keep the previous behavior.
 
+- The "Refused equipments" setting of the logs purge now purges the history of refused equipments instead of the refused equipments themselves.
+
 ### Deprecated
 
 ### Removed

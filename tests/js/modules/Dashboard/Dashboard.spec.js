@@ -104,6 +104,11 @@ describe('Dashboard', () => {
         expect(dashboard.current_name).toBe('current_dashboard');
     });
 
+    test('Init with an empty dashboard select', () => {
+        $('#dashboard-12345 .dashboard_select').empty();
+        expect(() => new GLPIDashboard({'rand': '12345'})).not.toThrow();
+    });
+
     test('saveMarkdown', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);
