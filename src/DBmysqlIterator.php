@@ -151,7 +151,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         if ($this->conn) {
             $stmt = $this->conn->prepare($this->sql ?? '');
             $this->conn->executeStatement($stmt, $this->values);
-            $this->res = $stmt->get_result();
+            $this->res = $this->conn->getStatementResult($stmt);
         }
         $this->count = $this->res instanceof mysqli_result ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);

@@ -83,6 +83,21 @@ class DBTest extends GLPITestCase
         );
     }
 
+    public function testWarningsRaisedWhileReadingStatementResult(): void
+    {
+        global $DB;
+
+        // Comparing a numeric column to an empty string produces a warning while the rows are read
+        iterator_to_array($DB->request([
+            'FROM'  => 'glpi_crontasks',
+            'WHERE' => ['frequency' => ''],
+        ]));
+        $this->hasPhpLogRecordThatContains(
+            'Truncated incorrect', // value type differs between MySQL and MariaDB
+            LogLevel::WARNING
+        );
+    }
+
     public static function nameProvider()
     {
         return [

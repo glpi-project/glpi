@@ -5958,7 +5958,7 @@ final class SQLProvider implements SearchProviderInterface
         $DBread->execution_time = true;
         $stmt = $DBread->prepare($data['sql']['search']->getQuery());
         $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
-        $result = $stmt->get_result();
+        $result = $DBread->getStatementResult($stmt);
 
         if ($result) {
             $data['data']['execution_time'] = $DBread->execution_time;
@@ -5982,7 +5982,7 @@ final class SQLProvider implements SearchProviderInterface
                 foreach ($data['sql']['count'] as $sqlcount) {
                     $stmt = $DBread->prepare($sqlcount->getQuery());
                     $DBread->executeStatement($stmt, $sqlcount->getParams());
-                    if ($sqlcount_result = $stmt->get_result()) {
+                    if ($sqlcount_result = $DBread->getStatementResult($stmt)) {
                         $data['data']['totalcount'] += $DBread->result($sqlcount_result, 0, 0);
                     }
                 }
@@ -6004,7 +6004,7 @@ final class SQLProvider implements SearchProviderInterface
                     self::constructSQL($data);
                     $stmt = $DBread->prepare($data['sql']['search']->getQuery());
                     $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
-                    if ($rebuilt_result = $stmt->get_result()) {
+                    if ($rebuilt_result = $DBread->getStatementResult($stmt)) {
                         $result = $rebuilt_result;
                     }
                 }
