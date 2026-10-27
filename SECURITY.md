@@ -61,13 +61,13 @@ Severity is assessed using CVSS v4.
 
 For the **Privileges Required (PR)** metric, GLPI uses the following convention:
 
-| Attacker privilege level                         | PR   |
-| ------------------------------------------------ | ---- |
-| Unauthenticated                                  | None |
-| Self-service user                                | Low  |
-| Technician, or any profile with higher rights    | High |
+| Attacker privilege level                                          | PR   |
+|-------------------------------------------------------------------|------|
+| Unauthenticated                                                   | None |
+| Profile using the simplified interface (e.g. *Self-Service*)      | Low  |
+| Profile using the standard interface (e.g. *Technician*, *Admin*) | High |
 
-Reports scoring a technician-level or higher attacker as PR:L will be re-scored accordingly.
+Reports scoring an attacker with a standard-interface profile as PR:L will be re-scored accordingly.
 
 Critical and High advisories are published one month after the fix release. All other advisories are published one week after the fix release.
 
