@@ -73,6 +73,7 @@
                             name="update"
                             type="submit"
                             aria-label="{{ __('Save translation') }}"
+                            disabled
                         >
                             <i class="ti ti-device-floppy me-2" aria-hidden="true"></i>
                             {{ __("Save") }}
@@ -116,7 +117,11 @@
         $('#form-translation-modal-{{ form_translation.fields['language']|e('js') }}').one('show.bs.modal', (event) => {
             const body = $(event.currentTarget).find('[data-glpi-form-translation-content-url]');
             $.get(body.data('glpiFormTranslationContentUrl'))
-                .done((html) => body.html(html))
+                .done((html) => {
+                    body.html(html);
+                    // Saving before rows are loaded would submit an empty translation set
+                    $(event.currentTarget).find('button[name="update"]').prop('disabled', false);
+                })
                 .fail(() => {
                     body.html('<div class="alert alert-danger m-3" role="alert">{{ __('An unexpected error occurred')|e('js') }}</div>');
                 });
