@@ -857,7 +857,7 @@ class CronTask extends CommonDBTM
      * Dropdown of state
      *
      * @param string  $name     select name
-     * @param self::STATE_DISABLE|self::STATE_WAITING $value    default value
+     * @param int     $value    default value
      * @param bool $display  display or get string
      *
      * @return string|int HTML output, or random part of dropdown ID.
@@ -1416,7 +1416,7 @@ TWIG, ['msg' => __('Last run list')]);
                 return Dropdown::showFromArray($name, $tab, $options);
 
             case 'state':
-                return self::dropdownState($name, $values[$field], false);
+                return self::dropdownState($name, (int) $values[$field], false);
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);

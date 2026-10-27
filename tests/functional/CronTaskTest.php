@@ -524,4 +524,26 @@ class CronTaskTest extends DbTestCase
         unset($_GET['crontasklogs_id']);
         $this->assertStringContainsString('Detail logged during the run', $html);
     }
+
+    public static function stateValueToSelectProvider(): iterable
+    {
+        // Search criteria values are strings, an empty one is used when adding a new criterion
+        yield ['', null];
+        yield [(string) CronTask::STATE_DISABLE, CronTask::STATE_DISABLE];
+        yield [(string) CronTask::STATE_WAITING, CronTask::STATE_WAITING];
+    }
+
+    #[DataProvider('stateValueToSelectProvider')]
+    public function testGetStateValueToSelect(string $value, ?int $expected_selected): void
+    {
+        $html = CronTask::getSpecificValueToSelect('state', 'criteria[0][value]', $value);
+
+        $this->assertStringContainsString("name='criteria[0][value]'", $html);
+        if ($expected_selected !== null) {
+            $this->assertMatchesRegularExpression(
+                "/<option value='{$expected_selected}' selected>/",
+                $html
+            );
+        }
+    }
 }
