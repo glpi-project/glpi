@@ -1733,7 +1733,7 @@ final class Transfer extends CommonDBTM
                         ],
                         ['s', 'i', 'i']
                     );
-                    $result = $stmt->get_result();
+                    $result = $DB->getStatementResult($stmt);
                     $row = $result->fetch_assoc();
 
                     if ($row['cpt'] > 0) {
