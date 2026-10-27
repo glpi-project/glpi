@@ -183,4 +183,22 @@ class AssetTypeTest extends DbTestCase
         $this->assertEquals($type_3->getID(), $asset_2->fields[$type_fkey]);
         $this->assertEquals($type_3->getID(), $asset_3->fields[$type_fkey]);
     }
+
+    public function testFindIdIsRestrictedToDefinition(): void
+    {
+        $foo_classname = $this->initAssetDefinition()->getAssetTypeClassName();
+        $bar_classname = $this->initAssetDefinition()->getAssetTypeClassName();
+
+        $foo_type = $this->createItem($foo_classname, ['name' => 'Server']);
+
+        // The type of another definition is not found, a new one is created
+        $input = ['name' => 'Server'];
+        $this->assertEquals(-1, (new $bar_classname())->findID($input));
+        $bar_type_id = (new $bar_classname())->import(['name' => 'Server']);
+        $this->assertGreaterThan(0, $bar_type_id);
+        $this->assertNotEquals($foo_type->getID(), $bar_type_id);
+
+        $this->assertEquals($foo_type->getID(), (new $foo_classname())->findID($input));
+        $this->assertEquals($bar_type_id, (new $bar_classname())->findID($input));
+    }
 }
