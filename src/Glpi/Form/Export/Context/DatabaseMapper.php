@@ -39,6 +39,7 @@ use CommonDBTM;
 use CommonTreeDropdown;
 use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Toolbox\MapperInterface;
@@ -91,6 +92,14 @@ final class DatabaseMapper implements MapperInterface
         return $this->values[$itemtype][$key];
     }
 
+    /**
+     * Check whether an id is mapped for the given itemtype and key.
+     */
+    public function hasItemId(string $itemtype, string|int $key): bool
+    {
+        return isset($this->values[$itemtype][$key]);
+    }
+
     /** @param DataRequirementSpecification[] $data_requirements */
     public function validateRequirements(array $data_requirements): bool
     {
@@ -98,7 +107,7 @@ final class DatabaseMapper implements MapperInterface
             $itemtype = $requirement->itemtype;
             $name = $requirement->name;
 
-            if (!$this->contextExist($itemtype, $name)) {
+            if (!$this->hasItemId($itemtype, $name)) {
                 return false;
             }
         }
@@ -115,7 +124,7 @@ final class DatabaseMapper implements MapperInterface
             $name = $requirement->name;
 
             // Skip if already defined
-            if ($this->contextExist($itemtype, $name)) {
+            if ($this->hasItemId($itemtype, $name)) {
                 continue;
             }
 
@@ -141,13 +150,18 @@ final class DatabaseMapper implements MapperInterface
         return is_a($itemtype, CommonDBTM::class, true);
     }
 
-    private function contextExist(string $itemtype, string $name): bool
+    /** @phpstan-assert-if-true class-string<Question|Section|Comment> $itemtype */
+    private function isFormItemtype(string $itemtype): bool
     {
-        if (
-            $itemtype === Question::class
+        return $itemtype === Question::class
             || $itemtype === Comment::class
             || $itemtype === Section::class
-        ) {
+        ;
+    }
+
+    private function contextExist(string $itemtype, string $name): bool
+    {
+        if ($this->isFormItemtype($itemtype)) {
             return true;
         }
 
@@ -162,6 +176,76 @@ final class DatabaseMapper implements MapperInterface
             throw new InvalidArgumentException();
         }
 
+        if ($this->isFormItemtype($itemtype)) {
+            $query = $this->getFormItemQuery($itemtype, $name);
+        } else {
+            $query = $this->getItemQuery($itemtype, $name);
+        }
+
+        // Find item
+        $rows = $DB->request($query);
+        $rows = iterator_to_array($rows);
+        if (count($rows) !== 1) {
+            return null;
+        }
+        return current($rows);
+    }
+
+    /**
+     * Questions, sections and comments are not entity assigned and their names
+     * are not unique: only look for them in the forms that are visible in the
+     * entities restrictions and that are not deleted.
+     *
+     * @param class-string<Question|Section|Comment> $itemtype
+     * @return array<mixed>
+     */
+    private function getFormItemQuery(string $itemtype, string $name): array
+    {
+        $table = $itemtype::getTable();
+        $forms_table = Form::getTable();
+        $query = [
+            'SELECT' => ["$table.id"],
+            'FROM'   => $table,
+            'WHERE'  => [
+                "$table.name"             => $name,
+                "$forms_table.is_deleted" => 0,
+                getEntitiesRestrictCriteria(
+                    $forms_table,
+                    value: $this->entities_restrictions,
+                    is_recursive: true,
+                ),
+            ],
+        ];
+
+        if ($itemtype === Section::class) {
+            $query['INNER JOIN'][$forms_table] = [
+                'ON' => [
+                    $table       => Form::getForeignKeyField(),
+                    $forms_table => 'id',
+                ],
+            ];
+        } else {
+            $sections_table = Section::getTable();
+            $query['INNER JOIN'][$sections_table] = [
+                'ON' => [
+                    $table          => Section::getForeignKeyField(),
+                    $sections_table => 'id',
+                ],
+            ];
+            $query['INNER JOIN'][$forms_table] = [
+                'ON' => [
+                    $sections_table => Form::getForeignKeyField(),
+                    $forms_table    => 'id',
+                ],
+            ];
+        }
+
+        return $query;
+    }
+
+    /** @return array<mixed> */
+    private function getItemQuery(string $itemtype, string $name): array
+    {
         $item = getItemForItemtype($itemtype);
         $query = [
             'FROM' => $item::getTable(),
@@ -183,13 +267,7 @@ final class DatabaseMapper implements MapperInterface
         }
         $query['WHERE'] = $condition;
 
-        // Find item
-        $rows = $DB->request($query);
-        $rows = iterator_to_array($rows);
-        if (count($rows) !== 1) {
-            return null;
-        }
-        return current($rows);
+        return $query;
     }
 
     /**
@@ -206,7 +284,7 @@ final class DatabaseMapper implements MapperInterface
             $itemtype = $requirement->itemtype;
             $name = $requirement->name;
 
-            if (!$this->contextExist($itemtype, $name)) {
+            if (!$this->hasItemId($itemtype, $name)) {
                 $invalid_requirements[] = $requirement;
             }
         }

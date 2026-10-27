@@ -70,7 +70,7 @@ final class Step3ResolveIssuesController extends AbstractController
             );
         }
 
-        $issues = $serializer->listIssues($mapper, $json)->getIssues()[$form_id];
+        $issues = $serializer->listIssues($mapper, $json, $skipped_forms)->getIssues()[$form_id];
         return $this->render("pages/admin/form/import/step3_resolve_issues.html.twig", [
             'title'        => __("Resolve issues"),
             'menu'         => ['admin', Form::getType()],

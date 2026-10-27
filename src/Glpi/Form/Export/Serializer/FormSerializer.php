@@ -75,6 +75,7 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\RenderLayout;
 use Glpi\Form\Section;
+use Glpi\Form\Tag\FormTagsManager;
 use Glpi\UI\IllustrationManager;
 use InvalidArgumentException;
 use JsonSerializable;
@@ -107,9 +108,10 @@ final class FormSerializer extends AbstractFormSerializer
         $export_specification = new ExportContentSpecification();
         $export_specification->version = $this->getVersion();
 
+        $exported_forms_ids = array_map(fn(Form $form) => $form->getID(), $forms);
         foreach ($forms as $form) {
             // Add forms to the main export spec
-            $form_spec = $this->exportFormToSpec($form);
+            $form_spec = $this->exportFormToSpec($form, $exported_forms_ids);
             $export_specification->addForm($form_spec);
         }
 
@@ -130,6 +132,8 @@ final class FormSerializer extends AbstractFormSerializer
         if ($export_specification->version !== $this->getVersion()) {
             throw new InvalidArgumentException("Unsupported version");
         }
+
+        $this->convertReferencesToSkippedForms($export_specification, $skipped_forms);
 
         // Validate each forms
         $results = new ImportResultPreview();
@@ -177,9 +181,11 @@ final class FormSerializer extends AbstractFormSerializer
         return $results;
     }
 
+    /** @param array<int|string> $skipped_forms */
     public function listIssues(
         DatabaseMapper $mapper,
-        string $json
+        string $json,
+        array $skipped_forms = [],
     ): ImportResultIssues {
         $export_specification = $this->deserialize($json);
 
@@ -187,6 +193,8 @@ final class FormSerializer extends AbstractFormSerializer
         if ($export_specification->version !== $this->getVersion()) {
             throw new InvalidArgumentException("Unsupported version");
         }
+
+        $this->convertReferencesToSkippedForms($export_specification, $skipped_forms);
 
         $results = new ImportResultIssues();
         foreach ($export_specification->forms as $form_spec) {
@@ -214,8 +222,11 @@ final class FormSerializer extends AbstractFormSerializer
             throw new InvalidArgumentException("Unsupported version");
         }
 
+        $this->convertReferencesToSkippedForms($export_specification, $skipped_forms);
+
         // Import each forms
         $result = new ImportResult();
+        $imported_forms = [];
         foreach ($export_specification->forms as $form_spec) {
             // Skip form if needed
             $form_id = $form_spec->id;
@@ -255,6 +266,15 @@ final class FormSerializer extends AbstractFormSerializer
 
             $form = $this->importFormFromSpec($form_spec, $mapper);
             $result->addImportedForm($form);
+            $imported_forms[] = [$form, $form_spec];
+        }
+
+        // Import the destinations config once all forms are imported, as its
+        // tags may reference the items of any of them
+        foreach ($imported_forms as [$form, $form_spec]) {
+            $this->runInTransaction(
+                fn() => $this->importDestinationsConfig($form, $form_spec, $mapper)
+            );
         }
 
         return $result;
@@ -283,14 +303,17 @@ final class FormSerializer extends AbstractFormSerializer
         return $filename . ".json";
     }
 
-    private function exportFormToSpec(Form $form): FormContentSpecification
-    {
+    /** @param int[] $exported_forms_ids */
+    private function exportFormToSpec(
+        Form $form,
+        array $exported_forms_ids,
+    ): FormContentSpecification {
         $form_spec = $this->exportBasicFormProperties($form);
         $form_spec = $this->exportSections($form, $form_spec);
         $form_spec = $this->exportComments($form, $form_spec);
         $form_spec = $this->exportQuestions($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
-        $form_spec = $this->exportDestinations($form, $form_spec);
+        $form_spec = $this->exportDestinations($form, $form_spec, $exported_forms_ids);
         $form_spec = $this->exportTranslations($form, $form_spec);
         $form_spec = $this->addCustomTypesRequirements($form, $form_spec);
         $form_spec = $this->addPluginsRequirements($form, $form_spec);
@@ -302,11 +325,23 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
         DatabaseMapper $mapper,
     ): Form {
+        return $this->runInTransaction(
+            fn() => $this->doImportFormFormSpecs($form_spec, $mapper)
+        );
+    }
+
+    /**
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     */
+    private function runInTransaction(callable $callback): mixed
+    {
         global $DB;
 
         $DB->beginTransaction();
         try {
-            $forms = $this->doImportFormFormSpecs($form_spec, $mapper);
+            $result = $callback();
             $DB->commit();
         } catch (Throwable $e) {
             try {
@@ -318,7 +353,7 @@ final class FormSerializer extends AbstractFormSerializer
             // Propagate the exception
             throw $e;
         }
-        return $forms;
+        return $result;
     }
 
     private function doImportFormFormSpecs(
@@ -331,7 +366,6 @@ final class FormSerializer extends AbstractFormSerializer
         $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
         $form = $this->importDestinations($form, $form_spec, $mapper);
-        $form = $this->importDestinationsConfig($form, $form_spec, $mapper);
         $form = $this->importConditions($form, $form_spec, $mapper);
         $form = $this->importTranslations($form, $form_spec, $mapper);
 
@@ -956,9 +990,11 @@ final class FormSerializer extends AbstractFormSerializer
         return $form;
     }
 
+    /** @param int[] $exported_forms_ids */
     private function exportDestinations(
         Form $form,
         FormContentSpecification $form_spec,
+        array $exported_forms_ids,
     ): FormContentSpecification {
         foreach ($form->getDestinations() as $destination) {
             // Compute simple fields
@@ -977,12 +1013,105 @@ final class FormSerializer extends AbstractFormSerializer
             // itself.
             $dynamic_data = $destination->exportDynamicData();
             $form_spec->addRequirementsFromDynamicData($dynamic_data);
-            $spec->config = $dynamic_data->getFieldData('config');
+            $spec->config = $this->convertTagsInConfig(
+                $dynamic_data->getFieldData('config'),
+                fn(string $content) => FormTagsManager::getInstance()->prepareTagsForExport(
+                    $content,
+                    $exported_forms_ids,
+                ),
+                $form_spec,
+            );
 
             $form_spec->destinations[] = $spec;
         }
 
         return $form_spec;
+    }
+
+    /**
+     * Apply the given tags conversion on each content of the given config
+     * that contains form tags, and add the resulting data requirements to
+     * the form specification.
+     *
+     * @param array<mixed> $config
+     * @param callable(string): DynamicExportDataField $convert
+     * @return array<mixed>
+     */
+    private function convertTagsInConfig(
+        array $config,
+        callable $convert,
+        FormContentSpecification $form_spec,
+    ): array {
+        foreach ($config as $key => $value) {
+            if (is_array($value)) {
+                $config[$key] = $this->convertTagsInConfig($value, $convert, $form_spec);
+            } elseif (is_string($value) && str_contains($value, 'data-form-tag="true"')) {
+                $export_data = $convert($value);
+                $config[$key] = $export_data->getData();
+
+                foreach ($export_data->getRequirements() as $requirement) {
+                    if (!in_array($requirement, $form_spec->data_requirements)) {
+                        $form_spec->addDataRequirement($requirement);
+                    }
+                }
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * The items of the skipped forms will not be imported: the tags of the
+     * other forms referencing them are converted into data requirements, so
+     * they are matched by name like the items of forms that were not exported.
+     *
+     * @param array<int|string> $skipped_forms
+     */
+    private function convertReferencesToSkippedForms(
+        ExportContentSpecification $export_specification,
+        array $skipped_forms,
+    ): void {
+        $requirements = [];
+        foreach ($export_specification->forms as $form_spec) {
+            if (!in_array($form_spec->id, $skipped_forms)) {
+                continue;
+            }
+
+            $items = [Form::class => [$form_spec]];
+            $items[Section::class]  = $form_spec->sections;
+            $items[Question::class] = $form_spec->questions;
+            $items[Comment::class]  = $form_spec->comments;
+            foreach ($items as $itemtype => $items_specs) {
+                foreach ($items_specs as $item_spec) {
+                    $requirements[$itemtype . '#' . $item_spec->id] = new DataRequirementSpecification(
+                        $itemtype,
+                        $item_spec->name,
+                    );
+                }
+            }
+        }
+
+        if ($requirements === []) {
+            return;
+        }
+
+        $get_requirement = fn(string $itemtype, int $id) => $requirements[$itemtype . '#' . $id] ?? null;
+        foreach ($export_specification->forms as $form_spec) {
+            if (in_array($form_spec->id, $skipped_forms)) {
+                continue;
+            }
+
+            foreach ($form_spec->destinations as $destination_spec) {
+                $destination_spec->config = $this->convertTagsInConfig(
+                    $destination_spec->config,
+                    fn(string $content) => FormTagsManager::getInstance()->convertTagsToRequirements(
+                        $content,
+                        $get_requirement,
+                    ),
+                    $form_spec,
+                );
+            }
+        }
     }
 
     private function importDestinations(

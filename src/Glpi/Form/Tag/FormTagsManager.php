@@ -35,8 +35,16 @@
 
 namespace Glpi\Form\Tag;
 
+use CommonDBTM;
+use Glpi\Features\CloneMapper;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Comment;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
 use Glpi\Toolbox\MapperInterface;
 
 use function Safe\preg_match;
@@ -45,6 +53,14 @@ use function Safe\preg_replace_callback;
 
 final class FormTagsManager
 {
+    /**
+     * Attribute added to the exported tags whose value is the name of a data
+     * requirement instead of an id.
+     */
+    public const REQUIREMENT_ATTRIBUTE = 'data-form-tag-requirement';
+
+    private const TAG_PATTERN = '/<span(?=[^>]*\bdata-form-tag="true")[^>]*>.*?<\/span>/';
+
     /**
      * Singleton instance.
      */
@@ -78,6 +94,10 @@ final class FormTagsManager
      * Its tags will be available in the form tags autocompletion and their
      * content will be computed using the given provider instance.
      *
+     * If the provider implements `TagWithIdValueInterface`, the IDs referenced
+     * by its tags are handled like the ones of the core providers when a form
+     * is exported, imported or cloned.
+     *
      * @param TagProviderInterface $provider
      * @return void
      */
@@ -102,24 +122,17 @@ final class FormTagsManager
         $providers = $this->getTagProvidersByClass();
 
         return preg_replace_callback(
-            '/<span(?=[^>]*\bdata-form-tag="true")[^>]*>.*?<\/span>/',
+            self::TAG_PATTERN,
             function ($match) use ($providers) {
                 $tag = $match[0];
 
-                // Extract value.
-                preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match);
-                if ($value_match === []) {
+                $value = $this->getTagValue($tag);
+                $provider = $this->getTagProvider($tag, $providers);
+                if ($value === null || $provider === null) {
                     return "";
                 }
 
-                // Extract provider.
-                preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
-                $provider = $providers[$provider_match[1] ?? ''] ?? null;
-                if ($provider === null) {
-                    return "";
-                }
-
-                $tag = $provider->getTagFromRawValue($value_match[1]);
+                $tag = $provider->getTagFromRawValue($value);
                 if ($tag === null) {
                     return "";
                 }
@@ -136,25 +149,18 @@ final class FormTagsManager
         $providers = $this->getTagProvidersByClass();
 
         return preg_replace_callback(
-            '/<span(?=[^>]*\bdata-form-tag="true")[^>]*>.*?<\/span>/',
+            self::TAG_PATTERN,
             function ($match) use ($answers_set, $providers) {
                 $tag = $match[0];
 
-                // Extract value.
-                preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match);
-                if ($value_match === []) {
-                    return "";
-                }
-
-                // Extract provider.
-                preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
-                $provider = $providers[$provider_match[1] ?? ''] ?? null;
-                if ($provider === null) {
+                $value = $this->getTagValue($tag);
+                $provider = $this->getTagProvider($tag, $providers);
+                if ($value === null || $provider === null) {
                     return "";
                 }
 
                 return $provider->getTagContentForValue(
-                    $value_match[1],
+                    $value,
                     $answers_set
                 );
             },
@@ -182,34 +188,138 @@ final class FormTagsManager
         ]);
     }
 
+    /**
+     * Replace the ids referenced by the tags of the given content, using the
+     * given mapper (form import or clone).
+     *
+     * Tags exported as data requirements (see `prepareTagsForExport()`) are
+     * resolved using the name of their requirement.
+     * Ids that are unknown to the mapper are kept as is.
+     */
     public function replaceIdsInTags(
         string $subject,
         MapperInterface $mapper
     ): string {
-        foreach ($this->getTagProviders() as $tag_provider) {
-            if (!$tag_provider instanceof TagWithIdValueInterface) {
-                // This tag value do not reference and ID, we can skip it
-                continue;
+        $providers = $this->getTagProvidersByClass();
+
+        return preg_replace_callback(
+            self::TAG_PATTERN,
+            function ($match) use ($providers, $mapper) {
+                $tag = $match[0];
+
+                $value = $this->getTagValue($tag);
+                $provider = $this->getTagProvider($tag, $providers);
+                if ($value === null || !$provider instanceof TagWithIdValueInterface) {
+                    // This tag value do not reference and ID, we can skip it
+                    return $tag;
+                }
+                $itemtype = $provider->getItemtype();
+
+                // Tags exported as data requirements are mapped by name
+                $is_requirement = $this->isRequirementTag($tag);
+                $key = $is_requirement ? htmlspecialchars_decode($value) : $value;
+                if (
+                    (!$is_requirement && !ctype_digit($key))
+                    || !$this->hasMappedId($mapper, $itemtype, $key)
+                ) {
+                    return $tag;
+                }
+
+                $tag = $this->setTagValue(
+                    $tag,
+                    (string) $mapper->getItemId($itemtype, $key)
+                );
+                return preg_replace(
+                    '/\s' . self::REQUIREMENT_ATTRIBUTE . '="true"/',
+                    '',
+                    $tag
+                );
+            },
+            $subject,
+        );
+    }
+
+    /**
+     * Prepare the tags of the given content for an export.
+     *
+     * Tags referencing an item (see `TagWithIdValueInterface`) that does not
+     * belong to one of the exported forms are converted into data
+     * requirements: their value is replaced by the name of the requirement,
+     * which will be used to find the item when the form is imported.
+     *
+     * @param int[] $exported_forms_ids
+     */
+    public function prepareTagsForExport(
+        string $content,
+        array $exported_forms_ids
+    ): DynamicExportDataField {
+        return $this->convertTagsToRequirements(
+            $content,
+            function (string $itemtype, int $id) use ($exported_forms_ids) {
+                $item = getItemForItemtype($itemtype);
+                if (
+                    !$item instanceof CommonDBTM
+                    || !$item->getFromDB($id)
+                    || $this->isItemOfForms($item, $exported_forms_ids)
+                ) {
+                    return null;
+                }
+
+                return DataRequirementSpecification::fromItem($item);
             }
-            $provider_class = preg_quote($tag_provider::class);
-            $mapped_class = $tag_provider->getItemtype();
+        );
+    }
 
-            $subject = preg_replace_callback(
-                // Look for the value + provider properties
-                "/data-form-tag-value=\"(\d+)\" "
-                . "data-form-tag-provider=\"$provider_class\"/",
-                fn($match) => preg_replace(
-                    // We do another preg on a small subset to avoid having to
-                    // manually rewrite the whole string
-                    "/value=\"(\d+)/",
-                    "value=\"" . $mapper->getItemId($mapped_class, $match[1]),
-                    $match[0]
-                ),
-                $subject,
-            );
-        }
+    /**
+     * Convert the tags referencing an item (see `TagWithIdValueInterface`) into
+     * data requirements: their value is replaced by the name of the requirement
+     * returned by the given callable, which will be used to find the item when
+     * the form is imported.
+     * Tags for which the callable returns `null` are left as is.
+     *
+     * @param callable(class-string<CommonDBTM>, int): ?DataRequirementSpecification $get_requirement
+     */
+    public function convertTagsToRequirements(
+        string $content,
+        callable $get_requirement
+    ): DynamicExportDataField {
+        $providers = $this->getTagProvidersByClass();
+        $requirements = [];
 
-        return $subject;
+        $content = preg_replace_callback(
+            self::TAG_PATTERN,
+            function ($match) use ($providers, $get_requirement, &$requirements) {
+                $tag = $match[0];
+
+                $value = $this->getTagValue($tag);
+                $provider = $this->getTagProvider($tag, $providers);
+                if (
+                    $value === null
+                    || !ctype_digit($value)
+                    || !$provider instanceof TagWithIdValueInterface
+                    || $this->isRequirementTag($tag)
+                ) {
+                    return $tag;
+                }
+
+                $requirement = $get_requirement($provider->getItemtype(), (int) $value);
+                if ($requirement === null) {
+                    return $tag;
+                }
+                $requirements[] = $requirement;
+
+                $tag = $this->setTagValue($tag, htmlescape($requirement->name));
+                return preg_replace(
+                    '/\bdata-form-tag="true"/',
+                    'data-form-tag="true" ' . self::REQUIREMENT_ATTRIBUTE . '="true"',
+                    $tag,
+                    1
+                );
+            },
+            $content
+        );
+
+        return new DynamicExportDataField($content, $requirements);
     }
 
     /**
@@ -223,6 +333,71 @@ final class FormTagsManager
         }
 
         return $providers;
+    }
+
+    private function getTagValue(string $tag): ?string
+    {
+        preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match);
+        return $value_match[1] ?? null;
+    }
+
+    /**
+     * @param array<class-string<TagProviderInterface>, TagProviderInterface> $providers
+     */
+    private function getTagProvider(
+        string $tag,
+        array $providers
+    ): ?TagProviderInterface {
+        preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
+        return $providers[$provider_match[1] ?? ''] ?? null;
+    }
+
+    private function setTagValue(string $tag, string $value): string
+    {
+        return preg_replace_callback(
+            '/data-form-tag-value="[^"]+"/',
+            fn() => sprintf('data-form-tag-value="%s"', $value),
+            $tag,
+            1
+        );
+    }
+
+    private function isRequirementTag(string $tag): bool
+    {
+        return str_contains($tag, self::REQUIREMENT_ATTRIBUTE . '="true"');
+    }
+
+    /**
+     * @param int[] $forms_ids
+     */
+    private function isItemOfForms(CommonDBTM $item, array $forms_ids): bool
+    {
+        if ($item instanceof Form) {
+            return in_array($item->getID(), $forms_ids);
+        }
+
+        if (
+            $item instanceof Question
+            || $item instanceof Section
+            || $item instanceof Comment
+        ) {
+            return in_array($item->getForm()->getID(), $forms_ids);
+        }
+
+        return false;
+    }
+
+    private function hasMappedId(
+        MapperInterface $mapper,
+        string $itemtype,
+        string|int $key
+    ): bool {
+        if ($mapper instanceof CloneMapper || $mapper instanceof DatabaseMapper) {
+            return $mapper->hasItemId($itemtype, $key);
+        }
+
+        // Unknown mapper implementation: let it handle the missing values.
+        return true;
     }
 
     private function removeInvalidProviders(array $providers): array

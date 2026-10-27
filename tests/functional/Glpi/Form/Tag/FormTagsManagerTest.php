@@ -34,11 +34,16 @@
 
 namespace tests\units\Glpi\Form\Tag;
 
+use CommonDBTM;
 use Computer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Comment;
 use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Section;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\CommentDescriptionTagProvider;
 use Glpi\Form\Tag\CommentTitleTagProvider;
@@ -412,6 +417,111 @@ final class FormTagsManagerTest extends DbTestCase
         // Assert: the tag label was updated
         $this->assertStringNotContainsString("My form name", $new_html);
         $this->assertStringContainsString("My new form name", $new_html);
+    }
+
+    public static function externalTagsProvider(): iterable
+    {
+        yield 'Question' => [QuestionTagProvider::class, Question::class];
+        yield 'Section'  => [SectionTagProvider::class, Section::class];
+        yield 'Comment'  => [CommentTitleTagProvider::class, Comment::class];
+        yield 'Form'     => [FormTagProvider::class, Form::class];
+    }
+
+    #[DataProvider('externalTagsProvider')]
+    public function testExternalTagIsConvertedToRequirementOnExport(
+        string $provider_class,
+        string $itemtype,
+    ): void {
+        // Arrange: get a tag of a form that is not exported
+        $tag_manager = new FormTagsManager();
+        $form = $this->createFormWithItems();
+        $exported_form = $this->createForm(new FormBuilder("Exported form"));
+        $tag = (new $provider_class())->getTags($form)[0];
+        $item = $this->getFormItem($form, $itemtype);
+
+        // Act: prepare the tag for an export that does not include its form
+        $export_data = $tag_manager->prepareTagsForExport(
+            "Before $tag->html after",
+            [$exported_form->getID()],
+        );
+
+        // Assert: the tag now references the item name and is a requirement
+        $this->assertStringContainsString(
+            sprintf('data-form-tag-value="%s"', htmlescape($item->fields['name'])),
+            $export_data->getData(),
+        );
+        $this->assertStringContainsString(
+            'data-form-tag-requirement="true"',
+            $export_data->getData(),
+        );
+        $this->assertEquals(
+            [DataRequirementSpecification::fromItem($item)],
+            $export_data->getRequirements(),
+        );
+    }
+
+    public function testExternalTagWithSpecialCharsRoundTrips(): void
+    {
+        // Arrange: export the tag of a question whose name contains special chars
+        $tag_manager = new FormTagsManager();
+        $name = 'Date "début" & <fin> l\'été ' . uniqid();
+        $form = $this->createForm(
+            (new FormBuilder())->addQuestion($name, QuestionTypeShortText::class)
+        );
+        $tag = (new QuestionTagProvider())->getTags($form)[0];
+        $exported = $tag_manager->prepareTagsForExport($tag->html, [0])->getData();
+        $mapper = $this->getDatabaseMapper();
+        $mapper->addMappedItem(Question::class, $name, 1234);
+
+        // Act: replace the ids in the exported tag
+        $imported = $tag_manager->replaceIdsInTags($exported, $mapper);
+
+        // Assert: the raw name was used to find the mapped id
+        $this->assertStringContainsString('data-form-tag-value="1234"', $imported);
+    }
+
+    public function testIdsAreReplacedWhateverTheAttributesOrder(): void
+    {
+        // Arrange: a tag whose attributes are not in the usual order
+        $tag_manager = new FormTagsManager();
+        $html = '<span class="x" data-form-tag-provider="Glpi\Form\Tag\QuestionTagProvider" data-form-tag-value="12" data-form-tag="true">#Q</span>';
+        $mapper = $this->getDatabaseMapper();
+        $mapper->addMappedItem(Question::class, 12, 34);
+
+        // Act: replace the ids in the tag
+        $result = $tag_manager->replaceIdsInTags($html, $mapper);
+
+        // Assert: the id was replaced
+        $this->assertEquals(
+            '<span class="x" data-form-tag-provider="Glpi\Form\Tag\QuestionTagProvider" data-form-tag-value="34" data-form-tag="true">#Q</span>',
+            $result,
+        );
+    }
+
+    private function createFormWithItems(): Form
+    {
+        $uid = uniqid();
+        $builder = new FormBuilder("Form $uid");
+        $builder->addSection("Section $uid");
+        $builder->addQuestion("Question $uid", QuestionTypeShortText::class);
+        $builder->addComment("Comment $uid", "Comment description $uid");
+        return $this->createForm($builder);
+    }
+
+    private function getFormItem(Form $form, string $itemtype): CommonDBTM
+    {
+        $items = match ($itemtype) {
+            Form::class     => [$form],
+            Section::class  => $form->getSections(),
+            Question::class => $form->getQuestions(),
+            Comment::class  => $form->getFormComments(),
+        };
+        return current($items);
+    }
+
+    private function getDatabaseMapper(): DatabaseMapper
+    {
+        return new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
     }
 
     private function createAndGetFormWithFirstAndLastNameQuestions(): Form
