@@ -363,6 +363,10 @@ class Session
      **/
     public static function isMultiEntitiesMode()
     {
+        // No login refreshes an anonymous session, so do not cache the mode for it.
+        if (!isset($_SESSION['glpiID'])) {
+            return countElementsInTable("glpi_entities") > 1;
+        }
 
         if (!isset($_SESSION['glpi_multientitiesmode'])) {
             if (countElementsInTable("glpi_entities") > 1) {

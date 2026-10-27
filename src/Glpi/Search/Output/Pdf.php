@@ -36,6 +36,7 @@
 namespace Glpi\Search\Output;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageMargins;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
@@ -53,6 +54,9 @@ final class Pdf extends Spreadsheet
 
         $borders = $style->getBorders();
         $borders->getBottom()->setBorderStyle(Border::BORDER_DOTTED);
+
+        // TCPDF 7 honors the spreadsheet default bottom vertical alignment
+        $style->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
 
         $pagesetup = $this->spread->getActiveSheet()->getPageSetup();
         $pagesetup->setPaperSize(PageSetup::PAPERSIZE_A4);

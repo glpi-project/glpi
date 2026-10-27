@@ -34,6 +34,7 @@
 
 namespace test\units;
 
+use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profile as DebugProfile;
@@ -1791,16 +1792,22 @@ HTML,
         yield ['articles' => []];
 
         // Second FAQ test case: public FAQ enabled + multi entities
-        $_SESSION['glpi_multientitiesmode'] = 1;
         $CFG_GLPI['use_public_faq'] = true;
         yield ['articles' => ['FAQ 2']];
 
         // Third FAQ test case: public FAQ enabled + single entity
-        $_SESSION['glpi_multientitiesmode'] = 0;
+        // The anonymous mode is read from the DB, so remove the child entities for this case.
+        $entities = iterator_to_array($DB->request([
+            'FROM'  => Entity::getTable(),
+            'WHERE' => ['id' => ['>', 0]],
+        ]));
+        $DB->delete(Entity::getTable(), ['id' => ['>', 0]]);
         yield ['articles' => ['FAQ 1', 'FAQ 2']];
 
-        // Revert session / config
-        $_SESSION['glpi_multientitiesmode'] = 1;
+        // Revert entities / config
+        foreach ($entities as $entity) {
+            $DB->insert(Entity::getTable(), $entity);
+        }
         $CFG_GLPI['use_public_faq'] = false;
     }
 
@@ -1977,7 +1984,7 @@ HTML,
         ]);
 
         // Target entity
-        $entity = new \Entity();
+        $entity = new Entity();
         $faq_entity1 = (int) $entity->add([
             'name' => 'FAQ 1 entity',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
@@ -2485,7 +2492,7 @@ HTML,
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $entity->getFromDBByCrit(['name' => '_test_root_entity']);
 
         $date = date('Y-m-d H:i:s');
@@ -2503,7 +2510,7 @@ HTML,
         );
 
         //add target
-        $tentity = new \Entity();
+        $tentity = new Entity();
         $this->assertGreaterThan(
             0,
             $eid = $tentity->add([
@@ -4572,22 +4579,19 @@ HTML,
      */
     public function testRootArticleIsListedForAnonymousFaqReaders(): void
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         $root_id = KnowbaseItem::getRootId();
-        $multi_entities_mode = $_SESSION['glpi_multientitiesmode'] ?? 1;
 
         $this->logOut();
         $CFG_GLPI['use_public_faq'] = true;
 
         try {
-            $_SESSION['glpi_multientitiesmode'] = 1;
             $this->assertContains($root_id, $this->getBrowseListRequestIds());
 
-            $_SESSION['glpi_multientitiesmode'] = 0;
+            $DB->delete(Entity::getTable(), ['id' => ['>', 0]]);
             $this->assertContains($root_id, $this->getBrowseListRequestIds());
         } finally {
-            $_SESSION['glpi_multientitiesmode'] = $multi_entities_mode;
             $CFG_GLPI['use_public_faq'] = false;
         }
     }

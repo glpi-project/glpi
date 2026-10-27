@@ -4263,7 +4263,7 @@ HTML;
                     if (is_numeric($post['searchText'])) {
                         $orwhere['id'] = $post['searchText'];
                     }
-                    if (!empty($orwhere)) {
+                    if ($orwhere !== []) {
                         $criteria['WHERE'][] = ['OR' => $orwhere];
                     }
                 }
@@ -4392,7 +4392,7 @@ HTML;
                             if (is_numeric($post['searchText'])) {
                                 $orwhere['id'] = $post['searchText'];
                             }
-                            if (!empty($orwhere)) {
+                            if ($orwhere !== []) {
                                 $criteria['WHERE'][] = ['OR' => $orwhere];
                             }
                         }
@@ -5007,6 +5007,12 @@ HTML;
             $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
             $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
         }
+        $default_use_notif = Entity::getUsedConfig(
+            'is_notif_enable_default',
+            $post['item']['entities_id'] ?? $_SESSION['glpiactive_entity'],
+            '',
+            1
+        );
 
         // prevent instanciation of bad classes
         if (!is_subclass_of($post['itiltemplate_class'], ITILTemplate::class)) {
@@ -5041,7 +5047,7 @@ HTML;
                     'title'             => sprintf(__('%1$s - %2$s'), $text, $user['name']),
                     'itemtype'          => "User",
                     'items_id'          => $ID,
-                    'use_notification'  => ((string) ($user['default_email'] ?? "")) !== '' ? 1 : 0,
+                    'use_notification'  => ($default_use_notif && (string) ($user['default_email'] ?? "") !== '') ? 1 : 0,
                     'default_email'     => $user['default_email'],
                     'alternative_email' => '',
                 ];
@@ -5115,7 +5121,7 @@ HTML;
                         $children['items_id']          = $children['id'];
                         $children['id']                = "Supplier_" . $children['id'];
                         $children['itemtype']          = "Supplier";
-                        $children['use_notification']  = ((string) $supplier_obj->fields['email']) !== '' ? 1 : 0;
+                        $children['use_notification']  = ($default_use_notif && (string) ($supplier_obj->fields['email'] ?? '') !== '') ? 1 : 0;
                         $children['default_email']     = $supplier_obj->fields['email'];
                         $children['alternative_email'] = '';
                     }

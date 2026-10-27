@@ -12,6 +12,7 @@ pr_commands = ["/agentic_review"] # default also runs /agentic_describe
 [review_agent]
 publish_in_progress_comment = false
 persistent_comment_notification = false
+comments_routing_preset = "custom"
 
 issues_user_guidelines = """\
 Read as much of the repository as you need in order to understand this pull \
@@ -27,11 +28,45 @@ Do not report anything the project tooling already enforces: PHP CS Fixer, \
 PHPStan, Psalm, Rector, ESLint, Stylelint. The .phpstan-baseline*.php files \
 record known pre-existing violations that are deliberately accepted; never \
 report those, and never suggest reducing the baselines.
-Skip stylistic and naming preferences.\
+Skip stylistic and naming preferences.
+
+Also check these project rules. They cover what maintainers otherwise ask for \
+by hand, so report each one that the pull request breaks.
+- Security disclosure: if the change closes a vulnerability that an attacker \
+can exploit in a supported release (a missing rights or entity check, IDOR, \
+XSS, SQL injection, CSRF, SSRF, authentication bypass), report a single \
+finding asking the author to close the pull request and report it to \
+security@glpi-project.org as SECURITY.md requires. Write that finding in one \
+neutral sentence: never describe the vulnerability, how to exploit it or \
+which versions are affected, because this comment is public.
+- Target branch: a pull request on a */bugfixes branch must not change a \
+public or protected method signature, remove or rename public API, add a \
+configuration option, or change established behaviour beyond the bug it \
+fixes. Such changes belong on main.
+- Changelog: a pull request on a */bugfixes branch that changes user-visible \
+behaviour, permissions, report or API output, or a default value must add an \
+entry to CHANGELOG.md.
+- Tests: a bug fix or a feature must come with a test that fails without the \
+change, as CONTRIBUTING.md requires. Use an end-to-end test for a client and \
+server contract.
+- Linked issue and AI disclosure: the description must link an issue, unless \
+the fix is trivial, and must say whether AI tools were used, as \
+CONTRIBUTING.md requires. Skip the AI disclosure when the author is a member \
+of the glpi-project organization (author association MEMBER or OWNER): never \
+ask project members about their use of AI.
+- Code rules: apply .github/instructions/php.instructions.md and \
+.github/instructions/e2e.instructions.md to the lines the pull request \
+changes, in particular the rights, translation and database sections.\
 """
 
+[review_agent.comments_routing]
+action_required = "both"
+remediation_recommended = "both"
+informational = "summary"
+
 [review_agent_ux]
-finding_overflow_count = 1
+finding_overflow_count = 5
+resolved_findings_placement = "resolved_section"
 resolved_overflow_count = 0
 use_images_and_animations = false
 show_context_used = false

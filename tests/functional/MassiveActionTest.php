@@ -44,6 +44,7 @@ use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
+use ITILCategory;
 use Location;
 use MassiveAction;
 use Notepad;
@@ -1857,5 +1858,92 @@ class MassiveActionTest extends DbTestCase
             0,
             \Reservation::class
         );
+    }
+
+    public static function updateDropdownConditionProvider(): iterable
+    {
+        foreach ([Ticket::class, Change::class, Problem::class] as $itemtype) {
+            yield [$itemtype, ITILCategory::getTable()];
+            yield [$itemtype, Location::getTable()];
+        }
+    }
+
+    #[DataProvider('updateDropdownConditionProvider')]
+    public function testUpdateDropdownCondition(string $itemtype, string $table): void
+    {
+        $this->login();
+
+        $categories = [
+            Ticket::class  => 'is_incident',
+            Change::class  => 'is_change',
+            Problem::class => 'is_problem',
+        ];
+        $expected = [];
+        foreach ($categories as $category_itemtype => $field) {
+            $category = $this->createItem(ITILCategory::class, array_merge([
+                'name'         => 'massive update ' . $field,
+                'entities_id'  => $this->getTestRootEntity(true),
+                'is_recursive' => 1,
+                'is_incident'  => 0,
+                'is_request'   => 0,
+                'is_change'    => 0,
+                'is_problem'   => 0,
+            ], [$field => 1]));
+            if ($category_itemtype === $itemtype) {
+                $expected[] = $category->fields['name'];
+            }
+        }
+        $location = $this->createItem(Location::class, [
+            'name'        => 'massive update location',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        if ($table === Location::getTable()) {
+            $expected = [$location->fields['name']];
+        }
+
+        $search_option = null;
+        foreach (SearchOption::getOptionsForItemtype($itemtype) as $id => $option) {
+            if (is_array($option) && ($option['table'] ?? null) === $table && $option['field'] === 'completename') {
+                $search_option = $id;
+                break;
+            }
+        }
+        $this->assertNotNull($search_option);
+
+        $ma = $this->createStub(MassiveAction::class);
+        $ma->method('getAction')->willReturn('update');
+        $ma->POST = [
+            'id_field'       => $itemtype . ':' . $search_option,
+            'common_options' => 'false',
+        ];
+        $_SESSION['glpicondition'] = [];
+        ob_start();
+        MassiveAction::showMassiveActionsSubForm($ma);
+        ob_end_clean();
+
+        // Load the dropdown values with the condition used by the form
+        $post = [
+            'itemtype'   => getItemTypeForTable($table),
+            'condition'  => array_key_last($_SESSION['glpicondition']),
+            'searchText' => 'massive update',
+            'page'       => 1,
+            'page_limit' => 100,
+        ];
+        $post['_idor_token'] = Session::getNewIDORToken($post['itemtype'], ['condition' => $post['condition']]);
+        $result = \Dropdown::getDropdownValue($post, false);
+        $this->assertIsArray($result);
+
+        $names = [];
+        array_walk_recursive($result['results'], function ($value, $key) use (&$names) {
+            if ($key === 'text') {
+                $names[] = $value;
+            }
+        });
+        $this->assertSame($expected, array_values(array_intersect($names, [
+            'massive update is_incident',
+            'massive update is_change',
+            'massive update is_problem',
+            'massive update location',
+        ])));
     }
 }

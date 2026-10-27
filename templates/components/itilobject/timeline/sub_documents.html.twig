@@ -52,7 +52,7 @@
          {% if document['_is_image'] %}
             {% set imgs = imgs|merge([{
                'title': '',
-               'thumbnail_src': docpath ~ '&context=timeline',
+               'thumbnail_src': docpath,
                'thumbnail_w': 'auto',
                'thumbnail_h': 'auto',
                'src': docpath,

@@ -93,7 +93,7 @@
             'nosort': true,
             'entries': entries2,
             'total_number': entries2|length,
-            'showmassiveactions': canedit,
+            'showmassiveactions': canedit|default(false),
         } %}
         {% set merged_params = datatable_params|merge(common_columns) %}
 

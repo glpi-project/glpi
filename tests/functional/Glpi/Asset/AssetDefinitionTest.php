@@ -40,6 +40,8 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Dashboard\Grid;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
@@ -620,6 +622,41 @@ class AssetDefinitionTest extends DbTestCase
                 getAllDataFromTable('glpi_displaypreferences', ['itemtype' => $classname])
             );
         }
+    }
+
+    public function testDashboardCardsCacheIsResetOnDefinitionChanges(): void
+    {
+        global $GLPI_CACHE;
+
+        $cache_keys = [];
+        foreach (array_keys(LanguageRegistry::all()) as $language) {
+            $cache_keys[] = Grid::getAllDashboardCardsCacheKey($language);
+        }
+        $fill_cache = static function () use ($GLPI_CACHE, $cache_keys) {
+            foreach ($cache_keys as $cache_key) {
+                $GLPI_CACHE->set($cache_key, ['card' => []]);
+            }
+        };
+        $assert_cache_is_empty = function () use ($GLPI_CACHE, $cache_keys) {
+            foreach ($cache_keys as $cache_key) {
+                $this->assertFalse($GLPI_CACHE->has($cache_key));
+            }
+        };
+
+        // Cache is reset on add
+        $fill_cache();
+        $definition = $this->initAssetDefinition('test');
+        $assert_cache_is_empty();
+
+        // Cache is reset on update
+        $fill_cache();
+        $this->updateItem(AssetDefinition::class, $definition->getID(), ['label' => 'Test label']);
+        $assert_cache_is_empty();
+
+        // Cache is reset on purge
+        $fill_cache();
+        $this->deleteItem(AssetDefinition::class, $definition->getID(), true);
+        $assert_cache_is_empty();
     }
 
     public function testUpdateRights()

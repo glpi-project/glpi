@@ -1599,6 +1599,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             );
         }
 
+        if (
+            !isset($input[TicketTemplate::getForeignKeyField()])
+            && (int) $input['itilcategories_id'] > 0
+        ) {
+            $tt = $this->getITILTemplateFromInput($input);
+            if ($tt !== null && $tt->getID() > 0) {
+                $input[TicketTemplate::getForeignKeyField()] = $tt->getID();
+            }
+        }
+
         return $input;
     }
 

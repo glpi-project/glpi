@@ -1393,6 +1393,9 @@ class GLPIDashboard {
         }
 
         select.addEventListener('change', (event) => {
+            if (event.target.selectedIndex < 0) {
+                return;
+            }
             const tempSelect = document.createElement('select');
             const tempOption = document.createElement('option');
             tempOption.textContent = event.target.options[event.target.selectedIndex].text;
