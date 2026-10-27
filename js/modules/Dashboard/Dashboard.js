@@ -164,7 +164,10 @@ class GLPIDashboard {
             float: true, // widget can be placed anywhere on the grid, not only on top
             animate: false, // as we don't move widget automatically, we don't need animation
             draggable: { // override jquery ui draggable options
-                'cancel': 'textarea' // avoid draggable on some child elements
+                'cancel': 'textarea', // avoid draggable on some child elements
+                // GridStack auto-scrolls as long as the dragged card is clipped by the viewport, not when the cursor
+                // nears an edge: dragging a card whose top is scrolled out scrolls the page up to the top.
+                'scroll': false,
             },
             // columnOpts is intentionally NOT used: GridStack v12 triggers GridStackEngine._fixCollisions
             // during the column change, which causes infinite recursion (moveNode <-> _fixCollisions)
