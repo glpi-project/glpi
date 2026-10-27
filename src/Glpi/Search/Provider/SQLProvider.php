@@ -3108,6 +3108,8 @@ final class SQLProvider implements SearchProviderInterface
                         $value_string = $value->getValue();
                         $new_value = strtr($value_string, $placeholders);
                         $new_criteria[$new_key] = new QueryExpression($new_value, values: $value->getParams());
+                    } elseif ($value instanceof QueryIdentifier) {
+                        $new_criteria[$new_key] = new QueryExpression(strtr($value->getValue(), $placeholders));
                     } elseif ($value !== null) {
                         $new_criteria[$new_key] = strtr($value, $placeholders);
                     } else {
