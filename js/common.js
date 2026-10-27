@@ -1576,6 +1576,7 @@ document.addEventListener('click', (e) => {
     const element = e.target.closest('[data-glpi-confirm]');
     if (element && !confirm(element.dataset.glpiConfirm)) {
         e.preventDefault();
+        e.stopPropagation();
     }
 }, true);
 
