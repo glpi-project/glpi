@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Alert;
 use CronTask;
+use CronTaskLog;
 use Entity;
 use Glpi\Tests\DbTestCase;
 use Group;
@@ -136,11 +137,16 @@ class TicketAlertNotClosedCronTest extends DbTestCase
             return $recipients;
         };
         $expected = ['alertnotclosed_member@localhost', 'alertnotclosed_tech@localhost'];
+        $count_logs = static fn(): int => countElementsInTable(CronTaskLog::getTable(), [
+            'crontasks_id' => $crontask->getID(),
+            'content'      => ['LIKE', '%notified individually'],
+        ]);
 
         // Only the late ticket is notified, to its technician and group
         $this->assertEquals(1, Ticket::cronAlertNotClosed($crontask));
         $this->assertEquals($expected, $get_recipients($late_ticket));
         $this->assertEquals([], $get_recipients($recent_ticket));
+        $this->assertEquals(1, $count_logs());
 
         $alert = new Alert();
         $this->assertTrue($alert->getFromDBByCrit([
@@ -155,6 +161,7 @@ class TicketAlertNotClosedCronTest extends DbTestCase
         // Not notified again the same day, while the digest is still sent
         Ticket::cronAlertNotClosed($crontask);
         $this->assertEquals($expected, $get_recipients($late_ticket));
+        $this->assertEquals(1, $count_logs());
         $this->assertEquals(
             2 * $digests_count,
             countElementsInTable(QueuedNotification::getTable(), ['event' => 'alertnotclosed'])
@@ -167,6 +174,7 @@ class TicketAlertNotClosedCronTest extends DbTestCase
             ['id' => $alert->getID()]
         );
         $this->assertEquals(1, Ticket::cronAlertNotClosed($crontask));
+        $this->assertEquals(2, $count_logs());
         $this->assertEquals(
             ['alertnotclosed_member@localhost', 'alertnotclosed_member@localhost', 'alertnotclosed_tech@localhost', 'alertnotclosed_tech@localhost'],
             $get_recipients($late_ticket)

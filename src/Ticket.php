@@ -5275,7 +5275,10 @@ JAVASCRIPT;
      */
     private static function raiseNotClosedTicketAlerts(int $entity, array $tickets): int
     {
-        if (count(Notification::getNotificationsByEventAndType('alertnotclosed_ticket', self::class, $entity)) === 0) {
+        if (
+            $tickets === []
+            || count(Notification::getNotificationsByEventAndType('alertnotclosed_ticket', self::class, $entity)) === 0
+        ) {
             return 0;
         }
 
