@@ -2900,6 +2900,7 @@ HTML;
             $values,
             static fn($label) => is_scalar($label) && preg_match($pattern, $remove_accents((string) $label))
         );
+    }
 
     /**
      * Get dropdown value
