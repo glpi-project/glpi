@@ -750,21 +750,6 @@ class HtmlTest extends DbTestCase
         $_SERVER['HTTP_REFERER'] = ''; // reset referer to prevent having this var in test loop mode
     }
 
-    public function testAddConfirmationOnAction()
-    {
-        $string = 'Are U\' OK?';
-        $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ ;return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($string));
-
-        $strings = ['Are you', 'OK?'];
-        $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($strings));
-
-        $actions = '$("#mydiv").focus();';
-        $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
-        $this->assertSame($expected, Html::addConfirmationOnAction($string, $actions));
-    }
-
     public function testCleanId()
     {
         $id = 'myid';
@@ -795,25 +780,6 @@ class HtmlTest extends DbTestCase
         $options = ['url' => 'mypage.php', 'class' => 'specific-class'];
         $expected = '<a href="mypage.php"><img src="/path/to/image.png" class="specific-class" title="" alt="" /></a>';
         $this->assertSame($expected, Html::image($path, $options));
-    }
-
-    public function testLink()
-    {
-        $text = 'My link';
-        $url = 'mylink.php';
-
-        $expected = '<a href="mylink.php" >My link</a>';
-        $this->assertSame($expected, @Html::link($text, $url));
-
-        $options = [
-            'confirm'   => 'U sure?',
-        ];
-        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
-        $this->assertSame($expected, @Html::link($text, $url, $options));
-
-        $options['confirmaction'] = 'window.close();';
-        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
-        $this->assertSame($expected, @Html::link($text, $url, $options));
     }
 
     public function testHidden()

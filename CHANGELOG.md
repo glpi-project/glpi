@@ -33,6 +33,10 @@ The present file will list all changes made to the project; according to the
 - `getAjaxCsrfToken()` JavaScript function.
 - `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
 - Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig`.
+- `Html::addConfirmationOnAction()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::link()`.
+- `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
 
 ## [12.0.1] unreleased
 

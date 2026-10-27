@@ -526,65 +526,6 @@ class Html
         return $referer;
     }
 
-
-    /**
-     * Add confirmation on button or link before action
-     *
-     * @param string $string             to display or array of string for using multilines
-     * @param string $additionalactions  additional actions to do on success confirmation
-     *                                     (default '')
-     *
-     * @return string
-     **/
-    public static function addConfirmationOnAction($string, $additionalactions = '')
-    {
-        return "onclick=\"" . htmlescape(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
-    }
-
-
-    /**
-     * Get confirmation on button or link before action
-     *
-     * @since 0.85
-     *
-     * @param string $string             to display or array of string for using multilines
-     * @param string $additionalactions  additional actions to do on success confirmation
-     *                                     (default '')
-     *
-     * @return string confirmation script
-     **/
-    public static function getConfirmationOnActionScript($string, $additionalactions = '')
-    {
-
-        if (!is_array($string)) {
-            $string = [$string];
-        }
-        $additionalactions = trim($additionalactions);
-        $out               = "";
-        $multiple          = false;
-        $close_string      = '';
-        // Manage multiple confirmation
-        foreach ($string as $tab) {
-            if (is_array($tab)) {
-                $multiple      = true;
-                $out          .= "if (window.confirm(";
-                $out          .= json_encode(htmlescape(implode("\n", $tab)));
-                $out          .= ")){ ";
-                $close_string .= "return true;} else { return false;}";
-            }
-        }
-        // manage simple confirmation
-        if (!$multiple) {
-            $out          .= "if (window.confirm(";
-            $out          .= json_encode(htmlescape(implode("\n", $string)));
-            $out          .= ")){ ";
-            $close_string .= "return true;} else { return false;}";
-        }
-        $out .= $additionalactions . (!str_ends_with($additionalactions, ';') ? ';' : '') . $close_string;
-        return $out;
-    }
-
-
     /**
      * Returns a static progress bar HTML snippet.
      *
@@ -2105,11 +2046,14 @@ TWIG,
             $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='" . htmlescape($p['action_button_classes']) . "' ";
-            if (is_array($p['confirm']) || strlen($p['confirm'])) {
-                $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
-            } else {
-                $out .= "onclick='modal_massiveaction_window$identifier.show();'";
+
+            if (is_array($p['confirm'])) {
+                $p['confirm'] = implode("\n", $p['confirm']);
             }
+            if (strlen($p['confirm'])) {
+                $out .= sprintf(' data-glpi-confirm="%s"', htmlescape($p['confirm']));
+            }
+            $out .= " onclick='modal_massiveaction_window$identifier.show();'";
             $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;' aria-hidden='true'></i>";
@@ -3853,11 +3797,13 @@ JAVASCRIPT
         }
         $action  = " submitGetLink('" . jsescape($action) . "', " . json_encode($fields) . ");";
 
-        if (is_array($confirm) || strlen($confirm)) {
-            $link .= self::addConfirmationOnAction($confirm, $action);
-        } else {
-            $link .= " onclick=\"" . htmlescape($action) . "\" ";
+        if (is_array($confirm)) {
+            $confirm = implode("\n", $confirm);
         }
+        if (strlen($confirm)) {
+            $link .= sprintf(' data-glpi-confirm="%s"', htmlescape($confirm));
+        }
+        $link .= " onclick=\"" . htmlescape($action) . "\" ";
 
         // Ensure $btlabel is properly escaped
         $btlabel = htmlescape($btlabel);
@@ -4257,53 +4203,6 @@ JS;
         return $image;
     }
 
-
-    /**
-     * Creates an HTML link.
-     *
-     * @since 0.85
-     *
-     * @param string $text     The content to be wrapped by a tags.
-     * @param string $url      URL parameter
-     * @param array  $options  Array of HTML attributes:
-     *     - `confirm` JavaScript confirmation message.
-     *     - `confirmaction` optional action to do on confirmation
-     * @return string an `a` element.
-     *
-     * @deprecated 12.0.0
-     **/
-    public static function link($text, $url, $options = [])
-    {
-        Toolbox::deprecated();
-
-        if (isset($options['confirm'])) {
-            if (!empty($options['confirm'])) {
-                $confirmAction  = '';
-                if (isset($options['confirmaction'])) {
-                    if (!empty($options['confirmaction'])) {
-                        $confirmAction = $options['confirmaction'];
-                    }
-                    unset($options['confirmaction']);
-                }
-                $options['onclick'] = Html::getConfirmationOnActionScript(
-                    $options['confirm'],
-                    $confirmAction
-                );
-            }
-            unset($options['confirm']);
-        }
-
-        $text = htmlescape($text);
-
-        return sprintf(
-            '<a href="%1$s" %2$s>%3$s</a>',
-            htmlescape($url),
-            Html::parseAttributes($options),
-            $text
-        );
-    }
-
-
     /**
      * Creates a hidden input field.
      *
@@ -4428,7 +4327,6 @@ JS;
      * @param array  $options  Array of options.
      *     - image : will use a submit image input
      *     - `confirm` JavaScript confirmation message.
-     *     - `confirmaction` optional action to do on confirmation
      *
      * @return string A HTML submit button
      **/
@@ -4449,19 +4347,17 @@ JS;
         }
         if (isset($options['confirm'])) {
             if (!empty($options['confirm'])) {
-                $confirmAction  = '';
-                if (isset($options['confirmaction'])) {
-                    if (!empty($options['confirmaction'])) {
-                        $confirmAction = $options['confirmaction'];
-                    }
-                    unset($options['confirmaction']);
+                if (is_array($options['confirm'])) {
+                    $options['confirm'] = implode("\n", $options['confirm']);
                 }
-                $options['onclick'] = Html::getConfirmationOnActionScript(
-                    $options['confirm'],
-                    $confirmAction
-                );
+                $options['data-glpi-confirm'] = $options['confirm'];
             }
             unset($options['confirm']);
+        }
+
+        if (isset($options['confirmaction'])) {
+            trigger_error("The 'confirmaction' option was removed.", E_USER_WARNING);
+            unset($options['confirmaction']);
         }
 
         if ($image) {
