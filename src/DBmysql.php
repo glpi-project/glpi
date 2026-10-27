@@ -214,6 +214,15 @@ class DBmysql
      */
     private ?WeakMap $statement_queries = null;
 
+    /**
+     * Number of the debug profile SQL query data registered on the last execution of each prepared statement.
+     *
+     * Used to add the warnings that are only known once the statement result set has been read.
+     *
+     * @var ?WeakMap<mysqli_stmt, int>
+     */
+    private ?WeakMap $statement_profile_queries = null;
+
     private DBmysqlIterator $iterator;
 
     /**
@@ -2185,7 +2194,7 @@ class DBmysql
         $debug_data['warnings'] = $this->getSQLWarnings($query);
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
-            Profile::getCurrent()->addSQLQueryData(
+            $profile_query_num = Profile::getCurrent()->addSQLQueryData(
                 $debug_data['query'],
                 $params,
                 $debug_data['time'],
@@ -2193,6 +2202,10 @@ class DBmysql
                 $debug_data['errors'],
                 $debug_data['warnings']
             );
+            if ($profile_query_num !== null) {
+                $this->statement_profile_queries ??= new WeakMap();
+                $this->statement_profile_queries[$stmt] = $profile_query_num;
+            }
         }
     }
 
@@ -2208,7 +2221,15 @@ class DBmysql
         $res = $stmt->get_result();
         if ($res !== false) {
             // Warnings are sent by the server after the rows, they are only available once the result set has been read
-            $this->getSQLWarnings($this->getStatementQuery($stmt));
+            $warnings = $this->getSQLWarnings($this->getStatementQuery($stmt));
+
+            $profile_query_num = $this->statement_profile_queries[$stmt] ?? null;
+            if ($profile_query_num !== null) {
+                unset($this->statement_profile_queries[$stmt]);
+                if ($warnings !== '') {
+                    Profile::getCurrent()->addSQLQueryWarnings($profile_query_num, $warnings);
+                }
+            }
         }
         return $res;
     }

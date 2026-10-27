@@ -194,14 +194,14 @@ final class Profile
      * @param string $errors
      * @param string $warnings
      *
-     * @return void
+     * @return ?int Number of the registered query, null if the profile is disabled
      */
-    public function addSQLQueryData(string $query, ?array $params, float $time, int $rows = 0, string $errors = '', string $warnings = '')
+    public function addSQLQueryData(string $query, ?array $params, float $time, int $rows = 0, string $errors = '', string $warnings = ''): ?int
     {
         global $DB;
 
         if ($this->disabled) {
-            return;
+            return null;
         }
         if (!array_key_exists('sql', $this->additional_info)) {
             $this->additional_info['sql'] = [
@@ -226,6 +226,26 @@ final class Profile
             'errors' => $errors,
             'warnings' => $warnings,
         ];
+
+        return $next_num;
+    }
+
+    /**
+     * Add warnings to a SQL query that was registered using self::addSQLQueryData().
+     *
+     * @param int $num Number of the query, as returned by self::addSQLQueryData()
+     * @param string $warnings
+     *
+     * @return void
+     */
+    public function addSQLQueryWarnings(int $num, string $warnings): void
+    {
+        if ($this->disabled || !isset($this->additional_info['sql']['queries'][$num])) {
+            return;
+        }
+
+        $query_warnings = &$this->additional_info['sql']['queries'][$num]['warnings'];
+        $query_warnings = trim($query_warnings . "\n" . $warnings);
     }
 
     public function getDebugInfo(): array
