@@ -1241,6 +1241,7 @@ HTML;
             yield "$itemtype - search starts with, not matching" => [$itemtype, $toadd, '^parent', []];
             yield "$itemtype - search ends with" => [$itemtype, $toadd, 'value$', [-3]];
             yield "$itemtype - search with regex chars" => [$itemtype, $toadd, '-----', [-1]];
+            yield "$itemtype - search is accent insensitive" => [$itemtype, [-4 => 'Toutes les catégories'], 'categorie', [-4]];
         }
     }
 
