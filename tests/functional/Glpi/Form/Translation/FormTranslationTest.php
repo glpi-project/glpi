@@ -162,6 +162,32 @@ class FormTranslationTest extends DbTestCase
         );
     }
 
+    public function testTranslationTableEscapesItemNames(): void
+    {
+        // Arrange: create a form whose sections, comments and questions names contain HTML
+        $payload = '<img src="x" onerror="alert(1)">';
+        $form_builder = (new FormBuilder())
+            ->addSection("Section $payload")
+            ->addQuestion("Question $payload", QuestionTypeShortText::class)
+            ->addSection("Other section $payload")
+            ->addComment("Comment $payload");
+        $form = $this->createForm($form_builder);
+        $this->addTranslationToForm($form, 'fr_FR', Form::TRANSLATION_KEY_NAME, 'Form name in fr_FR');
+
+        // Act: render the translation modal content
+        $crawler = $this->getTranslationModalContent($form, 'fr_FR');
+
+        // Assert: the names are displayed as text, not interpreted as HTML
+        $this->assertCount(0, $crawler->filter('img[onerror]'));
+        $categories = $crawler
+            ->filter('[data-glpi-form-translations-subtitle-row]')
+            ->each(fn(Crawler $node) => $node->text());
+        $this->assertContains("Sections: Section $payload", $categories);
+        $this->assertContains("Questions: Question $payload", $categories);
+        $this->assertContains("Sections: Other section $payload", $categories);
+        $this->assertContains("Comments: Comment $payload", $categories);
+    }
+
     public function createFormWithTranslations(): Form
     {
         $form_builder = (new FormBuilder())
