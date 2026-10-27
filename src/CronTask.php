@@ -1416,7 +1416,14 @@ TWIG, ['msg' => __('Last run list')]);
                 return Dropdown::showFromArray($name, $tab, $options);
 
             case 'state':
-                return self::dropdownState($name, $values[$field], false);
+                // Do not cast the value: an empty criterion value must not select the "Disabled" state
+                $options['value'] = $values[$field];
+                $tab = [
+                    self::STATE_DISABLE => self::getStateName(self::STATE_DISABLE),
+                    self::STATE_WAITING => self::getStateName(self::STATE_WAITING),
+                ];
+                // `display` is disabled, so the HTML string is returned
+                return (string) Dropdown::showFromArray($name, $tab, $options);
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
