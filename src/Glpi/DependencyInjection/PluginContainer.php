@@ -132,7 +132,12 @@ class PluginContainer implements ContainerInterface
             return;
         }
 
-        $container = new ContainerBuilder(new ParameterBag($this->container_parameters->all()));
+        $parameter_bag = new ParameterBag();
+        $parameter_bag->add(
+            $parameter_bag->escapeValue($this->container_parameters->all())
+        );
+
+        $container = new ContainerBuilder($parameter_bag);
 
         $this->configureContainerServices($container);
 
