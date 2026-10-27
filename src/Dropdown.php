@@ -2892,13 +2892,14 @@ HTML;
         $ends_with   = str_ends_with($search_text, '$');
         $search_text = trim(substr($search_text, $starts_with ? 1 : 0, $ends_with ? -1 : null));
 
-        $pattern = '/' . ($starts_with ? '^' : '') . preg_quote($search_text, '/') . ($ends_with ? '$' : '') . '/iu';
+        // Ignore accents, as the SQL collation does
+        $remove_accents = static fn(string $value): string => (string) transliterator_transliterate('NFD; [:Nonspacing Mark:] Remove; NFC', $value);
+        $pattern = '/' . ($starts_with ? '^' : '') . preg_quote($remove_accents($search_text), '/') . ($ends_with ? '$' : '') . '/iu';
 
         return array_filter(
             $values,
-            static fn($label) => is_scalar($label) && preg_match($pattern, (string) $label)
+            static fn($label) => is_scalar($label) && preg_match($pattern, $remove_accents((string) $label))
         );
-    }
 
     /**
      * Get dropdown value
