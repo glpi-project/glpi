@@ -1838,6 +1838,7 @@ class ProviderTest extends DbTestCase
         $this->login();
         $entity_id = $this->getTestRootEntity(true);
         $state     = $this->createItem(\State::class, ['name' => 'test dashboard monitors state']);
+        $computers = [];
 
         foreach (
             [
@@ -1855,6 +1856,7 @@ class ProviderTest extends DbTestCase
                 'states_id'   => $state->getID(),
                 'is_deleted'  => (int) $is_deleted,
             ]);
+            $computers[$name] = $computer;
             for ($i = 0; $i < $nb_monitors + $nb_deleted + $nb_templates; $i++) {
                 $monitor = $this->createItem(\Monitor::class, [
                     'name'        => "test dashboard monitor $name $i",
@@ -1871,6 +1873,19 @@ class ProviderTest extends DbTestCase
             }
         }
 
+        // A deleted connection to an active monitor is not counted
+        $monitor = $this->createItem(\Monitor::class, [
+            'name'        => 'test dashboard monitor deleted connection',
+            'entities_id' => $entity_id,
+        ]);
+        $this->assertTrue($DB->insert(Asset_PeripheralAsset::getTable(), [
+            'itemtype_asset'      => \Computer::class,
+            'items_id_asset'      => $computers['one monitor']->getID(),
+            'itemtype_peripheral' => \Monitor::class,
+            'items_id_peripheral' => $monitor->getID(),
+            'is_deleted'          => 1,
+        ]));
+
         // The state filter restricts the computers to the ones of this test
         $params     = ['apply_filters' => [StateFilter::getId() => [$state->getID()]]];
         $get_values = static fn(array $result): array => array_combine(
@@ -1878,7 +1893,7 @@ class ProviderTest extends DbTestCase
             array_column($result['data'], 'number')
         );
 
-        // Deleted and template monitors are not counted, nor deleted computers, the missing numbers are filled
+        // Deleted and template monitors, deleted connections and deleted computers are not counted, the missing numbers are filled
         $result = Provider::computersByMonitorsNumber($params);
         $this->assertSame([
             '0 monitors' => 1,

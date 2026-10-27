@@ -4558,6 +4558,7 @@ class Provider
                             "$connection_table.itemtype_asset"      => Computer::class,
                             "$connection_table.items_id_asset"      => new QueryIdentifier("$c_table.id"),
                             "$connection_table.itemtype_peripheral" => Monitor::class,
+                            "$connection_table.is_deleted"          => 0,
                             "$monitor_table.is_deleted"             => 0,
                             "$monitor_table.is_template"            => 0,
                         ] + getEntitiesRestrictCriteria($monitor_table, '', '', true),
