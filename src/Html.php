@@ -1748,11 +1748,6 @@ TWIG,
             }
         }
 
-        $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
-        if (!empty($criterion)) {
-            $out .= " onClick='massiveUpdateCheckbox(\"" . htmlescape(jsescape($criterion)) . "\", this)'";
-        }
-
         if (!empty($params['massive_tags'])) {
             $params['specific_tags']['data-glpicore-cb-massive-tags'] = $params['massive_tags'];
         }
@@ -1778,8 +1773,18 @@ TWIG,
 
         $out .= ">";
 
+        $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
         if (!empty($criterion)) {
-            $out .= Html::scriptBlock("\$(function() {\$('" . jsescape($criterion) . "').shiftSelectable();});");
+            $id = jsescape($params['id']);
+            $criterion = jsescape($criterion);
+            $out .= Html::scriptBlock(<<<JAVASCRIPT
+                $(function() {
+                    $("$criterion").shiftSelectable();
+                });
+                document.getElementById("$id").addEventListener("click", (e) => {
+                    massiveUpdateCheckbox("$criterion", e.currentTarget);
+                });
+            JAVASCRIPT);
         }
 
         return $out;
@@ -2043,7 +2048,8 @@ TWIG,
                     ]
                 );
             }
-            $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
+            $button_id = 'massiveaction_button_' . mt_rand();
+            $out .= "<button id=\"$button_id\" type=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='" . htmlescape($p['action_button_classes']) . "' ";
 
@@ -2053,13 +2059,18 @@ TWIG,
             if (strlen($p['confirm'])) {
                 $out .= sprintf(' data-glpi-confirm="%s"', htmlescape($p['confirm']));
             }
-            $out .= " onclick='modal_massiveaction_window$identifier.show();'";
-            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
+            $out .= ">";
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;' aria-hidden='true'></i>";
             }
             $out .= "<span>" . htmlescape($p['title']) . "</span>";
-            $out .= "</a>";
+            $out .= "</button>";
+
+            $out .= Html::scriptBlock(<<<JAVASCRIPT
+                document.getElementById("$button_id").addEventListener("click", () => {
+                    modal_massiveaction_window$identifier.show();
+                });
+            JAVASCRIPT);
 
             if (
                 !$p['ontop']
