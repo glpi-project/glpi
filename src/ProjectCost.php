@@ -396,7 +396,7 @@ class ProjectCost extends CommonDBChild
                 }
 
                 echo "<tr class='tab_bg_2' "
-                    . ($canedit ? "style='cursor:pointer' onClick=\"viewEditCost" . $project_id . "_" . $cost_id . "_$rand();\"" : '')
+                    . ($canedit ? "style='cursor:pointer' id='costrow" . $project_id . "_" . $cost_id . "_$rand'" : '')
                     . ">";
 
                 $name = empty($data['name'])
@@ -427,6 +427,9 @@ class ProjectCost extends CommonDBChild
                         display: false
                     );
                     $js .=  "};";
+                    $js .= "document.getElementById('costrow" . $project_id . "_" . $cost_id . "_$rand').addEventListener('click', () => {";
+                    $js .= "viewEditCost" . $project_id . "_" . $cost_id . "_$rand();";
+                    $js .= "});";
 
                     echo Html::scriptBlock($js);
                 }

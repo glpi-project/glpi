@@ -112,7 +112,7 @@ class ReminderTranslation extends CommonDBChild
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center">
-                    <button class="btn btn-primary" onclick="showTranslation{{ item.getID() ~ rand }}(-1)">{{ button_msg }}</button>
+                    <button id="addtranslation{{ item.getID() ~ rand }}" class="btn btn-primary">{{ button_msg }}</button>
                 </div>
                 <div id="viewtranslation{{ item.getID() ~ rand }}" class="mb-3"></div>
                 <script>
@@ -131,6 +131,9 @@ class ReminderTranslation extends CommonDBChild
                             }
                         });
                     }
+                    document.getElementById('addtranslation{{ item.getID() ~ rand }}').addEventListener('click', () => {
+                        showTranslation{{ item.getID() ~ rand }}(-1);
+                    });
                     $(() => {
                         $('#translationlist{{ rand }} tbody tr').on('click', function() {
                             showTranslation{{ item.getID() ~ rand }}($(this).attr('data-id'));
