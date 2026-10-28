@@ -5008,10 +5008,10 @@ final class SQLProvider implements SearchProviderInterface
         // If there are search items
         if (count($data['search']['criteria'])) {
             $main_where = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
-            if ($WHERE !== '' && $main_where->getQuery() !== '') {
-                $WHERE .= ' AND ';
+            if ($main_where->getQuery() !== '') {
+                // Group the criteria so that their OR links do not bypass the restrictions above
+                $WHERE .= ($WHERE !== '' ? ' AND ' : '') . '(' . $main_where->getQuery() . ')';
             }
-            $WHERE  .= $main_where->getQuery();
             $WHERE_VALUES = array_merge($WHERE_VALUES, $main_where->getParams());
             $main_having = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
             $HAVING = $main_having->getQuery();
