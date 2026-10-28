@@ -152,6 +152,18 @@ function unMarkCheckboxes(container_id) {
     return true;
 }
 
+document.addEventListener('click', (e) => {
+    const mark_button = e.target.closest('[data-glpi-mark-checkboxes]');
+    if (mark_button !== null) {
+        markCheckboxes(mark_button.dataset.glpiMarkCheckboxes);
+    }
+
+    const unmark_button = e.target.closest('[data-glpi-unmark-checkboxes]');
+    if (unmark_button !== null) {
+        unMarkCheckboxes(unmark_button.dataset.glpiUnmarkCheckboxes);
+    }
+});
+
 
 /**
  * display "other" text input field in case of selecting "other" option
