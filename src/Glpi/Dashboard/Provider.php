@@ -46,6 +46,7 @@ use Computer;
 use Config;
 use DBConnection;
 use ExtraVisibilityCriteria;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Dashboard\Filters\{
     AbstractGroupFilter,
     DatesFilter,
@@ -65,6 +66,7 @@ use Group_Ticket;
 use Item_OperatingSystem;
 use Location;
 use Log;
+use Monitor;
 use OperatingSystem;
 use OperatingSystemVersion;
 use Profile_User;
@@ -4491,6 +4493,110 @@ class Provider
         if (count($data) === 0) {
             $data = [
                 'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
+     * Count computers grouped by their number of connected monitors.
+     * Only the monitors the user can see are counted (not deleted, not templates, in the active entities),
+     * computers without any monitor are counted in the "0 monitor" entry.
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function computersByMonitorsNumber(array $params = []): array
+    {
+        $db = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Monitor::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $no_data = [
+            'data'  => [
+                'nodata' => true,
+            ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+
+        if (!Computer::canView() || !Monitor::canView()) {
+            return $no_data;
+        }
+
+        $c_table          = Computer::getTable();
+        $monitor_table    = Monitor::getTable();
+        $connection_table = Asset_PeripheralAsset::getTable();
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        // Monitors are counted in a subquery, so that the joins added by the filters can't count them several times
+        $computers_criteria = array_merge_recursive(
+            [
+                'DISTINCT' => true,
+                'SELECT'   => [
+                    "$c_table.id",
+                    new QuerySubQuery([
+                        'COUNT'      => 'cpt',
+                        'FROM'       => $connection_table,
+                        'INNER JOIN' => [
+                            $monitor_table => [
+                                'ON' => [
+                                    $monitor_table    => 'id',
+                                    $connection_table => 'items_id_peripheral',
+                                ],
+                            ],
+                        ],
+                        'WHERE'      => [
+                            "$connection_table.itemtype_asset"      => Computer::class,
+                            "$connection_table.items_id_asset"      => new QueryIdentifier("$c_table.id"),
+                            "$connection_table.itemtype_peripheral" => Monitor::class,
+                            "$connection_table.is_deleted"          => 0,
+                            "$monitor_table.is_deleted"             => 0,
+                            "$monitor_table.is_template"            => 0,
+                        ] + getEntitiesRestrictCriteria($monitor_table, '', '', true),
+                    ], 'nb_monitors'),
+                ],
+                'FROM'     => $c_table,
+                'WHERE'    => [
+                    "$c_table.is_deleted"  => 0,
+                    "$c_table.is_template" => 0,
+                ] + getEntitiesRestrictCriteria($c_table, '', '', true),
+            ],
+            self::getFiltersCriteria($c_table, $params['apply_filters'])
+        );
+
+        $criteria = [
+            'SELECT'  => ['computer_monitors.nb_monitors'],
+            'COUNT'   => 'cpt',
+            'FROM'    => new QuerySubQuery($computers_criteria, 'computer_monitors'),
+            'GROUPBY' => ['computer_monitors.nb_monitors'],
+        ];
+
+        $counts = [];
+        foreach ($db->request($criteria) as $result) {
+            $counts[(int) $result['nb_monitors']] = (int) $result['cpt'];
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        if (count($counts) === 0) {
+            return $no_data;
+        }
+
+        // Fill the missing numbers of monitors, so the bars stay in order without gaps
+        $data = [];
+        for ($nb_monitors = 0; $nb_monitors <= max(array_keys($counts)); $nb_monitors++) {
+            $data[] = [
+                'number' => $counts[$nb_monitors] ?? 0,
+                'label'  => sprintf(_n('%d monitor', '%d monitors', $nb_monitors), $nb_monitors),
+                'url'    => '',
             ];
         }
 
