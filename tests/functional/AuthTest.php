@@ -394,7 +394,7 @@ class AuthTest extends DbTestCase
 
         $CFG_GLPI['login_remember_time'] = 3600;
 
-        $cookie_name = session_name() . '_rememberme';
+        $cookie_name = Auth::getRememberMeCookieName();
         $user = getItemByTypeName(User::class, TU_USER);
         $this->assertnull($user->fields['last_login']);
 
@@ -590,7 +590,7 @@ class AuthTest extends DbTestCase
         $_SERVER['SSL_CLIENT_S_DN'] = 'CN=Forged/Email=attacker@example.com/';
 
         try {
-            unset($_COOKIE[session_name() . '_rememberme']);
+            unset($_COOKIE[Auth::getRememberMeCookieName()]);
 
             // No verification performed at all: forged DN must not select X509.
             unset($_SERVER['SSL_CLIENT_VERIFY']);
