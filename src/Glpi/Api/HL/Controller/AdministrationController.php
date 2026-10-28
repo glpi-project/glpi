@@ -36,8 +36,13 @@
 namespace Glpi\Api\HL\Controller;
 
 use Auth;
+use AuthLDAP;
+use Calendar;
+use ChangeTemplate;
 use CommonDBTM;
 use CommonITILObject;
+use CommonITILSatisfaction;
+use Contract;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\FileUpload\FileManager;
@@ -50,16 +55,29 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\UI\ThemeManager;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\Type;
 use Group;
+use Infocom;
+use InvalidArgumentException;
 use Planning;
+use ProblemTemplate;
 use Profile;
 use Session;
+use stdClass;
+use Ticket;
+use TicketTemplate;
 use Toolbox;
+use Transfer;
 use User;
 use UserCategory;
 use UserEmail;
 use UserTitle;
 use ValidatorSubstitute;
+
+use function Safe\json_decode;
+use function Safe\preg_match;
 
 /**
  * @phpstan-type EmailData = array{id: int, email: string, is_default: int, _links: array{'self': array{href: non-empty-string}}}
@@ -599,6 +617,7 @@ EOD,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                         'x-version-introduced' => '2.3.0',
                     ],
+                    'settings' => self::getDropdownTypeSchema(class: Entity::class, field: 'id', name_field: null, full_schema: 'EntitySettings', graphql_only: true, params: ['x-version-introduced' => '2.4.0']),
                 ],
             ],
             'Profile' => [
@@ -1119,7 +1138,417 @@ EOT,
             ],
         ];
 
+        $alarm_freq_entity_setting_prop = self::getEntitySettingIntSchema(
+            description: 'Alarm frequency in seconds. -10: Never, -2: Inherit from parent entity (No effect if root entity)',
+            special_values: [Entity::CONFIG_PARENT, Entity::CONFIG_NEVER],
+            min: 1,
+        );
+        $alarm_threshold_entity_setting_prop = self::getEntitySettingIntSchema(
+            description: '-10: Never, -2: Inherit from parent entity (No effect if root entity), item count threshold for triggering alarms.',
+            special_values: [Entity::CONFIG_PARENT, Entity::CONFIG_NEVER],
+            min: 0,
+            max: 100,
+        );
+        $fn_get_yesno_entity_setting_prop = static fn(?string $column = null) => self::getEntitySettingIntSchema(
+            description: '-2: Inherit from parent entity (No effect if root entity), 0: No, 1: Yes',
+            special_values: [Entity::CONFIG_PARENT, 0, 1],
+            column: $column,
+        );
+        $days_before_entity_setting_prop = self::getEntitySettingIntSchema(
+            description: 'Delay in days. -2: Inherit from parent entity (No effect if root entity), 0: No',
+            min: 0,
+            max: 365,
+        );
+        $fn_get_enum_entity_setting_prop = static fn(string $description, array $enum) => self::getEntitySettingIntSchema(
+            description: $description,
+            special_values: $enum === [] ? [Entity::CONFIG_PARENT] : $enum,
+        );
+
+        $autofill_pattern = '^(-2|0|[1-4]|' . Infocom::ON_STATUS_CHANGE . '_\d+)$';
+        $autofill = static fn(string $description) => [
+            'type' => Doc\Schema::TYPE_STRING,
+            'description' => $description . ' -2: Inherit from parent entity (No effect if root entity), 0: No autofill, 1: Copy the start date of warranty, '
+                . '2: Copy the date of purchase, 3: Copy the order date, 4: Copy the delivery date, or "' . Infocom::ON_STATUS_CHANGE . '_{state_id}": Fill when shifting to the given status',
+            'pattern' => $autofill_pattern,
+            'default' => (string) Entity::CONFIG_PARENT,
+            'x-graphql-args' => self::getEntitySettingComputedArgs(),
+        ];
+
+        $properties = [
+            //NOTE strategy fields are not exposed by the API directly because they are very confusing.
+            // Some settings support special values like "never" or "inherit from parent entity" directly, but others require a separate "strategy" field.
+            // When there is a separate strategy field, it is handled transparently by using negative values for the "id" of the dropdown.
+            'id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'readOnly' => true],
+
+            // Notifications
+            'delay_send_emails' => self::getEntitySettingIntSchema(
+                description: 'Delay in minutes before sending email notifications. -2: Inherit from parent entity (No effect if root entity)',
+                min: 0,
+                max: 100,
+            ),
+            'is_notif_enable_default' => $fn_get_yesno_entity_setting_prop(),
+
+            // Alarms
+            'cartridges_alert_repeat' => $alarm_freq_entity_setting_prop,
+            'default_cartridges_alarm_threshold' => $alarm_threshold_entity_setting_prop,
+            'consumables_alert_repeat' => $alarm_freq_entity_setting_prop,
+            'default_consumables_alarm_threshold' => $alarm_threshold_entity_setting_prop,
+            'use_licenses_alert' => $fn_get_yesno_entity_setting_prop(),
+            'send_licenses_alert_before_delay' => $days_before_entity_setting_prop,
+            'use_certificates_alert' => $fn_get_yesno_entity_setting_prop(),
+            'send_certificates_alert_before_delay' => $days_before_entity_setting_prop,
+            'certificates_alert_repeat_interval' => $alarm_freq_entity_setting_prop,
+            'use_contracts_alert' => $fn_get_yesno_entity_setting_prop(),
+            'default_contract_alert' => $fn_get_enum_entity_setting_prop(
+                'Default contract alarm. -2: Inherit from parent entity (No effect if root entity), 0: None, 4: End, 8: Notice, 12: End + Notice, 64: Period end, 72: Period end + Notice',
+                [Entity::CONFIG_PARENT, 0, 4, 8, 12, 64, 72]
+            ),
+            'send_contracts_alert_before_delay' => $days_before_entity_setting_prop,
+            'use_infocoms_alert' => $fn_get_yesno_entity_setting_prop(),
+            'default_infocom_alert' => $fn_get_enum_entity_setting_prop(
+                'Default financial and administrative information alarm. -2: Inherit from parent entity (No effect if root entity), 0: None, 4: Warranty expiration date',
+                [Entity::CONFIG_PARENT, 0, 4]
+            ),
+            'send_infocoms_alert_before_delay' => $days_before_entity_setting_prop,
+            'use_reservations_alert' => self::getEntitySettingIntSchema(
+                description: 'Alerts on reservations. Delay in hours. -2: Inherit from parent entity (No effect if root entity), 0: No',
+                min: 0,
+            ),
+            'use_domains_alert' => $fn_get_yesno_entity_setting_prop(),
+            'send_domains_alert_close_expiries_delay' => $days_before_entity_setting_prop,
+            'send_domains_alert_expired_delay' => $days_before_entity_setting_prop,
+            'notclosed_delay' => self::getEntitySettingIntSchema(
+                description: 'Alerts on tickets which are not solved since. Delay in days. -2: Inherit from parent entity (No effect if root entity), 0: Never',
+                min: 0,
+            ),
+            'approval_reminder_repeat_interval' => $alarm_freq_entity_setting_prop,
+
+            // Assistance
+            'calendar' => self::getEntitySettingDropdownSchema(Calendar::class, 'calendars_id', 'calendars_strategy', 'Calendar', [Entity::CONFIG_PARENT]),
+            //TODO these template properties need a schema
+            'ticket_template' => self::getEntitySettingDropdownSchema(TicketTemplate::class, 'tickettemplates_id', 'tickettemplates_strategy', null, [Entity::CONFIG_PARENT]),
+            'change_template' => self::getEntitySettingDropdownSchema(ChangeTemplate::class, 'changetemplates_id', 'changetemplates_strategy', null, [Entity::CONFIG_PARENT]),
+            'problem_template' => self::getEntitySettingDropdownSchema(ProblemTemplate::class, 'problemtemplates_id', 'problemtemplates_strategy', null, [Entity::CONFIG_PARENT]),
+            'default_contract' => self::getEntitySettingDropdownSchema(Contract::class, 'contracts_id_default', 'contracts_strategy_default', 'Contract', [Entity::CONFIG_PARENT, Entity::CONFIG_AUTO]),
+            'tickettype' => $fn_get_enum_entity_setting_prop(
+                'Default type of tickets. -2: Inherit from parent entity (No effect if root entity), 1: Incident, 2: Request',
+                [Entity::CONFIG_PARENT, Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE]
+            ),
+            'auto_assign_mode' => $fn_get_enum_entity_setting_prop(
+                'Automatic assignment of tickets, changes and problems. -2: Inherit from parent entity (No effect if root entity), -10: No, '
+                . '1: Based on the item then the category, 2: Based on the category then the item',
+                [Entity::CONFIG_PARENT, Entity::CONFIG_NEVER, Entity::AUTO_ASSIGN_HARDWARE_CATEGORY, Entity::AUTO_ASSIGN_CATEGORY_HARDWARE]
+            ),
+            'suppliers_as_private' => $fn_get_yesno_entity_setting_prop(),
+            'anonymize_support_agents' => $fn_get_enum_entity_setting_prop(
+                'Anonymize support agents. -2: Inherit from parent entity (No effect if root entity), 0: Disabled, 1: Replace the agent and group name with a generic name, '
+                . '2: Replace the agent and group name with a customisable nickname, 3: Replace the agent\'s name with a generic name, '
+                . '4: Replace the agent\'s name with a customisable nickname, 5: Replace the group\'s name with a generic name',
+                [
+                    Entity::CONFIG_PARENT, Entity::ANONYMIZE_DISABLED, Entity::ANONYMIZE_USE_GENERIC, Entity::ANONYMIZE_USE_NICKNAME,
+                    Entity::ANONYMIZE_USE_GENERIC_USER, Entity::ANONYMIZE_USE_NICKNAME_USER, Entity::ANONYMIZE_USE_GENERIC_GROUP,
+                ]
+            ),
+            'display_users_initials' => $fn_get_yesno_entity_setting_prop(),
+            'show_tickets_properties_on_helpdesk' => $fn_get_yesno_entity_setting_prop(),
+            'autoclose_delay' => self::getEntitySettingIntSchema(
+                description: 'Automatic closing of solved tickets after the given delay in days. -10: Never, -2: Inherit from parent entity (No effect if root entity), 0: Immediately',
+                special_values: [Entity::CONFIG_PARENT, Entity::CONFIG_NEVER],
+                min: 0,
+                max: 99,
+            ),
+            'autopurge_delay' => self::getEntitySettingIntSchema(
+                description: 'Automatic purge of closed tickets after the given delay in days. -10: Never, -2: Inherit from parent entity (No effect if root entity)',
+                special_values: [Entity::CONFIG_PARENT, Entity::CONFIG_NEVER],
+                min: 1,
+                max: 3650,
+            ),
+
+            // Assets
+            'autofill_buy_date' => $autofill('Date of purchase.'),
+            'autofill_order_date' => $autofill('Order date.'),
+            'autofill_delivery_date' => $autofill('Delivery date.'),
+            'autofill_use_date' => $autofill('Startup date.'),
+            'autofill_warranty_date' => $autofill('Start date of warranty.'),
+            'autofill_decommission_date' => $autofill('Decommission date.'),
+            'software_entity' => self::getEntitySettingDropdownSchema(Entity::class, 'entities_id_software', 'entities_strategy_software', 'Entity', [Entity::CONFIG_PARENT, Entity::CONFIG_NEVER]),
+            'transfer_model' => self::getEntitySettingDropdownSchema(Transfer::class, 'transfers_id', 'transfers_strategy', null, [Entity::CONFIG_PARENT, Entity::CONFIG_NEVER]),
+            'agent_base_url' => ['type' => Doc\Schema::TYPE_STRING, 'description' => 'Base URL of the inventory agents', 'maxLength' => 255],
+            'state_autoupdate_mode' => self::getEntitySettingIntSchema(
+                description: 'Status to set when connecting or updating the elements related to the computers. -2: Inherit from parent entity (No effect if root entity), -1: Copy computer status, 0: Keep status, >0: ID of the status to set',
+                special_values: [Entity::CONFIG_PARENT, Entity::CONFIG_AUTO],
+                min: 0,
+            ),
+            'state_autoclean_mode' => self::getEntitySettingIntSchema(
+                description: 'Status to set when disconnecting the elements related to the computers. -2: Inherit from parent entity (No effect if root entity), -1: Clear status, 0: Keep status, >0: ID of the status to set',
+                special_values: [Entity::CONFIG_PARENT, Entity::CONFIG_AUTO],
+                min: 0,
+            ),
+
+            // Advanced
+            'ldap_directory' => self::getDropdownTypeSchema(class: AuthLDAP::class, field: 'authldaps_id', full_schema: 'LDAPDirectory', params: ['x-version-introduced' => '2.4.0']),
+
+            // Security
+            'two_factor_enforcement' => $fn_get_yesno_entity_setting_prop('2fa_enforcement_strategy'),
+
+            // Custom UI
+            'enable_custom_css' => $fn_get_yesno_entity_setting_prop(),
+            'custom_css_code' => ['type' => Doc\Schema::TYPE_STRING, 'description' => 'Custom CSS code'],
+        ];
+
+        foreach (['contact', 'user', 'group', 'location'] as $related) {
+            $properties["is_{$related}_autoupdate"] = $fn_get_yesno_entity_setting_prop();
+            $properties["is_{$related}_autoclean"] = $fn_get_yesno_entity_setting_prop();
+        }
+
+        // Satisfaction surveys. The property names use "survey" and a "_ticket"/"_change" suffix. The columns use "inquest" and no suffix for tickets.
+        foreach (['Tickets' => ['', '_ticket'], 'Changes' => ['_change', '_change']] as $label => [$field_suffix, $prop_suffix]) {
+            $config_column = 'inquest_config' . $field_suffix;
+            $computed_args = static fn(string $column) => self::getEntitySettingComputedArgs($column, $config_column);
+            $properties['survey_config' . $prop_suffix] = self::getEntitySettingIntSchema(
+                description: "Satisfaction survey type for {$label}. -2: Inherit from parent entity (No effect if root entity), 1: Internal survey, 2: External survey",
+                special_values: [Entity::CONFIG_PARENT, CommonITILSatisfaction::TYPE_INTERNAL, CommonITILSatisfaction::TYPE_EXTERNAL],
+                column: $config_column,
+            );
+            $int_props = [
+                'survey_rate' => ['inquest_rate', "Rate (percentage) to trigger a survey for {$label}. 0: Disabled", 0, 100, 10],
+                'survey_delay' => ['inquest_delay', "Number of days after which to create the survey for {$label}. 0: As soon as possible", 0, 90, null],
+                'survey_duration' => ['inquest_duration', "Duration of the survey in days for {$label}. 0: Unspecified", 0, Entity::MAX_INQUEST_DURATION_DAYS, null],
+                'survey_max_rate' => ['inquest_max_rate', "Maximum rate of the survey for {$label}", 1, 10, null],
+                'survey_default_rate' => ['inquest_default_rate', "Default rate of the survey for {$label}", 0, 10, null],
+                'survey_mandatory_comment' => ['inquest_mandatory_comment', "A comment is required if the score is less than or equal to this value for {$label}. 0: Disabled", 0, 10, null],
+            ];
+            foreach ($int_props as $prop_name => [$column, $description, $min, $max, $multiple_of]) {
+                $column .= $field_suffix;
+                $properties[$prop_name . $prop_suffix] = [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'x-field' => $column,
+                    'description' => $description,
+                    'minimum' => $min,
+                    'maximum' => $max,
+                    'x-graphql-args' => $computed_args($column),
+                ] + ($multiple_of !== null ? ['multipleOf' => $multiple_of] : []);
+            }
+            $properties['survey_max_closedate' . $prop_suffix] = [
+                'type' => Doc\Schema::TYPE_STRING,
+                'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                'x-field' => 'max_closedate' . $field_suffix,
+                'description' => "Surveys are only created for {$label} closed after this date",
+                'x-graphql-args' => $computed_args('max_closedate' . $field_suffix),
+            ];
+            $properties['survey_url' . $prop_suffix] = [
+                'type' => Doc\Schema::TYPE_STRING,
+                'x-field' => 'inquest_URL' . $field_suffix,
+                'description' => "URL of the external survey for {$label}",
+                'x-graphql-args' => $computed_args('inquest_URL' . $field_suffix),
+            ];
+        }
+
+        $schemas['EntitySettings'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-version-introduced' => '2.4.0',
+            'x-itemtype' => Entity::class,
+            'x-graphql-noquery' => true,
+            'x-graphql-resolver' => [self::class, 'graphQLResolveEntitySettings'],
+            'properties' => $properties,
+        ];
+
         return $schemas;
+    }
+
+    /**
+     * Get the schema for an integer entity setting which supports special (negative) values like "inherit" and "never".
+     * With a range, the schema uses `oneOf` to allow either one of the special values or a number in the range.
+     * Without a range, the special values are the only allowed values (`enum`).
+     * @param string $description
+     * @param non-empty-array<int> $special_values The allowed special values, or all of the allowed values if there is no range.
+     * @param int|null $min Minimum of the range. If null, there is no range.
+     * @param int|null $max Maximum of the range.
+     * @param string|null $column The name of the column if different from the property name.
+     * @return array<string, mixed>
+     */
+    private static function getEntitySettingIntSchema(
+        string $description,
+        array $special_values = [Entity::CONFIG_PARENT],
+        ?int $min = null,
+        ?int $max = null,
+        ?string $column = null,
+    ): array {
+        $schema = [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+            'description' => $description,
+            'default' => Entity::CONFIG_PARENT,
+            'x-graphql-args' => self::getEntitySettingComputedArgs($column),
+        ];
+        if ($column !== null) {
+            $schema['x-field'] = $column;
+        }
+        if ($min === null) {
+            $schema['enum'] = $special_values;
+        } else {
+            $schema['oneOf'] = [
+                ['enum' => $special_values],
+                ['minimum' => $min] + ($max !== null ? ['maximum' => $max] : []),
+            ];
+        }
+        return $schema;
+    }
+
+    /**
+     * Get the schema for a dropdown entity setting that is stored as an ID field and a separate strategy field.
+     * Negative IDs are used by the API to represent the strategy (inherit from parent entity, never, etc).
+     * @param class-string<CommonDBTM> $class
+     * @param string $id_field The column that contains the ID
+     * @param string $strategy_field The column that contains the strategy
+     * @param string|null $full_schema
+     * @param int[] $special_values The negative IDs that are allowed
+     * @return array<string, mixed>
+     */
+    private static function getEntitySettingDropdownSchema(string $class, string $id_field, string $strategy_field, ?string $full_schema, array $special_values): array
+    {
+        return self::getDropdownTypeSchema(class: $class, field: $id_field, full_schema: $full_schema, params: [
+            'x-version-introduced' => '2.4.0',
+            'x-strategy-field' => $strategy_field,
+            'x-graphql-args' => self::getEntitySettingComputedArgs($id_field, $strategy_field),
+            'x-input-mapper' => static function (mixed $value) use ($id_field, $strategy_field, $special_values): array {
+                $id = is_array($value) ? ($value['id'] ?? null) : $value;
+                if (!is_int($id) && !(is_string($id) && preg_match('/^-?\d+$/', $id) === 1)) {
+                    throw new InvalidArgumentException('The ID must be an integer');
+                }
+                $id = (int) $id;
+                if ($id < 0) {
+                    if (!in_array($id, $special_values, true)) {
+                        throw new InvalidArgumentException('The ID must be a positive number, 0, or one of the following special values: ' . implode(', ', $special_values));
+                    }
+                    // The ID is also kept negative as Entity::handleConfigStrategyFields() resets the strategy to 0 for "entities_id*" fields with an ID of 0
+                    return [$id_field => $id, $strategy_field => $id];
+                }
+                return [$id_field => $id, $strategy_field => 0];
+            },
+        ]);
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private static function getEntitySettingComputedArgs(?string $column = null, ?string $strategy_field = null): array
+    {
+        return [
+            'computed' => [
+                'type' => Type::boolean(),
+                'defaultValue' => false,
+                'description' => 'Get the value in use (resolved through the parent entities) rather than the raw value of this entity',
+                // Custom configuration used by the resolver
+                'column' => $column,
+                'strategyField' => $strategy_field,
+            ],
+        ];
+    }
+
+    /**
+     * Get the value of a dropdown entity setting which is stored as an ID field and a strategy field.
+     * @param int $entities_id
+     * @param string $id_field
+     * @param string $strategy_field
+     * @param bool $computed If true, the value is resolved through the parent entities.
+     * @return int The ID, or the negative strategy value if the strategy isn't to use the ID. 0 if there is no value.
+     */
+    private static function getEntitySettingDropdownValue(int $entities_id, string $id_field, string $strategy_field, bool $computed): int
+    {
+        global $DB;
+
+        if ($computed) {
+            $strategy = (int) Entity::getUsedConfig($strategy_field, $entities_id, '', Entity::CONFIG_PARENT);
+            if ($strategy < 0) {
+                return $strategy;
+            }
+            return (int) Entity::getUsedConfig($strategy_field, $entities_id, $id_field, 0);
+        }
+
+        $row = $DB->request([
+            'SELECT' => [$id_field, $strategy_field],
+            'FROM' => Entity::getTable(),
+            'WHERE' => ['id' => $entities_id],
+        ])->current();
+        if ($row === null) {
+            return 0;
+        }
+        return (int) $row[$strategy_field] < 0 ? (int) $row[$strategy_field] : (int) $row[$id_field];
+    }
+
+    /**
+     * Resolve the fields of the EntitySettings type in GraphQL.
+     * Only the "computed" argument needs special handling. Everything else is read from the already loaded row.
+     * @param array<string, mixed> $args
+     */
+    public static function graphQLResolveEntitySettings(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
+    {
+        $field_name = $info->fieldName;
+        $use_computed = $args['computed'] ?? false;
+        $computed_arg = $info->fieldDefinition->getArg('computed');
+        $computed_arg_config = $computed_arg !== null ? $computed_arg->config : [];
+        $column = $computed_arg_config['column'] ?? $field_name;
+        $strategy_field = $computed_arg_config['strategyField'] ?? null;
+
+        if (Type::getNamedType($info->returnType) instanceof ObjectType) {
+            if ($strategy_field === null) {
+                // Dropdown without a strategy
+                return isset($context->default_resolvers)
+                    ? $context->default_resolvers->resolveObjectField($source, $args, $context, $info)
+                    : ($source[$field_name] ?? null);
+            }
+            // Dropdown. The strategy is encoded as a negative ID
+            $value = self::getEntitySettingDropdownValue((int) $source['id'], $column, $strategy_field, $use_computed);
+            if ($value === 0) {
+                return null;
+            }
+            if ($value < 0) {
+                return ['id' => $value, 'name' => null];
+            }
+            $source[$field_name . chr(0x1F) . 'id'] = $value;
+            if (isset($context->default_resolvers)) {
+                return $context->default_resolvers->resolveObjectField($source, $args, $context, $info);
+            }
+            return ['id' => $value];
+        }
+
+        if (!$use_computed) {
+            return $source[$field_name] ?? null;
+        }
+        return Entity::getUsedConfig(
+            fieldref: $strategy_field ?? $column,
+            entities_id: $source['id'],
+            fieldval: $column,
+            //TODO Support custom defaults?
+            default_value: Entity::CONFIG_PARENT
+        );
+    }
+
+    /**
+     * Replace the dropdown values of the given EntitySettings response by the negative IDs for entries which use a special strategy (inherit, never, etc).
+     * The joins used to read the dropdowns only know about the ID column.
+     */
+    private function applyEntitySettingsStrategies(Response $response, int $entities_id, string $api_version): Response
+    {
+        if ($response->getStatusCode() !== 200) {
+            return $response;
+        }
+        $content = json_decode((string) $response->getBody(), true);
+        if (!is_array($content)) {
+            return $response;
+        }
+        foreach ($this->getKnownSchema('EntitySettings', $api_version)['properties'] as $prop_name => $prop) {
+            if (!isset($prop['x-strategy-field'])) {
+                continue;
+            }
+            $value = self::getEntitySettingDropdownValue($entities_id, $prop['x-join']['fkey'], $prop['x-strategy-field'], false);
+            if ($value < 0) {
+                $content[$prop_name] = ['id' => $value, 'name' => null];
+            }
+        }
+        return new JSONResponse($content);
     }
 
     #[Route(path: '/User', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1665,6 +2094,32 @@ EOT,
     public function updateEntityByID(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Entity', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Entity/{id}/Settings', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(schema_name: 'EntitySettings', description: 'Get the settings of a specific entity')]
+    public function getEntitySettings(Request $request): Response
+    {
+        $api_version = $this->getAPIVersion($request);
+        return $this->applyEntitySettingsStrategies(
+            ResourceAccessor::getOneBySchema($this->getKnownSchema('EntitySettings', $api_version), $request->getAttributes(), $request->getParameters()),
+            (int) $request->getAttribute('id'),
+            $api_version
+        );
+    }
+
+    #[Route(path: '/Entity/{id}/Settings', methods: ['PATCH'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\UpdateRoute(schema_name: 'EntitySettings', description: 'Update the settings of a specific entity')]
+    public function updateEntitySettings(Request $request): Response
+    {
+        $api_version = $this->getAPIVersion($request);
+        return $this->applyEntitySettingsStrategies(
+            ResourceAccessor::updateBySchema($this->getKnownSchema('EntitySettings', $api_version), $request->getAttributes(), $request->getParameters()),
+            (int) $request->getAttribute('id'),
+            $api_version
+        );
     }
 
     #[Route(path: '/Entity/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]

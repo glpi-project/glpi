@@ -6,6 +6,9 @@ The present file will list all changes made to the project; according to the
 ## [11.0.12] unreleased
 
 ### Added
+- `settings` property added to the `Entity` schema for GraphQL in the High-Level API v2.4. Inheritable options have a `computed` boolean field argument that lets you get the "in use" value rather than the raw value.
+- New endpoints added to read and update the settings of an entity in the High-Level API v2.4.
+- Schema properties of the High-Level API can define an `x-input-mapper` to convert the value of a property to the input fields expected by GLPI when creating or updating an item.
 
 ### Changed
 - The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.

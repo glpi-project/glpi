@@ -34,7 +34,10 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Entity;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Api\HL\Router;
+use Glpi\Api\HL\Schemas;
 use Glpi\Event;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
@@ -977,5 +980,346 @@ EOT;
         $this->assertNotSame($original_picture_path, $updated_picture_path);
         $this->assertFileDoesNotExist($original_picture_path);
         $this->assertFileExists($updated_picture_path);
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function getEntitySettingsSchemaProperties(): array
+    {
+        return Schemas::getInstance(Router::API_VERSION)->getAllSchemas()['EntitySettings']['properties'];
+    }
+
+    private function createEntityForSettings(string $name): int
+    {
+        $this->loginWeb();
+        $entities_id = $this->createItem('Entity', [
+            'name' => $name,
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $this->login();
+        return $entities_id;
+    }
+
+    public function testGetEntitySettings(): void
+    {
+        $entities_id = $this->createEntityForSettings(__FUNCTION__);
+        $expected_properties = array_keys($this->getEntitySettingsSchemaProperties());
+
+        $this->api->call(new Request('GET', "/Administration/Entity/{$entities_id}/Settings"), function ($call) use ($entities_id, $expected_properties) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($entities_id, $expected_properties) {
+                    $this->assertEqualsCanonicalizing($expected_properties, array_keys($content));
+                    $this->assertSame($entities_id, $content['id']);
+
+                    // Integer settings that inherit from the parent entity by default
+                    $this->assertSame(-2, $content['cartridges_alert_repeat']);
+                    $this->assertSame(-2, $content['default_consumables_alarm_threshold']);
+                    $this->assertSame(-2, $content['use_licenses_alert']);
+                    $this->assertSame(-2, $content['tickettype']);
+                    $this->assertSame(-2, $content['is_contact_autoupdate']);
+                    $this->assertSame(-2, $content['two_factor_enforcement']);
+                    // String settings
+                    $this->assertSame('-2', $content['autofill_buy_date']);
+                    // Dropdowns with a strategy field use negative IDs to represent the strategy
+                    foreach (['calendar', 'ticket_template', 'change_template', 'problem_template', 'default_contract', 'software_entity', 'transfer_model'] as $dropdown) {
+                        $this->assertSame(-2, $content[$dropdown]['id'], "Dropdown $dropdown should inherit");
+                    }
+                });
+        });
+
+        $this->api->call(new Request('GET', '/Administration/Entity/99999999/Settings'), function ($call) {
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testGetEntitySettingsRequiresAuthentication(): void
+    {
+        $this->api->call(new Request('GET', '/Administration/Entity/' . getItemByTypeName('Entity', '_test_root_entity', true) . '/Settings'), function ($call) {
+            $call->response->isUnauthorizedError();
+        });
+    }
+
+    public function testUpdateEntitySettings(): void
+    {
+        $entities_id = $this->createEntityForSettings(__FUNCTION__);
+        $this->loginWeb();
+        $calendars_id = $this->createItem('Calendar', ['name' => __FUNCTION__])->getID();
+        $templates_id = $this->createItem('TicketTemplate', ['name' => __FUNCTION__, 'entities_id' => $this->getTestRootEntity(true), 'is_recursive' => 1])->getID();
+        $states_id = $this->createItem('State', ['name' => __FUNCTION__])->getID();
+        $this->login();
+
+        $request = new Request('PATCH', "/Administration/Entity/{$entities_id}/Settings");
+        foreach ([
+            // Special values
+            'cartridges_alert_repeat' => DAY_TIMESTAMP,
+            'consumables_alert_repeat' => Entity::CONFIG_NEVER,
+            'default_cartridges_alarm_threshold' => 15,
+            'use_licenses_alert' => 1,
+            'send_licenses_alert_before_delay' => 30,
+            'use_reservations_alert' => 12,
+            'default_contract_alert' => 12,
+            'autoclose_delay' => Entity::CONFIG_NEVER,
+            'autopurge_delay' => 90,
+            'tickettype' => 2,
+            'state_autoupdate_mode' => $states_id,
+            'state_autoclean_mode' => -1,
+            'is_user_autoclean' => 1,
+            'two_factor_enforcement' => 0,
+            'autofill_buy_date' => '2',
+            'autofill_warranty_date' => 'STATUS_' . $states_id,
+            'survey_config_ticket' => 2,
+            'survey_rate_ticket' => 50,
+            'survey_url_ticket' => 'https://example.com/survey',
+            'survey_config_change' => 1,
+            'survey_default_rate_change' => 4,
+            // Dropdowns with a strategy field
+            'calendar' => ['id' => $calendars_id],
+            'ticket_template' => ['id' => $templates_id],
+            'change_template' => ['id' => Entity::CONFIG_PARENT],
+            'default_contract' => ['id' => Entity::CONFIG_AUTO],
+            'software_entity' => ['id' => Entity::CONFIG_NEVER],
+            'transfer_model' => ['id' => Entity::CONFIG_NEVER],
+        ] as $name => $value) {
+            $request->setParameter($name, $value);
+        }
+        $this->api->call($request, function ($call) use ($calendars_id, $templates_id, $states_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($calendars_id, $templates_id, $states_id) {
+                    $this->assertSame(DAY_TIMESTAMP, $content['cartridges_alert_repeat']);
+                    $this->assertSame(Entity::CONFIG_NEVER, $content['consumables_alert_repeat']);
+                    $this->assertSame(15, $content['default_cartridges_alarm_threshold']);
+                    $this->assertSame(1, $content['use_licenses_alert']);
+                    $this->assertSame(30, $content['send_licenses_alert_before_delay']);
+                    $this->assertSame(12, $content['use_reservations_alert']);
+                    $this->assertSame(12, $content['default_contract_alert']);
+                    $this->assertSame(Entity::CONFIG_NEVER, $content['autoclose_delay']);
+                    $this->assertSame(90, $content['autopurge_delay']);
+                    $this->assertSame(2, $content['tickettype']);
+                    $this->assertSame($states_id, $content['state_autoupdate_mode']);
+                    $this->assertSame(-1, $content['state_autoclean_mode']);
+                    $this->assertSame(1, $content['is_user_autoclean']);
+                    $this->assertSame(0, $content['two_factor_enforcement']);
+                    $this->assertSame('2', $content['autofill_buy_date']);
+                    $this->assertSame('STATUS_' . $states_id, $content['autofill_warranty_date']);
+                    $this->assertSame(2, $content['survey_config_ticket']);
+                    $this->assertSame(50, $content['survey_rate_ticket']);
+                    $this->assertSame('https://example.com/survey', $content['survey_url_ticket']);
+                    $this->assertSame(1, $content['survey_config_change']);
+                    $this->assertSame(4, $content['survey_default_rate_change']);
+                    $this->assertSame($calendars_id, $content['calendar']['id']);
+                    $this->assertSame($templates_id, $content['ticket_template']['id']);
+                    $this->assertSame(Entity::CONFIG_PARENT, $content['change_template']['id']);
+                    $this->assertSame(Entity::CONFIG_AUTO, $content['default_contract']['id']);
+                    $this->assertSame(Entity::CONFIG_NEVER, $content['software_entity']['id']);
+                    $this->assertSame(Entity::CONFIG_NEVER, $content['transfer_model']['id']);
+                });
+        });
+
+        // The input mappers must have set the real columns and the strategy fields.
+        $entity = new Entity();
+        $this->assertTrue($entity->getFromDB($entities_id));
+        $this->assertEquals(DAY_TIMESTAMP, $entity->fields['cartridges_alert_repeat']);
+        $this->assertEquals(Entity::CONFIG_NEVER, $entity->fields['consumables_alert_repeat']);
+        $this->assertEquals(0, $entity->fields['2fa_enforcement_strategy']);
+        $this->assertEquals($calendars_id, $entity->fields['calendars_id']);
+        $this->assertEquals(0, $entity->fields['calendars_strategy']);
+        $this->assertEquals($templates_id, $entity->fields['tickettemplates_id']);
+        $this->assertEquals(0, $entity->fields['tickettemplates_strategy']);
+        $this->assertEquals(0, $entity->fields['changetemplates_id']);
+        $this->assertEquals(Entity::CONFIG_PARENT, $entity->fields['changetemplates_strategy']);
+        $this->assertEquals(0, $entity->fields['contracts_id_default']);
+        $this->assertEquals(Entity::CONFIG_AUTO, $entity->fields['contracts_strategy_default']);
+        $this->assertEquals(0, $entity->fields['entities_id_software']);
+        $this->assertEquals(Entity::CONFIG_NEVER, $entity->fields['entities_strategy_software']);
+        $this->assertEquals(0, $entity->fields['transfers_id']);
+        $this->assertEquals(Entity::CONFIG_NEVER, $entity->fields['transfers_strategy']);
+
+        // A GET returns the same values (including the strategy based dropdown values)
+        $this->api->call(new Request('GET', "/Administration/Entity/{$entities_id}/Settings"), function ($call) use ($calendars_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($calendars_id) {
+                    $this->assertSame($calendars_id, $content['calendar']['id']);
+                    $this->assertSame(Entity::CONFIG_PARENT, $content['change_template']['id']);
+                    $this->assertSame(Entity::CONFIG_NEVER, $content['transfer_model']['id']);
+                });
+        });
+
+        // Switching a dropdown from an ID back to a strategy
+        $request = new Request('PATCH', "/Administration/Entity/{$entities_id}/Settings");
+        $request->setParameter('calendar', ['id' => Entity::CONFIG_PARENT]);
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertSame(Entity::CONFIG_PARENT, $content['calendar']['id']);
+                });
+        });
+        $entity->getFromDB($entities_id);
+        $this->assertEquals(0, $entity->fields['calendars_id']);
+        $this->assertEquals(Entity::CONFIG_PARENT, $entity->fields['calendars_strategy']);
+    }
+
+    /**
+     * @return iterable<string, array{string, mixed, mixed}>
+     */
+    public static function invalidEntitySettingsProvider(): iterable
+    {
+        // [property, invalid value, expected value of the property after the failed update]
+        yield 'special value not allowed' => ['autoclose_delay', -5, -2];
+        yield 'zero not allowed' => ['autopurge_delay', 0, -2];
+        yield 'above maximum' => ['autoclose_delay', 100, -2];
+        yield 'frequency "never" must use the special value' => ['cartridges_alert_repeat', 0, -2];
+        yield 'enum value not allowed' => ['tickettype', 5, -2];
+        yield 'yes/no value not allowed' => ['use_licenses_alert', 2, -2];
+        yield 'not an integer' => ['use_contracts_alert', 'yes', -2];
+        yield 'dropdown strategy not allowed' => ['calendar', ['id' => Entity::CONFIG_NEVER], -2];
+        yield 'dropdown strategy not allowed (contract)' => ['default_contract', ['id' => -3], -2];
+        yield 'dropdown ID not an integer' => ['transfer_model', ['id' => 'abc'], -2];
+        yield 'invalid autofill value' => ['autofill_use_date', 'always', '-2'];
+        yield 'survey rate not a multiple of 10' => ['survey_rate_ticket', 55, 0];
+    }
+
+    #[DataProvider('invalidEntitySettingsProvider')]
+    public function testUpdateEntitySettingsInvalid(string $property, mixed $value, mixed $expected_unchanged_value): void
+    {
+        $entities_id = $this->createEntityForSettings(__FUNCTION__);
+
+        $request = new Request('PATCH', "/Administration/Entity/{$entities_id}/Settings");
+        $request->setParameter($property, $value);
+        $this->api->call($request, function ($call) use ($property) {
+            $call->response->isNotOK();
+            $call->response->jsonContent(function ($content) use ($property) {
+                $this->assertSame('ERROR_INVALID_PARAMETER', $content['status']);
+                $this->assertArrayHasKey($property, $content['detail']);
+            });
+        });
+
+        // The entity was not modified
+        $this->api->call(new Request('GET', "/Administration/Entity/{$entities_id}/Settings"), function ($call) use ($property, $expected_unchanged_value) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($property, $expected_unchanged_value) {
+                    $current = is_array($content[$property]) ? $content[$property]['id'] : $content[$property];
+                    $this->assertSame($expected_unchanged_value, $current);
+                });
+        });
+    }
+
+    public function testUpdateEntitySettingsPartialInvalidDoesNotUpdate(): void
+    {
+        $entities_id = $this->createEntityForSettings(__FUNCTION__);
+
+        $request = new Request('PATCH', "/Administration/Entity/{$entities_id}/Settings");
+        foreach ([
+            'use_licenses_alert' => 1,
+            'autoclose_delay' => -5,
+        ] as $name => $value) {
+            $request->setParameter($name, $value);
+        }
+        $this->api->call($request, function ($call) {
+            $call->response->isNotOK();
+        });
+
+        $entity = new Entity();
+        $this->assertTrue($entity->getFromDB($entities_id));
+        $this->assertEquals(Entity::CONFIG_PARENT, $entity->fields['use_licenses_alert']);
+    }
+
+    public function testGraphQLEntitySettings(): void
+    {
+        $entities_id = $this->createEntityForSettings(__FUNCTION__);
+        $root_entity_id = $this->getTestRootEntity(true);
+
+        // The parent entity uses a specific configuration that the child entity inherits
+        $this->loginWeb();
+        $calendars_id = $this->createItem('Calendar', ['name' => __FUNCTION__])->getID();
+        $this->updateItem('Entity', $root_entity_id, [
+            'cartridges_alert_repeat' => DAY_TIMESTAMP,
+            'use_licenses_alert' => 1,
+            'calendars_id' => $calendars_id,
+            'autofill_buy_date' => '2',
+            'inquest_config' => 1,
+            'inquest_rate' => 30,
+        ]);
+        $this->login();
+
+        // Every property can be fetched (without the dropdowns which need a sub-selection)
+        $scalar_fields = [];
+        foreach ($this->getEntitySettingsSchemaProperties() as $name => $prop) {
+            if ($prop['type'] !== 'object') {
+                $scalar_fields[] = $name;
+            }
+        }
+        // The GraphQL query complexity is limited so the fields are fetched in chunks
+        foreach (array_chunk($scalar_fields, 40) as $i => $fields_chunk) {
+            $query = 'query { Entity(id: ' . $entities_id . ') { id settings { id ' . implode(' ', $fields_chunk) . ' } } }';
+            $this->graphql->call($query, function ($call) use ($entities_id, $fields_chunk) {
+                $call->response
+                    ->isOK()
+                    ->data('Entity', function ($entities) use ($entities_id, $fields_chunk) {
+                        $this->assertCount(1, $entities);
+                        $settings = $entities[0]['settings'];
+                        foreach ($fields_chunk as $field) {
+                            $this->assertArrayHasKey($field, $settings, "Field $field was not returned");
+                        }
+                        $this->assertSame($entities_id, $settings['id']);
+                    });
+            });
+        }
+
+        $query = 'query { Entity(id: ' . $entities_id . ') { id settings { cartridges_alert_repeat two_factor_enforcement autofill_buy_date'
+            . ' calendar { id } ticket_template { id } change_template { id } problem_template { id }'
+            . ' default_contract { id } software_entity { id } transfer_model { id } ldap_directory { id } } } }';
+        $this->graphql->call($query, function ($call) {
+            $call->response
+                ->isOK()
+                ->data('Entity', function ($entities) {
+                    $this->assertCount(1, $entities);
+                    $settings = $entities[0]['settings'];
+                    $this->assertSame(-2, $settings['cartridges_alert_repeat']);
+                    $this->assertSame(-2, $settings['two_factor_enforcement']);
+                    $this->assertSame('-2', $settings['autofill_buy_date']);
+                    $this->assertSame(-2, $settings['calendar']['id']);
+                    $this->assertSame(-2, $settings['transfer_model']['id']);
+                });
+        });
+
+        // Raw values vs computed values
+        $query = 'query { Entity(id: ' . $entities_id . ') { settings {'
+            . ' raw_repeat: cartridges_alert_repeat computed_repeat: cartridges_alert_repeat(computed: true)'
+            . ' raw_licenses: use_licenses_alert computed_licenses: use_licenses_alert(computed: true)'
+            . ' raw_autofill: autofill_buy_date computed_autofill: autofill_buy_date(computed: true)'
+            . ' raw_config: survey_config_ticket computed_config: survey_config_ticket(computed: true)'
+            . ' computed_rate: survey_rate_ticket(computed: true)'
+            . ' raw_calendar: calendar { id } computed_calendar: calendar(computed: true) { id name }'
+            . ' } } }';
+        $this->graphql->call($query, function ($call) use ($calendars_id) {
+            $call->response
+                ->isOK()
+                ->data('Entity', function ($entities) use ($calendars_id) {
+                    $settings = $entities[0]['settings'];
+                    $this->assertSame(-2, $settings['raw_repeat']);
+                    $this->assertSame(DAY_TIMESTAMP, $settings['computed_repeat']);
+                    $this->assertSame(-2, $settings['raw_licenses']);
+                    $this->assertSame(1, $settings['computed_licenses']);
+                    $this->assertSame('-2', $settings['raw_autofill']);
+                    $this->assertEquals('2', $settings['computed_autofill']);
+                    $this->assertSame(-2, $settings['raw_config']);
+                    $this->assertSame(1, $settings['computed_config']);
+                    $this->assertSame(30, $settings['computed_rate']);
+                    $this->assertSame(-2, $settings['raw_calendar']['id']);
+                    $this->assertSame($calendars_id, $settings['computed_calendar']['id']);
+                    $this->assertSame(__FUNCTION__, $settings['computed_calendar']['name'] ?? null);
+                });
+        });
+
+        // The settings are not available as a top-level query
+        $this->graphql->call('query { EntitySettings { id } }', function ($call) {
+            $call->response->isCompletelyError();
+        });
     }
 }

@@ -107,6 +107,8 @@ final class GraphQL
             if ($context->fullyResolved ?? false) {
                 return $source[$info->fieldName] ?? null;
             }
+            // Allow custom resolvers to delegate to the default resolvers
+            $context->default_resolvers ??= $default_resolvers;
             $field_type = $info->returnType;
             $is_scalar = !($field_type instanceof ObjectType || $field_type instanceof ListOfType);
 

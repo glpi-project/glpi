@@ -79,6 +79,55 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertEquals($expected, ResourceAccessor::getInputParamsBySchema($schema, $request_params));
     }
 
+    /**
+     * @return iterable<string, array{array<string, mixed>, array<string, mixed>, string[]}>
+     */
+    public static function oneOfValidationProvider(): iterable
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'delay' => [
+                    'type' => 'integer',
+                    'oneOf' => [
+                        ['enum' => [-2, -10]],
+                        ['minimum' => 1, 'maximum' => 99],
+                    ],
+                ],
+                'mode' => ['type' => 'integer', 'enum' => [-2, 0, 1]],
+                'free' => ['type' => 'integer'],
+            ],
+        ];
+        yield 'special value' => [$schema, ['delay' => -10], []];
+        yield 'other special value' => [$schema, ['delay' => -2], []];
+        yield 'range minimum' => [$schema, ['delay' => 1], []];
+        yield 'range maximum' => [$schema, ['delay' => 99], []];
+        yield 'numeric string' => [$schema, ['delay' => '5'], []];
+        yield 'null is ignored' => [$schema, ['delay' => null], []];
+        yield 'between special values and range' => [$schema, ['delay' => 0], ['delay']];
+        yield 'unlisted negative' => [$schema, ['delay' => -5], ['delay']];
+        yield 'above range' => [$schema, ['delay' => 100], ['delay']];
+        yield 'not a number' => [$schema, ['delay' => 'never'], ['delay']];
+        yield 'enum valid' => [$schema, ['mode' => 0], []];
+        yield 'enum valid as string' => [$schema, ['mode' => '1'], []];
+        yield 'enum invalid' => [$schema, ['mode' => 2], ['mode']];
+        yield 'no constraints' => [$schema, ['free' => 12345], []];
+        yield 'multiple errors' => [$schema, ['delay' => 0, 'mode' => 7], ['delay', 'mode']];
+    }
+
+    /**
+     * @param array<string, mixed> $schema
+     * @param array<string, mixed> $input
+     * @param string[] $expected_invalid_properties
+     */
+    #[DataProvider('oneOfValidationProvider')]
+    public function testValidateInputParamsOneOfAndEnum(array $schema, array $input, array $expected_invalid_properties): void
+    {
+        $rm = new ReflectionMethod(ResourceAccessor::class, 'validateInputParamsBySchema');
+        $errors = $rm->invoke(null, $schema, $input, false);
+        $this->assertEqualsCanonicalizing($expected_invalid_properties, array_keys($errors));
+    }
+
     public function testCreateWithInvalidProperties()
     {
         $schema_with_validation = [

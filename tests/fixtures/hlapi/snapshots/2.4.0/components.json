@@ -7791,6 +7791,850 @@
                 "date_mod": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "settings": {
+                    "type": "object",
+                    "x-itemtype": "Entity",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "EntitySettings"
+                }
+            }
+        },
+        "EntitySettings": {
+            "type": "object",
+            "x-itemtype": "Entity",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "delay_send_emails": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 100
+                        }
+                    ]
+                },
+                "is_notif_enable_default": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "cartridges_alert_repeat": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -10
+                            ]
+                        },
+                        {
+                            "minimum": 1
+                        }
+                    ]
+                },
+                "default_cartridges_alarm_threshold": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -10
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 100
+                        }
+                    ]
+                },
+                "consumables_alert_repeat": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -10
+                            ]
+                        },
+                        {
+                            "minimum": 1
+                        }
+                    ]
+                },
+                "default_consumables_alarm_threshold": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -10
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 100
+                        }
+                    ]
+                },
+                "use_licenses_alert": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "send_licenses_alert_before_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 365
+                        }
+                    ]
+                },
+                "use_certificates_alert": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "send_certificates_alert_before_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 365
+                        }
+                    ]
+                },
+                "certificates_alert_repeat_interval": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -10
+                            ]
+                        },
+                        {
+                            "minimum": 1
+                        }
+                    ]
+                },
+                "use_contracts_alert": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "default_contract_alert": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        4,
+                        8,
+                        12,
+                        64,
+                        72
+                    ]
+                },
+                "send_contracts_alert_before_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 365
+                        }
+                    ]
+                },
+                "use_infocoms_alert": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "default_infocom_alert": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        4
+                    ]
+                },
+                "send_infocoms_alert_before_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 365
+                        }
+                    ]
+                },
+                "use_reservations_alert": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0
+                        }
+                    ]
+                },
+                "use_domains_alert": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "send_domains_alert_close_expiries_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 365
+                        }
+                    ]
+                },
+                "send_domains_alert_expired_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 365
+                        }
+                    ]
+                },
+                "notclosed_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2
+                            ]
+                        },
+                        {
+                            "minimum": 0
+                        }
+                    ]
+                },
+                "approval_reminder_repeat_interval": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -10
+                            ]
+                        },
+                        {
+                            "minimum": 1
+                        }
+                    ]
+                },
+                "calendar": {
+                    "type": "object",
+                    "x-itemtype": "Calendar",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Calendar"
+                },
+                "ticket_template": {
+                    "type": "object",
+                    "x-itemtype": "TicketTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
+                },
+                "change_template": {
+                    "type": "object",
+                    "x-itemtype": "ChangeTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
+                },
+                "problem_template": {
+                    "type": "object",
+                    "x-itemtype": "ProblemTemplate",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
+                },
+                "default_contract": {
+                    "type": "object",
+                    "x-itemtype": "Contract",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Contract"
+                },
+                "tickettype": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        1,
+                        2
+                    ]
+                },
+                "auto_assign_mode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        -10,
+                        1,
+                        2
+                    ]
+                },
+                "suppliers_as_private": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "anonymize_support_agents": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5
+                    ]
+                },
+                "display_users_initials": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "show_tickets_properties_on_helpdesk": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "autoclose_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -10
+                            ]
+                        },
+                        {
+                            "minimum": 0,
+                            "maximum": 99
+                        }
+                    ]
+                },
+                "autopurge_delay": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -10
+                            ]
+                        },
+                        {
+                            "minimum": 1,
+                            "maximum": 3650
+                        }
+                    ]
+                },
+                "autofill_buy_date": {
+                    "type": "string",
+                    "pattern": "^(-2|0|[1-4]|STATUS_\\d+)$",
+                    "default": "-2"
+                },
+                "autofill_order_date": {
+                    "type": "string",
+                    "pattern": "^(-2|0|[1-4]|STATUS_\\d+)$",
+                    "default": "-2"
+                },
+                "autofill_delivery_date": {
+                    "type": "string",
+                    "pattern": "^(-2|0|[1-4]|STATUS_\\d+)$",
+                    "default": "-2"
+                },
+                "autofill_use_date": {
+                    "type": "string",
+                    "pattern": "^(-2|0|[1-4]|STATUS_\\d+)$",
+                    "default": "-2"
+                },
+                "autofill_warranty_date": {
+                    "type": "string",
+                    "pattern": "^(-2|0|[1-4]|STATUS_\\d+)$",
+                    "default": "-2"
+                },
+                "autofill_decommission_date": {
+                    "type": "string",
+                    "pattern": "^(-2|0|[1-4]|STATUS_\\d+)$",
+                    "default": "-2"
+                },
+                "software_entity": {
+                    "type": "object",
+                    "x-itemtype": "Entity",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Entity"
+                },
+                "transfer_model": {
+                    "type": "object",
+                    "x-itemtype": "Transfer",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
+                },
+                "agent_base_url": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "state_autoupdate_mode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -1
+                            ]
+                        },
+                        {
+                            "minimum": 0
+                        }
+                    ]
+                },
+                "state_autoclean_mode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "oneOf": [
+                        {
+                            "enum": [
+                                -2,
+                                -1
+                            ]
+                        },
+                        {
+                            "minimum": 0
+                        }
+                    ]
+                },
+                "ldap_directory": {
+                    "type": "object",
+                    "x-itemtype": "AuthLDAP",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "LDAPDirectory"
+                },
+                "two_factor_enforcement": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "enable_custom_css": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "custom_css_code": {
+                    "type": "string"
+                },
+                "is_contact_autoupdate": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "is_contact_autoclean": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "is_user_autoupdate": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "is_user_autoclean": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "is_group_autoupdate": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "is_group_autoclean": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "is_location_autoupdate": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "is_location_autoclean": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        0,
+                        1
+                    ]
+                },
+                "survey_config_ticket": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        1,
+                        2
+                    ]
+                },
+                "survey_rate_ticket": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "multipleOf": 10
+                },
+                "survey_delay_ticket": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 90
+                },
+                "survey_duration_ticket": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 180
+                },
+                "survey_max_rate_ticket": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 10
+                },
+                "survey_default_rate_ticket": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 10
+                },
+                "survey_mandatory_comment_ticket": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 10
+                },
+                "survey_max_closedate_ticket": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "survey_url_ticket": {
+                    "type": "string"
+                },
+                "survey_config_change": {
+                    "type": "integer",
+                    "format": "int32",
+                    "default": -2,
+                    "enum": [
+                        -2,
+                        1,
+                        2
+                    ]
+                },
+                "survey_rate_change": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "multipleOf": 10
+                },
+                "survey_delay_change": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 90
+                },
+                "survey_duration_change": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 180
+                },
+                "survey_max_rate_change": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 10
+                },
+                "survey_default_rate_change": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 10
+                },
+                "survey_mandatory_comment_change": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 10
+                },
+                "survey_max_closedate_change": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "survey_url_change": {
+                    "type": "string"
                 }
             }
         },
