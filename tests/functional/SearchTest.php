@@ -4219,8 +4219,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 30, // is_active
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_authldaps`.`is_active` IS NULL)",
-                'expected_and_not'  => "(NOT (`glpi_authldaps`.`is_active` IS NULL))",
+                'expected_and'      => "(((`glpi_authldaps`.`is_active` IS NULL)) OR (`glpi_authldaps`.`is_active` = ?))",
+                'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`is_active` IS NULL)) OR (`glpi_authldaps`.`is_active` = ?)))",
+                'expected_values'    => [0],
             ];
 
             // datatype=integer
@@ -4228,8 +4229,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 4, // port
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_authldaps`.`port` IS NULL)",
-                'expected_and_not'  => "(NOT (`glpi_authldaps`.`port` IS NULL))",
+                'expected_and'      => "(((`glpi_authldaps`.`port` IS NULL)) OR (`glpi_authldaps`.`port` = ?))",
+                'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`port` IS NULL)) OR (`glpi_authldaps`.`port` = ?)))",
+                'expected_values'    => [0],
             ];
 
             // datatype=number
@@ -4237,8 +4239,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 32, // timeout
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_authldaps`.`timeout` IS NULL)",
-                'expected_and_not'  => "(NOT (`glpi_authldaps`.`timeout` IS NULL))",
+                'expected_and'      => "(((`glpi_authldaps`.`timeout` IS NULL)) OR (`glpi_authldaps`.`timeout` = ?))",
+                'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`timeout` IS NULL)) OR (`glpi_authldaps`.`timeout` = ?)))",
+                'expected_values'    => [0],
             ];
 
             // datatype=number (usehaving=true)
@@ -4246,9 +4249,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 115, // harddrive capacity
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Computer_115` IS NULL)",
-                'expected_and_not'  => "(NOT (`ITEM_Computer_115` IS NULL))",
-                'expected_values'    => [Computer::class, Computer::class, Computer::class],
+                'expected_and'      => "(((`ITEM_Computer_115` IS NULL)) OR (`ITEM_Computer_115` = ?))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Computer_115` IS NULL)) OR (`ITEM_Computer_115` = ?)))",
+                'expected_values'    => [Computer::class, Computer::class, Computer::class, 0],
             ];
 
             // datatype=decimal
@@ -4256,8 +4259,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Budget::class,
                 'search_option'     => 7, // value
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_budgets`.`value` IS NULL)",
-                'expected_and_not'  => "(NOT (`glpi_budgets`.`value` IS NULL))",
+                'expected_and'      => "(((`glpi_budgets`.`value` IS NULL)) OR (`glpi_budgets`.`value` = ?))",
+                'expected_and_not'  => "(NOT ((((`glpi_budgets`.`value` IS NULL)) OR (`glpi_budgets`.`value` = ?)))",
+                'expected_values'    => [0],
             ];
 
             // datatype=decimal (usehaving=true)
@@ -4265,9 +4269,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Contract::class,
                 'search_option'     => 11, // totalcost
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Contract_11` IS NULL)",
-                'expected_and_not'  => "(NOT (`ITEM_Contract_11` IS NULL))",
-                'expected_values'    => [],
+                'expected_and'      => "(((`ITEM_Contract_11` IS NULL)) OR (`ITEM_Contract_11` = ?))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Contract_11` IS NULL)) OR (`ITEM_Contract_11` = ?)))",
+                'expected_values'    => [0],
             ];
 
             // datatype=count (usehaving=true)
@@ -4275,9 +4279,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 27, // number of followups
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Ticket_27` IS NULL)",
-                'expected_and_not'  => "(NOT (`ITEM_Ticket_27` IS NULL))",
-                'expected_values'    => ['1', Ticket::class],
+                'expected_and'      => "(((`ITEM_Ticket_27` IS NULL)) OR (`ITEM_Ticket_27` = ?))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_27` IS NULL)) OR (`ITEM_Ticket_27` = ?)))",
+                'expected_values'    => ['1', Ticket::class, 0],
             ];
 
             // datatype=mio (usehaving=true)
@@ -4285,9 +4289,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 111, // memory size
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Computer_111` IS NULL)",
-                'expected_and_not'  => "(NOT (`ITEM_Computer_111` IS NULL))",
-                'expected_values'    => [Computer::class, Computer::class, Computer::class],
+                'expected_and'      => "(((`ITEM_Computer_111` IS NULL)) OR (`ITEM_Computer_111` = ?))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Computer_111` IS NULL)) OR (`ITEM_Computer_111` = ?)))",
+                'expected_values'    => [Computer::class, Computer::class, Computer::class, 0],
             ];
 
             // datatype=progressbar (with computation)
@@ -4297,7 +4301,17 @@ class SearchTest extends DbTestCase
                 'value'             => $null_value,
                 'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') = ?)",
                 'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NOT NULL AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') <> ?)",
-                'expected_values'    => [Computer::class, Computer::class, Computer::class, ''],
+                'expected_values'    => [Computer::class, Computer::class, Computer::class, 0],
+            ];
+
+            // datatype=progressbar
+            yield [
+                'itemtype'          => \ProjectTaskTemplate::class,
+                'search_option'     => 7, // percent_done
+                'value'             => $null_value,
+                'expected_and'      => "(((`glpi_projecttasktemplates`.`percent_done` IS NULL)) OR (`glpi_projecttasktemplates`.`percent_done` = ?))",
+                'expected_and_not'  => "(NOT ((((`glpi_projecttasktemplates`.`percent_done` IS NULL)) OR (`glpi_projecttasktemplates`.`percent_done` = ?)))",
+                'expected_values'    => [0],
             ];
 
             // datatype=timestamp
@@ -4305,8 +4319,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \CronTask::class,
                 'search_option'     => 6, // frequency
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_crontasks`.`frequency` IS NULL)",
-                'expected_and_not'  => "(NOT (`glpi_crontasks`.`frequency` IS NULL))",
+                'expected_and'      => "(((`glpi_crontasks`.`frequency` IS NULL)) OR (`glpi_crontasks`.`frequency` = ?))",
+                'expected_and_not'  => "(NOT ((((`glpi_crontasks`.`frequency` IS NULL)) OR (`glpi_crontasks`.`frequency` = ?)))",
+                'expected_values'    => [0],
             ];
 
             // datatype=timestamp (usehaving=true)
@@ -4314,9 +4329,9 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 49, // actiontime
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Ticket_49` IS NULL)",
-                'expected_and_not'  => "(NOT (`ITEM_Ticket_49` IS NULL))",
-                'expected_values'    => ['1'],
+                'expected_and'      => "(((`ITEM_Ticket_49` IS NULL)) OR (`ITEM_Ticket_49` = ?))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_49` IS NULL)) OR (`ITEM_Ticket_49` = ?)))",
+                'expected_values'    => ['1', 0],
             ];
 
             // datatype=datetime
@@ -5000,6 +5015,52 @@ class SearchTest extends DbTestCase
                     ];
                 }
             }
+        }
+    }
+
+    public function testNullSearchOnCountMatchesZero(): void
+    {
+        $this->login();
+
+        $name = __FUNCTION__;
+        $without_followup = $this->createItem(Ticket::class, [
+            'name'        => $name,
+            'content'     => 'Ticket without followup',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $with_followup = $this->createItem(Ticket::class, [
+            'name'        => $name,
+            'content'     => 'Ticket with a followup',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $with_followup->getID(),
+            'content'  => 'A followup',
+        ]);
+
+        foreach (['AND' => $without_followup, 'AND NOT' => $with_followup] as $link => $expected) {
+            $data = $this->doSearch(Ticket::class, [
+                'criteria' => [
+                    [
+                        'field'      => 1, // name
+                        'searchtype' => 'contains',
+                        'value'      => '^' . $name . '$',
+                    ],
+                    [
+                        'link'       => $link,
+                        'field'      => 27, // number of followups
+                        'searchtype' => 'contains',
+                        'value'      => 'NULL',
+                    ],
+                ],
+            ]);
+
+            $this->assertSame(
+                [$expected->getID()],
+                array_column($data['data']['rows'], 'id'),
+                $link
+            );
         }
     }
 
