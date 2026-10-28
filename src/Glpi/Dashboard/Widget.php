@@ -103,6 +103,75 @@ class Widget
     }
 
     /**
+     * Get legend options for ECharts: a single line, paginated when it doesn't fit in the card.
+     * @param string $fg_color
+     * @return array<string, mixed>
+     */
+    private static function getEChartsLegendOptions(string $fg_color): array
+    {
+        return [
+            'show'          => true,
+            'type'          => 'scroll',
+            'left'          => 0,
+            'top'           => 0,
+            'icon'          => 'roundRect',
+            'itemWidth'     => 10,
+            'itemHeight'    => 10,
+            'itemGap'       => 12,
+            'pageIconSize'  => 10,
+            'pageIconColor' => $fg_color,
+            'textStyle'     => [
+                'color'    => $fg_color,
+                'fontSize' => 11,
+            ],
+            'pageTextStyle' => [
+                'color' => $fg_color,
+            ],
+        ];
+    }
+
+    /**
+     * Get options for an ECharts category axis: labels kept horizontal, overlapping ones hidden.
+     * @param array<int|string, mixed> $labels
+     * @return array<string, mixed>
+     */
+    private static function getEChartsCategoryAxisOptions(array $labels): array
+    {
+        return [
+            'type'      => 'category',
+            'data'      => $labels,
+            'axisTick'  => [
+                'show' => false,
+            ],
+            'axisLabel' => [
+                'hideOverlap' => true,
+                'fontSize'    => 11,
+            ],
+        ];
+    }
+
+    /**
+     * Get options for an ECharts value axis, with light dashed split lines.
+     * @return array<string, mixed>
+     */
+    private static function getEChartsValueAxisOptions(): array
+    {
+        return [
+            'type'      => 'value',
+            'axisLabel' => [
+                'fontSize' => 11,
+            ],
+            'splitLine' => [
+                'show'      => true,
+                'lineStyle' => [
+                    'type'  => 'dashed',
+                    'color' => 'rgba(128, 128, 128, 0.2)',
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Define all possible widget types with their $labels/
      * This is used when adding a new card to display optgroups
      * This array can be hooked by plugins to add their own definitions.
@@ -728,7 +797,7 @@ HTML;
             </style>
             <div class="card g-chart {$class}" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart">{$no_data_html}</div>
-                <span class="main-label">{$label}</span>
+                <span class="main-label" title="{$label}">{$label}</span>
                 <i class="main-icon {$icon}" aria-hidden="true"></i>
             </div>
 HTML;
@@ -790,10 +859,14 @@ HTML;
         ];
 
         if ($p['legend']) {
-            $options['legend'] = [
-                'show' => true,
-                'left' => 'left',
-            ];
+            // below the chart, moved on its right side when the card is wide enough (see the script below)
+            $options['legend'] = array_merge(self::getEChartsLegendOptions($fg_color), [
+                'left' => 'center',
+                'top'  => $p['half'] ? 0 : 'bottom',
+            ]);
+            if (!$p['half']) {
+                $options['series'][0]['center'] = ['50%', '45%'];
+            }
         }
 
         if ($p['donut']) {
@@ -806,17 +879,19 @@ HTML;
 
             // append total to center of donut
             $options['title'] = [
-                'text'      => Toolbox::shortenNumber($total, 1, false),
-                'left'      => 'center',
-                'top'       => 'center',
-                'textStyle' => [
+                'text'              => Toolbox::shortenNumber($total, 1, false),
+                'left'              => '50%',
+                'top'               => $p['legend'] && !$p['half'] ? '45%' : '50%',
+                'textAlign'         => 'center',
+                'textVerticalAlign' => 'middle',
+                'textStyle'         => [
                     'color'      => $fg_color,
                     'fontWeight' => 'lighter',
                 ],
             ];
 
             if ($p['legend']) {
-                $options['series'][0]['radius'] = ['30%', '60%'];
+                $options['series'][0]['radius'] = ['40%', '68%'];
             }
         }
 
@@ -840,6 +915,7 @@ HTML;
         $twig_params = [
             'chart_id' => $chart_id,
             'options' => $options,
+            'side_legend' => $p['legend'] && !$p['half'],
         ];
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -852,6 +928,28 @@ HTML;
                         : $('#{{ chart_id }} .chart');
                     const myChart = echarts.init(target[0]);
                     myChart.setOption({{ options|json_encode|raw }});
+                    if ({{ side_legend ? 'true' : 'false' }}) {
+                        // In a wide card, the legend is displayed on the right side of the chart instead of below it
+                        const placeLegend = () => {
+                            const width = target[0].clientWidth;
+                            const wide = width > target[0].clientHeight * 1.2;
+                            const center = wide ? ['32%', '50%'] : ['50%', '45%'];
+                            myChart.setOption({
+                                'legend': wide
+                                    ? {'orient': 'vertical', 'left': 'auto', 'right': 0, 'top': 'middle', 'textStyle': {'width': width * 0.3, 'overflow': 'truncate'}}
+                                    : {'orient': 'horizontal', 'left': 'center', 'right': 'auto', 'top': 'bottom', 'textStyle': {'width': null, 'overflow': 'none'}},
+                                'series': [{'center': center}],
+                                'title': {'left': center[0], 'top': center[1]},
+                            });
+                            myChart.resize();
+                        };
+                        placeLegend();
+                        new ResizeObserver(() => {
+                            if (!myChart.isDisposed()) {
+                                placeLegend();
+                            }
+                        }).observe(target[0]);
+                    }
                     myChart
                         .on('click', function (params) {
                             const data_url = _.get(params, 'data.url', '');
@@ -1285,10 +1383,15 @@ TWIG, $twig_params);
                 'color'           => $palette[$serie_i] ?? Toolbox::getFgColor($p['color']),
                 'data'            => $value['data'],
                 'legendHoverLink' => true,
+                'barMaxWidth'     => 26,
             ];
 
             if ($p['stacked']) {
                 $serie['stack'] = 'total';
+            } else {
+                $serie['itemStyle'] = [
+                    'borderRadius' => $p['horizontal'] ? [0, 3, 3, 0] : [3, 3, 0, 0],
+                ];
             }
 
             if ($p['point_labels']) {
@@ -1352,7 +1455,7 @@ TWIG, $twig_params);
 
             <div class="card g-chart $class" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart">$no_data_html</div>
-                <span class="main-label">{$label}</span>
+                <span class="main-label" title="{$label}">{$label}</span>
                 <i class="main-icon {$icon}" aria-hidden="true"></i>
             </div>
 HTML;
@@ -1367,59 +1470,31 @@ HTML;
                 ],
             ],
             'grid'              => [
-                'left'         => '20',
-                'right'        => $p['horizontal'] ? '40' : '25',
-                'bottom'       => '20',
-                'top'          => $p['legend'] ? '40' : '20',
+                'left'         => 8,
+                'right'        => $p['horizontal'] ? 24 : 16,
+                'bottom'       => 4,
+                'top'          => $p['legend'] ? 32 : 12,
                 'containLabel' => true,
             ],
             'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
             'series' => $echarts_series,
-            'xAxis'  => [
-                'type' => 'category',
-                'data' => $labels,
-                'splitLine' => [
-                    'lineStyle' => [
-                        'type' => 'dashed',
-                    ],
-                    'show' => true,
-                ],
-            ],
-            'yAxis' => [
-                'type' => 'value',
-                'splitLine' => [
-                    'lineStyle' => [
-                        'type' => 'dashed',
-                    ],
-                    'show' => true,
-                ],
-            ],
+            'xAxis'  => self::getEChartsCategoryAxisOptions($labels),
+            'yAxis'  => self::getEChartsValueAxisOptions(),
         ];
 
         if ($p['horizontal']) {
-            $options['xAxis'] = array_merge($options['xAxis'], [
-                'type' => 'value',
-            ]);
-            $options['yAxis'] = array_merge($options['yAxis'], [
-                'type' => 'category',
-                'data' => $labels,
-                'axisLabel' => [
-                    'overflow' => 'truncate',
-                    'width'    => 100,
-                    'rotate'   => 30,
-                ],
-            ]);
+            // long labels are truncated, the full label is displayed in the tooltip
+            $category_axis = self::getEChartsCategoryAxisOptions($labels);
+            $category_axis['axisLabel'] += [
+                'overflow' => 'truncate',
+                'width'    => 110,
+            ];
+            $options['xAxis'] = self::getEChartsValueAxisOptions();
+            $options['yAxis'] = $category_axis;
         }
 
         if ($p['legend']) {
-            $options['legend'] = [
-                'show'      => true,
-                'left'      => 'left',
-                'top'       => 'top',
-                'textStyle' => [
-                    'color' => $fg_color,
-                ],
-            ];
+            $options['legend'] = self::getEChartsLegendOptions($fg_color);
         }
 
         $twig_params = [
@@ -1460,6 +1535,7 @@ HTML;
                         chart_options['xAxis'] = {
                             ...chart_options['xAxis'],
                             'axisLabel': {
+                                ...chart_options['xAxis']['axisLabel'],
                                 'formatter': (value) => {
                                     if (value < 1e3) {
                                         return value;
@@ -1626,7 +1702,7 @@ TWIG, $twig_params);
             'palette'      => '',
             'show_points'  => true,
             'point_labels' => false,
-            'line_width'   => 4,
+            'line_width'   => 2,
             'limit'        => 99999,
             'filters'      => [],
             'rand'         => mt_rand(),
@@ -1677,7 +1753,7 @@ TWIG, $twig_params);
             }
 
             if ($p['show_points']) {
-                $echart_serie['symbolSize'] = 8;
+                $echart_serie['symbolSize'] = 6;
             }
 
             if ($p['point_labels']) {
@@ -1727,7 +1803,7 @@ TWIG, $twig_params);
 
             <div class="card g-chart $class" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart"></div>
-                <span class="main-label">{$label}</span>
+                <span class="main-label" title="{$label}">{$label}</span>
                 <i class="main-icon {$icon}" aria-hidden="true"></i>
             </div>
 HTML;
@@ -1739,32 +1815,22 @@ HTML;
                 'appendToBody' => true,
             ],
             'grid'              => [
-                'left'         => '3%',
-                'right'        => '4%',
-                'bottom'       => '3%',
+                'left'         => 8,
+                'right'        => 24,
+                'bottom'       => 4,
+                'top'          => $p['legend'] ? 32 : 12,
                 'containLabel' => true,
             ],
             'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
-            'xAxis'  => [
-                'type'        => 'category',
-                'data'        => $labels,
+            'xAxis'  => self::getEChartsCategoryAxisOptions($labels) + [
                 'boundaryGap' => false, // avoid spacing on the left and right
             ],
-            'yAxis' => [
-                'type' => 'value',
-            ],
+            'yAxis'  => self::getEChartsValueAxisOptions(),
             'series' => $echarts_series,
         ];
 
         if ($p['legend']) {
-            $options['legend'] = [
-                'show'      => true,
-                'left'      => 'left',
-                'top'       => 'top',
-                'textStyle' => [
-                    'color' => $fg_color,
-                ],
-            ];
+            $options['legend'] = self::getEChartsLegendOptions($fg_color);
         }
 
         $twig_params = [
