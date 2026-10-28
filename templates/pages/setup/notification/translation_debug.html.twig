@@ -84,11 +84,19 @@
                 <tr>
                     <td style="overflow-wrap: anywhere;">{{ data['content_text']|nl2br }}</td>
                     <td>
-                        <iframe srcdoc="{{ data['content_html']|e('html_attr') }}"
+                        {% set rand = random() %}
+                        <iframe id="notification_html_preview{{ rand }}"
+                                srcdoc="{{ data['content_html']|e('html_attr') }}"
                                 title="{{ __('Email HTML body preview') }}"
                                 style="width: 100%; border: none; min-height: 200px;"
-                                onload="this.style.height = (this.contentDocument.body ? this.contentDocument.body.scrollHeight + 30 : 200) + 'px';"
                                 sandbox="allow-same-origin"></iframe>
+                        <script>
+                            document.getElementById('notification_html_preview{{ rand }}').addEventListener('load', (e) => {
+                                const iframe = e.currentTarget;
+                                const body = iframe.contentDocument?.body;
+                                iframe.style.height = (body ? body.scrollHeight + 30 : 200) + 'px';
+                            });
+                        </script>
                     </td>
                 </tr>
             </tbody>
