@@ -2257,6 +2257,52 @@ final class FormSerializerTest extends DbTestCase
         $this->assertEquals('user_to_keep', $actors[\User::class][0]);
     }
 
+    public static function userWithRealNameProvider(): iterable
+    {
+        yield 'Real name before first name' => [\User::REALNAME_BEFORE, 'Firstname'];
+        yield 'First name before real name' => [\User::FIRSTNAME_BEFORE, 'Firstname'];
+        yield 'Real name only' => [\User::REALNAME_BEFORE, ''];
+    }
+
+    #[DataProvider('userWithRealNameProvider')]
+    public function testActorUserWithRealNameIsFoundOnImport(
+        int $names_format,
+        string $firstname,
+    ): void {
+        $this->login();
+        $_SESSION['glpinames_format'] = $names_format;
+
+        // Arrange: create a form with a destination whose requester is a user
+        // with a real name, which is used instead of the login in the export
+        $user = $this->createItem(\User::class, [
+            'name'      => 'user_with_real_name',
+            'realname'  => 'Realname',
+            'firstname' => $firstname,
+        ]);
+        $form = $this->createForm(new FormBuilder());
+        $this->setDestinationFieldConfig(
+            $form,
+            RequesterField::getKey(),
+            new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    \User::getForeignKeyField() . '-' . $user->getID(),
+                ],
+            )
+        );
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: the requester is still the same user
+        $destinations = $form_copy->getDestinations();
+        $config = current($destinations)->getConfig()[RequesterField::getKey()];
+        $this->assertEquals(
+            [\User::class => [$user->getID()]],
+            $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS],
+        );
+    }
+
     public function testDeletedAssociatedItemInDestinationIsRemovedFromExport(): void
     {
         $this->login();

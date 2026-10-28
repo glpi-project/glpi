@@ -37,6 +37,8 @@ namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
 use CommonTreeDropdown;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
@@ -45,6 +47,7 @@ use Glpi\Toolbox\MapperInterface;
 use InvalidArgumentException;
 use LogicException;
 use Override;
+use User;
 
 final class DatabaseMapper implements MapperInterface
 {
@@ -169,6 +172,8 @@ final class DatabaseMapper implements MapperInterface
 
         if ($item instanceof CommonTreeDropdown) {
             $condition = ['completename' => $name];
+        } elseif ($item instanceof User) {
+            $condition = $this->getUserNameCriteria($name);
         } else {
             $condition = ['name' => $name];
         }
@@ -190,6 +195,44 @@ final class DatabaseMapper implements MapperInterface
             return null;
         }
         return current($rows);
+    }
+
+    /**
+     * Users are exported using their friendly name, which is their real name
+     * followed or preceded by their first name (depending on the names format
+     * preference of the exporting user), or their login if they have no real
+     * name.
+     *
+     * @return array<mixed>
+     */
+    private function getUserNameCriteria(string $name): array
+    {
+        global $DB;
+
+        $table = User::getTable();
+        $space = new QueryExpression($DB::quoteValue(' '));
+        $quoted_name = $DB::quoteValue($name);
+
+        return [
+            'OR' => [
+                ["$table.name" => $name],
+                [
+                    "$table.realname" => $name,
+                    'OR' => [
+                        ["$table.firstname" => null],
+                        ["$table.firstname" => ''],
+                    ],
+                ],
+                new QueryExpression(
+                    QueryFunction::concat(["$table.realname", $space, "$table.firstname"])
+                    . " = $quoted_name"
+                ),
+                new QueryExpression(
+                    QueryFunction::concat(["$table.firstname", $space, "$table.realname"])
+                    . " = $quoted_name"
+                ),
+            ],
+        ];
     }
 
     /**
