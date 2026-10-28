@@ -289,7 +289,7 @@ class NetworkAlias extends FQDNLabel
             $id = (int) $data['id'];
 
             $showviewjs = ($canedit
-                        ? "style='cursor:pointer' onClick=\"viewEditAlias" . $id . "$rand();\""
+                        ? "style='cursor:pointer' data-view-alias='" . $id . "$rand'"
                         : '');
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
@@ -316,6 +316,11 @@ class NetworkAlias extends FQDNLabel
                     display: false
                 );
                 $js .= "};";
+                $js .= "$(() => {";
+                $js .= "document.querySelectorAll('[data-view-alias=\"" . $id . "$rand\"]').forEach((cell) => {";
+                $js .= "cell.addEventListener('click', () => viewEditAlias" . $id . "$rand());";
+                $js .= "});";
+                $js .= "});";
                 echo Html::scriptBlock($js);
             }
             echo "<a href='" . htmlescape(static::getFormURLWithID($id)) . "'>" . htmlescape($name) . "</a>";
