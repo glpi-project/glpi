@@ -37,8 +37,6 @@ namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
 use CommonTreeDropdown;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
 use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
@@ -159,24 +157,41 @@ final class DatabaseMapper implements MapperInterface
 
     private function tryTofindOneRowByName(string $itemtype, string $name): ?array
     {
-        global $DB;
-
         if (!$this->isValidItemtype($itemtype)) {
             throw new InvalidArgumentException();
         }
 
         $item = getItemForItemtype($itemtype);
+        if ($item === false) {
+            throw new InvalidArgumentException();
+        }
+
+        if ($item instanceof CommonTreeDropdown) {
+            return $this->findOneRow($item, ['completename' => $name]);
+        }
+
+        if ($item instanceof User) {
+            // Users without a real name are exported using their login, look
+            // for it first so that another user displayed with the same name
+            // does not make it ambiguous
+            return $this->findOneRow($item, ['name' => $name])
+                ?? $this->findOneRow($item, $this->getUserFriendlyNameCriteria($name));
+        }
+
+        return $this->findOneRow($item, ['name' => $name]);
+    }
+
+    /**
+     * @param array<mixed> $condition
+     * @return array<string, mixed>|null
+     */
+    private function findOneRow(CommonDBTM $item, array $condition): ?array
+    {
+        global $DB;
+
         $query = [
             'FROM' => $item::getTable(),
         ];
-
-        if ($item instanceof CommonTreeDropdown) {
-            $condition = ['completename' => $name];
-        } elseif ($item instanceof User) {
-            $condition = $this->getUserNameCriteria($name);
-        } else {
-            $condition = ['name' => $name];
-        }
 
         // Check entities
         if ($item->isEntityAssign()) {
@@ -198,41 +213,40 @@ final class DatabaseMapper implements MapperInterface
     }
 
     /**
-     * Users are exported using their friendly name, which is their real name
-     * followed or preceded by their first name (depending on the names format
-     * preference of the exporting user), or their login if they have no real
-     * name.
+     * Users with a real name are exported using their friendly name, which is
+     * their real name followed or preceded by their first name (depending on
+     * the names format preference of the exporting user).
+     *
+     * As both names may contain spaces, every split of the name on a space is
+     * tried, so that the criteria only rely on the indexed name columns.
      *
      * @return array<mixed>
      */
-    private function getUserNameCriteria(string $name): array
+    private function getUserFriendlyNameCriteria(string $name): array
     {
-        global $DB;
-
-        $table = User::getTable();
-        $space = new QueryExpression($DB::quoteValue(' '));
-        $quoted_name = $DB::quoteValue($name);
-
-        return [
-            'OR' => [
-                ["$table.name" => $name],
-                [
-                    "$table.realname" => $name,
-                    'OR' => [
-                        ["$table.firstname" => null],
-                        ["$table.firstname" => ''],
-                    ],
+        $criteria = [
+            [
+                'realname' => $name,
+                'OR' => [
+                    ['firstname' => null],
+                    ['firstname' => ''],
                 ],
-                new QueryExpression(
-                    QueryFunction::concat(["$table.realname", $space, "$table.firstname"])
-                    . " = $quoted_name"
-                ),
-                new QueryExpression(
-                    QueryFunction::concat(["$table.firstname", $space, "$table.realname"])
-                    . " = $quoted_name"
-                ),
             ],
         ];
+
+        $parts = explode(' ', $name);
+        for ($i = 1; $i < count($parts); $i++) {
+            $before = implode(' ', array_slice($parts, 0, $i));
+            $after = implode(' ', array_slice($parts, $i));
+            if ($before === '' || $after === '') {
+                continue;
+            }
+
+            $criteria[] = ['realname' => $before, 'firstname' => $after];
+            $criteria[] = ['firstname' => $before, 'realname' => $after];
+        }
+
+        return ['OR' => $criteria];
     }
 
     /**

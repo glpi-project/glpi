@@ -2259,14 +2259,17 @@ final class FormSerializerTest extends DbTestCase
 
     public static function userWithRealNameProvider(): iterable
     {
-        yield 'Real name before first name' => [\User::REALNAME_BEFORE, 'Firstname'];
-        yield 'First name before real name' => [\User::FIRSTNAME_BEFORE, 'Firstname'];
-        yield 'Real name only' => [\User::REALNAME_BEFORE, ''];
+        yield 'Real name before first name' => [\User::REALNAME_BEFORE, 'Realname', 'Firstname'];
+        yield 'First name before real name' => [\User::FIRSTNAME_BEFORE, 'Realname', 'Firstname'];
+        yield 'Real name only' => [\User::REALNAME_BEFORE, 'Realname', ''];
+        yield 'Compound names, real name first' => [\User::REALNAME_BEFORE, 'De La Fontaine', 'Jean Pierre'];
+        yield 'Compound names, first name first' => [\User::FIRSTNAME_BEFORE, 'De La Fontaine', 'Jean Pierre'];
     }
 
     #[DataProvider('userWithRealNameProvider')]
     public function testActorUserWithRealNameIsFoundOnImport(
         int $names_format,
+        string $realname,
         string $firstname,
     ): void {
         $this->login();
@@ -2276,7 +2279,7 @@ final class FormSerializerTest extends DbTestCase
         // with a real name, which is used instead of the login in the export
         $user = $this->createItem(\User::class, [
             'name'      => 'user_with_real_name',
-            'realname'  => 'Realname',
+            'realname'  => $realname,
             'firstname' => $firstname,
         ]);
         $form = $this->createForm(new FormBuilder());
@@ -2295,6 +2298,43 @@ final class FormSerializerTest extends DbTestCase
         $form_copy = $this->exportAndImportForm($form);
 
         // Assert: the requester is still the same user
+        $destinations = $form_copy->getDestinations();
+        $config = current($destinations)->getConfig()[RequesterField::getKey()];
+        $this->assertEquals(
+            [\User::class => [$user->getID()]],
+            $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS],
+        );
+    }
+
+    public function testActorUserLoginIsPreferredOverFriendlyNameOnImport(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination whose requester is a user
+        // without real name, and another user whose real name is its login
+        $user = $this->createItem(\User::class, [
+            'name' => 'login_only_user',
+        ]);
+        $this->createItem(\User::class, [
+            'name'     => 'other_user',
+            'realname' => 'login_only_user',
+        ]);
+        $form = $this->createForm(new FormBuilder());
+        $this->setDestinationFieldConfig(
+            $form,
+            RequesterField::getKey(),
+            new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    \User::getForeignKeyField() . '-' . $user->getID(),
+                ],
+            )
+        );
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: the requester is the user found by its login
         $destinations = $form_copy->getDestinations();
         $config = current($destinations)->getConfig()[RequesterField::getKey()];
         $this->assertEquals(
