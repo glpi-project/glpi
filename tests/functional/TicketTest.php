@@ -10139,6 +10139,23 @@ HTML,
         $this->assertNotEmpty($survey);
     }
 
+    public function testTimelineDoesNotBreakFormLayout(): void
+    {
+        $this->login('post-only');
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => "My ticket",
+            'content' => "My ticket content",
+        ]);
+
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $html = ob_get_clean();
+
+        // An unbalanced tag in the timeline would push the right side out of the ITIL object row
+        $crawler = new Crawler($html);
+        $this->assertCount(1, $crawler->filter('.itil-object > .itil-right-side'));
+    }
+
     public function testGetAssociatedDocuments(): void
     {
         global $DB;
