@@ -48,7 +48,6 @@ use function Safe\json_encode;
 use function Safe\ldap_bind;
 use function Safe\parse_url;
 use function Safe\preg_match;
-use function Safe\session_name;
 
 /**
  *  Identification class used to login
@@ -685,7 +684,7 @@ class Auth extends CommonGLPI
                 }
                 break;
             case self::COOKIE:
-                $cookie_name   = session_name() . '_rememberme';
+                $cookie_name   = self::getRememberMeCookieName();
 
                 if ($CFG_GLPI["login_remember_time"]) {
                     try {
@@ -1605,7 +1604,7 @@ class Auth extends CommonGLPI
             }
         }
 
-        $cookie_name = session_name() . '_rememberme';
+        $cookie_name = self::getRememberMeCookieName();
         if ($CFG_GLPI["login_remember_time"] && isset($_COOKIE[$cookie_name])) {
             if ($redirect) {
                 Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
@@ -1833,6 +1832,19 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * Returns the "rememberme" cookie name.
+     *
+     * Unlike the session cookie name, it does not depend on the GLPI version,
+     * to keep the "rememberme" feature working across GLPI updates.
+     */
+    public static function getRememberMeCookieName(): string
+    {
+        return 'glpi_'
+            . \hash('sha512', GLPI_ROOT . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['SERVER_PORT'] ?? ''))
+            . '_rememberme';
+    }
+
+    /**
      * Defines "rememberme" cookie.
      *
      * @param string $cookie_value
@@ -1843,7 +1855,7 @@ class Auth extends CommonGLPI
     {
         global $CFG_GLPI;
 
-        $cookie_name     = session_name() . '_rememberme';
+        $cookie_name     = self::getRememberMeCookieName();
         $cookie_lifetime = empty($cookie_value) ? time() - 3600 : time() + $CFG_GLPI['login_remember_time'];
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');

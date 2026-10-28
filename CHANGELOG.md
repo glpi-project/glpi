@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- The session cookie name now includes the GLPI version. Users will have to log in again after each GLPI update, unless they use the "remember me" feature.
 
 ### Deprecated
 
@@ -16,6 +17,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- `Auth::getRememberMeCookieName()` to get the "remember me" cookie name, which no longer derives from the session name.
 
 #### Changes
 
