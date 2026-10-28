@@ -434,7 +434,7 @@ class Dropdown
 
             // Location icon
             if ($itemtype === 'Location' && Location::canView()) {
-                $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
+                $location_icon = "<div role='button' class='btn btn-outline-secondary' data-glpi-show-location-map
                                        data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip' data-bs-placement='bottom'>";
                 $location_icon .= "<i class='ti ti-map' aria-hidden='true'></i></div>";
                 $icon_array[] = $location_icon;
@@ -2549,11 +2549,8 @@ HTML;
             $deselect = __s('None');
             $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
-            $output  .= "<a class='btn btn-sm' "
-                      . "onclick=\"selectAll('" . htmlescape(jsescape($field_id)) . "');$('#" . htmlescape(jsescape($field_id)) . "').select2('close');\">$select"
-                     . "</a> ";
-            $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('" . htmlescape(jsescape($field_id)) . "');\">$deselect"
-                     . "</a>";
+            $output  .= "<a class='btn btn-sm' data-glpi-select-all>$select</a> ";
+            $output  .= "<a class='btn btn-sm' data-glpi-deselect-all>$deselect</a>";
             $output  .= "</div></div>";
 
             $multichecksappend_varname = "multichecksappend" . preg_replace('/[^\w]/', '_', $field_id);
@@ -2561,7 +2558,13 @@ HTML;
                 var $multichecksappend_varname = false;
                 $('#" . jsescape($field_id) . "').on('select2:open', function(e) {
                     if (!$multichecksappend_varname) {
-                        $('#select2-" . jsescape($field_id) . "-results').parent().append($('#selectallbuttons_" . jsescape($field_id) . "').html());
+                        const buttons = $($('#selectallbuttons_" . jsescape($field_id) . "').html());
+                        buttons.find('[data-glpi-select-all]').on('click', () => {
+                            selectAll('" . jsescape($field_id) . "');
+                            $('#" . jsescape($field_id) . "').select2('close');
+                        });
+                        buttons.find('[data-glpi-deselect-all]').on('click', () => deselectAll('" . jsescape($field_id) . "'));
+                        $('#select2-" . jsescape($field_id) . "-results').parent().append(buttons);
                         $multichecksappend_varname = true;
                     }
                 });
