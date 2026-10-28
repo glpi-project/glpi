@@ -290,7 +290,8 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @param img_name
  * @param img_src_yes
  * @param img_src_no
- * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
+ * @todo Remove - Not useful and no longer used by GLPI itself.
+ * @deprecated Will be removed in GLPI 14.
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
     if (document.getElementById(id).value == '0') {
