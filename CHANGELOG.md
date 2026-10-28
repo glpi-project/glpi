@@ -6,7 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.12] unreleased
 
 ### Added
-- Gregorian language
+- Georgian language
 
 ### Changed
 - The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.
