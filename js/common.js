@@ -835,6 +835,13 @@ var showMapForLocation = function(elt) {
     });
 };
 
+document.addEventListener('click', (e) => {
+    const button = e.target.closest('[data-glpi-show-location-map]');
+    if (button !== null) {
+        showMapForLocation(button);
+    }
+});
+
 var query = {};
 function markMatch (text, term) {
     // Find where the match is
