@@ -128,7 +128,7 @@
                      aria-label="{{ __('To do') }}"
                      title="{{ __('To do') }}"
                      {% if entry_i['can_change_state'] ?? can_edit_i %}
-                        onclick="change_task_state({{ entry_i['id']|json_encode|raw }}, this)"
+                        data-glpi-task-id="{{ entry_i['id'] }}"
                      {% else %}
                         disabled
                      {% endif %}
@@ -141,7 +141,7 @@
                      title="{{ __('Done') }}"
                      checked
                      {% if entry_i['can_change_state'] ?? can_edit_i %}
-                        onclick="change_task_state({{ entry_i['id']|json_encode|raw }}, this)"
+                        data-glpi-task-id="{{ entry_i['id'] }}"
                      {% else %}
                         disabled
                      {% endif %}
@@ -305,6 +305,13 @@
 
             $("#itil-footer .main-actions").show();
             $("#right-actions").show();
+        });
+
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-glpi-task-id]');
+            if (target !== null) {
+                change_task_state(target.dataset.glpiTaskId, target);
+            }
         });
     });
 
