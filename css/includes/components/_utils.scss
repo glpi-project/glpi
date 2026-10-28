@@ -172,3 +172,8 @@
         color: color-mix(in srgb, transparent, var(--tblr-link-hover-color) var(--tblr-link-opacity, 100%));
     }
 }
+
+// One-way collapse trigger: hide it once its target is expanded
+.collapse-trigger-once[aria-expanded="true"] {
+    display: none;
+}
