@@ -1057,8 +1057,34 @@ $break_tablet: 1400px;
             min-height: 0; // force firefox to respect flex-shrink on svg
         }
 
+        // Title above the chart, on 2 lines at most (the full title is in the title attribute)
         .main-label {
-            height: 30px;
+            order: -1;
+            margin: 0;
+            padding-block: 10px 0;
+            padding-inline: 12px 2.5em;
+            max-width: 100%;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .main-icon {
+            font-size: 1.3em;
+            inset-block-start: 8px;
+            inset-block-end: auto;
+            opacity: 0.55;
+        }
+
+        .chart {
+            margin-block: 4px 6px;
+            margin-inline: 6px;
         }
 
         .ct-chart-bar:not(.ct-horizontal-bars),
