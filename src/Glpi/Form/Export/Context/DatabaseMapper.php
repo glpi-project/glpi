@@ -235,7 +235,8 @@ final class DatabaseMapper implements MapperInterface
         ];
 
         $parts = explode(' ', $name);
-        for ($i = 1; $i < count($parts); $i++) {
+        $nb_parts = count($parts);
+        for ($i = 1; $i < $nb_parts; $i++) {
             $before = implode(' ', array_slice($parts, 0, $i));
             $after = implode(' ', array_slice($parts, $i));
             if ($before === '' || $after === '') {
