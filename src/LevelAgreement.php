@@ -241,6 +241,10 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public function getNextActionForTicket(Ticket $ticket, int $type)
     {
+        if ($ticket->isNewItem()) {
+            return false;
+        }
+
         /** @var OlaLevel_Ticket|SlaLevel_Ticket $nextaction */
         $nextaction = getItemForItemtype(static::$levelticketclass);
         if (!$nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
