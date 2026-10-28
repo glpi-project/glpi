@@ -1922,7 +1922,7 @@ final class SQLProvider implements SearchProviderInterface
                                 return self::getDateTimeRangeCriteria("$table.$field", $boundaries, $nott);
                             }
 
-                            return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE, false);
+                            return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE, null);
                         }
                     }
                     if ($searchtype === 'lessthan') {
@@ -2423,7 +2423,7 @@ final class SQLProvider implements SearchProviderInterface
                 $val,
                 $nott,
                 Operator::NONE,
-                self::isTextDatatype($searchopt[$ID]['datatype'] ?? null)
+                self::getEmptyValue($searchopt[$ID]['datatype'] ?? null)
             ),
         ];
     }
@@ -4347,7 +4347,7 @@ final class SQLProvider implements SearchProviderInterface
                 $val,
                 $NOT,
                 Operator::NONE,
-                self::isTextDatatype($searchopt[$ID]['datatype'] ?? null)
+                self::getEmptyValue($searchopt[$ID]['datatype'] ?? null)
             ),
         ];
     }
@@ -6295,18 +6295,19 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * Indicates whether values of given datatype are stored in a text column.
+     * Get the value matching an empty field of given datatype, in addition to `NULL`.
      *
-     * An empty string can only be stored in a text column, so comparing other columns to `''` is
-     * irrelevant, and produces SQL warnings.
+     * Only text columns can store an empty string; comparing other columns to `''` produces SQL warnings.
+     * Numeric columns were matching `0`, as the server casts `''` to `0`: this is kept explicitly.
+     * Date columns have no empty value.
      */
-    private static function isTextDatatype(?string $datatype): bool
+    private static function getEmptyValue(?string $datatype): string|int|null
     {
-        return !in_array(
-            $datatype,
-            ['bool', 'integer', 'number', 'decimal', 'count', 'mio', 'percentage', 'timestamp', 'date', 'datetime', 'date_delay'],
-            true
-        );
+        return match ($datatype) {
+            'bool', 'integer', 'number', 'decimal', 'count', 'mio', 'percentage', 'timestamp', 'progressbar' => 0,
+            'date', 'datetime', 'date_delay' => null,
+            default => '',
+        };
     }
 
     /**
@@ -6316,8 +6317,8 @@ final class SQLProvider implements SearchProviderInterface
      * @param string|int|null        $val   Value to search
      * @param bool                   $not   Is a negative search ? (false by default)
      * @param Operator               $link  With previous criteria (default 'AND')
-     * @param bool                   $match_empty_string Whether a `NULL` search also matches empty strings.
-     *                                                   Must be `false` for non text columns, see self::isTextDatatype().
+     * @param string|int|null        $empty_value Value also matched by a `NULL` search, `null` to only match `NULL`,
+     *                                            see self::getEmptyValue().
      *
      * @return array<string|int, mixed>
      */
@@ -6326,7 +6327,7 @@ final class SQLProvider implements SearchProviderInterface
         string|int|null $val,
         bool $not = false,
         Operator $link = Operator::AND,
-        bool $match_empty_string = true
+        string|int|null $empty_value = ''
     ): array {
         if (!is_string($field)) {
             //This case seems often not realistic; but let's keep for backward compatibility
@@ -6338,12 +6339,12 @@ final class SQLProvider implements SearchProviderInterface
             if ($search_val != null) {
                 // makeTextSearch() produces a `LIKE ?` placeholder
                 $values[] = $search_val;
-            } elseif ($match_empty_string && strtolower((string) ($val ?? 'null')) === 'null') {
+            } elseif ($empty_value !== null && strtolower((string) ($val ?? 'null')) === 'null') {
                 // makeTextCriteria() produces an `= ?`/`<> ?` placeholder for the NULL case
-                $values[] = '';
+                $values[] = $empty_value;
             }
             $qexpr = new QueryExpression(
-                self::makeTextCriteria($field, $val, $not, $link->value, $match_empty_string),
+                self::makeTextCriteria($field, $val, $not, $link->value, $empty_value !== null),
                 values: $values
             );
             return [$qexpr];
@@ -6356,11 +6357,11 @@ final class SQLProvider implements SearchProviderInterface
             $criteria = [$field => ['LIKE', $search_val]];
         }
 
-        if ($match_empty_string && strtolower((string) ($val ?? 'null')) == 'null') {
+        if ($empty_value !== null && strtolower((string) ($val ?? 'null')) == 'null') {
             $criteria = [
                 'OR' => [
                     [$criteria],
-                    [$field => ''],
+                    [$field => $empty_value],
                 ],
             ];
         }
@@ -6395,17 +6396,17 @@ final class SQLProvider implements SearchProviderInterface
      * @param string|int|null $val    Value to search
      * @param bool $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
-     * @param bool    $match_empty_string Whether a `NULL` search also matches empty strings.
-     *                                    Must be `false` for non text columns, see self::isTextDatatype().
+     * @param bool    $match_empty_value Whether a `NULL` search also matches the empty value,
+     *                                   bound to the added placeholder, see self::getTextCriteria().
      *
      * @return string Search SQL string
      **/
-    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND', bool $match_empty_string = true)
+    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND', bool $match_empty_value = true)
     {
 
         $sql = $field . self::makeTextSearch($val, $not);
 
-        if ($match_empty_string && strtolower((string) ($val ?? 'null')) == "null") {
+        if ($match_empty_value && strtolower((string) ($val ?? 'null')) == "null") {
             if ($not) {
                 $sql .= " AND $field <> ?";
             } else {
