@@ -104,6 +104,10 @@ class RouterTest extends GLPITestCase
                 if (!isset($schema['x-itemtype']) || !is_subclass_of($schema['x-itemtype'], \CommonTreeDropdown::class)) {
                     continue;
                 }
+                if ($schema_name === 'EntitySettings') {
+                    // Special case where the schema does not represent the main itemtype but rather a subset of properties
+                    continue;
+                }
                 foreach ($required_readonly_props as $prop) {
                     if (!isset($schema['properties'][$prop])) {
                         $schemas_errors[] = "Schema $schema_name in " . $controller::class . " is missing property '$prop'";
@@ -181,6 +185,10 @@ class RouterTest extends GLPITestCase
         foreach ($all_schemas as $schema_name => $schema) {
             // Ignore known duplicate. Cannot fix until v3
             if ($schema_name === 'SoftwareLicense') {
+                continue;
+            }
+            // Ignore acceptable duplicates that are for the same itemtype but different purposes (users / user preferences, entities / entity settings, etc.)
+            if (in_array($schema_name, ['UserPreferences', 'EntitySettings'], true)) {
                 continue;
             }
             if (isset($schema['x-itemtype'])) {

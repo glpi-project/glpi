@@ -109,6 +109,14 @@ class Types
             Doc\Schema::TYPE_BOOLEAN => Type::boolean(),
             default => null,
         };
+
+        $args = [];
+        if ($property['x-graphql-args'] ?? false) {
+            foreach ($property['x-graphql-args'] as $arg_name => $arg_config) {
+                $args[$arg_name] = $arg_config;
+            }
+        }
+
         if (
             $graphql_type === Type::string()
             && isset($property['format'])
@@ -117,7 +125,7 @@ class Types
             $graphql_type = DateTimeType::dateTime();
         }
         if ($graphql_type !== null) {
-            return ['type' => $graphql_type];
+            return ['type' => $graphql_type, 'args' => $args];
         }
 
         // Handle array and object types
@@ -141,7 +149,7 @@ class Types
                 ];
                 /** @phpstan-ignore-next-line */
                 $graphql_type = new UnionType($union_config);
-                return ['type' => new ListOfType($graphql_type)];
+                return ['type' => new ListOfType($graphql_type), 'args' => $args];
             }
 
             // Regular arrays
@@ -149,7 +157,7 @@ class Types
             if ($graphql_type === null) {
                 return null;
             }
-            return ['type' => new ListOfType($graphql_type['type'])];
+            return ['type' => new ListOfType($graphql_type['type']), 'args' => $args];
         }
 
         if ($type === Doc\Schema::TYPE_OBJECT) {
@@ -162,6 +170,7 @@ class Types
                 $full_schema_name = $property['x-full-schema'];
                 return [
                     'type' => static fn() => self::load($full_schema_name, $api_version),
+                    'args' => $args,
                 ];
             }
             return [
@@ -169,6 +178,7 @@ class Types
                     'name' => "_{$prefix}_{$name}",
                     'fields' => $fields,
                 ]),
+                'args' => $args,
             ];
         }
         return null;

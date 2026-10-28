@@ -78,6 +78,7 @@ final class ResourceAccessor
         }
         return null;
     }
+
     /**
      * Get the related itemtype for the given schema.
      * @param array $schema
@@ -176,6 +177,7 @@ final class ResourceAccessor
      * Only top-level properties are mapped.
      * Nested properties which would represent relations are not supported.
      * Creating/updating relations should be done using the appropriate endpoints.
+     * Properties with an input mapper (x-input-mapper) are ignored. See {@link self::getMappedInputParamsBySchema()}.
      * @param array $schema
      * @param array $request_params
      * @return array
@@ -185,8 +187,12 @@ final class ResourceAccessor
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         $joins = Doc\Schema::getJoins($schema['properties']);
-        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins) {
+        $input_mapped_props = array_filter($schema['properties'], static fn($p) => isset($p['x-input-mapper']));
+        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins, $input_mapped_props) {
             $base_k = strstr($k, '.', true) ?: $k;
+            if (isset($input_mapped_props[$base_k])) {
+                return false;
+            }
             $is_join = isset($joins[$base_k]);
             $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $k);
             return $is_dropdown_identifier || !$is_join;
@@ -236,6 +242,163 @@ final class ResourceAccessor
     }
 
     /**
+     * Map the request parameters for top-level properties that have an input mapper (x-input-mapper) to the format
+     * required for the GLPI add/update methods.
+     *
+     * The input mapper is a callable which receives the requested value and the item being created or updated
+     * and returns an array of input fields that will be merged into the input of the add/update methods.
+     * It may throw an {@link InvalidArgumentException} if the requested value is not valid.
+     * Read-only properties are ignored.
+     * @param array<string, mixed> $schema
+     * @param array<string, mixed> $request_params
+     * @param CommonDBTM $item The item being created (new item) or updated (item loaded from the DB)
+     * @return array<string, mixed>
+     * @throws APIException If any requested value is not valid. The details contain the errors for each property.
+     */
+    public static function getMappedInputParamsBySchema(array $schema, array $request_params, CommonDBTM $item): array
+    {
+        $mapped_params = [];
+        $errors = [];
+        foreach ($schema['properties'] as $prop_name => $prop) {
+            if (!isset($prop['x-input-mapper']) || ($prop['readOnly'] ?? false) || !array_key_exists($prop_name, $request_params)) {
+                continue;
+            }
+            try {
+                $mapped_params[] = $prop['x-input-mapper']($request_params[$prop_name], $item);
+            } catch (InvalidArgumentException $e) {
+                $errors[$prop_name][] = [
+                    'error' => 'invalid',
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+        if ($errors !== []) {
+            throw new APIException(
+                message: 'Invalid input parameters',
+                user_message: 'Invalid input parameters',
+                details: $errors
+            );
+        }
+        return array_merge([], ...$mapped_params);
+    }
+
+    /**
+     * Validate a value against the constraints of a schema property (or a `oneOf` branch of one).
+     * All the constraints are optional. Only the ones defined by the schema are checked.
+     * @param array<string, mixed> $prop
+     * @param mixed $value
+     * @return array{error: string, message: string}[]
+     */
+    private static function validateValueAgainstConstraints(array $prop, mixed $value): array
+    {
+        $errors = [];
+        if ($value === null) {
+            return $errors;
+        }
+
+        if (isset($prop['maxLength']) && is_string($value) && strlen($value) > $prop['maxLength']) {
+            $errors[] = [
+                'error' => 'maxLength',
+                'message' => "This field must be at most {$prop['maxLength']} characters long",
+                'maxLength' => $prop['maxLength'],
+            ];
+        }
+
+        $min = $prop['minimum'] ?? null;
+        $max = $prop['maximum'] ?? null;
+        $multiple_of = $prop['multipleOf'] ?? null;
+        if ($min !== null && $max !== null && is_numeric($value) && ($value < $min || $value > $max)) {
+            $errors[] = [
+                'error' => 'range',
+                'message' => "This field must be between $min and $max",
+                'minimum' => $min,
+                'maximum' => $max,
+            ];
+        } elseif ($min !== null && is_numeric($value) && $value < $min) {
+            $errors[] = [
+                'error' => 'minimum',
+                'message' => "This field must be at least $min",
+                'minimum' => $min,
+            ];
+        } elseif ($max !== null && is_numeric($value) && $value > $max) {
+            $errors[] = [
+                'error' => 'maximum',
+                'message' => "This field must be at most $max",
+                'maximum' => $max,
+            ];
+        }
+        // Range constraints cannot be satisfied by non-numeric values
+        if (($min !== null || $max !== null) && !is_numeric($value)) {
+            $errors[] = [
+                'error' => 'type',
+                'message' => 'This field must be a number',
+            ];
+        }
+        if ($multiple_of !== null && is_numeric($value) && fmod((float) $value, (float) $multiple_of) !== 0.0) {
+            $errors[] = [
+                'error' => 'multipleOf',
+                'message' => "This field must be a multiple of $multiple_of",
+                'multipleOf' => $multiple_of,
+            ];
+        }
+        if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {
+            $errors[] = [
+                'error' => 'pattern',
+                'message' => "This field must match the pattern {$prop['pattern']}",
+                'pattern' => $prop['pattern'],
+            ];
+        }
+        if (isset($prop['enum']) && is_array($prop['enum']) && is_scalar($value)) {
+            // Compare as strings so numeric values sent as strings (query/form parameters) match integer enum values
+            $is_allowed = in_array((string) $value, array_map(static fn($v) => (string) $v, $prop['enum']), true);
+            if (!$is_allowed) {
+                $errors[] = [
+                    'error' => 'enum',
+                    'message' => 'This field must be one of the following values: ' . implode(', ', $prop['enum']),
+                    'enum' => $prop['enum'],
+                ];
+            }
+        }
+        if (isset($prop['oneOf']) && is_array($prop['oneOf'])) {
+            $matches = 0;
+            foreach ($prop['oneOf'] as $branch) {
+                if (self::validateValueAgainstConstraints($branch, $value) === []) {
+                    $matches++;
+                }
+            }
+            if ($matches !== 1) {
+                $errors[] = [
+                    'error' => 'oneOf',
+                    'message' => 'This field must match exactly one of the allowed value sets: '
+                        . implode('; ', array_map(static fn($branch) => self::describeConstraints($branch), $prop['oneOf'])),
+                ];
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     * @param array<string, mixed> $constraints
+     */
+    private static function describeConstraints(array $constraints): string
+    {
+        $parts = [];
+        if (isset($constraints['enum'])) {
+            $parts[] = 'one of ' . implode(', ', $constraints['enum']);
+        }
+        if (isset($constraints['minimum'])) {
+            $parts[] = 'at least ' . $constraints['minimum'];
+        }
+        if (isset($constraints['maximum'])) {
+            $parts[] = 'at most ' . $constraints['maximum'];
+        }
+        if (isset($constraints['multipleOf'])) {
+            $parts[] = 'a multiple of ' . $constraints['multipleOf'];
+        }
+        return $parts === [] ? 'any value' : implode(' and ', $parts);
+    }
+
+    /**
      * @param array<string, mixed> $schema
      * @param array<string, mixed> $input
      * @param bool $is_create_input Whether the input is for a create or update action.
@@ -268,50 +431,8 @@ final class ResourceAccessor
             }
             $prop = $flattened_properties[$key];
 
-            if (isset($prop['maxLength']) && is_string($value) && strlen($value) > $prop['maxLength']) {
-                $errors[$key][] = [
-                    'error' => 'maxLength',
-                    'message' => "This field must be at most {$prop['maxLength']} characters long",
-                    'maxLength' => $prop['maxLength'],
-                ];
-            }
-
-            $min = $prop['minimum'] ?? null;
-            $max = $prop['maximum'] ?? null;
-            $multiple_of = $prop['multipleOf'] ?? null;
-            if ($min !== null && $max !== null && is_numeric($value) && ($value < $min || $value > $max)) {
-                $errors[$key][] = [
-                    'error' => 'range',
-                    'message' => "This field must be between $min and $max",
-                    'minimum' => $min,
-                    'maximum' => $max,
-                ];
-            } elseif ($min !== null && is_numeric($value) && $value < $min) {
-                $errors[$key][] = [
-                    'error' => 'minimum',
-                    'message' => "This field must be at least $min",
-                    'minimum' => $min,
-                ];
-            } elseif ($max !== null && is_numeric($value) && $value > $max) {
-                $errors[$key][] = [
-                    'error' => 'maximum',
-                    'message' => "This field must be at most $max",
-                    'maximum' => $max,
-                ];
-            }
-            if ($multiple_of !== null && is_numeric($value) && fmod((float) $value, (float) $multiple_of) !== 0.0) {
-                $errors[$key][] = [
-                    'error' => 'multipleOf',
-                    'message' => "This field must be a multiple of $multiple_of",
-                    'multipleOf' => $multiple_of,
-                ];
-            }
-            if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {
-                $errors[$key][] = [
-                    'error' => 'pattern',
-                    'message' => "This field must match the pattern {$prop['pattern']}",
-                    'pattern' => $prop['pattern'],
-                ];
+            foreach (self::validateValueAgainstConstraints($prop, $value) as $error) {
+                $errors[$key][] = $error;
             }
         }
 
@@ -845,6 +966,14 @@ final class ResourceAccessor
 
         $input = self::getInputParamsBySchema($schema, $request_params);
         $input['id'] = $items_id;
+        try {
+            $input = array_merge($input, self::getMappedInputParamsBySchema($schema, $request_params, $item));
+        } catch (APIException $e) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage(), $e->getDetails()),
+                400
+            );
+        }
 
         $transaction_result = self::runCreateOrUpdateTransaction(static function (array &$rollback_journal) use ($schema, $item, $items_id, $request_params, $input): int|Response {
             /** @var Document[] $created_documents */
@@ -912,6 +1041,14 @@ final class ResourceAccessor
         // Check permissions now that we have the main input parameters. Inline images in HTML content are handled later but should not affect permissions.
         if (!$item->can($item->getID(), CREATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
+        }
+        try {
+            $input = array_merge($input, self::getMappedInputParamsBySchema($schema, $request_params, $item));
+        } catch (APIException $e) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage(), $e->getDetails()),
+                400
+            );
         }
 
         $transaction_result = self::runCreateOrUpdateTransaction(static function (array &$rollback_journal) use ($schema, $item, $request_params, $input): int|Response {
