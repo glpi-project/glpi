@@ -89,7 +89,7 @@
                  aria-label="{{ __('Show password') }}" title="{{ __('Show password') }}"
                  data-bs-toggle="tooltip" data-bs-placement="bottom"
                  data-show-label="{{ __('Show password') }}" data-hide-label="{{ __('Hide password') }}"
-                 onclick="toggleDisclosablePasswordField(this, '{{ options.id|e('js') }}')">
+                 data-glpi-toggle-password="{{ options.id }}">
                 <i class="ti ti-eye disclose" aria-hidden="true"></i>
             </button>
         {% endif %}
@@ -98,7 +98,7 @@
             <button type="button" class="btn btn-outline-secondary"
                  aria-label="{{ __('Copy to clipboard') }}" title="{{ __('Copy to clipboard') }}"
                  data-bs-toggle="tooltip" data-bs-placement="bottom"
-                 onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id|e('js') }}')">
+                 data-glpi-copy-password="{{ options.id }}">
                 <i class="ti ti-clipboard-copy disclose" aria-hidden="true"></i>
             </button>
         {% endif %}

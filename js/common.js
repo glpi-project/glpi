@@ -1737,6 +1737,18 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     }
 }
 
+document.addEventListener('click', (e) => {
+    const toggle_button = e.target.closest('[data-glpi-toggle-password]');
+    if (toggle_button !== null) {
+        toggleDisclosablePasswordField(toggle_button, toggle_button.dataset.glpiTogglePassword);
+    }
+
+    const copy_button = e.target.closest('[data-glpi-copy-password]');
+    if (copy_button !== null) {
+        copyDisclosablePasswordFieldToClipboard(copy_button.dataset.glpiCopyPassword);
+    }
+});
+
 /**
  * Convert an HTML table with static content to a basic sortable table
  * @param element_id The ID of the table to be converted
