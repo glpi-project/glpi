@@ -259,9 +259,10 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.12] unreleased
+## [11.0.12] 2026-10-28
 
 ### Added
+- Georgian language
 
 ### Changed
 - The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.
