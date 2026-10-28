@@ -1061,7 +1061,8 @@ $break_tablet: 1400px;
         .main-label {
             order: -1;
             margin: 0;
-            padding: 10px 2.5em 0 12px;
+            padding-block: 10px 0;
+            padding-inline: 12px 2.5em;
             max-width: 100%;
             font-size: 0.95rem;
             font-weight: 600;
@@ -1076,13 +1077,14 @@ $break_tablet: 1400px;
 
         .main-icon {
             font-size: 1.3em;
-            top: 8px;
-            bottom: auto;
+            inset-block-start: 8px;
+            inset-block-end: auto;
             opacity: 0.55;
         }
 
         .chart {
-            margin: 4px 6px 6px;
+            margin-block: 4px 6px;
+            margin-inline: 6px;
         }
 
         .ct-chart-bar:not(.ct-horizontal-bars),

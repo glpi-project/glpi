@@ -930,7 +930,7 @@ HTML;
                     myChart.setOption({{ options|json_encode|raw }});
                     if ({{ side_legend ? 'true' : 'false' }}) {
                         // In a wide card, the legend is displayed on the right side of the chart instead of below it
-                        const placeLegend = () => {
+                        const place_legend = () => {
                             const width = target[0].clientWidth;
                             const wide = width > target[0].clientHeight * 1.2;
                             const center = wide ? ['32%', '50%'] : ['50%', '45%'];
@@ -943,10 +943,10 @@ HTML;
                             });
                             myChart.resize();
                         };
-                        placeLegend();
+                        place_legend();
                         new ResizeObserver(() => {
                             if (!myChart.isDisposed()) {
-                                placeLegend();
+                                place_legend();
                             }
                         }).observe(target[0]);
                     }

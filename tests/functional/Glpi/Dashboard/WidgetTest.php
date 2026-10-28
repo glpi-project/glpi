@@ -344,6 +344,79 @@ class WidgetTest extends DbTestCase
         $this->assertEquals(['2025-09', '2025-10', '2025-11'], array_column($serie_data, 'meta'));
     }
 
+    public static function pieLegendProvider(): iterable
+    {
+        yield 'full pie' => [
+            'half'        => false,
+            'legend_top'  => 'bottom',
+            'side_legend' => true,
+        ];
+        yield 'half pie' => [
+            'half'        => true,
+            'legend_top'  => 0,
+            'side_legend' => false,
+        ];
+    }
+
+    #[DataProvider('pieLegendProvider')]
+    public function testPieLegend(bool $half, string|int $legend_top, bool $side_legend): void
+    {
+        $html = Widget::donut([
+            'label'  => 'Tickets by status',
+            'legend' => true,
+            'half'   => $half,
+            'data'   => [
+                ['number' => 3, 'label' => 'New', 'url' => ''],
+                ['number' => 2, 'label' => 'Solved', 'url' => ''],
+            ],
+        ]);
+
+        // The full title is available in a tooltip, as it is clamped to 2 lines
+        $this->assertStringContainsString('<span class="main-label" title="Tickets by status">', $html);
+
+        preg_match('/myChart\.setOption\((\{.*\})\);$/m', $html, $matches);
+        $chart_options = json_decode($matches[1] ?? '', true);
+        $this->assertIsArray($chart_options);
+
+        // A single line legend, paginated when it overflows
+        $this->assertSame('scroll', $chart_options['legend']['type']);
+        $this->assertSame($legend_top, $chart_options['legend']['top']);
+
+        // Only a full pie moves its legend on the right side when its card is wide
+        $this->assertStringContainsString('if (' . ($side_legend ? 'true' : 'false') . ') {', $html);
+    }
+
+    public function testHorizontalBarsLabels(): void
+    {
+        $html = Widget::multipleHBars([
+            'label'  => 'Tickets by category',
+            'legend' => true,
+            'data'   => [
+                'labels' => ['A very long category name > A very long sub-category name', 'Short'],
+                'series' => [
+                    ['name' => 'New', 'data' => [3, 1]],
+                    ['name' => 'Solved', 'data' => [2, 4]],
+                ],
+            ],
+        ]);
+
+        $this->assertStringContainsString('<span class="main-label" title="Tickets by category">', $html);
+
+        $chart_options = $this->extractChartOptions($html);
+        $this->assertSame('scroll', $chart_options['legend']['type']);
+
+        // Long category labels are truncated on a single line, not rotated
+        $y_axis_label = $chart_options['yAxis']['axisLabel'];
+        $this->assertSame('truncate', $y_axis_label['overflow']);
+        $this->assertSame(110, $y_axis_label['width']);
+        $this->assertTrue($y_axis_label['hideOverlap']);
+        $this->assertArrayNotHasKey('rotate', $y_axis_label);
+
+        foreach ($chart_options['series'] as $serie) {
+            $this->assertSame(26, $serie['barMaxWidth']);
+        }
+    }
+
     public function testSunburst(): void
     {
         $this->assertArrayHasKey('sunburst', Widget::getAllTypes());
