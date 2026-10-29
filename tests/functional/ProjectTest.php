@@ -929,6 +929,50 @@ PLAINTEXT;
         $this->assertCount(1, $columns[$state->getID()]['items']);
     }
 
+    public function testCanModifyGlobalState(): void
+    {
+        $this->login();
+
+        $profile = $this->createItem('Profile', [
+            'name' => __FUNCTION__,
+            'interface' => 'central',
+            'project' => \Project::READALL | \Project::READMY,
+        ]);
+
+        $user = $this->createItem(\User::class, [
+            'name' => __FUNCTION__,
+            'password' => 'test',
+            'password2' => 'test',
+            '_profiles_id' => $profile->getID(),
+            '_entities_id' => $this->getTestRootEntity(true),
+        ], ['password', 'password2']);
+
+        $project = $this->createItem(\Project::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id' => getItemByTypeName(\User::class, 'glpi', true),
+        ]);
+
+        // User allowed to update the project, but not its manager
+        $this->assertTrue($project->canModifyGlobalState());
+        $this->assertTrue($project->canOrderKanbanCard($project->getID()));
+
+        // Read-only user, not the manager
+        $this->login(__FUNCTION__, 'test');
+        $this->assertTrue($project->getFromDB($project->getID()));
+        $this->assertFalse(\Project::canUpdate());
+        $this->assertFalse($project->canModifyGlobalState());
+        $this->assertFalse($project->canOrderKanbanCard($project->getID()));
+
+        // Read-only user, manager of the project
+        $this->login();
+        $this->updateItem(\Project::class, $project->getID(), ['users_id' => $user->getID()]);
+        $this->login(__FUNCTION__, 'test');
+        $this->assertTrue($project->getFromDB($project->getID()));
+        $this->assertFalse(\Project::canUpdate());
+        $this->assertTrue($project->canModifyGlobalState());
+    }
+
     public function testNotepadDisplayWithUpdateRights()
     {
         $this->login();

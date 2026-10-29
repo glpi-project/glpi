@@ -1935,8 +1935,10 @@ TWIG, $twig_params);
 
     public function canModifyGlobalState()
     {
-        // Only project manager (or managing group) may change the Kanban's state
-        return $this->fields["users_id"] === Session::getLoginUserID() || $this->isInTheManagerGroup();
+        // Only project manager (or managing group) or users allowed to update the project may change the Kanban's state
+        return $this->fields["users_id"] === Session::getLoginUserID()
+            || $this->isInTheManagerGroup()
+            || (self::canUpdate() && $this->canUpdateItem());
     }
 
     public function forceGlobalState()
