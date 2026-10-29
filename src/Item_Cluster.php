@@ -41,9 +41,6 @@ class Item_Cluster extends CommonDBRelation
     public static $items_id_1 = 'clusters_id';
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
-    public static $mustBeAttached_1 = false; // FIXME It make no sense for a cluster item to not be attached to a Cluster.
-    public static $mustBeAttached_2 = false; // FIXME It make no sense for a cluster item to not be attached to an Item.
 
     public static function getTypeName($nb = 0)
     {

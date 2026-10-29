@@ -763,6 +763,93 @@ final class TicketTaskTest extends CommonITILTaskTestCase
     }
 
     /**
+     * Editing an existing task must not reopen a solved ticket, while unchecking
+     * the pending toggle of a pending task must still resume the ticket.
+     *
+     * @return void
+     */
+    public function testEditingTaskKeepsParentStatus(): void
+    {
+        $this->login();
+
+        // Solved ticket: changing only the task duration must keep it solved.
+        $ticket_id = $this->getNewTicket();
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'tickets_id' => $ticket_id,
+            'content'    => 'Task on a ticket to solve',
+            'actiontime' => 600,
+            'pending'    => 0,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+
+        $this->assertTrue((new \Ticket())->update([
+            'id'     => $ticket_id,
+            'status' => \Ticket::SOLVED,
+        ]));
+        $solved_ticket = \Ticket::getById($ticket_id);
+        $this->assertEquals(\Ticket::SOLVED, $solved_ticket->fields['status']);
+        $this->assertNotNull($solved_ticket->fields['solvedate']);
+
+        // The task form always sends the parent id and the pending toggle, unchecked here.
+        $this->assertTrue($task->update([
+            'id'         => $task_id,
+            'tickets_id' => $ticket_id,
+            'actiontime' => 300,
+            'pending'    => 0,
+        ]));
+
+        $ticket = \Ticket::getById($ticket_id);
+        $this->assertEquals(\Ticket::SOLVED, $ticket->fields['status']);
+        $this->assertEquals($solved_ticket->fields['solvedate'], $ticket->fields['solvedate']);
+
+        // Pending task: unchecking the pending toggle must resume the ticket.
+        $ticket_id = $this->getNewTicket();
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'tickets_id' => $ticket_id,
+            'content'    => 'Pending task',
+            'pending'    => 1,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+        $this->assertEquals(\Ticket::WAITING, \Ticket::getById($ticket_id)->fields['status']);
+
+        $this->assertTrue($task->update([
+            'id'         => $task_id,
+            'tickets_id' => $ticket_id,
+            'content'    => 'No longer pending',
+            'pending'    => 0,
+        ]));
+        $this->assertEquals(\Ticket::ASSIGNED, \Ticket::getById($ticket_id)->fields['status']);
+
+        // No pending field (API): a requester editing a task of a solved ticket does not reopen it either.
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name'                => 'ticket title',
+            'content'             => 'a description',
+            'entities_id'         => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_users_id_requester' => \Session::getLoginUserID(),
+            '_users_id_assign'    => getItemByTypeName('User', 'tech', true),
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'tickets_id' => $ticket_id,
+            'content'    => 'Task on a ticket to solve',
+            'actiontime' => 600,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+        $this->assertTrue($ticket->update(['id' => $ticket_id, 'status' => \Ticket::SOLVED]));
+
+        $this->assertTrue($task->update([
+            'id'         => $task_id,
+            'tickets_id' => $ticket_id,
+            'actiontime' => 300,
+        ]));
+        $this->assertEquals(\Ticket::SOLVED, \Ticket::getById($ticket_id)->fields['status']);
+    }
+
+    /**
      * Test that the task duration is correctly updated
      *
      * @return void

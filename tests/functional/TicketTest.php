@@ -7485,12 +7485,14 @@ HTML,
             '_skip_auto_assign' => true,
         ]);
         $ticket_id = $ticket->getID();
+        // GLPI zero-pads the ticket id to at least 7 digits in notification subjects.
+        $padded_ticket_id = sprintf('%07d', $ticket_id);
 
         // Build a raw email from the sender replying to the ticket (linked via subject line)
         $raw = implode("\r\n", [
             "From: {$from_user} <{$sender_email}>",
             "To: helpdesk@glpi.com",
-            "Subject: Re: [GLPI #{$ticket_id}]",
+            "Subject: Re: [GLPI #{$padded_ticket_id}]",
             "Message-ID: <test-{$from_user}-followup@glpi-test.com>",
             "Date: Mon, 01 Jan 2024 12:00:00 +0000",
             "",
@@ -10353,6 +10355,68 @@ HTML,
                 $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled']);
             }
         }
+    }
+
+    /**
+     * A ticket created without template input (e.g. from mailcollector) must store the template
+     */
+    public function testTemplateIsStoredOnAddWithoutTemplateInput(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $template = $this->createItem(TicketTemplate::class, [
+            'name' => 'Dedicated template',
+        ]);
+        $category = $this->createItem(ITILCategory::class, [
+            'name'                        => 'Category with dedicated template',
+            'entities_id'                 => $entity_id,
+            'is_recursive'                => 1,
+            'tickettemplates_id_incident' => $template->getID(),
+            'tickettemplates_id_demand'   => $template->getID(),
+        ]);
+
+        $rule = $this->createItem(Rule::class, [
+            'name'         => 'Set category with dedicated template',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'entities_id'  => $entity_id,
+            'is_recursive' => 1,
+        ]);
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'name',
+            'condition' => Rule::PATTERN_CONTAIN,
+            'pattern'   => 'dedicated template',
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'itilcategories_id',
+            'value'       => $category->getID(),
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'         => 'Ticket with dedicated template',
+            'content'      => 'content',
+            'entities_id'  => $entity_id,
+            '_auto_import' => 1,
+        ], ['_auto_import']);
+        $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
+        $this->assertEquals($template->getID(), $ticket->fields['tickettemplates_id']);
+
+        // Without category template, profile or entity template must not be stored
+        $ticket = $this->createItem(Ticket::class, [
+            'name'         => 'Ticket without category',
+            'content'      => 'content',
+            'entities_id'  => $entity_id,
+            '_auto_import' => 1,
+        ], ['_auto_import']);
+        $this->assertEquals(0, $ticket->fields['itilcategories_id']);
+        $this->assertEquals(0, $ticket->fields['tickettemplates_id']);
     }
 
     /**

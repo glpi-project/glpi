@@ -37,11 +37,16 @@ namespace tests\units;
 use Entity;
 use Generator;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_User;
 use Notification;
+use NotificationEventMailing;
 use NotificationTarget;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Session;
+use Ticket;
+use User;
 
 class NotificationTargetTest extends DbTestCase
 {
@@ -589,8 +594,8 @@ class NotificationTargetTest extends DbTestCase
         global $DB;
 
         $notification_target = new NotificationTarget();
-        $group = new \Group();
-        $user = new \User();
+        $group = new Group();
+        $user = new User();
 
         // Create new user with a fake email
         $this->assertGreaterThan(0, $users_id = $user->add([
@@ -606,7 +611,7 @@ class NotificationTargetTest extends DbTestCase
         $this->assertGreaterThan(0, $groups_id = $group->add([
             'name'     => __FUNCTION__,
         ]));
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(0, $group_user->add([
             'groups_id' => $groups_id,
             'users_id'  => $users_id,
@@ -621,7 +626,7 @@ class NotificationTargetTest extends DbTestCase
             'notifications_id' => $fake_notification_id,
         ];
         $rc = new \ReflectionClass($notification_target);
-        $rc->getProperty('event')->setValue($notification_target, \NotificationEventMailing::class);
+        $rc->getProperty('event')->setValue($notification_target, NotificationEventMailing::class);
 
         $notification_target->addToRecipientsList([
             'users_id' => getItemByTypeName('User', TU_USER, true),
@@ -713,5 +718,161 @@ class NotificationTargetTest extends DbTestCase
             $this->assertNotEquals(Notification::PROFILE_TYPE, $target['type']);
             $this->assertNotEquals(getItemByTypeName('Profile', 'Technician', true), $target['items_id']);
         }
+    }
+
+    /**
+     * Create a notifiable group containing a single user with a mail address.
+     *
+     * @return array{group: int, email: string}
+     */
+    private function createNotifiableGroupWithUser(string $name): array
+    {
+        $email = strtolower($name) . '@example.com';
+        $group = $this->createItem(Group::class, [
+            'name'         => $name,
+            'entities_id'  => $this->getTestRootEntity(true),
+            'is_notify'    => 1,
+        ]);
+        $user = $this->createItem(User::class, [
+            'name'         => 'user_' . $name,
+            '_useremails'  => [-1 => $email],
+            '_entities_id' => $this->getTestRootEntity(true),
+            '_profiles_id' => 4, // Super admin
+        ]);
+        $this->createItem(Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => $user->getID(),
+        ]);
+
+        return ['group' => $group->getID(), 'email' => $email];
+    }
+
+    /**
+     * Build a notification target whose item exposes the given fields.
+     */
+    private function getTargetWithItemFields(array $fields): NotificationTarget
+    {
+        $ticket = new Ticket();
+        $ticket->fields = $fields + ['entities_id' => $this->getTestRootEntity(true)];
+
+        $notification_target = new NotificationTarget($this->getTestRootEntity(true));
+        $notification_target->setEvent(NotificationEventMailing::class);
+        $notification_target->obj = $ticket;
+        $notification_target->target_object = [$ticket];
+
+        return $notification_target;
+    }
+
+    public static function itemGroupFieldProvider(): iterable
+    {
+        yield 'single group id' => [
+            'method' => 'addItemGroup',
+            'field'  => 'groups_id',
+            'as_array' => false,
+        ];
+        yield 'array of group ids' => [
+            'method' => 'addItemGroup',
+            'field'  => 'groups_id',
+            'as_array' => true,
+        ];
+        yield 'single group id (supervisor)' => [
+            'method' => 'addItemGroupSupervisor',
+            'field'  => 'groups_id',
+            'as_array' => false,
+        ];
+        yield 'array of group ids (supervisor)' => [
+            'method' => 'addItemGroupSupervisor',
+            'field'  => 'groups_id',
+            'as_array' => true,
+        ];
+        yield 'single group id (without supervisor)' => [
+            'method' => 'addItemGroupWithoutSupervisor',
+            'field'  => 'groups_id',
+            'as_array' => false,
+        ];
+        yield 'array of group ids (without supervisor)' => [
+            'method' => 'addItemGroupWithoutSupervisor',
+            'field'  => 'groups_id',
+            'as_array' => true,
+        ];
+        yield 'single tech group id' => [
+            'method' => 'addItemGroupTechInCharge',
+            'field'  => 'groups_id_tech',
+            'as_array' => false,
+        ];
+        yield 'array of tech group ids' => [
+            'method' => 'addItemGroupTechInCharge',
+            'field'  => 'groups_id_tech',
+            'as_array' => true,
+        ];
+    }
+
+    #[DataProvider('itemGroupFieldProvider')]
+    public function testItemGroupFieldAcceptsSingleIdOrArray(string $method, string $field, bool $as_array): void
+    {
+        $this->login();
+
+        // Supervisor-only / non-supervisor filtering is covered by addForGroup;
+        // here we only care that every group of the field is considered.
+        $group_1 = $this->createNotifiableGroupWithUser('NtGroupA');
+        $group_2 = $this->createNotifiableGroupWithUser('NtGroupB');
+
+        if ($method === 'addItemGroupSupervisor') {
+            // Only managers are targeted by this method
+            global $DB;
+            $DB->update(Group_User::getTable(), ['is_manager' => 1], [
+                'groups_id' => [$group_1['group'], $group_2['group']],
+            ]);
+        }
+
+        $value = $as_array
+            ? [$group_1['group'], 0, $group_2['group']] // 0 must be ignored
+            : $group_1['group'];
+
+        $notification_target = $this->getTargetWithItemFields([$field => $value]);
+        $notification_target->$method();
+
+        $emails = array_keys($notification_target->target);
+        $this->assertContains($group_1['email'], $emails);
+        if ($as_array) {
+            $this->assertContains($group_2['email'], $emails);
+            $this->assertCount(2, $emails);
+        } else {
+            $this->assertNotContains($group_2['email'], $emails);
+            $this->assertCount(1, $emails);
+        }
+    }
+
+    public static function emptyGroupValueProvider(): iterable
+    {
+        yield 'zero' => [0];
+        yield 'empty array' => [[]];
+        yield 'array of zeros' => [[0, 0]];
+    }
+
+    #[DataProvider('emptyGroupValueProvider')]
+    public function testItemGroupFieldEmptyValueAddsNoRecipient(mixed $value): void
+    {
+        $this->login();
+        $this->createNotifiableGroupWithUser('NtGroupEmpty');
+
+        foreach (['addItemGroup' => 'groups_id', 'addItemGroupTechInCharge' => 'groups_id_tech'] as $method => $field) {
+            $notification_target = $this->getTargetWithItemFields([$field => $value]);
+            $notification_target->$method();
+            $this->assertSame([], $notification_target->target);
+        }
+    }
+
+    public function testItemGroupFieldMissingIsIgnored(): void
+    {
+        $this->login();
+
+        $notification_target = $this->getTargetWithItemFields([]);
+        $notification_target->addItemGroup();
+        $notification_target->addItemGroupSupervisor();
+        $notification_target->addItemGroupWithoutSupervisor();
+        $notification_target->addItemGroupTechInCharge();
+
+        $this->assertSame([], $notification_target->target);
     }
 }

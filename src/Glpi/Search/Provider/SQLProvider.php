@@ -41,6 +41,7 @@ use Calendar;
 use Cartridge;
 use Change;
 use ChangeSatisfaction;
+use ChangeValidation;
 use CommonDBTM;
 use CommonITILObject;
 use CommonITILTask;
@@ -962,6 +963,13 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     } else {
                         $criteria['OR'][] = new QueryExpression('false');
+                    }
+
+                    if (
+                        $itemtype === Change::class
+                        && Session::haveRightsOr('changevalidation', ChangeValidation::getValidateRights())
+                    ) {
+                        $criteria['OR'][] = ChangeValidation::getTargetCriteriaForUser((int) Session::getLoginUserID());
                     }
                 }
                 break;
@@ -2669,6 +2677,22 @@ final class SQLProvider implements SearchProviderInterface
                                 $searchopt[8]['joinparams']['beforejoin']['joinparams']
                             ));
                         }
+                    }
+
+                    if (
+                        $itemtype === Change::class
+                        && Session::haveRightsOr('changevalidation', ChangeValidation::getValidateRights())
+                    ) {
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                            $itemtype,
+                            $ref_table,
+                            $already_link_tables,
+                            "glpi_changevalidations",
+                            "changevalidations_id",
+                            false,
+                            '',
+                            $searchopt[58]['joinparams']['beforejoin']['joinparams']
+                        ));
                     }
                 }
                 break;
@@ -4479,7 +4503,7 @@ final class SQLProvider implements SearchProviderInterface
         // Meta Search / Search All / Count tickets
         if (
             (count($data['search']['metacriteria']))
-            || self::hasMetaCriteria($data['search']['criteria'])
+            || !empty($data['meta_toview'])
             || !empty($HAVING)
             || $data['search']['all_search']
         ) {
@@ -7169,25 +7193,5 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         return $suffix;
-    }
-
-    /**
-     * Check whether the given criteria contain a meta criterion, including in nested criteria groups.
-     *
-     * @param array<mixed> $criteria
-     * @return bool
-     */
-    private static function hasMetaCriteria(array $criteria): bool
-    {
-        foreach ($criteria as $criterion) {
-            if (isset($criterion['meta']) && $criterion['meta']) {
-                return true;
-            }
-            if (isset($criterion['criteria']) && is_array($criterion['criteria']) && self::hasMetaCriteria($criterion['criteria'])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

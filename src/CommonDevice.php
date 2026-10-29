@@ -645,6 +645,15 @@ abstract class CommonDevice extends CommonDropdown
         parent::post_updateItem($history);
     }
 
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                static::getItem_DeviceType(),
+            ]
+        );
+    }
+
     public static function getFormURL($full = true)
     {
         global $CFG_GLPI;
