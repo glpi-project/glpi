@@ -1841,6 +1841,43 @@ HTML,
         $this->assertSame(['doc_2.png', 'doc_3.png'], array_values($files));
     }
 
+    public function testGetAttachedFallbacksOnContentTypeNameWhenFilenameIsEmpty(): void
+    {
+        $raw = implode("\r\n", [
+            'From: sender@example.com',
+            'To: receiver@glpi-project.org',
+            'Message-ID: <empty-filename-test@glpi-project.org>',
+            'Subject: Empty filename',
+            'MIME-Version: 1.0',
+            'Content-Type: multipart/mixed; boundary="test-boundary"',
+            '',
+            '--test-boundary',
+            'Content-Type: text/plain; charset=utf-8',
+            '',
+            'Message contents...',
+            '--test-boundary',
+            'Content-Type: text/plain; charset=utf-8; name="report.txt"',
+            'Content-Disposition: attachment; filename=""',
+            '',
+            'Attachment contents...',
+            '--test-boundary--',
+            '',
+        ]);
+
+        $tmp_path = GLPI_TMP_DIR . '/test_empty_filename_' . uniqid();
+        mkdir($tmp_path);
+
+        $collector = new \MailCollector();
+        $files = $collector->getAttached(\MailCollector::parseMessage($raw), $tmp_path . '/', PHP_INT_MAX);
+
+        foreach ($files as $filename) {
+            unlink($tmp_path . '/' . $filename);
+        }
+        rmdir($tmp_path);
+
+        $this->assertSame(['report.txt'], array_values($files));
+    }
+
     /**
      * See https://github.com/glpi-project/glpi/issues/20892
      * The "To" header value used for rule criteria matching must contain every
