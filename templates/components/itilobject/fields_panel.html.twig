@@ -147,8 +147,6 @@
                }|merge(field_options) %}
                {% if item.isNewItem() %}
                   {% set type_params = type_params|merge({'add_data_attributes': {'glpi-submit-on-change': ''}}) %}
-               {% else %}
-                  {% set type_params = type_params|merge({'on_change': 'reloadCategory()',}) %}
                {% endif %}
                {# Without passing a specific ID, the "dropdown" prefix is missing from the label's "for" property here (not sure why). TODO: investigate #}
                {{ fields.field(
@@ -539,4 +537,7 @@ var reloadCategory = function() {
         container.html(html);
     });
 };
+{% if item.getType() == 'Ticket' and not item.isNewItem() %}
+$('#dropdown_type{{ rand }}').on('change', reloadCategory);
+{% endif %}
 </script>
