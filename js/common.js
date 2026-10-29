@@ -1776,6 +1776,12 @@ document.addEventListener('click', (e) => {
     }
 });
 
+document.addEventListener('focusin', (e) => {
+    if (e.target.matches('[data-glpi-readonly-until-focus]')) {
+        e.target.removeAttribute('readonly');
+    }
+});
+
 /**
  * Convert an HTML table with static content to a basic sortable table
  * @param element_id The ID of the table to be converted
