@@ -313,6 +313,13 @@
                 change_task_state(target.dataset.glpiTaskId, target);
             }
         });
+
+        document.addEventListener('change', (e) => {
+            const toggle = e.target.closest('[data-glpi-timeline-private-toggle]');
+            if (toggle !== null) {
+                toggleTimelinePrivate(toggle.checked, toggle);
+            }
+        });
     });
 
     // Align ITILReminder
