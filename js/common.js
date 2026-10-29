@@ -152,6 +152,18 @@ function unMarkCheckboxes(container_id) {
     return true;
 }
 
+document.addEventListener('click', (e) => {
+    const mark_button = e.target.closest('[data-glpi-mark-checkboxes]');
+    if (mark_button !== null) {
+        markCheckboxes(mark_button.dataset.glpiMarkCheckboxes);
+    }
+
+    const unmark_button = e.target.closest('[data-glpi-unmark-checkboxes]');
+    if (unmark_button !== null) {
+        unMarkCheckboxes(unmark_button.dataset.glpiUnmarkCheckboxes);
+    }
+});
+
 
 /**
  * display "other" text input field in case of selecting "other" option
@@ -290,7 +302,8 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @param img_name
  * @param img_src_yes
  * @param img_src_no
- * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
+ * @todo Remove - Not useful and no longer used by GLPI itself.
+ * @deprecated Will be removed in GLPI 14.
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
     if (document.getElementById(id).value == '0') {
@@ -834,6 +847,13 @@ var showMapForLocation = function(elt) {
     });
 };
 
+document.addEventListener('click', (e) => {
+    const button = e.target.closest('[data-glpi-show-location-map]');
+    if (button !== null) {
+        showMapForLocation(button);
+    }
+});
+
 var query = {};
 function markMatch (text, term) {
     // Find where the match is
@@ -1121,6 +1141,10 @@ function updateProgress(progressid) {
         }
     });
 }
+
+$(document).on('change', '[data-progressid]', function () {
+    updateProgress(this.dataset.progressid);
+});
 
 // fullscreen api
 function GoInFullscreen(element) {
@@ -1724,6 +1748,18 @@ function copyDisclosablePasswordFieldToClipboard(item) {
         }
     }
 }
+
+document.addEventListener('click', (e) => {
+    const toggle_button = e.target.closest('[data-glpi-toggle-password]');
+    if (toggle_button !== null) {
+        toggleDisclosablePasswordField(toggle_button, toggle_button.dataset.glpiTogglePassword);
+    }
+
+    const copy_button = e.target.closest('[data-glpi-copy-password]');
+    if (copy_button !== null) {
+        copyDisclosablePasswordFieldToClipboard(copy_button.dataset.glpiCopyPassword);
+    }
+});
 
 /**
  * Convert an HTML table with static content to a basic sortable table
