@@ -384,18 +384,8 @@
          {% endif %}
          {% if clearable %}
             <input type="hidden" name="_blank_{{ name }}" />
-             {%- set clear_js -%}
-                 const blank_input = $('input[name=\'_blank_{{ name|e('css')|e('js') }}\']');
-                 blank_input.val(blank_input.val() ? '' : true);
-                 if ($(this).closest('.picture_gallery_item').length) {
-                    $(this).closest('.picture_gallery_item').hide();
-                    $(this).closest('.picture_gallery').siblings('.deletion_pending').removeClass('d-none');
-                 } else {
-                    $(this).closest('.img-overlay-wrapper').hide();
-                 }
-             {%- endset -%}
             <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
-                    onclick="{{ clear_js }}">
+                    data-glpi-image-clear>
                <i class="ti ti-x" aria-hidden="true"></i>
             </button>
          {% endif %}
