@@ -1146,15 +1146,21 @@ abstract class CommonITILValidation extends CommonDBChild
                             <span class="ti ti-edit"
                                role="button"
                                title="{{ edit_button_label }}"
-                               onclick="glpi_ajax_dialog({{ edit_dialog_params|json_encode }});"
+                               id="edit_validation_step_{{ step_id }}_{{ rand }}"
                             >
                                 <span class="visually-hidden">{{ edit_button_label }}</span>
                             </span>
+                            <script>
+                                document.getElementById('edit_validation_step_{{ step_id }}_{{ rand }}').addEventListener('click', () => {
+                                    glpi_ajax_dialog({{ edit_dialog_params|json_encode|raw }});
+                                });
+                            </script>
                         </div>
                     </div>
                 TWIG,
                 [
                     'step_id'            => $validation_step_id,
+                    'rand'               => $rand,
                     'step_name'          => $step_name,
                     'step_status'        => $step_status,
                     'accepted_percent'   => $step_achievements[self::ACCEPTED],
