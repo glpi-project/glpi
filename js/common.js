@@ -1759,6 +1759,21 @@ document.addEventListener('click', (e) => {
     if (copy_button !== null) {
         copyDisclosablePasswordFieldToClipboard(copy_button.dataset.glpiCopyPassword);
     }
+
+    const image_clear_button = e.target.closest('[data-glpi-image-clear]');
+    if (image_clear_button !== null) {
+        const wrapper = $(image_clear_button).closest('.img-overlay-wrapper');
+        const blank_input = wrapper.find('input[name^="_blank_"]');
+        blank_input.val(blank_input.val() ? '' : true);
+
+        const gallery_item = wrapper.closest('.picture_gallery_item');
+        if (gallery_item.length) {
+            gallery_item.hide();
+            gallery_item.closest('.picture_gallery').siblings('.deletion_pending').removeClass('d-none');
+        } else {
+            wrapper.hide();
+        }
+    }
 });
 
 /**
