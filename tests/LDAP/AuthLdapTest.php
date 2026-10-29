@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use AuthLDAP;
+use FieldUnicity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\OAuth\Client;
 use Glpi\OAuth\UserRepository;
@@ -49,6 +50,7 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
 use Psr\Log\LogLevel;
 use RuleRight;
+use User;
 use UserTitle;
 
 /* Test for inc/authldap.class.php */
@@ -1440,6 +1442,46 @@ class AuthLdapTest extends DbTestCase
             ['sync_field' => null],
             ['id' => $ldap->getID()]
         );
+    }
+
+    #[RequiresPhpExtension('ldap')]
+    public function testRefusedImportDoesNotStoreLdapConnectionInSession(): void
+    {
+        $this->login();
+
+        // Make the import fail on a unicity check against an existing local user
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'User login uniqueness',
+            'itemtype'      => User::class,
+            '_fields'       => ['name'],
+            'entities_id'   => 0,
+            'is_recursive'  => 1,
+            'is_active'     => 1,
+            'action_refuse' => 1,
+        ], ['_fields']);
+        $users_id = $this->createItem(User::class, ['name' => 'ecuador0'])->getID();
+
+        // Import from the interface (display mode) saves the input in session
+        $import = AuthLDAP::ldapImportUserByServerId(
+            [
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                'value'  => 'ecuador0',
+            ],
+            AuthLDAP::ACTION_IMPORT,
+            $this->ldap->getID(),
+            true
+        );
+        $this->assertIsArray($import);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertFalse($import['id']);
+        $this->hasSessionMessages(ERROR, [
+            'Impossible record for Login = ecuador0<br>Other item exist<br>[<a href="/front/user.form.php?id=' . $users_id . '" data-bs-toggle="tooltip" data-bs-placement="bottom" title="ecuador0">ecuador0</a> - ID: ' . $users_id . ' - Entity: Root entity]',
+        ]);
+
+        // The saved input must not contain the LDAP connection, which cannot be serialized with the session
+        $this->assertArrayHasKey(User::class, $_SESSION['saveInput']);
+        $this->assertArrayNotHasKey('_ldap_conn', $_SESSION['saveInput'][User::class]);
+        $this->assertNotEmpty(serialize($_SESSION['saveInput']));
     }
 
     /**
