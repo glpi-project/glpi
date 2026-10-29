@@ -2349,7 +2349,8 @@ HTML;
 
         $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
-            $param['on_change'] .= "displayOtherSelectOptions(this, \"" . jsescape($other_select_option) . "\");";
+            $param['add_data_attributes'] = (is_array($param['add_data_attributes']) ? $param['add_data_attributes'] : [])
+                + ['glpi-other-option' => $other_select_option];
 
             // If $param['other'] is a string, then we must highlight "other" option
             if (is_string($param['other'])) {
