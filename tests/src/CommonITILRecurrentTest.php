@@ -37,6 +37,7 @@ namespace Glpi\Tests;
 use Calendar;
 use CalendarSegment;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class CommonITILRecurrentTest extends DbTestCase
 {
@@ -653,6 +654,121 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 $this->assertEquals($field_value, $created_item->fields[$field_name]);
             }
         }
+    }
+
+    public static function replaceDateVariablesProvider(): iterable
+    {
+        // 2025-10-15 is a Wednesday, in ISO week 42 and quarter 4
+        yield 'basic variables' => [
+            'text'     => '{YEAR}-{MONTH}-{DAY} {MONTH_NAME} {MONTH_SHORT} {WEEKDAY} W{WEEK} Q{QUARTER}',
+            'date'     => '2025-10-15 12:00:00',
+            'expected' => '2025-10-15 October Oct Wednesday W42 Q4',
+        ];
+        yield 'month offsets wrap without changing the year' => [
+            'text'     => '{MONTH-1} {MONTH+1} {MONTH+2} {MONTH+3} {YEAR}',
+            'date'     => '2025-10-15 12:00:00',
+            'expected' => '09 11 12 01 2025',
+        ];
+        yield 'year and quarter offsets' => [
+            'text'     => 'Planning Q{QUARTER+1} {YEAR+1}, review {YEAR-1}',
+            'date'     => '2025-10-15 12:00:00',
+            'expected' => 'Planning Q1 2026, review 2024',
+        ];
+        yield 'name offsets' => [
+            'text'     => '{MONTH_NAME+1} {MONTH_SHORT-10} {WEEKDAY-3}',
+            'date'     => '2025-10-15 12:00:00',
+            'expected' => 'November Dec Sunday',
+        ];
+        yield 'day and week offsets' => [
+            'text'     => '{DAY+20} {WEEK+12}',
+            'date'     => '2025-10-15 12:00:00',
+            'expected' => '04 02',
+        ];
+        yield 'ISO week year differs from calendar year' => [
+            'text'     => '{WEEK} {YEAR_OF_WEEK} {YEAR}, {WEEK-1} {YEAR_OF_WEEK-1}',
+            'date'     => '2025-12-29 12:00:00',
+            'expected' => '01 2026 2025, 52 2025',
+        ];
+        yield 'ISO week 53 in the next calendar year' => [
+            'text'     => '{WEEK} {YEAR_OF_WEEK} {YEAR}',
+            'date'     => '2027-01-01 12:00:00',
+            'expected' => '53 2026 2027',
+        ];
+        yield 'month offset from the last day of a month' => [
+            'text'     => '{MONTH_NAME+1}',
+            'date'     => '2025-01-31 12:00:00',
+            'expected' => 'February',
+        ];
+        yield 'text without variable' => [
+            'text'     => 'Monthly maintenance',
+            'date'     => '2025-10-15 12:00:00',
+            'expected' => 'Monthly maintenance',
+        ];
+        yield 'unknown variables are preserved' => [
+            'text'     => '{FOO} {month} {YEAR*2} {YEAR+99999999999999999999} {YEAR}',
+            'date'     => '2025-10-15 12:00:00',
+            'expected' => '{FOO} {month} {YEAR*2} {YEAR+99999999999999999999} 2025',
+        ];
+    }
+
+    #[DataProvider('replaceDateVariablesProvider')]
+    public function testReplaceDateVariables(string $text, string $date, string $expected): void
+    {
+        $child_class = $this->getChildClass();
+
+        $this->assertSame($expected, $child_class::replaceDateVariables($text, strtotime($date)));
+    }
+
+    public function testReplaceDateVariablesUsesSessionLanguage(): void
+    {
+        $child_class = $this->getChildClass();
+
+        $_SESSION['glpilanguage'] = \Session::loadLanguage('fr_FR');
+
+        $this->assertSame(
+            'Octobre Oct. Mercredi',
+            $child_class::replaceDateVariables('{MONTH_NAME} {MONTH_SHORT} {WEEKDAY}', strtotime('2025-10-15 12:00:00'))
+        );
+        // Short names must stay distinct when full names share their first letters (Juin, Juillet)
+        $this->assertSame(
+            'Juin Juil.',
+            $child_class::replaceDateVariables('{MONTH_SHORT} {MONTH_SHORT+1}', strtotime('2025-06-15 12:00:00'))
+        );
+    }
+
+    public function testCreateItemReplacesDateVariablesFromOccurrenceDate(): void
+    {
+        $child_class = $this->getChildClass();
+        $template_class = $child_class::getTemplateClass();
+
+        $template = $this->createItem($template_class, ['name' => __METHOD__]);
+        $this->createItem(
+            $child_class::getPredefinedFieldsClass(),
+            [
+                $template->getForeignKeyField() => $template->getID(),
+                'num'   => 1, // 1=name
+                'value' => 'Maintenance {DAY} {MONTH_NAME} {YEAR}',
+            ]
+        );
+
+        // Item is generated 5 days before its occurrence date
+        $instance = $this->createItem(
+            $child_class,
+            [
+                'name'          => __METHOD__,
+                'begin_date'    => '2030-03-15 10:00:00',
+                'end_date'      => null,
+                'periodicity'   => MONTH_TIMESTAMP,
+                'create_before' => 5 * DAY_TIMESTAMP,
+                'calendars_id'  => 0,
+                $template->getForeignKeyField() => $template->getID(),
+            ]
+        );
+        $this->assertSame('2030-03-10 10:00:00', $instance->fields['next_creation_date']);
+
+        $created_item = null;
+        $this->assertTrue($instance->createItem([], $created_item));
+        $this->assertSame('Maintenance 15 March 2030', $created_item->fields['name']);
     }
 
     public function testPrepareInputForUpdateWithPartialData()
