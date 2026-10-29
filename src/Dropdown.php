@@ -1487,7 +1487,7 @@ HTML;
     {
         Toolbox::deprecated(version: '12.0.0');
         $params = [
-            'on_change'             => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
+            'on_change'             => '',
             'width'                 => '300px',
             'display_emptychoice'   => true,
         ];
@@ -1514,6 +1514,7 @@ HTML;
         echo "<div class='col-sm-11'>";
         Dropdown::showFromArray('dpmenu', $values, [
             'on_change'           => $params['on_change'],
+            'add_data_attributes' => $params['on_change'] === '' ? ['glpi-navigate-on-change' => ''] : '',
             'value'               => $selected,
             'display_emptychoice' => $params['display_emptychoice'],
             'width'               => $params['width'],

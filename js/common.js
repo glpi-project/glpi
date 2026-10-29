@@ -1623,6 +1623,12 @@ $(() => {
     $(document).on('change', '[data-glpi-submit-on-change]', function() {
         this.form.submit();
     });
+    // Navigate to the URL selected in the field
+    $(document).on('change', '[data-glpi-navigate-on-change]', function() {
+        if (this.value !== '' && this.value !== '0') {
+            window.location.href = this.value;
+        }
+    });
 });
 
 document.addEventListener('click', (e) => {
