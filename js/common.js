@@ -1627,10 +1627,11 @@ $(() => {
     $(document).on('change', '[data-glpi-submit-on-change]', function() {
         this.form.submit();
     });
-    // Navigate to the URL selected in the field
+    // Navigate to the URL selected in the field, or to the attribute URL with `%value%` replaced by the field value
     $(document).on('change', '[data-glpi-navigate-on-change]', function() {
         if (this.value !== '' && this.value !== '0') {
-            window.location.href = this.value;
+            const url = $(this).attr('data-glpi-navigate-on-change');
+            window.location.href = url !== '' ? url.replace('%value%', encodeURIComponent(this.value)) : this.value;
         }
     });
 });
