@@ -1215,16 +1215,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $webhook = new self();
             $path = $webhook->getApiPath($item);
 
+            // Tasks have no entity of their own, use the one of their parent ITIL object
+            $entity_item = $item instanceof CommonITILTask ? $item->getItem() : $item;
+
             foreach ($it as $webhook_data) {
                 $match_entity = false;
-                if ($item->isEntityAssign()) {
+                if ($entity_item !== false && $entity_item->isEntityAssign()) {
                     if ($webhook_data['is_recursive']) {
-                        $parent_entities = getAncestorsOf(Entity::getTable(), $item->getEntityID());
+                        $parent_entities = getAncestorsOf(Entity::getTable(), $entity_item->getEntityID());
                         if (in_array($webhook_data['entities_id'], $parent_entities, true)) {
                             $match_entity = true;
                         }
                     }
-                    if ($item->getEntityID() === $webhook_data['entities_id']) {
+                    if ($entity_item->getEntityID() === $webhook_data['entities_id']) {
                         $match_entity = true;
                     }
                 } elseif ($webhook_data['entities_id'] === 0) {

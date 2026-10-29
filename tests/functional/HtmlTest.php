@@ -1644,4 +1644,35 @@ SCSS,
 
         $this->assertStringContainsString("multiple='multiple'", $result);
     }
+
+    public function testNotificationsAjaxOnlyStartedForAuthenticatedUsers(): void
+    {
+        global $CFG_GLPI, $FOOTER_LOADED;
+
+        $CFG_GLPI['notifications_ajax'] = 1;
+
+        $get_footers = static function () use (&$FOOTER_LOADED): array {
+            $outputs = [];
+            foreach (['footer', 'popFooter'] as $method) {
+                $FOOTER_LOADED = false;
+                ob_start();
+                Html::$method();
+                $outputs[$method] = ob_get_clean();
+            }
+            return $outputs;
+        };
+
+        // Anonymous visitors (e.g. on a public form) must not poll notifications,
+        // the request would be rejected and their session destroyed.
+        $this->logOut();
+        $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
+        foreach ($get_footers() as $output) {
+            $this->assertStringNotContainsString('GLPINotificationsAjax', $output);
+        }
+
+        $this->login();
+        foreach ($get_footers() as $output) {
+            $this->assertStringContainsString('GLPINotificationsAjax', $output);
+        }
+    }
 }

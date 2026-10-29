@@ -42,6 +42,7 @@ use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldDefinition;
+use Glpi\Dashboard\Grid;
 use LogicException;
 use Profile;
 use ProfileRight;
@@ -557,6 +558,8 @@ abstract class AbstractDefinition extends CommonDBTM
             $this->syncProfilesRights();
             unset($_SESSION['menu']);
         }
+
+        $this->resetDashboardCardsCache();
     }
 
     public function post_updateItem($history = true)
@@ -576,6 +579,27 @@ abstract class AbstractDefinition extends CommonDBTM
         ) {
             $this->syncProfilesRights();
         }
+
+        $this->resetDashboardCardsCache();
+    }
+
+    public function post_purgeItem()
+    {
+        $this->resetDashboardCardsCache();
+    }
+
+    /**
+     * Reset the dashboard cards catalog cache, as it contains cards related to the custom objects.
+     */
+    private function resetDashboardCardsCache(): void
+    {
+        global $CFG_GLPI, $GLPI_CACHE;
+
+        $cache_keys = [];
+        foreach (array_keys($CFG_GLPI['languages']) as $language) {
+            $cache_keys[] = Grid::getAllDashboardCardsCacheKey((string) $language);
+        }
+        $GLPI_CACHE->deleteMultiple($cache_keys);
     }
 
     private function registerAndBootstrapDefinition(): void
