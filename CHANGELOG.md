@@ -45,6 +45,7 @@ The present file will list all changes made to the project; according to the
 - `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
 - `Html::link()`.
 - `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
+- `onclick` key of the `addbuttons` option of `CommonDBTM::showFormButtons()`.
 - `laminas/laminas-mail` and `laminas/laminas-mime` PHP libraries. Use `directorytree/imapengine` and `zbateson/mail-mime-parser` instead.
 - `Toolbox::getMailServerStorageInstance()`. Use `Toolbox::getMailServerMailboxInstance()` instead.
 
