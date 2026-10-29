@@ -3218,7 +3218,6 @@ JAVASCRIPT;
      * @param array  $options  Array of options:
      *    - value     : integer / preselected value (default 0)
      *    - toadd     : array / array of specific values to add at the beginning
-     *    - on_change : string / value to transmit to "onChange"
      *    - display   : boolean / display or get string (default true)
      *
      * @return string id of the select

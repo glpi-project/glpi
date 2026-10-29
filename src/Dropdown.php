@@ -2278,7 +2278,6 @@ HTML;
      *    - value               : integer / preselected value (default 0)
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - readonly            : boolean / used as a readonly item (default false)
-     *    - on_change           : string / value to transmit to "onChange"
      *    - multiple            : boolean / can select several values (default false)
      *    - size                : integer / number of rows for the select (default = 1)
      *    - display             : boolean / display or return string
@@ -2347,6 +2346,10 @@ HTML;
             }
         }
 
+        if (!empty($param['on_change'])) {
+            trigger_error('The `on_change` option of `Dropdown::showFromArray()` is not supported anymore and will be ignored.', E_USER_WARNING);
+        }
+
         $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
             $param['add_data_attributes'] = (is_array($param['add_data_attributes']) ? $param['add_data_attributes'] : [])
@@ -2406,10 +2409,6 @@ HTML;
 
             if ($param['class']) {
                 $output .= ' class="' . htmlescape($param['class']) . '"';
-            }
-
-            if (!empty($param["on_change"])) {
-                $output .= " onChange='" . htmlescape($param["on_change"]) . "'";
             }
 
             if ((is_int($param["size"])) && ($param["size"] > 0)) {
@@ -2830,7 +2829,7 @@ HTML;
     /**
      * show dropdown to select list limit
      *
-     * @param string $onchange  Optional, for ajax (default '')
+     * @param string $onchange  Not supported anymore, it is ignored
      * @param bool $display
      * @param array<string, mixed> $options Additional options passed to Dropdown::showFromArray()
      *
@@ -2839,6 +2838,10 @@ HTML;
     public static function showListLimit($onchange = '', $display = true, array $options = [])
     {
         global $CFG_GLPI;
+
+        if ($onchange !== '') {
+            trigger_error('The `$onchange` parameter of `Dropdown::showListLimit()` is not supported anymore and will be ignored.', E_USER_WARNING);
+        }
 
         if (isset($_SESSION['glpilist_limit'])) {
             $list_limit = $_SESSION['glpilist_limit'];
@@ -2877,7 +2880,6 @@ HTML;
             'glpilist_limit',
             $values,
             array_merge([
-                'on_change' => $onchange,
                 'value'     => $list_limit,
                 'display'   => $display,
             ], $options)

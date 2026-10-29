@@ -1308,7 +1308,6 @@ TWIG, $twig_params);
      *                      (see Ajax::updateItemOnSelectEvent for information)
      *                      and may have moreparams)
      *    - used         : array / Already used items ID: not to display in dropdown (default empty)
-     *    - on_change    : string / value to transmit to "onChange"
      *    - display      : boolean / display or get string (default true)
      *    - width        : specific width needed
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)

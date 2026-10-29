@@ -40,6 +40,8 @@ The present file will list all changes made to the project; according to the
 - `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
 - `onclick` key of the `addbuttons` option of `CommonDBTM::showFormButtons()`.
 - `onclick` option of `Html::getCheckbox()`, `Html::showCheckbox()`, `Html::getMassiveActionCheckBox()` and `Html::showMassiveActionCheckBox()`.
+- `on_change` option of `Dropdown::showFromArray()` and of the methods relying on it. It is now ignored and triggers a warning.
+- `$onchange` parameter of `Dropdown::showListLimit()`. It is now ignored and triggers a warning.
 
 ## [12.0.1] unreleased
 
