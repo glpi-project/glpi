@@ -721,9 +721,13 @@ class Item_Rack extends CommonDBRelation
             -1,
             [
                 'rand'      => $rand,
-                'on_change' => 'toggleUsed(this.value)',
             ]
         );
+        echo Html::scriptBlock("
+         $('#dropdown_is_reserved$rand').on('change', function() {
+            toggleUsed(this.value);
+         });
+      ");
 
         $entities = $rack->fields['entities_id'];
         if ($rack->fields['is_recursive']) {
