@@ -1159,6 +1159,10 @@ HTML;
     {
         global $GLPI_CACHE;
 
+        if (\is_array($card_options['args'] ?? null)) {
+            $card_options['args'] = Item::cleanCardOptions($card_options['args']);
+        }
+
         $start = microtime(true);
 
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);

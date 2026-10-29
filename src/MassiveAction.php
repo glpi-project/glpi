@@ -1132,17 +1132,21 @@ class MassiveAction
                     }
                     switch ($item->getType()) {
                         case Change::class:
-                            $search['condition'][] = 'is_change';
+                            if ($DB->fieldExists($search['table'], 'is_change')) {
+                                $search['condition'][] = ['is_change' => 1];
+                            }
                             break;
                         case Problem::class:
-                            $search['condition'][] = 'is_problem';
+                            if ($DB->fieldExists($search['table'], 'is_problem')) {
+                                $search['condition'][] = ['is_problem' => 1];
+                            }
                             break;
                         case Ticket::class:
                             if ($DB->fieldExists($search['table'], 'is_incident') || $DB->fieldExists($search['table'], 'is_request')) {
                                 $search['condition'][] = [
                                     'OR' => [
-                                        'is_incident',
-                                        'is_request',
+                                        'is_incident' => 1,
+                                        'is_request'  => 1,
                                     ],
                                 ];
                             }
