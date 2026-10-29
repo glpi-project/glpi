@@ -1738,10 +1738,6 @@ TWIG,
         }
 
         $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
-        if (isset($params['onclick'])) {
-            $out .= " onclick='" . htmlescape($params['onclick']) . "'";
-        }
-
         foreach (['id', 'name', 'title', 'value'] as $field) {
             if (!empty($params[$field])) {
                 $out .= " $field='" . htmlescape($params[$field]) . "'";
