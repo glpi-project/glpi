@@ -4724,7 +4724,17 @@ class CommonDBTM extends CommonGLPI
                         if ($fields['is_recursive']) {
                             $entities = getSonsOf('glpi_entities', $fields['entities_id']);
                         }
-                        $where[] = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
+                        $entities_criteria = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
+                        if ($this instanceof User) {
+                            // "Full structure" default entity is stored as NULL
+                            $entities_criteria = [
+                                'OR' => [
+                                    $entities_criteria,
+                                    [static::getTable() . '.entities_id' => null],
+                                ],
+                            ];
+                        }
+                        $where[] = $entities_criteria;
 
                         $tmp = clone $this;
                         if ($tmp->maybeTemplate()) {
