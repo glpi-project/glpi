@@ -1601,13 +1601,13 @@ class MailCollector extends CommonDBTM
     private function getRecursiveAttached(IMessagePart $part, $path, $maxsize, $subject, $subpart = "")
     {
         if ($part instanceof IMimePart && $part->isMultiPart()) {
-            foreach ($this->getLeafParts($part) as $mypart) {
+            foreach (array_values($this->getLeafParts($part)) as $index => $mypart) {
                 $this->getRecursiveAttached(
                     $mypart,
                     $path,
                     $maxsize,
                     $subject,
-                    ($subpart ? $subpart . ".1" : "1")
+                    ($subpart ? $subpart . "." : "") . ($index + 1)
                 );
             }
         } else {

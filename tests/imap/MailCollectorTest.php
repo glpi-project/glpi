@@ -1796,6 +1796,51 @@ HTML,
         );
     }
 
+    public function testGetAttachedNamesUnnamedPartsFromTheirPosition(): void
+    {
+        $image = chunk_split(base64_encode(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png')), 76, "\r\n");
+
+        $raw = implode("\r\n", [
+            'From: sender@example.com',
+            'To: receiver@glpi-project.org',
+            'Message-ID: <unnamed-parts-test@glpi-project.org>',
+            'Subject: Unnamed parts',
+            'MIME-Version: 1.0',
+            'Content-Type: multipart/mixed; boundary="test-boundary"',
+            '',
+            '--test-boundary',
+            'Content-Type: text/plain; charset=utf-8',
+            '',
+            'Message contents...',
+            '--test-boundary',
+            'Content-Type: image/png',
+            'Content-Transfer-Encoding: base64',
+            '',
+            $image,
+            '--test-boundary',
+            'Content-Type: image/png',
+            'Content-Transfer-Encoding: base64',
+            '',
+            $image,
+            '--test-boundary--',
+            '',
+        ]);
+
+        $tmp_path = GLPI_TMP_DIR . '/test_unnamed_parts_' . uniqid();
+        mkdir($tmp_path);
+
+        $collector = new \MailCollector();
+        $files = $collector->getAttached(\MailCollector::parseMessage($raw), $tmp_path . '/', PHP_INT_MAX);
+
+        foreach ($files as $filename) {
+            unlink($tmp_path . '/' . $filename);
+        }
+        rmdir($tmp_path);
+
+        // Generated names are based on the part position (the text part being the first one).
+        $this->assertSame(['doc_2.png', 'doc_3.png'], array_values($files));
+    }
+
     /**
      * See https://github.com/glpi-project/glpi/issues/20892
      * The "To" header value used for rule criteria matching must contain every
