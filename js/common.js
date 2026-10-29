@@ -183,6 +183,10 @@ function displayOtherSelectOptions(select_object, other_option_name) {
     return true;
 }
 
+$(document).on('change', '[data-glpi-other-option]', function() {
+    displayOtherSelectOptions(this, this.dataset.glpiOtherOption);
+});
+
 
 
 
