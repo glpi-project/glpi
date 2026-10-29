@@ -2492,18 +2492,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$timestamp of function date expects int\\|null, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$specifictime of static method Html\\:\\:computeGenericDateTimeSearch\\(\\) expects int\\|string, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Building a Glpi\\\\DBAL\\\\QueryExpression from a non\\-literal SQL string is forbidden\\. Use `QueryIdentifier` for an identifier, `QueryValue` for a value, `QueryFunction` or `QuerySubQuery` for a SQL fragment, or pass the dynamic parts through the `values\\:` argument to have them bound as statement parameters\\.$#',
 	'identifier' => 'glpi.forbidNonLiteralSqlExpression',
 	'count' => 3,
