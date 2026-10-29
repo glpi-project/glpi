@@ -566,7 +566,8 @@ class Dashboard extends CommonDBTM
 
                 $d_items = array_filter($items, static fn($item) => $item['dashboards_dashboards_id'] == $id);
                 $d_items = array_map(static function ($item) {
-                    $item['card_options'] = importArrayFromDB($item['card_options']);
+                    $options = importArrayFromDB($item['card_options']);
+                    $item['card_options'] = \is_array($options) ? Item::cleanCardOptions($options) : $options;
                     return $item;
                 }, $d_items);
                 $dashboard['items'] = $d_items;

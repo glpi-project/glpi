@@ -592,6 +592,23 @@ class Central extends CommonGLPI
                 );
             }
 
+            if (
+                $CFG_GLPI['ssovariables_id'] > 0
+                && ($sso_variable = SsoVariable::getById($CFG_GLPI['ssovariables_id'])) !== false
+                && $sso_variable->isSafe() === false
+            ) {
+                $messages['warnings'][] = sprintf(
+                    __s('The %s variable is unsafe. It should not be used for authentication.'),
+                    htmlescape($sso_variable->getName()),
+                )
+                    . ' '
+                    . sprintf(
+                        '<a href="%s">%s</a>',
+                        htmlescape($CFG_GLPI['root_doc'] . '/front/auth.others.php'),
+                        __s('See configuration')
+                    );
+            }
+
             if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
                 $messages['warnings'][] = sprintf(__s('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
                     . ' '
