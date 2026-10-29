@@ -415,7 +415,10 @@ class RuleRight extends Rule
                     'text' => _x('button', 'Test'),
                     'icon' => 'ti ti-stethoscope',
                     'type' => 'button',
-                    'onclick' => "$('#ruletestmodal').modal('show');",
+                    'add_attribs' => [
+                        'data-bs-toggle' => 'modal',
+                        'data-bs-target' => '#ruletestmodal',
+                    ],
                 ],
             ];
         }
