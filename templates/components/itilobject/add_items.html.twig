@@ -103,6 +103,12 @@
          });
       }
       document.getElementById('itemAddButton{{ rand }}')?.addEventListener('click', () => itemAction{{ rand }}('add'));
+      document.getElementById('itemAddForm{{ rand }}').addEventListener('click', (e) => {
+         const button = e.target.closest('[data-glpi-itil-item-remove]');
+         if (button !== null) {
+            itemAction{{ rand }}('delete', button.dataset.itemtype, button.dataset.itemsId);
+         }
+      });
       refreshItemCounter{{ rand }}();
    </script>
 </div>
