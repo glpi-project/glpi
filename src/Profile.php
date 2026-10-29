@@ -942,6 +942,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Consumable::class, 'central'),
                                 $fn_get_rights(Phone::class, 'central'),
                                 $fn_get_rights(Peripheral::class, 'central'),
+                                $fn_get_rights(Cable::class, 'central'),
                                 $fn_get_rights(NetworkName::class, 'central', [
                                     'label' => __('Internet'),
                                 ]),
@@ -969,7 +970,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Domain::class, 'central'),
                                 $fn_get_rights(Appliance::class, 'central'),
                                 $fn_get_rights(DatabaseInstance::class, 'central'),
-                                $fn_get_rights(Cable::class, 'central'),
                             ],
                         ],
                         'admin' => [

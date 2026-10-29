@@ -39,6 +39,7 @@ use Glpi\Tests\DbTestCase;
 use Project;
 use ProjectTask;
 use ProjectTaskTeam;
+use Symfony\Component\DomCrawler\Crawler;
 
 /* Test for inc/projecttask.class.php */
 
@@ -1310,5 +1311,45 @@ class ProjectTaskTest extends DbTestCase
 
         // Toujours une seule entrée en base
         $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
+    }
+
+    public function testMassiveActionsOnSubTasksList(): void
+    {
+        $this->login();
+
+        $entities_id = $this->getTestRootEntity(true);
+        $project = $this->createItem(Project::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+        $task    = $this->createItem(ProjectTask::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'projects_id' => $project->getID(),
+        ]);
+        $subtask = $this->createItem(ProjectTask::class, [
+            'name'            => __FUNCTION__ . ' sub',
+            'entities_id'     => $entities_id,
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $task->getID(),
+        ]);
+
+        // Sub-tasks list of the parent task
+        ob_start();
+        ProjectTask::showFor($task);
+        $crawler = new Crawler(ob_get_clean());
+
+        $checkboxes = $crawler->filter('input.massive_action_checkbox[name^="item[ProjectTask]"]');
+        $this->assertCount(1, $checkboxes);
+        $this->assertSame("item[ProjectTask][{$subtask->getID()}]", $checkboxes->attr('name'));
+        // "Add a task" link is only displayed on project
+        $this->assertStringNotContainsString(_x('button', 'Add a task'), $crawler->html());
+
+        // Tasks list of the project contains both tasks
+        ob_start();
+        ProjectTask::showFor($project);
+        $crawler = new Crawler(ob_get_clean());
+
+        $this->assertCount(2, $crawler->filter('input.massive_action_checkbox[name^="item[ProjectTask]"]'));
     }
 }

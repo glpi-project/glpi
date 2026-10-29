@@ -287,9 +287,9 @@ class FieldUnicity extends CommonDropdown
             //Construct list
             $values = [];
             foreach ($DB->listFields(getTableForItemType($itemtype)) as $field) {
-                $searchOption = $target->getSearchOptionByField('field', $field['Field']);
+                $searchOption = self::getSearchOptionForField($target, $field['Field']);
                 if (
-                    !empty($searchOption)
+                    $searchOption !== []
                     && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity(), true)
                 ) {
                     $values[$field['Field']] = $searchOption['name'];
@@ -301,6 +301,41 @@ class FieldUnicity extends CommonDropdown
             return Dropdown::showFromArray($p['name'], $values, $p);
         }
         return false;
+    }
+
+    /**
+     * Get the search option matching a field of the item table, including foreign keys.
+     *
+     * @param CommonDBTM $item
+     * @param string     $field
+     *
+     * @return array<string, mixed>
+     */
+    public static function getSearchOptionForField(CommonDBTM $item, string $field): array
+    {
+        $searchOption = $item->getSearchOptionByField('field', $field);
+        if (!empty($searchOption)) {
+            return $searchOption;
+        }
+
+        $table = getTableNameForForeignKeyField($field);
+        if ($table === '') {
+            return [];
+        }
+
+        // Dropdown search options rarely declare their implicit link field
+        foreach ($item->searchOptions() as $id => $option) {
+            if (
+                ($option['table'] ?? null) === $table
+                && ($option['linkfield'] ?? getForeignKeyFieldForTable($table)) === $field
+                && ($option['datatype'] ?? null) === 'dropdown'
+                && !isset($option['joinparams'])
+            ) {
+                $option['id'] = $id;
+                return $option;
+            }
+        }
+        return [];
     }
 
     public function rawSearchOptions()
@@ -416,7 +451,7 @@ class FieldUnicity extends CommonDropdown
                         $fields       = explode(',', $values[$field]);
                         $message      = [];
                         foreach ($fields as $f) {
-                            $searchOption = $target->getSearchOptionByField('field', $f);
+                            $searchOption = self::getSearchOptionForField($target, $f);
 
                             if (isset($searchOption['name'])) {
                                 $message[] = $searchOption['name'];
@@ -571,7 +606,7 @@ class FieldUnicity extends CommonDropdown
 
         $columns = [];
         foreach ($fields as $field) {
-            $searchOption = $item->getSearchOptionByField('field', $field);
+            $searchOption = self::getSearchOptionForField($item, $field);
             $columns[$field] = $searchOption["name"];
         }
         $columns['number'] = _x('quantity', 'Number');

@@ -263,6 +263,61 @@ class Document_ItemTest extends DbTestCase
         );
     }
 
+    public function testPostAddItemOnlyCopiesTicketLinksToMergedTickets(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        // Ticket B is merged (SON_OF) into ticket A and soft-deleted
+        $ticket_a = $this->createItem(\Ticket::class, ['name' => __FUNCTION__ . ' A', 'content' => 'a']);
+        $ticket_b = $this->createItem(\Ticket::class, ['name' => __FUNCTION__ . ' B', 'content' => 'b']);
+        $ticket_c = $this->createItem(\Ticket::class, ['name' => __FUNCTION__ . ' C', 'content' => 'c']);
+
+        // A followup of ticket C sharing the id of ticket B
+        $followup = $this->createItem(\ITILFollowup::class, [
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticket_c->getID(),
+            'content'  => 'followup',
+        ]);
+        $shared_id = max($ticket_c->getID(), $followup->getID()) + 1;
+        $this->assertTrue($DB->update(\Ticket::getTable(), ['id' => $shared_id], ['id' => $ticket_b->getID()]));
+        $this->assertTrue($DB->update(\ITILFollowup::getTable(), ['id' => $shared_id], ['id' => $followup->getID()]));
+        $this->assertTrue($DB->update(\Ticket::getTable(), ['is_deleted' => 1], ['id' => $shared_id]));
+        $this->createItem(\Ticket_Ticket::class, [
+            'tickets_id_1' => $shared_id,
+            'tickets_id_2' => $ticket_a->getID(),
+            'link'         => \Ticket_Ticket::SON_OF,
+        ]);
+        $this->assertSame([$ticket_a->getID()], \Ticket::getMergedTickets($shared_id));
+
+        $document = $this->createItem(\Document::class, ['name' => __FUNCTION__]);
+
+        // A document of the followup must not be linked to the followup having the id of ticket A
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \ITILFollowup::class,
+            'items_id'     => $shared_id,
+        ]);
+        $this->assertSame(0, countElementsInTable(Document_Item::getTable(), [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \ITILFollowup::class,
+            'items_id'     => $ticket_a->getID(),
+        ]));
+
+        // A document of the merged ticket is still copied to ticket A
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $shared_id,
+        ]);
+        $this->assertSame(1, countElementsInTable(Document_Item::getTable(), [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket_a->getID(),
+        ]));
+    }
+
     public function testGetTypeItemsForKnowbaseItemDoesNotLeakUnrelatedArticles()
     {
         $this->login();
@@ -366,5 +421,46 @@ class Document_ItemTest extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ];
         $this->assertFalse($doc2->can(-1, CREATE, $input2));
+    }
+
+    public function testCannotUnlinkDocumentWithOnlyReadRights(): void
+    {
+        $this->login();
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'content'     => 'x',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Unlink ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $link_id = $this->createItem(Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ])->getID();
+
+        // Can view both items, but can update neither
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $this->assertTrue($ticket->can($ticket->getID(), READ));
+        $this->assertFalse($ticket->can($ticket->getID(), UPDATE));
+
+        $link = new Document_Item();
+        $this->assertFalse($link->can($link_id, DELETE));
+        $this->assertFalse($link->can($link_id, PURGE));
+
+        // Update right on the document side is enough
+        $_SESSION['glpiactiveprofile']['document'] = READ | UPDATE;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $this->assertTrue($link->can($link_id, DELETE));
+        $this->assertTrue($link->can($link_id, PURGE));
+
+        // Update right on the ticket side is enough
+        $_SESSION['glpiactiveprofile']['document'] = READ;
+        $_SESSION['glpiactiveprofile']['ticket'] = READ | UPDATE;
+        $this->assertTrue($link->can($link_id, DELETE));
+        $this->assertTrue($link->can($link_id, PURGE));
     }
 }

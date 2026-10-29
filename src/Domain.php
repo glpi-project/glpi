@@ -403,6 +403,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             'entity'  => '',
             'used'    => [],
             'display' => true,
+            'rand'    => mt_rand(),
         ];
 
         if (is_array($options) && count($options)) {
@@ -411,7 +412,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             }
         }
 
-        $rand = mt_rand();
+        $rand = $p['rand'];
 
         $where = [
             'glpi_domains.is_deleted'  => 0,

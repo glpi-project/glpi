@@ -430,59 +430,63 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public static function canRelation($method, $forceCheckBoth = false)
     {
+        // When both sides require the requested right on target item, the right on one side and the view right
+        // on the other side are enough. Otherwise, each side must pass its own check.
+        $OneWriteIsEnough
+            = !$forceCheckBoth
+            && static::HAVE_SAME_RIGHT_ON_ITEM === static::$checkItem_1_Rights
+            && static::HAVE_SAME_RIGHT_ON_ITEM === static::$checkItem_2_Rights
+        ;
 
-        $can1 = static::canConnexity(
-            $method,
-            static::$checkItem_1_Rights,
-            static::$itemtype_1,
-            static::$items_id_1
-        );
-        $can2 = static::canConnexity(
-            $method,
-            static::$checkItem_2_Rights,
-            static::$itemtype_2,
-            static::$items_id_2
-        );
+        $itemtype1 = static::$itemtype_1 !== null && is_a(static::$itemtype_1, CommonDBTM::class, true) ? static::$itemtype_1 : null;
+        $itemtype2 = static::$itemtype_2 !== null && is_a(static::$itemtype_2, CommonDBTM::class, true) ? static::$itemtype_2 : null;
 
-        /// Check only one if SAME RIGHT for both items and not force checkBoth
-        if (
-            ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
-            && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights))
-            && !$forceCheckBoth
-        ) {
-            if ($can1) {
-                // Can view the second one ?
-                if (
-                    !static::canConnexity(
-                        $method,
-                        static::HAVE_VIEW_RIGHT_ON_ITEM,
-                        static::$itemtype_2,
-                        static::$items_id_2
-                    )
-                ) {
-                    return false;
-                }
-                return true;
-            } elseif ($can2) {
-                // Can view the first one ?
-                if (
-                    !static::canConnexity(
-                        $method,
-                        static::HAVE_VIEW_RIGHT_ON_ITEM,
-                        static::$itemtype_1,
-                        static::$items_id_1
-                    )
-                ) {
-                    return false;
-                }
-                return true;
-            } else {
-                // No item have right
-                return false;
-            }
+        $can1 = match (static::$checkItem_1_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $itemtype1 === null || $itemtype1::canView(),
+            static::HAVE_SAME_RIGHT_ON_ITEM => $itemtype1 === null || $itemtype1::$method(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_1_Rights` value.'),
+        };
+        $can2 = match (static::$checkItem_2_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $itemtype2 === null || $itemtype2::canView(),
+            static::HAVE_SAME_RIGHT_ON_ITEM => $itemtype2 === null || $itemtype2::$method(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_2_Rights` value.'),
+        };
+
+        if ($can1 === false && $can2 === false) {
+            // Both sides failed to validate the requested right.
+            return false;
         }
 
-        return ($can1 && $can2);
+        if ($OneWriteIsEnough === false && ($can1 === false || $can2 === false)) {
+            // Both sides requires the requested right, but one side does not validate it.
+            return false;
+        }
+
+        $view1 = match (static::$checkItem_1_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $can1, // already computed
+            static::HAVE_SAME_RIGHT_ON_ITEM => $itemtype1 === null || $itemtype1::canView(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_1_Rights` value.'),
+        };
+        $view2 = match (static::$checkItem_2_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $can2, // already computed
+            static::HAVE_SAME_RIGHT_ON_ITEM => $itemtype2 === null || $itemtype2::canView(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_2_Rights` value.'),
+        };
+
+        if (
+            ($can1 === true && $view2 === false)
+            || ($can2 === true && $view1 === false)
+        ) {
+            // One side requires the requested right while the other side must just be viewable.
+            // This condition is not met.
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -498,117 +502,121 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public function canRelationItem($method, $methodNotItem, $check_entity = true, $forceCheckBoth = false)
     {
+        // When both sides require the requested right on target item, the right on one side and the view right
+        // on the other side are enough. Otherwise, each side must pass its own check.
+        $OneWriteIsEnough
+            = !$forceCheckBoth
+            && static::HAVE_SAME_RIGHT_ON_ITEM === static::$checkItem_1_Rights
+            && static::HAVE_SAME_RIGHT_ON_ITEM === static::$checkItem_2_Rights
+        ;
 
-        $OneWriteIsEnough = (!$forceCheckBoth
-                           && ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
-                               || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
-
-        $view1 = false;
-        $view2 = false;
-
-        try {
-            $item1 = null;
-            $can1  = $this->canConnexityItem(
-                $method,
-                $methodNotItem,
-                static::$checkItem_1_Rights,
-                static::$itemtype_1,
-                static::$items_id_1,
-                $item1
-            );
-            if ($OneWriteIsEnough) {
-                $view1 = $this->canConnexityItem(
-                    $method,
-                    $methodNotItem,
-                    static::HAVE_VIEW_RIGHT_ON_ITEM,
-                    static::$itemtype_1,
-                    static::$items_id_1,
-                    $item1
-                );
-            }
-        } catch (CommonDBConnexityItemNotFound $e) {
-            if (static::$mustBeAttached_1 && !$this->isAttach1Valid($this->fields)) {
-                return false;
-            }
-            $can1         = true;
-            $view1        = true;
-            $check_entity = false; // If no item, then, we cannot check entities
+        $item1 = static::$itemtype_1 !== null && static::$items_id_1 !== null
+            ? $this->getConnexityItem(static::$itemtype_1, static::$items_id_1)
+            : false;
+        if (
+            $item1 === false
+            && static::$mustBeAttached_1
+            && $this->isAttach1Valid($this->fields) === false
+        ) {
+            return false;
         }
 
-        try {
-            $item2 = null;
-            $can2  = $this->canConnexityItem(
-                $method,
-                $methodNotItem,
-                static::$checkItem_2_Rights,
-                static::$itemtype_2,
-                static::$items_id_2,
-                $item2
-            );
-            if ($OneWriteIsEnough) {
-                $view2 = $this->canConnexityItem(
-                    $method,
-                    $methodNotItem,
-                    static::HAVE_VIEW_RIGHT_ON_ITEM,
-                    static::$itemtype_2,
-                    static::$items_id_2,
-                    $item2
-                );
-            }
-        } catch (CommonDBConnexityItemNotFound $e) {
-            if (static::$mustBeAttached_2 && !$this->isAttach2Valid($this->fields)) {
-                return false;
-            }
-            $can2         = true;
-            $view2        = true;
-            $check_entity = false; // If no item, then, we cannot check entities
+        $item2 = static::$itemtype_2 !== null && static::$items_id_2 !== null
+            ? $this->getConnexityItem(static::$itemtype_2, static::$items_id_2)
+            : false;
+        if (
+            $item2 === false
+            && static::$mustBeAttached_2
+            && !$this->isAttach2Valid($this->fields)
+        ) {
+            return false;
         }
 
-        if ($OneWriteIsEnough) {
-            if (
-                (!$can1 && !$can2)
-                || ($can1 && !$view2)
-                || ($can2 && !$view1)
-            ) {
-                return false;
-            }
-        } else {
-            if (!$can1 || !$can2) {
-                return false;
-            }
+        $can1 = match (static::$checkItem_1_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $item1 === false || $item1->canView() && $item1->canViewItem(),
+            static::HAVE_SAME_RIGHT_ON_ITEM => $item1 === false || $item1->$methodNotItem() && $item1->$method(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_1_Rights` value.'),
+        };
+        $can2 = match (static::$checkItem_2_Rights) {
+            static::DONT_CHECK_ITEM_RIGHTS  => true,
+            static::HAVE_VIEW_RIGHT_ON_ITEM => $item2 === false || $item2->canView() && $item2->canViewItem(),
+            static::HAVE_SAME_RIGHT_ON_ITEM => $item2 === false || $item2->$methodNotItem() && $item2->$method(),
+            default                         => throw new LogicException('Unexpected `static::$checkItem_2_Rights` value.'),
+        };
+
+        if ($can1 === false && $can2 === false) {
+            // Both sides failed to validate the requested right.
+            return false;
+        }
+
+        if ($OneWriteIsEnough === false && ($can1 === false || $can2 === false)) {
+            // Both sides requires the requested right, but one side does not validate it.
+            return false;
+        }
+
+        if (
+            ($can1 === true && $item2 === false)
+            || ($can2 === true && $item1 === false)
+        ) {
+            // One side validates the requested right while the other side is unset.
+            // There is nothing more to check.
+            return true;
+        }
+
+        if (
+            $can1 === false
+            && static::$checkItem_1_Rights === static::HAVE_SAME_RIGHT_ON_ITEM
+            && $OneWriteIsEnough
+            && $can2 === true
+        ) {
+            $can1 = $item1 === false || $item1->canView() && $item1->canViewItem();
+        }
+        if (
+            $can2 === false
+            && static::$checkItem_2_Rights === static::HAVE_SAME_RIGHT_ON_ITEM
+            && $OneWriteIsEnough
+            && $can1 === true
+        ) {
+            $can2 = $item2 === false || $item2->canView() && $item2->canViewItem();
+        }
+
+        if ($can1 === false || $can2 === false) {
+            // One side cannot validate the requested right nor the view right.
+            return false;
         }
 
         // Check coherency of entities
-        if ($check_entity && static::$check_entity_coherency) {
-            // If one of both extremity is not valid => not allowed !
-            // (default is only to check on create and update not for view and delete)
-            if (
-                (!$item1 instanceof CommonDBTM)
-                || (!$item2 instanceof CommonDBTM)
-            ) {
-                return false;
-            }
-            if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
-                $entity1 = $item1->getEntityID();
-                $entity2 = $item2->getEntityID();
+        if (
+            $check_entity
+            && static::$check_entity_coherency
+            && $item1 !== false
+            && $item2 !== false
+            && $item1->isEntityAssign()
+            && $item2->isEntityAssign()
+        ) {
+            $entity1 = $item1->getEntityID();
+            $entity2 = $item2->getEntityID();
 
-                if ($entity1 == $entity2) {
-                    return true;
-                }
-                if (
-                    ($item1->isRecursive())
-                    && in_array($entity1, getAncestorsOf("glpi_entities", $entity2))
-                ) {
-                    return true;
-                }
-                if (
-                    ($item2->isRecursive())
-                    && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))
-                ) {
-                    return true;
-                }
-                return false;
+            if ($entity1 == $entity2) {
+                return true;
             }
+
+            if (
+                $item1->isRecursive()
+                && in_array($entity1, getAncestorsOf("glpi_entities", $entity2))
+            ) {
+                return true;
+            }
+
+            if (
+                $item2->isRecursive()
+                && in_array($entity2, getAncestorsOf("glpi_entities", $entity1))
+            ) {
+                return true;
+            }
+
+            return false;
         }
 
         return true;
@@ -2265,7 +2273,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if (!is_a($itemtype, CommonDBTM::class, true)) {
-            throw new RuntimeException('Unable to get itemtype from relation input.');
+            // If the polymorphic relation does not provide a valid value,
+            // then we consider the relation field value is empty.
+            return true;
         }
 
         return $itemtype::isNewID($value);

@@ -39,6 +39,7 @@ use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
@@ -197,5 +198,28 @@ class DisplayPreferenceTest extends DbTestCase
             ['users_id' => $users_id, 'itemtype' => $itemtype]
         );
         $this->assertEquals($count_after_first_call, $count_after_second_call);
+    }
+
+    /**
+     * The `users_id` hidden field must be tagged so that it is sent to the massive action
+     * modal, otherwise the "Delete permanently" action always fails.
+     */
+    public function testShowForUserSendsUsersIdToMassiveActions(): void
+    {
+        $this->login();
+        $users_id = (int) Session::getLoginUserID();
+
+        $displaypref = new DisplayPreference();
+        $displaypref->activatePerso(['itemtype' => 'Computer', 'users_id' => $users_id]);
+
+        ob_start();
+        DisplayPreference::showForUser($users_id);
+        $html = ob_get_clean();
+
+        $crawler = new Crawler($html);
+        $input = $crawler->filter('input[type="hidden"][name="users_id"]');
+        $this->assertCount(1, $input);
+        $this->assertSame((string) $users_id, $input->attr('value'));
+        $this->assertSame('common', $input->attr('data-glpicore-ma-tags'));
     }
 }
