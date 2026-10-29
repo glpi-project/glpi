@@ -239,7 +239,8 @@
                     &[data-glpi-itildestination-field-config-display-condition] {
                         margin-top: calc(-1 * var(--tblr-border-width));
 
-                        .select2-selection {
+                        .select2-selection,
+                        .tox.tox-tinymce {
                             border-top-left-radius: 0 !important;
                             border-top-right-radius: 0 !important;
                         }
