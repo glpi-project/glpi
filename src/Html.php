@@ -3710,7 +3710,9 @@ JAVASCRIPT
         if ($action) {
             $out .= "<form method='POST' action=\"" . htmlescape($action) . "\">";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("submit()", false);
+            $out .= Dropdown::showListLimit('', false, [
+                'add_data_attributes' => ['glpi-submit-on-change' => ''],
+            ]);
         } else {
             $out .= "<form method='POST' action =''>\n";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";

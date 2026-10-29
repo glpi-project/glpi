@@ -6513,9 +6513,9 @@ HTML;
     public static function showSwitchLangForm()
     {
         $params = [
-            'value'     => Session::getLanguage(),
-            'display'   => false,
-            'on_change' => 'this.form.submit()',
+            'value'               => Session::getLanguage(),
+            'display'             => false,
+            'add_data_attributes' => ['glpi-submit-on-change' => ''],
         ];
 
         $out = "<form method='post' name='switchlang' action='" . htmlescape(User::getFormURL()) . "' autocomplete='off'>";
