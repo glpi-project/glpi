@@ -74,6 +74,9 @@ export class FormTranslationPage extends GlpiPage
     {
         const dropdown = this.page.getByRole('dialog', { name: `Form translations: ${language}` });
         await expect(dropdown).toBeVisible();
+
+        // Translation rows are lazy loaded when the modal is shown
+        await expect(dropdown.getByRole('status')).toHaveCount(0);
     }
 
     public async getTranslationRow(translation_name: string): Promise<Locator>

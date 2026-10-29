@@ -248,19 +248,6 @@
     {% endif %}
 </div>
 
-    {% if survey is defined and survey %}
-        <form
-            data-testid="survey"
-            class="mt-5 w-100 hide-form-button-separator"
-            method="POST"
-            action="{{ get_class(survey)|itemtype_form_path }}"
-        >
-            <div>
-                {{ survey.showSatisfactionForm(item, false) }}
-        {# showSatisfactionForm closes the extra div and form tag by itself... #}
-    {% endif %}
-</div>
-
 <script type="text/javascript">
     $(function() {
         $(document).on("click", ".edit-timeline-item", function() {

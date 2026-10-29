@@ -7294,7 +7294,7 @@ final class SQLProvider implements SearchProviderInterface
                             ($ticket_status == Ticket::SOLVED)
                             || ($ticket_status == Ticket::CLOSED)
                         ) {
-                            $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                            $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                             continue;
                         }
 
@@ -7302,7 +7302,7 @@ final class SQLProvider implements SearchProviderInterface
                         // - ola completed (end_time is set)
                         // - search option without progress bar
                         if ($ola_end_time || in_array($orig_id, [180, 185])) {
-                            $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                            $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                             continue;
                         }
 

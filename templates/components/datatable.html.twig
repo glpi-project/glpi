@@ -182,7 +182,7 @@
                                 {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
                             {% endif %}
 
-                            {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
+                            {% set sort_href = "javascript:reloadTab('sort=" ~ colkey|e('js') ~ "&order=" ~ new_order ~ "&" ~ additional_params|e('js') ~ "');" %}
 
                             <th scope="col">
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}

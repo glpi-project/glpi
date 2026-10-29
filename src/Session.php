@@ -52,7 +52,6 @@ use function Safe\ini_get;
 use function Safe\preg_match;
 use function Safe\scandir;
 use function Safe\session_id;
-use function Safe\session_name;
 use function Safe\session_regenerate_id;
 use function Safe\session_save_path;
 use function Safe\session_start;
@@ -156,7 +155,7 @@ class Session
         // Define default time :
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
 
-        $cookie_name = session_name() . '_rememberme';
+        $cookie_name = Auth::getRememberMeCookieName();
         if (isset($_COOKIE[$cookie_name])) {
             $login_session_uid = explode(':', $_COOKIE[$cookie_name])[0];
         } else {
@@ -2371,7 +2370,7 @@ class Session
         self::destroy();
 
         // Remove remember me token and cookie
-        $cookie_name = session_name() . '_rememberme';
+        $cookie_name = Auth::getRememberMeCookieName();
         if (is_numeric($users_id) && isset($_COOKIE[$cookie_name])) {
             [$token_uid] = explode(':', $_COOKIE[$cookie_name]);
             if (!empty($token_uid)) {

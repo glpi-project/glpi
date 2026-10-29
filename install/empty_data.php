@@ -9375,22 +9375,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
         $tables['glpi_ssovariables'] = [
             [
                 'id' => 1,
-                'name' => 'HTTP_AUTH_USER',
-            ], [
-                'id' => 2,
                 'name' => 'REMOTE_USER',
             ], [
-                'id' => 3,
-                'name' => 'PHP_AUTH_USER',
-            ], [
-                'id' => 4,
+                'id' => 2,
                 'name' => 'USERNAME',
             ], [
-                'id' => 5,
+                'id' => 3,
                 'name' => 'REDIRECT_REMOTE_USER',
-            ], [
-                'id' => 6,
-                'name' => 'HTTP_REMOTE_USER',
             ],
         ];
 

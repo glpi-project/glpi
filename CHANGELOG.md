@@ -4,7 +4,28 @@ The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
 
-## [12.0.1] unreleased
+## [12.0.2] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [12.0.1] 2026-10-28
 
 ### Added
 
@@ -259,9 +280,10 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.12] unreleased
+## [11.0.12] 2026-10-28
 
 ### Added
+- Georgian language
 
 ### Changed
 - The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.
