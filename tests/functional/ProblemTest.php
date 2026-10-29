@@ -39,10 +39,12 @@ use CommonITILObject;
 use Computer;
 use Glpi\Tests\DbTestCase;
 use Item_Problem;
+use Item_Ticket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Problem_User;
 use Session;
+use Ticket;
 use User;
 
 /* Test for inc/problem.class.php */
@@ -726,5 +728,49 @@ class ProblemTest extends DbTestCase
 
         $_SESSION['glpiactiveprofile'][Problem::$rightname] = Problem::READMY | Problem::READALL;
         $this->assertEqualsCanonicalizing(array_values($ids), $get_listed_ids());
+    }
+
+    public function testCreateFromTicketWithUnknownLinkedItemtype(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $this->createItem(Item_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'itemtype'   => Computer::class,
+            'items_id'   => $computer->getID(),
+        ]);
+        // Relation kept by the Formcreator migration, whose itemtype no longer exists
+        $DB->insert(Item_Ticket::getTable(), [
+            'tickets_id' => $ticket->getID(),
+            'itemtype'   => 'PluginFormcreatorFormAnswer',
+            'items_id'   => 1,
+        ]);
+
+        $problem = $this->createItem(Problem::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+            '_tickets_id' => $ticket->getID(),
+        ]);
+
+        // Only the valid linked item is copied
+        $links = iterator_to_array($DB->request([
+            'SELECT' => ['itemtype', 'items_id'],
+            'FROM'   => Item_Problem::getTable(),
+            'WHERE'  => ['problems_id' => $problem->getID()],
+        ]), false);
+        $this->assertSame([['itemtype' => Computer::class, 'items_id' => $computer->getID()]], $links);
     }
 }

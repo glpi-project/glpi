@@ -55,7 +55,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     public static $items_id_1            = 'items_id';
     public static $mustBeAttached_1      = false;
     public static $take_entity_1         = false;
-    // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
     protected static $notable            = true;
 
@@ -76,8 +75,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     protected static $forward_entity_to  = ['Infocom'];
 
     public static $undisclosedFields      = [];
-
-    public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
     public static $rightname = 'device';
 
@@ -1497,7 +1494,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $this->check($ID, READ);
         } else {
             // Create item
-            $this->check(-1, CREATE);
+            $this->checkGlobal(CREATE);
         }
 
         $item1   = $this->getOnePeer(0);

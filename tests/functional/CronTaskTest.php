@@ -356,4 +356,58 @@ class CronTaskTest extends DbTestCase
             )
         );
     }
+
+    public function testShowHistoryLinksToTheWholeRun(): void
+    {
+        $this->login();
+
+        $crontask = $this->createItem(\CronTask::class, [
+            'itemtype'  => \CronTask::class,
+            'name'      => 'test_history_detail',
+            'frequency' => MINUTE_TIMESTAMP,
+        ]);
+
+        // A run is stored as a start log, followed by the logs added during the run and the stop log
+        $start_log = $this->createItem(\CronTaskLog::class, [
+            'crontasks_id'    => $crontask->getID(),
+            'date'            => date('Y-m-d H:i:s'),
+            'content'         => 'Run mode: CLI',
+            'crontasklogs_id' => 0,
+            'state'           => \CronTaskLog::STATE_START,
+            'volume'          => 0,
+            'elapsed'         => 0,
+        ]);
+        $this->createItem(\CronTaskLog::class, [
+            'crontasks_id'    => $crontask->getID(),
+            'date'            => date('Y-m-d H:i:s'),
+            'content'         => 'Detail logged during the run',
+            'crontasklogs_id' => $start_log->getID(),
+            'state'           => \CronTaskLog::STATE_RUN,
+            'volume'          => 0,
+            'elapsed'         => 0,
+        ]);
+        $this->createItem(\CronTaskLog::class, [
+            'crontasks_id'    => $crontask->getID(),
+            'date'            => date('Y-m-d H:i:s'),
+            'content'         => 'Action completed, fully processed',
+            'crontasklogs_id' => $start_log->getID(),
+            'state'           => \CronTaskLog::STATE_STOP,
+            'volume'          => 1,
+            'elapsed'         => 0.1,
+        ]);
+
+        // The runs list must link to the start log, which groups all the logs of the run
+        ob_start();
+        $crontask->showHistory();
+        $html = ob_get_clean();
+        $this->assertStringContainsString("crontasklogs_id={$start_log->getID()}'", $html);
+
+        // The detail of the run must display the logs added during the run
+        $_GET['crontasklogs_id'] = $start_log->getID();
+        ob_start();
+        $crontask->showHistory();
+        $html = ob_get_clean();
+        unset($_GET['crontasklogs_id']);
+        $this->assertStringContainsString('Detail logged during the run', $html);
+    }
 }

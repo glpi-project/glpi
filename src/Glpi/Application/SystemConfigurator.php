@@ -344,7 +344,9 @@ final class SystemConfigurator
         // Force session cookie name.
         // The cookie name contains the root dir + HTTP host + HTTP port to ensure that it is unique
         // for every GLPI instance, enven if they are served by the same server (mostly for dev envs).
-        session_name('glpi_' . \hash('sha512', $this->root_dir . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['SERVER_PORT'] ?? '')));
+        // It also contains the GLPI version, to prevent reusing a session created by another GLPI version
+        // (e.g. a session opened on a previous install served from the same path).
+        session_name('glpi_' . \hash('sha512', $this->root_dir . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['SERVER_PORT'] ?? '') . GLPI_VERSION));
     }
 
     private function initLogger(): void

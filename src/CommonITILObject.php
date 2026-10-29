@@ -7791,6 +7791,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 if (!$params['check_view_rights'] || $tltask->canViewItem()) {
                     $task_row['can_edit'] = $tltask->canUpdateItem();
+                    $task_row['can_change_state'] = $tltask->canChangeState();
                     $task_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
@@ -9326,19 +9327,22 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         }
                         break;
 
+                        // send approval request to the supervisor of each requester user (User::users_id_supervisor),
+                        // not to requester group managers (see 'requester_supervisor')
                     case 'requester_responsible':
-                        if (isset($input['_users_id_requester'])) {
-                            $requesters = is_array($input['_users_id_requester'])
-                                ? $input['_users_id_requester']
-                                : [$input['_users_id_requester']];
-                            foreach ($requesters as $users_id) {
-                                $user = new User();
-                                if ($user->getFromDB($users_id)) {
-                                    $validations_to_send[] = [
-                                        'itemtype_target' => User::class,
-                                        'items_id_target' => $user->fields['users_id_supervisor'],
-                                    ];
-                                }
+                        // requesters set by input/rule + already set ones (not in input on update)
+                        $requesters = (array) ($input['_users_id_requester'] ?? []);
+                        foreach ($this->getUsers(CommonITILActor::REQUESTER) as $d) {
+                            $requesters[] = $d['users_id'];
+                        }
+                        foreach (array_unique($requesters) as $users_id) {
+                            $user = new User();
+                            // skip requesters without supervisor; a supervisor shared by several requesters is deduplicated below
+                            if ($user->getFromDB($users_id) && $user->fields['users_id_supervisor'] > 0) {
+                                $validations_to_send[] = [
+                                    'itemtype_target' => User::class,
+                                    'items_id_target' => $user->fields['users_id_supervisor'],
+                                ];
                             }
                         }
                         break;
