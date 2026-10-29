@@ -52,14 +52,14 @@ class ImapConnection extends BaseImapConnection
      * @return array<string, array<string, mixed>>
      */
     #[Override]
-    protected function getDefaultSocketOptions(string $transport, array $proxy = [], bool $validateCert = true): array
+    protected function getDefaultSocketOptions(string $transport, array $proxy = [], bool $validate_cert = true): array
     {
-        $options = parent::getDefaultSocketOptions($transport, $proxy, $validateCert);
+        $options = parent::getDefaultSocketOptions($transport, $proxy, $validate_cert);
 
         if ($transport === 'starttls') {
             $options['ssl'] = [
-                'verify_peer'      => $validateCert,
-                'verify_peer_name' => $validateCert,
+                'verify_peer'      => $validate_cert,
+                'verify_peer_name' => $validate_cert,
             ];
         }
 
