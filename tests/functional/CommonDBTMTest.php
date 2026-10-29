@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Auth;
 use CommonDBConnexity;
 use CommonDBTM;
 use Computer;
@@ -1701,6 +1702,48 @@ class CommonDBTMTest extends DbTestCase
 
         $err_msg = 'Impossible record for Serial number = 123456<br>Other item exist<br>[<a href="/front/asset/asset.form.php?class=Test01&amp;id=' . $original_asset_id . '" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Test asset 1">Test asset 1</a> - ID: ' . $original_asset_id . ' - Serial number: 123456 - Entity: Root entity &gt; _test_root_entity]';
         $this->hasSessionMessages(ERROR, [$err_msg]);
+    }
+
+    public static function userDefaultEntityProvider(): iterable
+    {
+        yield 'root entity' => [0, 0];
+        yield 'full structure' => [-1, null];
+    }
+
+    #[DataProvider('userDefaultEntityProvider')]
+    public function testCheckUnicityForUserFromAnotherLdapDirectory(int $default_entity, ?int $stored_entity): void
+    {
+        $this->login();
+
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'User login uniqueness',
+            'itemtype'      => User::class,
+            '_fields'       => ['name'],
+            'entities_id'   => 0,
+            'is_recursive'  => 1,
+            'is_active'     => 1,
+            'action_refuse' => 1,
+        ], ['_fields']);
+
+        $login = $this->getUniqueString();
+
+        // User imported from a first LDAP directory
+        $user = $this->createItem(User::class, [
+            'name'        => $login,
+            'authtype'    => Auth::LDAP,
+            'auths_id'    => 1,
+            'entities_id' => $default_entity,
+        ], ['entities_id']);
+        $this->assertSame($stored_entity, $user->fields['entities_id']);
+
+        // Same login from another LDAP directory must be refused by the unicity rule
+        $user = new User();
+        $this->assertFalse($user->add([
+            'name'     => $login,
+            'authtype' => Auth::LDAP,
+            'auths_id' => 2,
+        ]));
+        $this->hasSessionMessageThatContains('Impossible record for Login = ' . $login, ERROR);
     }
 
     public function testAddFilesWithNewFile()
