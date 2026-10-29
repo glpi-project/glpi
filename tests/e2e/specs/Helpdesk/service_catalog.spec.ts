@@ -157,7 +157,7 @@ test.describe('Service Catalog Page', () => {
         // Submit the form
         await page.getByRole('textbox', {name: 'Question 1'}).fill('Answer 1');
         await page.getByRole('button', {name: 'Submit'}).click();
-        await expect(page.getByRole('alert')).toContainText('Item successfully created');
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 
     test(`Can display service catalog with form that has no description`, async ({page, profile, api}) => {
@@ -213,7 +213,7 @@ test.describe('Service Catalog Page', () => {
         await service_catalog.doSearchItem(uuid);
         await service_catalog.doGoToItem(`B form ${uuid}`);
         await page.getByRole('button', {name: 'Submit'}).click();
-        await expect(page.getByRole('alert')).toContainText('Item successfully created');
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         // Return to service catalog and search
         await service_catalog.goto();

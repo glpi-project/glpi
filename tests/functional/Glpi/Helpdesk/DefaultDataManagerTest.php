@@ -343,9 +343,10 @@ final class DefaultDataManagerTest extends DbTestCase
             ],
             'Attachments' => [$prefix . 'foo.txt'],
         ], [
-            'filename' => [$prefix . 'foo.txt'],
-            'prefix'   => [$prefix],
-            'tag'      => [$uuid],
+            'filename'    => [$prefix . 'foo.txt'],
+            'prefix'      => [$prefix],
+            'tag'         => [$uuid],
+            'question_id' => [$this->getQuestionId($form, 'Attachments')],
         ]);
 
         // Assert: check the created ticket properties

@@ -98,12 +98,6 @@ class ServerTest extends DbTestCase
                 'groups' => [],
                 'seeall' => true,
             ],
-            getItemByTypeName('User', 'e2e_tests', true) => [
-                'name'   => 'e2e_tests',
-                'pass'   => 'glpi',
-                'groups' => [],
-                'seeall' => false,
-            ],
         ];
 
         ksort($users);

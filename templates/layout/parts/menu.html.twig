@@ -121,11 +121,15 @@ $(function() {
             }
 
             // prevent menu links to close menu (waiting the page redirection)
-            if (orig_event.target.className.indexOf('dropdown-item') !== false) {
-               for (var item of document.querySelectorAll('#menu_{{ rand }} .dropdown-item')) {
-                  item.classList.remove('active');
+            var dropdownItem = orig_event.target.closest('.dropdown-item');
+            if (dropdownItem) {
+               // open in new tab, no optimistic UI update
+               if (!orig_event.ctrlKey && !orig_event.metaKey && orig_event.button !== 1) {
+                  for (var item of document.querySelectorAll('#menu_{{ rand }} .dropdown-item')) {
+                     item.classList.remove('active');
+                  }
+                  dropdownItem.classList.add('active');
                }
-               orig_event.target.classList.add('active');
                event.preventDefault();
             }
          }

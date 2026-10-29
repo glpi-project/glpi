@@ -209,16 +209,6 @@ class TestUpdatedDataCommand extends Command
             foreach ($row_iterator as $row_data) {
                 $criteria = [];
 
-                // Ignore e2e_tests user
-                if ($table_name === 'glpi_users' && $row_data['name'] === 'e2e_tests') {
-                    continue;
-                }
-
-                // Ignore e2e oauth client
-                if ($table_name === 'glpi_oauthclients' && $row_data['name'] === 'Test E2E OAuth Client') {
-                    continue;
-                }
-
                 foreach ($row_data as $key => $value) {
                     if (in_array($key, $excluded_fields)) {
                         continue; // Ignore fields that would be subject to legitimate changes

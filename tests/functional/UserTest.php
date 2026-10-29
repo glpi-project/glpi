@@ -714,6 +714,7 @@ class UserTest extends DbTestCase
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
             '_emails'               => ['test1@example.com', 'test2@example.com'],
             'is_active'             => false,
+            'is_deleted'            => true,
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {
@@ -2026,16 +2027,15 @@ class UserTest extends DbTestCase
                 ],
             ]),
         ]);
-        $this->assertCount(4, $users);
+        $this->assertCount(3, $users);
         $this->assertEquals(
-            ['glpi', "e2e_tests", TU_USER, "jsmith123"],
+            ['glpi', TU_USER, "jsmith123"],
             array_column($users, 'name')
         );
 
         $glpi = getItemByTypeName('User', 'glpi');
         $tu_user = getItemByTypeName('User', TU_USER);
         $jsmith123 = getItemByTypeName('User', 'jsmith123');
-        $e2e_tests = getItemByTypeName('User', 'e2e_tests');
 
         // Delete other users
         $this->login('glpi', 'glpi');
@@ -2043,8 +2043,6 @@ class UserTest extends DbTestCase
         $this->assertTrue($tu_user->delete(['id' => $tu_user->getID()]));
         $this->assertTrue($jsmith123->canDeleteItem());
         $this->assertTrue($jsmith123->delete(['id' => $jsmith123->getID()]));
-        $this->assertTrue($e2e_tests->canDeleteItem());
-        $this->assertTrue($e2e_tests->delete(['id' => $e2e_tests->getID()]));
 
         // Last user, can't be deleted or disabled
         $this->assertTrue($glpi->update([

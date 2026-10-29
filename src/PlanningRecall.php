@@ -190,6 +190,7 @@ class PlanningRecall extends CommonDBChild
                     $item->getFromDB($data['items_id']);
                     if (
                         $item->getFromDB($data['items_id'])
+                        && $item->can($data['items_id'], READ)
                         && !empty($item->fields[$data['field']])
                     ) {
                         $data['when'] = date(

@@ -3,7 +3,61 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [11.0.11] unreleased
+## [11.0.13] unreleased
+
+### Added
+
+### Changed
+- The session cookie name now includes the GLPI version. Users will have to log in again after each GLPI update, unless they use the "remember me" feature.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+- `Auth::getRememberMeCookieName()` to get the "remember me" cookie name, which no longer derives from the session name.
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.12] 2026-10-28
+
+### Added
+- Georgian language
+
+### Changed
+- The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.
+
+- Default behavior when submitting a Form that has only one destination is now redirecting to created item instead of showing the feedback page. Previous behavior is obtained by unchecking "Go to created item after creation" in General configuration > Default values.
+
+- Webhooks on ITIL tasks now match the entity of their parent item. A non-recursive task webhook defined in the root entity is no longer triggered by tasks of sub-entities: enable "Sub-entities" on the webhook to keep the previous behavior.
+
+- The "Refused equipments" setting of the logs purge now purges the history of refused equipments instead of the refused equipments themselves.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+- `Glpi\Application\Environment::shouldAddExtraCypressDataDuringInstallation()`
+- `Glpi\Application\Environment::shouldAddExtraE2EDataDuringInstallation()`
+
+#### Removed
+
+
+## [11.0.11] 2026-10-01
 
 ### Added
 

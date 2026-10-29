@@ -247,6 +247,145 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertStringContainsString(__('Not linked to any software'), $notification['body_html']);
     }
 
+    /**
+     * Enable licenses alerts on root entity and return the "alert" notification of licenses.
+     */
+    private function initLicensesAlert(int $before_delay): \Notification
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        // Same entities as the automatic actions, which run on the whole entities tree
+        $this->setEntity('Root entity', true);
+
+        $this->updateItem(\Entity::class, 0, [
+            'use_licenses_alert'               => 1,
+            'send_licenses_alert_before_delay' => $before_delay,
+        ]);
+
+        $CFG_GLPI['use_notifications']     = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $notification = new \Notification();
+        $this->assertTrue($notification->getFromDBByCrit([
+            'itemtype' => \SoftwareLicense::class,
+            'event'    => 'alert',
+        ]));
+
+        return $notification;
+    }
+
+    public function testCronSoftwareAppliesNotificationFilterToEachLicense(): void
+    {
+        $notification = $this->initLicensesAlert(5);
+
+        $software = getItemByTypeName(\Software::class, '_test_soft', true);
+        $expiring_today = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'license_expiring_today',
+            'softwares_id' => $software,
+            'entities_id'  => 0,
+            'expire'       => date('Y-m-d'),
+        ]);
+        $expiring_later = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'license_expiring_later',
+            'softwares_id' => $software,
+            'entities_id'  => 0,
+            'expire'       => date('Y-m-d', time() + 3 * DAY_TIMESTAMP),
+        ]);
+
+        // Only notify the licenses expiring today
+        $this->assertTrue($notification->saveFilter([
+            [
+                'link'       => 'AND',
+                'field'      => 8, // Expiration
+                'searchtype' => 'equals',
+                'value'      => 'TODAY',
+            ],
+        ]));
+
+        $this->assertEquals(1, \SoftwareLicense::cronSoftware());
+
+        // The notification only contains the license matching the filter
+        $queued = (new \QueuedNotification())->find([
+            'event'    => 'alert',
+            'itemtype' => \SoftwareLicense::class,
+        ]);
+        $this->assertCount(1, $queued);
+        $body = reset($queued)['body_text'];
+        $this->assertStringContainsString('SoftwareLicense_' . $expiring_today->getID() . "\n", $body);
+        $this->assertStringNotContainsString('SoftwareLicense_' . $expiring_later->getID() . "\n", $body);
+
+        // Only the notified license is marked as alerted
+        $alert = new \Alert();
+        $this->assertTrue($alert->getFromDBByCrit([
+            'itemtype' => \SoftwareLicense::class,
+            'items_id' => $expiring_today->getID(),
+        ]));
+        $this->assertFalse($alert->getFromDBByCrit([
+            'itemtype' => \SoftwareLicense::class,
+            'items_id' => $expiring_later->getID(),
+        ]));
+
+        // The cron message gives the license name, then its expiration date
+        $messages = implode("\n", $_SESSION['MESSAGE_AFTER_REDIRECT'][INFO] ?? []);
+        $this->assertStringContainsString(
+            sprintf(
+                'License %s expired on %s',
+                '_test_soft - license_expiring_today - ',
+                \Html::convDate(date('Y-m-d'))
+            ),
+            $messages
+        );
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+    }
+
+    public function testCronSoftwareDoesNotMarkFilteredLicensesAsAlerted(): void
+    {
+        $notification = $this->initLicensesAlert(5);
+
+        $license = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'license_excluded_by_filter',
+            'softwares_id' => getItemByTypeName(\Software::class, '_test_soft', true),
+            'entities_id'  => 0,
+            'expire'       => date('Y-m-d', time() + 3 * DAY_TIMESTAMP),
+        ]);
+
+        // Filter matching no license
+        $this->assertTrue($notification->saveFilter([
+            [
+                'link'       => 'AND',
+                'field'      => 8, // Expiration
+                'searchtype' => 'equals',
+                'value'      => '2000-01-01',
+            ],
+        ]));
+
+        // Nothing is sent, and the license must not be marked as alerted
+        \SoftwareLicense::cronSoftware();
+        $this->assertEquals(0, countElementsInTable(\QueuedNotification::getTable(), [
+            'event'    => 'alert',
+            'itemtype' => \SoftwareLicense::class,
+        ]));
+        $alert = new \Alert();
+        $this->assertFalse($alert->getFromDBByCrit([
+            'itemtype' => \SoftwareLicense::class,
+            'items_id' => $license->getID(),
+        ]));
+
+        // Once the filter is removed, the license is notified by the next run
+        $this->assertTrue($notification->deleteFilter());
+        $this->assertEquals(1, \SoftwareLicense::cronSoftware());
+        $this->assertEquals(1, countElementsInTable(\QueuedNotification::getTable(), [
+            'event'    => 'alert',
+            'itemtype' => \SoftwareLicense::class,
+        ]));
+        $this->assertTrue($alert->getFromDBByCrit([
+            'itemtype' => \SoftwareLicense::class,
+            'items_id' => $license->getID(),
+        ]));
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+    }
+
     public function testPrepareInputForUpdate()
     {
         $this->login();
@@ -723,4 +862,46 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertFalse($non_recursive_license->isRecursive());
     }
 
+    public function testShowChildrenHidesDeletedLicenses(): void
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $software_id = $this->createItem(\Software::class, [
+            'name'        => 'Software with child licenses',
+            'entities_id' => $entities_id,
+        ])->getID();
+        $parent = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'Parent license',
+            'softwares_id' => $software_id,
+            'entities_id'  => $entities_id,
+        ]);
+        $this->createItem(\SoftwareLicense::class, [
+            'name'                => 'Active child license',
+            'softwares_id'        => $software_id,
+            'softwarelicenses_id' => $parent->getID(),
+            'entities_id'         => $entities_id,
+        ]);
+        $deleted_child = $this->createItem(\SoftwareLicense::class, [
+            'name'                => 'Deleted child license',
+            'softwares_id'        => $software_id,
+            'softwarelicenses_id' => $parent->getID(),
+            'entities_id'         => $entities_id,
+        ]);
+        $this->assertTrue($deleted_child->delete(['id' => $deleted_child->getID()]));
+
+        ob_start();
+        $parent->showChildren();
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Active child license', $output);
+        $this->assertStringNotContainsString('Deleted child license', $output);
+
+        // The tab count must match the listed children
+        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $this->assertStringContainsString(
+            'data-testid="tab-count-badge">1<',
+            (new \SoftwareLicense())->getTabNameForItem($parent)
+        );
+    }
 }

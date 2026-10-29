@@ -51,7 +51,6 @@ use DomainRecord;
 use Dropdown;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Cache\CacheManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
@@ -111,12 +110,6 @@ class GLPITestCase extends TestCase
         // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
-
-        // Some tests might change the current language, thus storing some
-        // translations in the cache
-        $manager = new CacheManager();
-        $cache = $manager->getTranslationsCacheInstance();
-        $cache->clear();
 
         // Init log handler
         global $PHPLOGGER;

@@ -60,21 +60,19 @@ class Profile_UserTest extends DbTestCase
         $super_admin = getItemByTypeName('Profile', 'Super-Admin');
         $this->assertTrue($super_admin->isLastSuperAdminProfile());
 
-        // Default: 4 super admin account authorizations
+        // Default: 3 super admin account authorizations
         $authorizations = (new Profile_User())->find([
             'profiles_id' => $super_admin->fields['id'],
         ]);
-        $this->assertCount(4, $authorizations);
+        $this->assertCount(3, $authorizations);
         $glpi_users_id = getItemByTypeName('User', 'glpi', true);
         $tu_users_id = getItemByTypeName('User', TU_USER, true);
         $jsmith_users_id = getItemByTypeName('User', 'jsmith123', true);
-        $e2e_tests_users_id = getItemByTypeName('User', 'e2e_tests', true);
 
         $auth_array = array_column($authorizations, 'users_id');
         $this->assertContains($glpi_users_id, $auth_array);
         $this->assertContains($tu_users_id, $auth_array);
         $this->assertContains($jsmith_users_id, $auth_array);
-        $this->assertContains($e2e_tests_users_id, $auth_array);
 
         $authorizations_by_user_id = [];
         foreach ($authorizations as $authorization) {
@@ -87,8 +85,6 @@ class Profile_UserTest extends DbTestCase
         $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$tu_users_id]], 1));
         $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$jsmith_users_id])->canPurgeItem());
         $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$jsmith_users_id]], 1));
-        $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$e2e_tests_users_id])->canPurgeItem());
-        $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$e2e_tests_users_id]], 1));
 
         // Last user, can't be purged
         $this->assertFalse(Profile_User::getById($authorizations_by_user_id[$glpi_users_id])->canPurgeItem());
@@ -478,20 +474,20 @@ class Profile_UserTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $profile = getItemByTypeName(Profile::class, 'Self-Service');
         $profile_user = new Profile_User();
-        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">1</span>', $profile_user->getTabNameForItem($profile));
         $this->createItem(User::class, [
             'name' => __FUNCTION__ . '_deleted',
             '_profiles_id' => $profile->getId(),
             '_entities_id' => $this->getTestRootEntity(true),
             'is_deleted' => 1,
         ]);
-        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">1</span>', $profile_user->getTabNameForItem($profile));
         $this->createItem(User::class, [
             'name' => __FUNCTION__ . '_not_deleted',
             '_profiles_id' => $profile->getId(),
             '_entities_id' => $this->getTestRootEntity(true),
         ]);
-        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">3</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
 
     }
 

@@ -711,19 +711,28 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             ];
             $iterator = $DB->request($criteria);
 
-            $messages = [];
-            $items    = [];
-
+            $items = [];
             foreach ($iterator as $license) {
                 $license['softname'] ??= __('Not linked to any software');
+                $items[$license['id']] = $license;
+            }
+
+            // Licenses excluded by the notifications filters must not be marked as alerted,
+            // otherwise they would never be notified
+            $items = array_intersect_key(
+                $items,
+                array_flip(NotificationEvent::getGroupedItemsIdsToNotify('alert', self::class, $entity, array_keys($items)))
+            );
+
+            $messages = [];
+            foreach ($items as $license) {
                 $name = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
                 //TRANS: %1$s the license name, %2$s is the expiration date
                 $messages[] = sprintf(
                     __('License %1$s expired on %2$s'),
-                    Html::convDate($license["expire"]),
-                    $name
+                    $name,
+                    Html::convDate($license["expire"])
                 );
-                $items[$license['id']] = $license;
             }
 
             if ($items !== []) {
@@ -1109,17 +1118,7 @@ TWIG, $twig_params);
                     if (!self::canView()) {
                         return '';
                     }
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['softwarelicenses_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(
-                        self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;'),
-                        $item::class
-                    );
+                    return parent::getTabNameForItem($item, $withtemplate);
             }
         }
         return '';

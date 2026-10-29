@@ -40,6 +40,7 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Dashboard\Grid;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
@@ -256,49 +257,6 @@ class AssetDefinitionTest extends DbTestCase
             'messages' => [],
         ];
 
-        // start at 32 to ignore control chars
-        // stop at 8096, no need to test the whole UTF-8 charset
-        for ($i = 32; $i < 8096; $i++) {
-            $char = mb_chr($i);
-            if ($char === false) {
-                continue;
-            }
-
-            $system_name = sprintf('TestAsset%s', $char);
-            if (
-                ($char >= "A" && $char <= "Z") // A -> Z
-                || ($char >= "a" && $char <= "z") // a -> z
-                || ($char >= "0" && $char <= "9") // 0 -> 9
-            ) {
-                yield [
-                    'input'    => [
-                        'system_name' => $system_name,
-                    ],
-                    'output'   => [
-                        'system_name'  => $system_name,
-                        'label'        => $system_name,
-                        'capacities'   => '[]',
-                        'profiles'     => '[]',
-                        'translations' => '[]',
-                        'fields_display' => '[]',
-                    ],
-                    'messages' => [],
-                ];
-            } else {
-                yield [
-                    'input'    => [
-                        'system_name' => $system_name,
-                    ],
-                    'output'   => false,
-                    'messages' => [
-                        ERROR => [
-                            'The following field has an incorrect value: &quot;System name&quot;.',
-                        ],
-                    ],
-                ];
-            }
-        }
-
         $reserved_names = [
             'Computer',
             'Monitor',
@@ -505,6 +463,81 @@ class AssetDefinitionTest extends DbTestCase
         }
     }
 
+    /**
+     * Validates the system name allowed characters.
+     *
+     * Cases are not provided by a data provider, as the setup/teardown cost of each test case
+     * is far more expensive than the `prepareInputForAdd()` call itself.
+     */
+    public function testPrepareInputForAddSystemNameCharacters(): void
+    {
+        $count = 0;
+        foreach (self::systemNameCharactersProvider() as ['input' => $input, 'output' => $output, 'messages' => $messages]) {
+            $count++;
+
+            $definition = new AssetDefinition();
+
+            $this->assertEquals(
+                $output,
+                $definition->prepareInputForAdd($input),
+                sprintf('Unexpected result for system name `%s`.', $input['system_name'])
+            );
+
+            foreach ($messages as $level => $level_messages) {
+                $this->hasSessionMessages($level, $level_messages);
+            }
+        }
+
+        // Make sure the provider was not silently emptied
+        $this->assertGreaterThan(0, $count);
+    }
+
+    private static function systemNameCharactersProvider(): iterable
+    {
+        // start at 32 to ignore control chars
+        // stop at 8096, no need to test the whole UTF-8 charset
+        for ($i = 32; $i < 8096; $i++) {
+            $char = mb_chr($i);
+            if ($char === false) {
+                continue;
+            }
+
+            $system_name = sprintf('TestAsset%s', $char);
+            if (
+                ($char >= "A" && $char <= "Z") // A -> Z
+                || ($char >= "a" && $char <= "z") // a -> z
+                || ($char >= "0" && $char <= "9") // 0 -> 9
+            ) {
+                yield [
+                    'input'    => [
+                        'system_name' => $system_name,
+                    ],
+                    'output'   => [
+                        'system_name'  => $system_name,
+                        'label'        => $system_name,
+                        'capacities'   => '[]',
+                        'profiles'     => '[]',
+                        'translations' => '[]',
+                        'fields_display' => '[]',
+                    ],
+                    'messages' => [],
+                ];
+            } else {
+                yield [
+                    'input'    => [
+                        'system_name' => $system_name,
+                    ],
+                    'output'   => false,
+                    'messages' => [
+                        ERROR => [
+                            'The following field has an incorrect value: &quot;System name&quot;.',
+                        ],
+                    ],
+                ];
+            }
+        }
+    }
+
     public function testUniqueSystemName(): void
     {
         $definition = new AssetDefinition();
@@ -588,6 +621,41 @@ class AssetDefinitionTest extends DbTestCase
                 getAllDataFromTable('glpi_displaypreferences', ['itemtype' => $classname])
             );
         }
+    }
+
+    public function testDashboardCardsCacheIsResetOnDefinitionChanges(): void
+    {
+        global $CFG_GLPI, $GLPI_CACHE;
+
+        $cache_keys = [];
+        foreach (array_keys($CFG_GLPI['languages']) as $language) {
+            $cache_keys[] = Grid::getAllDashboardCardsCacheKey($language);
+        }
+        $fill_cache = static function () use ($GLPI_CACHE, $cache_keys) {
+            foreach ($cache_keys as $cache_key) {
+                $GLPI_CACHE->set($cache_key, ['card' => []]);
+            }
+        };
+        $assert_cache_is_empty = function () use ($GLPI_CACHE, $cache_keys) {
+            foreach ($cache_keys as $cache_key) {
+                $this->assertFalse($GLPI_CACHE->has($cache_key));
+            }
+        };
+
+        // Cache is reset on add
+        $fill_cache();
+        $definition = $this->initAssetDefinition('test');
+        $assert_cache_is_empty();
+
+        // Cache is reset on update
+        $fill_cache();
+        $this->updateItem(AssetDefinition::class, $definition->getID(), ['label' => 'Test label']);
+        $assert_cache_is_empty();
+
+        // Cache is reset on purge
+        $fill_cache();
+        $this->deleteItem(AssetDefinition::class, $definition->getID(), true);
+        $assert_cache_is_empty();
     }
 
     public function testUpdateRights()

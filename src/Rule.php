@@ -3442,6 +3442,32 @@ TWIG, ['label' => $this->getTitle()]);
         return static::canUpdate();
     }
 
+    public function canViewItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canViewItem();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canUpdateItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->isOfCurrentType() && parent::canPurgeItem();
+    }
+
+    /**
+     * Rules of all types share the same table, but each type has its own rights.
+     * A loaded rule must therefore be of the type it is accessed through.
+     */
+    private function isOfCurrentType(): bool
+    {
+        return static::class === self::class
+            || !isset($this->fields['sub_type'])
+            || $this->fields['sub_type'] === static::class;
+    }
+
     public static function getIcon()
     {
         return "ti ti-book";

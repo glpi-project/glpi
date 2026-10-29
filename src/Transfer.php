@@ -380,28 +380,7 @@ final class Transfer extends CommonDBTM
         foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $asset_itemtype) {
             if ($this->haveItemsToTransfer($asset_itemtype)) {
                 foreach ($DC_CONNECT as $peripheral_itemtype) {
-                    $peripheral_itemtable = getTableForItemType($peripheral_itemtype);
                     $relation_table = Asset_PeripheralAsset::getTable();
-
-                    // Clean DB / Search unexisting links and force disconnect
-                    $DB->delete(
-                        $relation_table,
-                        [
-                            $peripheral_itemtable . '.id' => null,
-                            $relation_table . '.itemtype_asset'      => $asset_itemtype,
-                            $relation_table . '.itemtype_peripheral' => $peripheral_itemtype,
-                        ],
-                        [
-                            'LEFT JOIN' => [
-                                $peripheral_itemtable => [
-                                    'ON' => [
-                                        $relation_table       => 'items_id_peripheral',
-                                        $peripheral_itemtable => 'id',
-                                    ],
-                                ],
-                            ],
-                        ]
-                    );
 
                     if (!($peripheral = getItemForItemtype($peripheral_itemtype))) {
                         continue;
@@ -436,46 +415,7 @@ final class Transfer extends CommonDBTM
         if (!$this->options['keep_software']) {
             return;
         }
-        // Clean DB
-        $DB->delete('glpi_items_softwareversions', ['glpi_softwareversions.id'  => null], [
-            'LEFT JOIN' => [
-                'glpi_softwareversions'  => [
-                    'ON' => [
-                        'glpi_items_softwareversions' => 'softwareversions_id',
-                        'glpi_softwareversions'       => 'id',
-                    ],
-                ],
-            ],
-        ]);
-
-        // Clean DB
-        $DB->delete('glpi_softwareversions', ['glpi_softwares.id'  => null], [
-            'LEFT JOIN' => [
-                'glpi_softwares'  => [
-                    'ON' => [
-                        'glpi_softwareversions' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
-                    ],
-                ],
-            ],
-        ]);
         foreach ($CFG_GLPI['software_types'] as $itemtype) {
-            $itemtable = getTableForItemType($itemtype);
-            // Clean DB
-            $DB->delete('glpi_items_softwareversions', [
-                "{$itemtable}.id"  => null,
-                'glpi_items_softwareversions.itemtype' => $itemtype,
-            ], [
-                'LEFT JOIN' => [
-                    $itemtable  => [
-                        'ON' => [
-                            'glpi_items_softwareversions' => 'items_id',
-                            $itemtable                    => 'id',
-                        ],
-                    ],
-                ],
-            ]);
-
             if ($this->haveItemsToTransfer($itemtype)) {
                 $iterator = $DB->request([
                     'SELECT'       => [

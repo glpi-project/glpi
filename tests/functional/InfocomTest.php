@@ -43,6 +43,7 @@ use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Infocom;
 use PHPUnit\Framework\Attributes\DataProvider;
+use SoftwareLicense;
 use State;
 use Toolbox;
 
@@ -357,5 +358,25 @@ class InfocomTest extends DbTestCase
         $this->assertEquals('2025-07-14', $infocom->fields['use_date'], 'Use date should be copied from order date');
         $this->assertEquals('2025-07-14', $infocom->fields['warranty_date'], 'Warranty date should be set on status change');
         $this->assertEmpty($infocom->fields['decommission_date'], 'Decommission date should be empty');
+    }
+
+    public function testOtherInfocomReportIncludesLicenseWithoutSoftware(): void
+    {
+        $this->login();
+
+        $license = $this->createItem(SoftwareLicense::class, [
+            'name'         => 'License without software',
+            'softwares_id' => 0,
+            'entities_id'  => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(Infocom::class, [
+            'itemtype' => SoftwareLicense::class,
+            'items_id' => $license->getID(),
+            'buy_date' => '2025-01-15',
+            'value'    => 100,
+        ]);
+
+        $results = Infocom::getDataForOtherInfocomReport(SoftwareLicense::class, '', '');
+        $this->assertContains($license->getID(), array_column($results, 'items_id'));
     }
 }

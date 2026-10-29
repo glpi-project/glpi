@@ -246,7 +246,7 @@ class Item_Disk extends CommonDBChild
             if ($data['encryption_status'] !== self::ENCRYPTION_STATUS_NO) {
                 $twig_params = [
                     'encryption_status_label'    => __('Partial encryption'),
-                    'encryption_status_value'    => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_YES),
+                    'encryption_status_value'    => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_PARTIALLY),
                     'encryption_tool_label'      => __('Encryption tool'),
                     'encryption_tool_value'      => $data['encryption_tool'],
                     'encryption_algorithm_label' => __('Encryption algorithm'),
