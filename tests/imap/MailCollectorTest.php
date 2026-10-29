@@ -1909,6 +1909,28 @@ HTML,
         );
     }
 
+    public function testGetHeadersKeepsInvalidAddresses(): void
+    {
+        $raw = implode("\r\n", [
+            'From: sender@example.com',
+            'To: Valid Recipient <valid@glpi-project.org>, Invalid Recipient <invalid@glpi-project@org>, undisclosed-recipients:;',
+            'Cc: not-an-email',
+            'Subject: Invalid recipients',
+            'Date: ' . date('r'),
+            'Message-ID: <invalid-addresses-test@glpi-project.org>',
+            '',
+            'Body',
+            '',
+        ]);
+
+        $collector = new \MailCollector();
+        $headers = $collector->getHeaders(\MailCollector::parseMessage($raw));
+
+        // Invalid addresses are kept, only empty ones are ignored.
+        $this->assertSame(['valid@glpi-project.org', 'invalid@glpi-project@org'], $headers['tos']);
+        $this->assertSame(['not-an-email'], $headers['ccs']);
+    }
+
     public static function decodedContentProvider(): iterable
     {
         // Charset handled by mbstring.

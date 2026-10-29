@@ -2666,7 +2666,7 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * Get the first valid email address from given header.
+     * Get the first email address from given header.
      *
      * @param IMessage $message
      * @param string   $header_name
@@ -2679,8 +2679,8 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * Get the valid email addresses from given header.
-     * Invalid addresses are ignored.
+     * Get the email addresses from given header.
+     * Empty addresses (e.g. from an empty group like `undisclosed-recipients:;`) are ignored.
      *
      * @param IMessage $message
      * @param string   $header_name
@@ -2697,7 +2697,7 @@ class MailCollector extends CommonDBTM
         $emails = [];
         foreach ($header->getAddresses() as $address) {
             $email = trim($address->getEmail());
-            if (GLPIMailer::validateAddress($email)) {
+            if ($email !== '') {
                 $emails[] = $email;
             }
         }
