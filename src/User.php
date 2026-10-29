@@ -1270,6 +1270,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
                 // Prevent disabling another user account
                 'is_active',
+                'is_deleted',
                 'begin_date',
                 'end_date',
 
@@ -6923,7 +6924,7 @@ HTML;
             && ($anon = $this->getAnonymizedName()) !== null
         ) {
             // if anonymized name active, return only the anonymized name
-            return $anon;
+            return htmlescape($anon);
         }
 
         return $this->getLink($options);

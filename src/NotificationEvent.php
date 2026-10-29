@@ -102,6 +102,35 @@ class NotificationEvent extends CommonDBTM
 
 
     /**
+     * Get, among the items grouped in a single notification (see NotificationTarget::getGroupedItemsOptionName()),
+     * the ones matching the filter of at least one active notification of the event.
+     *
+     * @param string                   $event
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int                      $entity
+     * @param int[]                    $ids
+     *
+     * @return int[]
+     */
+    public static function getGroupedItemsIdsToNotify(string $event, string $itemtype, int $entity, array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+
+        $notified_ids = [];
+        foreach (Notification::getNotificationsByEventAndType($event, $itemtype, $entity) as $data) {
+            $notification = Notification::getById($data['id']);
+            if (!$notification instanceof Notification) {
+                continue;
+            }
+            $notified_ids = array_merge($notified_ids, $notification->getItemsIdsMatchingFilter($itemtype, $ids));
+        }
+
+        return array_values(array_intersect($ids, $notified_ids));
+    }
+
+    /**
      * Raise a notification event
      *
      * @param string          $event   the event raised for the itemtype
@@ -136,13 +165,34 @@ class NotificationEvent extends CommonDBTM
             );
 
             $processed = []; // targets list
+            $grouped_items_option = $notificationtarget->getGroupedItemsOptionName();
             foreach ($notifications as $data) {
+                $notification_options = $options;
+
                 // Check notification filter
                 $notification = Notification::getById($data['id']);
+                if (!$notification instanceof Notification) {
+                    continue;
+                }
                 if (
-                    !$notification instanceof Notification
-                    || ($item instanceof CommonDBTM && !$notification->itemMatchFilter($item))
+                    $item instanceof CommonDBTM
+                    && $item->isNewItem()
+                    && $grouped_items_option !== null
+                    && isset($options[$grouped_items_option])
                 ) {
+                    // Several items are grouped in a single notification: the filter applies to each of them
+                    $matching_ids = $notification->getItemsIdsMatchingFilter(
+                        $item::class,
+                        array_map('intval', array_keys($options[$grouped_items_option]))
+                    );
+                    if ($matching_ids === []) {
+                        continue;
+                    }
+                    $notification_options[$grouped_items_option] = array_intersect_key(
+                        $options[$grouped_items_option],
+                        array_flip($matching_ids)
+                    );
+                } elseif ($item instanceof CommonDBTM && !$notification->itemMatchFilter($item)) {
                     continue;
                 }
 
@@ -193,17 +243,17 @@ class NotificationEvent extends CommonDBTM
                     $notify_me = $_SESSION['glpinotification_to_myself'];
                 }
 
-                $options['mode'] = $data['mode'];
+                $notification_options['mode'] = $data['mode'];
                 if (!isset($processed[$data['mode']])) { // targets list per mode to avoid spam
                     $processed[$data['mode']] = [];
                 }
-                $options['processed'] = &$processed[$data['mode']];
+                $notification_options['processed'] = &$processed[$data['mode']];
                 $eventclass = Notification_NotificationTemplate::getModeClass($data['mode'], 'event');
                 if (class_exists($eventclass)) {
                     $eventclass::raise(
                         $event,
                         $item,
-                        $options,
+                        $notification_options,
                         $label,
                         $data,
                         $notificationtarget->setEvent($eventclass),

@@ -497,6 +497,37 @@ test('Priority recalculates when urgency or impact changes', async ({ profile, p
     await expect(ticket.getDropdownByLabel('Priority')).toContainText('Very high');
 });
 
+test('Open category dropdown is not orphaned when type change reloads it', async ({ profile, page, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const ticket_id = await api.createItem('Ticket', {
+        name: 'Test category reload',
+        content: 'Test category reload',
+        type: 1,
+        entities_id: getWorkerEntityId(),
+    });
+
+    const ticket = new TicketPage(page);
+    await ticket.goto(ticket_id);
+
+    // Hold the category reload until the category dropdown is open
+    let release_reload!: () => void;
+    const reload_held = new Promise<void>((resolve) => { release_reload = resolve; });
+    await page.route('**/ajax/dropdownTicketCategories.php', async (route) => {
+        await reload_held;
+        await route.continue();
+    });
+
+    await ticket.doSetDropdownValue(ticket.getDropdownByLabel('Type'), 'Request');
+    await ticket.getDropdownByLabel('Category').click();
+    await expect(page.getByRole('listbox')).toBeVisible();
+
+    const reload_response = page.waitForResponse('**/ajax/dropdownTicketCategories.php');
+    release_reload();
+    await reload_response;
+
+    await expect(page.getByRole('listbox')).toBeHidden();
+});
+
 test('Add followup', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const ticket_id = await api.createItem('Ticket', {

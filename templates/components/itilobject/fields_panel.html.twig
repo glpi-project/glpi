@@ -524,13 +524,18 @@ $(function() {
 var reloadCategory = function() {
     var type = $('[name=type]').val();
    // Target only the category field to avoid conflicts with other field-container elements in the KB
-    $('#category_field_container{{ rand }}').load(
+    var container = $('#category_field_container{{ rand }}');
+    $.post(
         '{{ path("ajax/dropdownTicketCategories.php") }}',
         {
             'type': type,
-            'entity_restrict': {{ item.fields['entities_id'] }},
-            'value': {{ item.fields['itilcategories_id'] }},
+            'entity_restrict': {{ item.fields['entities_id']|json_encode|raw }},
+            'value': {{ item.fields['itilcategories_id']|json_encode|raw }},
         }
-    );
+    ).done(function (html) {
+        // Destroy right before replacement so an open Select2 popup is not left orphaned on <body>
+        container.find('.select2-hidden-accessible').select2('destroy');
+        container.html(html);
+    });
 };
 </script>

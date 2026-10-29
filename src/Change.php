@@ -102,7 +102,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     #[Override]
     public static function canView(): bool
     {
-        return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
+        return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY])
+            || Session::haveRightsOr('changevalidation', ChangeValidation::getValidateRights());
     }
 
     #[Override]
@@ -112,6 +113,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         if (!$this->checkEntity(true)) {
             return false;
         }
+
         return (Session::haveRight(self::$rightname, self::READALL)
               || (Session::haveRight(self::$rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
@@ -127,7 +129,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                               && $this->haveAGroup(
                                   CommonITILActor::ASSIGN,
                                   $_SESSION["glpigroups"]
-                              ))))));
+                              )))))
+              // Can validate changes (checked last as it requires a DB query)
+              || (Session::haveRightsOr('changevalidation', ChangeValidation::getValidateRights())
+                  && ChangeValidation::canValidate($this->fields['id'])));
     }
 
     #[Override]
