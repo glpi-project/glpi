@@ -20,20 +20,8 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
-- `Glpi\Mail\Imap\Mailbox` and `Glpi\Mail\Imap\ImapProtocol` classes, used by the native IMAP protocol.
-- `MailCollector::parseMessage()`
-- `Toolbox::getMailServerMailboxInstance()`
 
 #### Changes
-- Messages handled by `MailCollector` are now `ZBateson\MailMimeParser\IMessage` instances, instead of `Laminas\Mail\Storage\Message` instances.
-  This applies to `MailCollector::buildTicket()`, `MailCollector::getAdditionnalHeaders()`, `MailCollector::getAttached()`, `MailCollector::getBody()`,
-  `MailCollector::getHeaders()`, `MailCollector::getItemFromHeaders()`, `MailCollector::isResponseToMessageSentByAnotherGlpi()`
-  and to the `_message` key of the input built by `MailCollector::buildTicket()`.
-- `MailCollector::getDecodedContent()` now expects a `ZBateson\MailMimeParser\Message\IMessagePart` instance.
-- Protocols registered using the `mail_server_protocols` hook must now provide a `mailbox` entry, instead of the `storage` one.
-  It must be a class name, or a callable returning an instance, implementing `DirectoryTree\ImapEngine\MailboxInterface`.
-  The `protocol` entry must now implement `Glpi\Mail\Protocol\ProtocolInterface`.
-- `Toolbox::getMailServerProtocolInstance()` now returns a `Glpi\Mail\Protocol\ProtocolInterface` instance, or `null`.
 
 #### Deprecated
 
