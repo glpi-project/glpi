@@ -714,6 +714,7 @@ class UserTest extends DbTestCase
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
             '_emails'               => ['test1@example.com', 'test2@example.com'],
             'is_active'             => false,
+            'is_deleted'            => true,
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {

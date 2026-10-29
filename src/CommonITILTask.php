@@ -280,6 +280,41 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return false;
     }
 
+    /**
+     * Does current user have right to change the state (todo/done) of the current task?
+     *
+     * @return bool
+     **/
+    public function canChangeState(): bool
+    {
+        if ($this->canUpdateItem()) {
+            return true;
+        }
+
+        $is_assigned_user = (int) $this->fields['users_id_tech'] === Session::getLoginUserID();
+        $is_assigned_group = (int) $this->fields['groups_id_tech'] > 0
+            && in_array((int) $this->fields['groups_id_tech'], $_SESSION['glpigroups'] ?? []);
+
+        if (
+            !$this->canReadITILItem()
+            || (!$is_assigned_user && !$is_assigned_group)
+        ) {
+            return false;
+        }
+
+        $parent_loaded = $this->isParentAlreadyLoaded();
+        $item = $parent_loaded ? $this->item : static::getItilObjectItemInstance();
+        if (
+            (!$parent_loaded && !$item->getFromDB($this->fields[$item::getForeignKeyField()]))
+            || $item->isDeleted()
+            || in_array($item->fields['status'], $item->getClosedStatusArray())
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
 
     /**
      * Does current user have right to purge the current task?

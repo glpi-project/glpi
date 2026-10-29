@@ -1311,6 +1311,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $criteria['ORDERBY'] = [$_GET["sort"] . " $order", 'id ASC'];
 
         $canedit = $item::class === Project::class && $item->canEdit($ID);
+        // Massive actions are also available on sub-tasks list, rights are checked for each task when processing
+        $can_massive_actions = $item->canEdit($ID);
 
         switch ($item::class) {
             case Project::class:
@@ -1450,7 +1452,7 @@ TWIG, $twig_params);
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => $canedit,
+            'showmassiveactions' => $can_massive_actions,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
