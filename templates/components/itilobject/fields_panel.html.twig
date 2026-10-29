@@ -146,7 +146,7 @@
                   'readonly': field_options.fields_template.isReadonlyField('type'),
                }|merge(field_options) %}
                {% if item.isNewItem() %}
-                  {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
+                  {% set type_params = type_params|merge({'add_data_attributes': {'glpi-submit-on-change': ''}}) %}
                {% else %}
                   {% set type_params = type_params|merge({'on_change': 'reloadCategory()',}) %}
                {% endif %}

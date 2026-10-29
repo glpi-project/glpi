@@ -1619,6 +1619,10 @@ $(() => {
     $(document).on('change', '[data-glpi-reload-tab-on-change]', function(e) {
         reloadTab($(this).attr('data-glpi-reload-tab-on-change').replace('%value%', encodeURIComponent($(e.target).val() ?? '')));
     });
+    // Submit the field's form on change
+    $(document).on('change', '[data-glpi-submit-on-change]', function() {
+        this.form.submit();
+    });
 });
 
 document.addEventListener('click', (e) => {
