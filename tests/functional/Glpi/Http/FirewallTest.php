@@ -57,6 +57,7 @@ class FirewallTest extends DbTestCase
                     'dashboard.php' => '',
                     'getDropdown.php' => '',
                     'telemetry.php' => '',
+                    'treebrowse.php' => '',
                 ],
                 'front' => [
                     'foo' => [
@@ -127,6 +128,7 @@ class FirewallTest extends DbTestCase
 
         $default_mapping = [
             '/ajax/getDropdown.php'                     => $default_for_core_legacy,
+            '/ajax/treebrowse.php'                      => $default_for_core_legacy,
             '/front/foo/bar.php'                        => $default_for_core_legacy,
             '/front/computer.php'                       => $default_for_core_legacy,
             '/Core/Route'                               => $default_for_symfony_routes,

@@ -1092,7 +1092,7 @@ class NetworkPort extends CommonDBChild
                                 );
                             } else {
                                 foreach ($vlans as $row) {
-                                    $output .= $row['name'];
+                                    $output .= htmlescape($row['name']);
                                     if (!empty($row['tag'])) {
                                         $output .= ' [' . htmlescape($row['tag']) . ']';
                                     }

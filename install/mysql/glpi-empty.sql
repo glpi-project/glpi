@@ -10057,6 +10057,7 @@ CREATE TABLE `glpi_oauth_access_tokens` (
    `user_identifier` varchar(255) DEFAULT NULL,
    `scopes` text DEFAULT NULL,
    `ip_address` varchar(45) DEFAULT NULL,
+   `user_agent` varchar(512) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    UNIQUE KEY `uuid` (`uuid`),
    KEY `client` (`client`)

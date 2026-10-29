@@ -82,6 +82,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'user_identifier' => $accessTokenEntity->getUserIdentifier(),
             'scopes' => exportArrayToDB($accessTokenEntity->getScopes()),
             'ip_address' => IPUtilities::getClientIP(),
+            'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? substr($_SERVER['HTTP_USER_AGENT'], 0, 512) : null,
             'uuid' => Uuid::uuid4()->toString(),
         ]);
     }

@@ -41,7 +41,7 @@
 
     <div class="kb-comment-card card rounded w-100">
         <div class="card-body px-3 py-2">
-            <div class="card-title fs-4 d-flex align-items-start">
+            <div class="card-title fs-4 d-flex align-items-start {{ anchor_quote is not empty ? 'mb-1' }}">
                 <div class="flex-grow-1" data-testid="comment-header">
                     {{ user ? user.getFriendlyName() : __("Deleted user") }}
                     ·
@@ -100,7 +100,7 @@
             </div>
             {% if anchor_quote is not empty %}
                 <blockquote
-                    class="kb-comment-anchor-quote text-muted fs-3 border-start border-2 ps-2 mb-1"
+                    class="kb-comment-anchor-quote kb-comment-anchor-quote--context text-muted mb-1"
                     data-glpi-comment-anchor-quote
                 >{{ anchor_quote }}</blockquote>
             {% endif %}

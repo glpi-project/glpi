@@ -181,3 +181,32 @@ test('Can translate a form with many inputs', async ({ page, profile, api }) => 
         { timeout: 30000 }
     );
 });
+
+test('Cannot save a translation before its content is loaded', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const form_translation = new FormTranslationPage(page);
+
+    const form_id = await api.createItem('Glpi\\Form\\Form', {
+        name: `Test lazy load - ${randomUUID()}`,
+        entities_id: getWorkerEntityId(),
+    });
+    await form_translation.goto(form_id);
+
+    // Hold the lazy loaded translation rows until the button state is checked
+    let release_content!: () => void;
+    const content_released = new Promise<void>((resolve) => { release_content = resolve; });
+    await page.route(`**/Form/Translation/${form_id}/fr_FR`, async (route) => {
+        if (route.request().method() === 'GET') {
+            await content_released;
+        }
+        await route.continue();
+    });
+
+    await form_translation.addLanguage('Français');
+    await expect(page.getByRole('dialog', { name: 'Form translations: Français' })).toBeVisible();
+    await expect(form_translation.save_translation_button).toBeDisabled();
+
+    release_content();
+    await form_translation.expectLanguageDropdownOpened('Français');
+    await expect(form_translation.save_translation_button).toBeEnabled();
+});

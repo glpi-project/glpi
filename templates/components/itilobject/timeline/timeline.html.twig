@@ -34,6 +34,10 @@
 {% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 
 <div class="itil-timeline d-flex flex-column align-items-start mb-auto {{ is_helpdesk ? "px-3 py-2" : '' }}">
+    {% if is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/satisfaction_survey.html.twig') }}
+    {% endif %}
+
     {% if not is_timeline_reversed %}
         {{ include('components/itilobject/timeline/main_description.html.twig') }}
     {% else %}
@@ -123,7 +127,7 @@
                      class="form-check-input task-state-checkbox"
                      aria-label="{{ __('To do') }}"
                      title="{{ __('To do') }}"
-                     {% if can_edit_i %}
+                     {% if entry_i['can_change_state'] ?? can_edit_i %}
                         onclick="change_task_state({{ entry_i['id']|json_encode|raw }}, this)"
                      {% else %}
                         disabled
@@ -136,7 +140,7 @@
                      aria-label="{{ __('Done') }}"
                      title="{{ __('Done') }}"
                      checked
-                     {% if can_edit_i %}
+                     {% if entry_i['can_change_state'] ?? can_edit_i %}
                         onclick="change_task_state({{ entry_i['id']|json_encode|raw }}, this)"
                      {% else %}
                         disabled
@@ -240,18 +244,7 @@
     {% if not is_timeline_reversed %}
         {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
         {{ include('components/itilobject/answer.html.twig') }}
-    {% endif %}
-
-    {% if survey is defined and survey %}
-        <form
-            data-testid="survey"
-            class="mt-5 w-100 hide-form-button-separator"
-            method="POST"
-            action="{{ get_class(survey)|itemtype_form_path }}"
-        >
-            <div>
-                {{ survey.showSatisfactionForm(item, false) }}
-        {# showSatisfactionForm closes the extra div and form tag by itself... #}
+        {{ include('components/itilobject/timeline/satisfaction_survey.html.twig') }}
     {% endif %}
 </div>
 

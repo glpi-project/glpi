@@ -71,7 +71,12 @@ class Agent extends CommonDBTM
     public static string $rightname = 'agent';
     //static $rightname = 'inventory';
 
-    private static bool $found_address = false;
+    /**
+     * Addresses that successfully answered, indexed by agent ID.
+     *
+     * @var array<int, string>
+     */
+    private static array $found_addresses = [];
 
     public array $history_blacklist = ['last_contact'];
 
@@ -684,8 +689,9 @@ class Agent extends CommonDBTM
      */
     public function requestAgent($endpoint): ResponseInterface
     {
-        if (self::$found_address !== false) {
-            $addresses = [self::$found_address];
+        $agents_id = (int) $this->getID();
+        if (isset(self::$found_addresses[$agents_id])) {
+            $addresses = [self::$found_addresses[$agents_id]];
         } else {
             $addresses = $this->getAgentURLs();
         }
@@ -701,7 +707,7 @@ class Agent extends CommonDBTM
                     ]
                 );
                 $response = $httpClient->get($endpoint, []);
-                self::$found_address = $address;
+                self::$found_addresses[$agents_id] = $address;
                 break;
             } catch (ExceptionInterface $exception) {
                 // many addresses will be incorrect

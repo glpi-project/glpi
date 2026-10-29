@@ -913,6 +913,10 @@ var templateSelection = function (selection) {
     }
     var _elt = $('<span></span>');
     _elt.html(_.escape(text));
+
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    selection.title = '\u2068' + text + '\u2069';
+
     return _elt;
 };
 
@@ -989,6 +993,9 @@ var templateItilStatus = function(option) {
             break;
     }
 
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
+
     return $(`<span><i class="itilstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
@@ -1013,6 +1020,9 @@ var templateValidation = function(option) {
             break;
     }
 
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
+
     return $(`<span><i class="validationstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
@@ -1029,6 +1039,9 @@ var templateItilPriority = function(option) {
     if (priority_color.length > 0) {
         color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}' aria-hidden='true'></i>`;
     }
+
+    // Fix tooltip RTL rendering issue by using First Strong Isolate
+    option.title = '\u2068' + option.text + '\u2069';
 
     return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
 };

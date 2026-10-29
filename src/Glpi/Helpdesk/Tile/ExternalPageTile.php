@@ -39,6 +39,7 @@ use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Session\SessionInfo;
+use Glpi\Toolbox\URL;
 use Glpi\UI\IllustrationManager;
 use Override;
 
@@ -90,7 +91,7 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
     #[Override]
     public function getTileUrl(): string
     {
-        return $this->fields['url'] ?? "";
+        return URL::sanitizeURL($this->fields['url'] ?? '');
     }
 
     #[Override]

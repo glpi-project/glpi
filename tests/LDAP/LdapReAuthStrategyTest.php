@@ -288,7 +288,7 @@ class LdapReAuthStrategyTest extends DbTestCase
         $strategy = new LdapReAuthStrategy();
 
         // --- act + assert ---
-        $this->assertSame('pages/reauth/ldap_form.html.twig', $strategy->getPromptTemplate());
+        $this->assertSame('pages/reauth/password_form.html.twig', $strategy->getPromptTemplate());
         $this->assertSame(50, $strategy->getPriority());
         $this->assertNotEmpty($strategy->getLabel());
     }

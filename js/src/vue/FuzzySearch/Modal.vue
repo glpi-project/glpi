@@ -18,7 +18,7 @@
             pre: '<b>',
             post: '</b>',
             extract: (el) => {
-                return el.title;
+                return _.escape(el.title);
             }
         });
     });

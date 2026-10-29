@@ -35,7 +35,7 @@ import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { Config } from '../utils/Config';
 import { JSDOM } from 'jsdom';
-import { Constants } from '../utils/Constants';
+import { getWorkerLogin } from '../utils/WorkerEntities';
 import { ProfileSwitcher } from '../utils/ProfileSwitcher';
 import { WorkerSessionCache } from '../utils/WorkerSessionCache';
 import { Api } from '../utils/Api';
@@ -128,13 +128,7 @@ export const test = baseTest.extend<{
         }
 
         // Map id to expected playwright worker login
-        const worker_prefix = Constants.E2E_WORKER_PREFIX;
-        const worker_index = id + 1;
-        const worker_index_string = worker_index > 10
-            ? worker_index.toString()
-            : `0${worker_index.toString()}` // Pad numbers < 10
-        ;
-        const worker_login = worker_prefix + worker_index_string;
+        const worker_login = getWorkerLogin();
 
         // Send login request
         await context.post(`${Config.getBaseUrl()}/front/login.php`, {
@@ -143,6 +137,26 @@ export const test = baseTest.extend<{
                 [password_field_name]  : `${worker_login}`,
             }
         });
+
+        // Make sure the login succeeded: an anonymous session would otherwise
+        // be stored and every test of this worker would fail later with an
+        // unrelated HTTP 401.
+        // An authenticated session renders the central page, an anonymous one
+        // is redirected to the login page.
+        response = await context.get(`${Config.getBaseUrl()}/front/central.php`, {
+            maxRedirects: 0,
+        });
+        if (response.status() !== 200) {
+            await context.dispose();
+            throw new Error(
+                `Unable to log in as "${worker_login}" (worker ${id + 1}, `
+                + `HTTP ${response.status()} on the central page). `
+                + `The e2e database only contains 16 worker `
+                + `accounts (see \`PLAYWRIGHT_MAX_WORKERS\` in \`install/empty_data.php\`): `
+                + `run the tests with fewer workers, or increase this constant and `
+                + `reinstall the e2e database with \`make e2e-db-install\`.`
+            );
+        }
 
         // Store session
         await context.storageState({ path: file_name });

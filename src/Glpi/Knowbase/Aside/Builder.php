@@ -36,6 +36,7 @@ namespace Glpi\Knowbase\Aside;
 
 use KnowbaseItem;
 use KnowbaseItem_KnowbaseItem;
+use KnowbaseItemTranslation;
 
 /**
  * Builds the aside article tree from the set of articles the current user
@@ -78,6 +79,24 @@ final class Builder
     private bool $hierarchy_loaded = false;
 
     public function __construct(private readonly int $current_id = 0) {}
+
+    /**
+     * `LIST_COLUMNS`, plus the reader's translated title when
+     * `KnowbaseItem::getListRequest()` joined the translations.
+     *
+     * @param array<string, mixed> $criteria A `KnowbaseItem::getListRequest()` result
+     *
+     * @return string[]
+     */
+    public static function getListColumns(array $criteria): array
+    {
+        $columns = self::LIST_COLUMNS;
+        if (isset($criteria['LEFT JOIN'][KnowbaseItemTranslation::getTable()])) {
+            $columns[] = KnowbaseItemTranslation::getTableField('name') . ' AS transname';
+        }
+
+        return $columns;
+    }
 
     public function buildTree(): Tree
     {
@@ -149,7 +168,7 @@ final class Builder
 
         // 1) All articles the current user may see (visibility applied).
         $criteria = KnowbaseItem::getListRequest([], 'browse');
-        $criteria['SELECT'] = self::LIST_COLUMNS;
+        $criteria['SELECT'] = self::getListColumns($criteria);
         foreach ($DB->request($criteria) as $row) {
             $this->data[(int) $row['id']] = $row;
         }
@@ -304,7 +323,7 @@ final class Builder
 
         $article = new Article(
             id: $id,
-            title: $row['name'] ?? '',
+            title: ($row['transname'] ?? '') !== '' ? (string) $row['transname'] : ($row['name'] ?? ''),
             illustration: $row['illustration'] ?? '',
             link: KnowbaseItem::getFormURLWithID($id),
             is_current: $this->current_id > 0 && $id === $this->current_id,

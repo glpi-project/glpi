@@ -41,6 +41,7 @@ use Calendar;
 use Cartridge;
 use Change;
 use ChangeSatisfaction;
+use ChangeValidation;
 use CommonDBTM;
 use CommonITILObject;
 use CommonITILTask;
@@ -983,6 +984,13 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     } else {
                         $criteria['OR'][] = new QueryExpression('false');
+                    }
+
+                    if (
+                        $itemtype === Change::class
+                        && Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())
+                    ) {
+                        $criteria['OR'][] = ChangeValidation::getTargetCriteriaForUser((int) Session::getLoginUserID());
                     }
                 }
                 break;
@@ -2716,6 +2724,22 @@ final class SQLProvider implements SearchProviderInterface
                                 $searchopt[8]['joinparams']['beforejoin']['joinparams']
                             ));
                         }
+                    }
+
+                    if (
+                        $itemtype === Change::class
+                        && Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())
+                    ) {
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
+                            $itemtype,
+                            $ref_table,
+                            $already_link_tables,
+                            "glpi_changevalidations",
+                            "changevalidations_id",
+                            false,
+                            '',
+                            $searchopt[58]['joinparams']['beforejoin']['joinparams']
+                        ));
                     }
                 }
                 break;
@@ -5039,11 +5063,9 @@ final class SQLProvider implements SearchProviderInterface
         //// 7 - Manage GROUP BY
         $GROUPBY = "";
         // Meta Search / Search All / Count tickets
-        $criteria_with_meta = array_filter($data['search']['criteria'], fn($criterion) => isset($criterion['meta'])
-            && $criterion['meta']);
         if (
             (count($data['search']['metacriteria']))
-            || count($criteria_with_meta)
+            || !empty($data['meta_toview'])
             || !empty($HAVING)
             || $data['search']['all_search']
         ) {
@@ -7272,7 +7294,7 @@ final class SQLProvider implements SearchProviderInterface
                             ($ticket_status == Ticket::SOLVED)
                             || ($ticket_status == Ticket::CLOSED)
                         ) {
-                            $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                            $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                             continue;
                         }
 
@@ -7280,7 +7302,7 @@ final class SQLProvider implements SearchProviderInterface
                         // - ola completed (end_time is set)
                         // - search option without progress bar
                         if ($ola_end_time || in_array($orig_id, [180, 185])) {
-                            $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                            $out .= htmlescape($ola_name) . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                             continue;
                         }
 

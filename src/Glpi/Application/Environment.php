@@ -40,6 +40,7 @@ use GLPINetwork;
 use Planning;
 use Psr\Log\LogLevel;
 use RSSFeed;
+use Toolbox;
 use UnexpectedValueException;
 use Webhook;
 
@@ -262,25 +263,24 @@ enum Environment: string
         };
     }
 
+    /**
+     * @deprecated 11.0.12
+     */
     public function shouldAddExtraE2EDataDuringInstallation(): bool
     {
-        return
-            $this->shouldAddExtraCypressDataDuringInstallation()
-            || $this->shouldAddExtraPlaywrightDataDuringInstallation()
-        ;
+        Toolbox::deprecated('Use `Environment::shouldAddExtraPlaywrightDataDuringInstallation()` instead.');
+
+        return $this->shouldAddExtraPlaywrightDataDuringInstallation();
     }
 
+    /**
+     * @deprecated 11.0.12
+     */
     public function shouldAddExtraCypressDataDuringInstallation(): bool
     {
-        // Note: this data was added for the Cypress tests, which were replaced
-        // by the Playwright tests. It can't be removed yet because some PHPUnit
-        // tests use it.
-        // TODO: update these PHPUnit tests so they create their own data, then
-        // remove this method.
-        return match ($this) {
-            default       => false,
-            self::TESTING => true,
-        };
+        Toolbox::deprecated('The Cypress data is no longer added during installation.');
+
+        return false;
     }
 
     public function shouldAddExtraPlaywrightDataDuringInstallation(): bool

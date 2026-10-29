@@ -38,6 +38,7 @@ use Appliance;
 use Appliance_Item;
 use Change;
 use CommonDBTM;
+use CommonITILActor;
 use Computer;
 use DBConnection;
 use Document;
@@ -52,11 +53,14 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
+use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
 use Group_User;
+use ITILFollowup;
 use Location;
 use Peripheral;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -64,10 +68,13 @@ use Problem;
 use Psr\Log\LogLevel;
 use Session;
 use Software;
+use Supplier;
+use Supplier_Ticket;
 use TaskCategory;
 use Ticket;
 use User;
 
+use function Safe\json_encode;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
@@ -281,6 +288,82 @@ class SearchTest extends DbTestCase
             1,
             substr_count($data['sql']['search'], '`ITEM_Software_160`')
         );
+    }
+
+    public function testNestedMetaCriteria(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+
+        // Followup on a ticket that has the supplier assigned
+        $ticket_with_supplier = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $this->createItem(Supplier_Ticket::class, [
+            'tickets_id'   => $ticket_with_supplier->getID(),
+            'suppliers_id' => $supplier->getID(),
+            'type'         => CommonITILActor::ASSIGN,
+        ]);
+        $followup_with_supplier = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_with_supplier->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        // Followup on a ticket that has no supplier assigned
+        $ticket_without_supplier = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $entity_id,
+        ]);
+        $followup_without_supplier = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_without_supplier->getID(),
+            'content'  => __FUNCTION__,
+        ]);
+
+        // Meta criterion inside a nested group, as built by `FilterableTrait::itemMatchFilter()`
+        $search_followup = static fn(ITILFollowup $followup): array => SearchEngine::getData(ITILFollowup::class, [
+            'criteria' => [
+                [
+                    'link'     => 'AND',
+                    'criteria' => [
+                        [
+                            'link'       => 'AND',
+                            'itemtype'   => Ticket::class,
+                            'meta'       => true,
+                            'field'      => 6, // Assigned to a supplier
+                            'searchtype' => 'equals',
+                            'value'      => $supplier->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => 7, // ID
+                    'searchtype' => 'contains',
+                    'value'      => $followup->getID(),
+                ],
+            ],
+        ]);
+
+        // The meta criterion adds an aggregated column, so a GROUP BY is required
+        // to avoid a single row full of NULL values when nothing matches
+        $data = $search_followup($followup_without_supplier);
+        $this->assertStringContainsString('GROUP BY', $data['sql']['raw']['GROUPBY']);
+        $this->assertSame(0, $data['data']['totalcount']);
+
+        $data = $search_followup($followup_with_supplier);
+        $this->assertStringContainsString('GROUP BY', $data['sql']['raw']['GROUPBY']);
+        $this->assertSame(1, $data['data']['totalcount']);
+        $this->assertEquals($followup_with_supplier->getID(), $data['data']['rows'][0]['id']);
     }
 
     public function testMetaToviewNotLeakedAcrossIndependentCalls()
@@ -2610,9 +2693,9 @@ class SearchTest extends DbTestCase
 
         // update the right of tech profile
         // to have only the right of display their own tickets and tickets with incoming status
-        \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+        Session::callAsSystem(fn() => \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
             Ticket::class => (Ticket::READMY + Ticket::READNEWTICKET),
-        ]);
+        ]));
 
         // reload current profile to take into account the new rights
         $this->login('tech', 'tech');
@@ -3516,7 +3599,7 @@ class SearchTest extends DbTestCase
             ]);
             $this->assertGreaterThan(0, $tickets_id);
             $actors = $ticket->getITILActors();
-            $this->assertEquals(\CommonITILActor::OBSERVER, $actors[$params['observer']][0]);
+            $this->assertEquals(CommonITILActor::OBSERVER, $actors[$params['observer']][0]);
         }
 
         return [
@@ -6278,7 +6361,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    public static function provideCriteriaWithSubqueries(): iterable
+    private static function provideCriteriaWithSubqueries(): iterable
     {
         $category   = fn() => getItemByTypeName('ITILCategory', 'Test Criteria With Subqueries', true);
         $group_1    = fn() => getItemByTypeName('Group', 'Group 1', true);
@@ -6981,45 +7064,55 @@ class SearchTest extends DbTestCase
         ]);
     }
 
-    #[DataProvider('provideCriteriaWithSubqueries')]
-    public function testCriteriaWithSubqueries(
-        string $itemtype,
-        array $criteria,
-        array $expected
-    ): void {
-        // Init datas
+    public function testCriteriaWithSubqueries(): void
+    {
+        // Init datas once for all cases, as creating them is far more expensive than the searches
         $this->provideCriteriaWithSubqueries_Dataset();
 
-        // Process closure values
-        array_walk_recursive($criteria, function (&$value) {
-            if (is_callable($value)) {
-                $value = $value();
+        $case = 0;
+        foreach (self::provideCriteriaWithSubqueries() as ['itemtype' => $itemtype, 'criteria' => $criteria, 'expected' => $expected]) {
+            $case++;
+
+            // Process closure values
+            array_walk_recursive($criteria, function (&$value) {
+                if (is_callable($value)) {
+                    $value = $value();
+                }
+            });
+
+            // Run search
+            $data = \Search::getDatas($itemtype, [
+                'criteria' => $criteria,
+            ]);
+
+            // Parse results
+            $names = [];
+            foreach ($data['data']['rows'] as $row) {
+                // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
+                $n = $row['raw']["ITEM_{$itemtype}_1"];
+                $names[] = explode('$#$', $n)[0];
             }
-        });
 
-        // Run search
-        $data = \Search::getDatas($itemtype, [
-            'criteria' => $criteria,
-        ]);
+            // Sort both array for comparison
+            sort($names);
+            sort($expected);
 
-        // Parse results
-        $names = [];
-        foreach ($data['data']['rows'] as $row) {
-            // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
-            $n = $row['raw']["ITEM_{$itemtype}_1"];
-            $names[] = explode('$#$', $n)[0];
+            // Validate results
+            $this->assertEquals(
+                $expected,
+                $names,
+                sprintf(
+                    "Search query failed for case #%d (%s).\nCriteria: %s\nRaw SQL WHERE clause: %s",
+                    $case,
+                    $itemtype,
+                    json_encode($criteria, JSON_PRETTY_PRINT),
+                    $data['sql']['raw']['WHERE'] ?? 'N/A'
+                )
+            );
         }
 
-        // Sort both array for comparison
-        sort($names);
-        sort($expected);
-
-        // Validate results
-        $this->assertEquals(
-            $expected,
-            $names,
-            "Search query failed. Raw SQL WHERE clause: " . ($data['sql']['raw']['WHERE'] ?? 'N/A')
-        );
+        // Make sure the provider was not silently emptied
+        $this->assertGreaterThan(0, $case);
     }
 
     /**

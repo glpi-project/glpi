@@ -34,8 +34,10 @@
 
 namespace test\units;
 
+use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
 use Glpi\Tests\DbTestCase;
@@ -44,6 +46,7 @@ use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_User;
+use KnowbaseItemTranslation;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
@@ -1320,6 +1323,47 @@ HTML,
         $this->assertNotContains($grandchild->getID(), $ids);
     }
 
+    /**
+     * The aside already loads every visible article: the tab must only check its candidates.
+     */
+    public function testSubArticlesTabDoesNotLoadEveryVisibleArticle(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . '_parent',
+            'answer' => __FUNCTION__ . '_parent',
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_child',
+            'answer'   => __FUNCTION__ . '_child',
+            '_parents' => [$parent->getID()],
+        ]);
+
+        // SQL queries are only recorded in debug mode.
+        $use_mode = $_SESSION['glpi_use_mode'];
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+        try {
+            $before   = count(DebugProfile::getCurrent()->getDebugInfo()['sql']['queries']);
+            $children = $this->callPrivateMethod($parent, 'getChildArticlesInfo');
+            $queries  = array_slice(DebugProfile::getCurrent()->getDebugInfo()['sql']['queries'], $before);
+        } finally {
+            $_SESSION['glpi_use_mode'] = $use_mode;
+        }
+
+        $this->assertSame([$child->getID()], array_column($children, 'id'));
+
+        // The browse list request is the only one grouped by article.
+        $list_queries = array_filter(
+            array_column($queries, 'raw_query'),
+            static fn(string $query): bool => str_contains($query, 'GROUP BY `glpi_knowbaseitems`.`id`')
+        );
+        $this->assertNotEmpty($list_queries);
+        foreach ($list_queries as $query) {
+            $this->assertMatchesRegularExpression('/`glpi_knowbaseitems`\.`id` IN \(\?/', $query);
+        }
+    }
+
     public static function helpdeskHiddenKnowbaseRightsProvider(): iterable
     {
         yield 'READ' => [READ];
@@ -1748,16 +1792,22 @@ HTML,
         yield ['articles' => []];
 
         // Second FAQ test case: public FAQ enabled + multi entities
-        $_SESSION['glpi_multientitiesmode'] = 1;
         $CFG_GLPI['use_public_faq'] = true;
         yield ['articles' => ['FAQ 2']];
 
         // Third FAQ test case: public FAQ enabled + single entity
-        $_SESSION['glpi_multientitiesmode'] = 0;
+        // The anonymous mode is read from the DB, so remove the child entities for this case.
+        $entities = iterator_to_array($DB->request([
+            'FROM'  => Entity::getTable(),
+            'WHERE' => ['id' => ['>', 0]],
+        ]));
+        $DB->delete(Entity::getTable(), ['id' => ['>', 0]]);
         yield ['articles' => ['FAQ 1', 'FAQ 2']];
 
-        // Revert session / config
-        $_SESSION['glpi_multientitiesmode'] = 1;
+        // Revert entities / config
+        foreach ($entities as $entity) {
+            $DB->insert(Entity::getTable(), $entity);
+        }
         $CFG_GLPI['use_public_faq'] = false;
     }
 
@@ -1934,7 +1984,7 @@ HTML,
         ]);
 
         // Target entity
-        $entity = new \Entity();
+        $entity = new Entity();
         $faq_entity1 = (int) $entity->add([
             'name' => 'FAQ 1 entity',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
@@ -2442,7 +2492,7 @@ HTML,
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $entity->getFromDBByCrit(['name' => '_test_root_entity']);
 
         $date = date('Y-m-d H:i:s');
@@ -2460,7 +2510,7 @@ HTML,
         );
 
         //add target
-        $tentity = new \Entity();
+        $tentity = new Entity();
         $this->assertGreaterThan(
             0,
             $eid = $tentity->add([
@@ -3213,6 +3263,37 @@ HTML,
             $ids[] = (int) $row['id'];
         }
         return $ids;
+    }
+
+    /**
+     * Once a translation exists, the browse list is sorted on the title the
+     * reader sees: the translation in their language, else the original name.
+     */
+    public function testBrowseListIsSortedOnTheTranslatedTitle(): void
+    {
+        $this->login();
+
+        $charlie = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' Charlie',
+            'answer' => 'Charlie',
+        ]);
+        $bravo = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' Bravo',
+            'answer' => 'Bravo',
+        ]);
+        $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $charlie->getID(),
+            'language'         => $_SESSION['glpilanguage'],
+            'name'             => __FUNCTION__ . ' Alpha',
+            'answer'           => 'Alpha',
+        ]);
+
+        $ids = array_values(array_intersect(
+            $this->listBrowseIds(),
+            [$charlie->getID(), $bravo->getID()]
+        ));
+
+        $this->assertSame([$charlie->getID(), $bravo->getID()], $ids);
     }
 
     /**
@@ -4270,6 +4351,67 @@ HTML,
         }
     }
 
+    public function testDirectAccessHonoursThePublicationWindow(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $articles = [];
+        foreach (
+            [
+                'expired' => [null, '-1 day'],
+                'future'  => ['+1 day', null],
+                'current' => ['-1 day', '+1 day'],
+            ] as $key => [$begin, $end]
+        ) {
+            $articles[$key] = $this->createItem(KnowbaseItem::class, [
+                'name'       => __FUNCTION__ . '_' . $key,
+                'answer'     => '<p>Text</p>',
+                'is_faq'     => 1,
+                'users_id'   => getItemByTypeName(User::class, 'glpi', true),
+                'begin_date' => $begin === null ? null : date('Y-m-d H:i:s', strtotime($begin)),
+                'end_date'   => $end === null ? null : date('Y-m-d H:i:s', strtotime($end)),
+            ]);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $articles[$key]->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        // Fresh objects: `can()` does not reload the entity links added after `createItem()`.
+        // KB admin keeps access to manage scheduled and expired articles.
+        foreach ($articles as $article) {
+            $this->assertTrue((new KnowbaseItem())->can($article->getID(), READ));
+        }
+
+        $expected = ['expired' => false, 'future' => false, 'current' => true];
+
+        // A reader who is neither admin nor author gets the dates.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+
+        // An editor of the FAQ keeps access.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::PUBLISHFAQ;
+        foreach ($articles as $article) {
+            $this->assertTrue((new KnowbaseItem())->can($article->getID(), READ));
+        }
+
+        $this->login('post-only', 'postonly');
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = 1;
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+    }
+
     /**
      * Those endpoints all 403 outside the central interface, right or no right.
      */
@@ -4437,22 +4579,19 @@ HTML,
      */
     public function testRootArticleIsListedForAnonymousFaqReaders(): void
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         $root_id = KnowbaseItem::getRootId();
-        $multi_entities_mode = $_SESSION['glpi_multientitiesmode'] ?? 1;
 
         $this->logOut();
         $CFG_GLPI['use_public_faq'] = true;
 
         try {
-            $_SESSION['glpi_multientitiesmode'] = 1;
             $this->assertContains($root_id, $this->getBrowseListRequestIds());
 
-            $_SESSION['glpi_multientitiesmode'] = 0;
+            $DB->delete(Entity::getTable(), ['id' => ['>', 0]]);
             $this->assertContains($root_id, $this->getBrowseListRequestIds());
         } finally {
-            $_SESSION['glpi_multientitiesmode'] = $multi_entities_mode;
             $CFG_GLPI['use_public_faq'] = false;
         }
     }
@@ -4498,5 +4637,57 @@ HTML,
         $id = $kb->add(['name' => 'Article', 'answer' => 'Answer', 'is_faq' => 1]);
         $this->assertTrue($kb->getFromDB($id));
         $this->assertSame(0, $kb->fields['is_faq']);
+    }
+
+    public function testCreateUnderUneditableParentIsDenied(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Readable, not editable',
+            'answer'      => '',
+            'entities_id' => Session::getActiveEntity(),
+        ]);
+        $input = [
+            'name'        => 'Child',
+            'entities_id' => Session::getActiveEntity(),
+            '_parents'    => [$parent->getID()],
+        ];
+        $this->assertTrue((new KnowbaseItem())->can(-1, CREATE, $input));
+
+        // can() with the input is what the legacy API calls.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE;
+        $this->assertFalse((new KnowbaseItem())->can(-1, CREATE, $input));
+
+        $input['_parents'] = [KnowbaseItem::getRootId()];
+        $this->assertTrue((new KnowbaseItem())->can(-1, CREATE, $input));
+    }
+
+    public function testCloneUnderUneditableParentIsDenied(): void
+    {
+        $this->login();
+        // A FAQ article by someone else: not editable without PUBLISHFAQ.
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'FAQ parent',
+            'answer'      => '',
+            'is_faq'      => 1,
+            'users_id'    => getItemByTypeName(User::class, 'tech', true),
+            'entities_id' => Session::getActiveEntity(),
+        ]);
+        $source = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Source',
+            'answer'      => '',
+            'entities_id' => Session::getActiveEntity(),
+            '_parents'    => [$parent->getID()],
+        ]);
+
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE | UPDATE;
+        $this->assertFalse((new KnowbaseItem())->can($parent->getID(), UPDATE));
+
+        $this->assertTrue($source->getFromDB($source->getID()));
+        $this->assertFalse($source->clone());
+        $this->hasSessionMessages(ERROR, ["You don&#039;t have permission to perform this action."]);
+        $this->assertSame(1, countElementsInTable(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id_parent' => $parent->getID(),
+        ]));
     }
 }

@@ -78,6 +78,22 @@ final class ShareableAccessTest extends DbTestCase
         $this->assertTrue($item->can($kb->getID(), READ));
     }
 
+    public function testSharedAccessGrantsReadWithoutKnowbaseRight(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
+
+        $manager = new ShareTokenManager();
+        $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->can($kb->getID(), READ));
+    }
+
     public function testSharedAccessDoesNotGrantUpdate(): void
     {
         $this->login();

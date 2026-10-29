@@ -412,10 +412,13 @@ class ObjectLock extends CommonDBTM
                     </span>
 TWIG;
 
+                // Values are null when the item is not locked (no matching lock row)
+                $is_locked = ($values['id'] ?? 0) > 0;
+
                 return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
-                    'is_locked'       => $values['id'] > 0,
-                    'user_name'       => getUserName($values['users_id']),
-                    'date'            => $values['date'],
+                    'is_locked'       => $is_locked,
+                    'user_name'       => $is_locked ? getUserName($values['users_id']) : '',
+                    'date'            => $values['date'] ?? '',
                     'locked_label'    => __('Locked'),
                     'free_label'      => __('Free'),
                     'locked_by_label' => __('Locked by %s at %s'),

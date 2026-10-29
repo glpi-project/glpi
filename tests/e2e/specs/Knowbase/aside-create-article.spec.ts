@@ -33,6 +33,7 @@
 import { randomUUID } from 'crypto';
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
+import { LoginPage } from '../../pages/LoginPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
@@ -288,4 +289,40 @@ test('the inline input survives the lazy load of a folded article\'s children', 
     await inline_input.press('Enter');
     await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
     await expect(page.getByTestId('subject')).toHaveText(article_title);
+});
+
+test('without the update right, the "+" is only offered on the root article', async ({ anonymousPage, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+
+    const unique = randomUUID().slice(0, 8);
+    const login = `e2e_kb_creator_${unique}`;
+
+    const profile_id = await api.createItem('Profile', {
+        name: `E2E KB creator ${unique}`,
+        interface: 'central',
+        knowbase: 1 | 4,
+    });
+    await api.createItem('User', {
+        name: login,
+        password: login,
+        password2: login,
+        _profiles_id: profile_id,
+        _entities_id: getWorkerEntityId(),
+        _is_recursive: 1,
+    });
+
+    const parent_id = await api.knowbase.createArticle({ name: `E2E Not Editable Parent ${unique}` });
+    await api.knowbase.addEntityVisibility(parent_id, getWorkerEntityId(), true);
+
+    const login_page = new LoginPage(anonymousPage);
+    await login_page.goto();
+    await login_page.doLogin(login, login);
+
+    const kb = new KnowbaseItemPage(anonymousPage);
+    await kb.goto(parent_id);
+    await kb.waitForAsideReady();
+
+    await kb.doRevealAsideCategoryAddButton('Home');
+    await expect(kb.getAsideTreeArticleRow(parent_id)).toBeVisible();
+    await expect(kb.getAsideArticleAddChildTrigger(parent_id)).toHaveCount(0);
 });

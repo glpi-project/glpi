@@ -35,9 +35,13 @@
 namespace tests\units;
 
 use Computer;
+use Entity;
 use FieldUnicity;
 use Glpi\Tests\DbTestCase;
+use Location;
+use Manufacturer;
 use PHPUnit\Framework\Attributes\DataProvider;
+use State;
 
 class FieldUnicityTest extends DbTestCase
 {
@@ -147,5 +151,88 @@ class FieldUnicityTest extends DbTestCase
         if (count($errors) > 0) {
             $this->hasSessionMessages(ERROR, $errors);
         }
+    }
+
+    public function testDropdownFieldsIncludesForeignKeys(): void
+    {
+        $this->login();
+
+        $html = FieldUnicity::dropdownFields(Computer::class, ['display' => false]);
+        $this->assertStringContainsString("value='serial'", $html);
+        $this->assertStringContainsString("value='manufacturers_id'", $html);
+        $this->assertStringContainsString("value='computermodels_id'", $html);
+        $this->assertStringContainsString("value='users_id_tech'", $html);
+        $this->assertStringNotContainsString("value='entities_id'", $html);
+    }
+
+    public function testGetSpecificValueToDisplayWithForeignKeys(): void
+    {
+        $this->login();
+
+        $this->assertEquals(
+            'Serial number, Manufacturer, Model, Technician in charge',
+            FieldUnicity::getSpecificValueToDisplay('fields', [
+                'itemtype' => Computer::class,
+                'fields'   => 'serial,manufacturers_id,computermodels_id,users_id_tech',
+            ])
+        );
+    }
+
+    public static function foreignKeyUnicityProvider(): iterable
+    {
+        yield [Manufacturer::class, 'manufacturers_id', 'Manufacturer'];
+        // Location and State search options use 'completename' instead of 'name'
+        yield [Location::class, 'locations_id', 'Location'];
+        yield [State::class, 'states_id', 'Status'];
+    }
+
+    #[DataProvider('foreignKeyUnicityProvider')]
+    public function testCheckUnicityWithForeignKey(string $dropdown_class, string $field, string $label): void
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $this->createItem(FieldUnicity::class, [
+            'name'          => 'serial and dropdown uniqueness',
+            'itemtype'      => Computer::class,
+            '_fields'       => ['serial', $field],
+            'is_active'     => 1,
+            'action_refuse' => 1,
+            'entities_id'   => $entities_id,
+        ]);
+
+        $dropdown_1 = $this->createItem($dropdown_class, ['name' => __FUNCTION__ . '_1']);
+        $dropdown_2 = $this->createItem($dropdown_class, ['name' => __FUNCTION__ . '_2']);
+
+        $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__ . '_1',
+            'entities_id' => $entities_id,
+            'serial'      => 'SN-123',
+            $field        => $dropdown_1->getID(),
+        ]);
+
+        // Same serial number with another dropdown value is allowed
+        $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__ . '_2',
+            'entities_id' => $entities_id,
+            'serial'      => 'SN-123',
+            $field        => $dropdown_2->getID(),
+        ]);
+
+        $computer = new Computer();
+        $this->assertFalse($computer->add([
+            'name'        => __FUNCTION__ . '_3',
+            'entities_id' => $entities_id,
+            'serial'      => 'SN-123',
+            $field        => $dropdown_1->getID(),
+        ]));
+        $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? [];
+        $this->assertCount(1, $messages);
+        $this->assertStringContainsString(
+            'Impossible record for Serial number = SN-123 &amp; ' . $label . ' = ' . __FUNCTION__ . '_1<br>',
+            reset($messages)
+        );
+        unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
     }
 }

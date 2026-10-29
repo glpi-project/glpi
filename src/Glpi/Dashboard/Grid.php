@@ -1150,6 +1150,10 @@ HTML;
     {
         global $GLPI_CACHE;
 
+        if (\is_array($card_options['args'] ?? null)) {
+            $card_options['args'] = Item::cleanCardOptions($card_options['args']);
+        }
+
         $start = microtime(true);
 
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
@@ -1252,6 +1256,12 @@ HTML;
             if ($html === '') {
                 return $notfound_html;
             }
+        } catch (AccessDeniedHttpException $e) {
+            // Rights denial is not an application error, do not log it
+            $html = "<div class='empty-card card-warning '>
+         <i class='ti ti-lock' aria-hidden='true'></i>"
+         . \htmlescape($e->getMessageToDisplay() ?? __("You don't have permission to perform this action.")) . "
+      </div>";
         } catch (Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting

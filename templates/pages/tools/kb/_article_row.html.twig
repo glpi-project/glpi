@@ -41,7 +41,9 @@
 {% macro render_article(article, can_create = false, show_actions = false, favorite_state = null) %}
     {% import _self as macros %}
     {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
-    {% set is_node = article.hasChildren or can_create %}
+    {# A child makes the parent change: outside the root, the endpoint also requires UPDATE. #}
+    {% set can_add_child = can_create and (article.is_root or call('KnowbaseItem::canUpdate')) %}
+    {% set is_node = article.hasChildren or can_add_child %}
     <li
         data-glpi-kb-article-id="{{ article.id }}"
         {% if is_node %}
@@ -83,7 +85,7 @@
                 </span>
                 <span data-glpi-kb-article-title>{{ article.title }}</span>
             </a>
-            {% if can_create %}
+            {% if can_add_child %}
                 <button
                     type="button"
                     class="d-flex align-items-center ms-2 p-1 text-secondary border-0 bg-transparent"

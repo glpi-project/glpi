@@ -158,7 +158,7 @@ class ReAuthManagerTest extends DbTestCase
         $this->assertSame('value', $this->getReAuthManager()->getReplayData()['name']);
         // The GET query string of a POST request is preserved: browsers keep the action
         // URL's query string untouched on replay since the form data goes in the body.
-        $this->assertSame('https://glpi.example.org/front/user.form.php?id=2', $this->getReAuthManager()->getRequestedURL());
+        $this->assertSame('/front/user.form.php?id=2', $this->getReAuthManager()->getRequestedURL());
         // The replay carries the restore parameter, never the origin URL itself, whatever the
         // method: the referer is restored from the session on the replayed request.
         $replay_data = $this->getReAuthManager()->getReplayData();
@@ -181,12 +181,47 @@ class ReAuthManagerTest extends DbTestCase
         }
 
         // --- assert ---
-        $this->assertSame('https://glpi.example.org/front/user.form.php', $this->getReAuthManager()->getRequestedURL());
+        $this->assertSame('/front/user.form.php', $this->getReAuthManager()->getRequestedURL());
         // A GET replay carries the restore parameter instead of the origin URL itself: a
         // client-supplied _glpi_http_referer would drive where the user is redirected to.
         $replay_data = $this->getReAuthManager()->getReplayData();
         $this->assertArrayNotHasKey('_glpi_http_referer', $replay_data);
         $this->assertSame('1', $replay_data[ReAuthManager::RESTORE_REFERER_PARAM]);
+    }
+
+    /** Behind a TLS-terminating proxy, PHP sees HTTP: the stored URL must have no scheme. */
+    public function testRedirectToReauthStoresRootRelativeUrlBehindTlsProxy(): void
+    {
+        // --- arrange ---
+        $this->fakeWebContext(request_uri: '/front/user.php');
+        unset($_SERVER['HTTPS']);
+
+        // --- act ---
+        try {
+            $this->getReAuthManager()->redirectToReauth();
+            $this->fail('A RedirectException should have been thrown.');
+        } catch (RedirectException) {
+        }
+
+        // --- assert ---
+        $this->assertSame('/front/user.php', $this->getReAuthManager()->getRequestedURL());
+    }
+
+    /** A path starting with "//" must not be stored as a protocol-relative URL to another host. */
+    public function testRedirectToReauthCollapsesLeadingSlashes(): void
+    {
+        // --- arrange ---
+        $this->fakeWebContext(request_uri: '//front/user.php');
+
+        // --- act ---
+        try {
+            $this->getReAuthManager()->redirectToReauth();
+            $this->fail('A RedirectException should have been thrown.');
+        } catch (RedirectException) {
+        }
+
+        // --- assert ---
+        $this->assertSame('/front/user.php', $this->getReAuthManager()->getRequestedURL());
     }
 
     /**

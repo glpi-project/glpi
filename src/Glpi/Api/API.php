@@ -48,6 +48,7 @@ use CommonDevice;
 use CommonITILObject;
 use Contract;
 use Document;
+use Document_Item;
 use Dropdown;
 use Entity;
 use Glpi\Api\Deprecated\DeprecatedInterface;
@@ -918,6 +919,7 @@ abstract class API
                         'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
                     ];
                 }
+                $doc_criteria = [...$doc_criteria, ...Document_Item::getPrivacyRestrictionCriteria()];
                 $doc_iterator = $DB->request([
                     'SELECT'    => [
                         'glpi_documents_items.id AS assocID',
@@ -1013,8 +1015,12 @@ abstract class API
                     'glpi_changes_items.itemtype' => $itemtype,
                 ] + getEntitiesRestrictCriteria(Change::getTable());
                 $iterator = $DB->request($criteria);
+                $change = new Change();
                 foreach ($iterator as $data) {
-                    $fields['_changes'][] = $data;
+                    // Keep only the changes the user is allowed to see
+                    if ($change->getFromDB($data['id']) && $change->canViewItem()) {
+                        $fields['_changes'][] = $data;
+                    }
                 }
             }
         }

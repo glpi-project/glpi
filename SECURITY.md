@@ -34,7 +34,7 @@ Incomplete reports are returned once and **closed** if not completed within seve
 5. Working proof of concept.
 6. Impact and preconditions.
 7. AI disclosure: which tools, if any, you used to find or draft the report.
-8. A realistic estimated CVSS score
+8. A realistic estimated CVSS score, following the convention described in [Disclosure](#disclosure).
 
 Group related findings into a single report. Multiple instances of the same vulnerability class — for example XSS across different fields, or missing capability checks on related endpoints — belong in one submission, not several.
 
@@ -50,15 +50,25 @@ If you have a GitHub account, include your username so we can add you as observe
 
 | Version | Supported |
 | ------- | --------- |
+| 12.0.x  | ✔️        |
 | 11.0.x  | ✔️        |
-| 10.0.x  | ✔️        |
-| < 10.0  | ❌        |
+| < 11.0  | ❌        |
 
 Only the latest patch release of each supported branch is in scope. Reports against older patch versions are closed without review — please upgrade and verify the issue still exists before reporting.
 
 ## Disclosure
 
 Severity is assessed using CVSS v4.
+
+For the **Privileges Required (PR)** metric, GLPI uses the following convention:
+
+| Attacker privilege level                                          | PR   |
+|-------------------------------------------------------------------|------|
+| Unauthenticated                                                   | None |
+| Profile using the simplified interface (e.g. *Self-Service*)      | Low  |
+| Profile using the standard interface (e.g. *Technician*, *Admin*) | High |
+
+Reports scoring an attacker with a standard-interface profile as PR:L will be re-scored accordingly.
 
 Critical and High advisories are published one month after the fix release. All other advisories are published one week after the fix release.
 

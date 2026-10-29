@@ -80,7 +80,7 @@ enum AssociatedItemsFieldStrategy: string
             return false;
         }
 
-        if (!isset($value['items_id']) || !is_numeric($value['items_id'])) {
+        if (!isset($value['items_id']) || !is_numeric($value['items_id']) || $value['items_id'] <= 0) {
             return false;
         }
 
@@ -146,13 +146,7 @@ enum AssociatedItemsFieldStrategy: string
             return null;
         }
 
-        $values = $answer->getRawAnswer();
-
-        // $values must be a list of items
-        // We can have a single item, so we need to wrap it in a list
-        if (!array_is_list($values)) {
-            $values = [$values];
-        }
+        $values = $this->getItemsFromRawAnswer($answer->getRawAnswer());
 
         $values = array_filter($values, fn($value) => $this->isValidAnswer($value));
         if ($values === []) {
@@ -172,13 +166,7 @@ enum AssociatedItemsFieldStrategy: string
         }
 
         $answer = end($valid_answers);
-        $values = $answer->getRawAnswer();
-
-        // $values must be a list of items
-        // We can have a single item, so we need to wrap it in a list
-        if (!array_is_list($values)) {
-            $values = [$values];
-        }
+        $values = $this->getItemsFromRawAnswer($answer->getRawAnswer());
 
         if ($values === []) {
             return null;
@@ -197,17 +185,7 @@ enum AssociatedItemsFieldStrategy: string
         }
 
         $all_items = array_merge(...array_map(
-            function ($answer) {
-                $raw_answer = $answer->getRawAnswer();
-
-                // $raw_answer must be a list of items
-                // We can have a single item, so we need to wrap it in a list
-                if (!array_is_list($raw_answer)) {
-                    $raw_answer = [$raw_answer];
-                }
-
-                return $raw_answer;
-            },
+            fn($answer) => $this->getItemsFromRawAnswer($answer->getRawAnswer()),
             $valid_answers
         ));
 
@@ -224,21 +202,37 @@ enum AssociatedItemsFieldStrategy: string
                 QuestionTypeItem::class,
                 QuestionTypeUserDevice::class,
             ]),
-            function ($answer) {
-                $raw_answer = $answer->getRawAnswer();
-
-                // $raw_answer must be a list of items
-                // We can have a single item, so we need to wrap it in a list
-                if (!array_is_list($raw_answer)) {
-                    $raw_answer = [$raw_answer];
-                }
-
-                return array_reduce(
-                    $raw_answer,
-                    fn($carry, $value) => $carry || $this->isValidAnswer($value),
-                    false
-                );
-            }
+            fn($answer) => array_reduce(
+                $this->getItemsFromRawAnswer($answer->getRawAnswer()),
+                fn($carry, $value) => $carry || $this->isValidAnswer($value),
+                false
+            )
         );
+    }
+
+    /**
+     * @param array<mixed> $raw_answer
+     * @return array<mixed>
+     */
+    private function getItemsFromRawAnswer(array $raw_answer): array
+    {
+        // Item questions store the selected ids in items_ids (single value or list)
+        if (isset($raw_answer['items_ids'])) {
+            return array_map(
+                fn($items_id) => [
+                    'itemtype' => $raw_answer['itemtype'] ?? null,
+                    'items_id' => $items_id,
+                ],
+                array_values((array) $raw_answer['items_ids'])
+            );
+        }
+
+        // $raw_answer must be a list of items
+        // We can have a single item, so we need to wrap it in a list
+        if (!array_is_list($raw_answer)) {
+            $raw_answer = [$raw_answer];
+        }
+
+        return $raw_answer;
     }
 }

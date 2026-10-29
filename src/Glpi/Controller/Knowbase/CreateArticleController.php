@@ -69,13 +69,21 @@ final class CreateArticleController extends AbstractController
         $raw_parent_id = (int) ($data['knowbaseitems_id_parent'] ?? 0);
         $parent_id = KnowbaseItem::getReadablePrefilledParentId($raw_parent_id);
 
-        $item = $this->add(KnowbaseItem::class, [
+        $input = [
             'name'         => $name,
             'answer'       => '',
             'entities_id'  => Session::getActiveEntity(),
-            'is_recursive' => 0,
             '_parents'     => $parent_id !== null ? [$parent_id] : [],
-        ]);
+        ];
+
+        // Retry in the parent's entity; add() checks again, so other refusals stay a 403.
+        $parent = $parent_id !== null ? KnowbaseItem::getById($parent_id) : false;
+        if ($parent !== false && !(new KnowbaseItem())->can(-1, CREATE, $input)) {
+            $input['entities_id']  = $parent->getEntityID();
+            $input['is_recursive'] = (int) $parent->isRecursive();
+        }
+
+        $item = $this->add(KnowbaseItem::class, $input);
 
         return new JsonResponse([
             'id'  => (int) $item->getID(),

@@ -240,7 +240,7 @@ final class RichText
                     '/' . $leading_spaces . '<script[^>]*>.*?<\/script[^>]*>' . $following_spaces . '/si',
                     '/' . $leading_spaces . '<style[^>]*>.*?<\/style[^>]*>' . $following_spaces . '/si',
                     // Remove TinyMCE (Ephox) editor artifacts (e.g. drag-and-drop overlay blockers)
-                    '/<div[^>]+class=["\'][^"\']*\bephox-[^"\']*["\'][^>]*>\s*<\/div>/si',
+                    '/<div[^>]+class=["\'][^"\']*\bephox-[^"\']*["\'][^>]*>(?:\s|&nbsp;|&#160;|\xC2\xA0)*<\/div>/si',
                 ],
                 '',
                 $content

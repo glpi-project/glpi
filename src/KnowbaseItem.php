@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryValue;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Form\Category;
@@ -182,12 +183,28 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return true;
         }
 
+        // Editors keep access to manage a scheduled or expired article.
+        if (!$this->isInPublicationWindow() && !$this->canUpdateItem()) {
+            return false;
+        }
+
         if ($this->fields["is_faq"]) {
             return ((Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
                 && $this->haveVisibilityAccess())
                 || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
         }
         return (Session::haveRight(self::$rightname, READ) && $this->haveVisibilityAccess());
+    }
+
+    /**
+     * Same window as the list requests: `begin_date < NOW() < end_date`, a null bound is open.
+     */
+    private function isInPublicationWindow(): bool
+    {
+        $now = Session::getCurrentTime() ?? date('Y-m-d H:i:s');
+
+        return (empty($this->fields['begin_date']) || $this->fields['begin_date'] < $now)
+            && (empty($this->fields['end_date']) || $this->fields['end_date'] > $now);
     }
 
     public function canUpdateItem(): bool
@@ -207,6 +224,43 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 || (!$this->fields["is_faq"]
                     && Session::haveRight(self::$rightname, UPDATE)))
                 && $this->haveVisibilityAccess()));
+    }
+
+    public function canCreateItem(): bool
+    {
+        if (!parent::canCreateItem()) {
+            return false;
+        }
+
+        $parents = $this->input['_parents'] ?? [];
+
+        return $this->canLinkToParents(is_array($parents) ? $parents : []);
+    }
+
+    /**
+     * Gaining a child is editing the parent. The root is exempt.
+     *
+     * @param array<mixed> $parent_ids
+     */
+    private function canLinkToParents(array $parent_ids, bool $check_entities = true): bool
+    {
+        foreach ($parent_ids as $parent_id) {
+            $parent_id = (int) $parent_id;
+            if (self::isRootId($parent_id)) {
+                continue;
+            }
+            // An id <= 0 would make can() test CREATE.
+            $parent = new self();
+            if (
+                $parent_id <= 0
+                || !$parent->can($parent_id, UPDATE)
+                || ($check_entities && !KnowbaseItem_KnowbaseItem::areEntitiesCoherent($this, $parent))
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function canAddItem(string $type): bool
@@ -1202,6 +1256,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["users_id"] = Session::getLoginUserID();
         }
 
+        // For add() callers that skip can(), like the clone. Entities are not final yet.
+        if (Session::getLoginUserID() !== false && is_array($input['_parents'] ?? null)) {
+            if (!$this->canLinkToParents($input['_parents'], check_entities: false)) {
+                Session::addMessageAfterRedirect(
+                    __s("You don't have permission to perform this action."),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
         return $this->prepareIllustrationInput($input);
     }
 
@@ -1482,6 +1548,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if ($mode === "edit" || $mode === "view") {
             $can_update = $this->can($this->fields['id'], UPDATE);
 
+            // The title is edited in place, and its save writes the original name.
+            if (!$can_update) {
+                $params['subject'] = $this->getName();
+            }
+
             // Add last update info
             $last_update_info = $this->getLastUpdateInfo();
             $params['last_update_date']            = $last_update_info->getRawDate();
@@ -1712,13 +1783,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
-        // One query, instead of a `can()` call per candidate.
+        // One query per level instead of a `can()` call per candidate, restricted to
+        // the candidates: the aside already loads the whole visible list.
         $visible_criteria = self::getListRequest([], 'browse');
         $visible_criteria['SELECT'] = self::getTableField('id');
-        $visible = [];
-        foreach ($DB->request($visible_criteria) as $row) {
-            $visible[(int) $row['id']] = true;
-        }
 
         $children = [];
         $visited  = [$this->fields['id'] => true];
@@ -1726,13 +1794,28 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $child    = new self();
 
         while ($frontier !== []) {
-            $next_frontier = [];
+            $candidates = [];
             foreach ($this->getDirectChildIds($frontier) as $child_id) {
                 if (isset($visited[$child_id])) {
                     continue; // already resolved through another branch
                 }
                 $visited[$child_id] = true;
+                $candidates[] = $child_id;
+            }
+            if ($candidates === []) {
+                break;
+            }
 
+            $level_criteria = $visible_criteria;
+            $level_criteria['WHERE'][] = [self::getTableField('id') => $candidates];
+            $visible = [];
+            $lvl_iterator = $DB->request($level_criteria);
+            foreach ($lvl_iterator as $row) {
+                $visible[(int) $row['id']] = true;
+            }
+
+            $next_frontier = [];
+            foreach ($candidates as $child_id) {
                 if (isset($visible[$child_id]) && $child->can($child_id, READ)) {
                     $children[] = [
                         'id'           => $child_id,
@@ -2441,7 +2524,16 @@ TWIG, $twig_params);
                     ];
                 }
 
-                $criteria['ORDERBY'] = ['glpi_knowbaseitems.name ASC'];
+                // Sort on the title the reader sees: the translation if any, else the original.
+                $criteria['ORDERBY'] = isset($criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'])
+                    ? [QueryFunction::ifnull(
+                        QueryFunction::nullif(
+                            new QueryIdentifier('glpi_knowbaseitemtranslations.name'),
+                            new QueryValue('')
+                        ),
+                        new QueryIdentifier('glpi_knowbaseitems.name')
+                    )]
+                    : ['glpi_knowbaseitems.name ASC'];
                 break;
         }
 
@@ -3569,7 +3661,7 @@ TWIG, $twig_params);
         }
 
         $criteria = self::getListRequest([], 'browse');
-        $criteria['SELECT'] = Builder::LIST_COLUMNS;
+        $criteria['SELECT'] = Builder::getListColumns($criteria);
 
         $is_favorite_condition = [
             self::getTable() . '.id' => new QuerySubQuery([
@@ -3596,7 +3688,7 @@ TWIG, $twig_params);
         foreach ($DB->request($criteria) as $data) {
             $articles[] = new Article(
                 id: (int) $data['id'],
-                title: $data['name'] ?? '',
+                title: ($data['transname'] ?? '') !== '' ? (string) $data['transname'] : ($data['name'] ?? ''),
                 illustration: $data['illustration'] ?? '',
                 link: self::getFormURLWithID($data['id']),
                 // Take note of the current article as we will render it in

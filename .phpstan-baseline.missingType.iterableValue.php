@@ -3346,7 +3346,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method CommonITILObject\\:\\:getCommonDatatableColumns\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -6818,12 +6818,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Dropdown\\:\\:getDurationDropdown\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Dropdown\\:\\:getGMTValues\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -9256,7 +9250,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getProperties\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
 ];
 $ignoreErrors[] = [
@@ -19372,7 +19366,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Impact\\:\\:buildGraph\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Impact.php',
 ];
 $ignoreErrors[] = [
@@ -19444,7 +19438,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Impact\\:\\:makeDataForCytoscape\\(\\) has parameter \\$graph with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Impact.php',
 ];
 $ignoreErrors[] = [
@@ -24886,7 +24880,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Project\\:\\:getCommonDatatableColumns\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Project.php',
 ];
 $ignoreErrors[] = [
@@ -25702,7 +25696,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Class Report has type alias ReportData with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
@@ -25720,7 +25714,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Report\\:\\:getDefaultReport\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
@@ -25750,7 +25744,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Report\\:\\:getNetworkReport\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
@@ -25792,7 +25786,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Report\\:\\:showCountReport\\(\\) has parameter \\$report with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [

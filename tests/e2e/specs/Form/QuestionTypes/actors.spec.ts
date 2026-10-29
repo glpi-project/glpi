@@ -474,8 +474,8 @@ test.describe('Actor form question type', () => {
         // Submit the form
         await form.getButton('Submit').click();
 
-        // Check the form was submitted
-        await expect(form.getAlert('Item successfully created')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 
     test('can submit a form with an empty actor question with simple actor', async ({
@@ -497,8 +497,8 @@ test.describe('Actor form question type', () => {
         // Submit the form
         await form.getButton('Submit').click();
 
-        // Check the form was submitted
-        await expect(form.getAlert('Item successfully created')).toBeVisible();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
     });
 
     test('can disable itemtypes', async ({ page, profile, api }) => {

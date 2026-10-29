@@ -37,9 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 global $CFG_GLPI;
 
-Session::checkRight(AuthLDAP::$rightname, UPDATE);
-
 $config_ldap = new AuthLDAP();
+$config_ldap->checkGlobal(UPDATE);
 
 if (!isset($_GET['id'])) {
     $_GET['id'] = "";
