@@ -40,7 +40,7 @@
         __('Select statistics to be displayed'),
         {
             full_width: true,
-            on_change: 'window.location.href=this.options[this.selectedIndex].value',
+            add_data_attributes: {'glpi-navigate-on-change': ''},
             add_label_class: 'fs-3'
         }
     ) }}
