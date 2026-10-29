@@ -42,11 +42,13 @@ class Result
      * @param QueryExpression $where_criteria
      * @param QueryExpression $having_criteria
      * @param array<string, Error> $invalid_filters
+     * @param string[] $used_properties The valid properties used in the filters
      */
     public function __construct(
         private QueryExpression $where_criteria,
         private QueryExpression $having_criteria,
-        private array $invalid_filters = []
+        private array $invalid_filters = [],
+        private array $used_properties = []
     ) {}
 
     public function getSQLWhereCriteria(): QueryExpression
@@ -62,5 +64,13 @@ class Result
     public function getInvalidFilters(): array
     {
         return $this->invalid_filters;
+    }
+
+    /**
+     * @return string[] The valid properties used in the filters
+     */
+    public function getUsedProperties(): array
+    {
+        return $this->used_properties;
     }
 }

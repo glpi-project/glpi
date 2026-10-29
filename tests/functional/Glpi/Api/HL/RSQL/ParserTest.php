@@ -292,6 +292,87 @@ class ParserTest extends GLPITestCase
         $this->assertEquals(Error::MAPPED_PROPERTY, $result->getInvalidFilters()['mapped']);
     }
 
+    public function testIgnoreMappedObjectProperties(): void
+    {
+        $parser = $this->getParserInstance([
+            'properties' => [
+                'id' => ['type' => 'integer'],
+                'team' => [
+                    'type' => 'array',
+                    'items' => [
+                        'type' => 'object',
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => static fn() => [],
+                        'properties' => [
+                            'id' => ['type' => 'integer'],
+                            'role' => ['type' => 'string'],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        // Properties of mapped objects are calculated after the query is executed, so they cannot be used in filters
+        $result = $parser->parse([[5, 'team.role'], [6, '=='], [7, 'assigned']]);
+        $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
+        $this->assertEquals(Error::MAPPED_PROPERTY, $result->getInvalidFilters()['team.role']);
+        $this->assertEquals([], $result->getUsedProperties());
+    }
+
+    public function testPolymorphicJoinProperties(): void
+    {
+        $parser = $this->getParserInstance([
+            'properties' => [
+                'id' => ['type' => 'integer'],
+                'name' => ['type' => 'string'],
+                'team' => [
+                    'type' => 'array',
+                    'items' => [
+                        'type' => 'object',
+                        'x-join' => [
+                            'fkey' => 'id',
+                            'branches' => [
+                                'UserTeamMember' => [
+                                    'table' => 'glpi_tickets_users',
+                                    'field' => 'tickets_id',
+                                    'columns' => ['id' => 'branch.id', 'role' => 'branch.type', 'users_id' => 'branch.users_id'],
+                                ],
+                            ],
+                        ],
+                        'discriminator' => ['propertyName' => '_type'],
+                        'properties' => [
+                            '_type' => ['type' => 'string'],
+                            'id' => ['type' => 'integer'],
+                            'role' => ['type' => 'string'],
+                            'user' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'id' => ['type' => 'integer', 'x-field' => 'users_id'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        // Properties of the items, including nested objects, are columns of the polymorphic join
+        $result = $parser->parse([
+            [5, 'team.user.id'], [6, '=='], [7, '4'], [1, ';'],
+            [5, 'team.role'], [6, '=='], [7, 'assigned'], [1, ';'],
+            [5, 'team._type'], [6, '=='], [7, 'UserTeamMember'], [1, ';'],
+            [5, 'name'], [6, '=='], [7, 'test'],
+        ]);
+        $wexpr = $result->getSQLWhereCriteria();
+        $this->assertEquals(
+            "(`team`.`users_id` = ?) AND (`team`.`role` = ?) AND (`team`.`_type` = ?) AND (`_`.`name` = ?)",
+            $wexpr->getValue()
+        );
+        $this->assertEquals(['4', 'assigned', 'UserTeamMember', 'test'], $wexpr->getParams());
+        $this->assertEquals([], $result->getInvalidFilters());
+        $this->assertEquals(['team.user.id', 'team.role', 'team._type', 'name'], $result->getUsedProperties());
+    }
+
     public function testMissingValue()
     {
         $this->expectException(RSQLException::class);
