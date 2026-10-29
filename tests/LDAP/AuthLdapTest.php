@@ -993,7 +993,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
 
         $this->assertSame('ecuador0', $user->fields['name']);
@@ -1050,7 +1050,7 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertCount(1, $results);
 
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDBbyName('ecuador0'));
         $this->assertSame($ldap->getID(), $user->fields['auths_id']);
     }
@@ -1240,7 +1240,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, (int) $import['id']);
 
         //check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
 
         $usergroups = Group_User::getUserGroups($user->getID());
@@ -1274,7 +1274,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
         $this->assertSame('ecuador0', $user->fields['name']);
         $this->assertSame('034596780', $user->fields['phone']);
@@ -1495,7 +1495,7 @@ class AuthLdapTest extends DbTestCase
         //try to log in from a user that does not exist yet
         $auth = $this->realLogin('brazil6', 'password', false);
 
-        $user = new \User();
+        $user = new User();
         $user->getFromDBbyName('brazil6');
         $this->assertSame('brazil6', $user->fields['name']);
         $this->assertSame('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
@@ -1528,7 +1528,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
         $this->assertSame('brazil7', $user->fields['name']);
         $this->assertSame('uid=brazil7,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
@@ -1617,7 +1617,7 @@ class AuthLdapTest extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $user = new \User();
+        $user = new User();
         $this->assertFalse($user->getFromDBbyName('brazil9'));
 
         $cfg_backup = $CFG_GLPI;
@@ -1654,7 +1654,7 @@ class AuthLdapTest extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $user = new \User();
+        $user = new User();
         $this->assertFalse($user->getFromDBbyName('brazil10'));
 
         $cfg_backup = $CFG_GLPI;
@@ -1690,7 +1690,7 @@ class AuthLdapTest extends DbTestCase
             '_profiles_id' => 1, // add manual right (is_dynamic = 0)
             'entities_id'  => 0,
         ];
-        $user = new \User();
+        $user = new User();
         $user_id = $user->add($input);
         $this->assertGreaterThan(0, $user_id);
 
@@ -1889,7 +1889,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import['id']);
 
         // Check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
 
         // Add groups
@@ -1955,7 +1955,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertEquals($import['id'], $synchro['id']);
 
         // Refresh user
-        $user = new \User();
+        $user = new User();
         $user->getFromDB($import['id']);
 
         // Check expected behavior according to user config
@@ -2050,7 +2050,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import['id']);
 
         // Check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
 
         // Check sync from a non-reachable directory
@@ -2123,7 +2123,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import['id']);
 
         // check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
         $this->assertFalse((bool) $user->fields['is_deleted']);
         $this->assertFalse((bool) $user->fields['is_deleted_ldap']);
@@ -2313,7 +2313,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
 
         $this->assertSame('verylongdn', $user->fields['name']);
@@ -2420,7 +2420,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import['id']));
 
         $this->assertSame('Тестов Тест Тестович', $user->fields['name']);
@@ -2556,7 +2556,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import_user['id']);
 
         // Check created manager
-        $manager = new \User();
+        $manager = new User();
         $this->assertTrue($manager->getFromDB($import_manager['id']));
 
         $this->assertSame($manager_entry['uid'], $manager->fields['name']);
@@ -2569,7 +2569,7 @@ class AuthLdapTest extends DbTestCase
         );
 
         // Check created user
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($import_user['id']));
 
         $this->assertSame($user_entry['uid'], $user->fields['name']);
@@ -2613,7 +2613,7 @@ class AuthLdapTest extends DbTestCase
 
         // login the user to force a real synchronisation and get it's glpi id
         $this->realLogin('brazil6', 'password', false);
-        $users_id = \User::getIdByName('brazil6');
+        $users_id = User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
         // check the user got the entity/profiles assigned
         $pu = Profile_User::getForUser($users_id, true);
@@ -2656,10 +2656,10 @@ class AuthLdapTest extends DbTestCase
 
         // Real LDAP sync: assigns the dynamic profile/entity and records auths_id/user_dn.
         $this->realLogin('brazil6', 'password', false);
-        $users_id = \User::getIdByName('brazil6');
+        $users_id = User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($users_id));
         $this->assertNotEmpty($user->fields['auths_id']);
         $this->assertNotEmpty($user->fields['user_dn']);
@@ -2720,11 +2720,11 @@ class AuthLdapTest extends DbTestCase
 
         // Real LDAP sync: assigns the dynamic profile/entity/group and records auths_id/user_dn.
         $this->realLogin('brazil6', 'password', false);
-        $users_id = \User::getIdByName('brazil6');
+        $users_id = User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
         $this->assertTrue(Group_User::isUserInGroup($users_id, $group_id));
 
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($users_id));
 
         // Simulate the SSO/OAuth login context: the plugin authenticates the
@@ -2760,7 +2760,7 @@ class AuthLdapTest extends DbTestCase
             'group_member_field' => 'objectClass',
         ];
 
-        $user = new \User();
+        $user = new User();
         $result = $this->callPrivateMethod(
             $user,
             'getFromLDAPGroupDiscretCached',
@@ -2842,7 +2842,7 @@ class AuthLdapTest extends DbTestCase
 
         // login the user to force a real synchronisation and get it's glpi id
         $this->realLogin('brazil6', 'password', false);
-        $users_id = \User::getIdByName('brazil6');
+        $users_id = User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
         $this->assertTrue(Group_User::isUserInGroup($users_id, $group_id));
@@ -2891,7 +2891,7 @@ class AuthLdapTest extends DbTestCase
 
         // Login
         $this->realLogin('brazil6', 'password', false);
-        $users_id = \User::getIdByName('brazil6');
+        $users_id = User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
         // Check the dynamic group is deleted without losing the manual groups
@@ -2909,7 +2909,7 @@ class AuthLdapTest extends DbTestCase
 
         // Login
         $this->realLogin('brazil6', 'password', false);
-        $users_id = \User::getIdByName('brazil6');
+        $users_id = User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
         // Check the dynamic group is deleted without losing the manual groups
@@ -2947,7 +2947,7 @@ class AuthLdapTest extends DbTestCase
 
         // login the user to force a real synchronisation (and creation into DB)
         $this->realLogin('brazil7', 'password', false);
-        $users_id = \User::getIdByName('brazil7');
+        $users_id = User::getIdByName('brazil7');
 
         // Add group to user
         $this->createItem(Group_User::class, [
@@ -2980,7 +2980,7 @@ class AuthLdapTest extends DbTestCase
         //Import user that doesn't exist yet
         $auth = $this->realLogin('brazil5', 'password', false);
 
-        $user = new \User();
+        $user = new User();
         $user->getFromDBbyName('brazil5');
         $this->assertSame('brazil5', $user->fields['name']);
         $this->assertSame('uid=brazil5,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
@@ -3043,7 +3043,7 @@ class AuthLdapTest extends DbTestCase
         //Import user that doesn't exist yet
         $auth = $this->realLogin('logintest', 'password');
 
-        $user = new \User();
+        $user = new User();
         $user->getFromDBbyName('logintest');
         $this->assertSame('logintest', $user->fields['name']);
         $this->assertSame('uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
@@ -3082,7 +3082,7 @@ class AuthLdapTest extends DbTestCase
         $auth = new \Auth();
         $this->assertFalse($auth->login('brazil5', 'wrong-password', false));
 
-        $user = new \User();
+        $user = new User();
         $this->assertFalse($user->getFromDBbyName('brazil5'));
     }
 
@@ -3596,7 +3596,7 @@ class AuthLdapTest extends DbTestCase
         $users_id = $import['id'];
 
         // Verify user was created with the correct default group
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->getFromDB($users_id));
         $this->assertSame('remi', $user->fields['name']);
         $this->assertEquals($group_id, $user->fields['groups_id'], 'Default group should be set by rule after import');
@@ -3641,7 +3641,7 @@ class AuthLdapTest extends DbTestCase
         $user_id = $first_auth->user->fields['id'];
 
         // Simulate the user being disabled in AD and synced.
-        $user = new \User();
+        $user = new User();
         $this->assertTrue($user->update(['id' => $user_id, 'is_active' => 0, 'is_deleted_ldap' => 1]));
 
         $original_restore_cfg = $CFG_GLPI['user_restored_ldap'] ?? null;
