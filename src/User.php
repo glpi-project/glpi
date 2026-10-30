@@ -2757,7 +2757,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $this->fields['_ldap_conn']   = $ldap_connection;
                 //Hook to retrieve more information for ldap
                 $this->fields = Plugin::doHookFunction(Hooks::RETRIEVE_MORE_DATA_FROM_LDAP, $this->fields);
-                unset($this->fields['_ldap_result']);
+                unset($this->fields['_ldap_result'], $this->fields['_ldap_conn']);
             }
 
             return true;
