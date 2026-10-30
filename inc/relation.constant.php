@@ -1413,6 +1413,7 @@ $RELATION = [
     ],
 
     'glpi_tags' => [
+        '_glpi_tags_items'     => 'tags_id',
         '_glpi_tags_itemtypes' => 'tags_id',
     ],
 

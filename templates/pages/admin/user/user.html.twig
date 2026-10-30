@@ -225,6 +225,7 @@
                                         right: 'all'
                                     }) }}
                                 {% endif %}
+                                {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
 
                                 {% if enable_nickname %}
                                     {{ fields.textField('nickname', item.fields['nickname'], __('Nickname')) }}

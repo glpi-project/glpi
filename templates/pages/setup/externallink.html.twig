@@ -37,6 +37,9 @@
     {{ fields.textField('name', item.fields['name'], __('Name'), {
         full_width: true,
     }) }}
+
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+
     {{ fields.dropdownItemTypes('itemtypes', null, _n('Type', 'Types', get_plural_number()), {
         types: config('link_types'),
         multiple: true,

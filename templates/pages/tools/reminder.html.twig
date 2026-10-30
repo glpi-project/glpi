@@ -48,6 +48,8 @@
         full_width: true,
     }) }}
 
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+
     {% if params['from_planning_ajax'] is not defined %}
         {% set visibility_fields %}
             {{ fields.datetimeField('begin_view_date', item.fields['begin_view_date'], __('Begin'), {
