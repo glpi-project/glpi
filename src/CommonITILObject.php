@@ -2294,6 +2294,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             $useractors = $this->getActorObjectForItem(User::class);
                             if (
                                 isset($input['_auto_update'])
+                                // Self-assignment ("Associate myself") does not require the right to update the item
+                                || (
+                                    $this->canAssignToMe()
+                                    && (int) ($input['_itil_assign']['users_id'] ?? 0) === Session::getLoginUserID()
+                                )
                                 || $useractors->can(-1, CREATE, $input['_itil_assign'])
                             ) {
                                 $useractors->add($input['_itil_assign']);
