@@ -310,7 +310,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         $itemtype,
                         $items_id,
                         [
-                            'rand'      => $rand,
                             'delete'    => $delete,
                             'visible'   => ($count <= 5),
                         ]
@@ -344,7 +343,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public static function showItemToAdd($object_id, $itemtype, $items_id, $options)
     {
         $params = [
-            'rand'      => mt_rand(),
             'delete'    => true,
             'visible'   => true,
             'kblink'    => true,
@@ -363,7 +361,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 $result .= htmlescape($item->getTypeName(1)) . " : " . $item->getLink(['comments' => true]);
                 $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
                 if ($params['delete']) {
-                    $result .= " <i class='ti ti-circle-x pointer' onclick=\"itemAction" . htmlescape($params['rand']) . "('delete', '" . htmlescape(jsescape($itemtype)) . "', '" . htmlescape(jsescape($items_id)) . "');\"></i>";
+                    $result .= " <i class='ti ti-circle-x pointer' data-glpi-itil-item-remove"
+                        . " data-itemtype='" . htmlescape($itemtype) . "'"
+                        . " data-items-id='" . htmlescape($items_id) . "'></i>";
                 }
                 if ($params['kblink']) {
                     $result .= ' ' . $item->getKBLinks();
@@ -1308,7 +1308,6 @@ TWIG, $twig_params);
      *                      (see Ajax::updateItemOnSelectEvent for information)
      *                      and may have moreparams)
      *    - used         : array / Already used items ID: not to display in dropdown (default empty)
-     *    - on_change    : string / value to transmit to "onChange"
      *    - display      : boolean / display or get string (default true)
      *    - width        : specific width needed
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)

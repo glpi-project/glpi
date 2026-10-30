@@ -42,12 +42,13 @@
 {% endif %}
 
 {% set tab_params = null %}
+{% set navigate_url = null %}
 {% if no_onchange is not defined or not no_onchange %}
    {% if is_tab is defined and is_tab == true %}
       {% set tab_params = 'glpilist_limit=%value%' ~ additional_params %}
    {% elseif href is defined %}
       {% set href_separator = '?' in href ? '&' : '?' %}
-      {% set href = "location.href='" ~ href ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
+      {% set navigate_url = href ~ href_separator ~ 'glpilist_limit=%value%' ~ additional_params %}
    {% endif %}
 {% endif %}
 
@@ -80,7 +81,7 @@
 {% endif %}
 {% set select_name = select_name|default('list_limit') %}
 <select id="{{ select_name|safe_dom_id }}{{ rand|default(random()) }}" class="form-select form-select-sm mx-1 d-inline-block w-auto {{ select_class|default('') }}"
-        {% if tab_params is not null %}data-glpi-reload-tab-on-change="{{ tab_params }}"{% elseif not no_onchange and href is defined %}onChange="{{ href }}"{% endif %} name="{{ select_name }}"
+        {% if tab_params is not null %}data-glpi-reload-tab-on-change="{{ tab_params }}"{% elseif navigate_url is not null %}data-glpi-navigate-on-change="{{ navigate_url }}"{% endif %} name="{{ select_name }}"
         {% for attr, value in additional_attributes %}
             {{ attr }}="{{ value }}"
         {% endfor %}>

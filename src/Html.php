@@ -1738,10 +1738,6 @@ TWIG,
         }
 
         $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
-        if (isset($params['onclick'])) {
-            $out .= " onclick='" . htmlescape($params['onclick']) . "'";
-        }
-
         foreach (['id', 'name', 'title', 'value'] as $field) {
             if (!empty($params[$field])) {
                 $out .= " $field='" . htmlescape($params[$field]) . "'";
@@ -3714,7 +3710,9 @@ JAVASCRIPT
         if ($action) {
             $out .= "<form method='POST' action=\"" . htmlescape($action) . "\">";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("submit()", false);
+            $out .= Dropdown::showListLimit('', false, [
+                'add_data_attributes' => ['glpi-submit-on-change' => ''],
+            ]);
         } else {
             $out .= "<form method='POST' action =''>\n";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
@@ -4437,7 +4435,6 @@ JS;
               id="progress{$rand}"
               data-progressid="progress{$rand}"
               data-append-percent="{$append_percent}"
-              onchange="updateProgress('progress{$rand}')"
               max="{$max}"
               value="{$value}"
               title="{$tooltip}" data-bs-toggle="tooltip">
@@ -4978,17 +4975,12 @@ JS;
                 $display .= Html::hidden($name, ['value' => $tag['name']]);
 
                 // show button to delete the upload
-                $getEditor = 'null';
-                if ($p['editor_id'] != '') {
-                    $getEditor = "tinymce.get('" . jsescape($p['editor_id']) . "')";
-                }
-                $textTag = json_encode($tag['tag']);
-                $domItems = json_encode([
-                    0 => $upload['id'],
-                    1 => $upload['id'] . '2',
-                ]);
-                $deleteUpload = "deleteImagePasted({$domItems}, {$textTag}, {$getEditor})";
-                $display .= '<button class="btn btn-icon btn-sm btn-link ti ti-circle-x" onclick="' . htmlescape($deleteUpload) . '"></span>';
+                $display .= '<button type="button" class="btn btn-icon btn-sm btn-link ti ti-circle-x"'
+                    . ' title="' . htmlescape(__('Delete')) . '" aria-label="' . htmlescape(__('Delete')) . '"'
+                    . ' data-glpi-fileupload-remove'
+                    . ' data-upload-id="' . htmlescape($upload['id']) . '"'
+                    . ' data-tag="' . htmlescape($tag['tag']) . '"'
+                    . ' data-editor-id="' . htmlescape($p['editor_id']) . '"></button>';
 
                 $display .= "</p>";
             }

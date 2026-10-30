@@ -106,9 +106,9 @@
    {% endfor %}
 
    <div class="mt-2">
-      <button class="btn btn-sm btn-ghost-secondary {{ has_pending_link ? 'd-none' : '' }}" type="button"
+      <button class="btn btn-sm btn-ghost-secondary collapse-trigger-once" type="button"
               data-bs-toggle="collapse" data-bs-target="#link_itilobject_dropdowns"
-              aria-expanded="false" aria-controls="link_itilobject_dropdowns" onclick="$(this).hide();">
+              aria-expanded="{{ has_pending_link ? 'true' : 'false' }}" aria-controls="link_itilobject_dropdowns">
          <i class="ti ti-plus" aria-hidden="true"></i>
          <span>{{ __('Add') }}</span>
       </button>

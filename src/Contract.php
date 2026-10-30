@@ -1397,7 +1397,6 @@ class Contract extends CommonDBTM implements StateInterface
      *                      only available if entity is a single value not an array (default false)
      *    - used          : array / Already used items ID: not to display in dropdown (default empty)
      *    - nochecklimit  : boolean / disable limit for nomber of device (for supplier, default false)
-     *    - on_change     : string / value to transmit to "onChange"
      *    - display       : boolean / display or return string (default true)
      *    - expired       : boolean / display expired contract (default false)
      *    - toadd         : array / array of specific values to add at the beginning

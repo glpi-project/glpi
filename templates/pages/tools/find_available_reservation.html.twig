@@ -43,7 +43,10 @@
             type: 'button',
             text: _x('button', 'Cancel'),
             btn_class: 'btn-outline-secondary',
-            onclick: "$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')"
+            add_attribs: {
+                'data-bs-toggle': 'collapse',
+                'data-bs-target': '.resa-search-toggle',
+            }
         }
     }
 } %}
