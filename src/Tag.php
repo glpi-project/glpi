@@ -484,7 +484,7 @@ class Tag extends CommonDropdown
      * Get the data needed to render a tags dropdown.
      *
      * @param class-string<CommonGLPI>|list<class-string<CommonGLPI>>|null $itemtype Restrict the tags to those allowed for the given itemtype(s).
-     *                                    Use null to get every active tag, regardless of itemtype (e.g. for the "All assets" search).
+     *                                    Use null to get no tag (e.g. for the "All assets" search).
      *
      * @return array{tag_names: array<int, string>, bg_colors: array<int, string>, text_colors: array<int, string>}
      */

@@ -81,6 +81,7 @@ class TagTest extends DbTestCase
             \SavedSearch::class,
             \AuthLdapReplicate::class,
             \KnowbaseItem_Comment::class,
+            \KnowbaseItem::class,
             \ValidatorSubstitute::class,
             \CommonITILRecurrentCron::class,
             \CommonITILValidationCron::class,
