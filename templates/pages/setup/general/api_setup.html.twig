@@ -62,22 +62,21 @@
             :heading="__('The Legacy API is enabled. It is recommended to only use the new API when possible.')"
         />
     {% endif %}
+    {% set rand = random() %}
     {{ fields.sliderField('enable_api', config['enable_api'], __("Enable Legacy REST API"), {
-        additional_attributes: {
-            onchange: 'confirmEnableLegacyApi(this)'
-        }
+        rand: rand,
     }) }}
     {{ fields.nullField() }}
     <script>
-        function confirmEnableLegacyApi(element) {
-            if (element.checked) {
+        document.getElementById('enable_api_{{ rand }}').addEventListener('change', (e) => {
+            if (e.target.checked) {
                 glpi_confirm({
                     title: "{{ __('Enable Legacy REST API') }}",
                     message: "{{ __('Are you sure you want to enable the Legacy API? It is recommended to only use the new API when possible.') }}",
-                    cancel_callback: () => element.checked = false
+                    cancel_callback: () => e.target.checked = false
                 });
             }
-        }
+        });
     </script>
    {% if config['enable_api'] %}
       {% set legacy_doc %}<a href="{{ legacy_doc_url }}">{{ __('API inline Documentation') }}</a>{% endset %}
