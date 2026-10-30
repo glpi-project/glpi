@@ -1628,6 +1628,13 @@ class MigrationTest extends DbTestCase
                 global $DB;
                 $DB->executeStatement($stmt, $params, $types);
             }
+
+            public function getStatementResult(mysqli_stmt $stmt): mysqli_result|false
+            {
+                // Proxy result retrieval to the real DB instance since the statement was executed on its connection.
+                global $DB;
+                return $DB->getStatementResult($stmt);
+            }
         };
         $db->disableTableCaching();
         return $db;

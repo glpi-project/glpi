@@ -173,7 +173,7 @@ trait InventoryNetworkPort
         foreach ($this->ports as $port) {
             if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
                 $DB->executeStatement($stmt, [Unmanaged::class, $port->mac,]);
-                $results = $stmt->get_result();
+                $results = $DB->getStatementResult($stmt);
 
                 if ($results->num_rows > 0) {
                     $row = $results->fetch_object();
@@ -242,7 +242,7 @@ trait InventoryNetworkPort
                     $port->gateway,
                 ]
             );
-            $results = $stmt->get_result();
+            $results = $DB->getStatementResult($stmt);
 
             $row = $results->fetch_object();
             $count = $row->cnt;
@@ -476,7 +476,7 @@ trait InventoryNetworkPort
                     }
 
                     $DB->executeStatement($netname_stmt, [NetworkPort::class, $keydb]);
-                    $results = $netname_stmt->get_result();
+                    $results = $DB->getStatementResult($netname_stmt);
 
                     if ($results->num_rows) {
                         $row = $results->fetch_object();
@@ -667,7 +667,7 @@ trait InventoryNetworkPort
                     $data->mac,
                 ]
             );
-            $results = $stmt->get_result();
+            $results = $DB->getStatementResult($stmt);
 
             if ($results->num_rows > 0) {
                 $row = $results->fetch_object();

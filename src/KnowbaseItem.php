@@ -3257,7 +3257,7 @@ TWIG, $twig_params);
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype'  => 'child',
-                'condition' => ['NEWTABLE.users_id' => Session::getLoginUserID()],
+                'condition' => ['NEWTABLE.users_id' => (int) Session::getLoginUserID()],
             ],
             'massiveaction'      => false,
         ];
