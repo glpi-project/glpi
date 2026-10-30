@@ -120,14 +120,19 @@ if ($action == 'create') {
         }
     }
 
+    $input = [
+        'type'      => $_REQUEST['type'],
+        'url'       => $_REQUEST["url"],
+        'itemtype'  => $_REQUEST["itemtype"],
+        'ajax'      => true,
+    ];
+
+    if ($savedsearch->isNewItem()) {
+        $savedsearch->initObjectOnCreation($input);
+    }
     $savedsearch->showForm(
         $id,
-        [
-            'type'      => $_REQUEST['type'],
-            'url'       => $_REQUEST["url"],
-            'itemtype'  => $_REQUEST["itemtype"],
-            'ajax'      => true,
-        ]
+        $input
     );
     return;
 }

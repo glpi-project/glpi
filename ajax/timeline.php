@@ -53,7 +53,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     }
 
     $task = $parent::getTaskClassInstance();
-    if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->canUpdateItem()) {
+    if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->canChangeState()) {
         throw new AccessDeniedHttpException();
     }
     if (!in_array($task->fields['state'], [0, Planning::INFO])) {
@@ -63,7 +63,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         $foreignKey = $parent::getForeignKeyField();
         $task->update([
             'id'        => (int) $_POST['tasks_id'],
-            $foreignKey => (int) $_POST[$foreignKey],
+            $foreignKey => $task->fields[$foreignKey],
             'state'     => $new_state,
             'users_id_editor' => Session::getLoginUserID(),
         ]);

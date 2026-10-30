@@ -297,7 +297,48 @@ final class AnswersHandler
         // Increment the form usage counter
         $this->incrementFormUsageCount($form);
 
+        // The counter update locks the form row until commit, so concurrent
+        // submissions of the same form get distinct indexes from it
+        $this->updateAnswersSetIndex($form, $answers_set);
+
         return $answers_set;
+    }
+
+    /**
+     * Use the form usage counter as index of the given answers set, as
+     * concurrent submissions may have read the same MAX(index) value.
+     *
+     * @param Form       $form
+     * @param AnswersSet $answers_set
+     *
+     * @throws Exception If the data can't be saved
+     *
+     * @return void
+     */
+    protected function updateAnswersSetIndex(Form $form, AnswersSet $answers_set): void
+    {
+        global $DB;
+
+        $index = (int) $DB->request([
+            'SELECT' => 'usage_count',
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['id' => $form->getID()],
+        ])->current()['usage_count'];
+
+        if ($index === (int) $answers_set->fields['index']) {
+            return;
+        }
+
+        $input = [
+            'id'    => $answers_set->getID(),
+            'name'  => $form->getName() . " #$index",
+            'index' => $index,
+        ];
+        if (!$answers_set->update($input)) {
+            throw new Exception(
+                "Failed to update answers index: " . json_encode($input)
+            );
+        }
     }
 
     /**

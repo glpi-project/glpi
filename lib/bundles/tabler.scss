@@ -30,6 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
+@use "sass:map";
+@use "sass:meta";
+@use "sass:string";
+
+// Tabler Icons >= 3.36.1 ships filled icons in a dedicated font, with a custom prefix to not collide with outline `.ti` classes.
+@use "@tabler/icons-webfont/dist/tabler-icons-filled" as ti-filled with (
+    $ti-font-path: "@tabler/icons-webfont/dist/fonts",
+    $ti-prefix: "ti-filled"
+);
+
 $enable-negative-margins: true;
 $link-hover-decoration: none;
 
@@ -55,3 +65,19 @@ $fontDir: "@fontsource/inter/files";
 $ti-font-path: "@tabler/icons-webfont/dist/fonts";
 
 @import "@tabler/icons-webfont/dist/tabler-icons";
+
+// Restore legacy `ti-{name}-filled` classes; declared after `.ti` to override its font family.
+%ti-filled-font {
+    font-family: ti-filled.$ti-font-family !important;
+}
+
+@each $variable in map.keys(meta.module-variables("ti-filled")) {
+    @if string.index($variable, "ti-icon-") == 1 {
+        $name: string.slice($variable, 9);
+
+        .ti-#{$name}-filled {
+            @extend %ti-filled-font;
+            @extend .ti-filled-#{$name};
+        }
+    }
+}

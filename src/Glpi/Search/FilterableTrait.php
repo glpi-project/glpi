@@ -97,6 +97,76 @@ trait FilterableTrait
         return isset($data['data']['items'][$item->getID()]);
     }
 
+    /**
+     * Keep only the given items that match the filters defined for the current item.
+     * Useful when a single notification groups several items (e.g. alerts sent by an automatic action).
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int[]                    $ids
+     *
+     * @return int[]
+     */
+    public function getItemsIdsMatchingFilter(string $itemtype, array $ids): array
+    {
+        $filter = CriteriaFilter::getForItem($this);
+
+        // No filter defined
+        if (!$filter || $ids === []) {
+            return $ids;
+        }
+
+        // The ID is not always search option 2
+        $opts = SearchOption::getOptionsForItemtype($itemtype);
+        $item_table = $itemtype::getTable();
+        $id_field = $itemtype::getIndexName();
+        $id_opt_num = null;
+        foreach ($opts as $opt_num => $opt) {
+            if (isset($opt['field']) && $opt['field'] === $id_field && $opt['table'] === $item_table) {
+                $id_opt_num = $opt_num;
+                break;
+            }
+        }
+
+        if ($id_opt_num === null) {
+            trigger_error("Could not find {$id_field} option for itemtype {$itemtype}. Cannot use FilterableTrait on this itemtype.", E_USER_WARNING);
+            return [];
+        }
+
+        // Intersect given ids with the filter
+        $ids_criteria = [];
+        foreach ($ids as $id) {
+            $ids_criteria[] = [
+                'link' => 'OR',
+                'field' => $id_opt_num,
+                'searchtype' => "contains",
+                'value' => (int) $id,
+            ];
+        }
+        $criteria = [
+            [
+                'link' => 'AND',
+                'criteria' => $filter->fields['search_criteria'],
+            ],
+            [
+                'link' => 'AND',
+                'criteria' => $ids_criteria,
+            ],
+        ];
+
+        // Execute search
+        $data = SearchEngine::getData($itemtype, [
+            'criteria'   => $criteria,
+            'list_limit' => count($ids),
+        ]);
+
+        $matching_ids = array_map(
+            static fn(array $row) => (int) $row['id'],
+            $data['data']['rows']
+        );
+
+        return array_values(array_filter($ids, static fn($id) => in_array((int) $id, $matching_ids, true)));
+    }
+
     public function saveFilter(
         array $search_criteria
     ): bool {

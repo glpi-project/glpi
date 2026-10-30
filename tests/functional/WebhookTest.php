@@ -40,11 +40,13 @@ use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
 use Supplier;
 use Supplier_Ticket;
 use Ticket;
+use TicketTask;
 use TicketValidation;
 use User;
 use Webhook;
@@ -823,5 +825,47 @@ JSON;
         $this->assertSame('observer', $team_1['role']);
         $this->assertSame('post-only', $team_2['name']);
         $this->assertSame('observer', $team_2['role']);
+    }
+
+    public static function itilTaskWebhookEntityProvider(): iterable
+    {
+        yield 'same entity' => ['_test_root_entity', false, '_test_root_entity', 1];
+        yield 'parent entity, recursive' => ['_test_root_entity', true, '_test_child_1', 1];
+        yield 'parent entity, not recursive' => ['_test_root_entity', false, '_test_child_1', 0];
+        yield 'other entity' => ['_test_child_2', true, '_test_child_1', 0];
+        yield 'root entity, recursive' => ['Root entity', true, '_test_child_1', 1];
+    }
+
+    #[DataProvider('itilTaskWebhookEntityProvider')]
+    public function testITILTaskWebhookMatchesParentEntity(
+        string $webhook_entity,
+        bool $is_recursive,
+        string $ticket_entity,
+        int $expected_count
+    ): void {
+        $this->login();
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => getItemByTypeName('Entity', $webhook_entity, true),
+            'is_recursive'        => (int) $is_recursive,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketTask::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket',
+            'content'     => 'Test ticket content',
+            'entities_id' => getItemByTypeName('Entity', $ticket_entity, true),
+        ]);
+        $this->createItem(TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => 'Test task',
+        ]);
+
+        $this->assertEquals($expected_count, $this->countQueuedRequestForWebhook($webhook));
     }
 }

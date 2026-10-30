@@ -1270,8 +1270,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
                 // Prevent disabling another user account
                 'is_active',
+                'is_deleted',
                 'begin_date',
                 'end_date',
+
+                // Prevent changing the login, that is used to match the user with an external authentication source
+                'name',
 
                 // Prevent changing 2fa settings
                 '2fa',
@@ -1332,6 +1336,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 // blank password when authtype changes
                 $input['password'] = '';
             }
+        }
+
+        if (
+            Session::getLoginUserID() !== false // always allow update from backend routines
+            && !Session::haveRight(self::$rightname, self::UPDATEAUTHENT)
+        ) {
+            // prevent unexpected change of the authentication source and of the link with the directory entry
+            unset($input['auths_id'], $input['sync_field'], $input['user_dn'], $input['user_dn_hash']);
         }
 
         // Update User in the database
@@ -6923,7 +6935,7 @@ HTML;
             && ($anon = $this->getAnonymizedName()) !== null
         ) {
             // if anonymized name active, return only the anonymized name
-            return $anon;
+            return htmlescape($anon);
         }
 
         return $this->getLink($options);
