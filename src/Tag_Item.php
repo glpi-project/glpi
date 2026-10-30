@@ -236,9 +236,13 @@ class Tag_Item extends CommonDBRelation
 
         switch ($action) {
             case 'add':
+                Session::checkRight($item::$rightname, UPDATE);
                 $tag_id = (int) ($input['peer_tags_id'] ?? 0);
                 foreach ($ids as $id) {
-                    $item->fields['id'] = $id;
+                    if (!$item->getFromDB($id)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        continue;
+                    }
                     if ($tag_id > 0 && self::addTag($item, $tag_id)) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
@@ -247,9 +251,13 @@ class Tag_Item extends CommonDBRelation
                 }
                 break;
             case 'remove':
+                Session::checkRight($item::$rightname, UPDATE);
                 $tag_id = (int) ($input['peer_tags_id'] ?? 0);
                 foreach ($ids as $id) {
-                    $item->fields['id'] = $id;
+                    if (!$item->getFromDB($id)) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        continue;
+                    }
                     $success = $tag_id > 0
                         ? self::removeTag($item, $tag_id)
                         : self::cleanTag($item);

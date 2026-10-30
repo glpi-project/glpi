@@ -694,7 +694,7 @@ $extra_taggable_types = [
     AuthLDAP::class, AuthMail::class, Agent::class,
     DeviceBatteryModel::class, DeviceFirmwareModel::class,
     MailCollector::class, Webhook::class, NotificationTemplate::class,
-    KnowbaseItem::class, Notification::class,
+    Notification::class,
     TicketRecurrent::class, RecurrentChange::class, Link::class, Rack::class,
     PDU::class, CartridgeItem::class, ConsumableItem::class, Enclosure::class,
     Line::class, DatabaseInstance::class, Software::class, PassiveDCEquipment::class,
