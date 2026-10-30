@@ -2872,6 +2872,37 @@ HTML;
     }
 
     /**
+     * Filter values whose label matches a search text, case-insensitively.
+     * Follows the dropdown SQL search: "contains" by default, `^` and `$` anchor the start and end.
+     *
+     * @param array<int|string, mixed> $values      Values to filter (key => label)
+     * @param string                   $search_text Search text
+     *
+     * @return array<int|string, mixed>
+     */
+    private static function filterValuesBySearchText(array $values, string $search_text): array
+    {
+        $search_text = trim($search_text);
+        if ($search_text === '' || $search_text === '^') {
+            return $values;
+        }
+
+        //Search may be a regex
+        $starts_with = str_starts_with($search_text, '^');
+        $ends_with   = str_ends_with($search_text, '$');
+        $search_text = trim(substr($search_text, $starts_with ? 1 : 0, $ends_with ? -1 : null));
+
+        // Ignore accents, as the SQL collation does
+        $remove_accents = static fn(string $value): string => (string) transliterator_transliterate('NFD; [:Nonspacing Mark:] Remove; NFC', $value);
+        $pattern = '/' . ($starts_with ? '^' : '') . preg_quote($remove_accents($search_text), '/') . ($ends_with ? '$' : '') . '/iu';
+
+        return array_filter(
+            $values,
+            static fn($label) => is_scalar($label) && preg_match($pattern, $remove_accents((string) $label))
+        );
+    }
+
+    /**
      * Get dropdown value
      *
      * @param array   $post Posted values
@@ -2969,6 +3000,10 @@ HTML;
             $toadd = $post['toadd'];
         } else {
             $toadd = [];
+        }
+        // Keep only the added values matching the search, otherwise they are listed (and highlighted) first
+        if (!empty($post['searchText']) && is_array($toadd)) {
+            $toadd = self::filterValuesBySearchText($toadd, (string) $post['searchText']);
         }
 
         $ljoin = [];
