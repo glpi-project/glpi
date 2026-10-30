@@ -40,6 +40,7 @@ use Glpi\Form\Form;
 use Glpi\Toolbox\MapperInterface;
 
 use function Safe\preg_match;
+use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
 
@@ -128,6 +129,30 @@ final class FormTagsManager
             },
             $content
         );
+    }
+
+    /**
+     * Get the values of the tags of the given provider found in the content.
+     *
+     * @param class-string<TagProviderInterface> $provider_class
+     * @return string[]
+     */
+    public function getTagValuesForProvider(string $content, string $provider_class): array
+    {
+        preg_match_all('/<span(?=[^>]*\bdata-form-tag="true")[^>]*>/', $content, $matches);
+
+        $values = [];
+        foreach ($matches[0] as $tag) {
+            if (
+                preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match)
+                && $provider_match[1] === $provider_class
+                && preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match)
+            ) {
+                $values[] = $value_match[1];
+            }
+        }
+
+        return $values;
     }
 
     public function getTagProviders(): array
