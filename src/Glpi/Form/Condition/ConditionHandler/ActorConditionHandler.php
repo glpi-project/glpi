@@ -37,8 +37,14 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
+use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
+use Group;
 use Override;
+use Supplier;
+use User;
+
+use function Safe\json_decode;
 
 class ActorConditionHandler implements ConditionHandlerInterface
 {
@@ -76,6 +82,25 @@ class ActorConditionHandler implements ConditionHandlerInterface
         ValueOperator $operator,
         mixed $b,
     ): bool {
+        // During form rendering, applyValueOperator is called to compute items
+        // visibility using the question default value, which is stored as JSON.
+        if (is_string($a) && json_validate($a)) {
+            $decoded = json_decode($a, true);
+            $a = [];
+            foreach (
+                [
+                    User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+                    Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+                    Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+                ] as $itemtype => $key
+            ) {
+                $ids = is_array($decoded) ? ($decoded[$key] ?? []) : [];
+                foreach (is_array($ids) ? $ids : [] as $id) {
+                    $a[] = getForeignKeyFieldForItemType($itemtype) . '-' . $id;
+                }
+            }
+        }
+
         return $this->applyArrayValueOperator($a, $operator, $b);
     }
 }
