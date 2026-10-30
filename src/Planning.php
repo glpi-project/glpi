@@ -72,6 +72,7 @@ use function Safe\strtotime;
  *      params: array{show_delete?: boolean, filter_color_index?: integer},
  *      color: mixed|false,
  *      show_export_buttons: boolean,
+ *      token: string|null,
  *      uID: integer,
  *      gID: integer,
  *      webcal_base_url: string|null,
@@ -542,10 +543,42 @@ JAVASCRIPT;
 
         // define options for current page
         if ($fullview) {
+            // Compute once the personal token of the currently logged-in user. It is required to
+            // build the iCal/Webcal export links of the filters that may show export buttons
+            // ("user" and "group" filters, and sub-filters of "group_users" filters).
+            // It is always the token of the session user, whatever user/group the filters are
+            // displaying, as the iCal endpoint authorizes the request based on the identity
+            // related to the provided token (see front/planning.php).
+            $exportable_filter_types = ['user', 'group', 'group_users'];
+            $has_exportable_filter = false;
+            foreach (
+                [
+                    $_SESSION['glpi_plannings']['filters'] ?? [],
+                    $_SESSION['glpi_plannings']['plannings'] ?? [],
+                ] as $plannings
+            ) {
+                foreach ($plannings as $planning) {
+                    if (is_array($planning) && in_array($planning['type'] ?? '', $exportable_filter_types, true)) {
+                        $has_exportable_filter = true;
+                        break 2;
+                    }
+                }
+            }
+            $personal_token = null;
+            if ($has_exportable_filter) {
+                $session_users_id = Session::getLoginUserID();
+                if ($session_users_id !== false) {
+                    $session_token = User::getToken($session_users_id, 'personal_token');
+                    if ($session_token !== false) {
+                        $personal_token = $session_token;
+                    }
+                }
+            }
+
             $filters = [];
             if (isset($_SESSION['glpi_plannings']['filters'])) {
                 foreach ($_SESSION['glpi_plannings']['filters'] as $key => $filter) {
-                    $info = self::getPlanningFilterInfo($key, $filter);
+                    $info = self::getPlanningFilterInfo($key, $filter, ['token' => $personal_token]);
                     if ($info !== null) {
                         $filters['filters'][$key] = $info;
                     }
@@ -553,7 +586,7 @@ JAVASCRIPT;
             }
             if (isset($_SESSION['glpi_plannings']['plannings'])) {
                 foreach ($_SESSION['glpi_plannings']['plannings'] as $key => $filter) {
-                    $info = self::getPlanningFilterInfo($key, $filter);
+                    $info = self::getPlanningFilterInfo($key, $filter, ['token' => $personal_token]);
                     if ($info !== null) {
                         $filters['plannings'][$key] = $info;
                     }
@@ -785,7 +818,10 @@ JAVASCRIPT;
     /**
      * @param string $filter_key
      * @param PlanningFilterData $filter_data
-     * @param array{show_delete?: bool, filter_color_index?: int} $options
+     * @param array{show_delete?: bool, filter_color_index?: int, token?: string|null} $options
+     *        `token` is the personal token of the session user: when provided, it is exposed
+     *        through the top-level `token` key of the returned filter info, never within its
+     *        `params` key.
      * @return ?PlanningFilterInfo
      * @throws UrlException
      */
@@ -801,8 +837,14 @@ JAVASCRIPT;
         $params['show_delete']        = true;
         $params['filter_color_index'] = 0;
         foreach ($options as $key => $val) {
+            // The personal token is exposed through the top-level `token` key of the filter
+            // info only, it must not be propagated within the `params` key.
+            if ($key === 'token') {
+                continue;
+            }
             $params[$key] = $val;
         }
+        $token = $options['token'] ?? null;
 
         $actor = explode('_', $filter_key);
         $uID = 0;
@@ -833,6 +875,7 @@ JAVASCRIPT;
                         $info = self::getPlanningFilterInfo($user_key, $user_data, [
                             'show_delete' => false,
                             'filter_color_index' => $params['filter_color_index'],
+                            'token' => $token,
                         ]);
                         if ($info !== null) {
                             $child_filters[$user_key] = $info;
@@ -910,6 +953,11 @@ JAVASCRIPT;
             'params'                => $params,
             'color'                 => $color,
             'show_export_buttons'   => $show_export_buttons,
+            // Personal token of the session user. Only provided for filters that may show
+            // export buttons, as it is required to build the iCal/Webcal export URLs.
+            // It is exposed through the top-level `token` key of the filter info only, never
+            // within its `params`.
+            'token'                 => $show_export_buttons ? $token : null,
             'uID'                   => $uID,
             'gID'                   => $gID,
             'webcal_base_url'       => $webcal_base_url,
