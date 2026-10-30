@@ -82,13 +82,16 @@
 
     {% set calendar_field %}
         {% if params['from_planning_ajax'] is defined %}
-            {{ inputs.hidden('plan[begin]', params['begin']) }}
-            {{ inputs.hidden('plan[end]', params['end']) }}
-            {{ __('From %1$s to %2$s')|format(params['begin']|formatted_datetime, params['end']|formatted_datetime) }}
+            {% do call('Planning::showEventDatesForm', [{
+                itemtype: item.getType(),
+                items_id: item.getID(),
+                begin: params['begin'],
+                end: params['end'],
+            }]) %}
         {% else %}
             {% if params['canedit'] %}
                 {% set ajax_params = {
-                    action: 'add_event_classic_form',
+                    action: 'add_event_dates_form',
                     form: 'remind',
                     users_id: item.fields['users_id'],
                     itemtype: item.getType(),
