@@ -1211,8 +1211,8 @@ final class Search
         $cursor_used = $search->getCursorType() !== null;
         $return_result = [
             'results' => array_values($results),
-            'start' => $search->context->getRequestParameter('start') ?? 0,
-            'limit' => $search->context->getRequestParameter('limit') ?? count($results),
+            'start' => (int) ($search->context->getRequestParameter('start') ?? 0),
+            'limit' => (int) ($search->context->getRequestParameter('limit') ?? count($results)),
             'cursor_used' => $cursor_used,
             'prev_cursor' => $cursors['prev_cursor'],
             'next_cursor' => $cursors['next_cursor'],
