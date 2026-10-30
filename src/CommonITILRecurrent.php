@@ -34,8 +34,10 @@
  */
 
 use Glpi\Features\Clonable;
+use Safe\DateTimeImmutable;
 
 use function Safe\preg_match;
+use function Safe\preg_replace_callback;
 use function Safe\strtotime;
 
 /**
@@ -554,7 +556,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
     /**
      * Get create time
      *
-     * @return int|false
+     * @return int
      */
     public function getCreateTime()
     {
@@ -579,6 +581,10 @@ abstract class CommonITILRecurrent extends CommonDropdown
             }
         }
 
+        if (isset($input['name']) && is_string($input['name'])) {
+            $input['name'] = static::replaceDateVariables($input['name'], $this->getCreateTime());
+        }
+
         // Set date to creation date
         $input['date'] = date('Y-m-d H:i:s', $this->getCreateTime());
         if (isset($predefined['date'])) {
@@ -599,6 +605,54 @@ abstract class CommonITILRecurrent extends CommonDropdown
         }
 
         return $input;
+    }
+
+    /**
+     * Replace date variables (e.g. `{YEAR}`, `{MONTH_NAME+1}`, `{YEAR_OF_WEEK}`) in the given text.
+     * Offsets are applied in the unit of the variable and never carry over to other variables.
+     *
+     * @param string $text
+     * @param int    $timestamp Reference date
+     *
+     * @return string
+     */
+    public static function replaceDateVariables(string $text, int $timestamp): string
+    {
+        return preg_replace_callback(
+            '/\{(YEAR|MONTH|MONTH_NAME|MONTH_SHORT|DAY|WEEKDAY|WEEK|YEAR_OF_WEEK|QUARTER)([+-]\d{1,4})?\}/',
+            static function (array $matches) use ($timestamp): string {
+                $variable = $matches[1];
+                $offset   = (int) ($matches[2] ?? 0);
+
+                $date  = (new DateTimeImmutable())->setTimestamp($timestamp);
+                $year  = (int) $date->format('Y');
+                $month = (int) $date->format('n');
+                $day   = (int) $date->format('j');
+
+                // Months are shifted from the first day to prevent overflow (e.g. January 31 + 1 month)
+                $date = match ($variable) {
+                    'YEAR'                               => $date->setDate($year + $offset, 1, 1),
+                    'MONTH', 'MONTH_NAME', 'MONTH_SHORT' => $date->setDate($year, $month + $offset, 1),
+                    'QUARTER'                            => $date->setDate($year, $month + 3 * $offset, 1),
+                    'DAY', 'WEEKDAY'                     => $date->setDate($year, $month, $day + $offset),
+                    'WEEK', 'YEAR_OF_WEEK'             => $date->setDate($year, $month, $day + 7 * $offset),
+                    default                              => throw new LogicException(),
+                };
+
+                return match ($variable) {
+                    'YEAR'        => $date->format('Y'),
+                    'MONTH'       => $date->format('m'),
+                    'MONTH_NAME'  => Toolbox::getMonthsOfYearArray()[(int) $date->format('n')],
+                    'MONTH_SHORT' => mb_ucfirst((string) IntlDateFormatter::formatObject($date, 'LLL', $_SESSION['glpilanguage'] ?? 'en_GB')),
+                    'DAY'         => $date->format('d'),
+                    'WEEKDAY'     => Toolbox::getDaysOfWeekArray()[(int) $date->format('w')],
+                    'WEEK'        => $date->format('W'),
+                    'YEAR_OF_WEEK' => $date->format('o'),
+                    'QUARTER'     => (string) (intdiv((int) $date->format('n') - 1, 3) + 1),
+                };
+            },
+            $text
+        );
     }
 
     /**
