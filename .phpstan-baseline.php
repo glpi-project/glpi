@@ -8132,18 +8132,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Dropdown/FormActorsDropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method isEntityAssign\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Form/Export/Context/DatabaseMapper.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset int\\|string might not exist on array\\<string, int\\>\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
