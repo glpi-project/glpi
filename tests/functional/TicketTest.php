@@ -7421,6 +7421,68 @@ HTML,
         $this->assertCount(0, $actors);
     }
 
+    public static function assignToMeWithoutUpdateRightProvider(): iterable
+    {
+        yield 'steal' => [Ticket::READALL + Ticket::STEAL];
+        yield 'steal and assign' => [Ticket::READALL + Ticket::STEAL + Ticket::ASSIGN];
+    }
+
+    #[DataProvider('assignToMeWithoutUpdateRightProvider')]
+    public function testAssignToMeWithoutUpdateRight(int $rights): void
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+        ]);
+
+        $this->changeTechRights(['ticket' => $rights]);
+        $tech_id = Session::getLoginUserID();
+
+        // Same input as the "Associate myself" button
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $ticket->update(array_merge($ticket->fields, [
+            '_itil_assign' => [
+                '_type'            => 'user',
+                'users_id'         => $tech_id,
+                'use_notification' => 1,
+            ],
+        ]));
+
+        $ticket->getFromDB($ticket->getID());
+        $this->assertTrue($ticket->isUser(CommonITILActor::ASSIGN, $tech_id));
+    }
+
+    #[DataProvider('assignToMeWithoutUpdateRightProvider')]
+    public function testAssignOtherUserWithoutUpdateRight(int $rights): void
+    {
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => __METHOD__,
+            'content'             => __METHOD__,
+            'entities_id'         => 0,
+            '_skip_auto_assign'   => true,
+            '_users_id_requester' => getItemByTypeName('User', 'normal', true),
+        ]);
+
+        $this->changeTechRights(['ticket' => $rights]);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $ticket->update(array_merge($ticket->fields, [
+            '_itil_assign' => [
+                '_type'            => 'user',
+                'users_id'         => getItemByTypeName('User', 'glpi', true),
+                'use_notification' => 1,
+            ],
+        ]));
+
+        $ticket->getFromDB($ticket->getID());
+        $this->assertCount(0, $ticket->getActorsForType(CommonITILActor::ASSIGN));
+    }
+
     public static function mailCollectorFollowupSetAssigneeProvider(): array
     {
         return [
