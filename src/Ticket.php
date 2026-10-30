@@ -904,6 +904,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         $tt = new TicketTask();
         $tt->deleteByCriteria(['tickets_id' => $this->fields['id']]);
 
+        (new Alert())->clear(self::class, $this->fields['id'], Alert::NOTCLOSED);
+
         // sourceof_items_id / sourceitems_id are not named properly for foreign keys so they cannot be handled by relation.constant.php
         $DB->update(
             ITILFollowup::getTable(),
@@ -5195,20 +5197,38 @@ JAVASCRIPT;
         $tot = 0;
         foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
             $iterator = $DB->request([
-                'FROM'   => self::getTable(),
-                'WHERE'  => [
-                    'entities_id'  => $entity,
-                    'is_deleted'   => 0,
-                    'status'       => [
+                'SELECT'    => [
+                    self::getTable() . '.*',
+                    'glpi_alerts.date AS alert_date',
+                ],
+                'FROM'      => self::getTable(),
+                'LEFT JOIN' => [
+                    'glpi_alerts' => [
+                        'FKEY' => [
+                            'glpi_alerts'    => 'items_id',
+                            self::getTable() => 'id',
+                            [
+                                'AND' => [
+                                    'glpi_alerts.itemtype' => self::class,
+                                    'glpi_alerts.type'     => Alert::NOTCLOSED,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    self::getTable() . '.entities_id' => $entity,
+                    self::getTable() . '.is_deleted'  => 0,
+                    self::getTable() . '.status'      => [
                         self::INCOMING,
                         self::ASSIGNED,
                         self::PLANNED,
                         self::WAITING,
                     ],
-                    'closedate'    => null,
+                    self::getTable() . '.closedate'   => null,
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: new QueryIdentifier('date'),
+                            date: new QueryIdentifier(self::getTable() . '.date'),
                             interval: $value,
                             interval_unit: 'DAY'
                         ) . ' < ' . QueryFunction::now()
@@ -5239,9 +5259,63 @@ JAVASCRIPT;
                     ));
                 }
             }
+
+            $notified = self::raiseNotClosedTicketAlerts($entity, $tickets);
+            if ($notified > 0) {
+                $tot += $notified;
+                $task->addVolume($notified);
+                $task->log(sprintf(
+                    _n('%1$s: %2$s ticket notified individually', '%1$s: %2$s tickets notified individually', $notified),
+                    Dropdown::getDropdownName('glpi_entities', $entity),
+                    $notified
+                ));
+            }
         }
 
         return ($tot > 0 ? 1 : 0);
+    }
+
+    /**
+     * Raise a notification for each not solved ticket, at most once a day per ticket.
+     *
+     * @param int   $entity  Entity ID
+     * @param array<array{id: int, alert_date: ?string}> $tickets Not solved tickets, with the date of their last alert
+     *
+     * @return int Number of notified tickets
+     */
+    private static function raiseNotClosedTicketAlerts(int $entity, array $tickets): int
+    {
+        if (
+            $tickets === []
+            || count(Notification::getNotificationsByEventAndType('alertnotclosed_ticket', self::class, $entity)) === 0
+        ) {
+            return 0;
+        }
+
+        $today    = Session::getCurrentDate();
+        $notified = 0;
+        foreach ($tickets as $data) {
+            if ($data['alert_date'] !== null && $data['alert_date'] >= $today) {
+                continue;
+            }
+
+            $ticket = new self();
+            if (!$ticket->getFromDB($data['id']) || !NotificationEvent::raiseEvent('alertnotclosed_ticket', $ticket)) {
+                continue;
+            }
+
+            $input = [
+                'type'     => Alert::NOTCLOSED,
+                'itemtype' => self::class,
+                'items_id' => $ticket->getID(),
+            ];
+            $alert = new Alert();
+            $alert->deleteByCriteria($input, true);
+            $alert->add($input);
+            $notified++;
+        }
+
+        return $notified;
     }
 
     /**
