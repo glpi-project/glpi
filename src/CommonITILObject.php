@@ -9737,15 +9737,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     && in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))
                     && !$this->isStatusComputationBlocked($this->input)
                 ) {
+                    $status_input = [
+                        'id'                              => $this->getID(),
+                        'status'                          => self::ASSIGNED,
+                        '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
+                        '_from_assignment'                => true,
+                    ];
+                    // The current update already sends its own notification, or none was requested
+                    if (count($this->updates) || isset($this->input['_forcenotif']) || isset($this->input['_disablenotif'])) {
+                        $status_input['_disablenotif'] = true;
+                    }
                     $self = new static();
-                    $self->update(
-                        [
-                            'id'                              => $this->getID(),
-                            'status'                          => self::ASSIGNED,
-                            '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
-                            '_from_assignment'                => true,
-                        ]
-                    );
+                    $self->update($status_input);
                     $this->fields['status'] = $self->fields['status'];
                 }
             }
