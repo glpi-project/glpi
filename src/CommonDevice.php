@@ -473,7 +473,7 @@ abstract class CommonDevice extends CommonDropdown
 
         if ($options['canedit']) {
             $field_name  = 'quantity_' . static::class . '_' . $this->getID();
-            $content .= "&nbsp;<button type='button' class='btn-as-link ti ti-plus' title='" . __s('Add') . "'
+            $content .= "&nbsp;<button type='button' class='btn-as-link ti ti-plus collapse-trigger-once' title='" . __s('Add') . "'
                       data-bs-toggle='collapse' data-bs-target='#" . htmlescape($field_name) . "'
                       aria-expanded='false' aria-controls='" . htmlescape($field_name) . "'
                       ><span class='visually-hidden'>" . __s('Add') . "</span></button>";
