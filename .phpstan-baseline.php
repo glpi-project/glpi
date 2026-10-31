@@ -14026,7 +14026,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on \\(T of CommonITILObject\\)\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
