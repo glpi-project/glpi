@@ -91,6 +91,23 @@ TWIG, $twig_params);
         return max($min, min($max, $is_int ? (int) $value : (float) $value));
     }
 
+    /**
+     * Get the number of decimals of the field values, based on the `min` and `step` options.
+     *
+     * @return int
+     */
+    private function getDecimalsCount(float $min, float $step): int
+    {
+        $decimals_count = 0;
+        foreach ([$min, $step] as $value) {
+            $fractional_part = strrchr((string) $value, '.');
+            if ($fractional_part !== false) {
+                $decimals_count = max($decimals_count, strlen($fractional_part) - 1);
+            }
+        }
+        return $decimals_count;
+    }
+
     public function getSearchOption(): ?array
     {
         $opt = $this->getCommonSearchOptionData();
@@ -99,6 +116,10 @@ TWIG, $twig_params);
         $opt['min'] = $field_opts['min'] ?? 0;
         $opt['max'] = $field_opts['max'] ?? PHP_INT_MAX;
         $opt['step'] = $field_opts['step'] ?? 1;
+        $opt['decimals'] = $this->getDecimalsCount(
+            is_numeric($opt['min']) ? (float) $opt['min'] : 0,
+            is_numeric($opt['step']) ? (float) $opt['step'] : 1
+        );
         return $opt;
     }
 }
