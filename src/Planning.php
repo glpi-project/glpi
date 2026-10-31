@@ -2167,8 +2167,16 @@ TWIG, $twig_params);
                     $update['users_id_tech'] = $item->fields['users_id_tech'];
                 }
 
+                // identical old and new actors means only the time changed: nothing to do on actors
+                $actor_changed = strtolower((string) ($params['old_actor_itemtype'] ?? '')) !== strtolower((string) ($params['new_actor_itemtype'] ?? ''))
+                    || (int) ($params['old_actor_items_id'] ?? 0) !== (int) ($params['new_actor_items_id'] ?? 0);
+
                 // manage moving event between resource (actors)
-                if (!empty($params['new_actor_itemtype']) && !empty($params['new_actor_items_id'])) {
+                if (
+                    $actor_changed
+                    && !empty($params['new_actor_itemtype'])
+                    && !empty($params['new_actor_items_id'])
+                ) {
                     $new_actor_itemtype = strtolower($params['new_actor_itemtype']);
 
                     // reminders don't have group assignement for planning
@@ -2179,7 +2187,7 @@ TWIG, $twig_params);
                         switch ($new_actor_itemtype) {
                             case "group":
                                 $update['groups_id_tech'] = $params['new_actor_items_id'];
-                                if (strtolower($params['old_actor_itemtype']) === "user") {
+                                if (strtolower((string) ($params['old_actor_itemtype'] ?? '')) === "user") {
                                     $update['users_id_tech']  = 0;
                                 }
                                 break;
@@ -2187,7 +2195,7 @@ TWIG, $twig_params);
                             case "user":
                                 if (isset($item->fields['users_id_tech'])) {
                                     $update['users_id_tech']  = $params['new_actor_items_id'];
-                                    if (strtolower($params['old_actor_itemtype']) === "group") {
+                                    if (strtolower((string) ($params['old_actor_itemtype'] ?? '')) === "group") {
                                         $update['groups_id_tech']  = 0;
                                     }
                                 } else {
@@ -2200,29 +2208,35 @@ TWIG, $twig_params);
                     // special case for project tasks
                     // which have a link tables for their relation with groups/users
                     if ($item instanceof ProjectTask) {
-                        // get actor for finding relation with item
-                        $actor = getItemForItemtype($params['old_actor_itemtype']);
-                        $actor->getFromDB((int) $params['old_actor_items_id']);
+                        // get actors for finding relation with item
+                        // (values come from the client and may be missing or invalid)
+                        $actor     = getItemForItemtype((string) ($params['old_actor_itemtype'] ?? ''));
+                        $actor_new = getItemForItemtype((string) $params['new_actor_itemtype']);
 
-                        // get current relation
-                        $team_old = new ProjectTaskTeam();
-                        $team_old->getFromDBForItems($item, $actor);
-
-                        // if new relation already exists, delete old relation
-                        $actor_new = getItemForItemtype($params['new_actor_itemtype']);
-                        $actor_new->getFromDB((int) $params['new_actor_items_id']);
-                        $team_new  = new ProjectTaskTeam();
-                        if ($team_new->getFromDBForItems($item, $actor_new)) {
-                            $team_old->delete([
-                                'id' => $team_old->fields['id'],
-                            ]);
-                        } else {
-                            // else update relation
-                            $team_old->update([
-                                'id'       => $team_old->fields['id'],
-                                'itemtype' => $params['new_actor_itemtype'],
-                                'items_id' => $params['new_actor_items_id'],
-                            ]);
+                        if (
+                            $actor instanceof CommonDBTM
+                            && $actor_new instanceof CommonDBTM
+                            && $actor->getFromDB((int) ($params['old_actor_items_id'] ?? 0))
+                            && $actor_new->getFromDB((int) $params['new_actor_items_id'])
+                        ) {
+                            // get current relation
+                            $team_old = new ProjectTaskTeam();
+                            if ($team_old->getFromDBForItems($item, $actor)) {
+                                // if new relation already exists, delete old relation
+                                $team_new = new ProjectTaskTeam();
+                                if ($team_new->getFromDBForItems($item, $actor_new)) {
+                                    $team_old->delete([
+                                        'id' => $team_old->fields['id'],
+                                    ]);
+                                } else {
+                                    // else update relation
+                                    $team_old->update([
+                                        'id'       => $team_old->fields['id'],
+                                        'itemtype' => $params['new_actor_itemtype'],
+                                        'items_id' => $params['new_actor_items_id'],
+                                    ]);
+                                }
+                            }
                         }
                     }
                 }

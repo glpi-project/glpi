@@ -14548,7 +14548,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 4,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
@@ -14597,12 +14597,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$item2 of method CommonDBRelation\\:\\:getFromDBForItems\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
