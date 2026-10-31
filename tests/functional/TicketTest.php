@@ -59,7 +59,6 @@ use ITILCategory;
 use ITILFollowup;
 use ITILReminder;
 use ITILSolution;
-use Laminas\Mail\Storage\Message as MailMessage;
 use MailCollector;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
@@ -7633,7 +7632,7 @@ HTML,
             "",
             "This is a test followup sent via email.",
         ]);
-        $message = new MailMessage(['raw' => $raw]);
+        $message = MailCollector::parseMessage($raw);
 
         $tkt = $collector->buildTicket(1, $message, ['mailgates_id' => $mailgate_id, 'play_rules' => false]);
 

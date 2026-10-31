@@ -384,7 +384,7 @@ final class StatusChecker
                         } else {
                             $host = $param['address'];
                         }
-                        if ($fp = @fsockopen($host, $param['port'], $errno, $errstr, 1)) { // @phpstan-ignore theCodingMachineSafe.function
+                        if ($fp = @fsockopen($host, (int) $param['port'], $errno, $errstr, 1)) { // @phpstan-ignore theCodingMachineSafe.function
                             $status['servers'][$display_name] = [
                                 'status' => self::STATUS_OK,
                             ];

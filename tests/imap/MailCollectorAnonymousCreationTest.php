@@ -37,9 +37,9 @@ namespace tests\units;
 use CommonITILActor;
 use CommonITILObject;
 use Glpi\Config\ConfigContainer;
+use Glpi\Mail\Imap\Mailbox;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
-use Laminas\Mail\Protocol\Imap as ImapProtocol;
 use MailCollector;
 use NotificationTargetTicket;
 use NotImportedEmail;
@@ -69,7 +69,7 @@ class MailCollectorAnonymousCreationTest extends DbTestCase
     private const ANONYMOUS_SENDER   = 'anonymous-sender@glpi-project.org';
     private const ANONYMOUS_OBSERVER = 'anonymous-observer@glpi-project.org';
 
-    private static ?ImapProtocol $protocol = null;
+    private static ?Mailbox $mailbox = null;
 
     /**
      * A message sent by an unknown sender creates a ticket only when anonymous helpdesk is
@@ -389,18 +389,14 @@ class MailCollectorAnonymousCreationTest extends DbTestCase
      */
     private function fillMailbox(array $raw_messages): void
     {
-        $protocol = $this->getImapProtocol();
+        $mailbox = $this->getImapMailbox();
 
-        if (array_key_exists(self::IMAP_FOLDER, $protocol->listMailbox())) {
-            $deleted = $protocol->delete(self::IMAP_FOLDER);
-            assert($deleted);
-        }
-        $created = $protocol->create(self::IMAP_FOLDER);
-        assert($created);
+        // Any failure will throw an exception.
+        $mailbox->folders()->find(self::IMAP_FOLDER)?->delete();
+        $mailbox->folders()->create(self::IMAP_FOLDER);
 
         foreach ($raw_messages as $raw_message) {
-            $appended = $protocol->append(self::IMAP_FOLDER, $raw_message);
-            assert($appended);
+            $mailbox->connection()->append(self::IMAP_FOLDER, $raw_message);
         }
     }
 
@@ -408,18 +404,22 @@ class MailCollectorAnonymousCreationTest extends DbTestCase
      * Authentication on the test IMAP server takes about 2 seconds, so the connection used to
      * push the messages is shared by all the tests of this class.
      */
-    private function getImapProtocol(): ImapProtocol
+    private function getImapMailbox(): Mailbox
     {
-        if (self::$protocol === null) {
-            $protocol = new ImapProtocol();
-            $protocol->connect(self::IMAP_HOST, self::IMAP_PORT);
-            $logged_in = $protocol->login(self::IMAP_LOGIN, self::IMAP_PASSWORD);
-            assert($logged_in);
+        if (self::$mailbox === null) {
+            $mailbox = new Mailbox([
+                'host'       => self::IMAP_HOST,
+                'port'       => self::IMAP_PORT,
+                'username'   => self::IMAP_LOGIN,
+                'password'   => self::IMAP_PASSWORD,
+                'encryption' => null,
+            ]);
+            $mailbox->connect();
 
-            self::$protocol = $protocol;
+            self::$mailbox = $mailbox;
         }
 
-        return self::$protocol;
+        return self::$mailbox;
     }
 
     /**
