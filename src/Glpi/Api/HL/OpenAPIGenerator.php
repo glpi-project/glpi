@@ -1074,7 +1074,10 @@ EOT;
             }
             unset($component_schema['description']);
             foreach (array_keys($component_schema['properties'] ?? []) as $property_name) {
-                unset($component_schema['properties'][$property_name]['description']);
+                unset(
+                    $component_schema['properties'][$property_name]['description'],
+                    $component_schema['properties'][$property_name]['computation'],
+                );
             }
             $schema_components[$name] = $component_schema;
         }
