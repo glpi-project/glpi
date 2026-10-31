@@ -561,8 +561,8 @@ abstract class Spreadsheet extends ExportSearchOutput
         array $options = []
     ): void {
 
-        // If the value is an array and search options are provided, it's a search result item
-        if (is_array($value) && isset($options['searchopt'])) {
+        // If the value is an array, it's a search result item
+        if (is_array($value)) {
             $is_date = in_array($options['searchopt']['datatype'] ?? '', ['date', 'datetime']);
             $raw_val = $value[0]['name'] ?? null;
             $is_single_value = ($value['count'] ?? 0) === 1;
