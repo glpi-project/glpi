@@ -1274,6 +1274,117 @@ body.in_modal .kb-editor-reserved {
     }
 }
 
+// Mermaid diagram drawn from its source block
+// Without this, the highlight of a comment that quotes the source cannot be seen.
+pre.kb-mermaid-drawn:not(:has(.kb-comment-highlight)) {
+    display: none;
+}
+
+.kb-mermaid-diagram {
+    margin: 0 0 0.75rem;
+    overflow-x: auto;
+    text-align: center;
+
+    > svg {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+.kb-mermaid-block {
+    margin-block-end: 0.75rem;
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+
+    &.ProseMirror-selectednode {
+        outline: 2px solid var(--tblr-primary);
+        outline-offset: 2px;
+    }
+
+    .kb-mermaid-tabs {
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.25rem;
+        border-block-end: 1px solid var(--tblr-border-color);
+    }
+
+    .kb-mermaid-tab {
+        border: 0;
+        background: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--tblr-border-radius-sm);
+        color: var(--tblr-secondary);
+
+        &[aria-selected="true"] {
+            background: var(--tblr-bg-surface-secondary);
+            color: var(--tblr-body-color);
+            font-weight: 500;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--tblr-primary);
+        }
+    }
+
+    .kb-mermaid-preview {
+        padding: 1rem;
+
+        .kb-mermaid-diagram {
+            margin: 0;
+        }
+    }
+
+    pre.kb-mermaid-source {
+        display: none;
+        margin: 0;
+        border-radius: 0 0 var(--tblr-border-radius) var(--tblr-border-radius);
+    }
+
+    // Out of edit mode, a diagram that cannot be drawn shows its source, as in the read view.
+    &.is-source,
+    .ProseMirror[contenteditable="false"] &.is-invalid {
+        .kb-mermaid-preview {
+            display: none;
+        }
+
+        pre.kb-mermaid-source {
+            display: block;
+        }
+    }
+
+    .kb-mermaid-message {
+        margin: 0;
+        color: var(--tblr-secondary);
+        white-space: pre-wrap;
+
+        &.is-error {
+            color: var(--tblr-danger);
+            font-family: var(--tblr-font-monospace);
+            font-size: 0.875em;
+        }
+    }
+}
+
+// Out of edit mode, the editor shows the diagram only.
+.ProseMirror[contenteditable="false"] .kb-mermaid-block {
+    border: 0;
+
+    .kb-mermaid-tabs,
+    pre.kb-mermaid-source {
+        display: none;
+    }
+
+    .kb-mermaid-preview {
+        display: block;
+        padding: 0;
+    }
+
+    // As in the read view, the highlight of a comment that quotes the source must be seen.
+    pre.kb-mermaid-source:has(.kb-comment-highlight) {
+        display: block;
+    }
+}
+
 .visibility-type-col .select2-selection {
     // Merge borders with dropdown to its right
     border-start-end-radius: 0 !important;

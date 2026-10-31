@@ -41,6 +41,7 @@ export type SlashCommand =
     | 'Numbered List'
     | 'Quote'
     | 'Code Block'
+    | 'Diagram'
     | 'Table'
     | 'Divider'
     | 'Image'

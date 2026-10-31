@@ -1374,6 +1374,12 @@ class Toolbox
 
                     case "reservation":
                         return Reservation::getFormURLWithID((int) $data[1]) . "&$forcetab";
+
+                    case "knowbaseitem":
+                        if (isset($data[1]) && is_numeric($data[1]) && ($data[1] > 0)) {
+                            return KnowbaseItem::getFormURLWithID((int) $data[1]) . "&$forcetab";
+                        }
+                        return null;
                 }
 
                 break;

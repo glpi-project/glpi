@@ -40,6 +40,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\RichText\MermaidRenderer;
 use Glpi\RichText\RichText;
 use Glpi\RichText\VideoEmbedRenderer;
 use Group_KnowbaseItem;
@@ -69,6 +70,8 @@ final class KnowbaseItemController extends AbstractController
     )]
     public function content(Request $request): Response
     {
+        global $CFG_GLPI;
+
         $id = $request->attributes->getInt('knowbaseitems_id');
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
@@ -79,7 +82,11 @@ final class KnowbaseItemController extends AbstractController
         }
 
         $safe = RichText::getSafeHtml($kbitem->fields['answer'], false);
-        return new Response((new VideoEmbedRenderer())->renderAllAsLink($safe));
+        $html = (new VideoEmbedRenderer())->renderAllAsLink($safe);
+        // Absolute, as this content may go into notifications, and through the redirect page,
+        // which opens the article page of the reader's interface.
+        $article_url = $CFG_GLPI['url_base'] . '/index.php?redirect=' . rawurlencode('knowbaseitem_' . $id);
+        return new Response((new MermaidRenderer())->addArticleLinks($html, $article_url));
     }
 
     #[Route(
