@@ -1170,11 +1170,13 @@ final class HLAPIResponseAsserter
         $items = $is_schema_array ? $content : [$content];
 
         foreach ($items as $item) {
-            // Verify the JSON content matches the OpenAPI schema
-            $matches = Doc\Schema::fromArray($schema)->isValid($item, $operation);
+            // Verify the JSON content matches the OpenAPI schema (type and format only)
+            $errors = Doc\SchemaValidator::validate($schema, $item, ['type_format_only' => true]);
+            $matches = $errors === [];
             if (!$matches) {
                 $fail_msg ??= 'Response content does not match the schema';
                 $fail_msg .= ":\n" . var_export($item, true);
+                $fail_msg .= "\n\nErrors:\n" . var_export($errors, true);
                 $fail_msg .= "\n\nSchema:\n" . var_export($schema, true);
                 $this->call_asserter->test->assertTrue($matches, $fail_msg);
             }

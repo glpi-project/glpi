@@ -38,10 +38,8 @@ namespace Glpi\Api\HL\Doc;
 use ArrayAccess;
 use CommonGLPI;
 use Glpi\Api\HL\Router;
-use Glpi\Toolbox\ArrayPathAccessor;
 use Safe\Exceptions\DatetimeException;
 
-use function Safe\preg_match;
 use function Safe\strtotime;
 
 /**
@@ -421,79 +419,17 @@ class Schema implements ArrayAccess
         return $filtered_props;
     }
 
-    private static function validateTypeAndFormat(string $type, string $format, mixed $value): bool
-    {
-        // For now at least, null is acceptable for any type and format
-        if ($value === null) {
-            return true;
-        }
-
-        // In some cases, we may be validating content that was already encoded as JSON and the decode process ruins the type
-        // For example, a 0 or 1 integer value may be decoded as a boolean
-        if (($value === false || $value === true) && $type === self::TYPE_INTEGER) {
-            $value = (int) $value;
-        }
-
-        $type_match = match ($type) {
-            self::TYPE_STRING => is_string($value),
-            self::TYPE_INTEGER => is_int($value),
-            self::TYPE_NUMBER => is_int($value) || is_float($value),
-            self::TYPE_BOOLEAN => is_bool($value),
-            self::TYPE_ARRAY, self::TYPE_OBJECT => is_array($value),
-            default => false
-        };
-        if (!$type_match) {
-            return false;
-        }
-
-        // Check format
-        /** @var self::FORMAT_* $format */
-        return match ($format) {
-            self::FORMAT_BOOLEAN_BOOLEAN => is_bool($value),
-            self::FORMAT_INTEGER_INT32 => ((abs($value) & 0x7FFFFFFF) === abs($value)),
-            self::FORMAT_INTEGER_INT64 => ((abs($value) & 0x7FFFFFFFFFFFFFFF) === abs($value)),
-            // Double: float and has 2 or less decimal places
-            // We also accept integers as doubles (no decimal places specified)
-            self::FORMAT_NUMBER_DOUBLE => is_int($value) || (is_float($value) && (strlen(substr(strrchr((string) $value, "."), 1)) <= 2)),
-            self::FORMAT_NUMBER_FLOAT => is_int($value) || is_float($value),
-            // Binary: binary data like used for Files
-            self::FORMAT_STRING_BINARY, self::FORMAT_STRING_PASSWORD, self::FORMAT_STRING_STRING => is_string($value),
-            // Byte: base64 encoded string
-            self::FORMAT_STRING_BYTE => is_string($value) && preg_match('/^[a-zA-Z0-9\/+]*={0,2}$/', $value),
-            // Date: valid RFC3339 date
-            self::FORMAT_STRING_DATE => is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $value),
-            // Date-time: valid RFC3339 date-time
-            self::FORMAT_STRING_DATE_TIME => is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|(\+|-)\d{2}:\d{2})$/', $value),
-            default => true
-        };
-    }
-
+    /**
+     * Check that the type and format of the content match the properties of this schema.
+     * Null (or missing) values are valid for any type and format.
+     * @param array<string, mixed> $content
+     * @param string|null $operation Unused. The readOnly/writeOnly flags are not kept by this class and null values are always valid.
+     * @return bool
+     * @see SchemaValidator::validate() To get the details of what is invalid
+     */
     public function isValid(array $content, ?string $operation = null): bool
     {
-        $flattened_schema = self::flattenProperties($this->toArray()['properties'], '', false);
-
-        foreach ($flattened_schema as $sk => $sv) {
-            $ignored = false;
-            // Get value from original content by the array path $sk
-            $cv = ArrayPathAccessor::getElementByArrayPath($content, $sk);
-            if ($cv === null) {
-                if ($operation === 'read' && ($sv['writeOnly'] ?? false)) {
-                    $ignored = true;
-                } elseif ($operation === 'write' && ($sv['readOnly'] ?? false)) {
-                    $ignored = true;
-                }
-            }
-            if ($ignored) {
-                // Property was not found, but it wasn't applicable to the operation
-                continue;
-            }
-
-            // Verify that the type is correct
-            if (!self::validateTypeAndFormat($sv['type'], $sv['format'] ?? '', $cv)) {
-                return false;
-            }
-        }
-        return true;
+        return SchemaValidator::validate($this->toArray(), $content, ['type_format_only' => true]) === [];
     }
 
     /**
