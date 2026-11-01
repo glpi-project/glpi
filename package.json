@@ -36,7 +36,7 @@
         "@tiptap/suggestion": "^3.31.3",
         "altcha": "^3.2.4",
         "animate.css": "^4.1.1",
-        "cropperjs": "^2.2.0",
+        "cropperjs": "^2.3.1",
         "cytoscape": "^3.34.3",
         "cytoscape-canvas": "^3.0.1",
         "cytoscape-context-menus": "^4.2.1",
