@@ -61,6 +61,7 @@ use Throwable;
 use Ticket;
 use Toolbox;
 
+use function Safe\ini_get;
 use function Safe\json_encode;
 use function Safe\preg_replace;
 
@@ -692,6 +693,18 @@ TWIG, $twig_params);
         $params = array_merge($defaults, $params);
 
         if (!self::checkToken($params)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if (
+            session_status() === PHP_SESSION_ACTIVE
+            || filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN)
+        ) {
+            // The embed session must be built in the isolated context of a stateless request
+            // (see `SessionManager::isResourceStateless()`), never on top of the session
+            // of the current visitor, as it would replace their identity and rights.
+            // Session cookies are disabled for stateless requests, so a cookie-enabled
+            // context means that `Session::start()` could resume the visitor session.
             throw new AccessDeniedHttpException();
         }
 
