@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
@@ -86,5 +87,12 @@ final class RequesterField extends ITILActorField
     public function getWeight(): int
     {
         return 100;
+    }
+
+    #[Override]
+    protected function getFallbackActors(ITILActorFieldConfig $config, AnswersSet $answers_set): array
+    {
+        // A ticket must never end up with no requester.
+        return ITILActorFieldStrategy::FORM_FILLER->getITILActors($this, $config, $answers_set) ?? [];
     }
 }

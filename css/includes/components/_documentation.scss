@@ -154,14 +154,9 @@
     }
 }
 
-@include media-breakpoint-down(xxl) {
+@include media-breakpoint-up(sm) {
     .documentation-large {
-        margin-left: 240px;
-    }
-}
-
-@include media-breakpoint-down(sm) {
-    .documentation-large {
-        margin-left: 0;
+        // Never smaller than the fixed sidebar width, to avoid overlap.
+        margin-left: max(240px, calc((100% - 1000px) / 2));
     }
 }

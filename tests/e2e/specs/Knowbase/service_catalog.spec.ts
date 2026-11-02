@@ -55,7 +55,7 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
     await kb.goto(kb_id);
 
     // Open service catalog panel
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('Service catalog').click();
 
     // Confirm default state
@@ -79,7 +79,7 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
     await page.reload();
 
     // Validate values
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('Service catalog').click();
 
     await expect(kb.getCheckbox('Show in service catalog')).toBeChecked();
@@ -102,7 +102,7 @@ test('Can disable service catalog settings', async ({ page, profile, api }) => {
     await kb.goto(kb_id);
 
     // Open service catalog panel
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('Service catalog').click();
     await expect(kb.getHeading('Service catalog')).toBeVisible();
 
@@ -126,7 +126,7 @@ test('Can disable service catalog settings', async ({ page, profile, api }) => {
     await page.reload();
 
     // Service catalog is now disabled
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('Service catalog').click();
 
     await expect(kb.getCheckbox('Show in service catalog')).not.toBeChecked();

@@ -41,6 +41,7 @@ use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Tests\AbstractConditionHandlerTest;
+use Location;
 use Override;
 use SoftwareCategory;
 
@@ -65,6 +66,44 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             default:
                 throw new \InvalidArgumentException("Unsupported question type: $question_type");
         }
+    }
+
+    public function testComparisonIsDoneOnCompleteNameForTreeDropdowns(): void
+    {
+        $this->login();
+
+        // Arrange: create a location with a parent
+        $parent = $this->createItem(Location::class, ['name' => 'Parent location']);
+        $child  = $this->createItem(Location::class, [
+            'name'         => 'Child location',
+            'locations_id' => $parent->getID(),
+        ]);
+
+        // Act: compare the child with its parent name
+        $handler = new ItemAsTextConditionHandler(Location::class);
+        $answer  = ['itemtype' => Location::class, 'items_ids' => [$child->getID()]];
+
+        // Assert: the complete name of the child contains the parent name
+        $this->assertTrue($handler->applyValueOperator(
+            $answer,
+            ValueOperator::CONTAINS,
+            'Parent location > Child location',
+            null,
+        ));
+
+        // Assert: the parent name is part of the child complete name
+        $this->assertTrue($handler->applyValueOperator(
+            $answer,
+            ValueOperator::CONTAINS,
+            'Parent location',
+            null,
+        ));
+        $this->assertFalse($handler->applyValueOperator(
+            $answer,
+            ValueOperator::NOT_CONTAINS,
+            'Parent location',
+            null,
+        ));
     }
 
     #[Override]

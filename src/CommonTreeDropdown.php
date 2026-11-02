@@ -101,10 +101,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    $this->getTable(),
-                    [$this->getForeignKeyField() => $item->getID()]
-                );
+                $criteria = [$this->getForeignKeyField() => $item->getID()];
+                if ($this->maybeDeleted()) {
+                    $criteria['is_deleted'] = 0;
+                }
+                $nb = countElementsInTable($this->getTable(), $criteria);
             }
             return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
@@ -561,7 +562,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                                 {% endif %}
                             </div>
                             <div class="d-flex flex-row-reverse pe-2">
-                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                             </div>
                         </div>
                     </form>
@@ -570,10 +571,15 @@ TWIG, $twig_params);
         }
 
         $fk   = static::getForeignKeyField();
+        $where = [$fk => $ID];
+        if ($this->maybeDeleted()) {
+            // Children moved to the trash must not be listed with the active ones
+            $where['is_deleted'] = 0;
+        }
         $result = $DB->request(
             [
                 'FROM'  => static::getTable(),
-                'WHERE' => [$fk => $ID],
+                'WHERE' => $where,
                 'ORDER' => 'name',
             ]
         );
@@ -682,7 +688,7 @@ TWIG, $twig_params);
 
         if ($isadmin) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
-                  = "<i class='ti ti-sitemap'></i>"
+                  = "<i class='ti ti-sitemap' aria-hidden='true'></i>"
                     . _sx('button', 'Move under');
         }
 
@@ -866,6 +872,9 @@ TWIG, $twig_params);
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
+        // Add asset URL search option for asset types
+        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
+
         return $tab;
     }
 
@@ -935,7 +944,7 @@ TWIG, $twig_params);
                     'completename' => $input['completename'],
                 ],
             ];
-            if ($this->isEntityAssign()) {
+            if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',
@@ -960,7 +969,7 @@ TWIG, $twig_params);
                     $fk      => ($input[$fk] ?? 0),
                 ],
             ];
-            if ($this->isEntityAssign()) {
+            if ($this->isField('entities_id') && isset($input['entities_id'])) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',

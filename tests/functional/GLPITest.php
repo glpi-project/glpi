@@ -34,15 +34,14 @@
 
 namespace tests\units;
 
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Tests\GLPITestCase;
 
 class GLPITest extends GLPITestCase
 {
     public function testMissingLanguages()
     {
-        global $CFG_GLPI;
-
-        $know_languages = $CFG_GLPI['languages'];
+        $know_languages = LanguageRegistry::all();
         $list_languages = [];
 
         $diterator = new \DirectoryIterator(__DIR__ . '/../../locales');

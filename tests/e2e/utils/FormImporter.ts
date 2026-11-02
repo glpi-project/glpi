@@ -74,7 +74,7 @@ export class FormImporter
 
         const dom = new JSDOM(body);
         const link = dom.window.document.querySelector(
-            'a[href^="/front/form/form.form.php?id="]'
+            '[data-testid="import-results"] a[href^="/front/form/form.form.php?id="]'
         ) as HTMLAnchorElement;
 
         if (link === null) {

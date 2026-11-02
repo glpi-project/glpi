@@ -69,6 +69,19 @@ final class ShareTokenManager
     }
 
     /**
+     * Get the item shared by the given token, without granting access to it.
+     */
+    public function getSharedItem(string $token): (CommonDBTM&ShareableInterface)|null
+    {
+        $row = $this->findValidTokenRowByPlaintext($token);
+        if ($row === null) {
+            return null;
+        }
+
+        return $this->loadItemFromRow($row);
+    }
+
+    /**
      * Check whether the current session has shared access to an item.
      *
      * @param class-string<CommonDBTM> $itemtype The item class name
@@ -198,6 +211,27 @@ final class ShareTokenManager
      */
     private function openSessionAccessFromRow(array $row): (CommonDBTM&ShareableInterface)|null
     {
+        $item = $this->loadItemFromRow($row);
+        if ($item === null) {
+            return null;
+        }
+
+        // allow access for the next 5 minutes
+        $_SESSION[self::SESSION_KEY][$item::class][$item->getID()] = [
+            'sharetoken_id' => (int) $row['id'],
+            'expires_at'    => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime($_SESSION['glpi_currenttime']))),
+        ];
+
+        return $item;
+    }
+
+    /**
+     * Load the shared item of a token row, if it can still be shared.
+     *
+     * @param array<string, mixed> $row Token row containing at least `itemtype`, `items_id`.
+     */
+    private function loadItemFromRow(array $row): (CommonDBTM&ShareableInterface)|null
+    {
         $item = \getItemForItemtype($row['itemtype']);
 
         if (
@@ -212,12 +246,6 @@ final class ShareTokenManager
         ) {
             return null;
         }
-
-        // allow access for the next 5 minutes
-        $_SESSION[self::SESSION_KEY][$item::class][$item->getID()] = [
-            'sharetoken_id' => (int) $row['id'],
-            'expires_at'    => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime($_SESSION['glpi_currenttime']))),
-        ];
 
         return $item;
     }
@@ -253,6 +281,57 @@ final class ShareTokenManager
     public function computeTokenHint(string $plain_token): string
     {
         return substr(hash('sha256', $plain_token), 0, 16);
+    }
+
+    /**
+     * Whether the item currently has at least one active share token.
+     *
+     * @param class-string<CommonDBTM> $itemtype The item class name
+     * @param int $items_id The item ID
+     */
+    public function hasActiveToken(string $itemtype, int $items_id): bool
+    {
+        return $this->getActiveToken($itemtype, $items_id) !== null;
+    }
+
+    /**
+     * Return the active share token row (with the plaintext token) for an item,
+     * or null when the item is not currently published.
+     *
+     * @param class-string<CommonDBTM> $itemtype The item class name
+     * @param int $items_id The item ID
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getActiveToken(string $itemtype, int $items_id): ?array
+    {
+        foreach ($this->getTokensForItem($itemtype, $items_id) as $row) {
+            if ((int) $row['is_active'] === 1) {
+                $row['token'] = $this->decryptToken((string) $row['token']);
+                return $row;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Return the single share token row (active OR inactive) for an item, with
+     * the plaintext token, or null when the item has no token at all.
+     *
+     * @param class-string<CommonDBTM> $itemtype The item class name
+     * @param int $items_id The item ID
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getToken(string $itemtype, int $items_id): ?array
+    {
+        foreach ($this->getTokensForItem($itemtype, $items_id) as $row) {
+            $row['token'] = $this->decryptToken((string) $row['token']);
+            return $row;
+        }
+
+        return null;
     }
 
     /**

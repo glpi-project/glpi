@@ -104,14 +104,14 @@ final class CategoryProvider implements CompositeProviderInterface
         $categories = [];
         $current_category = [
             'id' => $category->getID(),
-            'name' => $category->fields['name'],
+            'name' => $category->getServiceCatalogItemTitle(),
         ];
 
         /** @var Category $ancestor */
         foreach ($category->getAncestors() as $ancestor) {
             $categories[] = [
                 'id' => $ancestor->getID(),
-                'name' => $ancestor->fields['name'],
+                'name' => $ancestor->getServiceCatalogItemTitle(),
             ];
         }
 

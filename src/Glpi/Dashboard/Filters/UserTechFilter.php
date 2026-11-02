@@ -36,15 +36,15 @@
 namespace Glpi\Dashboard\Filters;
 
 use Change;
-use CommonITILActor;
 use Problem;
 use Session;
 use Ticket;
-use UnexpectedValueException;
 use User;
 
 class UserTechFilter extends AbstractFilter
 {
+    use AssignedITILUserFilterTrait;
+
     public static function getName(): string
     {
         return __("Technician");
@@ -82,28 +82,7 @@ class UserTechFilter extends AbstractFilter
                     "$table.users_id_tech" => $users_id,
                 ];
             } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
-                $main_item = match ($table) {
-                    Ticket::getTable() => new Ticket(),
-                    Change::getTable() => new Change(),
-                    Problem::getTable() => new Problem(),
-                    default => throw new UnexpectedValueException(),
-                };
-                $userlink  = $main_item->userlinkclass;
-                $ul_table  = $userlink::getTable();
-                $fk        = $main_item->getForeignKeyField();
-
-                $criteria["JOIN"] = [
-                    "$ul_table as ul" => [
-                        'ON' => [
-                            'ul'   => $fk,
-                            $table => 'id',
-                        ],
-                    ],
-                ];
-                $criteria["WHERE"] = [
-                    "ul.type"     => CommonITILActor::ASSIGN,
-                    "ul.users_id" => $users_id,
-                ];
+                $criteria = self::getAssignedITILUserCriteria($table, $users_id);
             }
         }
 
@@ -125,12 +104,7 @@ class UserTechFilter extends AbstractFilter
                     'value'      =>  $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value,
                 ];
             } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
-                $criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => 5,// tech
-                    'searchtype' => 'equals',
-                    'value'      =>  is_numeric($value) ? (int) $value : $value,
-                ];
+                $criteria[] = self::getAssignedITILUserSearchCriteria($value);
             }
         }
         return $criteria;

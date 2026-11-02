@@ -1,0 +1,55 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block config_fields %}
+   {{ fields.largeTitle(__('Login session data retention'), 'ti ti-user-shield') }}
+
+    {{ fields.dropdownNumberField('login_history_retention_days', config['login_history_retention_days'], __('Retention period (days)'), {
+        min: 0,
+        max: 365,
+    }) }}
+
+    {% set crontask_config %}
+        {% if crontask.fields['state'] == 0 %}
+            <span class="badge bg-danger text-danger-fg">{{ __('Disabled') }}</span>
+        {% else %}
+            <span class="badge bg-success text-success-fg">{{ __('Enabled') }}</span>
+        {% endif %}
+        <a href="{{ crontask.getFormURLWithID(crontask.getID()) }}">
+            {{ __('Configure automatic action') }}
+        </a>
+    {% endset %}
+    {{ fields.htmlField('', crontask_config, 'CronTask'|itemtype_name) }}
+{% endblock %}

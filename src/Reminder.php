@@ -67,7 +67,7 @@ class Reminder extends CommonDBVisible implements
 
     public static function getTypeName($nb = 0)
     {
-        if (Session::haveRight('reminder_public', READ)) {
+        if (Session::haveRight(Reminder::$rightname, READ)) {
             return _n('Reminder', 'Reminders', $nb);
         }
         return _n('Personal reminder', 'Personal reminders', $nb);
@@ -221,6 +221,7 @@ class Reminder extends CommonDBVisible implements
                 0,
             ];
         }
+        $where['OR'] ??= [];
 
         // Groups
         if (
@@ -244,10 +245,10 @@ class Reminder extends CommonDBVisible implements
             if (count($restrict)) {
                 $or += $restrict;
             }
+            $groups_id = $_SESSION["glpigroups"] !== [] ? Group::getGroupsAncestorsIds($_SESSION["glpigroups"]) : [-1];
             $where['OR'][] = [
-                'glpi_groups_reminders.groups_id' => count($_SESSION["glpigroups"])
-                                                      ? $_SESSION["glpigroups"]
-                                                      : [-1],
+                // A user member of a sub-group must also see reminders made visible to a parent group
+                'glpi_groups_reminders.groups_id' => $groups_id,
                 'OR' => $or,
             ];
         }
@@ -454,7 +455,7 @@ class Reminder extends CommonDBVisible implements
             $nb = 0;
             switch (get_class($item)) {
                 case Reminder::class:
-                    if (Session::haveRight('reminder_public', CREATE)) {
+                    if (Session::haveRight(Reminder::$rightname, CREATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }
@@ -565,6 +566,56 @@ class Reminder extends CommonDBVisible implements
             'parent_link' => $parent->getLink(['icon' => true, 'forceid' => true]),
             'parent_entity_badge' => Entity::badgeCompletenameById($parent->getEntityID()),
         ]);
+    }
+
+    /**
+     * @param array<array<string, mixed>> $events
+     *
+     * @return array<array<string, mixed>>
+     */
+    protected static function translatePlanningEvents(array $events): array
+    {
+        global $DB;
+
+        $language = $_SESSION['glpilanguage'] ?? null;
+        $reminders_ids = array_unique(array_column($events, 'reminders_id'));
+        if (empty($language) || $reminders_ids === []) {
+            return $events;
+        }
+
+        // Use the translations of the current language, if any.
+        // Order by id and keep the first row per reminder so the result is deterministic.
+        $translations = [];
+        $iterator = $DB->request([
+            'SELECT' => ['reminders_id', 'name', 'text'],
+            'FROM'   => ReminderTranslation::getTable(),
+            'WHERE'  => [
+                'reminders_id' => $reminders_ids,
+                'language'     => $language,
+            ],
+            'ORDER'  => 'id',
+        ]);
+        foreach ($iterator as $data) {
+            if (!isset($translations[$data['reminders_id']])) {
+                $translations[$data['reminders_id']] = $data;
+            }
+        }
+
+        foreach ($events as &$event) {
+            $translation = $translations[$event['reminders_id'] ?? 0] ?? null;
+            if ($translation === null) {
+                continue;
+            }
+            if (!empty($translation['name'])) {
+                $event['name'] = $translation['name'];
+            }
+            if (!empty($translation['text'])) {
+                $event['text'] = RichText::getSafeHtml($translation['text']);
+            }
+        }
+        unset($event);
+
+        return $events;
     }
 
     final public static function getListCriteria(): array
@@ -773,7 +824,7 @@ class Reminder extends CommonDBVisible implements
                         Html::convDateTime($data["end"])
                     );
                     $row['values'][] = sprintf(
-                        '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell"></i><span class="sr-only">%s</span></a>',
+                        '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell" aria-hidden="true"></i><span class="visually-hidden">%s</span></a>',
                         htmlescape(sprintf('%s/front/planning.php?date=%s&type=day', $CFG_GLPI['root_doc'], $date_url)),
                         htmlescape($planning_text),
                         __s('Planning')
@@ -870,7 +921,7 @@ class Reminder extends CommonDBVisible implements
 
     public function getAsVCalendar()
     {
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return null;
         }
 

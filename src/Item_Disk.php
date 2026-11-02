@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * Disk Class
@@ -219,7 +220,7 @@ class Item_Disk extends CommonDBChild
             $canedit
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
-            $link = self::getFormURL() . '?itemtype=' . $item::class . '&items_id=' . $ID . '&withtemplate=' . (int) $withtemplate;
+            $link = self::getFormURL() . '?itemtype=' . rawurlencode($item::class) . '&items_id=' . $ID . '&withtemplate=' . (int) $withtemplate;
 
             TemplateRenderer::getInstance()->display(
                 'components/tab/addlink_block.html.twig',
@@ -246,7 +247,7 @@ class Item_Disk extends CommonDBChild
             if ($data['encryption_status'] !== self::ENCRYPTION_STATUS_NO) {
                 $twig_params = [
                     'encryption_status_label'    => __('Partial encryption'),
-                    'encryption_status_value'    => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_YES),
+                    'encryption_status_value'    => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_PARTIALLY),
                     'encryption_tool_label'      => __('Encryption tool'),
                     'encryption_tool_value'      => $data['encryption_tool'],
                     'encryption_algorithm_label' => __('Encryption algorithm'),
@@ -447,7 +448,7 @@ TWIG, $twig_params);
             'width'              => 2,
             // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
             'computation'        => QueryFunction::lpad(
-                expression: QueryFunction::round(new QueryExpression('100*TABLE.freesize/' . QueryFunction::nullif('TABLE.totalsize', new QueryExpression('0')))),
+                expression: QueryFunction::round(new QueryExpression('100*TABLE.freesize/' . QueryFunction::nullif(new QueryIdentifier('TABLE.totalsize'), new QueryExpression('0')))),
                 length: 3,
                 pad_string: '0'
             ),

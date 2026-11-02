@@ -43,7 +43,7 @@
    <button class="btn {{ onlyicon ? 'btn-icon' : 'dropdown-toggle' }} btn-outline-secondary" type="button"
            id="single-action" data-bs-toggle="dropdown" aria-haspopup="true"
            aria-expanded="false">
-      <i class="ti ti-dots-vertical"></i>
+      <i class="ti ti-dots-vertical" aria-hidden="true"></i>
       {% if not onlyicon %}
          <span>{{ _n('Action', 'Actions', get_plural_number()) }}</span>
       {% endif %}

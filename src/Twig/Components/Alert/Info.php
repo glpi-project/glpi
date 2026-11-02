@@ -36,8 +36,9 @@ namespace Twig\Components\Alert;
 
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-#[AsTwigComponent()] // No name needed, it will match to Alert:Info and twig_components/Alert/Info.html.twig
+// No name needed, it will match to Alert:Info
+#[AsTwigComponent(template: 'twig_components/Alert/Base.html.twig')]
 final class Info extends AbstractAlert
 {
-    public string $type = 'info';
+    public string $color = 'info';
 }

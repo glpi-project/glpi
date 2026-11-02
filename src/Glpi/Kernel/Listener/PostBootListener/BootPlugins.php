@@ -34,7 +34,6 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
-use Glpi\Application\Environment;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
@@ -66,10 +65,6 @@ final readonly class BootPlugins implements EventSubscriberInterface
 
         Profiler::getInstance()->start('BootPlugins::execute', Profiler::CATEGORY_BOOT);
 
-        if (Environment::get()->shouldSetupTesterPlugin()) {
-            $this->setupTesterPlugin();
-        }
-
         $plugin = new Plugin();
 
         if (!$plugin->isPluginsExecutionSuspended()) {
@@ -77,16 +72,5 @@ final readonly class BootPlugins implements EventSubscriberInterface
         }
 
         Profiler::getInstance()->stop('BootPlugins::execute');
-    }
-
-    private function setupTesterPlugin(): void
-    {
-        global $DB;
-        $DB->updateOrInsert(table: Plugin::getTable(), params: [
-            'directory' => 'tester',
-            'name'      => 'tester',
-            'state'     => 1,
-            'version'   => '1.0.0',
-        ], where: ['directory' => 'tester']);
     }
 }

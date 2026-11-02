@@ -180,4 +180,16 @@ export class TipTapEditorHelper {
             this.contentContainer.getByRole('link', { name: text })
         ).toHaveAttribute('href', href);
     }
+
+    async assertLinkOpensInNewTab(text: string): Promise<void> {
+        await expect(
+            this.contentContainer.getByRole('link', { name: text })
+        ).toHaveAttribute('target', '_blank');
+    }
+
+    async assertLinkOpensInSameTab(text: string): Promise<void> {
+        await expect(
+            this.contentContainer.getByRole('link', { name: text })
+        ).not.toHaveAttribute('target');
+    }
 }

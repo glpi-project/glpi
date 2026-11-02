@@ -41,6 +41,8 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
+use Glpi\Inventory\MainAsset\NetworkEquipment;
+use Glpi\Inventory\MainAsset\Printer;
 use mysqli_stmt;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPort_NetworkPort;
@@ -383,11 +385,6 @@ class NetworkPort extends InventoryAsset
             return;
         }
 
-        // Try to detect phone + computer on this port
-        if (isset($this->connection_ports['Phone']) && count($found_macs) == 2) {
-            trigger_error('Phone/Computer MAC linked', E_USER_WARNING);
-            return;
-        }
         if (count($found_macs) > 1) { // MultipleMac
             //do not manage MAC addresses if we found one NetworkEquipment
             if (isset($this->connection_ports['NetworkEquipment'])) {
@@ -633,7 +630,9 @@ class NetworkPort extends InventoryAsset
 
     public function handle()
     {
-        $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
+        if ($this->extra_data[$this->main_asset::class] instanceof NetworkEquipment) {
+            $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
+        }
         $this->handlePorts();
     }
 
@@ -837,7 +836,7 @@ class NetworkPort extends InventoryAsset
         //remove management port for Printer on netinventory
         //to prevent twice IP (NetworkPortAggregate / NetworkPortEthernet)
         if ($mainasset instanceof Printer && !$this->item->isNewItem()) {
-            if (empty($this->extra_data[$this->main_asset::class]->getManagementPorts())) {
+            if (empty($mainasset->getManagementPorts())) {
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();
                 $networkport->deleteByCriteria([
@@ -850,7 +849,7 @@ class NetworkPort extends InventoryAsset
         }
 
         //handle ports for stacked switches
-        if ($mainasset->isStackedSwitch()) {
+        if ($mainasset instanceof NetworkEquipment && $mainasset->isStackedSwitch()) {
             $bkp_ports = $this->ports;
             $stack_id = $mainasset->getStackId();
             $need_increment_index = false;

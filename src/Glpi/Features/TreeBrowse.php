@@ -225,7 +225,7 @@ JAVASCRIPT;
         $data = Search::prepareDatasForSearch($itemtype, $params);
         Search::constructSQL($data);
         // This query is used to get the IDs of all results matching the search criteria
-        $sql = $data['sql']['search'];
+        $sql = $data['sql']['search']->getQuery();
         // We can remove all the SELECT fields and replace it with just the ID field
         $raw_select = $data['sql']['raw']['SELECT'];
         $replacement_select = 'SELECT DISTINCT ' . $itemtype::getTableField('id');
@@ -233,7 +233,7 @@ JAVASCRIPT;
         // Remove GROUP BY and ORDER BY clauses
         $sql_id = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql_id);
 
-        $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql_id . ') AS id_criteria )');
+        $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql_id . ') AS id_criteria )', values: $data['sql']['search']->getParams());
 
         $cat_table = $cat_item::getTable();
         $cat_fk    = $cat_item::getForeignKeyField();

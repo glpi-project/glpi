@@ -113,6 +113,14 @@ license-headers: ## Add the missing license headers in all files
 	$(CONSOLE) tools:licence_headers_check --fix
 .PHONY: license-headers
 
+decorative-icons-check: ## Verify that decorative icons are hidden from assistive technologies
+	$(CONSOLE) tools:check_decorative_icons
+.PHONY: decorative-icons-check
+
+decorative-icons: ## Hide the decorative icons that are still exposed to assistive technologies
+	$(CONSOLE) tools:check_decorative_icons --fix
+.PHONY: decorative-icons
+
 ## —— Database —————————————————————————————————————————————————————————————————
 db-install: ## Install local development's database
 	$(CONSOLE) database:install \
@@ -211,6 +219,25 @@ e2e-db-update: ## Update e2e testing's database
 		--env=e2e_testing
 .PHONY: e2e-db-update
 
+e2e-db-check: ## Ensure the e2e database is up to date before running the tests
+	@if $(CONSOLE) database:is_up_to_date --env=e2e_testing >/dev/null 2>&1; then \
+		exit 0; \
+	fi; \
+	printf $(_ERROR) "playwright" "The e2e database is out of date or not yet installed."; \
+	if [ -t 0 ]; then \
+		read -p "Reinstall it now? [y/N] " answer; \
+		if [ "$$answer" = "y" ] || [ "$$answer" = "Y" ]; then \
+			$(MAKE) --no-print-directory e2e-db-install; \
+		else \
+			printf $(_ERROR) "playwright" "Aborted. Run \"make e2e-db-install\" to reinstall it."; \
+			exit 1; \
+		fi; \
+	else \
+		printf $(_ERROR) "playwright" "Run \"make e2e-db-install\" to reinstall it."; \
+		exit 1; \
+	fi
+.PHONY: e2e-db-check
+
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
 	@$(eval c ?=)
@@ -231,7 +258,7 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 paratest: ## Run paratest, example: make paratest p=8
 	@$(eval p ?= 4)
 	@$(eval c ?=)
-	$(PHP) php vendor/bin/paratest -p $(p) --exclude-group "single-thread" $(c)
+	$(PHP) php vendor/bin/paratest -p $(p) $(c)
 .PHONY: paratest
 
 phpstan: ## Run phpstan
@@ -270,25 +297,17 @@ rector: ## Run rector
 	$(PHP) php vendor/bin/rector $(c)
 .PHONY: rector
 
-cypress: ## Run cypress tests
-	@$(eval c ?=)
-	$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
-	$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
-	$(PHP) node_modules/.bin/cypress run --project tests $(c)
-.PHONY: cypress
-
-cypress-open: ## Open cypress UI
-	@$(eval c ?=)
-	$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
-	$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
-	$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
-.PHONY: cypress-open
-
-playwright: ## Run playwright tests
+playwright: e2e-db-check ## Run playwright tests
 	@$(eval c ?=)
 	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
 	$(PLAYWRIGHT) test $(c)
 .PHONY: playwright
+
+playwright-isolated: e2e-db-check ## Run the isolated playwright tests (tests that change global data)
+	@$(eval c ?=)
+	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
+	$(PLAYWRIGHT) test -c playwright.isolated.config.ts $(c)
+.PHONY: playwright-isolated
 
 playwright-report: ## View playwright reports
 	@$(eval c ?=)
@@ -296,7 +315,13 @@ playwright-report: ## View playwright reports
 	$(PLAYWRIGHT) show-report tests/e2e/results --host=0.0.0.0 $(c)
 .PHONY: playwright-report
 
-playwright-ui: ## Open playwright's UI mode
+playwright-isolated-report: ## View the isolated playwright reports
+	@$(eval c ?=)
+	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
+	$(PLAYWRIGHT) show-report tests/e2e/results-isolated --host=0.0.0.0 $(c)
+.PHONY: playwright-isolated-report
+
+playwright-ui: e2e-db-check ## Open playwright's UI mode
 	@$(eval c ?=)
 	$(PLAYWRIGHT) test --ui-host=0.0.0.0 --ui-port=9323 $(c)
 .PHONY: playwright-ui

@@ -37,6 +37,7 @@
 
     {% if can_preview %}
         <div class="d-flex">
+            {# Set on the field container as some itemtypes have their own dropdown implementation #}
             {{ fields.dropdownField(
                 template.fields['itemtype'],
                 template.fields['itemtype']|itemtype_foreign_key,
@@ -44,13 +45,17 @@
                 template.fields['itemtype']|itemtype_name,
                 {
                     field_class: 'col-6',
-                    on_change: 'reloadTab("' ~ template.fields['itemtype']|itemtype_foreign_key ~ '="+this.value)',
+                    add_field_attribs: {
+                        'data-glpi-reload-tab-on-change': template.fields['itemtype']|itemtype_foreign_key ~ '=%value%',
+                    },
                 }
             ) }}
 
             {{ fields.htmlField('', call('NotificationEvent::dropdownEvents', [template.fields['itemtype'], {
                 value: get_saved_option('NotificationTemplateTranslation', template.fields['itemtype']|itemtype_foreign_key ~ '_event', ''),
-                on_change: 'reloadTab("' ~ template.fields['itemtype']|itemtype_foreign_key ~ '_event="+this.value)',
+                add_data_attributes: {
+                    'glpi-reload-tab-on-change': template.fields['itemtype']|itemtype_foreign_key ~ '_event=%value%',
+                },
                 display: false
             }]), 'NotificationEvent'|itemtype_name(1), {
                 field_class: 'col-6'
@@ -58,13 +63,13 @@
         </div>
     {% else %}
         <div class="alert alert-info d-flex align-items-center m-0" role="alert">
-            <i class="ti ti-info-circle me-1"></i>
+            <i class="ti ti-info-circle me-1" aria-hidden="true"></i>
             {{ __('The preview is not available for the notifications related to %s.')|format(template.fields['itemtype']|itemtype_name(get_plural_number())) }}
         </div>
     {% endif %}
 
     {% if data is not null %}
-        <table class="table table-borderless">
+        <table class="table table-borderless" style="table-layout: fixed;">
             <tbody>
                 <tr>
                     <th colspan="2">{{ __('Subject') }}</th>
@@ -77,8 +82,22 @@
                     <th>{{ __('Email HTML body') }}</th>
                 </tr>
                 <tr>
-                    <td>{{ data['content_text']|nl2br }}</td>
-                    <td>{{ data['content_html']|raw }}</td>
+                    <td style="overflow-wrap: anywhere;">{{ data['content_text']|nl2br }}</td>
+                    <td>
+                        {% set rand = random() %}
+                        <iframe id="notification_html_preview{{ rand }}"
+                                srcdoc="{{ data['content_html']|e('html_attr') }}"
+                                title="{{ __('Email HTML body preview') }}"
+                                style="width: 100%; border: none; min-height: 200px;"
+                                sandbox="allow-same-origin"></iframe>
+                        <script>
+                            document.getElementById('notification_html_preview{{ rand }}').addEventListener('load', (e) => {
+                                const iframe = e.currentTarget;
+                                const body = iframe.contentDocument?.body;
+                                iframe.style.height = (body ? body.scrollHeight + 30 : 200) + 'px';
+                            });
+                        </script>
+                    </td>
                 </tr>
             </tbody>
         </table>

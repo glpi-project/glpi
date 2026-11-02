@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Safe\DateTime;
 
@@ -386,12 +387,7 @@ class Infocom extends CommonDBChild
 
         switch ($itemtype) {
             case 'SoftwareLicense':
-                $criteria['INNER JOIN']['glpi_softwares'] = [
-                    'ON'  => [
-                        'glpi_softwarelicenses' => 'softwares_id',
-                        'glpi_softwares'        => 'id',
-                    ],
-                ];
+                // Do not join the software, a license may not be linked to any
                 $criteria['WHERE'][] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
                 break;
             default:
@@ -687,7 +683,7 @@ class Infocom extends CommonDBChild
                     'NOT'                      => ["$table.warranty_date" => null],
                     new QueryExpression(QueryFunction::dateDiff(
                         expression1: QueryFunction::dateAdd(
-                            date: 'glpi_infocoms.warranty_date',
+                            date: new QueryIdentifier('glpi_infocoms.warranty_date'),
                             interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
                             interval_unit: 'MONTH'
                         ),
@@ -2152,7 +2148,7 @@ HTML;
             Infocom::canApplyOn($itemtype)
             && static::canCreate()
         ) {
-            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>"
                                   . __s('Enable the financial and administrative information');
         }
     }

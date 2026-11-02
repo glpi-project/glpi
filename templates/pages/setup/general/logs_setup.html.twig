@@ -34,7 +34,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block config_fields %}
-   {{ fields.largeTitle(__('Logs purge configuration'), 'ti ti-news') }}
+   {{ fields.largeTitle(__('Historical data retention'), 'ti ti-news') }}
 
    {% set logs_interval_options = {
       (constant('Config::DELETE_ALL')): __('Delete all'),
@@ -55,6 +55,18 @@
       label_class: 'col-xxl-5 fst-italic',
       on_change: '$(this).closest(`form`).find(`.purgelog_interval select`).val(this.value).trigger("change");'
    }) }}
+
+    {% set crontask_config %}
+        {% if logspurge_crontask.fields['state'] == 0 %}
+            <span class="badge bg-danger text-danger-fg">{{ __('Disabled') }}</span>
+        {% else %}
+            <span class="badge bg-success text-success-fg">{{ __('Enabled') }}</span>
+        {% endif %}
+        <a href="{{ logspurge_crontask.getFormURLWithID(logspurge_crontask.getID()) }}">
+            {{ __('Configure automatic action') }}
+        </a>
+    {% endset %}
+    {{ fields.htmlField('', crontask_config, 'CronTask'|itemtype_name) }}
 
    {{ fields.smallTitle(__('General')) }}
    {{ _self.log_interval_dropdown('purge_addrelation', __('Add/update relation between items'), config, logs_interval_options) }}

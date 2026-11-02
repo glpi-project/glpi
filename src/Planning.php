@@ -36,8 +36,10 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\HttpClient;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -47,6 +49,8 @@ use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Safe\DateTime;
+use Safe\Exceptions\UrlException;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use function Safe\parse_url;
 use function Safe\preg_match;
@@ -55,6 +59,25 @@ use function Safe\strtotime;
 
 /**
  * Planning Class
+ * @phpstan-type UserPlanningFilterData array{type: 'user', display?: bool, color?: string}
+ * @phpstan-type GroupUsersPlanningFilterData array{type: 'group_users', users: array<string, UserPlanningFilterData>, display?: bool, color?: string}
+ * @phpstan-type ExternalPlanningFilterData array{type: 'external', name: string, display?: bool, color?: string}
+ * @phpstan-type EventFilterPlanningFilterData array{type: 'event_filter', display?: bool, color?: string}
+ * @phpstan-type PlanningFilterData UserPlanningFilterData|GroupUsersPlanningFilterData|ExternalPlanningFilterData|EventFilterPlanningFilterData
+ * @phpstan-type PlanningFilterInfo array{
+ *      filter_key: string,
+ *      filter_data: PlanningFilterData,
+ *      expanded: ' expanded'|'',
+ *      title: string,
+ *      params: array{show_delete?: boolean, filter_color_index?: integer},
+ *      color: mixed|false,
+ *      show_export_buttons: boolean,
+ *      uID: integer,
+ *      gID: integer,
+ *      webcal_base_url: string|null,
+ *      caldav_url: string|null,
+ *      child_filters: array<string, mixed>
+ *  }
  **/
 class Planning extends CommonGLPI
 {
@@ -125,7 +148,7 @@ class Planning extends CommonGLPI
         if (self::canView()) {
             $title     = htmlescape(self::getTypeName(Session::getPluralNumber()));
             $planning  = "<i class='ti ti-calendar pointer' title='$title'>
-                        <span class='sr-only'>$title</span>
+                        <span class='visually-hidden'>$title</span>
                        </i>";
 
             $links[$planning] = self::getSearchURL(false);
@@ -134,7 +157,7 @@ class Planning extends CommonGLPI
         if (PlanningExternalEvent::canView()) {
             $ext_title = htmlescape(PlanningExternalEvent::getTypeName(Session::getPluralNumber()));
             $external  = "<i class='ti ti-calendar-week pointer' title='$ext_title'>
-                        <span class='sr-only'>$ext_title</span>
+                        <span class='visually-hidden'>$ext_title</span>
                        </i>";
 
             $links[$external] = PlanningExternalEvent::getSearchURL(false);
@@ -143,7 +166,7 @@ class Planning extends CommonGLPI
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $caldav_title = __s('CalDAV browser interface');
             $caldav  = "<i class='ti ti-refresh pointer' title='$caldav_title'>
-                        <span class='sr-only'>$caldav_title</span>
+                        <span class='visually-hidden'>$caldav_title</span>
                        </i>";
 
             $links[$caldav] = '/caldav.php';
@@ -245,7 +268,7 @@ class Planning extends CommonGLPI
         }
         $class = self::getStatusClass($status);
         $color = self::getStatusColor($status);
-        return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip'></i><span>" . $label . "</span>";
+        return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip' aria-hidden='true'></i><span>" . $label . "</span>";
     }
 
     /**
@@ -314,7 +337,7 @@ class Planning extends CommonGLPI
                     break;
 
             }
-            return $('<span><i class="itilstatus ' + classes + '"></i> ' + _.escape(option.text) + '</span>');
+            return $('<span><i class="itilstatus ' + classes + '" aria-hidden="true"></i> ' + _.escape(option.text) + '</span>');
         }
 JAVASCRIPT;
 
@@ -519,24 +542,53 @@ JAVASCRIPT;
 
         // define options for current page
         if ($fullview) {
+            $filters = [];
+            if (isset($_SESSION['glpi_plannings']['filters'])) {
+                foreach ($_SESSION['glpi_plannings']['filters'] as $key => $filter) {
+                    $info = self::getPlanningFilterInfo($key, $filter);
+                    if ($info !== null) {
+                        $filters['filters'][$key] = $info;
+                    }
+                }
+            }
+            if (isset($_SESSION['glpi_plannings']['plannings'])) {
+                foreach ($_SESSION['glpi_plannings']['plannings'] as $key => $filter) {
+                    $info = self::getPlanningFilterInfo($key, $filter);
+                    if ($info !== null) {
+                        $filters['plannings'][$key] = $info;
+                    }
+                }
+            }
+
             $options = [
                 'full_view'    => true,
-                'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
+                'fullcalendar_options' => [
+                    'initialView' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
+                ],
+                'filters'      => $filters,
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
                 'can_delete'   => PlanningExternalEvent::canPurge(),
-                'rand'         => mt_rand(),
+                'active_entity' => [
+                    'id' => Session::getActiveEntity(),
+                    'is_recursive' => Session::getIsActiveEntityRecursive(),
+                ],
             ];
         } else {
             // short view (on Central page)
             $options = [
                 'full_view'    => false,
-                'default_view' => 'listFull',
-                'header'       => false,
-                'height'       => 'auto',
-                'rand'         => mt_rand(),
+                'fullcalendar_options' => [
+                    'initialView' => 'listFull',
+                    'header'       => false,
+                    'height'       => 'auto',
+                ],
                 'now'          => date("Y-m-d H:i:s"),
+                'active_entity' => [
+                    'id' => Session::getActiveEntity(),
+                    'is_recursive' => Session::getIsActiveEntityRecursive(),
+                ],
             ];
         }
 
@@ -731,44 +783,38 @@ JAVASCRIPT;
     }
 
     /**
-     * Display a single line of planning filter.
-     * See self::showPlanningFilter function
-     *
-     * @param string $filter_key identify curent line of filter
-     * @param array $filter_data array of filter date, must contain:
-     *   * 'show_delete' (boolean): show delete button
-     *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
-     * @param array $options
-     *
-     * @return void
-     * @used-by templates/pages/assistance/planning/filters.html.twig
-     * @used-by templates/pages/assistance/planning/single_filter.html.twig
+     * @param string $filter_key
+     * @param PlanningFilterData $filter_data
+     * @param array{show_delete?: bool, filter_color_index?: int} $options
+     * @return ?PlanningFilterInfo
+     * @throws UrlException
      */
-    public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
+    public static function getPlanningFilterInfo(string $filter_key, array $filter_data, array $options = []): ?array
     {
         global $CFG_GLPI;
 
         // Invalid data, skip
         if (!isset($filter_data['type'])) {
-            return;
+            return null;
         }
 
         $params['show_delete']        = true;
         $params['filter_color_index'] = 0;
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
+        foreach ($options as $key => $val) {
+            $params[$key] = $val;
         }
 
         $actor = explode('_', $filter_key);
         $uID = 0;
         $gID = 0;
+        //TODO this should be a boolean
         $expanded = '';
         $title = '';
         $caldav_item_url = null;
+        $child_filters = [];
+
         if ($filter_data['type'] === 'user') {
-            $uID = $actor[1];
+            $uID = (int) $actor[1];
             $user = new User();
             $user_exists = $user->getFromDB($actor[1]);
             $title = $user->getName(); // Will return N/A if it doesn't exist anymore
@@ -781,10 +827,22 @@ JAVASCRIPT;
             $title = $group->getName(); // Will return N/A if it doesn't exist anymore
             if ($group_exists) {
                 $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+
+                if ($caldav_item_url !== null) {
+                    foreach ($filter_data['users'] as $user_key => $user_data) {
+                        $info = self::getPlanningFilterInfo($user_key, $user_data, [
+                            'show_delete' => false,
+                            'filter_color_index' => $params['filter_color_index'],
+                        ]);
+                        if ($info !== null) {
+                            $child_filters[$user_key] = $info;
+                        }
+                    }
+                }
             }
             $enabled = $disabled = 0;
             foreach ($filter_data['users'] as $user) {
-                if ($user['display']) {
+                if ($user['display'] ?? false) {
                     $enabled++;
                 } else {
                     $disabled++;
@@ -795,7 +853,7 @@ JAVASCRIPT;
                 $expanded = ' expanded';
             }
         } elseif ($filter_data['type'] === 'group') {
-            $gID = $actor[1];
+            $gID = (int) $actor[1];
             $group = new Group();
             $group_exists = $group->getFromDB($actor[1]);
             $title = $group->getName(); // Will return N/A if it doesn't exist anymore
@@ -813,9 +871,9 @@ JAVASCRIPT;
                 $title = __('Done elements');
             } else {
                 if (!getItemForItemtype($filter_key)) {
-                    return;
+                    return null;
                 } elseif (!$filter_key::canView()) {
-                    return;
+                    return null;
                 }
                 $title = $filter_key::getTypeName();
             }
@@ -829,7 +887,6 @@ JAVASCRIPT;
             $color = self::getPaletteColor('bg', $params['filter_color_index']);
         }
 
-        $login_user = null;
         $webcal_base_url = null;
         $show_export_buttons = in_array($filter_data['type'], ['user', 'group'], true);
         if ($show_export_buttons) {
@@ -843,12 +900,9 @@ JAVASCRIPT;
                 . $parsed_url['host']
                 . ($url_port !== null ? ':' . $url_port : '')
                 . ($parsed_url['path'] ?? '');
-
-            $login_user = new User();
-            $login_user->getFromDB(Session::getLoginUserID(true));
         }
 
-        TemplateRenderer::getInstance()->display('pages/assistance/planning/single_filter.html.twig', [
+        return [
             'filter_key'            => $filter_key,
             'filter_data'           => $filter_data,
             'expanded'              => $expanded,
@@ -858,10 +912,10 @@ JAVASCRIPT;
             'show_export_buttons'   => $show_export_buttons,
             'uID'                   => $uID,
             'gID'                   => $gID,
-            'login_user'            => $login_user,
             'webcal_base_url'       => $webcal_base_url,
             'caldav_url'            => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
-        ]);
+            'child_filters'         => $child_filters,
+        ];
     }
 
     /**
@@ -872,7 +926,7 @@ JAVASCRIPT;
     public static function showAddPlanningForm()
     {
         $planning_types = ['user' => User::getTypeName(1)];
-        if (Session::haveRightsOr('planning', [self::READGROUP, self::READALL])) {
+        if (Session::haveRightsOr(Planning::$rightname, [self::READGROUP, self::READALL])) {
             $planning_types['group_users'] = __('All users of a group');
             $planning_types['group']       = Group::getTypeName(1);
         }
@@ -927,13 +981,13 @@ TWIG, $twig_params);
         // show only users with right to add planning events
         $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
         // Can we see only personal planning ?
-        if (!Session::haveRightsOr('planning', [self::READALL, self::READGROUP])) {
+        if (!Session::haveRightsOr(Planning::$rightname, [self::READALL, self::READGROUP])) {
             $rights = 'id';
         }
         // Can we see user of my groups ?
         if (
-            Session::haveRight('planning', self::READGROUP)
-            && !Session::haveRight('planning', self::READALL)
+            Session::haveRight(Planning::$rightname, self::READGROUP)
+            && !Session::haveRight(Planning::$rightname, self::READALL)
         ) {
             $rights = 'groups';
         }
@@ -990,7 +1044,7 @@ TWIG, $twig_params);
     {
         $condition = [];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
+        if (!Session::haveRight(Planning::$rightname, self::READALL) && count($_SESSION['glpigroups'])) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
 
@@ -1068,9 +1122,17 @@ TWIG, $twig_params);
      */
     public static function editEventForm($params = [])
     {
+        global $CFG_GLPI;
+
+        if (!in_array($params['itemtype'] ?? null, $CFG_GLPI['planning_types'], true)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $item = getItemForItemtype($params['itemtype']);
         if ($item instanceof CommonDBTM) {
-            $item->getFromDB((int) $params['id']);
+            if (!$item->can((int) $params['id'], READ)) {
+                throw new AccessDeniedHttpException();
+            }
             $url = $item->getLinkURL();
 
             $rand = mt_rand();
@@ -1081,20 +1143,26 @@ TWIG, $twig_params);
             ];
             if (isset($params['parentitemtype'])) {
                 $options['parent'] = getItemForItemtype($params['parentitemtype']);
-                $options['parent']->getFromDB($params['parentid']);
+                // The parent must be the item's own parent, and be readable
+                if (
+                    !($options['parent'] instanceof CommonDBTM)
+                    || (int) ($item->fields[$options['parent']::getForeignKeyField()] ?? 0) !== (int) $params['parentid']
+                    || !$options['parent']->can((int) $params['parentid'], READ)
+                ) {
+                    throw new AccessDeniedHttpException();
+                }
                 $url = $options['parent']->getLinkURL();
             }
 
             echo "<div class='center'>";
             echo "<a href='" . htmlescape($url) . "' class='btn btn-outline-secondary'>"
-                . "<i class='ti ti-eye'></i>"
+                . "<i class='ti ti-eye' aria-hidden='true'></i>"
                 . "<span>" . __s("View this item in its context") . "</span>"
             . "</a>";
             echo "</div>";
             echo "<hr>";
             $item->showForm((int) $params['id'], $options);
             $callback = "glpi_close_all_dialogs();
-                      GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
             Html::ajaxForm("#edit_event_form$rand", $callback);
         }
@@ -1112,7 +1180,7 @@ TWIG, $twig_params);
     {
         $condition = ['is_task' => 1];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
+        if (!Session::haveRight(Planning::$rightname, self::READALL) && count($_SESSION['glpigroups'])) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
 
@@ -1201,15 +1269,6 @@ TWIG, $twig_params);
     {
         if (empty($params['url'])) {
             Session::addMessageAfterRedirect(__s('A url is required'), false, ERROR);
-            return;
-        }
-
-        if (!Toolbox::isUrlSafe($params['url'])) {
-            Session::addMessageAfterRedirect(
-                sprintf(__s('URL "%s" is not allowed by your administrator.'), htmlescape($params['url'])),
-                false,
-                ERROR
-            );
             return;
         }
 
@@ -1304,7 +1363,6 @@ TWIG, $twig_params);
                 'form_id'            => "ajax_reminder$rand",
             ]);
             $callback = "glpi_close_all_dialogs();
-                      GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
             Html::ajaxForm("#ajax_reminder$rand", $callback);
         }
@@ -1397,8 +1455,8 @@ TWIG, $twig_params);
         if (count($append_params) > 1) {
             $rand = mt_rand();
             echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
-            echo "<i class='ti ti-calendar'></i>";
-            echo "<span class='sr-only'>" . __s('Availability') . "</span>";
+            echo "<i class='ti ti-calendar' aria-hidden='true'></i>";
+            echo "<span class='visually-hidden'>" . __s('Availability') . "</span>";
             echo "</a>";
             Ajax::createIframeModalWindow(
                 'planningcheck' . $rand,
@@ -1535,15 +1593,15 @@ TWIG, $twig_params);
     public static function toggleFilter($options = [])
     {
         $key = 'filters';
+        $display = filter_var($options['display'], FILTER_VALIDATE_BOOLEAN);
         if (in_array($options['type'], ['user', 'group', 'group_users', 'external'])) {
             $key = 'plannings';
         }
         if (empty($options['parent'])) {
-            $_SESSION['glpi_plannings'][$key][$options['name']]['display'] = ($options['display'] === 'true');
+            $_SESSION['glpi_plannings'][$key][$options['name']]['display'] = $display;
         } else {
             $_SESSION['glpi_plannings']['plannings'][$options['parent']]['users']
-            [$options['name']]['display']
-            = ($options['display'] === 'true');
+            [$options['name']]['display'] = $display;
         }
         self::savePlanningsInDB();
     }
@@ -1638,6 +1696,9 @@ TWIG, $twig_params);
                 $param[$key] = $val;
             }
         }
+
+        // `genical` is reserved to the iCal export (see generateIcal()) and alters the session rights.
+        $param['genical'] = false;
 
         $timezone = new DateTimeZone(date_default_timezone_get());
         $time_begin = strtotime($param['start']) - $timezone->getOffset(new DateTime($param['start']));
@@ -1742,12 +1803,12 @@ TWIG, $twig_params);
                 'duration'    => $ms_duration,
                 '_duration'   => $ms_duration, // sometimes duration is removed from event object in fullcalendar
                 '_editable'   => $event['editable'], // same, avoid loss of editable key in fullcalendar
-                'rendering'   => isset($event['background'])
+                'display'   => isset($event['background'])
                              && $event['background']
                              && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
                               ? 'background'
                               : '',
-                'color'       => (empty($event['color'])
+                'backgroundColor'       => (empty($event['color'])
                               ? self::$palette_bg[$index_color]
                               : $event['color']),
                 'borderColor' => (empty($event['event_type_color'])
@@ -1783,7 +1844,7 @@ TWIG, $twig_params);
                 $param['view_name'] === "resourceWeek"
                 && !empty($event['event_cat_color'])
             ) {
-                $new_event['color'] = $event['event_cat_color'];
+                $new_event['backgroundColor'] = $event['event_cat_color'];
             }
 
             // manage reccurent events
@@ -1950,23 +2011,30 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        global $CFG_GLPI;
-
         $raw_events = [];
 
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
             if ('external' !== $planning_params['type'] || !$planning_params['display']) {
                 continue; // Ignore non-external and inactive calendars
             }
-            $errmsg = null;
-            $eopts = [];
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-                $eopts['proxy_excluded'] = true;
+
+            $http_client = new HttpClient(Planning::class);
+            try {
+                $response = $http_client->get($planning_params['url']);
+            } catch (ExceptionInterface $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    sprintf('Unable to fetch calendar data from URL: "%s"', $e->getMessage()),
+                    ['exception' => $e]
+                );
+                continue;
             }
-            $calendar_data = Toolbox::getURLContent($planning_params['url'], $errmsg, 0, $eopts);
+
+            $calendar_data = $response->getContent();
             if (empty($calendar_data)) {
                 continue;
             }
+
             try {
                 $vcalendar = Reader::read($calendar_data);
             } catch (ParseException $exception) {
@@ -2028,8 +2096,8 @@ TWIG, $twig_params);
                     'content'          => htmlescape($description),
                     'begin'            => $begin_dt->format('Y-m-d H:i:s'),
                     'end'              => $end_dt->format('Y-m-d H:i:s'),
-                    'event_type_color' => $planning_params['color'],
-                    'color'            => $planning_params['color'],
+                    'event_type_color' => $planning_params['backgroundColor'],
+                    'color'            => $planning_params['backgroundColor'],
                     'rrule'            => $vcomp->RRULE instanceof Recur
                   ? current($vcomp->RRULE->getJsonValue())
                   : null,
@@ -2065,8 +2133,7 @@ TWIG, $twig_params);
             if (
                 $item->getFromDB($params['items_id'])
                 && empty($item->fields['is_deleted'])
-                && $item::canUpdate()
-                && $item->canUpdateItem()
+                && $item->can($item->getID(), UPDATE)
             ) {
                 // item exists and is not in bin
 

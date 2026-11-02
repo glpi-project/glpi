@@ -32,7 +32,7 @@
 
 {% macro btn(url, icon, label) %}
    <a class="btn btn-primary me-2" href="{{ url }}">
-      <i class="{{ icon }}"></i>
+      <i class="{{ icon }}" aria-hidden="true"></i>
       <span>{{ label }}</span>
    </a>
 {% endmacro %}

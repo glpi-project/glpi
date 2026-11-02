@@ -226,12 +226,14 @@ class ProfileRight extends CommonDBChild
         ]);
 
         $expr = 'NOT EXISTS ' . $subq->getQuery();
+        $qexpr = new QueryExpression($expr, values: $subq->getParams());
+
         $iterator = $DB->request([
             'SELECT'          => 'POSSIBLE.name AS NAME',
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profilerights AS POSSIBLE',
             'WHERE'           => [
-                new QueryExpression($expr),
+                $qexpr,
             ],
         ]);
 

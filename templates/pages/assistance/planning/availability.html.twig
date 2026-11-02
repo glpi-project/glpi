@@ -144,9 +144,9 @@
                                         {% else %}
                                             {# Activity in part of the quarter #}
                                             {% if begin_act <= begin_time %}
-                                                <td class="partialavailableend p-1"></td>
+                                                <td class="p-1" style="background-image: linear-gradient(to left, red 50%, green 0%);"></td>
                                             {% else %}
-                                                <td class="partialavailablebegin p-1"></td>
+                                                <td class="p-1" style="background-image: linear-gradient(to left, green 50%, red 0%)"></td>
                                             {% endif %}
                                         {% endif %}
                                     {% else %}

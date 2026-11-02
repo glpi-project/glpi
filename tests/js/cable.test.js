@@ -48,7 +48,7 @@ describe('Cable', () => {
     });
     it('refreshAssetBreadcrumb', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/cable.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/cable.php', 'GET', {
             action: 'get_item_breadcrum',
             itemtype: 'Computer',
             items_id: '123',
@@ -63,7 +63,7 @@ describe('Cable', () => {
     });
     it('refreshNetworkPortDropdown', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/cable.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/cable.php', 'GET', {
             action: 'get_networkport_dropdown',
             itemtype: 'Computer',
             items_id: '123',
@@ -77,7 +77,7 @@ describe('Cable', () => {
     });
     it('refreshSocketDropdown', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/cable.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/cable.php', 'GET', {
             action: 'get_socket_dropdown',
             itemtype: 'Computer',
             items_id: '123',

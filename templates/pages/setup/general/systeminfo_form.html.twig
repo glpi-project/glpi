@@ -87,7 +87,7 @@
 
    {{ fields.smallTitle(__('GLPI update')) }}
    {% set btn_check_updates %}
-      <a class="btn btn-secondary" href="?check_version"><i class="ti ti-reload"></i>
+      <a class="btn btn-secondary" href="?check_version"><i class="ti ti-reload" aria-hidden="true"></i>
          <span>{{ __('Check if a new version is available') }}</span>
       </a>
    {% endset %}

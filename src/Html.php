@@ -38,7 +38,9 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Console\Application;
+use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Debug\Profiler;
@@ -47,6 +49,8 @@ use Glpi\Exception\RedirectException;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Inventory\Inventory;
+use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\SecurityConfig;
 use Glpi\System\Log\LogViewer;
@@ -56,7 +60,6 @@ use Glpi\UI\ThemeManager;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use ScssPhp\ScssPhp\Compiler;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\file_get_contents;
 use function Safe\filesize;
@@ -94,7 +97,7 @@ class Html
     public static function convDate($time, $format = null)
     {
 
-        if (is_null($time) || trim($time) == '' || in_array($time, ['NULL', '0000-00-00', '0000-00-00 00:00:00'])) {
+        if (is_null($time) || trim($time) == '' || in_array($time, ['null', 'NULL', '0000-00-00', '0000-00-00 00:00:00'])) {
             return null;
         }
 
@@ -140,7 +143,7 @@ class Html
      **/
     public static function convDateTime($time, $format = null, bool $with_seconds = false)
     {
-        if (is_null($time) || ($time === 'NULL')) {
+        if (is_null($time) || $time === 'NULL' || $time === 'null') {
             return null;
         }
 
@@ -497,15 +500,20 @@ class Html
 
     /**
      * Return the referer URL.
+     *
+     * Referer is fetched from $_SERVER['HTTP_REFERER']
+     * unless $_POST['_glpi_http_referer'] is defined.
+     *
+     * $_POST['_glpi_http_referer'] can be used to override the referer URL in case of redirection from an intermediate page.
+     *
      * If the referer is invalid, return value will be null.
      *
-     * @since 11.0.0
-     *
      * @return string|null
+     * @since 11.0.0
      */
     public static function getRefererUrl(): ?string
     {
-        $referer = URL::sanitizeURL($_SERVER['HTTP_REFERER'] ?? '');
+        $referer = URL::sanitizeURL($_POST['_glpi_http_referer'] ?? $_SERVER['HTTP_REFERER'] ?? '');
 
         $referer_host = parse_url($referer, PHP_URL_HOST);
         $referer_path = parse_url($referer, PHP_URL_PATH);
@@ -517,65 +525,6 @@ class Html
 
         return $referer;
     }
-
-
-    /**
-     * Add confirmation on button or link before action
-     *
-     * @param string $string             to display or array of string for using multilines
-     * @param string $additionalactions  additional actions to do on success confirmation
-     *                                     (default '')
-     *
-     * @return string
-     **/
-    public static function addConfirmationOnAction($string, $additionalactions = '')
-    {
-        return "onclick=\"" . htmlescape(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
-    }
-
-
-    /**
-     * Get confirmation on button or link before action
-     *
-     * @since 0.85
-     *
-     * @param string $string             to display or array of string for using multilines
-     * @param string $additionalactions  additional actions to do on success confirmation
-     *                                     (default '')
-     *
-     * @return string confirmation script
-     **/
-    public static function getConfirmationOnActionScript($string, $additionalactions = '')
-    {
-
-        if (!is_array($string)) {
-            $string = [$string];
-        }
-        $additionalactions = trim($additionalactions);
-        $out               = "";
-        $multiple          = false;
-        $close_string      = '';
-        // Manage multiple confirmation
-        foreach ($string as $tab) {
-            if (is_array($tab)) {
-                $multiple      = true;
-                $out          .= "if (window.confirm(";
-                $out          .= json_encode(htmlescape(implode("\n", $tab)));
-                $out          .= ")){ ";
-                $close_string .= "return true;} else { return false;}";
-            }
-        }
-        // manage simple confirmation
-        if (!$multiple) {
-            $out          .= "if (window.confirm(";
-            $out          .= json_encode(htmlescape(implode("\n", $string)));
-            $out          .= ")){ ";
-            $close_string .= "return true;} else { return false;}";
-        }
-        $out .= $additionalactions . (!str_ends_with($additionalactions, ';') ? ';' : '') . $close_string;
-        return $out;
-    }
-
 
     /**
      * Returns a static progress bar HTML snippet.
@@ -631,7 +580,7 @@ TWIG,
         global $CFG_GLPI;
 
         // complete title with id if exist
-        if ($add_id && isset($_GET['id']) && $_GET['id']) {
+        if ($add_id && isset($_GET['id']) && is_scalar($_GET['id']) && $_GET['id']) {
             $title = sprintf(__('%1$s - %2$s'), $title, $_GET['id']);
         }
 
@@ -650,7 +599,7 @@ TWIG,
         $lang = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
 
         $tpl_vars = [
-            'lang'               => $CFG_GLPI["languages"][$lang][3],
+            'lang'               => LanguageRegistry::get($lang)->getPageLang(),
             'title'              => $title,
             'theme'              => $theme,
             'is_anonymous_page'  => false,
@@ -702,6 +651,14 @@ TWIG,
                 }
             }
 
+            //TODO Stop using sector-based JS loading
+
+            //Remove huge memory waste by loading dashboard and related libraries (looking at you echarts...)
+            //on pages when there is no right to view dashboards (mainly for simplified interface users)
+            if (!Grid::canViewOneDashboard()) {
+                $jslibs = array_filter($jslibs, static fn($lib) => $lib !== 'dashboard');
+            }
+
             if (in_array('dashboard', $jslibs)) {
                 // include more js libs for dashboard case
                 $jslibs = array_merge($jslibs, [
@@ -709,20 +666,6 @@ TWIG,
                     'charts',
                     'clipboard',
                 ]);
-            }
-
-            if (in_array('planning', $jslibs)) {
-                Html::requireJs('planning');
-            }
-
-            if (in_array('fullcalendar', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'lib/fullcalendar.css'];
-                Html::requireJs('fullcalendar');
-            }
-
-            if (in_array('reservations', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'css/standalone/reservations.scss'];
-                Html::requireJs('reservations');
             }
 
             if (in_array('dashboard', $jslibs)) {
@@ -834,7 +777,7 @@ TWIG,
     {
         global $CFG_GLPI;
 
-        $can_read_dashboard      = Session::haveRight('dashboard', READ);
+        $can_read_dashboard      = Session::haveRight(Dashboard::$rightname, READ);
         $default_asset_dashboard = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('assets');
         $default_asset_helpdesk  = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('helpdesk');
 
@@ -912,7 +855,7 @@ TWIG,
                 'types' => [
                     AssetDefinition::class,
                     CommonDropdown::class, CommonDevice::class, Notification::class, Webhook::class,
-                    SLM::class, Config::class, SecurityConfig::class, FieldUnicity::class, CronTask::class, Auth::class,
+                    SLM::class, Config::class, SecurityConfig::class, DataAndPrivacyConfig::class, FieldUnicity::class, CronTask::class, Auth::class,
                     OAuthClient::class, MailCollector::class, Link::class, Plugin::class,
                 ],
                 'icon'  => 'ti ti-settings',
@@ -1084,8 +1027,8 @@ TWIG,
         }
 
         if (
-            Session::haveRight("ticket", READ)
-            || Session::haveRight("ticket", Ticket::READMY)
+            Session::haveRight(Ticket::$rightname, READ)
+            || Session::haveRight(Ticket::$rightname, Ticket::READMY)
         ) {
             $menu['tickets'] = [
                 'default' => '/front/ticket.php',
@@ -1101,12 +1044,12 @@ TWIG,
                 ],
             ];
 
-            if (Session::haveRight("ticket", CREATE)) {
+            if (Session::haveRight(Ticket::$rightname, CREATE)) {
                 $menu['tickets']['content']['ticket']['links']['add'] = ServiceCatalog::getSearchURL(false);
             }
         }
 
-        if (Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
+        if (Session::haveRightsOr(Reservation::$rightname, [READ, ReservationItem::RESERVEANITEM])) {
             $menu['reservation'] = [
                 'default' => '/front/reservationitem.php',
                 'title'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
@@ -1114,7 +1057,7 @@ TWIG,
             ];
         }
 
-        if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+        if (Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::READFAQ)) {
             $menu['faq'] = [
                 'default' => '/front/helpdesk.faq.php',
                 'title'   => __('FAQ'),
@@ -1206,7 +1149,7 @@ TWIG,
         /**
          * @var bool $HEADER_LOADED
          */
-        global $CFG_GLPI, $HEADER_LOADED, $DB;
+        global $HEADER_LOADED, $DB;
 
         // If in modal : display popHeader
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1269,8 +1212,9 @@ TWIG,
     {
         /**
          * @var bool $FOOTER_LOADED
+         * @var Kernel $kernel
          */
-        global $CFG_GLPI, $FOOTER_LOADED;
+        global $CFG_GLPI, $FOOTER_LOADED, $kernel;
 
         // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1284,10 +1228,9 @@ TWIG,
         }
         $FOOTER_LOADED = true;
 
-        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
+        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && Session::getLoginUserID() !== false && !Session::isImpersonateActive()) {
             $options = [
                 'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
-                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
                 'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
                 'user_id'   => Session::getLoginUserID(),
             ];
@@ -1319,7 +1262,7 @@ TWIG,
             // select2
             $filename = sprintf(
                 'lib/select2/js/i18n/%s.js',
-                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
+                LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code
             );
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 $tpl_vars['js_files'][] = ['path' => $filename];
@@ -1334,7 +1277,7 @@ TWIG,
         Profiler::getInstance()->stopAll();
         if (
             $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
-            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
+            && !str_starts_with($kernel->getMainRequest()->getPathInfo(), '/install/')
         ) {
             $tpl_vars['debug_info'] = DebugProfile::getCurrent()->getDebugInfo();
         }
@@ -1680,9 +1623,8 @@ TWIG,
         }
 
         $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
-                      title='" . __s('Check all as') . "'
                       name='_checkall_$rand' id='checkall_$rand'
-                      onclick= \"if ( checkAsCheckboxes(this, '" . htmlescape(jsescape($container_id)) . "', '.massive_action_checkbox')) {return true;}\">";
+                      data-glpi-check-all='" . htmlescape($container_id) . "'>";
 
         // permit to shift select checkboxes
         $out .= Html::scriptBlock("\$(function() {\$('#" . jsescape($container_id) . " input[type=\"checkbox\"]').shiftSelectable();});");
@@ -1806,11 +1748,6 @@ TWIG,
             }
         }
 
-        $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
-        if (!empty($criterion)) {
-            $out .= " onClick='massiveUpdateCheckbox(\"" . htmlescape(jsescape($criterion)) . "\", this)'";
-        }
-
         if (!empty($params['massive_tags'])) {
             $params['specific_tags']['data-glpicore-cb-massive-tags'] = $params['massive_tags'];
         }
@@ -1836,8 +1773,18 @@ TWIG,
 
         $out .= ">";
 
+        $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
         if (!empty($criterion)) {
-            $out .= Html::scriptBlock("\$(function() {\$('" . jsescape($criterion) . "').shiftSelectable();});");
+            $id = jsescape($params['id']);
+            $criterion = jsescape($criterion);
+            $out .= Html::scriptBlock(<<<JAVASCRIPT
+                $(function() {
+                    $("$criterion").shiftSelectable();
+                });
+                document.getElementById("$id").addEventListener("click", (e) => {
+                    massiveUpdateCheckbox("$criterion", e.currentTarget);
+                });
+            JAVASCRIPT);
         }
 
         return $out;
@@ -2056,20 +2003,15 @@ TWIG,
             && ($max > 0)
             && ($max < ($p['num_displayed'] + 10))
         ) {
-            if (
-                !$p['ontop']
-                || (isset($p['forcecreate']) && $p['forcecreate'])
-            ) {
-                $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
-                            <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;'></i>"
-                            . __s('Selection too large, massive action disabled.')
-                        . "</span>";
-                if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                    $out .= Html::showToolTip(
-                        __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
-                        ['display' => false, 'awesome-class' => 'btn btn-sm border-danger text-danger me-1 fa-info']
-                    );
-                }
+            $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
+                        <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;' aria-hidden='true'></i>"
+                        . __s('Selection too large, massive action disabled.')
+                    . "</span>";
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+                $out .= Html::showToolTip(
+                    __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
+                    ['display' => false, 'link_class' => 'btn btn-sm border-danger text-danger me-1']
+                );
             }
         } else {
             // Create Modal window on top
@@ -2106,20 +2048,29 @@ TWIG,
                     ]
                 );
             }
-            $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
+            $button_id = 'massiveaction_button_' . mt_rand();
+            $out .= "<button id=\"$button_id\" type=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='" . htmlescape($p['action_button_classes']) . "' ";
-            if (is_array($p['confirm']) || strlen($p['confirm'])) {
-                $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
-            } else {
-                $out .= "onclick='modal_massiveaction_window$identifier.show();'";
+
+            if (is_array($p['confirm'])) {
+                $p['confirm'] = implode("\n", $p['confirm']);
             }
-            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
+            if (strlen($p['confirm'])) {
+                $out .= sprintf(' data-glpi-confirm="%s"', htmlescape($p['confirm']));
+            }
+            $out .= ">";
             if ($p['display_arrow']) {
-                $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
+                $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;' aria-hidden='true'></i>";
             }
             $out .= "<span>" . htmlescape($p['title']) . "</span>";
-            $out .= "</a>";
+            $out .= "</button>";
+
+            $out .= Html::scriptBlock(<<<JAVASCRIPT
+                document.getElementById("$button_id").addEventListener("click", () => {
+                    modal_massiveaction_window$identifier.show();
+                });
+            JAVASCRIPT);
 
             if (
                 !$p['ontop']
@@ -2207,13 +2158,13 @@ TWIG,
         $calendar_tooltip = __s('Enter or select a date');
         $calendar_btn = $p['calendar_btn']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
-                <i class='ti ti-calendar'></i>
-                <span class='sr-only'>" . $calendar_tooltip . "</span>
+                <i class='ti ti-calendar' aria-hidden='true'></i>
+                <span class='visually-hidden'>" . $calendar_tooltip . "</span>
             </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle data-clear title='" . __s('Clear') . "'>
-                    <i class='ti ti-circle-x'></i>
+                    <i class='ti ti-circle-x' aria-hidden='true'></i>
                 </button>"
          : "";
 
@@ -2403,7 +2354,7 @@ JS;
         $disabled = !$p['canedit'] ? " disabled='disabled'" : "";
         $clear    = $p['maybeempty'] && $p['canedit']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Clear') . "'>
-                    <i class='ti ti-circle-x' data-clear></i>
+                    <i class='ti ti-circle-x' data-clear aria-hidden='true'></i>
                 </button>"
          : "";
 
@@ -2416,7 +2367,8 @@ JS;
             <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
             <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
-                <i class='ti ti-calendar-time'></i>
+                <i class='ti ti-calendar-time' aria-hidden='true'></i>
+                <span class='visually-hidden'>{$show_datepicker_label}</span>
             </button>
             $clear
          </div>
@@ -2865,7 +2817,7 @@ JS;
         // format dates
         foreach ($options['dates'] as &$data) {
             $data['date'] = $data['timestamp'] !== null
-                ? date("Y-m-d H:i:s", $data['timestamp'])
+                ? date("Y-m-d H:i:s", (int) $data['timestamp'])
                 : null;
         }
 
@@ -2897,6 +2849,7 @@ JS;
      *   link?: string,          // link on the displayed icon if contentid is empty
      *   linkid?: string,        // HTML id of the link
      *   linktarget?: string,    // link target
+     *   link_class?: string,    // class of the wrapper element (the <a>, or the <span> when there is no link)
      *   awesome-class?: string, // class of the icon to display (default 'fa-info')
      *   popup?: string,         // popup action
      *   img?: string,           // URL of a specific image
@@ -2953,17 +2906,22 @@ JS;
         }
 
         if (empty($param['applyto'])) {
-            if (!empty($param['link'])) {
-                $out .= "<a id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
+            // Keep wrapper classes (e.g. btn) off the icon element, since they can clash with fas/fa-* on font-family and hide the glyph.
+            $has_wrapper = !empty($param['link']) || !empty($param['link_class']);
+            $wrapper_tag = !empty($param['link']) ? 'a' : 'span';
+            if ($has_wrapper) {
+                $out .= "<{$wrapper_tag} id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
                         class='dropdown_tooltip " . htmlescape($param['link_class']) . "'";
 
-                if (!empty($param['linktarget'])) {
-                    $out .= " target='" . htmlescape($param['linktarget']) . "' ";
-                }
-                $out .= " href='" . htmlescape($param['link']) . "'";
+                if (!empty($param['link'])) {
+                    if (!empty($param['linktarget'])) {
+                        $out .= " target='" . htmlescape($param['linktarget']) . "' ";
+                    }
+                    $out .= " href='" . htmlescape($param['link']) . "'";
 
-                if (!empty($param['popup'])) {
-                    $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
+                    if (!empty($param['popup'])) {
+                        $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
+                    }
                 }
                 $out .= '>';
             }
@@ -2972,14 +2930,14 @@ JS;
                 $out .= "<img id='tooltip$rand' src='" . htmlescape($param['img']) . "'>";
             } else {
                 $class = htmlescape($param['awesome-class']);
-                $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw'></span>";
+                $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw' aria-hidden='true'></span>";
             }
 
-            if (!empty($param['link'])) {
-                $out .= "</a>";
+            if ($has_wrapper) {
+                $out .= "</{$wrapper_tag}>";
             }
 
-            $param['applyto'] = (!empty($param['link']) && !empty($param['linkid'])) ? $param['linkid'] : "tooltip$rand";
+            $param['applyto'] = (!empty($param['linkid']) && $has_wrapper) ? $param['linkid'] : "tooltip$rand";
         }
 
         if (empty($param['contentid'])) {
@@ -3138,8 +3096,9 @@ JS;
         $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
         $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
         $expected_languages  = [$language_RFC5646, $language_regionless];
-        if (array_key_exists($language_regionless, $CFG_GLPI['main_languages'])) {
-            $expected_languages[] = str_replace('_', '-', $CFG_GLPI['main_languages'][$language_regionless]); // fallback to main language (fr_CA -> fr_FR)
+        $main_language       = LanguageRegistry::getMainLanguage($language_regionless);
+        if ($main_language !== null) {
+            $expected_languages[] = str_replace('_', '-', $main_language); // fallback to main language (fr_CA -> fr_FR)
         }
         $language_opts = '';
         foreach ($expected_languages as $language) {
@@ -3438,7 +3397,7 @@ JAVASCRIPT
         $link =  $CFG_GLPI['root_doc'] . $url;
 
         echo sprintf(
-            '<a href="%1$s" %2$s target="_blank" style="margin-top:6px; display: block">%3$s <i class="ti ti-help"></i></a>',
+            '<a href="%1$s" %2$s target="_blank" style="margin-top:6px; display: block">%3$s <i class="ti ti-help" aria-hidden="true"></i></a>',
             htmlescape($link),
             !is_null($link_id) ? sprintf('id="%s"', htmlescape($link_id)) : '',
             __s('Available variables')
@@ -3492,7 +3451,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info, $display and $additional_params params in GLPI 12.0, they are not used.
+     * @TODO Deprecate $additional_info, $display and $additional_params params, they are not used.
      **/
     public static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '')
     {
@@ -3536,10 +3495,12 @@ JAVASCRIPT
 
         // Back and fast backward button
         if (!$start == 0) {
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\"></i></a></th>";
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\"></i></a></th>";
+            $out .= "<th class='left'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=0" . $additional_params) . "'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\">
+                     <i class='ti ti-chevrons-left' aria-hidden='true'></i></button></th>";
+            $out .= "<th class='left'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$back" . $additional_params) . "'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\">
+                     <i class='ti ti-chevron-left' aria-hidden='true'></i></button></th>";
         }
 
         $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3558,10 +3519,12 @@ JAVASCRIPT
 
         // Forward and fast forward button
         if ($forward < $numrows) {
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\"></i></a></th>";
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\"></i></a></th>";
+            $out .= "<th class='right'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$forward" . $additional_params) . "'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\">
+                     <i class='ti ti-chevron-right' aria-hidden='true'></i></button></th>";
+            $out .= "<th class='right'><button type='button' class='btn btn-sm btn-icon btn-ghost-secondary' data-glpi-reload-tab='" . htmlescape("start=$end" . $additional_params) . "'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\">
+                     <i class='ti ti-chevrons-right' aria-hidden='true'></i></button></th>";
         }
 
         // End pager
@@ -3574,72 +3537,6 @@ JAVASCRIPT
 
         return $out;
     }
-
-
-    /**
-     * Clean Printing of and array in a table
-     * ONLY FOR DEBUG
-     *
-     * @param array   $tab       the array to display
-     * @param int $pad       Pad used
-     * @param bool $jsexpand  Expand using JS ?
-     *
-     * @return void
-     **/
-    public static function printCleanArray($tab, $pad = 0, $jsexpand = false)
-    {
-
-        if (count($tab)) {
-            echo "<table class='array-debug table table-striped'>";
-            // For debug / no gettext
-            echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
-
-            foreach ($tab as $key => $val) {
-                echo "<tr><td>";
-                echo htmlescape($key);
-                echo "</td><td>";
-                $is_array = is_array($val);
-                $rand     = mt_rand();
-                if ($jsexpand && $is_array) {
-                    echo "<a href=\"javascript:showHideDiv('content" . htmlescape(jsescape($key . $rand)) . "','','','')\">";
-                    echo "=></a>";
-                } else {
-                    echo "=>";
-                }
-                echo "</td><td>";
-
-                if ($is_array) {
-                    echo "<div id='content" . htmlescape($key . $rand) . "' " . ($jsexpand ? "style=\"display:none;\"" : '') . ">";
-                    self::printCleanArray($val, $pad + 1);
-                    echo "</div>";
-                } else {
-                    if (is_bool($val)) {
-                        if ($val) {
-                            echo 'true';
-                        } else {
-                            echo 'false';
-                        }
-                    } else {
-                        if (is_object($val)) {
-                            if (method_exists($val, '__toString')) {
-                                echo htmlescape((string) $val);
-                            } else {
-                                echo htmlescape("(object) " . get_class($val));
-                            }
-                        } else {
-                            echo htmlescape($val);
-                        }
-                    }
-                }
-                echo "</td></tr>";
-            }
-            echo "</table>";
-        } else {
-            echo __s('Empty array');
-        }
-    }
-
-
 
     /**
      * Print pager for search option (first/previous/next/last)
@@ -3657,7 +3554,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info param in GLPI 12.0, it is not used.
+     * @TODO Deprecate $additional_info param, it is not used.
      * @TODO Accept an array of key/values in the $parameters param to ease its usage/escaping.
      */
     public static function printPager(
@@ -3717,11 +3614,11 @@ JAVASCRIPT
             echo "<th class='left'>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=0' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Start') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevrons-left'></i>";
+            echo "<i class='ti ti-chevrons-left' aria-hidden='true'></i>";
             echo "</a>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$back' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Previous') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevron-left'></i>";
+            echo "<i class='ti ti-chevron-left' aria-hidden='true'></i>";
             echo "</a></th>";
         }
 
@@ -3782,11 +3679,11 @@ JAVASCRIPT
             echo "<th class='right'>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$forward' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('Next') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>
-               <i class='ti ti-chevron-right'></i>";
+               <i class='ti ti-chevron-right' aria-hidden='true'></i>";
             echo "</a>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$end' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('End') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevrons-right'></i>";
+            echo "<i class='ti ti-chevrons-right' aria-hidden='true'></i>";
             echo "</a>";
             echo "</th>";
         }
@@ -3821,7 +3718,11 @@ JAVASCRIPT
         } else {
             $out .= "<form method='POST' action =''>\n";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"" . jsescape($additional_params) . "\")", false);
+            $out .= Dropdown::showListLimit('', false, [
+                'add_data_attributes' => [
+                    'glpi-reload-tab-on-change' => 'glpilist_limit=%value%' . $additional_params,
+                ],
+            ]);
         }
         $out .= Html::closeForm(false);
 
@@ -3892,7 +3793,7 @@ JAVASCRIPT
             $button[$btname] = $btname;
         }
         $fields          = array_merge($button, $fields);
-        $link = "<a ";
+        $link = "<button type='button'";
 
         if (!empty($btoption)) {
             $link .= ' ' . $btoption . ' ';
@@ -3902,15 +3803,17 @@ JAVASCRIPT
             if (empty($btimage)) {
                 $link .= " class='btn btn-primary' ";
             } else {
-                $link .= " class='pointer' ";
+                $link .= " class='pointer btn-as-link' ";
             }
         }
-        $action  = " submitGetLink('" . jsescape($action) . "', " . json_encode($fields) . ");";
+        $link .= ' data-glpi-submit-get-link="' . htmlescape($action) . '"';
+        $link .= ' data-glpi-submit-get-link-fields="' . htmlescape(json_encode($fields)) . '"';
 
-        if (is_array($confirm) || strlen($confirm)) {
-            $link .= self::addConfirmationOnAction($confirm, $action);
-        } else {
-            $link .= " onclick=\"" . htmlescape($action) . "\" ";
+        if (is_array($confirm)) {
+            $confirm = implode("\n", $confirm);
+        }
+        if (strlen($confirm)) {
+            $link .= sprintf(' data-glpi-confirm="%s"', htmlescape($confirm));
         }
 
         // Ensure $btlabel is properly escaped
@@ -3921,14 +3824,14 @@ JAVASCRIPT
             $link .= $btlabel;
         } else {
             if (str_starts_with($btimage, 'fa-')) {
-                $link .= "<span class='fas $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+                $link .= "<span class='fas $btimage' title='$btlabel'><span class='visually-hidden'>$btlabel</span>";
             } elseif (str_starts_with($btimage, 'ti-')) {
-                $link .= "<span class='ti $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+                $link .= "<span class='ti $btimage' title='$btlabel'><span class='visually-hidden'>$btlabel</span>";
             } else {
                 $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
             }
         }
-        $link .= "</a>";
+        $link .= "</button>";
 
         return $link;
     }
@@ -4007,7 +3910,7 @@ JAVASCRIPT
      *
      * @return string
      *
-     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     * @TODO (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
      *       `templateResult`, `templateSelection`.
      */
     public static function jsAdaptDropdown($id, $params = [])
@@ -4025,6 +3928,7 @@ JAVASCRIPT
         $ajax_limit_count    = (int) $CFG_GLPI['ajax_limit_count'];
         $templateresult      = $params["templateResult"] ?? "templateResult";
         $templateselection   = $params["templateSelection"] ?? "templateSelection";
+        $allowclear          = !empty($params["allowclear"]) ? 'true' : 'false';
 
         // escape values for JS
         $id = jsescape($id);
@@ -4042,6 +3946,7 @@ JAVASCRIPT
                 ajax_limit_count: {$ajax_limit_count},
                 templateresult: {$templateresult},
                 templateselection: {$templateselection},
+                allowclear: {$allowclear},
             };
 JS;
 
@@ -4072,7 +3977,7 @@ JS;
      *
      * @return string
      *
-     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     * @TODO (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
      *        `on_change`, `templateResult`, `templateSelection`.
      **/
     public static function jsAjaxDropdown($name, $field_id, $url, $params = [])
@@ -4309,52 +4214,6 @@ JS;
         return $image;
     }
 
-
-    /**
-     * Creates an HTML link.
-     *
-     * @since 0.85
-     *
-     * @param string $text     The content to be wrapped by a tags.
-     * @param string $url      URL parameter
-     * @param array  $options  Array of HTML attributes:
-     *     - `confirm` JavaScript confirmation message.
-     *     - `confirmaction` optional action to do on confirmation
-     * @return string an `a` element.
-     *
-     * @TODO Deprecate this method in GLPI 12.0, it is not used anymore in GLPI itself.
-     **/
-    public static function link($text, $url, $options = [])
-    {
-
-        if (isset($options['confirm'])) {
-            if (!empty($options['confirm'])) {
-                $confirmAction  = '';
-                if (isset($options['confirmaction'])) {
-                    if (!empty($options['confirmaction'])) {
-                        $confirmAction = $options['confirmaction'];
-                    }
-                    unset($options['confirmaction']);
-                }
-                $options['onclick'] = Html::getConfirmationOnActionScript(
-                    $options['confirm'],
-                    $confirmAction
-                );
-            }
-            unset($options['confirm']);
-        }
-
-        $text = htmlescape($text);
-
-        return sprintf(
-            '<a href="%1$s" %2$s>%3$s</a>',
-            htmlescape($url),
-            Html::parseAttributes($options),
-            $text
-        );
-    }
-
-
     /**
      * Creates a hidden input field.
      *
@@ -4479,7 +4338,6 @@ JS;
      * @param array  $options  Array of options.
      *     - image : will use a submit image input
      *     - `confirm` JavaScript confirmation message.
-     *     - `confirmaction` optional action to do on confirmation
      *
      * @return string A HTML submit button
      **/
@@ -4500,19 +4358,17 @@ JS;
         }
         if (isset($options['confirm'])) {
             if (!empty($options['confirm'])) {
-                $confirmAction  = '';
-                if (isset($options['confirmaction'])) {
-                    if (!empty($options['confirmaction'])) {
-                        $confirmAction = $options['confirmaction'];
-                    }
-                    unset($options['confirmaction']);
+                if (is_array($options['confirm'])) {
+                    $options['confirm'] = implode("\n", $options['confirm']);
                 }
-                $options['onclick'] = Html::getConfirmationOnActionScript(
-                    $options['confirm'],
-                    $confirmAction
-                );
+                $options['data-glpi-confirm'] = $options['confirm'];
             }
             unset($options['confirm']);
+        }
+
+        if (isset($options['confirmaction'])) {
+            trigger_error("The 'confirmaction' option was removed.", E_USER_WARNING);
+            unset($options['confirmaction']);
         }
 
         if ($image) {
@@ -4527,7 +4383,7 @@ JS;
 
         $icon = "";
         if (isset($options['icon'])) {
-            $icon = sprintf('<i class="%s"></i>&nbsp;', htmlescape($options['icon']));
+            $icon = sprintf('<i class="%s" aria-hidden="true"></i>&nbsp;', htmlescape($options['icon']));
             unset($options['icon']);
         }
 
@@ -4581,7 +4437,6 @@ JS;
               id="progress{$rand}"
               data-progressid="progress{$rand}"
               data-append-percent="{$append_percent}"
-              onchange="updateProgress('progress{$rand}')"
               max="{$max}"
               value="{$value}"
               title="{$tooltip}" data-bs-toggle="tooltip">
@@ -4894,6 +4749,22 @@ HTML;
             // manage file upload without tinymce editor
             $display .= "<span class='b'>" . __s('Drag and drop your file here, or') . '</span><br>';
         }
+
+        if ($p['onlyimages']) {
+            $accept = sprintf(
+                ' accept="%s"',
+                implode(
+                    ',',
+                    array_map(
+                        fn($ext) => '.' . $ext,
+                        Document::ALLOWED_IMAGE_EXTENSIONS
+                    )
+                )
+            );
+        } else {
+            $accept = ''; // no accept attribute when all types are allowed
+        }
+
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
@@ -4902,7 +4773,7 @@ HTML;
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
+                      . $accept . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
@@ -4914,7 +4785,7 @@ HTML;
             ? "$('#" . jsescape($p['dropZone']) . "')"
             : "false";
         $acceptFileTypes = $p['onlyimages']
-            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
+            ? "/(\.|\/)(" . implode('|', Document::ALLOWED_IMAGE_EXTENSIONS) . ")$/i"
             : DocumentType::getUploadableFilePattern();
         $messages = json_encode([
             'acceptFileTypes' => __('Filetype not allowed'),
@@ -5488,7 +5359,7 @@ JS);
      */
     public static function requireJs($name)
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $PLUGIN_HOOKS;
 
         if (isset($_SESSION['glpi_js_toload'][$name])) {
             //already in stack
@@ -5507,34 +5378,19 @@ JS);
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
                 break;
-            case 'planning':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
-                break;
             case 'flatpickr':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     $filename = "lib/flatpickr/l10n/"
-                    . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
+                    . strtolower(LanguageRegistry::get($_SESSION['glpilanguage'])->js_code) . ".js";
                     if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                         $_SESSION['glpi_js_toload'][$name][] = $filename;
                         break;
                     }
                 }
                 break;
-            case 'fullcalendar':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
-                if (isset($_SESSION['glpilanguage'])) {
-                    foreach ([2, 3] as $loc) {
-                        $filename = "lib/fullcalendar/core/locales/"
-                         . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
-                        if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
-                            $_SESSION['glpi_js_toload'][$name][] = $filename;
-                            break;
-                        }
-                    }
-                }
-                break;
+
             case 'fileupload':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
@@ -5571,9 +5427,6 @@ JS);
                 break;
             case 'photoswipe':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/photoswipe.js';
-                break;
-            case 'reservations':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
                 break;
             case 'cable':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
@@ -5630,7 +5483,7 @@ JS);
         if (isset($_SESSION['glpilanguage'])) {
             // select2
             $filename = "lib/select2/js/i18n/"
-                     . $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
+                     . LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code . ".js";
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 echo Html::script($filename);
             }
@@ -5640,10 +5493,9 @@ JS);
         self::redefineAlert();
         self::redefineConfirm();
 
-        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
+        if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && Session::getLoginUserID() !== false && !Session::isImpersonateActive()) {
             $options = [
                 'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
-                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
                 'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
                 'user_id'   => Session::getLoginUserID(),
             ];
@@ -5694,44 +5546,6 @@ JS);
         if (file_exists(GLPI_ROOT . "/js/analytics.js")) {
             echo Html::script("js/analytics.js");
         }
-    }
-
-
-    /**
-     * transfer some var of php to javascript
-     * (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
-     *
-     * @param bool $full if false, don't expose all variables from CFG_GLPI (only url_base & root_doc)
-     *
-     * @since 9.5
-     * @return string
-     */
-    public static function getCoreVariablesForJavascript(bool $full = false)
-    {
-        global $CFG_GLPI;
-
-        // prevent leak of data for non logged sessions
-        $full = $full && (Session::getLoginUserID(true) !== false);
-
-        $cfg_glpi = "var CFG_GLPI  = {
-            'url_base': '" . jsescape((isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')) . "',
-            'root_doc': '" . jsescape($CFG_GLPI["root_doc"]) . "',
-        };";
-
-        if ($full) {
-            $cfg_glpi = "var CFG_GLPI  = " . json_encode(Config::getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
-        }
-
-        $plugins_path = [];
-        foreach (Plugin::getPlugins() as $key) {
-            $plugins_path[$key] = "/plugins/{$key}";
-        }
-        $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
-
-        return self::scriptBlock("
-            $cfg_glpi
-            $plugins_path
-        ");
     }
 
     /**

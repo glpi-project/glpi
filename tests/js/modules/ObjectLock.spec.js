@@ -84,13 +84,13 @@ describe('Object Lock', () => {
         });
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/unlockobject.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/unlockobject.php', 'GET', {
             lockstatus: 1,
             id: 3450
         }, () => {
             return 1; // Not unlocked yet
         }));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/unlockobject.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/unlockobject.php', 'GET', {
             lockstatus: 1,
             id: 3450
         }, () => {
@@ -132,7 +132,7 @@ describe('Object Lock', () => {
     test('Ask unlock item', async () => {
         $('body').append('<button class="ask-unlock-item"></button>');
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/unlockobject.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/unlockobject.php', 'POST', {
             requestunlock: 1,
             id: 3450
         }, () => {
@@ -186,7 +186,7 @@ describe('Object Lock', () => {
 
         window.dispatchEvent(new Event('beforeunload'));
         await new Promise(process.nextTick);
-        expect(fetch_spy).toHaveBeenCalledWith('//ajax/unlockobject.php', expect.objectContaining({
+        expect(fetch_spy).toHaveBeenCalledWith('/ajax/unlockobject.php', expect.objectContaining({
             method: 'POST',
             cache: 'no-cache',
             headers: expect.objectContaining({
@@ -198,7 +198,7 @@ describe('Object Lock', () => {
     test('Unlock on beforeunload - ajax fallback', async () => {
         window.fetch = undefined;
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/unlockobject.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/unlockobject.php', 'POST', {
             unlock: 1,
             id: 3450
         }, () => {

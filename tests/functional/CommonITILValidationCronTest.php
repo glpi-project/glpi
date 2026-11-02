@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Ticket;
+use TicketValidation;
 
 class CommonITILValidationCronTest extends DbTestCase
 {
@@ -56,7 +58,7 @@ class CommonITILValidationCronTest extends DbTestCase
         );
 
         // create ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket_id = $ticket->add([
             'name' => 'Ticket',
             'content' => 'Ticket',
@@ -64,7 +66,7 @@ class CommonITILValidationCronTest extends DbTestCase
         $this->assertGreaterThan(0, $ticket_id);
 
         // create ticket validation
-        $ticket_validation = new \TicketValidation();
+        $ticket_validation = new TicketValidation();
         $ticket_validation_id = $ticket_validation->add([
             'tickets_id'      => $ticket_id,
             'itemtype_target' => 'User',
@@ -75,7 +77,7 @@ class CommonITILValidationCronTest extends DbTestCase
         // backdate ticket validation
         $this->assertTrue(
             $DB->update(
-                \TicketValidation::getTable(),
+                TicketValidation::getTable(),
                 [
                     'submission_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
                 ],
@@ -99,7 +101,7 @@ class CommonITILValidationCronTest extends DbTestCase
         // reset last reminder date
         $this->assertTrue(
             $DB->update(
-                \TicketValidation::getTable(),
+                TicketValidation::getTable(),
                 [
                     'last_reminder_date' => null,
                 ],
@@ -117,7 +119,7 @@ class CommonITILValidationCronTest extends DbTestCase
         $this->assertTrue(
             $ticket->update([
                 'id' => $ticket_id,
-                'status' => \Ticket::SOLVED,
+                'status' => Ticket::SOLVED,
             ])
         );
 
@@ -132,7 +134,7 @@ class CommonITILValidationCronTest extends DbTestCase
         $this->assertTrue(
             $ticket->update([
                 'id' => $ticket_id,
-                'status' => \Ticket::CLOSED,
+                'status' => Ticket::CLOSED,
             ])
         );
 
@@ -142,5 +144,48 @@ class CommonITILValidationCronTest extends DbTestCase
         // verify last reminder date is empty
         $this->assertTrue($ticket_validation->getFromDB($ticket_validation_id));
         $this->assertEmpty((string) $ticket_validation->fields['last_reminder_date']);
+    }
+
+    public function testNoNotificationsForDeletedTickets(): void
+    {
+        global $DB, $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['use_notifications']  = true;
+
+        $entity = new \Entity();
+        $this->assertTrue(
+            $entity->update([
+                'id' => $this->getTestRootEntity(true),
+                'approval_reminder_repeat_interval' => DAY_TIMESTAMP,
+            ])
+        );
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'test ticket',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $ticket_validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => 'User',
+            'items_id_target' => getItemByTypeName('User', TU_USER, true),
+        ]);
+
+        $DB->update(TicketValidation::getTable(), [
+            'submission_date' => date('Y-m-d H:i:s', strtotime('-2 day')),
+        ], ['id' => $ticket_validation->getID()]);
+
+        $ticket_validation->getFromDB($ticket_validation->getID());
+
+        $this->updateItem(Ticket::class, $ticket->getID(), ['is_deleted' => 1]);
+
+        $crontask = new \CronTask();
+        $this->assertTrue($crontask->getFromDBbyName('CommonITILValidationCron', 'approvalreminder'));
+        $this->assertEquals(1, \CommonITILValidationCron::cronApprovalReminder($crontask));
+
+        $ticket_validation->getFromDB($ticket_validation->getID());
+        $this->assertNull($ticket_validation->fields['last_reminder_date']);
     }
 }

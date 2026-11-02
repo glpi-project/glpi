@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Ramsey\Uuid\Uuid;
 
 class OAuthClientTest extends DbTestCase
 {
@@ -92,6 +93,7 @@ class OAuthClientTest extends DbTestCase
         $identifier = $client->fields['identifier'];
 
         $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'uuid' => Uuid::uuid4()->toString(),
             'identifier' => 'access_token_purge_test',
             'client' => $identifier,
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
@@ -107,6 +109,7 @@ class OAuthClientTest extends DbTestCase
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
         ]));
         $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'uuid' => Uuid::uuid4()->toString(),
             'identifier' => 'access_token_other_client',
             'client' => 'other_client_identifier',
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),

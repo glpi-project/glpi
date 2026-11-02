@@ -210,6 +210,7 @@ class Item_Line extends CommonDBRelation
             'nosort' => true,
             'super_header' => [
                 'label' => Item_DeviceSimcard::getTypeName(Session::getPluralNumber()),
+                'level' => 2,
             ],
             'columns' => [
                 'name' => __('Name'),
@@ -253,6 +254,7 @@ class Item_Line extends CommonDBRelation
                     'used'        => $used,
                 ],
                 'form_label' => __('Add an item'),
+                'form_label_level' => 2,
             ]);
         }
 
@@ -276,6 +278,7 @@ class Item_Line extends CommonDBRelation
             'nosort' => true,
             'super_header' => [
                 'label' => _n('Item', 'Items', Session::getPluralNumber()),
+                'level' => 2,
             ],
             'columns' => [
                 'name' => __('Name'),
@@ -354,6 +357,7 @@ class Item_Line extends CommonDBRelation
             'nosort' => true,
             'super_header' => [
                 'label' => Item_DeviceSimcard::getTypeName(Session::getPluralNumber()),
+                'level' => 2,
             ],
             'columns' => [
                 'name' => __('Name'),
@@ -397,6 +401,7 @@ class Item_Line extends CommonDBRelation
                     'used'        => $used,
                 ],
                 'form_label' => __('Add a phone line'),
+                'form_label_level' => 2,
             ]);
         }
 
@@ -417,6 +422,7 @@ class Item_Line extends CommonDBRelation
             'nosort' => true,
             'super_header' => [
                 'label' => Line::getTypeName(Session::getPluralNumber()),
+                'level' => 2,
             ],
             'columns' => [
                 'name' => __('Name'),

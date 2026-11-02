@@ -34,6 +34,7 @@
 
 namespace tests\units\Twig\Components\Alert;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Twig\Components\Alert\Alert;
 use Twig\Components\Alert\Danger;
@@ -43,21 +44,59 @@ use Twig\Components\Alert\Warning;
 
 class AlertTest extends TestCase
 {
-    public function test_alert_types(): void
+    public function test_alert_colors(): void
     {
-        $this->assertSame('info', (new Alert())->type);
-        $this->assertSame('info', (new Info())->type);
-        $this->assertSame('success', (new Success())->type);
-        $this->assertSame('warning', (new Warning())->type);
-        $this->assertSame('danger', (new Danger())->type);
+        $this->assertSame('info', (new Alert())->color);
+        $this->assertSame('info', (new Info())->color);
+        $this->assertSame('success', (new Success())->color);
+        $this->assertSame('warning', (new Warning())->color);
+        $this->assertSame('danger', (new Danger())->color);
     }
 
     public function test_resolvedIcon_uses_custom_icon(): void
     {
         $alert = new Alert();
-        $alert->type = 'info';
+        $alert->color = 'info';
         $alert->icon = 'ti ti-custom-star';
 
         $this->assertSame('ti ti-custom-star', $alert->getResolvedIcon());
+    }
+
+    public static function provideResolvedIconDefaults(): \Generator
+    {
+        yield 'success' => ['success', 'ti ti-check'];
+        yield 'warning' => ['warning', 'ti ti-alert-triangle'];
+        yield 'danger'  => ['danger', 'ti ti-exclamation-circle'];
+        yield 'info'    => ['info', 'ti ti-info-circle'];
+        yield 'default' => ['secondary', 'ti ti-info-circle'];
+    }
+
+    /**
+     * @param 'primary'|'secondary'|'success'|'danger'|'warning'|'info'|'light'|'dark' $color
+     */
+    #[DataProvider('provideResolvedIconDefaults')]
+    public function test_resolvedIcon_defaults_per_color(string $color, string $expected_icon): void
+    {
+        $alert = new Alert();
+        $alert->color = $color;
+
+        $this->assertSame($expected_icon, $alert->getResolvedIcon());
+    }
+
+    public function test_getClasses(): void
+    {
+        $alert = new Alert();
+        $alert->color = 'info';
+        $this->assertSame('alert alert-info', $alert->getClasses());
+
+        $alert->dismissible = true;
+        $this->assertSame('alert alert-info alert-dismissible fade show', $alert->getClasses());
+
+        $alert->dismissible = false;
+        $alert->important = true;
+        $this->assertSame('alert alert-info alert-important', $alert->getClasses());
+
+        $alert->dismissible = true;
+        $this->assertSame('alert alert-info alert-dismissible fade show alert-important', $alert->getClasses());
     }
 }

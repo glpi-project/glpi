@@ -45,7 +45,9 @@
 
         var _this = this;
         var _queue = $('<div></div>');
-        var _queue_audio = $('<div></div>');
+        // Guard to avoid overlapping polling requests when the server is slow:
+        // a new poll is skipped while the previous one is still pending.
+        var _request_pending = false;
 
         this.options = $.extend({}, GLPINotificationsAjax.default, options);
 
@@ -82,37 +84,17 @@
 
         };
 
-        this.playAudio = function (sound) {
-            if (!sound || !('Audio' in window)) {
-                return false;
-            }
-
-            var audioElement = new Audio();
-
-            $(audioElement).append($('<source />', {
-                src: `${CFG_GLPI.root_doc}/sound/${sound}.mp3`,
-                type: 'audio/mpeg'
-            }));
-            $(audioElement).append($('<source />', {
-                src: `${CFG_GLPI.root_doc}/sound/${sound}.ogg`,
-                type: 'audio/ogg'
-            }));
-
-            //Queue multiple sounds
-            _queue_audio.queue(function () {
-                var queue = this;
-                audioElement.onended = function () {
-                    $(queue).dequeue();
-                };
-
-                audioElement.play();
-            });
-        };
-
         this.checkNewNotifications = function () {
             if (!_this.isSupported()) {
                 return false;
             }
+
+            // Skip this poll if the previous request has not completed yet, so a
+            // slow server does not lead to overlapping requests piling up.
+            if (_request_pending) {
+                return;
+            }
+            _request_pending = true;
 
             var ajax = $.getJSON(`${CFG_GLPI.root_doc}/ajax/notifications_ajax.php`);
             ajax.done((data) => {
@@ -121,12 +103,10 @@
                         var item = data[i];
                         _this.showNotification(item.id, item.title, item.body, item.url);
                     }
-
-                    if (_this.options.sound) {
-                        _this.playAudio(_this.options.sound);
-                    }
-
                 }
+            });
+            ajax.always(() => {
+                _request_pending = false;
             });
         };
 
@@ -185,7 +165,6 @@
 
     GLPINotificationsAjax.default = {
         interval : 10000,
-        sound    : false,
         icon     : false,
         user_id  : 0
     };

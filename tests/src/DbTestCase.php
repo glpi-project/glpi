@@ -104,8 +104,7 @@ class DbTestCase extends GLPITestCase
         bool $noauto = true,
         bool $expected = true
     ): Auth {
-        Session::destroy();
-        Session::start();
+        $this->logOut();
 
         $auth = new Auth();
         $this->assertEquals($expected, $auth->login($user_name, $user_pass, $noauto));
@@ -129,12 +128,13 @@ class DbTestCase extends GLPITestCase
         string $user_name = TU_USER,
         string $user_pass = "",
     ): Auth {
-        Session::destroy();
-        Session::start();
+        $this->logOut();
 
         $auth = new Auth();
         $auth->user = getItemByTypeName(User::class, $user_name);
         $auth->auth_succeded = true;
+        // Simulate a login with the method configured on the account
+        $auth->setAuthType((int) $auth->user->fields['authtype']);
         Session::init($auth);
 
         return $auth;
@@ -395,6 +395,19 @@ class DbTestCase extends GLPITestCase
     }
 
     /**
+     * @template T of CommonDBTM
+     * @param T $item
+     * @return T
+     */
+    protected function reloadItem(CommonDBTM $item): CommonDBTM
+    {
+        $new = new ($item::class);
+        $new->getFromDB($item->getID());
+
+        return $new;
+    }
+
+    /**
      * Adds a new rule
      *
      * @param string $name     New rule name
@@ -519,7 +532,7 @@ class DbTestCase extends GLPITestCase
         );
 
         $this->assertEqualsCanonicalizing(
-            $capacities,
+            array_values($capacities),
             array_values($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))
         );
         $this->assertEqualsCanonicalizing(

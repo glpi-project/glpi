@@ -83,7 +83,7 @@ use ImageResolution;
 use ITILCategory;
 use ITILFollowupTemplate;
 use ITILValidationTemplate;
-use KnowbaseItemCategory;
+use KnowbaseItem;
 use LineOperator;
 use LineType;
 use Location;
@@ -149,7 +149,7 @@ final class DropdownController extends AbstractController
 {
     use CRUDControllerTrait;
 
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         $schemas = [];
 
@@ -395,7 +395,7 @@ final class DropdownController extends AbstractController
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'parent' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['x-version-introduced' => '2.2.0'],
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User') + ['x-version-introduced' => '2.2.0'],
                 'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group') + ['x-version-introduced' => '2.2.0'],
                 'code' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.2.0'],
                 'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_helpdeskvisible', 'x-version-introduced' => '2.2.0'],
@@ -423,11 +423,17 @@ final class DropdownController extends AbstractController
                 'is_request_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_request', 'x-version-introduced' => '2.2.0'],
                 'is_change_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_change', 'x-version-introduced' => '2.2.0'],
                 'is_problem_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_problem', 'x-version-introduced' => '2.2.0'],
+                // BC: categories are now articles, so this points to the same field as `knowbase_article`
                 'knowbase_category' => self::getDropdownTypeSchema(
-                    class: KnowbaseItemCategory::class,
-                    field: 'knowbaseitemcategories_id',
+                    class: KnowbaseItem::class,
+                    field: 'knowbaseitems_id',
                     full_schema: 'KBCategory'
-                ) + ['x-version-introduced' => '2.2.0'],
+                ) + ['x-version-introduced' => '2.2.0', 'x-version-removed' => '3.0.0'],
+                'knowbase_article' => self::getDropdownTypeSchema(
+                    class: KnowbaseItem::class,
+                    field: 'knowbaseitems_id',
+                    full_schema: 'KBArticle'
+                ) + ['x-version-introduced' => '3.0.0'],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -920,7 +926,7 @@ EOT,
                         - 2: Done
                         EOT,
                 ],
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
                 'use_current_user' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -2328,7 +2334,7 @@ EOT,
     {
         $dropdown_types = self::getDropdownTypes(false);
         $v20_dropdowns = self::getDropdownEndpointTypes20();
-        $schemas = self::getRawKnownSchemas();
+        $schemas = self::getRawKnownSchemas($this->getAPIVersion($request));
         $dropdown_paths = [];
         foreach ($dropdown_types as $dropdown_type => $dropdown_name) {
             $dropdown_paths[] = [

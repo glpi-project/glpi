@@ -40,6 +40,7 @@ enableAutoUnmount(afterEach);
 describe('EntitySelector Vue Component', () => {
     beforeEach(() => {
         vi.useFakeTimers();
+        window.location.reload = vi.fn();
     });
 
     afterEach(() => {

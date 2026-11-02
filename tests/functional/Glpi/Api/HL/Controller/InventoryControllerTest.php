@@ -38,7 +38,6 @@ use Agent;
 use AgentType;
 use Computer;
 use Glpi\Http\Request;
-use Glpi\Tests\HLAPICallAsserter;
 use Glpi\Tests\HLAPITestCase;
 use Lockedfield;
 use SNMPCredential;
@@ -75,7 +74,6 @@ class InventoryControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', '/Inventory/Agent'), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) {
                 $found_agent = false;
@@ -92,7 +90,6 @@ class InventoryControllerTest extends HLAPITestCase
         $update_request = new Request('PATCH', "/Inventory/Agent/{$agents_id}");
         $update_request->setParameter('threads_network_discovery', 6);
         $this->api->call($update_request, function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) {
                 $this->assertEquals(6, $content['threads_network_discovery']);
@@ -100,7 +97,6 @@ class InventoryControllerTest extends HLAPITestCase
         });
 
         $this->api->call(new Request('GET', "/Inventory/Agent/{$agents_id}"), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) {
                 $this->assertEquals(6, $content['threads_network_discovery']);
@@ -108,12 +104,10 @@ class InventoryControllerTest extends HLAPITestCase
         });
 
         $this->api->call(new Request('DELETE', "/Inventory/Agent/{$agents_id}"), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
         $this->api->call(new Request('GET', "/Inventory/Agent/{$agents_id}"), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
     }

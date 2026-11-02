@@ -38,6 +38,7 @@ namespace Glpi\Console\Migration;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
+use Glpi\Exception\Database\QueryException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -70,7 +71,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
-        $myisam_tables = $this->db->getMyIsamTables();
+        $myisam_tables = $this->getDb()->getMyIsamTables();
 
         $output->writeln(
             sprintf(
@@ -96,14 +97,14 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
             $progress_message = (fn(string $table) => sprintf(__('Migrating table "%s"...'), $table));
 
             foreach ($this->iterate($tables, $progress_message) as $table) {
-                $result = $this->db->doQuery(sprintf('ALTER TABLE %s ENGINE = InnoDB', $this->db->quoteName($table)));
-
-                if (false === $result) {
+                try {
+                    $this->getDb()->doQuery(sprintf('ALTER TABLE %s ENGINE = InnoDB', $this->getDb()->quoteName($table)));
+                } catch (QueryException $e) {
                     $message = sprintf(
                         __('Migration of table "%s" failed with message "(%s) %s".'),
                         $table,
-                        $this->db->errno(),
-                        $this->db->error()
+                        $this->getDb()->errno(),
+                        $this->getDb()->error()
                     );
                     $this->outputMessage(
                         '<error>' . $message . '</error>',

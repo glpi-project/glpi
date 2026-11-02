@@ -35,10 +35,17 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
+Session::checkRightsOr(Reservation::$rightname, [READ, ReservationItem::RESERVEANITEM]);
 
 if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(__('Simplified interface'), 'reservation');
+    Html::helpHeader(
+        sprintf(
+            '%s - %s',
+            Reservation::getTypeName(Session::getPluralNumber()),
+            __('Simplified interface')
+        ),
+        'reservation'
+    );
 } else {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }

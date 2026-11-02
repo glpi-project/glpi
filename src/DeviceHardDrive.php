@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /// Class DeviceHardDrive
 class DeviceHardDrive extends CommonDevice
@@ -282,9 +283,9 @@ class DeviceHardDrive extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => '('
-                . QueryFunction::sum('TABLE.capacity') . ' / '
-                . QueryFunction::count('TABLE.id') . ') * '
-                . QueryFunction::count(expression: 'TABLE.id', distinct: true),
+                . QueryFunction::sum(new QueryIdentifier('TABLE.capacity')) . ' / '
+                . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                . QueryFunction::count(expression: new QueryIdentifier('TABLE.id'), distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

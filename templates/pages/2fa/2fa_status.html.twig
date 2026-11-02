@@ -43,8 +43,8 @@
         {% endif %}
     {% endset %}
     <twig:Alert
-        :title="__('2FA enabled')"
-        :message="status_message"
+        :heading="__('2FA enabled')"
+        :content="status_message"
     />
    {{ tfa.tfa_backup_codes_container() }}
    <div>

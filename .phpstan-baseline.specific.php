@@ -21,6 +21,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_11.0.2_to_11.0.3/tokens.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$codepoint of function chr expects int\\<0, 255\\>, int\\<0, 510\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_11.0.x_to_12.0.0/notifications.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'array.invalidKey',
 	'count' => 1,
@@ -37,6 +43,18 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 4,
 	'path' => __DIR__ . '/src/Appliance_Item_Relation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$options of function setcookie expects array\\{expires\\?\\: int, path\\?\\: string, domain\\?\\: string, secure\\?\\: bool, httponly\\?\\: bool, samesite\\?\\: \'Lax\'\\|\'lax\'\\|\'None\'\\|\'none\'\\|\'Strict\'\\|\'strict\'\\}, array\\{expires\\: \\(float\\|int\\), path\\: string, domain\\: string, secure\\: bool, httponly\\: true, samesite\\: string\\} given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$options of function setcookie expects array\\{expires\\?\\: int, path\\?\\: string, domain\\?\\: string, secure\\?\\: bool, httponly\\?\\: bool, samesite\\?\\: \'Lax\'\\|\'lax\'\\|\'None\'\\|\'none\'\\|\'Strict\'\\|\'strict\', partitioned\\?\\: bool\\}, array\\{expires\\: \\(float\\|int\\), path\\: string, domain\\: string, secure\\: bool, httponly\\: true, samesite\\: string\\} given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
@@ -105,6 +123,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method DbUtils\\:\\:getDbRelations\\(\\) should return array\\<string, array\\<string, list\\<array\\{string, string\\}\\|string\\>\\|string\\>\\> but returns array\\<array\\<list\\<array\\<mixed, mixed\\>\\|string\\>\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method DbUtils\\:\\:getDbRelations\\(\\) should return array\\<string, array\\<string, list\\<array\\{string, string\\}\\|string\\>\\|string\\>\\> but returns array\\<array\\<list\\<array\\<mixed\\>\\|string\\>\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type class\\-string\\<CommonDBTM\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 4,
@@ -149,7 +179,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type class\\-string\\<Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 4,
+	'count' => 5,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -163,6 +193,12 @@ $ignoreErrors[] = [
 	'identifier' => 'array.invalidKey',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+    'message' => '#^Possibly invalid array key type string\\|null\\.$#',
+    'identifier' => 'offsetAccess.invalidOffset',
+    'count' => 2,
+    'path' => __DIR__ . '/src/Item_Ola.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',

@@ -43,6 +43,7 @@ use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\ArrayNormalizer;
 use Group_User;
@@ -152,7 +153,8 @@ trait PlanningEvent
             $input["name"] = __('Without title');
         }
 
-        $input["begin"] = $input["end"] = "NULL";
+        $input["begin"] ??= 'NULL';
+        $input["end"] ??= "NULL";
 
         if (isset($input['plan'])) {
             if (
@@ -485,7 +487,7 @@ trait PlanningEvent
                     'OR' => [
                         "$table.users_id" => $who,
                         QueryFunction::jsonContains(
-                            "$table.users_id_guests",
+                            new QueryIdentifier("$table.users_id_guests"),
                             new QueryExpression($DB::quoteValue((int) $who)),
                             '$'
                         ),
@@ -588,7 +590,7 @@ trait PlanningEvent
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $event_obj->getFromResultSet($data);
-                if ($event_obj->canViewItem()) {
+                if ($event_obj->can($event_obj->getID(), READ)) {
                     $key = $data["begin"]
                       . "$$" . $itemtype
                       . "$$" . $data["id"]
@@ -623,7 +625,7 @@ trait PlanningEvent
                                         . "?action=edit_event_form"
                                         . "&itemtype=$itemtype"
                                         . "&id=" . $data['id'],
-                        'editable'         => $event_obj->canUpdateItem(),
+                        'editable'         => $event_obj->can($event_obj->getID(), UPDATE),
                         'url'              => $url,
                         'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)
                                           ? $begin
@@ -679,6 +681,18 @@ trait PlanningEvent
             $events += $events_toadd;
         }
 
+        return static::translatePlanningEvents($events);
+    }
+
+    /**
+     * Apply the translations of the current language to the planning events.
+     *
+     * @param array<array<string, mixed>> $events
+     *
+     * @return array<array<string, mixed>>
+     */
+    protected static function translatePlanningEvents(array $events): array
+    {
         return $events;
     }
 
@@ -741,14 +755,6 @@ trait PlanningEvent
         if ($complete) {
             $html .= "<span>" . htmlescape(Planning::getState($val["state"])) . "</span><br>";
             $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
-        } else {
-            $html .= Html::showToolTip(
-                "<span class='b'>" . htmlescape(Planning::getState($val["state"])) . "</span><br>" . $content,
-                [
-                    'applyto' => "reminder_" . $val[$item_fk] . $rand,
-                    'display' => false,
-                ]
-            );
         }
 
         $parent = getItemForItemtype($val['itemtype']);
@@ -826,12 +832,13 @@ trait PlanningEvent
                         ? "none" : "table";
 
         $out .= "<span id='toggle_ar' style='display: $display_tar'>";
-        $out .= "<a class='btn btn-primary'
-                 title='" . __("Personalization") . "'
-                 onclick='$(\"#advanced_repetition$rand\").toggle()'>
-                 <i class='ti ti-settings'></i>
-              </a>";
-        $out .= "<div id='advanced_repetition$rand' style='display: $display_ar; max-width: 23'>";
+        $out .= "<button type='button' class='btn btn-primary'
+                 title='" . __s("Personalization") . "' aria-label='" . __s("Personalization") . "'
+                 data-bs-toggle='collapse' data-bs-target='#advanced_repetition$rand'
+                 aria-expanded='" . ($display_ar === 'none' ? 'false' : 'true') . "' aria-controls='advanced_repetition$rand'>
+                 <i class='ti ti-settings' aria-hidden='true'></i>
+              </button>";
+        $out .= "<div id='advanced_repetition$rand' class='collapse" . ($display_ar === 'none' ? '' : ' show') . "'>";
 
         $out .= "<div class='field'>";
         $out .= "<label for='dropdown_interval$rand'>" . __s("Interval") . "</label>";

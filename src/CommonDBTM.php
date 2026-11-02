@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QueryParam;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
@@ -47,6 +48,7 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumbInterface;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
@@ -59,6 +61,7 @@ use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
 
 use function Safe\getimagesize;
+use function Safe\json_encode;
 use function Safe\preg_grep;
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -383,7 +386,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param DBmysqlIterator $iter Iterator instance
      *
-     * @return iterable
+     * @return iterable<CommonDBTM>
      */
     public static function getFromIter(DBmysqlIterator $iter)
     {
@@ -429,10 +432,11 @@ class CommonDBTM extends CommonGLPI
         } elseif (count($iter) > 1) {
             throw new TooManyResultsException(
                 sprintf(
-                    '`%1$s::getFromDBByCrit()` expects to get one result, %2$s found in query "%3$s".',
+                    '`%1$s::getFromDBByCrit()` expects to get one result, %2$s found in query "%3$s" with values: %4$s.',
                     static::class,
                     count($iter),
-                    $iter->getSql()
+                    $iter->getSql(),
+                    json_encode($iter->getValues())
                 )
             );
         }
@@ -473,10 +477,11 @@ class CommonDBTM extends CommonGLPI
         } elseif (count($iterator) > 1) {
             throw new TooManyResultsException(
                 sprintf(
-                    '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s".',
+                    '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s" with values "%4$s".',
                     static::class,
                     count($iterator),
-                    $iterator->getSql()
+                    $iterator->getSql(),
+                    json_encode($iterator->getValues())
                 )
             );
         }
@@ -738,7 +743,7 @@ class CommonDBTM extends CommonGLPI
             $tobeupdated,
             ['id' => $this->fields['id']]
         );
-        $affected_rows = $DB->affectedRows();
+        $affected_rows = $DB->getAffectedRows();
 
         if (count($oldvalues) && $affected_rows > 0) {
             Log::constructHistory($this, $oldvalues, $this->fields);
@@ -805,9 +810,8 @@ class CommonDBTM extends CommonGLPI
                 $params['date_mod'] = $_SESSION["glpi_currenttime"];
             }
 
-            if ($DB->update(static::getTable(), $params, ['id' => $this->fields['id']])) {
-                return true;
-            }
+            $DB->update(static::getTable(), $params, ['id' => $this->fields['id']]);
+            return true;
         }
         return false;
     }
@@ -919,7 +923,14 @@ class CommonDBTM extends CommonGLPI
                 }
 
                 $itemtype = getItemTypeForTable($tablename);
-                if (!is_a($itemtype, self::class, true)) {
+                $is_clonable = $itemtype !== null
+                    && is_a($itemtype, self::class, true)
+                    && (
+                        !(new ReflectionClass($itemtype))->isAbstract()
+                        || (new ReflectionMethod($itemtype, 'getById'))->class !== self::class
+                    );
+
+                if (!$is_clonable) {
                     trigger_error(
                         sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
                         E_USER_WARNING
@@ -1511,7 +1522,7 @@ class CommonDBTM extends CommonGLPI
         }
         if ($icon !== '') {
             $html .= sprintf(
-                '<i class="%s"></i> ',
+                '<i class="%s" aria-hidden="true"></i> ',
                 htmlescape($icon)
             );
         }
@@ -1677,6 +1688,15 @@ class CommonDBTM extends CommonGLPI
         Plugin::doHook(Hooks::PRE_ITEM_UPDATE, $this);
         if ($this->input && is_array($this->input)) {
             $this->input = $this->prepareInputForUpdate($this->input);
+        }
+
+        if ($this->input && is_array($this->input)) {
+            // Call the plugin hook - $this->input can be altered
+            // This hook get the data altered by the object method
+            Plugin::doHook(Hooks::POST_PREPAREUPDATE, $this);
+        }
+
+        if ($this->input && is_array($this->input)) {
             $this->filterValues(!isCommandLine());
         }
 
@@ -1894,20 +1914,22 @@ class CommonDBTM extends CommonGLPI
         ) {
             $fields = array_values($this->updates);
             $fields = array_filter($fields, fn($f) => $f !== 'date_mod');
-            $stmt = $DB->prepare(
-                $DB->buildInsert(
-                    $lockedfield->getTable(),
-                    [
-                        'itemtype'        => static::class,
-                        'items_id'        => $this->fields['id'],
-                        'date_creation'   => $_SESSION["glpi_currenttime"],
-                        'field'           => new QueryParam(),
-                    ]
-                )
+            $insert_stmt = $DB->buildInsert(
+                $lockedfield->getTable(),
+                [
+                    'itemtype'        => static::class,
+                    'items_id'        => $this->fields['id'],
+                    'date_creation'   => $_SESSION["glpi_currenttime"],
+                    'field'           => new QueryParam(),
+                ]
             );
+            $stmt = $DB->prepare($insert_stmt);
             foreach ($fields as $field) {
                 try {
-                    $DB->executeStatement($stmt, [$field]);
+                    $DB->executeStatement(
+                        $stmt,
+                        [...$insert_stmt->getParams(), $field]
+                    );
                 } catch (StatementException $e) {
                     if ($e->getCode() != 1062) {
                         throw new RuntimeException('Unable to add locked field!', code: $e->getCode(), previous: $e);
@@ -2008,10 +2030,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            // Do not display quotes
-            if (isset($this->fields['name'])) {
-                $this->fields['name'] = $this->fields['name'];
-            } else {
+            if (!isset($this->fields['name'])) {
                 //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $this->fields['name'] = sprintf(
                     __('%1$s - ID %2$d'),
@@ -2451,6 +2470,13 @@ class CommonDBTM extends CommonGLPI
      */
     public function canAddItem(string $type): bool
     {
+        if ($type === Document::class) {
+            // "One write is enough". Stricter itemtypes (e.g. no document on a closed
+            // ticket) override this method and keep their own rule.
+            return $this->can($this->getID(), UPDATE)
+                || (Session::haveRight(Document::$rightname, CREATE) && $this->can($this->getID(), READ));
+        }
+
         return $this->can($this->getID(), UPDATE);
     }
 
@@ -2480,8 +2506,6 @@ class CommonDBTM extends CommonGLPI
      * Default is true and check entity if the objet is entity assign
      *
      * May be overloaded if needed
-     *
-     * @return bool
      **/
     public function canUpdateItem(): bool
     {
@@ -2847,7 +2871,8 @@ class CommonDBTM extends CommonGLPI
             && !static::isNewID($ID)
         ) {
             // Create item from template
-            // Check read right on the template
+            // Check right to create an item and read right on the template
+            $this->checkGlobal(CREATE);
             $this->check($ID, READ);
 
             // Restore saved input or template data
@@ -2858,19 +2883,48 @@ class CommonDBTM extends CommonGLPI
                 $input['entities_id'] = $_SESSION['glpiactive_entity'];
             }
 
-            // Check create right
-            $this->check(-1, CREATE, $input);
+            $input = $this->initObjectOnCreation($input);
         } elseif (static::isNewID($ID)) {
+            // Check create right
+            $this->checkGlobal(CREATE);
+
             // Restore saved input if available
             $input = $this->restoreInput($options);
-            // Create item
-            $this->check(-1, CREATE, $input);
+
+            $input = $this->initObjectOnCreation($input);
         } else {
             // Existing item
             $this->check($ID, READ);
         }
 
         return ($options['withtemplate'] ?? '');
+    }
+
+    /**
+     * Init object fields and fill default input fields.
+     *
+     * @param array<string, mixed>|null $input
+     * @return array<string, mixed>|null
+     */
+    public function initObjectOnCreation(?array $input): ?array
+    {
+        if (!isset($this->fields['id'])) {
+            // Only once
+            $this->getEmpty();
+        }
+
+        if (is_array($input)) {
+            $input = $this->addNeededInfoToInput($input);
+            // Copy input field to allow getEntityID() to work
+            // from entites_id field or from parent item ref
+            foreach ($input as $key => $val) {
+                if (isset($this->fields[$key])) {
+                    $this->fields[$key] = $val;
+                }
+            }
+        }
+
+        return $input;
     }
 
 
@@ -2950,44 +3004,73 @@ class CommonDBTM extends CommonGLPI
         return true;
     }
 
-    public function can($ID, int $right, ?array &$input = null): bool
+    #[Override]
+    public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
         if (Session::isInventory()) {
+            $reauth_needed = false;
             return true;
         }
 
-        // Create process
-        if (static::isNewID($ID)) {
-            if (!isset($this->fields['id'])) {
-                // Only once
-                $this->getEmpty();
+        // reauth - store reauth status in $is_user_reauthentication_needed, set it to $reauth_needed only if it's the sole missing requirement.
+        $is_user_reauthentication_needed = static::isUserReauthenticationNeeded();
+        $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
+
+        /**
+         * Returns the correct value for $allowed depending on $is_user_reauthentication_needed
+         *
+         * Core logic to respond with reauth and authorization is in this method
+         *
+         *
+         * - allowed (legacy right management) :
+         *   - 1. item type requires reauth : [can result: false (because item type requires reauth), reauth_needed : true]
+         *   - 2. reauth not needed [true, false]
+         * - not allowed :
+         *   - 3. single case, because whether or not reauth is needed, no right is given : [false, false]
+         *
+         * @return array{bool, bool} first value is the allowed result, second value is reauth_needed
+         */
+        $allowed_against_reauth = static function (bool $allowed) use ($is_user_reauthentication_needed) {
+            if (!$allowed) {
+                // case 3 - not allowed
+                return [false, false];
             }
 
+            if ($is_user_reauthentication_needed) {
+                // case 1 - allowed but $is_user_reauthentication_needed
+                return [false, true];
+            }
+
+            // case 2 - allowed, no reauth_needed
+            return [true, false];
+        };
+
+        // New item
+        if (static::isNewID($ID)) {
+            $input = $this->initObjectOnCreation($input);
+
+            // Store to be available for others functions
             if (is_array($input)) {
-                $input = $this->addNeededInfoToInput($input);
-                // Copy input field to allow getEntityID() to work
-                // from entites_id field or from parent item ref
-                foreach ($input as $key => $val) {
-                    if (isset($this->fields[$key])) {
-                        $this->fields[$key] = $val;
-                    }
-                }
-                // Store to be available for others functions
                 $this->input = $input;
             }
 
-            if (
-                $this->isPrivate()
-                && ($this->fields['users_id'] == Session::getLoginUserID())
-            ) {
-                return true;
+            // check if private
+            $allowed = $this->isPrivate() && ($this->fields['users_id'] == Session::getLoginUserID());
+            // global check
+            if (!$allowed) {
+                $allowed = static::canCreate() && $this->canCreateItem();
             }
-            return (static::canCreate() && $this->canCreateItem());
+
+            [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+
+            return $allowed;
         }
-        // else : Get item if not already loaded
+
+        // Existing item without id or $ID param not the same as this
         if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
             // Item not found : no right
             if (!$this->getFromDB($ID)) {
+                [, $reauth_needed] = $allowed_against_reauth(false);
                 return false;
             }
         }
@@ -2996,8 +3079,10 @@ class CommonDBTM extends CommonGLPI
         $this->right = $right;
         Plugin::doHook(Hooks::ITEM_CAN, $this);
         if ($this->right !== $right) {
+            [, $reauth_needed] = $allowed_against_reauth(false);
             return false;
         }
+
         $this->right = null;
 
         // Share token session-based access (read-only)
@@ -3006,61 +3091,43 @@ class CommonDBTM extends CommonGLPI
             && $this instanceof ShareableInterface
             && (new ShareTokenManager())->hasSessionAccess(static::class, $ID)
         ) {
+            $reauth_needed = false;
             return true;
         }
 
+        $this_belongs_to_current_user = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
         switch ($right) {
             case READ:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canView() && $this->canViewItem());
+                $allowed = $this_belongs_to_current_user || (static::canView() && $this->canViewItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case UPDATE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canUpdate() && $this->canUpdateItem());
+                $allowed = $this_belongs_to_current_user || (static::canUpdate() && $this->canUpdateItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case DELETE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canDelete() && $this->canDeleteItem());
+                $allowed = $this_belongs_to_current_user || (static::canDelete() && $this->canDeleteItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case PURGE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canPurge() && $this->canPurgeItem());
+                $allowed = $this_belongs_to_current_user || (static::canPurge() && $this->canPurgeItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case CREATE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canCreate() && $this->canCreateItem());
+                $allowed = $this_belongs_to_current_user || (static::canCreate() && $this->canCreateItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
+
+            default:
+                $reauth_needed = false;
+                return false;
         }
-        return false;
+
+        return $allowed;
     }
 
     /**
@@ -3088,22 +3155,26 @@ class CommonDBTM extends CommonGLPI
      * @param int                  $ID    ID of the item (-1 if new item)
      * @param int                  $right Right to check
      * @param ?array<string,mixed> $input array of input data (used for adding item) (default NULL)
-     *
-     * @return void
      **/
     public function check($ID, int $right, ?array &$input = null): void
     {
         // Check item exists
         if (!$this->checkIfExistOrNew($ID)) {
             throw new NotFoundHttpException();
-        } else {
-            if (!$this->can($ID, $right, $input)) {
-                /** @var class-string<CommonDBTM> $itemtype */
-                $itemtype = static::class;
-                $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
-                $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
-                throw new AccessDeniedHttpException($info);
+        }
+
+        $require_reauth = null;
+        if (!$this->can($ID, $right, $input, $require_reauth)) {
+            if ($require_reauth) {
+                self::redirectToReauthPrompt();
+                // method exit - redirection processed
             }
+
+            /** @var class-string<CommonDBTM> $itemtype */
+            $itemtype = static::class;
+            $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
+            $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -3171,26 +3242,41 @@ class CommonDBTM extends CommonGLPI
      **/
     public function checkGlobal(int $right): void
     {
-        if (!$this->canGlobal($right)) {
-            /** @var class-string<CommonDBTM> $itemtype */
-            $itemtype = static::class;
-            $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
-            $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
-            throw new AccessDeniedHttpException($info);
+        $reauth_needed = null;
+        $allowed = $this->canGlobal($right, $reauth_needed);
+
+        if ($allowed) {
+            return;
         }
+
+        // not allowed because of missing reauth : redirect to reauth prompt
+        if ($reauth_needed) {
+            self::redirectToReauthPrompt();
+        }
+
+        // not allowed, no reauth needed
+        /** @var class-string<CommonDBTM> $itemtype */
+        $itemtype = static::class;
+        $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
+        $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
+        throw new AccessDeniedHttpException($info);
     }
 
 
     /**
      * Get global right on an object
      *
-     * @param int $right Right to check: READ / UPDATE / CREATE / DELETE
+     * @param int  $right         Right to check: READ / UPDATE / CREATE / DELETE
+     * @param null $reauth_needed always pass null. use reference to get reauth status. see @param-out tag.
+     * @param-out bool $reauth_needed On true, it tells that soly a reauth is needed to perform action. On false, ignore it.
      *
-     * @return bool
      **/
-    public function canGlobal(int $right): bool
+    public function canGlobal(int $right, null &$reauth_needed = null): bool
     {
-        return match ($right) {
+        $_reauth_needed = self::isUserReauthenticationNeeded();
+        $reauth_needed = false;
+
+        $allowed = match ($right) {
             READ => static::canView(),
             UPDATE => static::canUpdate(),
             CREATE => static::canCreate(),
@@ -3198,6 +3284,16 @@ class CommonDBTM extends CommonGLPI
             PURGE => static::canPurge(),
             default => false,
         };
+
+        if ($allowed) {
+            if ($_reauth_needed) {
+                $reauth_needed = true;
+
+                return false;
+            }
+        }
+
+        return $allowed;
     }
 
 
@@ -3306,6 +3402,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
+     * @phpstan-impure
      * @return bool
      **/
     public function isActive()
@@ -3833,7 +3930,7 @@ class CommonDBTM extends CommonGLPI
         $self = new static();
 
         foreach ($self->rawSearchOptions() as $opt) {
-            // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+            // FIXME Trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             $missingFields = [];
             if (!isset($opt['id'])) {
@@ -3921,6 +4018,9 @@ class CommonDBTM extends CommonGLPI
             ];
         }
 
+        // Add asset URL search option for asset types
+        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
+
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
@@ -3957,7 +4057,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         foreach ($classname::$method_name($itemtype) as $opt) {
-            // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+            // FIXME Trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             if (!isset($opt['id'])) {
                 throw new Exception(static::class . ': invalid search option! ' . print_r($opt, true));
@@ -4151,12 +4251,12 @@ class CommonDBTM extends CommonGLPI
             if ($checkitem === null || $checkitem->isNewItem() || !$checkitem->isTemplate()) {
                 if (in_array(static::class, Appliance::getTypes(true))) {
                     $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                        = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
+                        = "<i class='" . htmlescape(Appliance::getIcon()) . "' aria-hidden='true'></i>" . _sx('button', 'Associate to an appliance');
                 }
 
                 if (in_array(static::class, $CFG_GLPI['rackable_types'])) {
                     $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                        = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                        = "<i class='ti ti-server-off' aria-hidden='true'></i>" . _sx('button', 'Remove from a rack');
                 }
             }
         }
@@ -4410,7 +4510,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function getUnallowedFieldsForUnicity()
     {
-        return ['alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id'];
+        return ['alert', 'comment', 'date_mod', 'entities_id', 'id', 'is_recursive', 'items_id'];
     }
 
 
@@ -4428,13 +4528,12 @@ class CommonDBTM extends CommonGLPI
 
         $message = [];
         foreach ($msgs as $field => $value) {
+            $searchOption = FieldUnicity::getSearchOptionForField($this, $field);
             $table = getTableNameForForeignKeyField($field);
-            if ($table != '') {
-                $searchOption = $this->getSearchOptionByField('field', 'name', $table);
-            } else {
-                $searchOption = $this->getSearchOptionByField('field', $field);
+            if ($table !== '') {
+                $value = Dropdown::getDropdownName($table, $value);
             }
-            $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'], $value);
+            $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'] ?? $field, $value);
         }
 
         if ($unicity['action_refuse']) {
@@ -4498,6 +4597,26 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
+     * Locked field names that cleanLockeds() will strip from this update.
+     *
+     * @return string[]
+     */
+    private function getLockedFieldsForUnicityCheck(): array
+    {
+        if (
+            ($this->input['_skip_locks'] ?? false) === true
+            || (isset($this->input['_transfer']) && !($this->input['_lock_updated_fields'] ?? false))
+            || !$this->maybeDynamic()
+            || !isset($this->input['is_dynamic'])
+            || !$this->input['is_dynamic']
+        ) {
+            return [];
+        }
+
+        return (new Lockedfield())->getLockedNames(static::class, $this->fields['id']);
+    }
+
+    /**
      * Check field unicity before insert or update
      *
      * @param bool $add     true for insert, false for update (false by default)
@@ -4538,9 +4657,14 @@ class CommonDBTM extends CommonGLPI
 
         //Get all checks for this itemtype and this entity
         if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+            $locked_fields = $add ? [] : $this->getLockedFieldsForUnicityCheck();
+
             // Get input entities if set / else get object one
             if ($this instanceof User) {
                 $entities_id = 0; // Exception: user does not belong to an entity
+            } elseif (in_array('entities_id', $locked_fields, true)) {
+                // Locked entity: stays where it actually is, not where the input tries to move it.
+                $entities_id = $this->fields['entities_id'];
             } elseif (isset($this->input['entities_id'])) {
                 $entities_id = $this->input['entities_id'];
             } elseif (isset($this->fields['entities_id'])) {
@@ -4552,28 +4676,36 @@ class CommonDBTM extends CommonGLPI
             }
 
             $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
+
             foreach ($all_fields as $key => $fields) {
                 //If there's fields to check
                 if (!empty($fields) && !empty($fields['fields'])) {
                     $where    = [];
                     $continue = true;
+                    $effective_values = [];
                     foreach (explode(',', $fields['fields']) as $field) {
+                        // Locked field: check against the value that will actually remain stored.
+                        $value = (isset($this->input[$field]) && in_array($field, $locked_fields, true))
+                            ? ($this->fields[$field] ?? $this->input[$field])
+                            : ($this->input[$field] ?? null);
+                        $effective_values[$field] = $value;
+
                         if (
                             isset($this->input[$field]) //Field is set
                             //Standard field not null
                             && (((getTableNameForForeignKeyField($field) == '')
-                            && ($this->input[$field] != ''))
+                            && ($value != ''))
                             //Foreign key and value is not 0
                             || ((getTableNameForForeignKeyField($field) != '')
-                              && ($this->input[$field] > 0)))
+                              && ($value > 0)))
                             && !Fieldblacklist::isFieldBlacklisted(
                                 get_class($this),
                                 $entities_id,
                                 $field,
-                                $this->input[$field]
+                                $value
                             )
                         ) {
-                            $where[static::getTable() . '.' . $field] = $this->input[$field];
+                            $where[static::getTable() . '.' . $field] = $value;
                         } else {
                             $continue = false;
                         }
@@ -4607,7 +4739,7 @@ class CommonDBTM extends CommonGLPI
                                 || $p['add_event_on_duplicate']
                             ) {
                                 foreach (explode(',', $fields['fields']) as $field) {
-                                    $message[$field] = $this->input[$field];
+                                    $message[$field] = $effective_values[$field];
                                 }
 
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
@@ -4669,11 +4801,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Clean all infos which match some criteria
      *
-     * @param array   $crit    array of criteria (ex array('is_active'=>'1'))
-     * @param bool $force   force purge not on put in trashbin (default false)
-     * @param bool $history do history log ? (true by default)
+     * @param array $crit    array of criteria (ex array('is_active'=>'1'))
+     * @param bool  $force   force purge not on put in trashbin (default false)
+     * @param bool  $history do history log ? (true by default)
      *
-     * @return bool
+     * @return bool false if a deletion failed or there was nothing to delete (criteria did not match any entry)
      **/
     public function deleteByCriteria($crit = [], $force = false, $history = true)
     {
@@ -4691,9 +4823,9 @@ class CommonDBTM extends CommonGLPI
                 }
             }
         }
+
         return $ok;
     }
-
 
     /**
      * get the Entity of an Item
@@ -4954,8 +5086,9 @@ class CommonDBTM extends CommonGLPI
                         break;
 
                     case "language":
-                        if (isset($CFG_GLPI['languages'][$value ?? ''])) {
-                            return htmlescape($CFG_GLPI['languages'][$value][0]);
+                        $language = LanguageRegistry::tryGet($value ?? '');
+                        if ($language !== null) {
+                            return htmlescape($language->native_name);
                         }
                         return __s('Default value');
                 }
@@ -5083,6 +5216,15 @@ class CommonDBTM extends CommonGLPI
                     return Dropdown::showNumber($name, $options);
 
                 case "decimal":
+                    $copytooption = ['min', 'max', 'step'];
+                    foreach ($copytooption as $key) {
+                        if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                            $options[$key] = $searchoptions[$key];
+                        }
+                    }
+                    $options['type'] = 'number';
+                    $options['value'] = $value;
+                    return Html::input($name, $options);
                 case "mac":
                 case "ip":
                 case "string":
@@ -5728,7 +5870,10 @@ class CommonDBTM extends CommonGLPI
             }
         }
         if ($title !== null) {
-            $mark = "<i class='ti ti-wand' title='$title'></i>";
+            $mark = sprintf(
+                '<span><i class="ti ti-wand" title="%1$s" aria-hidden="true"></i><span class="visually-hidden">%1$s</span></span>',
+                $title
+            );
         }
         return $mark;
     }
@@ -5784,6 +5929,11 @@ class CommonDBTM extends CommonGLPI
             // If _auto is not defined : it's a manual process : set it's value to 0
             if (!isset($this->input['_auto'])) {
                 $input['_auto'] = 0;
+            }
+
+            // The 'manufacturer' criterion is matched by its code, not by the 'manufacturers_id' field
+            if (isset($input['manufacturers_id'])) {
+                $input['manufacturer'] = $input['manufacturers_id'];
             }
 
             // Add last_inventory_update
@@ -6050,7 +6200,7 @@ class CommonDBTM extends CommonGLPI
 
         return [
             'RAW' => [
-                (string) QueryFunction::lower("$table.$name_field") => ['LIKE', "%$filter%"],
+                (string) QueryFunction::lower(new QueryIdentifier("$table.$name_field")) => ['LIKE', "%$filter%"],
             ],
         ];
     }
@@ -6494,6 +6644,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Display a full helpdesk page (header + content + footer) for a given item
      *
+     * Right checks and reauth process are processed in this method.
+     *
      * @param int|string  $id      Id of the item to be displayed, may be a
      *                             string due to some weird default values.
      *                             Will be cast to int straight away.
@@ -6531,23 +6683,16 @@ class CommonDBTM extends CommonGLPI
             $menus = $menus[$interface];
         }
 
+        // New item, check create rights
         if (static::isNewID($id)) {
-            // New item, check create rights
-            if (!static::canCreate()) {
-                throw new AccessDeniedHttpException('Missing CREATE right. Cannot view the new item form.');
-            }
+            $item->checkGlobal(CREATE);
 
             // Tab name will be generic (item isn't saved yet)
             $title = static::getBrowserTabNameForNewItem();
         } else {
-            // Existing item, try to load it and check read rights
-            if (!$item->getFromDB($id)) {
-                throw new NotFoundHttpException();
-            }
-
-            if (!$item->can($id, READ)) {
-                throw new AccessDeniedHttpException('Missing READ right. Cannot view the item.');
-            }
+            // Existing item : check() loads it and checks read rights.
+            // It throws NotFound/AccessDenied or redirects to the re-authentication prompt when needed.
+            $item->check($id, READ);
 
             // Tab name will be specific to the loaded item
             $title = $item->getBrowserTabName();

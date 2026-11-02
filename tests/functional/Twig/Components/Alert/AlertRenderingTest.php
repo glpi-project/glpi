@@ -45,7 +45,7 @@ class AlertRenderingTest extends GLPITestCase
         return TemplateRenderer::getInstance()->renderFromStringTemplate($template);
     }
 
-    public static function provideAlertTypeCssClass(): \Generator
+    public static function provideAlertColorCssClass(): \Generator
     {
         yield 'info'    => ['info',    'alert-info'];
         yield 'warning' => ['warning', 'alert-warning'];
@@ -53,10 +53,10 @@ class AlertRenderingTest extends GLPITestCase
         yield 'success' => ['success', 'alert-success'];
     }
 
-    #[DataProvider('provideAlertTypeCssClass')]
-    public function test_renders_correct_css_class_for_type(string $type, string $expected_class): void
+    #[DataProvider('provideAlertColorCssClass')]
+    public function test_renders_correct_css_class_for_color(string $color, string $expected_class): void
     {
-        $html = $this->render("{{ component('Alert', {type: '$type'}) }}");
+        $html = $this->render("{{ component('Alert', {color: '$color'}) }}");
         $this->assertStringContainsString($expected_class, $html);
     }
 
@@ -97,11 +97,11 @@ class AlertRenderingTest extends GLPITestCase
 
     public function test_twig_tag_syntax_renders_alert(): void
     {
-        $html = $this->render('<twig:Alert title="My info alert" />');
+        $html = $this->render('<twig:Alert heading="My info alert" />');
         $this->assertStringContainsString('alert-info', $html);
         $this->assertStringContainsString('My info alert', $html);
 
-        $html = $this->render('<twig:Alert:Warning type="warning" />');
+        $html = $this->render('<twig:Alert:Warning />');
         $this->assertStringContainsString('alert-warning', $html);
     }
 
@@ -109,8 +109,8 @@ class AlertRenderingTest extends GLPITestCase
     {
         $content = "
         <twig:Alert>
-            <twig:block name='title'>
-                <h3 class='alert-title bg-green'>
+            <twig:block name='heading'>
+                <h3 class='alert-heading bg-green'>
                     We can also be more like a vue/nuxt component
                 </h3>
             </twig:block>
@@ -122,8 +122,65 @@ class AlertRenderingTest extends GLPITestCase
         ";
 
         $html = $this->render($content);
-        $this->assertStringContainsString('alert-title bg-green', $html);
+        $this->assertStringContainsString('alert-heading bg-green', $html);
         $this->assertStringContainsString('My content in more like a twig logic', $html);
 
+    }
+
+    public function test_attributes_are_forwarded(): void
+    {
+        $html = $this->render('<twig:Alert class="mb-0" id="my-alert" data-foo="bar" />');
+        $this->assertStringContainsString('class="alert alert-info mb-0"', $html);
+        $this->assertStringContainsString('id="my-alert"', $html);
+        $this->assertStringContainsString('data-foo="bar"', $html);
+    }
+
+    public function test_dismissible_renders_close_button(): void
+    {
+        $html = $this->render('<twig:Alert :dismissible="true" />');
+        $this->assertStringContainsString('alert-dismissible', $html);
+        $this->assertStringContainsString('fade', $html);
+        $this->assertStringContainsString('show', $html);
+        $this->assertStringContainsString('btn-close', $html);
+        $this->assertStringContainsString('data-bs-dismiss="alert"', $html);
+    }
+
+    public function test_close_block_can_be_overridden(): void
+    {
+        $content = "
+        <twig:Alert :dismissible='true'>
+            <twig:block name='close'>
+                <button type='button' class='my-custom-close'></button>
+            </twig:block>
+        </twig:Alert>
+        ";
+
+        $html = $this->render($content);
+        $this->assertStringContainsString('my-custom-close', $html);
+        $this->assertStringNotContainsString('btn-close', $html);
+    }
+
+    public function test_icon_block_can_be_emptied(): void
+    {
+        $content = "
+        <twig:Alert>
+            <twig:block name='icon'></twig:block>
+        </twig:Alert>
+        ";
+
+        $html = $this->render($content);
+        $this->assertStringNotContainsString('alert-icon', $html);
+    }
+
+    public function test_heading_uses_alert_heading_class(): void
+    {
+        $html = $this->render('<twig:Alert heading="My heading" />');
+        $this->assertStringContainsString('<h4 class="alert-heading">My heading</h4>', $html);
+    }
+
+    public function test_content_uses_alert_description_class(): void
+    {
+        $html = $this->render('<twig:Alert content="My content" />');
+        $this->assertStringContainsString('<div class="alert-description">My content</div>', $html);
     }
 }

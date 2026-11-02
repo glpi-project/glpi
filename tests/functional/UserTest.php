@@ -37,10 +37,12 @@ namespace tests\units;
 use AuthLDAP;
 use DateInterval;
 use DateTime;
+use DBmysql;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Tests\DbTestCase;
 use Group;
+use Group_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
@@ -444,6 +446,63 @@ class UserTest extends DbTestCase
         $this->assertSame(null, $user->fields['entities_id']);
     }
 
+    public static function addLanguageProvider(): iterable
+    {
+        yield 'valid language' => ['fr_FR', 'fr_FR'];
+        yield 'empty language' => ['', null];
+        yield 'default value choice' => ['0', null];
+        yield 'global default language' => ['en_GB', null];
+        yield 'unknown language' => ['xx_XX', null];
+    }
+
+    #[DataProvider('addLanguageProvider')]
+    public function testAddWithLanguage(string $language, ?string $expected): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['language'] = 'en_GB';
+
+        $this->login();
+
+        $user = $this->createItem(User::class, [
+            'name'     => 'user_with_language',
+            'language' => $language,
+        ], ['language']);
+
+        $this->assertSame($expected, $user->fields['language']);
+    }
+
+    public function testAddWithLanguageSendsPasswordInitInUserLanguage(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['language']              = 'en_GB';
+        $CFG_GLPI['use_notifications']     = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+
+        $user = $this->createItem(User::class, [
+            'name'           => 'user_with_language_init_password',
+            'language'       => 'fr_FR',
+            '_useremails'    => ['user_with_language_init_password@example.com'],
+            '_init_password' => 1,
+        ], ['language', '_useremails', '_init_password']);
+
+        // Emails cannot be sent in the testing env
+        $this->hasSessionMessageThatContains('Error in sending the email', ERROR);
+
+        $queued = getAllDataFromTable('glpi_queuednotifications', [
+            'itemtype' => User::class,
+            'items_id' => $user->getID(),
+        ]);
+        $this->assertCount(1, $queued);
+        $this->assertStringContainsString(
+            "Votre compte vient juste d'être créé. Veuillez définir votre mot de passe.",
+            (new \GLPIKey())->decrypt(reset($queued)['body_text'])
+        );
+    }
+
     public function testPrepareInputForAddPdfFont(): void
     {
         global $CFG_GLPI;
@@ -705,13 +764,12 @@ class UserTest extends DbTestCase
         $inputs = [
             'api_token'             => \bin2hex(\random_bytes(16)),
             '_reset_api_token'      => true,
-            'cookie_token'          => \bin2hex(\random_bytes(16)),
             'password_forget_token' => \bin2hex(\random_bytes(16)),
             'personal_token'        => \bin2hex(\random_bytes(16)),
             '_reset_personal_token' => true,
             '_useremails'           => ['test1@example.com', 'test2@example.com'],
             '_emails'               => ['test1@example.com', 'test2@example.com'],
-            'is_active'              => false,
+            'is_active'             => false,
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {
@@ -748,6 +806,45 @@ class UserTest extends DbTestCase
                 $this->assertEquals(true, \array_key_exists($key, $output));
             }
         }
+    }
+
+    public function testPrepareInputForUpdate2fa(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $target_user = \getItemByTypeName(User::class, 'tech');
+        $update_input = ['id' => $target_user->getID(), '2fa' => \bin2hex(\random_bytes(16)), '2fa_unenforced' => 1];
+
+        // Admin with `User::UPDATEAUTHENT` right can change `2fa`/`2fa_unenforced` fields
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate($update_input);
+        $this->assertArrayHasKey('2fa', $update_input);
+        $this->assertArrayHasKey('2fa_unenforced', $update_input);
+        $this->assertSame($update_input['2fa'], $output['2fa']);
+        $this->assertSame($update_input['2fa_unenforced'], $output['2fa_unenforced']);
+
+        // Admin without `User::UPDATEAUTHENT` right cannot change `2fa`/`2fa_unenforced` fields
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate($update_input);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa']);
+
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa_unenforced' => 1]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa_unenforced']);
+
+        // User with lower privileges cannot change the `2fa`/`2fa_unenforced` fields,
+        // even when having the `User::UPDATEAUTHENT` right
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa' => \bin2hex(\random_bytes(16))]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa']);
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), '2fa_unenforced' => 1]);
+        $this->assertFalse($output);
+        $this->hasSessionMessages(ERROR, ['You are not allowed to update the following fields: 2fa_unenforced']);
     }
 
     public function testPrepareInputForUpdateAuthTypeWithSession(): void
@@ -947,6 +1044,166 @@ class UserTest extends DbTestCase
                 'is_dynamic'    => $row['is_dynamic'],
             ]));
         }
+    }
+
+    public function testCloneDoesNotEscalatePrivileges(): void
+    {
+        // A Technician cloning a Super-Admin user must not inherit Super-Admin rights
+        $this->login('tech', 'tech');
+
+        $source = getItemByTypeName('User', 'glpi');
+        $this->assertInstanceOf(User::class, $source);
+
+        $puser = new Profile_User();
+        $this->assertTrue($puser->getFromDBByCrit([
+            'users_id'    => $source->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited the Super-Admin authorization,
+        // since the Technician performing the clone could not grant it directly.
+        $this->assertFalse($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Super-Admin', true),
+        ]));
+    }
+
+    public function testCloneStillCopiesAuthorizedProfiles(): void
+    {
+        $this->login();
+
+        $user = $this->createItem(User::class, ['name' => 'clone_source_technician']);
+
+        $puser = $this->createItem(Profile_User::class, [
+            'users_id'    => $user->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $this->assertTrue($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+        ]));
+    }
+
+    public function testCloneDoesNotEscalateAuthorizationAcrossEntities(): void
+    {
+        $this->login();
+
+        // A technician authorized only (non-recursively) on _test_root_entity.
+        $this->createItem(User::class, [
+            'name'         => 'clone_restricted_technician',
+            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        // The user to clone is authorized in a child entity the technician has no access to.
+        $source = $this->createItem(User::class, ['name' => 'clone_source_other_entity']);
+        $puser = $this->createItem(Profile_User::class, [
+            'users_id'    => $source->getID(),
+            'profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+
+        $this->login('clone_restricted_technician');
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited the authorization on an entity
+        // the technician performing the clone had no access to.
+        $this->assertFalse($puser->getFromDBByCrit([
+            'users_id'    => $cloned_id,
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]));
+    }
+
+    public function testCloneStillCopiesAuthorizedGroupMembership(): void
+    {
+        $this->login();
+
+        $user = $this->createItem(User::class, ['name' => 'clone_source_with_group']);
+
+        $group = $this->createItem(Group::class, [
+            'name'        => 'clone_group_in_scope',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $gu = $this->createItem(Group_User::class, [
+            'users_id'  => $user->getID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $this->assertTrue($gu->getFromDBByCrit(['users_id' => $cloned_id, 'groups_id' => $group->getID()]));
+    }
+
+    public function testCloneDoesNotEscalateGroupMembership(): void
+    {
+        $this->login();
+
+        // A technician authorized only (non-recursively) on _test_root_entity.
+        $this->createItem(User::class, [
+            'name'         => 'clone_restricted_technician_group',
+            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true),
+            '_entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        // The user to clone belongs to a group defined in a child entity the technician has no access to.
+        $source = $this->createItem(User::class, ['name' => 'clone_source_group_other_entity']);
+        $group = $this->createItem(Group::class, [
+            'name'        => 'clone_group_other_entity',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]);
+        $gu = $this->createItem(Group_User::class, [
+            'users_id'  => $source->getID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        $this->login('clone_restricted_technician_group');
+
+        $cloned_id = $source->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        // The clone must not have inherited membership in a group defined
+        // in an entity the technician performing the clone had no access to.
+        $this->assertFalse($gu->getFromDBByCrit(['users_id' => $cloned_id, 'groups_id' => $group->getID()]));
+    }
+
+    public function testCloneDoesNotCopyLdapFields(): void
+    {
+        $this->login();
+
+        $user = new User();
+        $uid = $user->add([
+            'name'       => 'ldap_user_to_clone',
+            'user_dn'    => 'uid=ldap_user_to_clone,ou=people,dc=example,dc=com',
+            'sync_field' => 'ldap_user_to_clone',
+        ]);
+        $this->assertGreaterThan(0, $uid);
+        $this->assertTrue($user->getFromDB($uid));
+
+        $this->assertNotEmpty($user->fields['user_dn']);
+        $this->assertNotEmpty($user->fields['user_dn_hash']);
+        $this->assertNotEmpty($user->fields['sync_field']);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $cloned_user = new User();
+        $this->assertTrue($cloned_user->getFromDB($cloned_id));
+
+        $this->assertEmpty($cloned_user->fields['user_dn']);
+        $this->assertEmpty($cloned_user->fields['user_dn_hash']);
+        $this->assertEmpty($cloned_user->fields['sync_field']);
     }
 
     public function testGetFromDBbyDn()
@@ -1825,16 +2082,15 @@ class UserTest extends DbTestCase
                 ],
             ]),
         ]);
-        $this->assertCount(4, $users);
+        $this->assertCount(3, $users);
         $this->assertEquals(
-            ['glpi', "e2e_tests", TU_USER, "jsmith123"],
+            ['glpi', TU_USER, "jsmith123"],
             array_column($users, 'name')
         );
 
         $glpi = getItemByTypeName('User', 'glpi');
         $tu_user = getItemByTypeName('User', TU_USER);
         $jsmith123 = getItemByTypeName('User', 'jsmith123');
-        $e2e_tests = getItemByTypeName('User', 'e2e_tests');
 
         // Delete other users
         $this->login('glpi', 'glpi');
@@ -1842,8 +2098,6 @@ class UserTest extends DbTestCase
         $this->assertTrue($tu_user->delete(['id' => $tu_user->getID()]));
         $this->assertTrue($jsmith123->canDeleteItem());
         $this->assertTrue($jsmith123->delete(['id' => $jsmith123->getID()]));
-        $this->assertTrue($e2e_tests->canDeleteItem());
-        $this->assertTrue($e2e_tests->delete(['id' => $e2e_tests->getID()]));
 
         // Last user, can't be deleted or disabled
         $this->assertTrue($glpi->update([
@@ -1859,6 +2113,24 @@ class UserTest extends DbTestCase
 
         // Can still be deleted by calling delete directly, maybe it should not be possible ?
         $this->assertTrue($glpi->delete(['id' => $glpi->getID()]));
+    }
+
+    public function testCannotDeleteUserWithMoreRights(): void
+    {
+        // Technician profile has DELETE and PURGE rights on users
+        $this->login('tech', 'tech');
+
+        // Super-Admin user: more rights than the current user
+        $jsmith123 = getItemByTypeName('User', 'jsmith123');
+        $this->assertFalse($jsmith123->canDeleteItem());
+        $this->assertFalse($jsmith123->canPurgeItem());
+        $this->assertFalse($jsmith123->can($jsmith123->getID(), DELETE));
+        $this->assertFalse($jsmith123->can($jsmith123->getID(), PURGE));
+
+        // Self-Service user: less rights than the current user
+        $post_only = getItemByTypeName('User', 'post-only');
+        $this->assertTrue($post_only->canDeleteItem());
+        $this->assertTrue($post_only->canPurgeItem());
     }
 
     public function testUserPreferences()
@@ -2142,7 +2414,6 @@ class UserTest extends DbTestCase
                 $this->assertArrayHasKey('password', $fields);
                 $this->assertArrayHasKey('personal_token', $fields);
                 $this->assertArrayHasKey('api_token', $fields);
-                $this->assertArrayHasKey('cookie_token', $fields);
                 $this->assertArrayHasKey('password_forget_token', $fields);
                 $this->assertArrayHasKey('password_forget_token_date', $fields);
 
@@ -2151,7 +2422,6 @@ class UserTest extends DbTestCase
                 $this->assertEquals(false, \array_key_exists('password', $fields));
                 $this->assertEquals(false, \array_key_exists('personal_token', $fields));
                 $this->assertEquals(false, \array_key_exists('api_token', $fields));
-                $this->assertEquals(false, \array_key_exists('cookie_token', $fields));
                 $this->assertEquals($disclose, \array_key_exists('password_forget_token', $fields));
                 $this->assertEquals($disclose, \array_key_exists('password_forget_token_date', $fields));
             }
@@ -2165,7 +2435,6 @@ class UserTest extends DbTestCase
             'name'                       => 'test',
             'password'                   => \bin2hex(\random_bytes(16)),
             'api_token'                  => \bin2hex(\random_bytes(16)),
-            'cookie_token'               => \bin2hex(\random_bytes(16)),
             'password_forget_token'      => \bin2hex(\random_bytes(16)),
             'personal_token'             => \bin2hex(\random_bytes(16)),
             'password_forget_token_date' => '2024-10-25 13:15:12',
@@ -2226,7 +2495,7 @@ class UserTest extends DbTestCase
 
         $this->assertNotContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
 
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $group_user_id = $group_user->add([
             'groups_id' => $groups_id,
             'users_id' => $user->getID(),
@@ -2607,7 +2876,7 @@ class UserTest extends DbTestCase
 
         // Simulate Auth::login() update cycle (copies fields, calls update).
         $input = $user->fields;
-        unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
+        unset($input['api_token'], $input['password_forget_token'], $input['personal_token']);
         $user->update($input);
 
         // The profile must now be assigned in Profile_User.
@@ -2655,8 +2924,8 @@ class UserTest extends DbTestCase
     }
 
     /**
-     * Verify that getFromLDAPGroupDiscret() routes to the cached path when the
-     * LDAP_MATCHING_RULE_IN_CHAIN OID is present in group_member_field.
+     * Verify that getFromLDAPGroupDiscret() routes to the cached path only when
+     * batch mode is enabled and the LDAP_MATCHING_RULE_IN_CHAIN OID is present.
      *
      * The cached path queries GLPI groups from DB (no LDAP call when DB is empty)
      * and returns true, while the standard path returns false when
@@ -2699,7 +2968,7 @@ class UserTest extends DbTestCase
         );
         $this->assertFalse($result);
 
-        // CHAIN OID present + group_field set → cached path → true.
+        // CHAIN OID present + batch mode + group_field set → cached path → true.
         // No groups with ldap_group_dn exist in DB, so no ldap_search is fired.
         $result = $this->callPrivateMethod(
             $user,
@@ -2709,7 +2978,8 @@ class UserTest extends DbTestCase
                 'group_member_field' => 'member:' . AuthLDAP::MATCHING_RULE_IN_CHAIN_OID,
             ]),
             'uid=testuser,dc=example,dc=com',
-            'testuser'
+            'testuser',
+            true
         );
         $this->assertTrue($result);
         $this->assertEmpty($user->fields['_groups'] ?? []);
@@ -2757,7 +3027,8 @@ class UserTest extends DbTestCase
             null,
             $ldap_method,
             $userdn,
-            'cachetest'
+            'cachetest',
+            true
         );
         $this->assertTrue($result);
         $this->assertEmpty($user1->fields['_groups'] ?? []);
@@ -2778,10 +3049,109 @@ class UserTest extends DbTestCase
             null,
             $ldap_method,
             $userdn,
-            'cachetest'
+            'cachetest',
+            true
         );
         $this->assertTrue($result);
         $this->assertEmpty($user2->fields['_groups'] ?? []);
+    }
+
+    public static function ldapImportLocationEntityProvider(): iterable
+    {
+        // No entity assigned by the LDAP rules -> root entity.
+        yield 'no rules' => [
+            'ldap_rules' => [],
+            'expected'   => 0,
+        ];
+
+        // A single entity assigned through the rights rules -> that entity.
+        yield 'single entity (rights)' => [
+            'ldap_rules' => ['rules_entities_rights' => [[5, 4]]],
+            'expected'   => 5,
+        ];
+
+        // A single entity assigned through the entities rules -> that entity.
+        yield 'single entity (entities)' => [
+            'ldap_rules' => ['rules_entities' => [[7]]],
+            'expected'   => 7,
+        ];
+
+        // The same entity assigned by both rule sets -> that entity.
+        yield 'same entity twice' => [
+            'ldap_rules' => [
+                'rules_entities_rights' => [[5, 4]],
+                'rules_entities'        => [[5]],
+            ],
+            'expected'   => 5,
+        ];
+
+        // Several different entities -> ambiguous, fall back to root.
+        yield 'two different entities' => [
+            'ldap_rules' => ['rules_entities_rights' => [[5, 4], [6, 4]]],
+            'expected'   => 0,
+        ];
+
+        // A single rule assigning one entity as an array -> that entity.
+        yield 'entity given as array' => [
+            'ldap_rules' => ['rules_entities_rights' => [[[5], 4]]],
+            'expected'   => 5,
+        ];
+
+        // A single rule assigning several entities at once -> ambiguous, root.
+        yield 'multiple entities in one rule' => [
+            'ldap_rules' => ['rules_entities_rights' => [[[5, 6], 4]]],
+            'expected'   => 0,
+        ];
+    }
+
+    #[DataProvider('ldapImportLocationEntityProvider')]
+    public function testGetLdapImportLocationEntity(array $ldap_rules, int $expected): void
+    {
+        $user = new User();
+        $user->fields['_ldap_rules'] = $ldap_rules;
+
+        $this->assertSame(
+            $expected,
+            $this->callPrivateMethod($user, 'getLdapImportLocationEntity')
+        );
+    }
+
+    public function testKeepDbConnectionAliveSkipsQueryWhenRecentActivity(): void
+    {
+        global $DB;
+
+        $db_mock = $this->createMock(DBmysql::class);
+        $db_mock->expects($this->never())->method('getVersion');
+
+        $original_db = $DB;
+        $DB = $db_mock;
+        try {
+            $last_db_activity = time();
+            $result = $this->callPrivateMethod(new User(), 'keepDbConnectionAlive', $last_db_activity);
+        } finally {
+            $DB = $original_db;
+        }
+
+        $this->assertSame($last_db_activity, $result);
+    }
+
+    public function testKeepDbConnectionAlivePingsDbWhenIdleTooLong(): void
+    {
+        global $DB;
+
+        $db_mock = $this->createMock(DBmysql::class);
+        $db_mock->expects($this->once())->method('getVersion');
+
+        $original_db = $DB;
+        $DB = $db_mock;
+        try {
+            $before_call = time();
+            $result = $this->callPrivateMethod(new User(), 'keepDbConnectionAlive', $before_call - 3600);
+        } finally {
+            $DB = $original_db;
+        }
+
+        $this->assertGreaterThanOrEqual($before_call, $result);
     }
 
     public function testIsValidUserForEntity(): void
@@ -2827,5 +3197,167 @@ class UserTest extends DbTestCase
             '_is_recursive' => 1,
         ]);
         $this->assertTrue(User::isValidUserForEntity($recursive_user->getID(), $child1_entity_id));
+    }
+
+    /**
+     * The `pdffont` user preference stores a font key that must exist in the
+     * fonts shipped with TCPDF. The TCPDF 7.0 migration dropped several fonts
+     * (Arabic `aealarabiya`/`aefurat` and the CJK CID fonts
+     * `kozminproregular`, `kozgopromedium`, `msungstdlight`, `stsongstdlight`,
+     * `hysmyeongjostdmedium`), so a value saved with a previous version may no
+     * longer be valid.
+     *
+     * This test documents how the preference behaves on save when the selected
+     * font is (in)valid.
+     */
+    public function testPdffontPreference()
+    {
+        $this->login();
+
+        $font_list = \GLPIPDF::getFontList();
+        // Sanity checks on the font list provided by the current TCPDF version.
+        $this->assertArrayHasKey('times', $font_list);
+        // Font dropped by the TCPDF 7.0 migration.
+        $this->assertArrayNotHasKey('kozminproregular', $font_list);
+
+        $user = new User();
+        $uid  = $user->add(['name' => $this->getUniqueString()]);
+        $this->assertGreaterThan(0, $uid);
+
+        // A font available in the current font list is accepted and stored.
+        $this->assertTrue($user->update([
+            'id'      => $uid,
+            'pdffont' => 'times',
+        ]));
+        $this->hasNoSessionMessages([ERROR, WARNING]);
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('times', $user->fields['pdffont']);
+
+        // Saving the preferences form with a font that no longer exists (e.g. a
+        // value inherited from a previous TCPDF version) is refused: the bad
+        // value is discarded with an error message while the other submitted
+        // fields are still saved and the previous font is kept.
+        $this->assertTrue($user->update([
+            'id'       => $uid,
+            'realname' => 'Font Tester',
+            'pdffont'  => 'kozminproregular',
+        ]));
+        $this->hasSessionMessages(
+            ERROR,
+            ['The following field has an incorrect value: &quot;PDF export font&quot;.']
+        );
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('Font Tester', $user->fields['realname']); // other field saved
+        $this->assertSame('times', $user->fields['pdffont']); // font preference unchanged
+
+        // A stale value may already be stored in database (saved before the
+        // migration). It stays untouched as long as `pdffont` is not part of
+        // the submitted input...
+        global $DB;
+        $DB->update(User::getTable(), ['pdffont' => 'kozminproregular'], ['id' => $uid]);
+        $this->assertTrue($user->update([
+            'id'       => $uid,
+            'realname' => 'Font Tester 2',
+        ]));
+        $this->hasNoSessionMessages([ERROR, WARNING]);
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('kozminproregular', $user->fields['pdffont']);
+
+        // ... but GLPIPDF silently falls back to the default font at export
+        // time, so PDF generation does not break.
+        $pdf = new \GLPIPDF(['font' => $user->fields['pdffont']]);
+        $this->assertSame('helvetica', $pdf->getFontFamily());
+    }
+
+    public function testShowFormIdentityFieldsReadonlyPerAuthSourceMapping(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        // New user form: identity fields must be editable
+        $new_user = new User();
+        ob_start();
+        $new_user->showForm(-1);
+        $html_new = ob_get_clean();
+
+        $realname_ro = function (string $html): bool {
+            $matched = preg_match('/<input[^>]*name="realname"[^>]*>/', $html, $m);
+            $this->assertSame(1, $matched, 'Field "realname" not found in HTML');
+            return str_contains($m[0], 'readonly');
+        };
+        $firstname_ro = function (string $html): bool {
+            $matched = preg_match('/<input[^>]*name="firstname"[^>]*>/', $html, $m);
+            $this->assertSame(1, $matched, 'Field "firstname" not found in HTML');
+            return str_contains($m[0], 'readonly');
+        };
+
+        $this->assertFalse($realname_ro($html_new));
+        $this->assertFalse($firstname_ro($html_new));
+
+        // LDAP source without identity field mapping: Surname/First name editable
+        $authldap_unmapped = $this->createItem(AuthLDAP::class, [
+            'name'             => $this->getUniqueString(),
+            'host'             => '127.0.0.1',
+            'basedn'           => 'dc=example,dc=com',
+            'realname_field'   => '',
+            'firstname_field'  => '',
+            'login_field'      => 'uid',
+            'use_dn'           => 1,
+        ]);
+        $user_unmapped = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::LDAP,
+            'auths_id' => $authldap_unmapped->getID(),
+        ]);
+
+        ob_start();
+        $user_unmapped->showForm($user_unmapped->getID());
+        $html_unmapped = ob_get_clean();
+
+        // LDAP source with realname_field only: Surname read-only, First name editable
+        $authldap_realname_only = $this->createItem(AuthLDAP::class, [
+            'name'             => $this->getUniqueString(),
+            'host'             => '127.0.0.1',
+            'basedn'           => 'dc=example,dc=com',
+            'realname_field'   => 'sn',
+            'firstname_field'  => '',
+            'login_field'      => 'uid',
+            'use_dn'           => 1,
+        ]);
+        $user_realname_only = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::LDAP,
+            'auths_id' => $authldap_realname_only->getID(),
+        ]);
+
+        ob_start();
+        $user_realname_only->showForm($user_realname_only->getID());
+        $html_realname_only = ob_get_clean();
+
+        // unmapped source -> both editable
+        $this->assertFalse($realname_ro($html_unmapped));
+        $this->assertFalse($firstname_ro($html_unmapped));
+        // mapped realname only -> surname locked, first name editable
+        $this->assertTrue($realname_ro($html_realname_only));
+        $this->assertFalse($firstname_ro($html_realname_only));
+
+        // External non-LDAP source: all identity fields stay locked
+        $user_external = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::EXTERNAL,
+        ]);
+
+        ob_start();
+        $user_external->showForm($user_external->getID());
+        $html_external = ob_get_clean();
+
+        $middlename_ro = function (string $html): bool {
+            $matched = preg_match('/<input[^>]*name="middlename"[^>]*>/', $html, $m);
+            $this->assertSame(1, $matched, 'Field "middlename" not found in HTML');
+            return str_contains($m[0], 'readonly');
+        };
+
+        $this->assertTrue($realname_ro($html_external));
+        $this->assertTrue($firstname_ro($html_external));
+        $this->assertTrue($middlename_ro($html_external));
     }
 }

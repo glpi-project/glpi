@@ -162,6 +162,13 @@ class UnmanagedTest extends AbstractInventoryAsset
         ]);
         $this->assertGreaterThan(0, $entities_id_b);
 
+        $location = new \Location();
+        $locations_id = $location->add([
+            'name'        => 'Location B',
+            'entities_id' => $entities_id_b,
+        ]);
+        $this->assertGreaterThan(0, $locations_id);
+
         // Add a rule for get entity tag (1)
         $rule = new \Rule();
         $input = [
@@ -199,6 +206,14 @@ class UnmanagedTest extends AbstractInventoryAsset
             'action_type' => 'regex_result',
             'field'       => '_affect_entity_by_tag',
             'value'       => '#0',
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => $locations_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -242,6 +257,15 @@ class UnmanagedTest extends AbstractInventoryAsset
 
         //check entity
         $this->assertEquals($entities_id_b, $unmanaged->fields['entities_id']);
+
+        // Check that the location assigned by RuleImportEntity is reused.
+        $this->assertEquals($locations_id, $unmanaged->fields['locations_id']);
+
+        // A new location named after the numerical ID must not be created.
+        $this->assertFalse($location->getFromDbByCrit([
+            'name'        => (string) $locations_id,
+            'entities_id' => $entities_id_b,
+        ]));
 
         //check for one NetworkPort
         $np = new \NetworkPort();

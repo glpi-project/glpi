@@ -372,10 +372,13 @@ class DropdownTranslation extends CommonDBChild
                         $('#datatable_translations{{ rand }}').on('click', 'tr.cursor-pointer', function() {
                             viewEditTranslation{{ rand }}($(this).data('id'));
                         });
+                        document.getElementById('new_translation{{ rand }}').addEventListener('click', () => {
+                            viewEditTranslation{{ rand }}();
+                        });
                     });
                 </script>
                 <div class="text-center mb-3">
-                    <button name="new_translation" class="btn btn-primary" type="button" onclick="viewEditTranslation{{ rand }}()">
+                    <button id="new_translation{{ rand }}" name="new_translation" class="btn btn-primary" type="button">
                         {{ btn_msg }}
                     </button>
                 </div>

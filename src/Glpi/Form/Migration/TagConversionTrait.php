@@ -35,8 +35,12 @@
 namespace Glpi\Form\Migration;
 
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Form\Tag\ItemPropertyTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
+use Glpi\Message\MessageType;
+use Glpi\Search\SearchOption;
 
 use function Safe\preg_match_all;
 
@@ -45,6 +49,32 @@ use function Safe\preg_match_all;
  */
 trait TagConversionTrait
 {
+    /**
+     * Maps Formcreator property names to database fields
+     */
+    private const FORMCREATOR_FIELD_MAP = [
+        '*' => [
+            'name'        => 'name',
+            'comment'     => 'comment',
+        ],
+        \User::class => [
+            'login'       => 'name',
+            'firstname'   => 'firstname',
+            'realname'    => 'realname',
+            'phone'       => 'phone',
+            'phone2'      => 'phone2',
+            'mobile'      => 'mobile',
+            'email'       => 'emails',
+            'emails'      => 'emails',
+        ],
+        \Computer::class => [
+            'serial'      => 'serial',
+            'otherserial' => 'otherserial',
+            'contact'     => 'contact',
+            'contact_num' => 'contact_num',
+        ],
+    ];
+
     /**
      * Convert legacy tags in the format ##question_ID## or ##answer_ID## to new tag format
      *
@@ -59,8 +89,47 @@ trait TagConversionTrait
             return $content;
         }
 
-        preg_match_all('/##(question_\d+|answer_\d+)##/', $content, $tags);
+        preg_match_all('/##(question_\d+|answer_\d+(?:\.\w+)?)##/', $content, $tags);
         foreach ($tags[1] as $tag) {
+
+            if (str_contains($tag, '.')) {
+                [$answer_part, $property_name] = explode('.', $tag, 2);
+                $item_id = (int) explode('_', $answer_part)[1];
+
+                $target = $migration->getMappedItemTarget('PluginFormcreatorQuestion', $item_id);
+                if (empty($target)) {
+                    continue;
+                }
+                $question_id = $target['items_id'];
+                $question = Question::getById($question_id);
+                if (!$question) {
+                    continue;
+                }
+
+                // Resolve the FormCreator property name to a search option ID
+                $search_option_id = self::resolveFormcreatorPropertyToSearchOptionId($question, $property_name, $migration);
+                if ($search_option_id === null) {
+                    continue;
+                }
+
+                $provider = new ItemPropertyTagProvider();
+                $new_tag = $provider->getTagFromRawValue($question_id . ':' . $search_option_id);
+                if ($new_tag === null) {
+                    $migration->addMessageToResult(
+                        MessageType::Warning,
+                        sprintf(
+                            __('Formcreator migration: cannot convert legacy tag "%s" tag of question "%s".'),
+                            $tag,
+                            $question->fields['name']
+                        )
+                    );
+                    continue;
+                }
+
+                $content = str_replace("##$tag##", $new_tag->html, $content);
+                continue;
+            }
+
             $type = explode('_', $tag)[0];
             $item_id = (int) explode('_', $tag)[1];
 
@@ -96,4 +165,87 @@ trait TagConversionTrait
 
         return $content;
     }
+
+    /**
+     * Resolves a Formcreator property name to the corresponding search option ID for a given question.
+     * If the resolving fails, a warning message describing the failure is added to the migration result object.
+     *
+     * @param Question $question The question object
+     * @param string $property_name The property name to resolve
+     * @param FormMigration $migration Migration object for ID mapping
+     * @return int|null The corresponding search option ID, or null if not found
+     */
+    private static function resolveFormcreatorPropertyToSearchOptionId(
+        Question $question,
+        string $property_name,
+        FormMigration $migration
+    ): ?int {
+        if (!is_a($question->fields['type'], QuestionTypeItem::class, true)) {
+            $migration->addMessageToResult(
+                MessageType::Warning,
+                sprintf(
+                    __('Formcreator migration: cannot convert the property "%s" tag of question "%s" because it\'s '
+                        . 'not an Item question.'),
+                    $property_name,
+                    $question->fields['name'],
+                )
+            );
+            return null;
+        }
+
+        $itemtype = (new ($question->fields['type'])())->getDefaultValueItemtype($question);
+        if ($itemtype === null || !is_a($itemtype, \CommonDBTM::class, true)) {
+            $migration->addMessageToResult(
+                MessageType::Warning,
+                sprintf(
+                    __('Formcreator migration: cannot convert the property "%s" tag of question "%s" because the Itemtype of '
+                    . 'the question is not a valid CommonDBTM.'),
+                    $property_name,
+                    $question->fields['name'],
+                )
+            );
+            return null;
+        }
+
+        $key = strtolower($property_name);
+        $field_name = self::FORMCREATOR_FIELD_MAP[$itemtype][$key]
+            ?? self::FORMCREATOR_FIELD_MAP['*'][$key]
+            ?? null;
+
+        if ($field_name === null) {
+            $migration->addMessageToResult(
+                MessageType::Warning,
+                sprintf(
+                    __('Formcreator migration: unknown property "%s" for %s'),
+                    $property_name,
+                    $itemtype
+                )
+            );
+            return null;
+        }
+
+        // Handle special case for user emails
+        if ($field_name === 'emails') {
+            return ItemPropertyTagProvider::USER_EMAILS_PSEUDO_ID;
+        }
+
+        // Find the search option ID corresponding to the field name
+        $options = SearchOption::getOptionsForItemtype($itemtype, true, false);
+        foreach ($options as $id => $option) {
+            if (is_int($id) && ($option['field'] ?? null) === $field_name && ($option['table'] ?? null) === $itemtype::getTable()) {
+                return $id;
+            }
+        }
+
+        $migration->addMessageToResult(
+            MessageType::Warning,
+            sprintf(
+                __('Formcreator migration: cannot convert the property "%s" tag of question "%s"'),
+                $property_name,
+                $question->fields['name']
+            )
+        );
+        return null;
+    }
+
 }

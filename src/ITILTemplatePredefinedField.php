@@ -135,7 +135,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         // can exists for template
         if (
             $item instanceof ITILTemplate
-            && Session::haveRight("itiltemplate", READ)
+            && Session::haveRight(ITILTemplate::$rightname, READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -236,6 +236,11 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
             $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable),
             $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates'),
         ];
+
+        if ($itil_class === Ticket::class) {
+            $fields[] = 190; // glpi_olas.name ['type' => SLM::TTO]
+            $fields[] = 191; // glpi_olas.name ['type' => SLM::TTR]
+        }
 
         return $fields;
     }

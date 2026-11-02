@@ -60,7 +60,6 @@ class RuleControllerTest extends HLAPITestCase
 
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
         $this->api->call(new Request('GET', '/Rule/Collection'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -80,7 +79,6 @@ class RuleControllerTest extends HLAPITestCase
         $_SESSION['glpiactiveprofile']['rule_ticket'] = $rule_ticket_right;
 
         $this->api->call(new Request('GET', '/Rule/Collection'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -102,7 +100,6 @@ class RuleControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', '/Rule/Collection'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -164,7 +161,6 @@ class RuleControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', "/Rule/Collection/{$type}/CriteriaCondition"), function ($call) use ($conditions) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($conditions) {
@@ -222,7 +218,6 @@ class RuleControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', "/Rule/Collection/{$type}/CriteriaCriteria"), function ($call) use ($criteria) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($criteria) {
@@ -274,7 +269,6 @@ class RuleControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', "/Rule/Collection/{$type}/ActionType"), function ($call) use ($action_types) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($action_types) {
@@ -329,7 +323,6 @@ class RuleControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', "/Rule/Collection/{$type}/ActionField"), function ($call) use ($fields) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($fields) {
@@ -361,7 +354,6 @@ class RuleControllerTest extends HLAPITestCase
 
             // Create
             $this->api->call($request, function ($call) use ($collection, &$new_url) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($collection, &$new_url) {
@@ -372,7 +364,6 @@ class RuleControllerTest extends HLAPITestCase
 
             // Get
             $this->api->call(new Request('GET', $new_url), function ($call) use ($collection) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) use ($collection) {
@@ -384,7 +375,6 @@ class RuleControllerTest extends HLAPITestCase
             $request = new Request('PATCH', $new_url);
             $request->setParameter('name', "testCRUDRules{$collection}2");
             $this->api->call($request, function ($call) use ($collection) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) use ($collection) {
@@ -394,15 +384,12 @@ class RuleControllerTest extends HLAPITestCase
 
             // Delete
             $this->api->call(new Request('DELETE', $new_url), function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response->isOK();
             });
 
             // Verify delete
             $this->api->call(new Request('GET', $new_url), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isNotFoundError();
+                $call->response->isNotFoundError();
             });
         }
     }
@@ -425,7 +412,6 @@ class RuleControllerTest extends HLAPITestCase
         $request->setParameter('pattern', 'testCRUDRuleCriteria');
         $new_url = null;
         $this->api->call($request, function ($call) use ($rules_id, &$new_url) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($rules_id, &$new_url) {
@@ -436,7 +422,6 @@ class RuleControllerTest extends HLAPITestCase
 
         // List
         $this->api->call(new Request('GET', "/Rule/Collection/Ticket/Rule/{$rules_id}/Criteria"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -447,7 +432,6 @@ class RuleControllerTest extends HLAPITestCase
 
         // Get
         $this->api->call(new Request('GET', $new_url), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -461,7 +445,6 @@ class RuleControllerTest extends HLAPITestCase
         $request = new Request('PATCH', $new_url);
         $request->setParameter('pattern', 'testCRUDRuleCriteria2');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -473,15 +456,12 @@ class RuleControllerTest extends HLAPITestCase
 
         // Delete
         $this->api->call(new Request('DELETE', $new_url), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
         // Verify delete
         $this->api->call(new Request('GET', $new_url), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isNotFoundError();
+            $call->response->isNotFoundError();
         });
     }
 
@@ -503,7 +483,6 @@ class RuleControllerTest extends HLAPITestCase
         $request->setParameter('value', 'testCRUDRuleAction');
         $new_url = null;
         $this->api->call($request, function ($call) use ($rules_id, &$new_url) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($rules_id, &$new_url) {
@@ -514,7 +493,6 @@ class RuleControllerTest extends HLAPITestCase
 
         // List
         $this->api->call(new Request('GET', "/Rule/Collection/Ticket/Rule/{$rules_id}/Action"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -525,7 +503,6 @@ class RuleControllerTest extends HLAPITestCase
 
         // Get
         $this->api->call(new Request('GET', $new_url), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -539,7 +516,6 @@ class RuleControllerTest extends HLAPITestCase
         $request = new Request('PATCH', $new_url);
         $request->setParameter('value', 'testCRUDRuleAction2');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -551,15 +527,12 @@ class RuleControllerTest extends HLAPITestCase
 
         // Delete
         $this->api->call(new Request('DELETE', $new_url), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
         // Verify delete
         $this->api->call(new Request('GET', $new_url), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isNotFoundError();
+            $call->response->isNotFoundError();
         });
     }
 
@@ -574,7 +547,6 @@ class RuleControllerTest extends HLAPITestCase
 
         // Create
         $this->api->call($request, function ($call) use (&$new_url) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_url) {
@@ -584,7 +556,6 @@ class RuleControllerTest extends HLAPITestCase
         });
         // Get and check ranking
         $this->api->call(new Request('GET', $new_url), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -605,7 +576,6 @@ class RuleControllerTest extends HLAPITestCase
 
         // Create
         $this->api->call($request, function ($call) use (&$new_url) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_url) {
@@ -616,7 +586,6 @@ class RuleControllerTest extends HLAPITestCase
 
         // Get and check ranking
         $this->api->call(new Request('GET', $new_url), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -636,7 +605,6 @@ class RuleControllerTest extends HLAPITestCase
 
         // Create
         $this->api->call($request, function ($call) use (&$new_url) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_url) {
@@ -649,7 +617,6 @@ class RuleControllerTest extends HLAPITestCase
         $request = new Request('PATCH', $new_url);
         $request->setParameter('ranking', 0);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {

@@ -87,7 +87,35 @@ class Document_Item extends CommonDBRelation
             }
         }
 
-        return parent::canCreateItem();
+        return $this->canEditLinkedKnowbaseItem() && parent::canCreateItem();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canUpdateItem();
+    }
+
+    public function canDeleteItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canDeleteItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canEditLinkedKnowbaseItem() && parent::canPurgeItem();
+    }
+
+    /**
+     * Linking to or unlinking from an article requires the right to edit it, see `KnowbaseItem::canAddItem()`.
+     */
+    private function canEditLinkedKnowbaseItem(): bool
+    {
+        $item = getItemForItemtype((string) $this->fields['itemtype']);
+        if (!$item instanceof KnowbaseItem) {
+            return true;
+        }
+
+        return !$item->getFromDB($this->fields['items_id']) || $item->canAddItem(Document::class);
     }
 
     public function canViewItem(): bool
@@ -107,6 +135,43 @@ class Document_Item extends CommonDBRelation
         }
 
         return true;
+    }
+
+    /**
+     * Returns criteria restricting a `glpi_documents_items` query to the links the current user
+     * is allowed to see, i.e. excluding the private ones when the user does not hold the
+     * `self::SEEPRIVATE` right and is not the author of the link.
+     *
+     * Mirrors the restriction enforced by `self::canViewItem()` on display.
+     *
+     * @return list<array<string, mixed>> Criteria to spread into a `WHERE` clause,
+     *                                      empty when no restriction applies.
+     */
+    public static function getPrivacyRestrictionCriteria(): array
+    {
+        if (Session::haveRight(Document::$rightname, self::SEEPRIVATE)) {
+            return [];
+        }
+
+        $users_id = Session::getLoginUserID();
+        if ($users_id === false) {
+            // Anonymous access (public FAQ, share token): no link can belong to the current
+            // user, and comparing `false` would match the ownerless links stored with a 0.
+            return [
+                [
+                    self::getTableField('is_private') => 0,
+                ],
+            ];
+        }
+
+        return [
+            [
+                'OR' => [
+                    self::getTableField('is_private') => 0,
+                    self::getTableField('users_id')   => $users_id,
+                ],
+            ],
+        ];
     }
 
     public function prepareInputForAdd($input)
@@ -252,6 +317,11 @@ class Document_Item extends CommonDBRelation
 
     private function addToMergedTickets(): void
     {
+        // Ticket merge relationships must only be applied to ticket documents.
+        if ($this->fields['itemtype'] !== Ticket::class) {
+            return;
+        }
+
         $merged = Ticket::getMergedTickets($this->fields['items_id']);
         foreach ($merged as $ticket_id) {
             $input = $this->input;
@@ -591,8 +661,8 @@ TWIG, $twig_params);
             $entity   = $_SESSION["glpiactive_entity"];
 
             if ($item->isEntityAssign()) {
-                // Case of personal items : entity = -1 : create on active entity (Reminder case))
-                if ($item->getEntityID() >= 0) {
+                // Item's entity when the user may write there, otherwise their active entity.
+                if ($item->getEntityID() >= 0 && Session::haveAccessToEntity($item->getEntityID())) {
                     $entity = $item->getEntityID();
                 }
 
@@ -681,6 +751,7 @@ TWIG, $twig_params);
             $reverse_criteria['WHERE'] = [
                 'glpi_documents_items.documents_id' => $item->getID(),
                 'glpi_documents_items.itemtype' => $item::class,
+                ...self::getPrivacyRestrictionCriteria(),
             ];
             $criteria = ['FROM' => new QueryUnion([$criteria, $reverse_criteria])];
         }
@@ -833,6 +904,14 @@ TWIG, $twig_params);
                 continue;
             }
             $doc_id = (int) $item->fields['documents_id'];
+
+            $document = new Document();
+            if (!$document->can($doc_id, UPDATE)) {
+                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                continue;
+            }
+
             $_SESSION['glpitransfer_list'][Document::class][$doc_id] = $doc_id;
             $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
         }
@@ -1034,6 +1113,10 @@ TWIG, $twig_params);
             // Anonymous access from FAQ
             $criteria['WHERE']['glpi_documents.entities_id'] = 0;
         }
+
+        // Applied after the entity restriction: the latter may return a numerically keyed
+        // criterion, which the union above would silently drop on collision.
+        $criteria['WHERE'] = [...$criteria['WHERE'], ...self::getPrivacyRestrictionCriteria()];
 
         return $criteria;
     }

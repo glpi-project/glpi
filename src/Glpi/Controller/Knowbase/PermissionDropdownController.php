@@ -34,12 +34,15 @@
 
 namespace Glpi\Controller\Knowbase;
 
+use CommonDBTM;
 use Entity;
+use Entity_KnowbaseItem;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Group;
 use KnowbaseItem;
+use KnowbaseItem_User;
 use Profile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,9 +71,11 @@ final class PermissionDropdownController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        // If the user can't update the KB, he should problably not be able
-        // to see this dropdown at all.
-        if (!KnowbaseItem::canUpdate()) {
+        // If the user can't update this specific KB item, he should problably
+        // not be able to see this dropdown at all.
+        $knowbaseitems_id = $request->request->getInt('knowbaseitems_id');
+        $kb = new KnowbaseItem();
+        if (!$kb->can($knowbaseitems_id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -111,9 +116,68 @@ final class PermissionDropdownController extends AbstractController
             ],
         };
 
+        // Exclude targets already assigned to this article so the user cannot
+        // select a duplicate (which would otherwise be rejected on submit).
+        // Only done for User and Entity: their uniqueness is single-dimension
+        // (one entry per user/entity). Group and Profile targets are unique on
+        // (id, entities_id), so the same group/profile may legitimately be
+        // added again for a different entity and cannot be excluded here.
+        if ($type === User::class) {
+            $dropdown_options['used'] = $this->getUsedIds(
+                KnowbaseItem_User::class,
+                'users_id',
+                $knowbaseitems_id
+            );
+        } elseif ($type === Entity::class) {
+            $used = $this->getUsedIds(
+                Entity_KnowbaseItem::class,
+                'entities_id',
+                $knowbaseitems_id
+            );
+            $dropdown_options['used'] = $used;
+
+            // Dropdown::show keeps the preselected value selectable even when it
+            // is listed in `used`. Clear the default (active entity) when it is
+            // already a target so it gets excluded like the others.
+            if (in_array((int) $dropdown_options['value'], $used, true)) {
+                $dropdown_options['value'] = '';
+            }
+        }
+
         return $this->render('pages/tools/kb/permission_dropdown.html.twig', [
             'type'             => $type,
             'dropdown_options' => $dropdown_options,
         ]);
+    }
+
+    /**
+     * Get the ids already assigned as visibility targets for the given article.
+     *
+     * @param class-string<CommonDBTM> $relation_class Visibility relation class
+     * @param string                   $field          Target foreign key field
+     * @param int                      $knowbaseitems_id
+     * @return list<int>
+     */
+    private function getUsedIds(
+        string $relation_class,
+        string $field,
+        int $knowbaseitems_id
+    ): array {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $used = [];
+        $iterator = $DB->request([
+            'SELECT' => $field,
+            'FROM'   => $relation_class::getTable(),
+            'WHERE'  => ['knowbaseitems_id' => $knowbaseitems_id],
+        ]);
+        foreach ($iterator as $row) {
+            if ($row[$field] !== null) {
+                $used[] = (int) $row[$field];
+            }
+        }
+
+        return $used;
     }
 }

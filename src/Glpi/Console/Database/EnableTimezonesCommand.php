@@ -77,7 +77,7 @@ class EnableTimezonesCommand extends AbstractCommand implements ConfigurationCom
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $timezones_requirement = new DbTimezones($this->db);
+        $timezones_requirement = new DbTimezones($this->getDb());
 
         if (!$timezones_requirement->isValidated()) {
             $message = '<error>' . __('Timezones usage cannot be activated due to following errors:') . '</error>';
@@ -90,7 +90,7 @@ class EnableTimezonesCommand extends AbstractCommand implements ConfigurationCom
             );
         }
 
-        if (($datetime_count = $this->db->getTzIncompatibleTables()->count()) > 0) {
+        if (($datetime_count = $this->getDb()->getTzIncompatibleTables()->count()) > 0) {
             $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
             . ' '
             . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');

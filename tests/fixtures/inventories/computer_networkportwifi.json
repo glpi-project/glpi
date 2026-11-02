@@ -1,0 +1,130 @@
+{
+    "action": "inventory",
+    "content": {
+        "accesslog": {
+            "logdate": "2026-09-08 09:44:57"
+        },
+        "bios": {
+            "bdate": "2026-05-27",
+            "bmanufacturer": "Dell Inc.",
+            "bversion": "1.30.0",
+            "mmanufacturer": "Dell Inc.",
+            "mmodel": "07MV6Y",
+            "msn": "MB-WIFI-TEST-001",
+            "skunumber": "0C04",
+            "smanufacturer": "Dell Inc.",
+            "smodel": "Latitude 5340",
+            "ssn": "WIFITEST001"
+        },
+        "controllers": [
+            {
+                "caption": "Raptor Lake PCH CNVi WiFi",
+                "manufacturer": "Intel Corporation",
+                "name": "Wi-Fi 6E AX211 160MHz",
+                "pcisubsystemid": "8086:4090",
+                "productid": "51f1",
+                "type": "Intel(R) Wi-Fi 6E AX211 160MHz",
+                "vendorid": "8086"
+            },
+            {
+                "caption": "XMM7560 LTE Advanced Pro Modem",
+                "manufacturer": "Intel Corporation",
+                "name": "XMM7560 LTE Advanced Pro Modem",
+                "pcisubsystemid": "1028:5823",
+                "productid": "7560",
+                "type": "DW5823e-eSIM Intel(R) XMM7560 R+ LTE-A UDE Device",
+                "vendorid": "8086"
+            }
+        ],
+        "hardware": {
+            "chassis_type": "Convertible",
+            "defaultgateway": "192.0.2.1",
+            "dns": "192.0.2.53",
+            "lastloggeduser": "testuser",
+            "memory": 16036,
+            "name": "wifi-test",
+            "uuid": "25c1bb60-5bcb-11d9-b18f-5404a6a534c4",
+            "vmsystem": "Physical",
+            "winlang": "1033",
+            "winprodid": "00330-80000-00000-AA000",
+            "winprodkey": "AAAAA-BBBBB-CCCCC-DDDDD-EEEEE",
+            "workgroup": "WORKGROUP"
+        },
+        "networks": [
+            {
+                "description": "DW5823e-eSIM XMM7560 R+ LTE-A",
+                "mac": "02:00:00:00:00:01",
+                "pnpdeviceid": "USB\\VID_8087&PID_0AC9&MI_00\\7&4fa6012&0&0000",
+                "status": "down",
+                "virtualdev": false
+            },
+            {
+                "description": "Intel(R) Wi-Fi 6E AX211 160MHz",
+                "mac": "02:00:00:00:00:01",
+                "pciid": "8086:51F1:4090:8086",
+                "pnpdeviceid": "PCI\\VEN_8086&DEV_51F1&SUBSYS_40908086&REV_01\\3&11583659&0&A3",
+                "status": "down",
+                "type": "wifi",
+                "virtualdev": false,
+                "wifi_mode": "Managed",
+                "wifi_ssid": "My wifi network",
+                "wifi_version": "AX"
+            },
+            {
+                "description": "Bluetooth Device (Personal Area Network)",
+                "mac": "02:00:00:00:00:01",
+                "pnpdeviceid": "BTH\\MS_BTHPAN\\6&15fc6ba9&0&2",
+                "speed": "3",
+                "status": "down",
+                "type": "ethernet",
+                "virtualdev": false
+            },
+            {
+                "description": "Realtek USB GbE Family Controller #2",
+                "ipaddress": "192.0.2.10",
+                "ipdhcp": "192.0.2.2",
+                "ipgateway": "192.0.2.1",
+                "ipmask": "255.255.252.0",
+                "ipsubnet": "192.0.2.0",
+                "mac": "02:00:00:00:00:01",
+                "pnpdeviceid": "USB\\VID_0BDA&PID_8153\\001000001",
+                "speed": "100",
+                "status": "up",
+                "type": "ethernet",
+                "virtualdev": false
+            },
+            {
+                "description": "Realtek USB GbE Family Controller #2",
+                "ipaddress6": "2001:db8::10",
+                "ipmask6": "ffff:ffff:ffff:ffff::",
+                "ipsubnet6": "2001:db8::",
+                "mac": "02:00:00:00:00:01",
+                "pnpdeviceid": "USB\\VID_0BDA&PID_8153\\001000001",
+                "speed": "100",
+                "status": "up",
+                "type": "ethernet",
+                "virtualdev": false
+            }
+        ],
+        "operatingsystem": {
+            "arch": "64-bit",
+            "boot_time": "2026-09-08 07:12:36",
+            "dns_domain": "WORKGROUP",
+            "fqdn": "wifi-test.example.invalid",
+            "full_name": "Microsoft Windows 11 Enterprise",
+            "install_date": "2025-04-03 06:36:39",
+            "kernel_name": "MSWin32",
+            "kernel_version": "10.0.26200",
+            "name": "Windows",
+            "service_pack": "26200.9106",
+            "timezone": {
+                "name": "Europe/Berlin",
+                "offset": "+0200"
+            },
+            "version": "25H2"
+        },
+        "versionclient": "GLPI-Agent_v1.17"
+    },
+    "deviceid": "test-networkportwifi-2026-09-08-09-44-57",
+    "itemtype": "Computer"
+}

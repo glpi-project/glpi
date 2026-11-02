@@ -55,6 +55,8 @@ abstract class CommonITILValidation extends CommonDBChild
     public static int $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
     public static int $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
+    protected ?CommonITILObject $item = null;
+
     public const VALIDATE               = 1024;
 
 
@@ -86,6 +88,38 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         return new $class();
+    }
+
+    /**
+     * Set the parent ITIL object, to avoid reloading it from the DB when it
+     * is already available (e.g. when building the ticket/change/problem timeline).
+     *
+     * @param CommonITILObject $parent Parent item
+     *
+     * @return void
+     */
+    final public function setParentItem(CommonITILObject $parent): void
+    {
+        $this->item = $parent;
+    }
+
+    /**
+     * Check if $this->item already contains the correct parent item and thus
+     * help us to avoid reloading it for no reason.
+     *
+     * @phpstan-assert-if-true !null $this->item
+     *
+     * @return bool
+     */
+    protected function isParentAlreadyLoaded(): bool
+    {
+        if (!isset($this->fields[static::$items_id])) {
+            return false;
+        }
+
+        return $this->item !== null
+            && $this->item::class === static::getItilObjectItemType()
+            && $this->item->getID() === $this->fields[static::$items_id];
     }
 
     /**
@@ -431,7 +465,7 @@ abstract class CommonITILValidation extends CommonDBChild
                             $user->getName()
                         )),
                         false,
-                        ERROR
+                        WARNING
                     );
                 }
             } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {
@@ -529,10 +563,12 @@ abstract class CommonITILValidation extends CommonDBChild
 
         // -- notifications
         if (
-            count($this->updates)
+            in_array('status', $this->updates)
+            && (int) $this->fields["status"] !== self::WAITING
             && $donotif
         ) {
-            $options  = ['validation_id'     => $this->fields["id"],
+            $options  = [
+                'validation_id'     => $this->fields["id"],
                 'validation_status' => $this->fields["status"],
             ];
             NotificationEvent::raiseEvent('validation_answer', $this->getItem(), $options, $this);
@@ -723,7 +759,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     break;
             }
 
-            return sprintf('<span><i class="validationstatus %s"></i> %s</span>', $classes, htmlescape($label));
+            return sprintf('<span><i class="validationstatus %s" aria-hidden="true"></i> %s</span>', $classes, htmlescape($label));
         }
 
         return $label;
@@ -1077,15 +1113,15 @@ abstract class CommonITILValidation extends CommonDBChild
                         <div class="flex-shrink-0">
                             {% if step_status == constant('CommonITILValidation::ACCEPTED') %}
                                 <span class="text-green" data-bs-toogle="tooltip" title="{{ accepted_label }}">
-                                    <i class="ti ti-check"></i>
+                                    <i class="ti ti-check" aria-hidden="true"></i>
                                 </span>
                             {% elseif step_status == constant('CommonITILValidation::REFUSED') %}
                                 <span class="text-red" data-bs-toggle="tooltip" title="{{ refused_label }}">
-                                    <i class="ti ti-ban"></i>
+                                    <i class="ti ti-ban" aria-hidden="true"></i>
                                 </span>
                             {% elseif step_status == constant('CommonITILValidation::WAITING') %}
                                 <span class="text-yellow" data-bs-toggle="tooltip" title="{{ pending_label }}">
-                                    <i class="ti ti-clock"></i>
+                                    <i class="ti ti-clock" aria-hidden="true"></i>
                                 </span>
                             {% endif %}
                         </div>
@@ -1112,7 +1148,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                title="{{ edit_button_label }}"
                                onclick="glpi_ajax_dialog({{ edit_dialog_params|json_encode }});"
                             >
-                                <span class="sr-only">{{ edit_button_label }}</span>
+                                <span class="visually-hidden">{{ edit_button_label }}</span>
                             </span>
                         </div>
                     </div>
@@ -1206,7 +1242,6 @@ abstract class CommonITILValidation extends CommonDBChild
 
                     $script = <<<HTML
                         <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
-                              onclick="viewEditValidation{$rand_id}();"
                               id="viewvalidation{$rand_id}">
                         </span>
                         <script>
@@ -1217,6 +1252,9 @@ abstract class CommonITILValidation extends CommonDBChild
                                     params: $params_json,
                                 });
                             };
+                            document.getElementById('viewvalidation{$rand_id}').addEventListener('click', () => {
+                                viewEditValidation{$rand_id}();
+                            });
                         </script>
 HTML;
                 }
@@ -1736,7 +1774,7 @@ HTML;
                         if (($approver = $target['itemtype_target']::getById((int) $target['items_id_target'])) !== null) {
                             $user = $approver->getLink();
                         }
-                        $text = "<i class='" . \htmlescape($target['itemtype_target']::getIcon()) . " me-1'></i>" . $user . '<span class="mx-1">-</span>' . $status;
+                        $text = "<i class='" . \htmlescape($target['itemtype_target']::getIcon()) . " me-1' aria-hidden='true'></i>" . $user . '<span class="mx-1">-</span>' . $status;
                         $content = "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;" . $text . "</div>";
                     }
                     $out .= (empty($out) ? '' : Search::LBBR) . $content;
@@ -1808,12 +1846,20 @@ HTML;
     {
         global $CFG_GLPI;
 
+        $default_right = 'validate';
+        if (static::class === self::class) {
+            // Impossible to know the itemtype the validation is for (probably from the approval template form)
+            $default_right = ['validate_request', 'validate_incident', 'validate'];
+        } elseif (static::$itemtype == Ticket::class) {
+            $default_right = ['validate_request', 'validate_incident'];
+        }
+
         $params = [
             'prefix'             => null,
             'id'                 => 0,
             'parents_id'         => null,
             'entity'             => $_SESSION['glpiactive_entity'],
-            'right'              => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
+            'right'              => $default_right,
             'groups_id'          => 0,
             'itemtype_target'    => '',
             'items_id_target'    => 0,
@@ -2010,7 +2056,7 @@ HTML;
                   <div class="alert alert-warning" role="alert">
                      <div class="d-flex">
                         <div class="me-2">
-                           <i class="ti ti-alert-triangle fs-2x"></i>
+                           <i class="ti ti-alert-triangle fs-2x" aria-hidden="true"></i>
                         </div>
                         <div>
                            <h4 class="alert-title">$title</h4>

@@ -33,7 +33,7 @@
 import { test, expect } from '../../fixtures/glpi_fixture';
 import { SearchEnginePage } from '../../pages/SearchEnginePage';
 import { Profiles } from '../../utils/Profiles';
-import AxeBuilder from '@axe-core/playwright';
+import { a11yScan } from '../../utils/Accessibility';
 
 test('Search engine accessibility', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
@@ -41,7 +41,7 @@ test('Search engine accessibility', async ({ page, profile }) => {
     await search_engine_page.goto();
     await expect(search_engine_page.search_page).toBeVisible();
 
-    const page_a11y = await new AxeBuilder({ page })
+    const page_a11y = await a11yScan(page)
         .include('[data-testid="search-page"]')
         .analyze()
     ;
@@ -50,7 +50,7 @@ test('Search engine accessibility', async ({ page, profile }) => {
     await search_engine_page.doOpenSearchFilters();
     await expect(search_engine_page.search_filters_panel).toBeVisible();
 
-    const filters_a11y = await new AxeBuilder({ page })
+    const filters_a11y = await a11yScan(page)
         .include('[data-testid="search-filters-panel"]')
         .disableRules(['color-contrast']) // known issue: action button labels have insufficient contrast
         .analyze()
@@ -60,7 +60,7 @@ test('Search engine accessibility', async ({ page, profile }) => {
     await search_engine_page.doOpenSearchSorts();
     await expect(search_engine_page.search_sorts_panel).toBeVisible();
 
-    const sorts_a11y = await new AxeBuilder({ page })
+    const sorts_a11y = await a11yScan(page)
         .include('[data-testid="search-sorts-panel"]')
         .disableRules(['color-contrast']) // known issue: action button labels have insufficient contrast
         .analyze()

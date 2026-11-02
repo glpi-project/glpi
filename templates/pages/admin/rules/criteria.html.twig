@@ -50,7 +50,7 @@
                         {% set param_itemtype = get_class(rule) ~ 'Parameter' %}
                         <button type="button" class="btn btn-outline-secondary" title="{{ __('Add a criterion') }}"
                                 data-bs-toggle="modal" data-bs-target="#addcriterion{{ rand }}">
-                            <i class="ti ti-plus"></i>
+                            <i class="ti ti-plus" aria-hidden="true"></i>
                         </button>
                         {% do call('Ajax::createIframeModalWindow', [
                             'addcriterion' ~ rand,

@@ -44,7 +44,6 @@ class ToolControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Tools'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -74,7 +73,6 @@ class ToolControllerTest extends HLAPITestCase
             ],
         ];
         $this->api->call(new Request('GET', '/Tools'), function ($call) use ($dataset) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($dataset) {
@@ -99,7 +97,6 @@ class ToolControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Tools'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -123,7 +120,6 @@ class ToolControllerTest extends HLAPITestCase
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
 
         $this->api->call(new Request('GET', '/Tools'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -140,7 +136,6 @@ class ToolControllerTest extends HLAPITestCase
                         $new_location = null;
                         $new_items_id = null;
                         $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
-                            /** @var \HLAPICallAsserter $call */
                             $call->response
                                 ->isOK()
                                 ->headers(function ($headers) use (&$new_location) {

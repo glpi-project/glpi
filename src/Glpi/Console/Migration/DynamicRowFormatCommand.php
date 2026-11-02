@@ -37,6 +37,7 @@ namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Exception\EarlyExitException;
+use Glpi\Exception\Database\QueryException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -83,7 +84,7 @@ class DynamicRowFormatCommand extends AbstractCommand
     {
 
         // Check that all tables are using InnoDB engine
-        if (($myisam_count = $this->db->getMyIsamTables()->count()) > 0) {
+        if (($myisam_count = $this->getDb()->getMyIsamTables()->count()) > 0) {
             $msg = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
             . ' '
             . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
@@ -100,7 +101,7 @@ class DynamicRowFormatCommand extends AbstractCommand
     private function upgradeRowFormat(): void
     {
 
-        $table_iterator = $this->db->listTables(
+        $table_iterator = $this->getDb()->listTables(
             'glpi\_%',
             [
                 'row_format'   => ['COMPACT', 'REDUNDANT'],
@@ -133,14 +134,14 @@ class DynamicRowFormatCommand extends AbstractCommand
         $progress_message = (fn(string $table) => sprintf(__('Migrating table "%s"...'), $table));
 
         foreach ($this->iterate($tables, $progress_message) as $table) {
-            $result = $this->db->doQuery(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->db->quoteName($table)));
-
-            if (!$result) {
+            try {
+                $this->getDb()->doQuery(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->getDb()->quoteName($table)));
+            } catch (QueryException $e) {
                 $message = sprintf(
                     __('Migration of table "%s" failed with message "(%s) %s".'),
                     $table,
-                    $this->db->errno(),
-                    $this->db->error()
+                    $this->getDb()->errno(),
+                    $this->getDb()->error()
                 );
                 $this->outputMessage(
                     '<error>' . $message . '</error>',

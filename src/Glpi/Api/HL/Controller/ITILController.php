@@ -59,10 +59,12 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Team\Team;
+use GraphQL\Type\Definition\ResolveInfo;
 use Group;
 use InvalidArgumentException;
 use Item_Problem;
@@ -73,7 +75,6 @@ use ITILFollowupTemplate;
 use ITILReminder;
 use ITILSolution;
 use Location;
-use OLA;
 use OlaLevel;
 use PendingReason;
 use PendingReason_Item;
@@ -96,6 +97,8 @@ use SLA;
 use SlaLevel;
 use SolutionTemplate;
 use SolutionType;
+use stdClass;
+use Supplier;
 use TaskCategory;
 use Ticket;
 use Ticket_Ticket;
@@ -109,6 +112,13 @@ use User;
 
 use function Safe\json_decode;
 
+/**
+ * @phpstan-type TeamV2 = array{role: string|int, name?: string, realname?: string, firstname?: string, display_name?: string, href: string, type: string}[]
+ * @phpstan-type UserTeamMember = array{_type: 'UserTeamMember', id: int, role: string, user: array{id: int, username: string}}
+ * @phpstan-type GroupTeamMember = array{_type: 'GroupTeamMember', id: int, role: string, group: array{id: int, name: string}}
+ * @phpstan-type SupplierTeamMember = array{_type: 'SupplierTeamMember', id: int, role: string, supplier: array{id: int, name: string}}
+ * @phpstan-type TeamV3 = array<UserTeamMember|GroupTeamMember|SupplierTeamMember>
+ */
 #[Route(path: '/Assistance', requirements: [
     'itemtype' => 'Ticket|Change|Problem',
     'id' => '\d+',
@@ -131,7 +141,7 @@ final class ITILController extends AbstractController
 {
     use CRUDControllerTrait;
 
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         $schemas = [];
 
@@ -188,8 +198,8 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_HTML,
                     'x-supports-mentions' => true,
                 ],
-                'user_recipient' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_recipient', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
-                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_lastupdater', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'user_recipient' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_recipient', name_field: ['name', 'username'], full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_lastupdater', name_field: ['name', 'username'], full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'category' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
@@ -264,6 +274,7 @@ final class ITILController extends AbstractController
 
         $schemas['TeamMember'] = [
             'x-version-introduced' => '2.0',
+            'x-version-removed' => '3.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'description' => 'The valid types and roles depend on the type of the item they are being added to',
             'properties' => [
@@ -388,7 +399,7 @@ final class ITILController extends AbstractController
 
                         if (
                             Session::haveRightsOr(
-                                'ticketvalidation',
+                                TicketValidation::$rightname,
                                 [TicketValidation::VALIDATEINCIDENT,
                                     TicketValidation::VALIDATEREQUEST,
                                 ]
@@ -432,6 +443,40 @@ final class ITILController extends AbstractController
                 $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: RequestType::class, full_schema: 'RequestType');
 
                 // SLA/OLA Properties
+
+                // OLA fields: since OLAs are now stored in the items_ola junction table
+                // (no more direct olas_id_ttr / olas_id_tto FK on the ticket), we use
+                // x-mapper to read the first TTR / first TTO OLA for backward compatibility.
+                //
+                // A per-request static cache avoids repeated getById + getOlas*Data() calls
+                // when multiple OLA fields are resolved for the same ticket during a list.
+                $ola_data_cache = [];
+                $get_ola_data = static function (int $ticket_id, int $ola_type) use (&$ola_data_cache): ?array {
+                    $cache_key = $ticket_id . '_' . $ola_type;
+                    if (!array_key_exists($cache_key, $ola_data_cache)) {
+                        $ticket = Ticket::getById($ticket_id);
+                        if (!$ticket instanceof Ticket) {
+                            $ola_data_cache[$cache_key] = null;
+                        } else {
+                            $olas = $ola_type === \SLM::TTR
+                                ? $ticket->getOlasTTRData()
+                                : $ticket->getOlasTTOData();
+                            $ola_data_cache[$cache_key] = $olas !== [] ? $olas[0] : null;
+                        }
+                    }
+                    return $ola_data_cache[$cache_key];
+                };
+                $ola_dropdown_properties = [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'nullable' => true,
+                    'x-full-schema' => 'OLA',
+                    'x-mapped-from' => 'id',
+                    'properties' => [
+                        'id'   => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                        'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    ],
+                ];
+
                 $schemas[$itil_type]['properties']['take_into_account_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
@@ -447,46 +492,114 @@ final class ITILController extends AbstractController
                 ];
                 $schemas[$itil_type]['properties']['sla_ttr'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_ttr', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
                 $schemas[$itil_type]['properties']['sla_tto'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_tto', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_ttr'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_ttr', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_tto'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_tto', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['ola_ttr'] = $ola_dropdown_properties + [
+                    'x-version-introduced' => '2.1.0',
+                    'readOnly' => true,
+                    'x-mapper' => static function ($v) use ($get_ola_data): array {
+                        $ola = $get_ola_data((int) $v, \SLM::TTR);
+                        return $ola !== null ? ['id' => $ola['olas_id'], 'name' => $ola['name']] : [];
+                    },
+                ];
+                $schemas[$itil_type]['properties']['ola_tto'] = $ola_dropdown_properties + [
+                    'x-version-introduced' => '2.1.0',
+                    'readOnly' => true,
+                    'x-mapper' => static function ($v) use ($get_ola_data): array {
+                        $ola = $get_ola_data((int) $v, \SLM::TTO);
+                        return $ola !== null ? ['id' => $ola['olas_id'], 'name' => $ola['name']] : [];
+                    },
+                ];
                 $schemas[$itil_type]['properties']['sla_level_ttr'] = self::getDropdownTypeSchema(class: SlaLevel::class, field: 'slalevels_id_ttr', full_schema: 'SLALevel') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_level_ttr'] = self::getDropdownTypeSchema(class: OlaLevel::class, field: 'olalevels_id_ttr', full_schema: 'OLALevel') + ['x-version-introduced' => '2.1.0'];
+
+                // OLA level for TTR (equivalent of sla_level_ttr)
+                $schemas[$itil_type]['properties']['ola_level_ttr'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'nullable' => true,
+                    'x-full-schema' => 'OLALevel',
+                    'x-mapped-from' => 'id',
+                    'properties' => [
+                        'id'   => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                        'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    ],
+                    'readOnly' => true,
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?array {
+                        $ola = $get_ola_data((int) $v, \SLM::TTR);
+                        if ($ola === null || empty($ola['level']) || !($ola['level'] instanceof OlaLevel)) {
+                            return null;
+                        }
+                        return ['id' => $ola['level']->getID(), 'name' => $ola['level']->getName()];
+                    },
+                ];
+
                 $schemas[$itil_type]['properties']['sla_waiting_duration'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'readOnly' => true,
                     'description' => 'Total SLA waiting duration in seconds',
                 ];
+
+                // OLA waiting duration (sum of TTR + TTO waiting times; replaces old single ola_waiting_duration column)
                 $schemas[$itil_type]['properties']['ola_waiting_duration'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'readOnly' => true,
                     'description' => 'Total OLA waiting duration in seconds',
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): int {
+                        $ttr = $get_ola_data((int) $v, \SLM::TTR);
+                        $tto = $get_ola_data((int) $v, \SLM::TTO);
+                        return (int) ($ttr['waiting_time'] ?? 0) + (int) ($tto['waiting_time'] ?? 0);
+                    },
                 ];
+
+                // OLA begin dates (replacing ola_ttr_begin_date / ola_tto_begin_date columns)
                 $schemas[$itil_type]['properties']['ola_ttr_begin_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTR);
+                        return ($ola !== null && !empty($ola['start_time'])) ? $ola['start_time'] : null;
+                    },
                 ];
                 $schemas[$itil_type]['properties']['ola_tto_begin_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTO);
+                        return ($ola !== null && !empty($ola['start_time'])) ? $ola['start_time'] : null;
+                    },
                 ];
+
+                // OLA due dates (replacing internal_time_to_resolve / internal_time_to_own columns)
                 $schemas[$itil_type]['properties']['internal_resolution_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-field' => 'internal_time_to_resolve',
+                    'readOnly' => true,
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTR);
+                        return ($ola !== null && !empty($ola['due_time'])) ? $ola['due_time'] : null;
+                    },
                 ];
                 $schemas[$itil_type]['properties']['internal_take_into_account_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-field' => 'internal_time_to_own',
+                    'readOnly' => true,
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTO);
+                        return ($ola !== null && !empty($ola['due_time'])) ? $ola['due_time'] : null;
+                    },
                 ];
+
             }
             if ($itil_type === Ticket::class || $itil_type === Change::class) {
                 $schemas[$itil_type]['properties']['global_validation'] = [
@@ -512,6 +625,7 @@ final class ITILController extends AbstractController
             foreach ($itil_type::getAllStatusArray() as $status => $status_name) {
                 $status_description .= "- $status: $status_name\n";
             }
+
             $schemas[$itil_type]['properties']['status'] = [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
@@ -536,22 +650,95 @@ final class ITILController extends AbstractController
             // Add completename field
             $schemas[$itil_type]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
 
-            $schemas[$itil_type]['properties']['team'] = [
-                'type' => Doc\Schema::TYPE_ARRAY,
-                'items' => [
-                    'x-mapped-from' => 'id',
-                    'x-mapper' => function ($v) use ($itil_type) {
-                        $item = $itil_type::getById($v);
+            if (version_compare($api_version, '3.0.0', '<')) {
+                $schemas[$itil_type]['properties']['team'] = [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => function ($v) use ($api_version, $itil_type) {
+                            $item = $itil_type::getById($v);
+                            if ($item) {
+                                return self::getCleanTeam($item, $api_version);
+                            }
+                            return [];
+                        },
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'properties' => $schemas['TeamMember']['properties'],
+                        'x-full-schema' => 'TeamMember',
+                    ],
+                ];
+            } else {
+                $schemas['UserTeamMember'] = [
+                    'x-version-introduced' => '3.0.0',
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => [
+                        '_type' => ['type' => Doc\Schema::TYPE_STRING],
+                        'id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'readOnly' => true],
+                        'role' => ['type' => Doc\Schema::TYPE_STRING, 'enum' => ['requester', 'assigned', 'observer', null]],
+                        'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                    ],
+                ];
+                $schemas['GroupTeamMember'] = [
+                    'x-version-introduced' => '3.0.0',
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => [
+                        '_type' => ['type' => Doc\Schema::TYPE_STRING],
+                        'id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'readOnly' => true],
+                        'role' => ['type' => Doc\Schema::TYPE_STRING, 'enum' => ['requester', 'assigned', 'observer', null]],
+                        'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                    ],
+                ];
+                $schemas['SupplierTeamMember'] = [
+                    'x-version-introduced' => '3.0.0',
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => [
+                        '_type' => ['type' => Doc\Schema::TYPE_STRING],
+                        'id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'readOnly' => true],
+                        'role' => ['type' => Doc\Schema::TYPE_STRING, 'enum' => ['assigned', null]],
+                        'supplier' => self::getDropdownTypeSchema(class: Supplier::class, full_schema: 'Supplier'),
+                    ],
+                ];
+
+                $schemas[$itil_type]['properties']['team'] = [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'x-graphql-resolver' => function (mixed $source, array $args, stdClass $context, ResolveInfo $info) use ($api_version, $itil_type) {
+                        $item = $itil_type::getById($source['id']);
                         if ($item) {
-                            return self::getCleanTeam($item);
+                            return self::getCleanTeam($item, $api_version);
                         }
                         return [];
                     },
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'properties' => $schemas['TeamMember']['properties'],
-                    'x-full-schema' => 'TeamMember',
-                ],
-            ];
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        //TODO remove mapper and properties. only exists for REST.
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => function ($v) use ($api_version, $itil_type) {
+                            $item = $itil_type::getById($v);
+                            if ($item) {
+                                return self::getCleanTeam($item, $api_version);
+                            }
+                            return [];
+                        },
+                        'oneOf' => ['UserTeamMember', 'GroupTeamMember', 'SupplierTeamMember'],
+                        'discriminator' => [
+                            'propertyName' => '_type',
+                            'mapping' => [
+                                'UserTeamMember' => 'UserTeamMember',
+                                'GroupTeamMember' => 'GroupTeamMember',
+                                'SupplierTeamMember' => 'SupplierTeamMember',
+                            ],
+                        ],
+                        'properties' =>  [
+                            '_type' => ['type' => Doc\Schema::TYPE_STRING],
+                            'id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'readOnly' => true],
+                            'role' => ['type' => Doc\Schema::TYPE_STRING, 'enum' => ['requester', 'assigned', 'observer', null]],
+                            'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                            'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                            'supplier' => self::getDropdownTypeSchema(class: Supplier::class, full_schema: 'Supplier'),
+                        ],
+                    ],
+                ];
+            }
 
             $cost_type = match ($itil_type) {
                 Ticket::class => TicketCost::class,
@@ -634,9 +821,9 @@ final class ITILController extends AbstractController
                     'x-supports-mentions' => true,
                 ],
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', name_field: ['name', 'username'], full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
                 'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group') + ['x-version-introduced' => '2.1.0'],
                 'date' => [
                     'x-version-introduced' => '2.1.0',
@@ -750,8 +937,8 @@ final class ITILController extends AbstractController
                     'x-supports-mentions' => true,
                 ],
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', name_field: ['name', 'username'], full_schema: 'User'),
                 'request_type' => self::getDropdownTypeSchema(RequestType::class, full_schema: 'RequestType'),
                 'date' => [
                     'x-version-introduced' => '2.1.0',
@@ -799,9 +986,9 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_HTML,
                     'x-supports-mentions' => true,
                 ],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
-                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_approval', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', name_field: ['name', 'username'], full_schema: 'User'),
+                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_approval', name_field: ['name', 'username'], full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
                 'status' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -864,8 +1051,8 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'readOnly' => true,
                 ],
-                'requester' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_validate', full_schema: 'User'),
+                'requester' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_validate', name_field: ['name', 'username'], full_schema: 'User'),
                 'requested_approver_type' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-field' => 'itemtype_target',
@@ -1077,7 +1264,7 @@ final class ITILController extends AbstractController
                 'category' => self::getDropdownTypeSchema(class: PlanningEventCategory::class, full_schema: 'EventCategory'),
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
                 'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_begin' => [
@@ -1518,7 +1705,7 @@ EOT,
                 ],
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 'date' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
@@ -1679,15 +1866,27 @@ EOT,
         return $fields;
     }
 
-    private function getTimelineItemFilters(CommonITILObject $item, Request $request, string $subitem_type): string
+    private function getTimelineItemScope(CommonITILObject $item, Request $request, string $subitem_type): string
     {
-        $request_filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters = $request_filters;
-        $required_fields = $this->getRequiredTimelineItemFields($item, $request, $subitem_type);
-        foreach ($required_fields as $name => $value) {
-            $filters .= ";{$name}=={$value}";
+        $scope = [];
+        foreach ($this->getRequiredTimelineItemFields($item, $request, $subitem_type) as $name => $value) {
+            $scope[] = "{$name}=={$value}";
         }
-        return $filters;
+        return implode(';', $scope);
+    }
+
+    /**
+     * A single timeline item is requested when the scope (set by the `/Timeline/<type>/<id>` routes)
+     * or a user filter targets a specific id. In that case an empty result must be a 404.
+     */
+    private function isSingleTimelineItemRequest(Request $request): bool
+    {
+        foreach (['filter', Search::MANDATORY_FILTER_PARAM] as $param) {
+            if ($request->hasParameter($param) && str_contains((string) $request->getParameter($param), 'id==')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function getKnownSubitemSchema(CommonITILObject $item, string $subitem_type, string $api_version): array
@@ -1728,9 +1927,17 @@ EOT,
             }
         }
 
+        $user_filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $request_scope = $request->hasParameter(Search::MANDATORY_FILTER_PARAM)
+            ? $request->getParameter(Search::MANDATORY_FILTER_PARAM)
+            : '';
+
         $results = [];
         foreach ($subitem_types as $subitem_type) {
-            $filters = $this->getTimelineItemFilters($item, $request, $subitem_type);
+            $scope = $this->getTimelineItemScope($item, $request, $subitem_type);
+            if ($request_scope !== '') {
+                $scope = $scope === '' ? $request_scope : $scope . ';' . $request_scope;
+            }
             $schema = $this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request));
 
             /** @var class-string<CommonDBTM> $schema_itemtype */
@@ -1739,11 +1946,14 @@ EOT,
                 continue;
             }
             if (array_key_exists('is_private', $schema['properties']) && !Session::haveRight($schema_itemtype::$rightname, $schema_itemtype::SEEPRIVATE)) {
-                $filters .= ';is_private==0';
+                $scope = $scope === '' ? 'is_private==0' : $scope . ';is_private==0';
             }
 
+            // The scope (parent item, is_private, ...) is passed as a mandatory filter so a user
+            // `filter` cannot escape it through operator precedence.
             $subitem_results = ResourceAccessor::searchBySchema($schema, [
-                'filter' => $filters,
+                'filter' => $user_filter,
+                Search::MANDATORY_FILTER_PARAM => $scope,
                 'limit' => 1000,
             ]);
             $decoded_results = json_decode($subitem_results->getBody(), true);
@@ -1754,7 +1964,7 @@ EOT,
                 ];
             }
         }
-        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        $single_result = $this->isSingleTimelineItemRequest($request);
         if ($single_result && count($results) > 0) {
             $results = $results[0]['item'];
         } elseif ($single_result && count($results) === 0) {
@@ -1794,7 +2004,7 @@ EOT,
         $friendly_subitem_type = $request->getAttribute('subitem_type');
 
         $timeline = $this->getITILTimelineItems($item, $request, [$friendly_subitem_type]);
-        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        $single_result = $this->isSingleTimelineItemRequest($request);
         if ($single_result && $timeline === null) {
             return self::getNotFoundErrorResponse();
         }
@@ -1815,7 +2025,7 @@ EOT,
         $item = $request->getParameter('_item');
 
         $timeline = $this->getITILTimelineItems($item, $request, ['Task']);
-        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        $single_result = $this->isSingleTimelineItemRequest($request);
         if ($single_result && $timeline === null) {
             return self::getNotFoundErrorResponse();
         }
@@ -1838,7 +2048,7 @@ EOT,
         $item = $request->getParameter('_item');
 
         $timeline = $this->getITILTimelineItems($item, $request, ['Validation']);
-        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        $single_result = $this->isSingleTimelineItemRequest($request);
         if ($single_result && $timeline === null) {
             return self::getNotFoundErrorResponse();
         }
@@ -1882,10 +2092,8 @@ EOT,
     )]
     public function getTimelineItem(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';id==' . $request->getAttribute('subitem_id');
-        // Reuse existing logic from the getTimelineItems route
-        $request->setParameter('filter', $filters);
+        // Reuse existing logic from the getTimelineItems route, restricting to the requested item.
+        $this->restrictSearch($request, 'id==' . $request->getAttribute('subitem_id'));
         return $this->getTimelineItems($request);
     }
 
@@ -1899,10 +2107,8 @@ EOT,
     )]
     public function getTimelineTask(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';id==' . $request->getAttribute('subitem_id');
-        // Reuse existing logic from the getTimelineItems route
-        $request->setParameter('filter', $filters);
+        // Reuse existing logic from the getTimelineItems route, restricting to the requested item.
+        $this->restrictSearch($request, 'id==' . $request->getAttribute('subitem_id'));
         $request->setAttribute('subitem_type', 'Task');
         return $this->getTimelineItems($request);
     }
@@ -1918,10 +2124,8 @@ EOT,
     )]
     public function getTimelineValidation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';id==' . $request->getAttribute('subitem_id');
-        // Reuse existing logic from the getTimelineItems route
-        $request->setParameter('filter', $filters);
+        // Reuse existing logic from the getTimelineItems route, restricting to the requested item.
+        $this->restrictSearch($request, 'id==' . $request->getAttribute('subitem_id'));
         $request->setAttribute('subitem_type', 'Validation');
         return $this->getTimelineItems($request);
     }
@@ -2131,34 +2335,76 @@ EOT,
 
     /**
      * @param CommonITILObject $item
-     * @return array{role: string|int, name?: string, realname?: string, firstname?: string, display_name?: string, href: string, type: string}[]
+     * @param string $api_version
+     * @return TeamV2|TeamV3
      */
-    private static function getCleanTeam(CommonITILObject $item): array
+    private static function getCleanTeam(CommonITILObject $item, string $api_version): array
     {
         $team = $item->getTeam();
-        $preserved_element_keys = ['role', 'name', 'realname', 'firstname', 'display_name'];
-        foreach ($team as &$member) {
-            /** @var class-string<CommonDBTM> $member_itemtype */
-            $member_itemtype = $member['itemtype'];
-            $member_items_id = $member['items_id'];
-            // Only keep the allowed properties
-            foreach ($member as $k => $v) {
-                if (!in_array($k, $preserved_element_keys, true)) {
-                    unset($member[$k]);
+        if (version_compare($api_version, '3.0.0', '<')) {
+            $preserved_element_keys = ['role', 'name', 'realname', 'firstname', 'display_name'];
+            foreach ($team as &$member) {
+                /** @var class-string<CommonDBTM> $member_itemtype */
+                $member_itemtype = $member['itemtype'];
+                $member_items_id = $member['items_id'];
+                // Only keep the allowed properties
+                foreach ($member as $k => $v) {
+                    if (!in_array($k, $preserved_element_keys, true)) {
+                        unset($member[$k]);
+                    }
+                }
+                // Add a link to the full resource represented by the team member (User, Group, etc)
+                $member['id'] = $member_items_id;
+                $member['href'] = $member_itemtype::getFormURLWithID($member_items_id);
+                $member['type'] = $member_itemtype;
+                // Replace role with non-localized textual representation
+                try {
+                    $member['role'] = self::getRoleName($member['role']);
+                } catch (InvalidArgumentException) {
+                    // Leave invalid role as-is
                 }
             }
-            // Add a link to the full resource represented by the team member (User, Group, etc)
-            $member['id'] = $member_items_id;
-            $member['href'] = $member_itemtype::getFormURLWithID($member_items_id);
-            $member['type'] = $member_itemtype;
-            // Replace role with non-localized textual representation
-            try {
-                $member['role'] = self::getRoleName($member['role']);
-            } catch (InvalidArgumentException) {
-                // Leave invalid role as-is
-            }
+            /** @var TeamV2 $team */
+            return $team;
         }
-        return $team;
+        $team_members = [];
+        foreach ($team as $member) {
+            if ($member['itemtype'] !== 'User' && $member['itemtype'] !== 'Group' && $member['itemtype'] !== 'Supplier') {
+                continue;
+            }
+            $m = [
+                '_type' => match ($member['itemtype']) {
+                    'User' => 'UserTeamMember',
+                    'Group' => 'GroupTeamMember',
+                    'Supplier' => 'SupplierTeamMember',
+                },
+                'id' => $member['linkid'],
+                'role' => self::getRoleName($member['role']),
+            ];
+            switch ($member['itemtype']) {
+                case 'User':
+                    $m['user'] = [
+                        'id' => $member['items_id'],
+                        'username' => $member['name'],
+                    ];
+                    break;
+                case 'Group':
+                    $m['group'] = [
+                        'id' => $member['items_id'],
+                        'name' => $member['name'],
+                    ];
+                    break;
+                case 'Supplier':
+                    $m['supplier'] = [
+                        'id' => $member['items_id'],
+                        'name' => $member['name'],
+                    ];
+                    break;
+            }
+            $team_members[] = $m;
+        }
+        /** @var TeamV3 $team_members */
+        return $team_members;
     }
 
     /**
@@ -2216,7 +2462,7 @@ EOT,
             return self::getAccessDeniedErrorResponse();
         }
 
-        $team = self::getCleanTeam($item);
+        $team = self::getCleanTeam($item, $this->getAPIVersion($request));
         return new JSONResponse($team);
     }
 
@@ -2252,7 +2498,7 @@ EOT,
 
         $role_id = self::getRoleName($request->getAttribute('role'));
 
-        $team = self::getCleanTeam($item);
+        $team = self::getCleanTeam($item, $this->getAPIVersion($request));
         $team = array_filter($team, static fn($v) => $v['role'] === $role_id, ARRAY_FILTER_USE_BOTH);
         return new JSONResponse($team);
     }
@@ -2498,16 +2744,13 @@ EOT,
     {
         $itemtype = $request->getAttribute('itemtype');
         $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
-        $parameters = $request->getParameters();
         $parent_prop = match ($itemtype) {
             'Ticket' => 'ticket',
             'Change' => 'change',
             'Problem' => 'problem',
             default => throw new RuntimeException(\sprintf('Unexpected type `%s`.', $itemtype)),
         };
-        $filters = $parameters['filter'] ?? '';
-        $filters .= $parent_prop . '.id==' . $request->getAttribute('id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, $parent_prop . '.id==' . $request->getAttribute('id'));
         return ResourceAccessor::searchBySchema($schema, $request->getParameters());
     }
 
@@ -2613,9 +2856,7 @@ EOT,
     )]
     public function searchKBArticleItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id'));
         return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -2631,9 +2872,7 @@ EOT,
     )]
     public function getKBArticleItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id'));
         return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -2741,8 +2980,7 @@ EOT,
     {
         $itemtype = $request->getAttribute('itemtype');
         $schema = $this->getKnownSchema('PendingReason_Item', $this->getAPIVersion($request));
-        $filters = 'itemtype==' . $itemtype;
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $itemtype);
         return ResourceAccessor::getOneBySchema($schema, ['items_id' => $request->getAttribute('id')], $request->getParameters(), 'items_id');
     }
 }

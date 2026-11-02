@@ -38,6 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\TOTPManager;
 use Html;
 use Session;
@@ -47,8 +48,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
-
-use function Safe\preg_replace;
 
 final class MFAController extends AbstractController
 {
@@ -100,14 +99,32 @@ final class MFAController extends AbstractController
         $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
 
         $from_login = $pre_auth_data !== null;
+
+        if (!$from_login) {
+            // Reauth only applies when an already authenticated user changes their own 2FA settings
+            ReAuthManager::getInstance()->checkReAuthenticationOrRedirect();
+        }
+
         $users_id = $from_login ? (int) $pre_auth_data['user_id'] : (int) Session::getLoginUserID();
         if (!$users_id) {
             return new RedirectResponse($request->getBasePath() . '/MFA/Prompt');
         }
+
+        $secret = $request->request->get('secret');
+        if ($secret !== null) {
+            $idor_data = [
+                '_idor_token'   => $request->request->getString('_idor_token'),
+                'user_id'       => $users_id,
+                'secret'        => $secret,
+            ];
+            if (!Session::validateIDOR($idor_data)) {
+                throw new \Glpi\Exception\Http\AccessDeniedHttpException();
+            }
+        }
+
         $totp = new TOTPManager();
         $backup_code = $request->request->get('backup_code');
-        $totp_code = preg_replace('/\s+/', '', $request->request->getString('totp_code'));
-        $secret = $request->request->get('secret');
+        $totp_code = implode('', $request->request->all('totp_code'));
         $algorithm = null;
 
         $in_grace_period = $totp->get2FAEnforcement($users_id) === TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD && !$totp->is2FAEnabled($users_id);
@@ -133,8 +150,7 @@ final class MFAController extends AbstractController
 
             if (
                 isset($secret)
-                && !(Session::validateIDOR($request->request->all())
-                    && $totp->setSecretForUser($users_id, $request->request->getString('secret'), $algorithm))
+                && !$totp->setSecretForUser($users_id, $request->request->getString('secret'), $algorithm)
             ) {
                 Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
                 return new RedirectResponse($from_login ? ($request->getBasePath() . '/MFA/Prompt') : Html::getBackUrl());

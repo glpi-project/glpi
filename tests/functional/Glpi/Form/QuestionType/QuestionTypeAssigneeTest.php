@@ -34,14 +34,10 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
-use Entity;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
-use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\Tests\Glpi\Form\QuestionType\AbstractQuestionTypeActorsTest;
 use Group;
-use Profile;
-use Profile_User;
 use Supplier;
 use User;
 
@@ -250,129 +246,10 @@ final class QuestionTypeAssigneeTest extends AbstractQuestionTypeActorsTest
         ];
     }
 
-    public function testSubmitAnswerWithUserThatCanBeAssignee(): void
-    {
-        // Create a User
-        $user = $this->createItem(User::class, [
-            'name' => 'jdoe',
-        ]);
-
-        // Create a profile that allows the user to be assigned
-        $this->createItem(Profile_User::class, [
-            'users_id' => $user->getID(),
-            'profiles_id' => getItemByTypeName(Profile::class, 'Super-Admin', true),
-            'entities_id' => $this->getTestRootEntity(only_id: true),
-        ]);
-
-        // Create a form
-        $builder = new FormBuilder();
-        $builder->setEntitiesId($this->getTestRootEntity(only_id: true));
-        $builder->addQuestion("Assigned", QuestionTypeAssignee::class);
-        $form = $this->createForm($builder);
-
-        // Send the form again
-        $this->assertNotNull(
-            $this->sendFormAndGetAnswerSet($form, [
-                "Assigned" => ["users_id-{$user->getID()}"],
-            ])
-        );
-    }
-
-    public function testSubmitAnswerWithUserThatCannotBeAssignee(): void
-    {
-        // Create a User
-        $user = $this->createItem(User::class, [
-            'name' => 'jdoe',
-        ]);
-
-        // Create a form
-        $builder = new FormBuilder();
-        $builder->setEntitiesId($this->getTestRootEntity(only_id: true));
-        $builder->addQuestion("Assigned", QuestionTypeAssignee::class);
-        $form = $this->createForm($builder);
-
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("Invalid actor: must be able to be assigned");
-        $this->assertNull(
-            $this->sendFormAndGetAnswerSet($form, [
-                "Assigned" => ["users_id-{$user->getID()}"],
-            ])
-        );
-    }
-
-    public function testSubmitAnswerWithUserThatCanBeAssigneeWithOwnRightInParentEntityWithoutRecursiveProfile(): void
-    {
-        $this->login();
-
-        // Create a User
-        $user = $this->createItem(User::class, [
-            'name' => 'jdoe',
-        ]);
-
-        // Create an entity
-        $entity = $this->createItem(Entity::class, [
-            'name'        => 'Another entity',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
-        ]);
-
-        // Create a profile that allows the user to be assigned
-        $this->createItem(Profile_User::class, [
-            'users_id'     => $user->getID(),
-            'profiles_id'  => getItemByTypeName(Profile::class, 'Super-Admin', true),
-            'entities_id'  => $this->getTestRootEntity(only_id: true),
-            'is_recursive' => false,
-        ]);
-
-        // Create a form
-        $builder = new FormBuilder();
-        $builder->setEntitiesId($entity->getID());
-        $builder->addQuestion("Assigned", QuestionTypeAssignee::class);
-        $form = $this->createForm($builder);
-
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("Invalid actor: must be able to be assigned");
-        $this->assertNull(
-            $this->sendFormAndGetAnswerSet($form, [
-                "Assigned" => ["users_id-{$user->getID()}"],
-            ])
-        );
-    }
-
-    public function testSubmitAnswerWithUserThatCanBeAssigneeWithRecursiveProfileInParentEntity(): void
-    {
-        $this->login();
-
-        // Create a User
-        $user = $this->createItem(User::class, [
-            'name' => 'jdoe',
-        ]);
-
-        // Create an entity
-        $entity = $this->createItem(Entity::class, [
-            'name'        => 'Another entity',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
-        ]);
-
-        // Create a profile that allows the user to be assigned
-        $this->createItem(Profile_User::class, [
-            'users_id'     => $user->getID(),
-            'profiles_id'  => getItemByTypeName(Profile::class, 'Super-Admin', true),
-            'entities_id'  => $this->getTestRootEntity(only_id: true),
-            'is_recursive' => true,
-        ]);
-
-        // Create a form
-        $builder = new FormBuilder();
-        $builder->setEntitiesId($entity->getID());
-        $builder->addQuestion("Assigned", QuestionTypeAssignee::class);
-        $form = $this->createForm($builder);
-
-        $this->assertNotNull(
-            $this->sendFormAndGetAnswerSet($form, [
-                "Assigned" => ["users_id-{$user->getID()}"],
-            ])
-        );
-    }
+    // Whether a User actor can actually be assigned depends on the ITIL
+    // object's entity, which is not known yet when answers are prepared.
+    // This is covered at the point where that entity is resolved, in
+    // ITILActorField::isActorAllowed() (see AssigneeFieldTest).
 
     public static function groupActorProvider(): iterable
     {

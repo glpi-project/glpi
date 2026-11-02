@@ -185,6 +185,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
             'field'         => 'name',
             'name'          => User::getTypeName(1),
             'datatype'      => 'dropdown',
+            'right'         => 'all',
         ];
 
         $tab[] = [
@@ -513,8 +514,8 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 
         if ($isadmin) {
             $prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
-            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
+            $actions[$prefix . 'add']    = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off' aria-hidden='true'></i>" . _sx('button', 'Remove an item');
         }
 
         KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
@@ -550,7 +551,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
                         'items_id'        => $id,
                         'itemtype'        => $item::class,
                     ];
-                    if ($appli_item->can(-1, UPDATE, $input)) {
+                    if ($appli_item->can(-1, CREATE, $input)) {
                         if ($appli_item->add($input)) {
                             $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {

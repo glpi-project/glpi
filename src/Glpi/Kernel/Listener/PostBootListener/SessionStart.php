@@ -37,13 +37,13 @@ namespace Glpi\Kernel\Listener\PostBootListener;
 use Glpi\Debug\Profiler;
 use Glpi\Http\RequestRouterTrait;
 use Glpi\Http\SessionManager;
+use Glpi\Kernel\Kernel;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Session;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\ini_get;
 use function Safe\ini_set;
@@ -76,7 +76,8 @@ class SessionStart implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        global $CFG_GLPI;
+        /** @var Kernel $kernel */
+        global $CFG_GLPI, $kernel;
 
         Profiler::getInstance()->start('SessionStart::execute', Profiler::CATEGORY_BOOT);
 
@@ -97,7 +98,7 @@ class SessionStart implements EventSubscriberInterface
         if ($this->php_sapi === 'cli') {
             $is_stateless = true;
         } else {
-            $request = Request::createFromGlobals();
+            $request = $kernel->getMainRequest();
             $is_stateless = $this->session_manager->isResourceStateless($request);
         }
 
@@ -122,7 +123,7 @@ class SessionStart implements EventSubscriberInterface
         // Copy the "preference" defaults to the session, if they are not already set.
         // They are set during the authentication but may be accessed in a sessionless context (cron, anonymous pages, ...).
         foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (!\array_key_exists("glpi$field", $_SESSION) && \array_key_exists($field, $CFG_GLPI)) {
+            if (!\array_key_exists("glpi$field", $_SESSION) && isset($CFG_GLPI[$field])) {
                 $_SESSION["glpi$field"] = $CFG_GLPI[$field];
             }
         }

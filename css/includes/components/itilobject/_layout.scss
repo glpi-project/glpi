@@ -41,12 +41,17 @@
     }
 
     @include media-breakpoint-up(lg) {
-        height: calc(100vh - 187px);
+        height: calc(100vh - 197px);
 
         .itil-left-side,
         .itil-right-side {
             overflow-y: auto;
             transition: all 400ms ease;
+        }
+
+        .itil-left-side:focus,
+        .itil-right-side:focus {
+            outline: none;
         }
 
         .itil-left-side {

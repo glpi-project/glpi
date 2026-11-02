@@ -37,6 +37,7 @@ use Rector\CodeQuality\Rector as CodeQuality;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector as DeadCode;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\Php74\Rector\If_\IfToNullCoalescingAssignRector;
 use Rector\ValueObject\PhpVersion;
 use RectorGlpi\Set\GlpiSetList;
 
@@ -44,6 +45,7 @@ return RectorConfig::configure()
     ->withSets([
         GlpiSetList::GLPI_DEFAULT_SET,
     ])
+    ->withImportNames(importNames: false, importDocBlockNames: false, importShortClasses: false, removeUnusedImports: true)
     ->withPaths([
         __DIR__ . '/ajax',
         __DIR__ . '/dependency_injection',
@@ -59,6 +61,7 @@ return RectorConfig::configure()
         StringClassNameToClassConstantRector::class => [
             __DIR__ . '/install/migrations',
         ],
+        IfToNullCoalescingAssignRector::class, // Too much changes, may be done in another PR
     ])
     ->withPhpVersion(PhpVersion::PHP_83)
     ->withCache(
@@ -66,6 +69,7 @@ return RectorConfig::configure()
         cacheDirectory: 'files/_cache/rector',
     )
     ->withParallel(timeoutSeconds: 300)
+    ->withPhpSets(php74: true) // apply PHP sets up to PHP 7.4
     // handled by PHP-CS-Fixer with `fully_qualified_strict_types` rule ->withImportNames()
     ->withRules([
         CodeQuality\Assign\CombinedAssignRector::class,
@@ -80,7 +84,6 @@ return RectorConfig::configure()
         CodeQuality\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector::class,
         CodeQuality\Foreach_\ForeachToInArrayRector::class,
         CodeQuality\Foreach_\SimplifyForeachToCoalescingRector::class,
-        CodeQuality\Foreach_\UnusedForeachValueToArrayKeysRector::class,
         CodeQuality\FuncCall\ChangeArrayPushToArrayAssignRector::class,
         CodeQuality\FuncCall\CompactToVariablesRector::class,
         CodeQuality\FuncCall\InlineIsAInstanceOfRector::class,
@@ -111,5 +114,4 @@ return RectorConfig::configure()
         CodeQuality\Ternary\UnnecessaryTernaryExpressionRector::class,
         DeadCode\Assign\RemoveUnusedVariableAssignRector::class,
     ])
-    ->withPhpSets(php74: true) // apply PHP sets up to PHP 7.4
 ;

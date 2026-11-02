@@ -36,13 +36,14 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Output\Csv;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\Pdf;
 use Glpi\Search\SearchEngine;
 use Glpi\Stat\StatData;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\mktime;
 use function Safe\strtotime;
@@ -438,6 +439,9 @@ class Stat extends CommonGLPI
      **/
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = '')
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         $numrows = count($value);
         // Set display type for export if define
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
@@ -466,7 +470,7 @@ class Stat extends CommonGLPI
             $nbcols--;
         }
 
-        $request = Request::createFromGlobals();
+        $request = $kernel->getMainRequest();
 
         if ($is_html_output) {
             $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
@@ -634,7 +638,7 @@ class Stat extends CommonGLPI
                         ]
                     );
                     $link = "<a href='" . htmlescape($url) . "' title='" . __s('View graph') . "'>"
-                      . "<i class='ti ti-graph fs-1'></i>"
+                      . "<i class='ti ti-graph fs-1' aria-hidden='true'></i>"
                       . "</a>";
                 }
                 $html_output .= $output::showItem($link, $item_num, $row_num);
@@ -1224,17 +1228,17 @@ class Stat extends CommonGLPI
         }
 
         $date_unix = QueryFunction::fromUnixtime(
-            expression: QueryFunction::unixTimestamp("$table.date"),
+            expression: QueryFunction::unixTimestamp(new QueryIdentifier("$table.date")),
             format: new QueryExpression($DB::quoteValue('%Y-%m')),
             alias: 'date_unix'
         );
         $solvedate_unix = QueryFunction::fromUnixtime(
-            expression: QueryFunction::unixTimestamp("$table.solvedate"),
+            expression: QueryFunction::unixTimestamp(new QueryIdentifier("$table.solvedate")),
             format: new QueryExpression($DB::quoteValue('%Y-%m')),
             alias: 'date_unix'
         );
         $closedate_unix = QueryFunction::fromUnixtime(
-            expression: QueryFunction::unixTimestamp("$table.closedate"),
+            expression: QueryFunction::unixTimestamp(new QueryIdentifier("$table.closedate")),
             format: new QueryExpression($DB::quoteValue('%Y-%m')),
             alias: 'date_unix'
         );

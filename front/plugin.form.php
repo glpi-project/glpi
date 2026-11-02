@@ -37,11 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/**
- * @since 0.84
- */
-
-Session::checkRight("config", UPDATE);
+(new Config())->checkGlobal(UPDATE);
 
 $plugin = new Plugin();
 

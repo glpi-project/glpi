@@ -61,8 +61,11 @@ use function Safe\unlink;
 
 final class Server
 {
-    private const PRIVATE_KEY_PATH = GLPI_CONFIG_DIR . '/oauth.pem';
-    private const PUBLIC_KEY_PATH  = GLPI_CONFIG_DIR . '/oauth.pub';
+    private const PRIVATE_KEY_FILENAME = 'oauth.pem';
+    private const PUBLIC_KEY_FILENAME  = 'oauth.pub';
+
+    private const PRIVATE_KEY_PATH = GLPI_CONFIG_DIR . '/' . self::PRIVATE_KEY_FILENAME;
+    private const PUBLIC_KEY_PATH  = GLPI_CONFIG_DIR . '/' . self::PUBLIC_KEY_FILENAME;
 
     private ClientRepository $client_repository;
 
@@ -195,15 +198,18 @@ final class Server
         ];
     }
 
-    public static function checkKeys(): bool
+    public static function checkKeys(string $config_dir = GLPI_CONFIG_DIR): bool
     {
+        $private_key_path = $config_dir . '/' . self::PRIVATE_KEY_FILENAME;
+        $public_key_path  = $config_dir . '/' . self::PUBLIC_KEY_FILENAME;
+
         if (
-            file_exists(self::PRIVATE_KEY_PATH)
-            && file_exists(self::PUBLIC_KEY_PATH)
+            file_exists($private_key_path)
+            && file_exists($public_key_path)
         ) {
             // Keys are already generated
 
-            if (is_readable(self::PRIVATE_KEY_PATH) && is_readable(self::PUBLIC_KEY_PATH)) {
+            if (is_readable($private_key_path) && is_readable($public_key_path)) {
                 return true;
             } else {
                 throw new OAuth2KeyException('Either private or public OAuth keys cannot be read. Please check file system permissions');

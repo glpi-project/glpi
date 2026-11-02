@@ -53,6 +53,31 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
+    public function testDeserializedFallbackMatchesTheFieldDefaultStrategy(): void
+    {
+        $this->assertEquals(
+            (new AssociatedItemsField())->getDefaultConfig($this->createForm(new FormBuilder()))
+                ->getStrategies(),
+            AssociatedItemsFieldConfig::jsonDeserialize([])->getStrategies(),
+        );
+    }
+
+    public function testEmptyStrategyValueIsIgnoredWhenDeserializingConfig(): void
+    {
+        // "0" is the empty value of the strategy dropdown. It may have been
+        // stored by a configuration form saved without picking any strategy.
+        $config = AssociatedItemsFieldConfig::jsonDeserialize([
+            AssociatedItemsFieldConfig::STRATEGIES => ['0'],
+        ]);
+
+        // An unknown strategy must be discarded, so the field falls back on its
+        // default strategy instead of exposing a `null` strategy.
+        $this->assertEquals(
+            AssociatedItemsFieldConfig::jsonDeserialize([])->getStrategies(),
+            $config->getStrategies(),
+        );
+    }
+
     public function testAssociatedItemsFromSpecificItems(): void
     {
         $this->login();
@@ -333,6 +358,73 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     $form->getID() => $form->getID(),
                 ],
             ],
+        );
+    }
+
+    public function testAssociatedItemsFromItemQuestionWithItemsIds(): void
+    {
+        $this->login();
+
+        $computers = $this->createComputers(2);
+        $form = $this->createAndGetFormWithMultipleItemQuestions();
+
+        // Item questions answers use the items_ids key, as a single value or a list
+        foreach ([$computers[0]->getID(), [$computers[1]->getID()]] as $items_ids) {
+            $expected_id = current((array) $items_ids);
+            $this->sendFormAndAssertAssociatedItems(
+                form: $form,
+                config: new AssociatedItemsFieldConfig(
+                    strategies: [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
+                ),
+                answers: [
+                    "Computer" => [
+                        'itemtype'  => Computer::getType(),
+                        'items_ids' => $items_ids,
+                    ],
+                ],
+                expected_associated_items: [
+                    Computer::getType() => [
+                        $expected_id => $expected_id,
+                    ],
+                    Form::getType() => [
+                        $form->getID() => $form->getID(),
+                    ],
+                ]
+            );
+        }
+    }
+
+    public function testAssociatedItemsFromLastValidAnswerIgnoresEmptyItemQuestion(): void
+    {
+        $this->login();
+
+        $computers = $this->createComputers(1);
+        $form = $this->createAndGetFormWithMultipleItemQuestions();
+
+        // The last Item question is left on its empty choice ('-1'), it must
+        // not hide the previous valid answer
+        $this->sendFormAndAssertAssociatedItems(
+            form: $form,
+            config: new AssociatedItemsFieldConfig(
+                strategies: [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
+            ),
+            answers: [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Computer" => [
+                    'itemtype' => Computer::getType(),
+                    'items_ids' => ['-1'],
+                ],
+            ],
+            expected_associated_items: [
+                Computer::getType() => [
+                    $computers[0]->getID() => $computers[0]->getID(),
+                ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
+            ]
         );
     }
 

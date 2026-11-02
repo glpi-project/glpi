@@ -261,7 +261,7 @@ var followDownloadProgress = function(button) {
                     loop();
                 } else if (!ajax_done) {
                     // set an animated icon when decompressing
-                    buttons.html('<i class="fas fa-cog fa-spin"></i>');
+                    buttons.html('<i class="fas fa-cog fa-spin" aria-hidden="true"></i>');
 
                     // display messages from backend
                     displayAjaxMessageAfterRedirect();

@@ -41,10 +41,11 @@ use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
 use Html;
 use Override;
-use Ticket;
 
 final class FormTile extends CommonDBChild implements TileInterface
 {
+    use TileRightTrait;
+
     public static string $rightname = 'config';
     public static string $itemtype = Form::class;
     public static string $items_id = 'forms_forms_id';
@@ -61,18 +62,6 @@ final class FormTile extends CommonDBChild implements TileInterface
     public function getLabel(): string
     {
         return Form::getTypeName(1);
-    }
-
-    #[Override]
-    public static function canCreate(): bool
-    {
-        return self::canUpdate();
-    }
-
-    #[Override]
-    public static function canPurge(): bool
-    {
-        return self::canUpdate();
     }
 
     #[Override]
@@ -114,10 +103,6 @@ final class FormTile extends CommonDBChild implements TileInterface
     public function isAvailable(SessionInfo $session_info): bool
     {
         $form_access_manager = FormAccessControlManager::getInstance();
-
-        if (!$session_info->hasRight(Ticket::$rightname, CREATE)) {
-            return false;
-        }
 
         // Form must be active
         if (!$this->form->isActive()) {

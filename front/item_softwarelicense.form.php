@@ -39,7 +39,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\ItemLinkException;
 
-Session::checkRight("software", UPDATE);
+Session::checkRight(Software::$rightname, UPDATE);
 
 if (
     isset($_POST["add"])

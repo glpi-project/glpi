@@ -35,11 +35,11 @@
 namespace Glpi\Migration;
 
 use CommonDBChild;
-use CommonDBConnexity;
 use CommonDBRelation;
 use CommonDBTM;
 use Config;
 use DBmysql;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\RichText\RichText;
@@ -49,7 +49,6 @@ use RuntimeException;
 use Throwable;
 
 use function Safe\json_decode;
-use function Safe\preg_replace;
 use function Safe\strtotime;
 
 abstract class AbstractPluginMigration
@@ -481,84 +480,6 @@ abstract class AbstractPluginMigration
     }
 
     /**
-     * Copy the polymorphic relations related to the given source item and attach them to the given target item.
-     *
-     * @param class-string<CommonDBTM> $source_itemtype
-     * @param int $source_items_id
-     * @param class-string<CommonDBTM> $target_itemtype
-     * @param int $target_items_id
-     */
-    final protected function copyPolymorphicConnexityItems(
-        string $source_itemtype,
-        int $source_items_id,
-        string $target_itemtype,
-        int $target_items_id
-    ): void {
-        // TODO Deprecate this in GLPI 12.0.
-
-        $polymorphic_column_iterator = $this->db->request(
-            [
-                'SELECT' => [
-                    'table_name AS TABLE_NAME',
-                    'column_name AS COLUMN_NAME',
-                ],
-                'FROM'   => 'information_schema.columns',
-                'WHERE'  => [
-                    'table_schema' => $this->db->dbdefault,
-                    'table_name'   => ['LIKE', 'glpi\_%'],
-                    'OR' => [
-                        ['column_name'  => 'items_id'],
-                        ['column_name'  => ['LIKE', 'items_id_%']],
-                    ],
-                ],
-                'ORDER'  => 'TABLE_NAME',
-            ]
-        );
-
-        foreach ($polymorphic_column_iterator as $polymorphic_column_data) {
-            $table = $polymorphic_column_data['TABLE_NAME'];
-            $items_id_field = $polymorphic_column_data['COLUMN_NAME'];
-            $itemtype_field = preg_replace('/^items_id/', 'itemtype', $items_id_field);
-
-            $relation_itemtype = \getItemTypeForTable($table);
-            if (!is_a($relation_itemtype, CommonDBConnexity::class, true)) {
-                // Not a relation class.
-                continue;
-            }
-
-            if (!$this->db->fieldExists($table, $itemtype_field)) {
-                // The `items_id` field exists but the `itemtype` field does not exist.
-                // It is not a polymorphic relation.
-                continue;
-            }
-
-            $this->copyItems(
-                $relation_itemtype,
-                where: [
-                    $itemtype_field => $source_itemtype,
-                    $items_id_field => $source_items_id,
-                ],
-                replacements: [
-                    [
-                        'field' => $itemtype_field,
-                        'from'  => $source_itemtype,
-                        'to'    => $target_itemtype,
-                    ],
-                    [
-                        'field' => $items_id_field,
-                        'from'  => $source_items_id,
-                        'to'    => $target_items_id,
-                    ],
-                ],
-                // Disable unicity checks when copying connexity items.
-                // These check may fail considering the source item and the copied item are doubles,
-                // but as the source item will no longer be used, it should not be considered as an issue.
-                disable_unicity_check: true,
-            );
-        }
-    }
-
-    /**
      * Update references to the given source itemtype and attach them to the given target itemtype.
      *
      * @param string $source_itemtype
@@ -691,8 +612,8 @@ abstract class AbstractPluginMigration
                         $items_id_field => $source_items_id,
                     ]
                 );
-            } catch (RuntimeException $e) {
-                if (!str_contains($e->getMessage(), '(1062)')) {
+            } catch (StatementException $e) {
+                if ($e->getCode() !== 1062) {
                     throw $e;
                 }
                 // Bulk update failed: fall back to row-by-row to only remove conflicting entries.
@@ -714,8 +635,8 @@ abstract class AbstractPluginMigration
                             ],
                             where: ['id' => $source_row['id']]
                         );
-                    } catch (RuntimeException $inner_e) {
-                        if (!str_contains($inner_e->getMessage(), '(1062)')) {
+                    } catch (StatementException $inner_e) {
+                        if ($inner_e->getCode() !== 1062) {
                             throw $inner_e;
                         }
                         $this->db->delete($table, ['id' => $source_row['id']]);
@@ -785,6 +706,14 @@ abstract class AbstractPluginMigration
         }
 
         return $this->target_items_mapping[$source_itemtype];
+    }
+
+    /**
+     * Add a message to the result object.
+     */
+    final public function addMessageToResult(MessageType $type, string $message): void
+    {
+        $this->result->addMessage($type, $message);
     }
 
     /**

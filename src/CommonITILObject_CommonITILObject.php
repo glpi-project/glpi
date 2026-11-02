@@ -74,8 +74,12 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         $links = static::getLinkedTo(static::$itemtype_1, $input[static::$items_id_1]);
         if (count($links)) {
             foreach ($links as $link) {
-                // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed
-                if ($link['items_id'] === $input[static::$items_id_1] || $link['items_id'] === $input[static::$items_id_2]) {
+                // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed.
+                // Compare both itemtype and items_id so that different itemtypes sharing the same id are not seen as duplicates.
+                if (
+                    ($link['itemtype'] === static::$itemtype_1 && $link['items_id'] === $input[static::$items_id_1])
+                    || ($link['itemtype'] === static::$itemtype_2 && $link['items_id'] === $input[static::$items_id_2])
+                ) {
                     if ((int) $link['link'] === self::LINK_TO && (int) $input['link'] === self::DUPLICATE_WITH) {
                         $link_item = getItemForItemtype($link['link_class']);
                         $link_item->delete(['id' => $link['id']]);
@@ -137,6 +141,62 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
     {
         switch ($ma->getAction()) {
+            case 'unlink':
+                $input = $ma->getInput();
+                $source_itemtype = $input['source_itemtype'] ?? '';
+                $source_items_id = (int) ($input['source_items_id'] ?? 0);
+
+                if (!is_string($source_itemtype) || !is_a($source_itemtype, CommonITILObject::class, true)) {
+                    foreach ($ids as $id) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                    }
+                    return;
+                }
+
+                $link_class = self::getLinkClass($source_itemtype, $item::class);
+
+                if ($link_class === null || $source_items_id <= 0) {
+                    foreach ($ids as $id) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                    }
+                    return;
+                }
+
+                $link = getItemForItemtype($link_class);
+                if ($link === false) {
+                    foreach ($ids as $id) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                    }
+                    return;
+                }
+
+                $source_fk = $source_itemtype::getForeignKeyField();
+                $target_fk = $item::getForeignKeyField();
+
+                foreach ($ids as $id) {
+                    $criteria = [
+                        $source_fk => $source_items_id,
+                        $target_fk => $id,
+                    ];
+                    if ($link->getFromDBByCrit($criteria)) {
+                        if ($link->can($link->getID(), DELETE)) {
+                            if ($link->delete(['id' => $link->getID()])) {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        } else {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
+                        }
+                    } else {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
+                    }
+                }
+                return;
+
             case 'add':
                 $input = $ma->getInput();
 
@@ -436,7 +496,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
             return htmlescape(NOT_AVAILABLE);
         }
 
-        $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';
+        $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip" aria-hidden="true"></i>%2$s';
 
         $link_type = $link_types[$value];
         $resolved_value = $inverted && isset($link_type['inverse']) ? $link_types[$link_type['inverse']] : $link_type;

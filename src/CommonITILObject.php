@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
@@ -613,6 +614,34 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Resolve the entity to use for a new item created from an asset (via the
+     * "_add_fromitem"/"itemtype"/"items_id" form options), provided the
+     * current user has access to that entity.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return int|null The asset entity, or null if it cannot be determined or is not accessible.
+     */
+    protected function getEntitiesIdFromAddFromItemOptions(array $options): ?int
+    {
+        if (
+            !isset($options['_add_fromitem'], $options['itemtype'])
+            || !is_a($options['itemtype'], CommonDBTM::class, true)
+        ) {
+            return null;
+        }
+
+        $item = new $options['itemtype']();
+        $item->getFromDB($options['items_id'][$options['itemtype']][0]);
+
+        if (!Session::haveAccessToEntity($item->fields['entities_id'])) {
+            return null;
+        }
+
+        return $item->fields['entities_id'];
+    }
+
+    /**
      * @param $ID
      * @param $options   array
      **/
@@ -622,9 +651,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return false;
         }
 
+        $entities_id = $this->getEntitiesIdFromAddFromItemOptions($options);
+        if ($entities_id !== null) {
+            $options['entities_id'] = $entities_id;
+        }
+
         $this->restoreInputAndDefaults($ID, $options);
 
-        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
+        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->can($this->getID(), UPDATE));
 
         if ($ID && in_array($this->fields['status'], static::getClosedStatusArray())) {
             $canupdate = false;
@@ -726,37 +760,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ticket->getEmpty();
         if (in_array(static::class, [Change::class, Problem::class]) && $tickets_id) {
             $ticket->getFromDB($tickets_id);
-
-            // copy fields from original ticket, only when fields are not already set by the user (contained in _saved array)
-            $fields = [
-                'content',
-                'name',
-                'impact',
-                'urgency',
-                'priority',
-                'time_to_resolve',
-                'entities_id',
-            ];
-            foreach ($fields as $field) {
-                if (!isset($options['_saved'][$field])) {
-                    $options[$field] = $ticket->fields[$field];
-                }
-            }
-
-            if (!isset($options['_saved']['itilcategories_id'])) {
-                //page is reloaded on category change, we only want category on the very first load
-                $category = new ITILCategory();
-                $options['itilcategories_id'] = 0;
-                if (
-                    $category->getFromDB($ticket->fields['itilcategories_id'])
-                    && (
-                        ($this instanceof Change && $category->fields['is_change'])
-                        || ($this instanceof Problem && $category->fields['is_problem'])
-                    )
-                ) {
-                    $options['itilcategories_id'] = $ticket->fields['itilcategories_id'];
-                }
-            }
+            $this->setPredefinedFieldsFromITILObject($ticket, $options);
         }
 
         // check original problem for change
@@ -765,18 +769,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $problem->getEmpty();
         if ($this instanceof Change && $problems_id) {
             $problem->getFromDB($problems_id);
-
-            $options['content']             = $problem->fields['content'];
-            $options['name']                = $problem->fields['name'];
-            $options['impact']              = $problem->fields['impact'];
-            $options['urgency']             = $problem->fields['urgency'];
-            $options['priority']            = $problem->fields['priority'];
-            if (isset($options['problems_id'])) {
-                //page is reloaded on category change, we only want category on the very first load
-                $options['itilcategories_id'] = $problem->fields['itilcategories_id'];
-            }
-            $options['time_to_resolve']     = $problem->fields['time_to_resolve'];
-            $options['entities_id']         = $problem->fields['entities_id'];
+            $this->setPredefinedFieldsFromITILObject($problem, $options);
         }
 
         // Store predefined fields to be able not to take into account on change template
@@ -785,6 +778,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if ($this->isNewItem()) {
             if (count($tt->predefined)) {
+                // apply predefined fields
                 foreach ($tt->predefined as $predeffield => $predefvalue) {
                     if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
                         // Is always default value : not set
@@ -809,6 +803,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             || ($problems_id != null
                                 && $options[$predeffield] == $problem->fields[$predeffield])
                         ) {
+                            // predefined fields _olas_id_tto, _olas_id_ttr should be merged in _olas_id
+                            if (in_array($predeffield, ['_olas_id_tto', '_olas_id_ttr'])) {
+                                $to_merge = is_array($predefvalue) ? $predefvalue : [$predefvalue];
+                                $options['_olas_id'] = array_merge($options['_olas_id'] ?? [], $to_merge);
+                                $predefined_fields['_olas_id'] = array_merge($predefined_fields['_olas_id'] ?? [], $to_merge);
+                                $this->fields['_olas_id']      = array_merge($this->fields['_olas_id'] ?? [], $to_merge);
+
+                                continue;
+                            }
+
                             $options[$predeffield]           = $predefvalue;
                             $predefined_fields[$predeffield] = $predefvalue;
                             $this->fields[$predeffield]      = $predefvalue;
@@ -871,6 +875,48 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return $predefined_fields;
     }
 
+    /**
+     *  Override current option values if we transform a ticket (form change and problem) or a problem (for change)
+     *  override values in options with field values from orignal item.
+     *  Handle reload when setting category.
+     *
+     * @param CommonITILObject $item, the original item we're creating from
+     * @param array<mixed> $options The current options array (PASSED BY REFERENCE)
+     */
+    protected function setPredefinedFieldsFromITILObject(CommonITILObject $item, array &$options): void
+    {
+        // copy fields from original ticket, only when fields are not already set by the user (contained in _saved array)
+        $fields = [
+            'content',
+            'name',
+            'impact',
+            'urgency',
+            'priority',
+            'time_to_resolve',
+            'entities_id',
+            '_olas_id',
+        ];
+        foreach ($fields as $field) {
+            if (!isset($options['_saved'][$field]) && isset($item->fields[$field])) {
+                $options[$field] = $item->fields[$field];
+            }
+        }
+
+        if (!isset($options['_saved']['itilcategories_id'])) {
+            //page is reloaded on category change, we only want category on the very first load
+            $category = new ITILCategory();
+            $options['itilcategories_id'] = 0;
+            if (
+                $category->getFromDB($item->fields['itilcategories_id'])
+                && (
+                    ($this instanceof Change && $category->fields['is_change'])
+                    || ($this instanceof Problem && $category->fields['is_problem'])
+                )
+            ) {
+                $options['itilcategories_id'] = $item->fields['itilcategories_id'];
+            }
+        }
+    }
 
     /**
      * Retrieve all possible entities for an itilobject posted data.
@@ -1269,7 +1315,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    // FIXME add params typehint in GLPI 11.0
     public function isGroup($type, $groups_id): bool
     {
         if (isset($this->groups[$type])) {
@@ -1322,9 +1367,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
 
     /**
-     * get groups linked to a object
+     * Get linked groups
      *
-     * @param int $type type to search (see constants)
+     * @param int $type e.g.CommonITILActor::REQUESTER, etc
      *
      * @return array
      **/
@@ -1499,7 +1544,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         /// TODO own_ticket -> own_itilobject
         if ($type == CommonITILActor::ASSIGN) {
             if (
-                Session::haveRight("ticket", Ticket::OWN)
+                Session::haveRight(Ticket::$rightname, Ticket::OWN)
                 && $_SESSION['glpiset_default_tech']
             ) {
                 return Session::getLoginUserID();
@@ -1556,7 +1601,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return countElementsInTable(
             [$itemtable, $linktable],
             [
-                "$linktable.$itemfk"    => new QueryExpression(DBmysql::quoteName("$itemtable.id")),
+                "$linktable.$itemfk"    => new QueryIdentifier("$itemtable.id"),
                 "$linktable.$field"     => $id,
                 "$linktable.type"       => $role,
                 "$itemtable.is_deleted" => 0,
@@ -1751,7 +1796,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'NOT' => [$this->getTable() . '.solvedate' => null],
                         new QueryExpression(
                             QueryFunction::dateAdd(
-                                date: static::getTable() . '.solvedate',
+                                date: new QueryIdentifier(static::getTable() . '.solvedate'),
                                 interval: $days,
                                 interval_unit: 'DAY'
                             ) . ' > ' . QueryFunction::now()
@@ -1812,7 +1857,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             // Closed tickets
             || in_array($this->fields['status'], static::getClosedStatusArray()))
         ) {
-            $allowed_fields                    = ['id'];
+            $allowed_fields                    = ['id', '_olas_id_ttr', '_olas_id_tto'];
             $check_allowed_fields_for_template = true;
 
             if (in_array($this->fields['status'], static::getClosedStatusArray())) {
@@ -1856,7 +1901,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
 
                 // Can only update initial fields if no followup or task already added
-                if ($this->canUpdateItem()) {
+                if ($this->can($this->getID(), UPDATE)) {
                     $allowed_fields[] = 'content';
                     $allowed_fields[] = 'urgency';
                     $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
@@ -1893,14 +1938,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        // If category, entity, or type fields are not updated, the template is not changed.
-        if (
-            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
-            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
-            && (empty($input['type']) || $this->fields['type'] == $input['type'])
-        ) {
-            return $input;
-        }
+        [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
 
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
@@ -1910,9 +1948,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return $input;
         }
 
-        $tpl_class = static::getTemplateClass();
-        $input[$tpl_class::getForeignKeyField()] = $tt->getID();
-        $input[static::getTemplateFormFieldName()] = $tt->getID();
+        // If category, entity, or type fields are updated, the template used by the
+        // item may have changed
+        $update_template = !(
+            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
+            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
+            && (empty($input['type']) || $this->fields['type'] == $input['type'])
+        );
+
+        if ($update_template) {
+            $tpl_class = static::getTemplateClass();
+            $input[$tpl_class::getForeignKeyField()] = $tt->getID();
+            $input[static::getTemplateFormFieldName()] = $tt->getID();
+        }
 
         if (count($tt->mandatory)) {
             $mandatory_missing = [];
@@ -2086,7 +2134,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
         if (isset($input['_itil_requester'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_requester']['_type'])) {
                 $input['_itil_requester'] = [
                     'type'                            => CommonITILActor::REQUESTER,
@@ -2157,7 +2205,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (isset($input['_itil_observer'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_observer']['_type'])) {
                 $input['_itil_observer'] = [
                     'type'                            => CommonITILActor::OBSERVER,
@@ -2227,7 +2275,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (isset($input['_itil_assign'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_assign']['_type'])) {
                 $input['_itil_assign'] = [
                     'type'                            => CommonITILActor::ASSIGN,
@@ -2381,9 +2429,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             (
                 isset($this->input["status"])
                 && $this->input["status"] != self::WAITING
+                && !in_array($this->input["status"], $solvedclosed)
             ) || (
                 isset($input["status"])
                 && $input["status"] != self::WAITING
+                && !in_array($input["status"], $solvedclosed)
             )
         ) {
             PendingReason_Item::deleteForItem($this);
@@ -2479,6 +2529,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             unset($this->oldvalues['date']);
         }
 
+        // do not update closedate fields if not changed
         if (
             (($key = array_search('closedate', $this->updates)) !== false)
             && isset($this->oldvalues['closedate'])
@@ -2488,6 +2539,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             unset($this->oldvalues['closedate']);
         }
 
+        // do not update time_to_resolve if date is not changed
         if (
             (($key = array_search('time_to_resolve', $this->updates)) !== false)
             && isset($this->oldvalues['time_to_resolve'])
@@ -2497,6 +2549,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             unset($this->oldvalues['time_to_resolve']);
         }
 
+        // do not update solvedate if date is not changed
         if (
             (($key = array_search('solvedate', $this->updates)) !== false)
             && isset($this->oldvalues['solvedate'])
@@ -2506,6 +2559,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             unset($this->oldvalues['solvedate']);
         }
 
+        // status update
         if (isset($this->input["status"])) {
             // status changed to solved
             if (
@@ -2544,7 +2598,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // check dates
 
-        // check time_to_resolve (SLA)
+        // unset date and time_to_resolve time_to_resolve is before 'date' time.
         if (
             (in_array("date", $this->updates) || in_array("time_to_resolve", $this->updates))
             && !is_null($this->fields["time_to_resolve"])
@@ -2563,32 +2617,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        // check internal_time_to_resolve (OLA)
-        if (
-            (in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
-            && !is_null($this->fields["internal_time_to_resolve"])
-        ) { // Date set
-            if ($this->fields["internal_time_to_resolve"] < $this->fields["date"]) {
-                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
-
-                if (($key = array_search('date', $this->updates)) !== false) {
-                    unset($this->updates[$key]);
-                    unset($this->oldvalues['date']);
-                }
-                if (($key = array_search('internal_time_to_resolve', $this->updates)) !== false) {
-                    unset($this->updates[$key]);
-                    unset($this->oldvalues['internal_time_to_resolve']);
-                }
-            }
-        }
-
-        // Status close: check dates
+        // Unset closedate if before solvedate
+        // unset 'date' and unset 'closedate' if closedate is before 'date'
         if (
             in_array($this->fields["status"], static::getClosedStatusArray())
             && (in_array("date", $this->updates) || in_array("closedate", $this->updates))
         ) {
-            // Invalid dates : no change
-            // closedate must be > solvedate
+            // Unset closedate if before solvedate
             if ($this->fields["closedate"] < $this->fields["solvedate"]) {
                 Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
 
@@ -2598,7 +2633,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
             }
 
-            // closedate must be > create date
+            // unset 'date' and unset 'closedate' if closedate is before 'date'
             if ($this->fields["closedate"] < $this->fields["date"]) {
                 Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
                 if (($key = array_search('date', $this->updates)) !== false) {
@@ -2612,6 +2647,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
+        // unset 'status' if unchanged
         if (
             (($key = array_search('status', $this->updates)) !== false)
             && $this->oldvalues['status'] == $this->fields['status']
@@ -2620,7 +2656,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             unset($this->oldvalues['status']);
         }
 
-        // Status solved: check dates
+        // unset solvedate and date if solvedate is before 'date' time.
         if (
             in_array($this->fields["status"], static::getSolvedStatusArray())
             && (in_array("date", $this->updates) || in_array("solvedate", $this->updates))
@@ -2641,7 +2677,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        // Manage come back to waiting state
+        // OLA / SLA tto/ttr computations
+        // if
+        // - begin_waiting_date is set
+        // - and status is updated
+        // - and previous status was 'waiting'
+        // - and
+        //      - status is switching from any 'solved' status to any 'closed' status
+        //      - or status is switching from any 'closed' status to any 'not solved' status
         if (
             !is_null($this->fields['begin_waiting_date'])
             && ($key = array_search('status', $this->updates)) !== false
@@ -2662,7 +2705,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             // Compute ticket waiting time use calendar if exists
             $calendar     = new Calendar();
             $calendars_id = $this->getCalendar();
-            $delay_time   = 0;
 
             // Compute ticket waiting time use calendar if exists
             // Using calendar
@@ -2680,8 +2722,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
 
             // SLA case: compute sla_ttr duration
+            // associated sla
             if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
                 $sla = new SLA();
+                // Compute begin_waiting_date
                 if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
                     $sla->setTicketCalendar($calendars_id);
                     $delay_time_sla  = $sla->getActiveTimeBetween(
@@ -2702,7 +2746,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if ($this instanceof Ticket) { // TODO: rewrite with polymorphism...
                     $sla->addLevelToDo($this);
                 }
-            } else {
+            } else { // sla set by date
                 // Using calendar
                 if (
                     ($calendars_id > 0)
@@ -2729,58 +2773,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
             }
 
-            // OLA case: compute ola_ttr duration
-            if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
-                $ola = new OLA();
-                if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
-                    $ola->setTicketCalendar($calendars_id);
-                    $delay_time_ola  = $ola->getActiveTimeBetween(
-                        $this->fields['begin_waiting_date'],
-                        $_SESSION["glpi_currenttime"]
-                    );
-                    $this->updates[]                      = "ola_waiting_duration";
-                    $this->fields["ola_waiting_duration"] += $delay_time_ola;
-                }
-
-                // Compute new internal_time_to_resolve
-                $this->updates[]                          = "internal_time_to_resolve";
-                $this->fields['internal_time_to_resolve'] = $ola->computeDate(
-                    $this->fields['ola_ttr_begin_date'],
-                    $this->fields["ola_waiting_duration"]
-                );
-                // Add current level to do
-                if ($this instanceof Ticket) { // TODO: rewrite with polymorphism...
-                    $ola->addLevelToDo($this, $this->fields["olalevels_id_ttr"]);
-                }
-            } elseif (array_key_exists("internal_time_to_resolve", $this->fields)) {
-                // Change doesn't have internal_time_to_resolve
-                // Using calendar
-                if (
-                    ($calendars_id > 0)
-                    && $calendar->getFromDB($calendars_id)
-                    && $calendar->hasAWorkingDay()
-                ) {
-                    if ((int) $this->fields['internal_time_to_resolve'] > 0) {
-                        // compute new internal_time_to_resolve using calendar
-                        $this->updates[]                          = "internal_time_to_resolve";
-                        $this->fields['internal_time_to_resolve'] = $calendar->computeEndDate(
-                            $this->fields['internal_time_to_resolve'],
-                            $delay_time
-                        );
-                    }
-                } else { // Not calendar defined
-                    if ((int) $this->fields['internal_time_to_resolve'] > 0) {
-                        // compute new internal_time_to_resolve: no calendar so add computed delay_time
-                        $this->updates[]                          = "internal_time_to_resolve";
-                        $this->fields['internal_time_to_resolve'] = date(
-                            'Y-m-d H:i:s',
-                            $delay_time
-                            + strtotime($this->fields['internal_time_to_resolve'])
-                        );
-                    }
-                }
-            }
-
+            // --- OLA case is handled in Ticket::recomputeOlas
             $this->updates[]                   = "waiting_duration";
             $this->fields["waiting_duration"] += $delay_time;
 
@@ -2790,6 +2783,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // Set begin waiting date if needed
+        // handle levels
         if (
             (($key = array_search('status', $this->updates)) !== false)
             && (($this->fields['status'] == self::WAITING)
@@ -2804,9 +2798,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     SLA::deleteLevelsToDo($this);
                 }
 
-                if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
-                    OLA::deleteLevelsToDo($this);
-                }
+                OLA::deleteLevelsToDo($this);
             }
         }
 
@@ -3000,6 +2992,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $input = $this->computeDefaultValuesForAdd($input);
 
+        // split OLA ids by type to allow mandatory check
+        [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
+
         // Do not check mandatory on auto import (mailgates)
         $key = static::getTemplateFormFieldName();
         if (!isset($input['_auto_import'])) {
@@ -3071,20 +3066,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                             if (static::class === Ticket::class) {
                                 // For time_to_resolve and time_to_own : check also slas
-                                // For internal_time_to_resolve and internal_time_to_own : check also olas
                                 foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                                     [$dateField, $slaField] = SLA::getFieldNames($slmType);
                                     if (
                                         ($key == $dateField)
                                         && isset($input[$slaField]) && ($input[$slaField] > 0)
-                                        && isset($mandatory_missing[$dateField])
-                                    ) {
-                                        unset($mandatory_missing[$dateField]);
-                                    }
-                                    [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                                    if (
-                                        ($key == $dateField)
-                                        && isset($input[$olaField]) && ($input[$olaField] > 0)
                                         && isset($mandatory_missing[$dateField])
                                     ) {
                                         unset($mandatory_missing[$dateField]);
@@ -4167,10 +4153,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 || Session::haveRight(Problem::$rightname, UPDATE);
             if ($can_update_itilobject) {
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                    = "<i class='ti ti-link'></i>"
+                    = "<i class='ti ti-link' aria-hidden='true'></i>"
                     . _sx('button', 'Link ITIL Object');
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                    = "<i class='ti ti-unlink'></i>"
+                    = "<i class='ti ti-unlink' aria-hidden='true'></i>"
                     . _sx('button', 'Unlink ITIL Object');
             }
         }
@@ -4727,7 +4713,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'SELECT' => 'id',
             'FROM'   => ITILSolution::getTable(),
             'WHERE'  => [
-                ITILSolution::getTable() . '.items_id' => new QueryExpression($DB::quoteName('REFTABLE.id')),
+                ITILSolution::getTable() . '.items_id' => new QueryIdentifier('REFTABLE.id'),
                 ITILSolution::getTable() . '.itemtype' => static::class,
             ],
             'ORDER'  => ITILSolution::getTable() . '.id DESC',
@@ -4747,7 +4733,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 'jointype'  => 'itemtype_item',
                 // Get only last created solution
                 'condition' => [
-                    'NEWTABLE.id'  => new QueryExpression($last_solution_condition->getQuery()),
+                    'NEWTABLE.id'  => new QueryExpression($last_solution_condition->getQuery(), values: $last_solution_condition->getParams()),
                 ],
             ],
         ];
@@ -4763,7 +4749,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
-            'computation'        => QueryFunction::max('TABLE.date_creation'),
+            'computation'        => QueryFunction::max(new QueryIdentifier('TABLE.date_creation')),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
         ];
 
@@ -5129,7 +5115,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @param string $type
+     * Generate an 'if' QueryExpression condition to match ticket with exceeded OLA/SLA TTO/TTR
+     *
+     * internal_time_to_own & internal_time_to_resolve fields are removed from ticket but can still be used here.
+     *
+     * @param string $type ticket field to match ('time_to_own', 'internal_time_to_own', 'time_to_resolve', 'internal_time_to_resolve')
      * @param string $table
      * @return QueryExpression|void
      */
@@ -5138,7 +5128,24 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         global $DB;
 
         switch ($type) {
+            // OLA TTO/TTR uses the same logic, we rely on item_ola datas
             case 'internal_time_to_own':
+                $ola_type_to_filter = SLM::TTO;
+                // no break
+            case 'internal_time_to_resolve':
+                $ola_type_to_filter ??= SLM::TTR;
+
+                // QueryFunction::max is used to match a late ola amongst associated OLAs
+                return QueryFunction::max(
+                    QueryFunction::if(
+                        condition: [
+                            "{$table}.ola_type" => $ola_type_to_filter,
+                            "$table.is_late" => 1,
+                        ],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
+                    )
+                );
             case 'time_to_own':
                 return QueryFunction::if(
                     condition: [
@@ -5148,7 +5155,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             [
                                 'AND' => [
                                     'NOT' => ["$table.takeintoaccountdate" => null],
-                                    "$table.takeintoaccountdate" => ['>', new QueryExpression($DB::quoteName("{$table}.{$type}"))],
+                                    "$table.takeintoaccountdate" => ['>', new QueryIdentifier("{$table}.{$type}")],
                                 ],
                             ],
                             [
@@ -5157,8 +5164,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                     "$table.takeintoaccount_delay_stat" => ['>',
                                         QueryFunction::timestampdiff(
                                             unit: 'SECOND',
-                                            expression1: "$table.date",
-                                            expression2: "{$table}.{$type}"
+                                            expression1: new QueryIdentifier("$table.date"),
+                                            expression2: new QueryIdentifier("{$table}.{$type}")
                                         ),
                                     ],
                                 ],
@@ -5175,14 +5182,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     false_expression: new QueryExpression('0')
                 );
 
-            case 'internal_time_to_resolve':
             case 'time_to_resolve':
                 return QueryFunction::if(
                     condition: [
                         'NOT' => ["{$table}.{$type}" => null],
                         "$table.status" => ['<>', self::WAITING],
                         'OR' => [
-                            "$table.solvedate" => ['>', new QueryExpression($DB::quoteName("$table.$type"))],
+                            "$table.solvedate" => ['>', new QueryIdentifier("$table.$type")],
                             'AND' => [
                                 "$table.solvedate" => null,
                                 "$table.$type" => ['<', QueryFunction::now()],
@@ -5198,16 +5204,29 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get status icon
      *
-     * @param int $status
+     * @param int  $status
+     * @param bool $with_name Expose the status name as a visually hidden text. Pass `false` when
+     *                        the caller already displays that name next to the icon, otherwise
+     *                        assistive technologies announce it twice.
      * @return string
      *
      * @since 9.3
      */
-    public static function getStatusIcon($status)
+    public static function getStatusIcon($status, bool $with_name = true)
     {
         $class = htmlescape(static::getStatusClass($status));
         $label = htmlescape(static::getStatus($status));
-        return "<i class='$class me-1' title='$label' data-bs-toggle='tooltip'></i>";
+        // An `<i>` maps to `role=generic`, which cannot carry an accessible name: the status is
+        // exposed through a visually hidden text instead.
+        $name = $with_name
+            ? sprintf('<span class="visually-hidden">%s</span>', $label)
+            : '';
+        return sprintf(
+            '<span><i class="%1$s me-1" title="%2$s" data-bs-toggle="tooltip" aria-hidden="true"></i>%3$s</span>',
+            $class,
+            $label,
+            $name
+        );
     }
 
     /**
@@ -5672,25 +5691,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function showStatsDates()
     {
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</th></tr>";
+        $is_solved = !$this->isNotSolved();
+        $is_closed = in_array($this->fields['status'], static::getClosedStatusArray());
 
-        echo "<tr class='tab_bg_2'><td>" . __s('Opening date') . "</td>";
-        echo "<td>" . htmlescape(Html::convDateTime($this->fields['date'])) . "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __s('Time to resolve') . "</td>";
-        echo "<td>" . htmlescape(Html::convDateTime($this->fields['time_to_resolve'])) . "</td></tr>";
-
-        if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Resolution date') . "</td>";
-            echo "<td>" . htmlescape(Html::convDateTime($this->fields['solvedate'])) . "</td></tr>";
-        }
-
-        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Closing date') . "</td>";
-            echo "<td>" . htmlescape(Html::convDateTime($this->fields['closedate'])) . "</td></tr>";
-        }
-        echo "</table>";
+        // Row presence depends on the status; its value may be empty.
+        TemplateRenderer::getInstance()->display('components/itilobject/stats_dates.html.twig', [
+            'opening_date'    => Html::convDateTime($this->fields['date']),
+            'time_to_resolve' => Html::convDateTime($this->fields['time_to_resolve']),
+            'is_solved'       => $is_solved,
+            'solve_date'      => $is_solved ? Html::convDateTime($this->fields['solvedate']) : null,
+            'is_closed'       => $is_closed,
+            'close_date'      => $is_closed ? Html::convDateTime($this->fields['closedate']) : null,
+        ]);
     }
 
     /**
@@ -5698,51 +5710,27 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function showStatsTimes()
     {
-        echo "<div class='dates_timelines'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . _sn('Time', 'Times', Session::getPluralNumber()) . "</th></tr>";
+        $has_takeintoaccount = isset($this->fields['takeintoaccount_delay_stat']);
+        $is_solved           = !$this->isNotSolved();
+        $is_closed           = in_array($this->fields['status'], static::getClosedStatusArray());
 
-        if (isset($this->fields['takeintoaccount_delay_stat'])) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Take into account') . "</td><td>";
-            if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
-
-            if ($this->fields['solve_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
-            if ($this->fields['close_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        echo "<tr class='tab_bg_2'><td>" . __s('Pending') . "</td><td>";
-        if ($this->fields['waiting_duration'] > 0) {
-            echo htmlescape(Html::timestampToString($this->fields['waiting_duration'], false, false));
-        } else {
-            echo '&nbsp;';
-        }
-        echo "</td></tr>";
-
-        echo "</table>";
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/itilobject/stats_times.html.twig', [
+            'has_takeintoaccount' => $has_takeintoaccount,
+            'takeintoaccount'     => $has_takeintoaccount && $this->fields['takeintoaccount_delay_stat'] > 0
+                ? Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false)
+                : null,
+            'is_solved'           => $is_solved,
+            'resolution'          => $is_solved
+                ? Html::timestampToString($this->fields['solve_delay_stat'], false, false)
+                : null,
+            'is_closed'           => $is_closed,
+            'closure'             => $is_closed
+                ? Html::timestampToString($this->fields['close_delay_stat'], true, false)
+                : null,
+            'pending'             => $this->fields['waiting_duration'] > 0
+                ? Html::timestampToString($this->fields['waiting_duration'], false, false)
+                : null,
+        ]);
     }
 
 
@@ -6616,7 +6604,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $candelete   = static::canDelete();
         $canupdate   = Session::haveRight(static::$rightname, UPDATE);
-        $showprivate = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
+        $showprivate = Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE);
         $align       = "class='left'";
         $align_desc  = "class='left'";
 
@@ -6640,7 +6628,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             // Second column TITLE
             $second_column = "<span class='b'>" . htmlescape($item->getName()) . "</span>&nbsp;";
-            if ($item->canViewItem()) {
+            if ($item->can($item->getID(), READ)) {
                 $second_column  = sprintf(
                     __s('%1$s (%2$s)'),
                     "<a id='" . htmlescape($item::class . $item->getID() . $rand) . "' href=\"" . htmlescape($item->getLinkURL()) . "\">$second_column</a>",
@@ -6903,7 +6891,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 $solvedelay_column = "";
                 // Show only for solved tickets
-                if ($item->fields['solve_delay_stat'] > 0) {
+                if (!empty($item->fields['solvedate'])) {
                     $solvedelay_column = htmlescape(Html::timestampToString($item->fields['solve_delay_stat']));
                 }
                 echo $output::showItem($solvedelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
@@ -7048,7 +7036,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'ticket_stats' => false,
         ], $params);
 
-        $showprivate_fup = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
+        $showprivate_fup = Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE);
         $showprivate_task = [];
         $rand = mt_rand();
         // Cache of entity names
@@ -7081,7 +7069,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
 
             $name = '<span class="fw-bold">' . htmlescape($item->getName()) . '</span>';
-            if ($item->canViewItem()) {
+            if ($item->can($item->getID(), READ)) {
                 $name  = sprintf(
                     __s('%1$s (%2$s)'),
                     '<a id="' . htmlescape($name_link_id) . '" href="' . htmlescape($item->getLinkURL()) . '">' . $name . '</a><br>',
@@ -7431,6 +7419,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
             'item'          => $fup,
             'hide_in_menu'  => !$canadd_fup,
+            'lazy_load'     => true,
         ];
         $itemtypes['task'] = [
             'type'          => 'ITILTask',
@@ -7441,6 +7430,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
             'item'          => $task,
             'hide_in_menu'  => !$canadd_task,
+            'lazy_load'     => true,
         ];
         $itemtypes['solution'] = [
             'type'          => 'ITILSolution',
@@ -7451,6 +7441,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
             'item'          => new ITILSolution(),
             'hide_in_menu'  => !$canadd_solution,
+            'lazy_load'     => true,
         ];
         $itemtypes['document'] = [
             'type'          => 'Document_Item',
@@ -7472,6 +7463,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
                 'hide_in_menu'  => !$canadd_validation,
+                'lazy_load'     => true,
             ];
         }
 
@@ -7580,7 +7572,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return [];
         }
 
-        if ($params['check_view_rights'] && !$this->canViewItem()) {
+        if ($params['check_view_rights'] && !$this->can($this->getID(), READ)) {
             return [];
         }
 
@@ -7589,13 +7581,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
 
-        $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], static::getClosedStatusArray());
+        $canupdate_parent = $this->can($this->getID(), UPDATE) && !in_array($this->fields['status'], static::getClosedStatusArray());
 
         //checks rights
         $restrict_fup = $restrict_task = [];
         if (
             $params['hide_private_items']
-            || ($params['check_view_rights'] && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE))
+            || ($params['check_view_rights'] && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE))
         ) {
             if (!$params['check_view_rights']) {
                 // notification case, we cannot rely on session
@@ -7667,8 +7659,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $followup->fields = $followup_row;
                 $followup->post_getFromDB();
 
-                if (!$params['check_view_rights'] || $followup->canViewItem()) {
-                    $followup_row['can_edit'] = $followup->canUpdateItem();
+                if (!$params['check_view_rights'] || $followup->can($followup->getID(), READ)) {
+                    $followup_row['can_edit'] = $followup->can($followup->getID(), UPDATE);
                     $followup_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
@@ -7702,12 +7694,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             foreach ($tasks as $tasks_id => $task_row) {
                 // Safer to use a clean object to load our data
+                /** @var CommonITILTask $tltask */
                 $tltask = getItemForItemtype($taskClass);
+                if (($tltask === false)) {
+                    continue;
+                }
+
+                $tltask->setParentItem($this);
                 $tltask->fields = $task_row;
                 $tltask->post_getFromDB();
 
-                if (!$params['check_view_rights'] || $tltask->canViewItem()) {
-                    $task_row['can_edit'] = $tltask->canUpdateItem();
+                if (!$params['check_view_rights'] || $tltask->can($tltask->getID(), READ)) {
+                    $task_row['can_edit'] = $tltask->can($tltask->getID(), UPDATE);
+                    $task_row['can_change_state'] = $tltask->canChangeState();
                     $task_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
@@ -7783,11 +7782,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Safer to use a clean object to load our data
                 /** @var CommonITILValidation $validation */
                 $validation = getItemForItemtype($validation_class);
+                $validation->setParentItem($this);
                 $validation->fields = $validation_row;
                 $validation->post_getFromDB();
 
-                $canedit = $validation_obj->can($validations_id, UPDATE);
-                $cananswer = $validation_obj->canAnswer()
+                // Use $validation (already loaded with this row's data) instead of $validation_obj,
+                // so that can() does not reload it from the DB.
+                $canedit = $validation->can($validations_id, UPDATE);
+                $cananswer = $validation->canAnswer()
                     && $validation_row['status'] == CommonITILValidation::WAITING
                     && !$this->isSolved(true);
                 $user = new User();
@@ -7800,7 +7802,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (is_a($validation_row['itemtype_target'], CommonDBTM::class, true)) {
                     $validation_target = new $validation_row['itemtype_target']();
                     if ($validation_target->getFromDB($validation_row['items_id_target'])) {
-                        $content .= " <i class='ti ti-arrow-right'></i><i class='" . htmlescape($validation_target->getIcon()) . " text-muted me-1'></i>"
+                        $content .= " <i class='ti ti-arrow-right' aria-hidden='true'></i><i class='" . htmlescape($validation_target->getIcon()) . " text-muted me-1'></i>"
                             . $validation_target->getlink();
                     }
                 }
@@ -7870,7 +7872,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Check visibility for private documents
                 if ($params['check_view_rights'] && (bool) $document_item['is_private']) {
                     if (
-                        !Session::haveRight('document', Document_Item::SEEPRIVATE)
+                        !Session::haveRight(Document::$rightname, Document_Item::SEEPRIVATE)
                         && (int) ($document_item['users_id'] ?? 0) !== Session::getLoginUserID()
                     ) {
                         continue;
@@ -7890,7 +7892,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $item['is_private'] = $document_item['is_private'];
 
                 $item['timeline_position'] = $document_item['timeline_position'];
-                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
+                $item['_can_edit'] = $document_obj->can($document_obj->getID(), UPDATE);
                 $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem() && $canupdate_parent;
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
@@ -7940,7 +7942,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (((string) $log_row['field']) !== '') {
                     $content = sprintf(__s("%s: %s"), htmlescape($log_row['field']), $content);
                 }
-                $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
+                $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip' aria-hidden='true'></i>"
+                    . "<span class='visually-hidden'>" . __s("Log entry") . "</span>" . $content;
                 $user_id = 0;
                 // try to extract ID from "user_name" (which was created using User::getNameForLog)
                 if (preg_match('/ \((\d+)\)$/', $log_row["user_name"], $m)) {
@@ -7977,7 +7980,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $pending_reason = $autoreminder_obj->getPendingReason();
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
-                '<i class="ti ti-refresh-alert text-warning me-1"></i>',
+                '<i class="ti ti-refresh-alert text-warning me-1" aria-hidden="true"></i>',
                 htmlescape(ITILReminder::getTypeName(1)),
                 htmlescape($autoreminder_obj->fields['content'] ?? ''),
                 htmlescape($autoreminder_obj->fields['name'])
@@ -8048,7 +8051,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $can_requester = $item->canRequesterUpdateItem();
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/simple_form.html.twig', [
             'item'          => $item,
-            'canupdate'     => (Session::getCurrentInterface() == "central" && $item->canUpdateItem()),
+            'canupdate'     => (Session::getCurrentInterface() == "central" && $item->can($item->getID(), UPDATE)),
             'can_requester' => $can_requester,
         ]);
     }
@@ -8414,7 +8417,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return ITILTemplate|null
      *
      * @since 11.0.2
-     * @TODO Make this method private in GLPI 12.
+     * @TODO Make this method private.
      */
     public function getITILTemplateFromInput(array $input = [], $existing_object = null): ?ITILTemplate
     {
@@ -8793,10 +8796,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             'users_id' => $user_id,
                             'users_id_tech' => $user_id,
                         ];
+
+                        if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
+                            $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
+                        }
                     }
-                }
-                if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
-                    $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
                 }
                 if (!empty($private_task_crit)) {
                     $tasks_crit[] = ['OR' => $private_task_crit];
@@ -9197,19 +9201,22 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         }
                         break;
 
+                        // send approval request to the supervisor of each requester user (User::users_id_supervisor),
+                        // not to requester group managers (see 'requester_supervisor')
                     case 'requester_responsible':
-                        if (isset($input['_users_id_requester'])) {
-                            $requesters = is_array($input['_users_id_requester'])
-                                ? $input['_users_id_requester']
-                                : [$input['_users_id_requester']];
-                            foreach ($requesters as $users_id) {
-                                $user = new User();
-                                if ($user->getFromDB($users_id)) {
-                                    $validations_to_send[] = [
-                                        'itemtype_target' => User::class,
-                                        'items_id_target' => $user->fields['users_id_supervisor'],
-                                    ];
-                                }
+                        // requesters set by input/rule + already set ones (not in input on update)
+                        $requesters = (array) ($input['_users_id_requester'] ?? []);
+                        foreach ($this->getUsers(CommonITILActor::REQUESTER) as $d) {
+                            $requesters[] = $d['users_id'];
+                        }
+                        foreach (array_unique($requesters) as $users_id) {
+                            $user = new User();
+                            // skip requesters without supervisor; a supervisor shared by several requesters is deduplicated below
+                            if ($user->getFromDB($users_id) && $user->fields['users_id_supervisor'] > 0) {
+                                $validations_to_send[] = [
+                                    'itemtype_target' => User::class,
+                                    'items_id_target' => $user->fields['users_id_supervisor'],
+                                ];
                             }
                         }
                         break;
@@ -9388,9 +9395,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
             '_from_object'                    => true,
         ];
-        if ($disable_notifications) {
-            $common_actor_input['_disablenotif'] = true;
-        }
+        // Notifications for added actors are raised once removed actors are deleted
+        $common_actor_input['_disablenotif'] = true;
 
         $actor_itemtypes = [
             User::class,
@@ -9403,6 +9409,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'observer',
         ];
 
+        $added_events = [];
         foreach ($actor_types as $actor_type) {
             $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
 
@@ -9541,7 +9548,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         } else {
                             $actor_id = $actor;
                         }
-                        if (!is_numeric($actor_id)) {
+                        if (!is_numeric($actor_id) && $actor_id !== 'requester_manager') {
                             trigger_error(
                                 sprintf(
                                     'Invalid value "%s" found for additional actor in "%s".',
@@ -9643,13 +9650,44 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             }
 
+            $do_not_compute_status = false;
+            foreach ($added as $actor) {
+                if ($actor['type'] === CommonITILActor::ASSIGN) {
+                    $do_not_compute_status = true;
+                }
+            }
+
+            // Process deleted actors
+            foreach ($actor_itemtypes as $actor_itemtype) {
+                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
+                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
+
+                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
+                    ? $this->input[$actors_deleted_input_key]
+                    : [];
+                foreach ($deleted as $actor) {
+                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+                    if ($do_not_compute_status) {
+                        $actor_obj->delete([
+                            'id' => $actor['id'],
+                            '_do_not_compute_status' => $do_not_compute_status,
+                        ]);
+                    } else {
+                        $actor_obj->delete(['id' => $actor['id']]);
+                    }
+                }
+            }
+
             // Add new actors
             foreach ($added as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-                $actor_obj->add($common_actor_input + $actor + [
+                $actor_added = $actor_obj->add($common_actor_input + $actor + [
                     $actor_obj->getItilObjectForeignKey() => $this->fields['id'],
                     $actor_obj->getActorForeignKey()      => $actor['items_id'],
                 ]);
+                if ($actor_added) {
+                    $added_events[$actor_type . '_' . strtolower($actor['itemtype'])] = true;
+                }
                 if (
                     $actor['type'] === CommonITILActor::ASSIGN
                     && (
@@ -9678,24 +9716,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        // Process deleted actors
-        foreach ($actor_types as $actor_type) {
-            foreach ($actor_itemtypes as $actor_itemtype) {
-                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
-                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
-
-                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
-                    ? $this->input[$actors_deleted_input_key]
-                    : [];
-                foreach ($deleted as $actor) {
-                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-                    $actor_obj->delete(['id' => $actor['id']]);
-                }
-            }
-        }
-
         // We just updated actors, clear any cached data
         $this->clearLazyLoadedActors();
+
+        $item = new static();
+        if (!$disable_notifications && $added_events !== [] && $item->getFromDB($this->getID())) {
+            foreach (array_keys($added_events) as $event) {
+                NotificationEvent::raiseEvent($event, $item);
+            }
+        }
     }
 
 
@@ -9775,36 +9804,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $input['_groups_id_assign'] = $item->fields['groups_id_tech'];
             }
-        }
-
-        return $input;
-    }
-
-    /**
-     * Replay setting auto assign if set in rules engine or by auto_assign_mode
-     * Do not force status if status has been set by rules
-     *
-     * @param array $input
-     *
-     * @return array
-     */
-    protected function assign(array $input)
-    {
-        // FIXME Deprecate this method in GLPI 11.0.
-        if (!in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
-            return $input;
-        }
-
-        if (
-            (
-                $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN)
-                || $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN)
-                || $this->hasValidActorInInput($input, Supplier::class, CommonITILActor::ASSIGN)
-            )
-            && (in_array($input['status'], static::getNewStatusArray()))
-            && !$this->isStatusComputationBlocked($input)
-        ) {
-            $input["status"] = self::ASSIGNED;
         }
 
         return $input;
@@ -10556,10 +10555,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             $select = [];
             if ($itemtype === User::class) {
-                $select = [$link_class::getTable() . '.' . $itemtype::getForeignKeyField(), 'type', 'name', 'realname', 'firstname'];
+                $select = [
+                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(),
+                    $link_class::getTable() . '.id AS linkid',
+                    'type', 'name', 'realname', 'firstname'];
             } else {
                 $select = [
-                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(), 'type', 'name',
+                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(),
+                    $link_class::getTable() . '.id AS linkid',
+                    'type', 'name',
                     new QueryExpression('NULL as realname'),
                     new QueryExpression('NULL as firstname'),
                 ];
@@ -10581,6 +10585,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($it as $data) {
                 $items_id = $data[$itemtype::getForeignKeyField()];
                 $member = [
+                    'linkid'       => $data['linkid'],
                     'itemtype'     => $itemtype,
                     'items_id'     => $items_id,
                     'role'         => $data['type'],
@@ -10845,6 +10850,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $input["content"] = str_replace("\r\n", "\n", $input['content']);
         }
 
+        // Keep category in sync on update, so rules relying only on other
+        // changed fields (e.g. validation acceptance) still see it
+        if (!$this->isNewItem() && !isset($input['itilcategories_id'])) {
+            $input['itilcategories_id'] = $this->fields['itilcategories_id'];
+        }
+
         // Set itil category code
         $cat_id = $input['itilcategories_id'] ?? 0;
         if ($cat_id) {
@@ -10870,18 +10881,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (!$this->isNewItem() && !isset($input['entities_id'])) {
             $input['entities_id'] = $this->fields['entities_id'];
         }
-    }
-
-    /**
-     * @param string $name
-     * @return array{description: string, parameter?: string}
-     */
-    public static function cronInfo($name)
-    {
-        return match ($name) {
-            'createinquest' => ['description' => __('Generation of satisfaction surveys')],
-            default => [],
-        };
     }
 
     /**
@@ -10961,14 +10960,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     "$table.closedate"            => ['>', $max_closedate],
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: "$table.closedate",
+                            date: new QueryIdentifier("$table.closedate"),
                             interval: $delay,
                             interval_unit: 'DAY'
                         ) . ' <= ' . QueryFunction::now()
                     ),
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: "glpi_entities.max_closedate$config_suffix",
+                            date: new QueryIdentifier("glpi_entities.max_closedate$config_suffix"),
                             interval: $duration,
                             interval_unit: 'DAY'
                         ) . ' <= ' . QueryFunction::now()
@@ -11146,7 +11145,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
                     continue;
                 }
-                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->canUpdateItem()) {
+                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->can($this->getID(), UPDATE)) {
                     continue;
                 }
 
@@ -11323,7 +11322,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($usertypes as $k => $t) {
             //handle new input
             if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
-                // FIXME Deprecate these keys in GLPI 11.0.
+                // FIXME Deprecate these keys.
                 $field = $input['_itil_' . $t]['_type'] . 's_id';
                 if (
                     isset($input['_itil_' . $t][$field])
@@ -11413,6 +11412,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if ($condition === RuleCommonITILObject::ONUPDATE) {
             $rules_params['entities_id'] = $entid;
             $changes = [];
+            if (isset($input['entities_id'])) {
+                $changes[] = 'entities_id';
+            }
             foreach ($rule->getCriterias() as $key => $val) {
                 if (array_key_exists($key, $input)) {
                     if (

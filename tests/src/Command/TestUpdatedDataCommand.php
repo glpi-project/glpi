@@ -44,6 +44,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+use function Safe\json_encode;
+
 class TestUpdatedDataCommand extends Command
 {
     protected function configure()
@@ -209,21 +211,6 @@ class TestUpdatedDataCommand extends Command
             foreach ($row_iterator as $row_data) {
                 $criteria = [];
 
-                // Ignore e2e_tests user
-                if ($table_name === 'glpi_users' && $row_data['name'] === 'e2e_tests') {
-                    continue;
-                }
-
-                // Ignore e2e oauth client
-                if ($table_name === 'glpi_oauthclients' && $row_data['name'] === 'Test E2E OAuth Client') {
-                    continue;
-                }
-
-                // Ignore e2e LDAP
-                if ($table_name === 'glpi_authldaps' && $row_data['name'] === '_e2e_ldap') {
-                    continue;
-                }
-
                 foreach ($row_data as $key => $value) {
                     if (in_array($key, $excluded_fields)) {
                         continue; // Ignore fields that would be subject to legitimate changes
@@ -263,6 +250,12 @@ class TestUpdatedDataCommand extends Command
                 if ($found_in_updated->count() !== 1) {
                     $missing = true;
                     $msg = sprintf('Unable to find the following object in table "%s": %s', $table_name, json_encode($row_data));
+                    $msg .= sprintf(
+                        "Query:\n%s\nParameters:\n%s\n%s",
+                        $found_in_updated->getSql(),
+                        json_encode($found_in_updated->getValues()),
+                        var_export($criteria, true)
+                    );
                     $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
                 }
             }

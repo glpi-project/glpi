@@ -50,7 +50,7 @@
                             class="alert alert-warning d-flex align-items-center"
                             role="alert"
                         >
-                            <i class="ti ti-alert-triangle me-2"></i>
+                            <i class="ti ti-alert-triangle me-2" aria-hidden="true"></i>
                             {{ warning }}
                         </div>
                     {% endfor %}
@@ -69,7 +69,7 @@
                     aria-label="{{ strategy.getLabel() }}"
                 >
                     <h3 class="d-flex align-items-center">
-                        <i class="{{ strategy.getIcon() }} me-2"></i>
+                        <i class="{{ strategy.getIcon() }} me-2" aria-hidden="true"></i>
                         {{ strategy.getLabel() }}
                         <label class="form-check mb-0 ms-auto form-switch">
                             <input
@@ -109,7 +109,7 @@
                         class="btn btn-primary"
                         name="update"
                     >
-                        <i class="ti ti-device-floppy me-2"></i>
+                        <i class="ti ti-device-floppy me-2" aria-hidden="true"></i>
                         {{ __("Save changes") }}
                     </button>
                 </div>

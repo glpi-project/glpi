@@ -50,7 +50,7 @@
     {% if entry_i['link'] %}
         <div class="col-auto">
             <a href="{{ entry_i['link'] }}" target="_blank">
-                <i class="ti ti-external-link"></i>
+                <i class="ti ti-external-link" aria-hidden="true"></i>
                 {{ entry_i['name'] }}
             </a>
         </div>
@@ -66,7 +66,7 @@
         <div class="col-auto">
             <span class="badge bg-warning text-dark" title="{{ __('Private') }}"
                   data-bs-toggle="tooltip" data-bs-placement="top">
-                <i class="ti ti-lock"></i>
+                <i class="ti ti-lock" aria-hidden="true"></i>
             </span>
         </div>
     {% endif %}
@@ -77,7 +77,7 @@
                 <a href="{{ 'Document'|itemtype_form_path(entry_i['id']) }}"
                    class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
                    data-bs-toggle="tooltip" data-bs-placement="top">
-                    <i class="ti ti-edit"></i>
+                    <i class="ti ti-edit" aria-hidden="true"></i>
                 </a>
             {% endif %}
 
@@ -88,7 +88,7 @@
                     <button type="submit" class="btn btn-sm btn-ghost-secondary" name="delete_document"
                             title="{{ _x('button', 'Delete permanently') }}"
                             data-bs-toggle="tooltip" data-bs-placement="top">
-                        <i class="ti ti-trash"></i>
+                        <i class="ti ti-trash" aria-hidden="true"></i>
                     </button>
                 </form>
             {% endif %}
@@ -102,7 +102,7 @@
                     <button type="submit" class="btn btn-sm btn-ghost-secondary" name="update"
                             title="{{ blacklisted_title }}"
                             data-bs-toggle="tooltip" data-bs-placement="top">
-                        <i class="ti ti-ban {{ blacklisted_class }}"></i>
+                        <i class="ti ti-ban {{ blacklisted_class }}" aria-hidden="true"></i>
                     </button>
                 </form>
             {% endif %}

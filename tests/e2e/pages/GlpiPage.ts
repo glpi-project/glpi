@@ -69,9 +69,9 @@ export class GlpiPage
         this.page = page;
 
         // Define locators
-        this.user_menu             = this.getButton('User menu');
+        this.user_menu             = page.getByRole('button', { name: 'User menu' }).filter({ visible: true });
         this.logout_link           = this.getLink('Logout');
-        this.change_profile_button = this.getButton('Change profile');
+        this.change_profile_button = page.getByRole('button', { name: 'Change profile' }).filter({ visible: true });
         this.history_rows          = page.getByRole('row');
         this.dashboards_widgets    = page.getByTestId("dashboard-widget");
 
@@ -114,10 +114,12 @@ export class GlpiPage
         const simple_dropdown_with_prefix = this.page
             .getByRole('listbox')
             .getByRole('option', {'name': `»${value}`, exact: exact})
+            .first()
         ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
             .getByRole('listitem', {'name': value, exact: exact})
+            .first()
         ;
 
         await simple_dropdown
@@ -141,12 +143,22 @@ export class GlpiPage
             .getByRole('listbox')
             .getByRole('option', {'name': value, exact: exact})
         ;
+        // Tree dropdowns (e.g. entities) prefix hierarchical options with "»",
+        // which Select2 4.1.0 exposes in the option accessible name.
+        const simple_dropdown_with_prefix = this.page
+            .getByRole('listbox')
+            .getByRole('option', {'name': `»${value}`, exact: exact})
+        ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
             .getByRole('listitem', {'name': value, exact: exact})
         ;
 
-        await simple_dropdown.or(dropdown_with_groups).click();
+        await simple_dropdown
+            .or(simple_dropdown_with_prefix)
+            .or(dropdown_with_groups)
+            .click()
+        ;
 
         if (check_value) {
             await expect(dropdown).toContainText(value);
@@ -157,13 +169,17 @@ export class GlpiPage
         dropdown: Locator,
         value: string,
     ): Promise<void> {
-        // We have no control on select2 selectors
-        // eslint-disable-next-line playwright/no-raw-locators
-        await dropdown.getByText(value)
-            .locator('..')
-            .locator('.select2-selection__choice__remove')
+        await dropdown.getByTitle(value)
+            .getByRole('button', {name: /remove item/i})
             .click()
         ;
+    }
+
+    public async assertDropdownIsClearable(dropdown: Locator): Promise<void>
+    {
+        // We have no control on select2 selectors
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(dropdown.locator('.select2-selection__clear')).toBeVisible();
     }
 
     public async doLogout(): Promise<void>
@@ -285,11 +301,14 @@ export class GlpiPage
      * Select2's container is the span right after the select.
      * The interactive element is the combobox inside the container.
      */
-    public getDropdownByLabel(label: string, base?: Locator): Locator
-    {
+    public getDropdownByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = true,
+    ): Locator {
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
-            .getByLabel(label, {exact: true})
+            .getByLabel(label, {exact: exact})
             .locator('+ span')
             .getByRole('combobox')
         ;
@@ -316,11 +335,14 @@ export class GlpiPage
      * TinyMCE's container is the div right after the textarea.
      * The interactive element is the body of the iframe.
      */
-    public getRichTextByLabel(label: string, base?: Locator): Locator
-    {
+    public getRichTextByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = false,
+    ): Locator {
         // eslint-disable-next-line playwright/no-raw-locators
         return (base ?? this.page)
-            .getByLabel(label)
+            .getByLabel(label, {exact: exact})
             .locator('+ div')
             .locator('iframe:visible')
             .contentFrame()
@@ -331,11 +353,18 @@ export class GlpiPage
     /**
      * Initialize a rich text editor by clicking on it, then return its body locator.
      */
-    public async initRichTextByLabel(label: string, base?: Locator): Promise<Locator>
-    {
+    public async initRichTextByLabel(
+        label: string,
+        base?: Locator,
+        exact: boolean = false,
+    ): Promise<Locator> {
         // eslint-disable-next-line playwright/no-raw-locators
-        await (base ?? this.page).getByLabel(label).locator('+ div').click();
-        return this.getRichTextByLabel(label, base);
+        await (base ?? this.page)
+            .getByLabel(label, {exact: exact})
+            .locator('+ div')
+            .click()
+        ;
+        return this.getRichTextByLabel(label, base, exact);
     }
 
     /**

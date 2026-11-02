@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -123,5 +122,14 @@ class QueryUnion extends AbstractQuery
         $query .= ' AS ' . DBmysql::quoteName($alias);
 
         return $query;
+    }
+
+    public function getParams(): array
+    {
+        $values = [];
+        foreach ($this->queries as $query) {
+            $values = array_merge($values, $query->getParams());
+        }
+        return $values;
     }
 }

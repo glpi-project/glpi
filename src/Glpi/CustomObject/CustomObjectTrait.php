@@ -83,6 +83,25 @@ trait CustomObjectTrait
     }
 
     /**
+     * @see \CommonDBTM:: getFromDB()
+     */
+    public function getFromDB($ID)
+    {
+        if (!parent::getFromDB($ID)) {
+            return false;
+        }
+
+        // All the concrete classes share the same table, items of other definitions must not be loaded.
+        $definition_fkey = static::getDefinition()::getForeignKeyField();
+        if ((int) ($this->fields[$definition_fkey] ?? 0) !== static::getDefinition()->getID()) {
+            $this->fields = [];
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @see \CommonDBTM:: getById()
      */
     public static function getById(?int $id)

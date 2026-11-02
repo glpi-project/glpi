@@ -39,11 +39,13 @@
 use Composer\Autoload\ClassLoader;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigContainer;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Exception\RedirectException;
 use Glpi\Exception\SessionExpiredException;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
@@ -579,17 +581,18 @@ class Plugin extends CommonDBTM
                 continue;
             }
             $locales_dir = "$base_dir/$plugin_key/locales/";
+            $trytoload_lang = LanguageRegistry::tryGet($trytoload);
+            $default_lang = !empty($CFG_GLPI["language"]) ? LanguageRegistry::tryGet($CFG_GLPI["language"]) : null;
             if (
-                array_key_exists($trytoload, $CFG_GLPI["languages"])
-                && file_exists($locales_dir . $CFG_GLPI["languages"][$trytoload][1])
+                $trytoload_lang !== null
+                && file_exists($locales_dir . $trytoload_lang->mo_file)
             ) {
-                $mofile = $locales_dir . $CFG_GLPI["languages"][$trytoload][1];
+                $mofile = $locales_dir . $trytoload_lang->mo_file;
             } elseif (
-                !empty($CFG_GLPI["language"])
-                && array_key_exists($CFG_GLPI["language"], $CFG_GLPI["languages"])
-                && file_exists($locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1])
+                $default_lang !== null
+                && file_exists($locales_dir . $default_lang->mo_file)
             ) {
-                $mofile = $locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1];
+                $mofile = $locales_dir . $default_lang->mo_file;
             } elseif (file_exists($locales_dir . "en_GB.mo")) {
                 $mofile = $locales_dir . "en_GB.mo";
             }
@@ -1259,7 +1262,7 @@ class Plugin extends CommonDBTM
                                 mb_strtolower(_x('button', 'Enable')),
                                 ['id' => $ID],
                                 '',
-                                'class="pointer"'
+                                'class="pointer btn-as-link"'
                             ),
                             __s('Do you want to %activate_link it?')
                         );
@@ -1675,6 +1678,7 @@ class Plugin extends CommonDBTM
      **/
     public static function registerClass($itemtype, $attrib = [])
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         $plug = isPluginItemType($itemtype);
@@ -1695,7 +1699,7 @@ class Plugin extends CommonDBTM
             $attrib['assignable_types'] = true;
         }
 
-        $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
+        $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI->getArrayCopy()));
         $all_types[] = 'networkport_instantiations';
 
         $blacklist = ['device_types'];
@@ -1739,7 +1743,7 @@ class Plugin extends CommonDBTM
         foreach ($attrib as $key => $value) {
             if (preg_match('/^plugin[a-z]+_types$/', $key)) {
                 if ($value) {
-                    if (!array_key_exists($key, $CFG_GLPI)) {
+                    if (!isset($CFG_GLPI[$key])) {
                         $CFG_GLPI[$key] = [];
                     }
                     $CFG_GLPI[$key][] = $itemtype;
@@ -2812,7 +2816,7 @@ class Plugin extends CommonDBTM
                     // Do not show actions if the plugins execution is suspended.
                     // These actions would require to load the plugin, we do not want this to happen.
                     return \sprintf(
-                        '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled"></i></span>',
+                        '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled" aria-hidden="true"></i></span>',
                         __s('The plugins maintenance actions are disabled when the plugins execution is suspended.')
                     );
                 }
@@ -2841,8 +2845,8 @@ class Plugin extends CommonDBTM
                     // Configuration button for activated or configurable plugins
                     $config_url = htmlescape("{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
-                    . '<i class="ti ti-tool fs-2x"></i>'
-                    . '<span class="sr-only">' . __s('Configure') . '</span>'
+                    . '<i class="ti ti-tool fs-2x" aria-hidden="true"></i>'
+                    . '<span class="visually-hidden">' . __s('Configure') . '</span>'
                     . '</a>'
                     . '&nbsp;';
                 }
@@ -2916,7 +2920,7 @@ class Plugin extends CommonDBTM
                                                           data-bs-toggle="modal"
                                                           data-bs-target="#updateModal' . htmlescape($plugin->getField('directory')) . '"
                                                           title="' . __s("Update") . '">
-                                                          <span class="sr-only">' . __s("Update") . '</span>
+                                                          <span class="visually-hidden">' . __s("Update") . '</span>
                                                       </span></a>',
                                 'update_btn' => Html::getSimpleForm(
                                     static::getFormURL(),
@@ -2957,7 +2961,7 @@ class Plugin extends CommonDBTM
                                 data-bs-toggle="modal"
                                 data-bs-target="#uninstallModal' . htmlescape($plugin->getField('directory')) . '"
                                 title="' . $uninstall_label . '">
-                                <span class="sr-only">' . $uninstall_label . '</span>
+                                <span class="visually-hidden">' . $uninstall_label . '</span>
                             </span></a>
                         ';
 
@@ -3004,7 +3008,7 @@ class Plugin extends CommonDBTM
                 if (!empty($value)) {
                     $value = htmlescape($value);
                     return "<a href=\"" . $value . "\" target='_blank'>
-                     <i class='ti ti-external-link-alt fs-2x'></i><span class='sr-only'>$value</span>
+                     <i class='ti ti-external-link fs-2x' aria-hidden='true'></i><span class='visually-hidden'>$value</span>
                   </a>";
                 }
                 return "&nbsp;";
@@ -3106,7 +3110,6 @@ class Plugin extends CommonDBTM
         return str_replace('\\', '/', $directory);
     }
 
-
     public static function getIcon()
     {
         return "ti ti-puzzle";
@@ -3118,19 +3121,19 @@ class Plugin extends CommonDBTM
 
         if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-            = "<i class='ti ti-folder-plus'></i>"
+            = "<i class='ti ti-folder-plus' aria-hidden='true'></i>"
             . __s('Install');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-            = "<i class='ti ti-folder-minus'></i>"
+            = "<i class='ti ti-folder-minus' aria-hidden='true'></i>"
             . __s('Uninstall');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable']
-            = "<i class='ti ti-toggle-right-filled'></i>"
+            = "<i class='ti ti-toggle-right-filled' aria-hidden='true'></i>"
             . __s('Enable');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable']
-            = "<i class='ti ti-toggle-left-filled'></i>"
+            = "<i class='ti ti-toggle-left-filled' aria-hidden='true'></i>"
             . __s('Disable');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'clean']
-            = "<i class='ti ti-recycle'></i>"
+            = "<i class='ti ti-recycle' aria-hidden='true'></i>"
             . __s('Clean');
         }
 
@@ -3192,6 +3195,12 @@ class Plugin extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
+        if (!Config::canUpdate()) {
+            $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
+            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+            return;
+        }
+
         $plugin = new self();
         switch ($ma->getAction()) {
             case 'install':
@@ -3278,7 +3287,7 @@ class Plugin extends CommonDBTM
      */
     private function resetHookableCacheEntries(string $plugin_key): bool
     {
-        global $CFG_GLPI, $GLPI_CACHE;
+        global $GLPI_CACHE;
 
         $to_clear = [
             // Plugin lowercase/case-sensitive class names mapping.
@@ -3289,11 +3298,14 @@ class Plugin extends CommonDBTM
             'all_possible_rights',
         ];
 
-        foreach (array_keys($CFG_GLPI['languages']) as $language) {
+        foreach (array_keys(LanguageRegistry::all()) as $language) {
             // Hookable using `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
             // and `Hooks::DASHBOARD_FILTERS`.
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }
+
+        // FIXME Try to separate template cache for each Twig namespace, in order to be able to reset only the plugin Twig templates cache.
+        (new CacheManager())->resetCompiledTemplates();
 
         return $GLPI_CACHE->deleteMultiple($to_clear);
     }

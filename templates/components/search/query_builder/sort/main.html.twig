@@ -54,20 +54,20 @@
 
     <div class="card-footer d-flex sort_actions">
         <button id="addsort{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1 add_sort" type="button">
-            <i class="ti ti-square-plus"></i>
+            <i class="ti ti-square-plus" aria-hidden="true"></i>
             <span class="d-none d-sm-block">{{ __('Add another sort') }}</span>
         </button>
 
         <div class="btn-group ms-auto me-1">
             <button class="btn btn-sm btn-primary trigger-sort" type="button" name="sort">
-                <i class="ti ti-arrows-sort"></i>
+                <i class="ti ti-arrows-sort" aria-hidden="true"></i>
                 <span class="d-none d-sm-block">{{ __("Sort") }}</span>
             </button>
 
             <button class="btn btn-sm btn-icon px-2 sort-reset" type="button"
                 data-bs-toggle="tooltip" data-bs-placement="bottom"
                 title="{{ __('Reset sort') }}">
-                <i class="ti ti-square-x"></i>
+                <i class="ti ti-square-x" aria-hidden="true"></i>
             </a>
         </div>
     </div>

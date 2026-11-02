@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /// Class DeviceMemory
 class DeviceMemory extends CommonDevice
@@ -250,9 +251,9 @@ class DeviceMemory extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => '('
-                . QueryFunction::sum('TABLE.size') . '/'
-                . QueryFunction::count('TABLE.id') . ') * '
-                . QueryFunction::count('TABLE.id', true),
+                . QueryFunction::sum(new QueryIdentifier('TABLE.size')) . '/'
+                . QueryFunction::count(new QueryIdentifier('TABLE.id')) . ') * '
+                . QueryFunction::count(new QueryIdentifier('TABLE.id'), true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

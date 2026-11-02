@@ -66,7 +66,7 @@ window.GLPI.Search.GenericView = class GenericView {
             container.append(`
             <div class="spinner-overlay text-center">
                 <div class="spinner-border" role="status">
-                    <span class="sr-only">${__('Loading...')}</span>
+                    <span class="visually-hidden">${__('Loading...')}</span>
                 </div>
             </div>`);
             loading_overlay = container.find('div.spinner-overlay');

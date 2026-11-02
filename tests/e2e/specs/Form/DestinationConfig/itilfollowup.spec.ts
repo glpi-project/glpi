@@ -91,7 +91,8 @@ test.describe('ITILFollowup configuration', () => {
         await page.getByRole('tab', { name: 'Form', exact: true }).click();
         await form_page.doPreviewForm();
         await form_page.getButton('Submit').click();
-        await page.getByRole('link', { name: 'My test form' }).click();
+        // Check that the user is redirected to the created ticket
+        await expect(page).toHaveURL(/\/front\/ticket\.form\.php\?id=\d+/);
 
         // Check if followup template content is displayed
         await expect(page.getByText('My ITILFollowup template content')).toBeVisible();

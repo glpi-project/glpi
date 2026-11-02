@@ -248,16 +248,16 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleSoftwareCategory']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'compute_software_category']
-            = "<i class='ti ti-calculator'></i>"
+            = "<i class='ti ti-calculator' aria-hidden='true'></i>"
               . __s('Recalculate the category');
         }
 
         if (
-            Session::haveRightsOr("rule_dictionnary_software", [CREATE, UPDATE])
+            Session::haveRightsOr(RuleDictionnarySoftware::$rightname, [CREATE, UPDATE])
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleDictionnarySoftware']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']
-            = "<i class='ti ti-arrow-back-up'></i>"
+            = "<i class='ti ti-arrow-back-up' aria-hidden='true'></i>"
               . __s('Replay the dictionary rules');
         }
 
@@ -280,17 +280,30 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 if (isset($input['item_items_id'])) {
                     $items = [];
                     foreach ($ids as $id) {
+                        if (!$item->can($id, UPDATE) || !$item->can($id, DELETE)) {
+                            // Merged items will be updated then deleted
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         $items[$id] = 1;
                     }
+
+                    if ($items === []) {
+                        // No items to process, all actions resulted with `ACTION_NORIGHT`.
+                        return;
+                    }
+
                     if ($item->can($input['item_items_id'], UPDATE)) {
                         if ($item->merge($items)) {
-                            $ma->itemDone($item::class, $ids, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, array_keys($items), MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, array_keys($items), MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, array_keys($items), MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 } else {
@@ -323,7 +336,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -336,7 +349,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                     if ($item->can($id, UPDATE)) {
                         $allowed_ids[] = $id;
                     } else {
-                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }

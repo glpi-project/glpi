@@ -57,7 +57,7 @@ trait Clonable
     /**
      * Get relations class to clone along with current element.
      *
-     * @return CommonDBTM::class[]
+     * @return class-string<CommonDBTM>[]
      */
     abstract public function getCloneRelations(): array;
 

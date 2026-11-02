@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 
 class RuleDictionnarySoftwareCollection extends RuleCollection
 {
@@ -83,8 +84,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                 <div class="card">
                     <div class="card-body">
                         <twig:Alert:Warning
-                            :title="warning_title"
-                            :message="warning_message"
+                            :heading="warning_title"
+                            :content="warning_message"
                         />
                         <div>
                             {{ fields.dropdownField('Manufacturer', 'manufacturer', 0, manufacturer_label, {
@@ -484,7 +485,7 @@ TWIG, $twig_params);
                                 'gcs_2'                       => 'items_id',
                                 $item_softwareversion_table   => 'items_id', [
                                     'AND' => [
-                                        'gcs_2.itemtype' => $item_softwareversion_table . '.itemtype',
+                                        'gcs_2.itemtype' => new QueryExpression(DBmysql::quoteName($item_softwareversion_table . '.itemtype')),
                                     ],
                                 ],
                             ],

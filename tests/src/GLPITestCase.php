@@ -51,7 +51,7 @@ use DomainRecord;
 use Dropdown;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigContainer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Dropdown\DropdownDefinitionManager;
@@ -89,7 +89,7 @@ class GLPITestCase extends TestCase
     private $int;
     private $str;
     protected $has_failed = false;
-    private ?array $config_copy = null;
+    private ?ConfigContainer $config_copy = null;
     private array $superglobals_copy = [];
 
     private TestHandler $log_handler;
@@ -110,12 +110,6 @@ class GLPITestCase extends TestCase
         // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
-
-        // Some tests might change the current language, thus storing some
-        // translations in the cache
-        $manager = new CacheManager();
-        $cache = $manager->getTranslationsCacheInstance();
-        $cache->clear();
 
         // Init log handler
         global $PHPLOGGER;
@@ -239,7 +233,7 @@ class GLPITestCase extends TestCase
     {
         $method = new ReflectionMethod($instance, $methodName);
 
-        return $method->invoke($instance, ...$args);
+        return $method->invoke(is_string($instance) ? null : $instance, ...$args);
     }
 
     /**
@@ -510,7 +504,9 @@ class GLPITestCase extends TestCase
         $this->superglobals_copy['SERVER'] = $_SERVER;
 
         if ($this->config_copy === null) {
-            $this->config_copy = $CFG_GLPI;
+            // Snapshot the config as an independent copy (ConfigContainer holds
+            // its data in an array property, copied by value on clone).
+            $this->config_copy = clone $CFG_GLPI;
         }
     }
 
@@ -537,7 +533,7 @@ class GLPITestCase extends TestCase
 
         // Globals
         global $CFG_GLPI, $FOOTER_LOADED, $HEADER_LOADED;
-        $CFG_GLPI = $this->config_copy;
+        $CFG_GLPI = clone $this->config_copy;
         $FOOTER_LOADED = false;
         $HEADER_LOADED = false;
 
@@ -700,5 +696,24 @@ class GLPITestCase extends TestCase
                 $e
             );
         }
+    }
+
+    /**
+     * Clean a SQL query string by removing extra whitespaces to make it easier to compare with another SQL query string.
+     * @param $sql
+     * @return string
+     */
+    protected function cleanSQL(string $sql): string
+    {
+        // Clean whitespaces
+        $sql = preg_replace('/\s+/', ' ', $sql);
+
+        // Remove whitespaces around parenthesis
+        $sql = preg_replace('/\(\s+/', '(', $sql);
+        $sql = preg_replace('/\s+\)/', ')', $sql);
+
+        $sql = trim($sql);
+
+        return $sql;
     }
 }

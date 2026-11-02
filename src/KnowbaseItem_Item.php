@@ -106,7 +106,8 @@ class KnowbaseItem_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (!$item instanceof CommonDBTM) {
+        // KB articles show their linked items in the main article view, not in a tab
+        if (!$item instanceof CommonDBTM || $item::class === KnowbaseItem::class) {
             return false;
         }
         self::showForItem($item, $withtemplate);
@@ -235,6 +236,15 @@ class KnowbaseItem_Item extends CommonDBRelation
         $entity_restrict = -1;
         $checkright = true;
 
+        if ($item instanceof KnowbaseItem && isset($item->fields['entities_id'])) {
+            $is_recursive = $item->fields['is_recursive'] ?? 0;
+            if ($is_recursive) {
+                $entity_restrict = getSonsOf('glpi_entities', $item->fields['entities_id']);
+            } else {
+                $entity_restrict = $item->fields['entities_id'];
+            }
+        }
+
         return Dropdown::showSelectItemFromItemtypes([
             'items_id_name'   => $name,
             'entity_restrict' => $entity_restrict,
@@ -322,11 +332,11 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         $kb_item = new KnowbaseItem();
         $kb_item->getEmpty();
-        if ($kb_item->canViewItem()) {
+        if ($kb_item->can($kb_item->getID(), READ)) {
             $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
             $actions[$action_prefix . 'add']
-            = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+            = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>"
               . _sx('button', 'Link knowledgebase article');
         }
 

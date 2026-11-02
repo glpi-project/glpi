@@ -72,6 +72,7 @@
     define('GLPI_CENTRAL_WARNINGS', $random_val([false, true]));
     define('GLPI_DOCUMENTATION_ROOT_URL', 'https://links.glpi-project.org');
     define('GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE', $random_val([false, true]));
+    define('GLPI_DISABLE_REAUTH', $random_val([false, true]));
     define('GLPI_DISALLOWED_UPLOADS_PATTERN', $random_val(['', '/\.(php\d*|phar)$/i']));
     define('GLPI_ENVIRONMENT_TYPE', $random_val(['development', 'testing', 'staging', 'production']));
     define('GLPI_INSTALL_MODE', $random_val(['GIT', 'TARBALL']));
@@ -86,7 +87,7 @@
     define('GLPI_NETWORK_MAIL', 'glpi@teclib.com');
     define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');
     define('GLPI_PLUGINS_DIRECTORIES', [dirname(__FILE__, 2) . '/plugins', dirname(__FILE__, 2) . '/marketplace']);
-    define('GLPI_SERVERSIDE_URL_ALLOWLIST', $random_val([[], ['/^.*$/']]));
+    define('GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS', $random_val([[], ['Agent']]));
     define('GLPI_SKIP_UPDATES', $random_val([false, true]));
     define('GLPI_STRICT_ENV', $random_val([false, true]));
     define('GLPI_SYSTEM_CRON', $random_val([false, true]));

@@ -36,6 +36,7 @@ namespace Glpi\Form\Destination;
 
 use CommonITILObject;
 use DBmysql;
+use Document;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\PrepareForCloneInterface;
@@ -55,6 +56,7 @@ use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceField;
+use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
@@ -62,6 +64,7 @@ use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\Tag\FormTagsManager;
 use Override;
 use ReflectionClass;
@@ -176,6 +179,19 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $answers_set
         );
         $already_applied_fields[] = ITILCategoryField::class;
+
+        // Applied early for template resolution, then re-applied in the loop below so the form answer still prevails over a predefined type
+        $request_type_field = current(array_filter(
+            $fields_to_apply,
+            fn($field) => $field instanceof RequestTypeField
+        ));
+        if ($request_type_field !== false) {
+            $input = $request_type_field->applyConfiguratedValueToInputUsingAnswers(
+                $request_type_field->getConfig($form, $config, $answers_set),
+                $input,
+                $answers_set
+            );
+        }
 
         // Compute and apply template predefined template fields
         $input = $this->applyPredefinedTemplateFields($input);
@@ -453,6 +469,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
 
         $fields = $predefined_fields->getPredefinedFields($template->fields['id']);
         foreach ($fields as $field => $value) {
+            $field = in_array($field, ['_olas_id_tto','_olas_id_ttr']) ? '_olas_id' : $field;
             $field_definition = $fields_definition[$field] ?? null;
             if (
                 $field_definition
@@ -477,20 +494,76 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             }
         }
 
+        // If the template has a predefined OLA, we set the _la_update flag to update them
+        if (isset($input['_olas_id'])) {
+            $input['_la_update'] = true;
+        }
+
         return $input;
     }
 
     private function setFilesInput(array $input, AnswersSet $answers_set): array
     {
+        // Nothing to do if no file was submitted with the form
         $files = $answers_set->getSubmittedFiles();
         if ($files === [] || empty($files['filename'])) {
             return $input;
         }
 
-        $input['_filename']        = $files['filename'];
-        $input['_prefix_filename'] = $files['prefix'];
-        $input['_tag_filename']    = $files['tag'];
+        // Collect the "File" questions and the documents created from their answers
+        $file_questions_ids = [];
+        $documents_ids      = [];
+        foreach ($answers_set->getAnswersByType(QuestionTypeFile::class) as $answer) {
+            $file_questions_ids[] = $answer->getQuestionId();
+            array_push($documents_ids, ...$answer->getRawAnswer());
+        }
+
+        // Link these existing documents directly, whatever the entity of the created item
+        if ($documents_ids !== []) {
+            $input['_documents_id'] = array_merge($input['_documents_id'] ?? [], $documents_ids);
+            $this->setDefaultDocumentCategory($documents_ids);
+        }
+
+        // Files of "File" questions are already linked through their documents
+        foreach (array_keys($files['filename']) as $key) {
+            if (in_array($files['question_id'][$key] ?? null, $file_questions_ids, true)) {
+                unset($files['filename'][$key], $files['prefix'][$key], $files['tag'][$key]);
+            }
+        }
+
+        // Remaining files (e.g. rich text images) are uploaded by the created item
+        $input['_filename']        = array_values($files['filename']);
+        $input['_prefix_filename'] = array_values($files['prefix']);
+        $input['_tag_filename']    = array_values($files['tag']);
 
         return $input;
+    }
+
+    /**
+     * @param int[] $documents_ids
+     */
+    private function setDefaultDocumentCategory(array $documents_ids): void
+    {
+        global $CFG_GLPI;
+
+        if (
+            !$this->getTarget() instanceof Ticket
+            || empty($CFG_GLPI['documentcategories_id_forticket'])
+        ) {
+            return;
+        }
+
+        $document = new Document();
+        foreach ($documents_ids as $documents_id) {
+            if (
+                $document->getFromDB($documents_id)
+                && (int) $document->fields['documentcategories_id'] === 0
+            ) {
+                $document->update([
+                    'id'                    => $documents_id,
+                    'documentcategories_id' => $CFG_GLPI['documentcategories_id_forticket'],
+                ]);
+            }
+        }
     }
 }

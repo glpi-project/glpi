@@ -41,37 +41,41 @@
          <h4 class="card-title {{ icon|length ? 'ms-5' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fs-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}" aria-hidden="true"></i>
                </div>
             {% endif %}
             {{ label }}
             {% if helper is not empty %}
-               <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
-                     data-bs-title="{{ helper }}">?</span>
+               <span class="form-help" tabindex="0" aria-label="{{ helper }}"
+                     data-bs-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="top"
+                     data-bs-html="true" data-bs-title="{{ helper }}">?</span>
             {% endif %}
          </h4>
       </div>
    </div>
 {% endmacro %}
 
-{% macro smallTitle(label, icon = '', helper = '', id = '') %}
+{% macro smallTitle(label, icon = '', helper = '', id = '', level = 4) %}
    {% set margins = 'mt-2 mb-2' %}
    {% set id = id != '' ? id : 'formsection' ~ random() %}
+   {% set level = level in [1, 2, 3, 4, 5, 6] ? level : 4 %}
 
    <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
       <div id="{{ id }}" class="card-header mb-1 p-0 ps-3 py-1">
-         <h4 class="card-subtitle {{ icon|length ? 'ms-4' : '' }}">
+         {# fs-4 keeps the visual size constant regardless of the heading level #}
+         <h{{ level }} class="card-subtitle fs-4 {{ icon|length ? 'ms-4' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fs-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}" aria-hidden="true"></i>
                </div>
             {% endif %}
              <span class="ms-2">{{ label }}</span>
             {% if helper is not empty %}
-               <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
-                     data-bs-title="{{ helper }}">?</span>
+               <span class="form-help" tabindex="0" aria-label="{{ helper }}"
+                     data-bs-toggle="tooltip" data-bs-trigger="hover focus" data-bs-placement="top"
+                     data-bs-html="true" data-bs-title="{{ helper }}">?</span>
             {% endif %}
-         </h4>
+         </h{{ level }}>
       </div>
    </div>
 {% endmacro %}
@@ -281,7 +285,7 @@
 {% macro dateField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.date(name, value, options) }}
+        {{ _inputs.date(name, value, options|merge({'field_label': label})) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -291,7 +295,7 @@
 {% macro datetimeField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.datetime(name, value, options) }}
+        {{ _inputs.datetime(name, value, options|merge({'field_label': label})) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -392,7 +396,7 @@
              {%- endset -%}
             <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
                     onclick="{{ clear_js }}">
-               <i class="ti ti-x"></i>
+               <i class="ti ti-x" aria-hidden="true"></i>
             </button>
          {% endif %}
       </div>
@@ -445,16 +449,12 @@
             If `options` is not iterable, it means that this macro was used
             with its previous signature (name, value, label, options = {}).
             We get the `options` value from the extra positional arguments (available in `varargs`).
-            @TODO Add a deprecation in GLPI 12.0.
+            @TODO Add a deprecation.
          #}
         {% set options = varargs[0]|default({}) %}
     {% endif %}
     {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
     {{ _inputs.hidden(name, value, options) }}
-{% endmacro %}
-
-{% macro csrfField() %}
-   {% do call('Toolbox::deprecated', ['Csrf protection is now handled without tokens.']) %}
 {% endmacro %}
 
 {% macro dropdownNumberField(name, value, label = '', options = {}) %}
@@ -1049,6 +1049,7 @@
     {% set options = {
         extra_css_classes: "",
         backdrop: true,
+        allow_empty: false,
     }|merge(options) %}
     {% set field %}
         {{ include('components/illustration/icon_picker.html.twig', {
@@ -1057,6 +1058,7 @@
             'size': 100,
             'preview_css_classes': "illustration-selector d-flex align-items-center card border-1 " ~ options.extra_css_classes,
             'backdrop': options.backdrop,
+            'allow_empty': options.allow_empty,
         }, with_context: false) }}
     {% endset %}
 

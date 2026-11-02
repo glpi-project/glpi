@@ -38,6 +38,7 @@ use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\DCBreadcrumbInterface;
+use Glpi\Features\Inventoriable;
 use Glpi\Features\StateInterface;
 
 /**
@@ -48,6 +49,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
+    use Inventoriable;
     use DCBreadcrumb;
     /** @use Clonable<static> */
     use Clonable;
@@ -98,6 +100,8 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
          ->addStandardTab(Item_Ticket::class, $ong, $options)
          ->addStandardTab(Item_Problem::class, $ong, $options)
          ->addStandardTab(Change_Item::class, $ong, $options)
+         ->addStandardTab(Lock::class, $ong, $options)
+         ->addStandardTab(RuleMatchedLog::class, $ong, $options)
          ->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }

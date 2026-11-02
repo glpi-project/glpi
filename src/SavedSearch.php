@@ -97,17 +97,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unset_default']
-                     = "<i class='ti ti-star'></i>" . __s('Unset as default');
+                     = "<i class='ti ti-star' aria-hidden='true'></i>" . __s('Unset as default');
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
-                     = "<i class='ti ti-adjustments-alt'></i>" . __s('Change count method');
+                     = "<i class='ti ti-adjustments-alt' aria-hidden='true'></i>" . __s('Change count method');
         if (Session::haveRight(self::$rightname, UPDATE)) {
             // Everyone can create/update a private search but only users with permission to update can change visibility to public
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
-                = "<i class='ti ti-eye-search'></i>" . __s('Change visibility');
+                = "<i class='ti ti-eye-search' aria-hidden='true'></i>" . __s('Change visibility');
         }
-        if (Session::haveRight('transfer', READ)) {
+        if (Session::haveRight(Transfer::$rightname, READ)) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
-                     = "<i class='ti ti-corner-right-up'></i>" . __s('Change entity');
+                     = "<i class='ti ti-corner-right-up' aria-hidden='true'></i>" . __s('Change entity');
         }
         return $actions;
     }
@@ -266,7 +266,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
 
         if ($this->fields['is_private'] == 1) {
-            return (Session::haveRight('config', UPDATE)
+            return (Session::haveRight(Config::$rightname, UPDATE)
                  || $this->fields['users_id'] == Session::getLoginUserID());
         }
         return parent::canCreateItem();
@@ -281,7 +281,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     public function canViewItem(): bool
     {
         if ($this->fields['is_private'] == 1) {
-            return (Session::haveRight('config', READ)
+            return (Session::haveRight(Config::$rightname, READ)
                  || $this->fields['users_id'] == Session::getLoginUserID());
         }
         return parent::canViewItem();
@@ -475,16 +475,22 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function showForm($ID, array $options = [])
     {
-        if ($this->fields === [] && $ID > 0) {
+        if ($ID > 0) {
             $this->getFromDB($ID);
         }
         // If this form is used to edit a saved search from the search screen
         $is_ajax = $options['ajax'] ?? false;
-        if ($is_ajax && $this->getID() > 0) {
-            // Allow an extra option to save as a new search instead of editing the current one
-            $options['addbuttons'] = ["add" => __("Save as a new search")];
-            // Do not allow delete from this modal
-            $options['candel'] = false;
+        if ($is_ajax) {
+            if ($this->isNewItem()) {
+                // FIXME: Cannot rely on `canCreate()` for simplified interface,
+                // the `canCreate()` method should probably fixed to handle this.
+                $options['canedit'] = $this->canCreateItem();
+            } else {
+                // Allow an extra option to save as a new search instead of editing the current one
+                $options['addbuttons'] = ["add" => __("Save as a new search")];
+                // Do not allow delete from this modal
+                $options['candel'] = false;
+            }
         }
 
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/form.html.twig', [
@@ -667,7 +673,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
         global $DB;
 
-        if (Session::haveRight('config', UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             return $DB->delete(
                 'glpi_savedsearches_users',
                 [
@@ -747,7 +753,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
                 if ($error) {
                     $info_message = __s('A fatal error occurred while executing this saved search. It is not able to be used.');
-                    $count = "<span class='ti ti-alert-triangle-filled' title='$info_message'></span>";
+                    $count = "<span class='ti ti-alert-triangle-filled' title='$info_message' aria-hidden='true'></span>"
+                        . "<span class='visually-hidden'>$info_message</span>";
                 } elseif (isset($search_data['data']['totalcount'])) {
                     $count = $search_data['data']['totalcount'];
                 } else {
@@ -755,7 +762,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                                 ? __s('Count for this saved search has been disabled.')
                                 : __s('Counting this saved search would take too long, it has been skipped.');
                     // no count, just inform the user
-                    $count = "<span class='ti ti-info-circle' title='$info_message'></span>";
+                    $count = "<span class='ti ti-info-circle' title='$info_message' aria-hidden='true'></span>"
+                        . "<span class='visually-hidden'>$info_message</span>";
                 }
 
                 $data['count'] = $count;
@@ -1169,9 +1177,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
 
         if ($notif->isNewItem()) {
-            $notif->check(-1, CREATE);
+            $notif->checkGlobal(CREATE);
             $notif->add(['name'            => SavedSearch::getTypeName(1) . ' ' . $this->getName(),
-                'entities_id'     => $_SESSION["glpidefault_entity"],
+                // Fall back to the saved search entity when there is no default
+                // entity, so the insertion does not fail on the NOT NULL column.
+                'entities_id'     => $_SESSION["glpidefault_entity"] ?? $this->fields['entities_id'],
                 'itemtype'        => SavedSearch_Alert::class,
                 'event'           => 'alert_' . $this->getID(),
                 'is_active'       => 0,
@@ -1214,7 +1224,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
-        if (Session::haveRight('config', UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             return ['WHERE' => []];
         }
 

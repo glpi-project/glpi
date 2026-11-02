@@ -34,15 +34,35 @@
 
 namespace test\units;
 
+use Entity;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\Debug\Profile as DebugProfile;
+use Glpi\Knowbase\EditorAction;
+use Glpi\Knowbase\EditorActionType;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
+use KnowbaseItem_Comment;
+use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_User;
+use KnowbaseItemTranslation;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
+use Profile_User;
+use ProfileRight;
+use Psr\Log\LogLevel;
+use RuntimeException;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
+use User;
+
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\ob_end_clean;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /* Test for inc/knowbaseitem.class.php */
 
@@ -78,7 +98,7 @@ class KnowbaseItemTest extends DbTestCase
         );
 
         //add some comments
-        $comment = new \KnowbaseItem_Comment();
+        $comment = new KnowbaseItem_Comment();
         $input = [
             'knowbaseitems_id' => $kb->getID(),
             'users_id'         => $users_id,
@@ -335,7 +355,7 @@ HTML,
     }
 
     #[AllowMockObjectsWithoutExpectations]
-    public function testGetForCategory()
+    public function testGetChildrenArticlesFiltersUnviewableIds()
     {
         global $DB;
         $orig_db = clone $DB;
@@ -347,7 +367,7 @@ HTML,
             ->getMock();
 
         $m_kbi = $this->getMockBuilder(KnowbaseItem::class)
-            ->onlyMethods(['getFromDB', 'canViewItem'])
+            ->onlyMethods(['getFromDB', 'can'])
             ->getMock();
 
         // Mocked db request result
@@ -362,12 +382,12 @@ HTML,
         $m_kbi->method('getFromDB')->willReturn(true);
 
         // True for call 1 & 3, false for call 2 and every following calls
-        $m_kbi->method('canViewItem')->willReturn(true, false, true, false, false, false);
+        $m_kbi->method('can')->willReturn(true, false, true, false, false, false);
 
         // Expected : [1, 3]
         // Replace global DB with mocked DB
         $DB = $m_db;
-        $result = KnowbaseItem::getForCategory(1, $m_kbi);
+        $result = KnowbaseItem::getChildrenArticles(1, $m_kbi);
         $DB = $orig_db;
         $this->assertCount(2, $result);
         $this->assertContains('1', $result);
@@ -376,10 +396,45 @@ HTML,
         // Expected : [-1]
         // Replace global DB with mocked DB
         $DB = $m_db;
-        $result = KnowbaseItem::getForCategory(1, $m_kbi);
+        $result = KnowbaseItem::getChildrenArticles(1, $m_kbi);
         $DB = $orig_db;
         $this->assertCount(1, $result);
         $this->assertContains(-1, $result);
+    }
+
+    public function testGetChildrenArticlesReturnsMinusOneWhenNothingIsVisible(): void
+    {
+        // The method is used to build an `IN` clause, thus it must never return
+        // an empty array.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Hidden ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$parent->getID()],
+        ]);
+
+        $this->login('tech', 'tech');
+        $this->assertEquals([-1], KnowbaseItem::getChildrenArticles($parent->getID()));
+    }
+
+    public function testGetChildrenArticles(): void
+    {
+        $this->login();
+        $parent = new KnowbaseItem();
+        $parent_id = (int) $parent->add(['name' => 'Section', 'answer' => '']);
+        $child = new KnowbaseItem();
+        $child_id = (int) $child->add(['name' => 'Leaf', 'answer' => '', '_parents' => [$parent_id]]);
+
+        $children = KnowbaseItem::getChildrenArticles($parent_id);
+        $this->assertEquals([$child_id], array_map('intval', $children));
     }
 
     public static function fullTextSearchProvider(): iterable
@@ -549,7 +604,6 @@ HTML,
         return [
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "+macintosh",
                     //Find rows that contain the word 'macintosh'
@@ -560,7 +614,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "+apple",
                     //Find rows that contain the word 'apple'
@@ -571,7 +624,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "apple macintosh",
                     //Find rows that contain at least one of the two words.
@@ -582,7 +634,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "base entry _knowbaseitem02",
                     //Find rows that contain at least one of the three words.
@@ -593,7 +644,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "apple",
                     //Find rows that contain at least 'apple'
@@ -604,7 +654,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "macintosh",
                     //Find rows that contain at least 'macintosh'
@@ -615,7 +664,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "Knowledge",
                     //Find rows that contain at least 'macintosh'
@@ -626,7 +674,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "+juice +macintosh",
                     //Find rows that contain both words.
@@ -637,7 +684,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "+apple -macintosh",
                     //Find rows that contain the word “apple” but not “macintosh”.
@@ -648,7 +694,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "+apple ~macintosh",
                     //Find rows that contain the word “apple”, but if the row also contains the word “macintosh”, rate it lower than if row does not.
@@ -659,7 +704,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "+apple macintosh",
                     //Find rows that contain the word “apple”, but rank rows higher if they also contain “macintosh”.
@@ -670,7 +714,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "+apple +(>macintosh <juice)",
                     //Find rows that contain the words “apple” and "juice", or “apple” and "macintosh" (in any order), but rank “apple macintosh" higher than “apple juice".
@@ -681,7 +724,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "Know*",
                     //Find rows that contain "Know" such as "Knowledge"
@@ -692,7 +734,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => "turn*",
                     //Find rows that contain "turn" such as "turnover"
@@ -703,7 +744,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => '"macintosh strudel"',
                     //Find rows that contain the exact phrase “macintosh strudel”
@@ -714,7 +754,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => '"base entry _knowbaseitem02"',
                     //Find rows that contain the exact phrase “base entry _knowbaseitem02”
@@ -725,7 +764,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => ' ',
                     // Make sure no errors are triggered when sending this specific request
@@ -736,7 +774,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => '      ',
                     // Make sure no errors are triggered when sending this specific request
@@ -747,7 +784,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => '*',
                     // Make sure no errors are triggered when sending this specific request
@@ -758,7 +794,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
                     'faq' => false,
                     'contains' => '%',
                     // Make sure no errors are triggered when sending this specific request
@@ -783,14 +818,66 @@ HTML,
         // Check that the request is valid
         $iterator = $DB->request($criteria);
 
+        // Exclude the root article, which is created by the installation process
+        // and thus matches any parentless search.
+        $rows = array_filter(
+            iterator_to_array($iterator),
+            static fn(array $row): bool => (int) $row['id'] !== KnowbaseItem::getRootId(),
+        );
+
         //count KnowBaseItem found
-        $this->assertEquals($count, $iterator->numrows());
+        $this->assertCount($count, $rows);
 
         // check order if needed
         if ($sort != null) {
-            $names = array_column(iterator_to_array($iterator), 'name');
+            $names = array_column($rows, 'name');
             $this->assertEquals($sort, $names);
         }
+    }
+
+    public function testGetListRequestHidesArticlesOutsideTheirValidityWindowOnWildcardSearch(): void
+    {
+        global $DB;
+
+        // A search made only of operators result in `*`, which matches the whole
+        // knowledge base. Make sure the publication window is still applied.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $articles = [];
+        // Relative dates: `begin_date` is a timestamp column, capped at 2038 on MySQL.
+        foreach (
+            [
+                'valid'   => ['begin_date' => null, 'end_date' => null],
+                'expired' => ['begin_date' => null, 'end_date' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+                'future'  => ['begin_date' => date('Y-m-d H:i:s', strtotime('+1 year')), 'end_date' => null],
+            ] as $key => $dates
+        ) {
+            $articles[$key] = $this->createItem(KnowbaseItem::class, [
+                'name'        => __FUNCTION__ . '_' . $key,
+                'answer'      => __FUNCTION__ . '_' . $key,
+                'is_faq'      => 1,
+                'users_id'    => $glpi_user,
+                'entities_id' => $entity,
+                'begin_date'  => $dates['begin_date'],
+                'end_date'    => $dates['end_date'],
+            ]);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $articles[$key]->getID(),
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login('post-only', 'postonly');
+
+        $criteria = KnowbaseItem::getListRequest(['contains' => '*'], 'search');
+        $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
+
+        $this->assertContains($articles['valid']->fields['name'], $names);
+        $this->assertNotContains($articles['expired']->fields['name'], $names);
+        $this->assertNotContains($articles['future']->fields['name'], $names);
     }
 
     public function testGetAnswerAnchors(): void
@@ -819,107 +906,833 @@ HTML,
         $this->assertStringContainsString('<a href="#title-1c">', $answer);
     }
 
-    /**
-     * To be deleted after 11.0 release
-     */
-    /*public function testCreateWithCategoriesDeprecated()
-    {
-        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        // Create a KB category
-        $category = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => __FUNCTION__ . '_1',
-            'comment' => __FUNCTION__ . '_1',
-            'entities_id' => $root_entity,
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
-
-        // Create KB item with category
-        $kb_item = @$this->createItem(\KnowbaseItem::class, [
-            'name' => __FUNCTION__ . '_1',
-            'answer' => __FUNCTION__ . '_1',
-            'knowbaseitemcategories_id' => $category->getID(),
-        ], ['knowbaseitemcategories_id']);
-
-        // Get categories linked to our kb_item
-        $linked_categories = (new \KnowbaseItem_KnowbaseItemCategory())->find([
-            'knowbaseitems_id' => $kb_item->getID(),
-        ]);
-
-        // We expect one category
-        $this->assertCount(1, $linked_categories);
-
-        // Check category id
-        $data = array_pop($linked_categories);
-        $this->assertEquals($category->getID(), $data['knowbaseitemcategories_id']);
-    }*/
-
-    public function testCreateWithCategories()
+    public function testCreateWithParents()
     {
         global $DB;
 
-        // Create 2 new KB categories
-        $kb_category = new \KnowbaseItemCategory();
-        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
-        $kb_cat_id1 = $kb_category->add([
-            'name' => __FUNCTION__ . '_1',
-            'comment' => __FUNCTION__ . '_1',
-            'entities_id' => $root_entity,
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
-        $this->assertGreaterThan(0, $kb_cat_id1);
+        $this->login();
 
-        $kb_cat_id2 = $kb_category->add([
-            'name' => __FUNCTION__ . '_2',
-            'comment' => __FUNCTION__ . '_2',
-            'entities_id' => $root_entity,
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
+        // Create 2 new parent articles
+        $parent1 = $this->createItem(KnowbaseItem::class, [
+            'name' => __FUNCTION__ . '_1',
+            'answer' => __FUNCTION__ . '_1',
         ]);
-        $this->assertGreaterThan(0, $kb_cat_id2);
+        $parent2 = $this->createItem(KnowbaseItem::class, [
+            'name' => __FUNCTION__ . '_2',
+            'answer' => __FUNCTION__ . '_2',
+        ]);
 
         $kbitem = new KnowbaseItem();
-        // Create a new KB item with the first category
+        // Create a new KB item with the first parent
         $kbitems_id1 = $kbitem->add([
             'name' => __FUNCTION__ . '_1',
             'answer' => __FUNCTION__ . '_1',
-            '_categories' => [$kb_cat_id1],
+            '_parents' => [$parent1->getID()],
         ]);
         $this->assertGreaterThan(0, $kbitems_id1);
 
-        // Expect the KB item to have the first category
+        // Expect the KB item to have the first parent
         $iterator = $DB->request([
-            'FROM' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+            'FROM' => KnowbaseItem_KnowbaseItem::getTable(),
             'WHERE' => [
                 'knowbaseitems_id' => $kbitems_id1,
             ],
         ]);
         $this->assertEquals(1, $iterator->count());
-        $this->assertEquals($kb_cat_id1, $iterator->current()['knowbaseitemcategories_id']);
+        $this->assertEquals($parent1->getID(), $iterator->current()['knowbaseitems_id_parent']);
 
-        // Create a new KB item with both categories
+        // Create a new KB item with both parents
         $kbitems_id2 = $kbitem->add([
             'name' => __FUNCTION__ . '_2',
             'answer' => __FUNCTION__ . '_2',
-            '_categories' => [$kb_cat_id1, $kb_cat_id2],
+            '_parents' => [$parent1->getID(), $parent2->getID()],
         ]);
         $this->assertGreaterThan(0, $kbitems_id2);
 
-        // Expect the KB item to have both categories
+        // Expect the KB item to have both parents
         $iterator = $DB->request([
-            'FROM' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+            'FROM' => KnowbaseItem_KnowbaseItem::getTable(),
             'WHERE' => [
                 'knowbaseitems_id' => $kbitems_id2,
             ],
         ]);
         $this->assertEquals(2, $iterator->count());
-        $category_ids = [];
+        $parent_ids = [];
         foreach ($iterator as $row) {
-            $category_ids[] = $row['knowbaseitemcategories_id'];
+            $parent_ids[] = $row['knowbaseitems_id_parent'];
         }
-        $this->assertEqualsCanonicalizing([$kb_cat_id1, $kb_cat_id2], $category_ids);
+        $this->assertEqualsCanonicalizing([$parent1->getID(), $parent2->getID()], $parent_ids);
+    }
+
+    public function testSearchByParent(): void
+    {
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'entities_id' => $entity,
+        ]);
+
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+
+        // Not a child of $parent, must never appear in the results below.
+        $unrelated = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_unrelated',
+            'answer'      => __FUNCTION__ . '_unrelated',
+            'entities_id' => $entity,
+        ]);
+
+        $data = \Search::getDatas(KnowbaseItem::class, [
+            'criteria' => [
+                [
+                    'field'      => 79,
+                    'searchtype' => 'equals',
+                    'value'      => $parent->getID(),
+                ],
+            ],
+            // These test articles have no visibility grants (closed by
+            // default). Ask the search to include unpublished articles too,
+            // same as testGetVisibilityCriteria() does, so this test is only
+            // exercising the option-79 filter itself.
+            'unpublished' => 1,
+        ]);
+
+        $names = [];
+        foreach ($data['data']['rows'] as $row) {
+            // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
+            $n = $row['raw']['ITEM_' . KnowbaseItem::class . '_1'];
+            $names[] = explode('$#$', $n)[0];
+        }
+
+        $this->assertContains($child->fields['name'], $names);
+        $this->assertNotContains($unrelated->fields['name'], $names);
+        $this->assertNotContains($parent->fields['name'], $names);
+    }
+
+    public function testShowFullAddModeIgnoresUnknownParent(): void
+    {
+        $this->login();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                    => 'add',
+            'display'                 => false,
+            'knowbaseitems_id_parent' => 999999,
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
+    }
+
+    public function testShowFullAddModeIgnoresNonNumericParent(): void
+    {
+        $this->login();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                    => 'add',
+            'display'                 => false,
+            'knowbaseitems_id_parent' => 'abc',
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
+    }
+
+    public function testShowFullAddModeIgnoresParentWhenNotViewable(): void
+    {
+        // Parent article authored by another user, with no visibility grants:
+        // not viewable by a non-admin session.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => __FUNCTION__,
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $parent_id = $parent->getID();
+
+        // Log in as a user without KB admin rights and unrelated to the article
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                    => 'add',
+            'display'                 => false,
+            'knowbaseitems_id_parent' => $parent_id,
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
+    }
+
+    public function testSubArticlesTabShowChildren(): void
+    {
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        // A session without KB admin rights, unrelated to both articles.
+        $this->login('post-only', 'postonly');
+
+        $direct = new KnowbaseItem();
+        $this->assertTrue($direct->can($parent->getID(), READ));
+        $inherited = new KnowbaseItem();
+        $this->assertTrue($inherited->can($child->getID(), READ));
+
+        $item = new KnowbaseItem();
+        $item->getFromDB($parent->getID());
+        $html = (string) $item->showFull(['display' => false]);
+
+        $this->assertStringContainsString($child->fields['name'], $html);
+        $this->assertStringContainsString('id="kb-children-tab"', $html);
+    }
+
+    public function testSubArticlesTabHidesChildrenOutsideTheirValidityWindow(): void
+    {
+        // can() ignores begin_date/end_date, so the tab must apply the window itself,
+        // otherwise it publishes scheduled or expired articles the rest of the KB hides.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $children = [];
+        // Relative dates: `begin_date` is a timestamp column, capped at 2038 on MySQL.
+        foreach (
+            [
+                'valid'   => ['begin_date' => null, 'end_date' => null],
+                'expired' => ['begin_date' => null, 'end_date' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+                'future'  => ['begin_date' => date('Y-m-d H:i:s', strtotime('+1 year')), 'end_date' => null],
+            ] as $key => $dates
+        ) {
+            $children[$key] = $this->createItem(KnowbaseItem::class, [
+                'name'        => __FUNCTION__ . '_' . $key,
+                'answer'      => __FUNCTION__ . '_' . $key,
+                'is_faq'      => 1,
+                'users_id'    => $glpi_user,
+                'entities_id' => $entity,
+                '_parents'    => [$parent->getID()],
+                'begin_date'  => $dates['begin_date'],
+                'end_date'    => $dates['end_date'],
+            ]);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $children[$key]->getID(),
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $item->getFromDB($parent->getID());
+        $html = (string) $item->showFull(['display' => false]);
+
+        $this->assertStringContainsString($children['valid']->fields['name'], $html);
+        $this->assertStringNotContainsString($children['expired']->fields['name'], $html);
+        $this->assertStringNotContainsString($children['future']->fields['name'], $html);
+    }
+
+    public function testSubArticlesTabListsChildrenTheUserCanOpen(): void
+    {
+        // Same shape as the test above, but the child carries its own grant.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+        foreach ([$parent->getID(), $child->getID()] as $article_id) {
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $article_id,
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $item->getFromDB($parent->getID());
+        $html = (string) $item->showFull(['display' => false]);
+
+        $this->assertStringContainsString('id="kb-children-tab"', $html);
+        $this->assertStringContainsString($child->fields['name'], $html);
+
+        // This session cannot update the article and it has no document, so the
+        // Documents and Related items tabs must not be rendered at all.
+        $this->assertStringNotContainsString('id="kb-documents-tab-btn"', $html);
+        $this->assertStringNotContainsString('id="kb-items-tab-btn"', $html);
+    }
+
+    /**
+     * Home -> mid (not in the FAQ) -> grandchild (in the FAQ): the walk skips mid.
+     */
+    public function testSubArticlesTabFindsFaqGrandchildPastANonFaqParent(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+        $root_id = KnowbaseItem::getRootId();
+
+        $mid = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_mid',
+            'answer'   => __FUNCTION__ . '_mid',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+            // No `_parents`: attaches to the root article automatically.
+        ]);
+        $grandchild = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_grandchild',
+            'answer'      => __FUNCTION__ . '_grandchild',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$mid->getID()],
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $grandchild->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertNotContains($mid->getID(), $this->getBrowseListRequestIds(), 'mid must NOT be visible for this test');
+        $this->assertContains($grandchild->getID(), $this->getBrowseListRequestIds(), 'grandchild must be visible for this test');
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $children = $this->callPrivateMethod($root, 'getChildArticlesInfo');
+
+        $ids = array_column($children, 'id');
+        $this->assertContains($grandchild->getID(), $ids);
+        $this->assertNotContains($mid->getID(), $ids);
+    }
+
+    /**
+     * Same shape, grandchild unreadable too: skipping must not widen visibility.
+     */
+    public function testSubArticlesTabDoesNotWidenVisibilityPastAnUnreadableParent(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $mid = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_mid',
+            'answer'   => __FUNCTION__ . '_mid',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $grandchild = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_grandchild',
+            'answer'   => __FUNCTION__ . '_grandchild',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+            '_parents' => [$mid->getID()],
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertNotContains($mid->getID(), $this->getBrowseListRequestIds());
+        $this->assertNotContains($grandchild->getID(), $this->getBrowseListRequestIds());
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $children = $this->callPrivateMethod($root, 'getChildArticlesInfo');
+
+        $ids = array_column($children, 'id');
+        $this->assertNotContains($mid->getID(), $ids);
+        $this->assertNotContains($grandchild->getID(), $ids);
+    }
+
+    /**
+     * A central session opens every direct child, so the walk stops there.
+     */
+    public function testSubArticlesTabListsOnlyTheDirectChildForACentralSession(): void
+    {
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $mid = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . '_mid',
+            'answer' => __FUNCTION__ . '_mid',
+        ]);
+        $grandchild = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_grandchild',
+            'answer'   => __FUNCTION__ . '_grandchild',
+            '_parents' => [$mid->getID()],
+        ]);
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $children = $this->callPrivateMethod($root, 'getChildArticlesInfo');
+
+        $ids = array_column($children, 'id');
+        $this->assertContains($mid->getID(), $ids);
+        $this->assertNotContains($grandchild->getID(), $ids);
+    }
+
+    /**
+     * The aside already loads every visible article: the tab must only check its candidates.
+     */
+    public function testSubArticlesTabDoesNotLoadEveryVisibleArticle(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . '_parent',
+            'answer' => __FUNCTION__ . '_parent',
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_child',
+            'answer'   => __FUNCTION__ . '_child',
+            '_parents' => [$parent->getID()],
+        ]);
+
+        // SQL queries are only recorded in debug mode.
+        $use_mode = $_SESSION['glpi_use_mode'];
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+        try {
+            $before   = count(DebugProfile::getCurrent()->getDebugInfo()['sql']['queries']);
+            $children = $this->callPrivateMethod($parent, 'getChildArticlesInfo');
+            $queries  = array_slice(DebugProfile::getCurrent()->getDebugInfo()['sql']['queries'], $before);
+        } finally {
+            $_SESSION['glpi_use_mode'] = $use_mode;
+        }
+
+        $this->assertSame([$child->getID()], array_column($children, 'id'));
+
+        // The browse list request is the only one grouped by article.
+        $list_queries = array_filter(
+            array_column($queries, 'raw_query'),
+            static fn(string $query): bool => str_contains($query, 'GROUP BY `glpi_knowbaseitems`.`id`')
+        );
+        $this->assertNotEmpty($list_queries);
+        foreach ($list_queries as $query) {
+            $this->assertMatchesRegularExpression('/`glpi_knowbaseitems`\.`id` IN \(\?/', $query);
+        }
+    }
+
+    public static function helpdeskHiddenKnowbaseRightsProvider(): iterable
+    {
+        yield 'READ' => [READ];
+        yield 'READ + KNOWBASEADMIN' => [READ | KnowbaseItem::KNOWBASEADMIN];
+    }
+
+    /**
+     * A central profile moved to helpdesk keeps KB rights that the helpdesk
+     * form does not show. Helpdesk must still show the FAQ only.
+     */
+    #[DataProvider('helpdeskHiddenKnowbaseRightsProvider')]
+    public function testHelpdeskProfileWithHiddenKnowbaseRightsSeesFaqOnly(int $rights): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $profile = $this->createItem(Profile::class, [
+            'name'      => __FUNCTION__ . '_profile',
+            'interface' => 'central',
+        ]);
+        ProfileRight::updateProfileRights($profile->getID(), ['knowbase' => $rights]);
+        $this->updateItem(Profile::class, $profile->getID(), ['interface' => 'helpdesk']);
+
+        $user = $this->createItem(User::class, ['name' => __FUNCTION__ . '_user']);
+        $this->createItem(Profile_User::class, [
+            'users_id'     => $user->getID(),
+            'profiles_id'  => $profile->getID(),
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $shared = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_shared',
+            'answer'   => __FUNCTION__ . '_shared',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $shared->getID(),
+            'users_id'         => $user->getID(),
+        ]);
+        $owned = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_owned',
+            'answer'   => __FUNCTION__ . '_owned',
+            'is_faq'   => 0,
+            'users_id' => $user->getID(),
+        ]);
+        $faq = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_faq',
+            'answer'   => __FUNCTION__ . '_faq',
+            'is_faq'   => 1,
+            'users_id' => $glpi_user,
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $faq->getID(),
+            'users_id'         => $user->getID(),
+        ]);
+
+        $this->login(__FUNCTION__ . '_user');
+        Session::changeProfile($profile->getID());
+        $this->assertSame('helpdesk', Session::getCurrentInterface());
+        $this->assertTrue(Session::haveRight(KnowbaseItem::$rightname, $rights), 'the hidden rights survive the switch');
+
+        $list_ids = $this->getBrowseListRequestIds();
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $child_ids = array_column($this->callPrivateMethod($root, 'getChildArticlesInfo'), 'id');
+
+        foreach ([$shared, $owned] as $article) {
+            $this->assertFalse((new KnowbaseItem())->can($article->getID(), READ));
+            $this->assertNotContains($article->getID(), $list_ids);
+            $this->assertNotContains($article->getID(), $child_ids);
+        }
+
+        $this->assertTrue((new KnowbaseItem())->can($faq->getID(), READ));
+        $this->assertContains($faq->getID(), $list_ids);
+    }
+
+    /**
+     * The other side: widening for a READ holder must not reach a READFAQ reader.
+     */
+    public function testFaqOnlyReaderStillCannotSeeANonFaqArticle(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_article',
+            'answer'   => __FUNCTION__ . '_article',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(Session::haveRight(KnowbaseItem::$rightname, READ));
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $item = new KnowbaseItem();
+        $this->assertFalse($item->can($article->getID(), READ));
+        $this->assertNotContains($article->getID(), $this->getBrowseListRequestIds());
+    }
+
+    /**
+     * Children sort through the session collation, not byte-wise.
+     */
+    public function testSubArticlesTabSortsAccentedNamesUnderTheirLetter(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . '_parent',
+            'answer' => __FUNCTION__ . '_parent',
+        ]);
+        foreach (['Zebre', 'Éditeur', 'Alpha'] as $name) {
+            $this->createItem(KnowbaseItem::class, [
+                'name'     => $name,
+                'answer'   => $name,
+                '_parents' => [$parent->getID()],
+            ]);
+        }
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($parent->getID()));
+        $names = array_column($this->callPrivateMethod($item, 'getChildArticlesInfo'), 'name');
+
+        $this->assertSame(['Alpha', 'Éditeur', 'Zebre'], $names);
+    }
+
+    /**
+     * The knowledge base is a DAG: an article appears under each of its parents.
+     */
+    public function testSubArticlesTabListsAnArticleUnderEachOfItsParents(): void
+    {
+        $this->login();
+
+        $parent1 = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . '_parent1',
+            'answer' => __FUNCTION__ . '_parent1',
+        ]);
+        $parent2 = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . '_parent2',
+            'answer' => __FUNCTION__ . '_parent2',
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_child',
+            'answer'   => __FUNCTION__ . '_child',
+            '_parents' => [$parent1->getID(), $parent2->getID()],
+        ]);
+
+        foreach ([$parent1, $parent2] as $parent) {
+            $item = new KnowbaseItem();
+            $this->assertTrue($item->getFromDB($parent->getID()));
+            $children = $this->callPrivateMethod($item, 'getChildArticlesInfo');
+            $this->assertContains($child->getID(), array_column($children, 'id'));
+        }
+    }
+
+    /**
+     * Root -> mid1 -> mid2 (both unreadable) -> leaf: the walk reaches the leaf.
+     */
+    public function testSubArticlesTabFindsReadableArticleTwoUnreadableLevelsDown(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+        $root_id = KnowbaseItem::getRootId();
+
+        $mid1 = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_mid1',
+            'answer'   => __FUNCTION__ . '_mid1',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+            // No `_parents`: attaches to the root article automatically.
+        ]);
+        $mid2 = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_mid2',
+            'answer'   => __FUNCTION__ . '_mid2',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+            '_parents' => [$mid1->getID()],
+        ]);
+        $leaf = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_leaf',
+            'answer'      => __FUNCTION__ . '_leaf',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$mid2->getID()],
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $leaf->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertNotContains($mid1->getID(), $this->getBrowseListRequestIds(), 'mid1 must NOT be visible for this test');
+        $this->assertNotContains($mid2->getID(), $this->getBrowseListRequestIds(), 'mid2 must NOT be visible for this test');
+        $this->assertContains($leaf->getID(), $this->getBrowseListRequestIds(), 'leaf must be visible for this test');
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $children = $this->callPrivateMethod($root, 'getChildArticlesInfo');
+
+        $ids = array_column($children, 'id');
+        $this->assertContains($leaf->getID(), $ids);
+        $this->assertNotContains($mid1->getID(), $ids);
+        $this->assertNotContains($mid2->getID(), $ids);
+    }
+
+    /**
+     * The knowledge base is a DAG: an article under two unreadable parents
+     * surfaces once, not once per branch.
+     */
+    public function testSubArticlesTabListsADiamondArticleOnlyOnce(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+        $root_id = KnowbaseItem::getRootId();
+
+        $branch1 = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_branch1',
+            'answer'   => __FUNCTION__ . '_branch1',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $branch2 = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_branch2',
+            'answer'   => __FUNCTION__ . '_branch2',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $leaf = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_leaf',
+            'answer'      => __FUNCTION__ . '_leaf',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$branch1->getID(), $branch2->getID()],
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $leaf->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertNotContains($branch1->getID(), $this->getBrowseListRequestIds());
+        $this->assertNotContains($branch2->getID(), $this->getBrowseListRequestIds());
+        $this->assertContains($leaf->getID(), $this->getBrowseListRequestIds());
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $children = $this->callPrivateMethod($root, 'getChildArticlesInfo');
+
+        $ids = array_column($children, 'id');
+        $this->assertSame(
+            1,
+            count(array_filter($ids, static fn(int $id): bool => $id === $leaf->getID())),
+            'the diamond article must appear exactly once',
+        );
+    }
+
+    /**
+     * `can()` ignores the validity window, see
+     * `testSubArticlesTabHidesChildrenOutsideTheirValidityWindow()`.
+     */
+    public function testSubArticlesTabHidesOutOfWindowIntermediateButFindsArticleBelowIt(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+        $root_id = KnowbaseItem::getRootId();
+
+        $mid = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_mid',
+            'answer'      => __FUNCTION__ . '_mid',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            'end_date'    => date('Y-m-d H:i:s', strtotime('-1 year')),
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $mid->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+        $leaf = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_leaf',
+            'answer'      => __FUNCTION__ . '_leaf',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$mid->getID()],
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $leaf->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertNotContains($mid->getID(), $this->getBrowseListRequestIds(), 'mid must be excluded by the validity window');
+        $this->assertContains($leaf->getID(), $this->getBrowseListRequestIds());
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $children = $this->callPrivateMethod($root, 'getChildArticlesInfo');
+
+        $ids = array_column($children, 'id');
+        $this->assertNotContains($mid->getID(), $ids);
+        $this->assertContains($leaf->getID(), $ids);
+    }
+
+    public function testShowFullAddModePrefillsParentFromOptions(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => __FUNCTION__,
+        ]);
+        $parent_id = $parent->getID();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                    => 'add',
+            'display'                 => false,
+            'knowbaseitems_id_parent' => $parent_id,
+        ]);
+
+        $this->assertStringContainsString(
+            'data-glpi-kb-prefilled-parent-id="' . $parent_id . '"',
+            $html
+        );
+    }
+
+    public function testShowFullExposesCommentAnchors(): void
+    {
+        $this->login();
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Anchors in showFull ' . $this->getUniqueString(),
+            'answer' => '<p>Some content to anchor on</p>',
+        ]);
+
+        $comment = new KnowbaseItem_Comment();
+        $comment->add([
+            'knowbaseitems_id'  => $kb->getID(),
+            'comment'           => 'Anchored comment',
+            'anchor_prefix'     => 'Some ',
+            'anchor_exact'      => 'content',
+            'anchor_suffix'     => ' to anchor',
+            'anchor_occurrence' => 0,
+        ]);
+
+        $html = $kb->showFull(['display' => false]);
+        $crawler = new Crawler($html);
+
+        $raw = $crawler->filter('[data-glpi-comment-anchors]')->attr('data-glpi-comment-anchors');
+        $anchors = json_decode($raw, true);
+
+        $this->assertCount(1, $anchors);
+        $this->assertSame('content', $anchors[0]['exact']);
     }
 
     protected function testGetVisibilityCriteriaProvider(): iterable
@@ -979,16 +1792,22 @@ HTML,
         yield ['articles' => []];
 
         // Second FAQ test case: public FAQ enabled + multi entities
-        $_SESSION['glpi_multientitiesmode'] = 1;
         $CFG_GLPI['use_public_faq'] = true;
         yield ['articles' => ['FAQ 2']];
 
         // Third FAQ test case: public FAQ enabled + single entity
-        $_SESSION['glpi_multientitiesmode'] = 0;
+        // The anonymous mode is read from the DB, so remove the child entities for this case.
+        $entities = iterator_to_array($DB->request([
+            'FROM'  => Entity::getTable(),
+            'WHERE' => ['id' => ['>', 0]],
+        ]));
+        $DB->delete(Entity::getTable(), ['id' => ['>', 0]]);
         yield ['articles' => ['FAQ 1', 'FAQ 2']];
 
-        // Revert session / config
-        $_SESSION['glpi_multientitiesmode'] = 1;
+        // Revert entities / config
+        foreach ($entities as $entity) {
+            $DB->insert(Entity::getTable(), $entity);
+        }
         $CFG_GLPI['use_public_faq'] = false;
     }
 
@@ -1165,7 +1984,7 @@ HTML,
         ]);
 
         // Target entity
-        $entity = new \Entity();
+        $entity = new Entity();
         $faq_entity1 = (int) $entity->add([
             'name' => 'FAQ 1 entity',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
@@ -1371,7 +2190,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \User::class,
+                    '_type' => User::class,
                     'users_id' => $tech_user,
                 ],
             ],
@@ -1385,7 +2204,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \User::class,
+                    '_type' => User::class,
                     'users_id' => $normal_user,
                 ],
             ],
@@ -1516,7 +2335,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \Profile::class,
+                    '_type' => Profile::class,
                     'profiles_id' => getItemByTypeName("Profile", "Technician", true),
                 ],
             ],
@@ -1530,7 +2349,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \Profile::class,
+                    '_type' => Profile::class,
                     'profiles_id' => getItemByTypeName("Profile", "Hotliner", true),
                 ],
             ],
@@ -1637,12 +2456,43 @@ HTML,
         }
     }
 
+    public function testChildGroupInheritsParentGroupVisibility(): void
+    {
+        $this->login();
+
+        $parent_group = $this->createItem("Group", ['name' => 'KB parent group']);
+        $child_group = $this->createItem("Group", [
+            'name' => 'KB child group',
+            'groups_id' => $parent_group->getID(),
+        ]);
+
+        $tech_user = getItemByTypeName("User", "tech", true);
+        $this->createItem("Group_User", ['users_id' => $tech_user, 'groups_id' => $child_group->getID()]);
+
+        $kb = $this->createItem("KnowbaseItem", [
+            'name'         => 'KB visible to parent group',
+            'answer'       => 'KB visible to parent group',
+            'is_faq'       => false,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            '_visibility'  => [
+                'entities_id'  => -1,
+                'is_recursive' => 1,
+                '_type'        => \Group::class,
+                'groups_id'    => $parent_group->getID(),
+            ],
+        ]);
+
+        $this->login('tech', 'tech');
+        $this->assertTrue((new KnowbaseItem())->can($kb->getID(), READ));
+    }
+
     public function testClone()
     {
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $entity->getFromDBByCrit(['name' => '_test_root_entity']);
 
         $date = date('Y-m-d H:i:s');
@@ -1660,7 +2510,7 @@ HTML,
         );
 
         //add target
-        $tentity = new \Entity();
+        $tentity = new Entity();
         $this->assertGreaterThan(
             0,
             $eid = $tentity->add([
@@ -1782,36 +2632,34 @@ HTML,
         $this->login();
         $kbi = getItemByTypeName('KnowbaseItem', '_knowbaseitem01', false);
 
-        $category = $this->createItem('KnowbaseItemCategory', [
-            'name' => __FUNCTION__,
-            'entities_id' => $this->getTestRootEntity(true),
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => __FUNCTION__,
         ]);
 
         $kbi->update([
             'id' => $kbi->getID(),
-            '_categories' => [$category->getID()],
-            '__categories_defined' => 1,
+            '_parents' => [$parent->getID()],
+            '__parents_defined' => 1,
         ]);
         $this->assertEquals(
             1,
             countElementsInTable(
-                \KnowbaseItem_KnowbaseItemCategory::getTable(),
+                KnowbaseItem_KnowbaseItem::getTable(),
                 ['knowbaseitems_id' => $kbi->getID()]
             )
         );
         $kbi->update([
             'id' => $kbi->getID(),
-            '_categories' => '',
-            '__categories_defined' => 1,
+            '_parents' => '',
+            '__parents_defined' => 1,
         ]);
-        $this->assertEquals(
-            0,
-            countElementsInTable(
-                \KnowbaseItem_KnowbaseItemCategory::getTable(),
-                ['knowbaseitems_id' => $kbi->getID()]
-            )
+        // The chosen parent is gone. The article joins the root article rather
+        // than being left outside the tree, see
+        // `testArticleUpdatedWithoutAnyParentIsAttachedToTheRoot()`.
+        $this->assertSame(
+            [KnowbaseItem::getRootId()],
+            $this->getParentIds($kbi->getID())
         );
     }
 
@@ -2027,14 +2875,14 @@ HTML,
             'items_id'     => $ticket->getID(),
         ]);
 
-        $profile = $this->createItem(\Profile::class, [
+        $profile = $this->createItem(Profile::class, [
             'name'      => __FUNCTION__,
             'interface' => 'central',
             'knowbase'  => KnowbaseItem::PUBLISHFAQ | CREATE,
             'ticket'    => 0,
         ]);
 
-        $user = $this->createItem(\User::class, [
+        $user = $this->createItem(User::class, [
             'name'         => __FUNCTION__,
             'password'     => 'testpassword',
             'password2'    => 'testpassword',
@@ -2070,5 +2918,1776 @@ HTML,
                 'items_id'     => $kb->getID(),
             ])
         );
+    }
+
+    public function testGetReadablePrefilledParentIdRejectsZeroOrUnreadableIds(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Public static test parent',
+            'answer' => 'Public static test parent',
+        ]);
+
+        $this->assertSame(
+            $parent->getID(),
+            KnowbaseItem::getReadablePrefilledParentId($parent->getID())
+        );
+        $this->assertNull(KnowbaseItem::getReadablePrefilledParentId(0));
+        $this->assertNull(KnowbaseItem::getReadablePrefilledParentId(999999));
+    }
+
+    public function testGetFormOptionsFromUrlWhitelistsParentOnly(): void
+    {
+        $item = new KnowbaseItem();
+        $this->assertSame(
+            ['knowbaseitems_id_parent' => 5],
+            $item->getFormOptionsFromUrl(['knowbaseitems_id_parent' => 5, 'unrelated' => 'x'])
+        );
+        $this->assertSame([], $item->getFormOptionsFromUrl(['unrelated' => 'x']));
+    }
+
+    public function testGetServiceCatalogItemDescriptionWithDescriptionSet(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__,
+            'answer'      => '<h1>Full procedure</h1><p>' . str_repeat('Lorem ipsum dolor sit amet. ', 30) . '</p>',
+            'description' => 'A short description for the tile',
+            'is_faq'      => 1,
+        ]);
+
+        $this->assertEquals(
+            'A short description for the tile',
+            $kb->getServiceCatalogItemDescription()
+        );
+    }
+
+    public function testGetServiceCatalogItemDescriptionFallsBackToAnswerExcerpt(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => '<h1>PROCESS</h1><p>Screenshot on an Android smartphone</p>'
+                . '<img src="https://example.org/screenshot.png">'
+                . '<p>' . str_repeat('Lorem ipsum dolor sit amet. ', 30) . '</p>',
+            'is_faq' => 1,
+        ]);
+
+        $description = $kb->getServiceCatalogItemDescription();
+
+        // No raw HTML leaking into the tile.
+        $this->assertStringNotContainsString('<h1>', $description);
+        $this->assertStringNotContainsString('<img', $description);
+        $this->assertStringNotContainsString('<p>', $description);
+
+        // Truncated to a fixed length.
+        $this->assertLessThanOrEqual(200 + mb_strlen('&nbsp;(...)'), mb_strlen($description));
+        $this->assertStringEndsWith('&nbsp;(...)', $description);
+    }
+
+    public function testGetServiceCatalogItemDescriptionFallsBackToShortAnswer(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => '<p>Short answer</p>',
+            'is_faq' => 1,
+        ]);
+
+        $this->assertEquals('Short answer', $kb->getServiceCatalogItemDescription());
+    }
+
+    public function testVisibilityInheritsFromAncestor(): void
+    {
+        // Non-admin central user
+        $this->login('normal', 'normal');
+        $entity = (int) $_SESSION['glpiactiveentities'][0];
+
+        // Author the articles as *another* user (glpi): otherwise the author
+        // bypass (`users_id => current user`) would make them directly visible
+        // to `normal` and inheritance would never be exercised.
+        // Only an admin can choose the author, so create them as one.
+        $this->login();
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+
+        $parent = new KnowbaseItem();
+        $parent_id = (int) $parent->add(['name' => 'Section', 'answer' => '', 'users_id' => $glpi_user]);
+        // grant the parent to the user's active entity
+        (new \Entity_KnowbaseItem())->add([
+            'knowbaseitems_id' => $parent_id, 'entities_id' => $entity, 'is_recursive' => 1,
+        ]);
+
+        // child has NO direct visibility, linked under the parent
+        $child = new KnowbaseItem();
+        $child_id = (int) $child->add(['name' => 'Nested', 'answer' => '', 'users_id' => $glpi_user, '_parents' => [$parent_id]]);
+
+        $this->login('normal', 'normal');
+
+        // browse list applies visibility criteria
+        $visible_ids = $this->listBrowseIds();
+        $this->assertContains($child_id, $visible_ids, 'child visible via ancestor');
+
+        // remove the parent grant -> child no longer visible
+        $ekb = new \Entity_KnowbaseItem();
+        $ekb->getFromDBByCrit(['knowbaseitems_id' => $parent_id]);
+        $ekb->delete(['id' => $ekb->getID()], true);
+
+        $visible_ids = $this->listBrowseIds();
+        $this->assertNotContains($child_id, $visible_ids, 'child hidden once ancestor grant removed');
+    }
+
+    public function testChildArticleIsViewableThroughItsVisibleParent(): void
+    {
+        // Arrange: create three articles (parent, child and grandchild) and give
+        // visiblity to the "tech" user of the parent article.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$parent->getID()],
+        ]);
+        $grandchild = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Grandchild ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$child->getID()],
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'users_id'         => $tech_user,
+        ]);
+
+        // Act and assert: the parent, child and grandchild articles should be
+        // visible for "tech"
+        $this->login('tech', 'tech');
+
+        // Make sure "tech" does not have administrator rights as it would make
+        // the test meaningless (he would be able to access any articles).
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $parent_obj = new KnowbaseItem();
+        $this->assertTrue($parent_obj->getFromDB($parent->getID()));
+        $this->assertTrue($parent_obj->canViewItem());
+        $this->assertFalse($parent_obj->canUpdateItem());
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child->getID()));
+        $this->assertTrue($child_obj->canViewItem());
+        $this->assertFalse($child_obj->canUpdateItem());
+
+        $grandchild_obj = new KnowbaseItem();
+        $this->assertTrue($grandchild_obj->getFromDB($grandchild->getID()));
+        $this->assertTrue($grandchild_obj->canViewItem());
+        $this->assertFalse($grandchild_obj->canUpdateItem());
+    }
+
+    public function testChildArticleIsEditableThroughItsEditableParent(): void
+    {
+        // Arrange: create three articles (parent, child and grandchild) and give
+        // visiblity to the "tech" user of the parent article.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$parent->getID()],
+        ]);
+        $grandchild = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Grandchild ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$child->getID()],
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'users_id'         => $tech_user,
+        ]);
+
+        // Act and assert: the parent, child and grandchild articles should be
+        // visible and editable for "tech"
+        $this->login('tech', 'tech');
+
+        // Make sure "tech" does not have administrator rights as it would make
+        // the test meaningless (he would be able to access any articles).
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $parent_obj = new KnowbaseItem();
+        $this->assertTrue($parent_obj->getFromDB($parent->getID()));
+        $this->assertTrue($parent_obj->canViewItem());
+        $this->assertTrue($parent_obj->canUpdateItem());
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child->getID()));
+        $this->assertTrue($child_obj->canViewItem());
+        $this->assertTrue($child_obj->canUpdateItem());
+
+        $grandchild_obj = new KnowbaseItem();
+        $this->assertTrue($grandchild_obj->getFromDB($grandchild->getID()));
+        $this->assertTrue($grandchild_obj->canViewItem());
+        $this->assertTrue($grandchild_obj->canUpdateItem());
+    }
+
+    public function testChildArticleIsViewableThroughOneOfItsParents(): void
+    {
+        // Arrange: create a child with two parents, and give visibility to the
+        // "tech" user of the second parent only.
+        // The hidden parent is created and linked first, thus it is checked
+        // first: the check must continue with the next parent.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+
+        $hidden_parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Hidden parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $visible_parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Visible parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$hidden_parent->getID(), $visible_parent->getID()],
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $visible_parent->getID(),
+            'users_id'         => $tech_user,
+        ]);
+
+        // Act and assert: the child is visible for "tech" through its visible
+        // parent, the other parent stays hidden.
+        $this->login('tech', 'tech');
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child->getID()));
+        $this->assertSame(
+            [$hidden_parent->getID(), $visible_parent->getID()],
+            array_map('intval', $child_obj->fields['_parents'])
+        );
+        $this->assertTrue($child_obj->canViewItem());
+
+        $hidden_parent_obj = new KnowbaseItem();
+        $this->assertTrue($hidden_parent_obj->getFromDB($hidden_parent->getID()));
+        $this->assertFalse($hidden_parent_obj->canViewItem());
+    }
+
+    public function testVisibilityCheckStopsOnACycleInTheParentLinks(): void
+    {
+        global $DB;
+
+        // Arrange: create two articles without any visibility rule, each one
+        // being the parent of the other.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $first = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'First ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $second = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Second ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$first->getID()],
+        ]);
+
+        // The cycle is refused by `KnowbaseItem_KnowbaseItem`, thus the link is
+        // inserted directly, like corrupted data would be.
+        $DB->insert(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id'        => $first->getID(),
+            'knowbaseitems_id_parent' => $second->getID(),
+        ]);
+
+        // Act and assert: the check ends (no infinite loop), and none of the
+        // articles is visible.
+        $this->login('tech', 'tech');
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        foreach ([$first, $second] as $article) {
+            $article_obj = new KnowbaseItem();
+            $this->assertTrue($article_obj->getFromDB($article->getID()));
+            $this->assertFalse($article_obj->canViewItem());
+        }
+    }
+
+    /** @return int[] ids returned by a visibility-filtered browse list */
+    private function listBrowseIds(): array
+    {
+        global $DB;
+        $ids = [];
+        foreach ($DB->request(KnowbaseItem::getListRequest([], 'browse')) as $row) {
+            $ids[] = (int) $row['id'];
+        }
+        return $ids;
+    }
+
+    /**
+     * Once a translation exists, the browse list is sorted on the title the
+     * reader sees: the translation in their language, else the original name.
+     */
+    public function testBrowseListIsSortedOnTheTranslatedTitle(): void
+    {
+        $this->login();
+
+        $charlie = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' Charlie',
+            'answer' => 'Charlie',
+        ]);
+        $bravo = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__ . ' Bravo',
+            'answer' => 'Bravo',
+        ]);
+        $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $charlie->getID(),
+            'language'         => $_SESSION['glpilanguage'],
+            'name'             => __FUNCTION__ . ' Alpha',
+            'answer'           => 'Alpha',
+        ]);
+
+        $ids = array_values(array_intersect(
+            $this->listBrowseIds(),
+            [$charlie->getID(), $bravo->getID()]
+        ));
+
+        $this->assertSame([$charlie->getID(), $bravo->getID()], $ids);
+    }
+
+    /**
+     * The visibility criteria must keep working when the caller renames
+     * `glpi_knowbaseitems` to an alias, as the High Level API does (it maps the
+     * main table to `_`). Callers can only rewrite criteria *keys*, so no
+     * table-qualified column may be buried inside a raw `QueryExpression`.
+     *
+     * A KB admin sees every article through a short-circuit that skips the
+     * inherited-visibility term entirely, so this must run as a plain user.
+     */
+    public function testVisibilityCriteriaSupportMainTableAlias(): void
+    {
+        global $DB;
+
+        $this->login('normal', 'normal');
+
+        $criteria = KnowbaseItem::getVisibilityCriteria(true);
+
+        // Sanity check: the term that used to hardcode the table name is present.
+        $iterator = new \DBmysqlIterator($DB);
+        $iterator->buildQuery([
+            'SELECT'    => [KnowbaseItem::getTableField('id')],
+            'FROM'      => KnowbaseItem::getTable(),
+            'LEFT JOIN' => $criteria['LEFT JOIN'],
+            'WHERE'     => $criteria['WHERE'],
+        ]);
+        $this->assertStringContainsString('WITH RECURSIVE', $iterator->getSql());
+
+        // Rewrite the main table to `_` the same way `Glpi\Api\HL\Search` does,
+        // then make sure the resulting query is still valid SQL.
+        $rewrite = static function (array $crit) use (&$rewrite): array {
+            $out = [];
+            foreach ($crit as $key => $value) {
+                if ($key === KnowbaseItem::getTable() || str_starts_with((string) $key, KnowbaseItem::getTable() . '.')) {
+                    $key = str_replace(KnowbaseItem::getTable(), '_', (string) $key);
+                }
+                $out[$key] = is_array($value) ? $rewrite($value) : $value;
+            }
+            return $out;
+        };
+
+        $aliased = $DB->request([
+            'SELECT'    => ['_.id'],
+            'FROM'      => KnowbaseItem::getTable() . ' AS _',
+            'LEFT JOIN' => $rewrite($criteria['LEFT JOIN']),
+            'WHERE'     => $rewrite($criteria['WHERE']),
+        ]);
+        $this->assertGreaterThanOrEqual(0, $aliased->count());
+    }
+
+    public function testShowListDoesNotLeakUnviewableParent(): void
+    {
+        // Parent + child authored by glpi, with no visibility grants.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Secret parent ' . __FUNCTION__,
+            'answer'   => '',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $parent_id = $parent->getID();
+
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Leaf child ' . __FUNCTION__,
+            'answer'   => '',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+            '_parents' => [$parent_id],
+        ]);
+        $child_id = $child->getID();
+
+        // Non-admin central user, unrelated to the articles.
+        $this->login('normal', 'normal');
+
+        // Grant the child directly to this user (so the child shows in the list),
+        // while the parent remains non-viewable.
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $child_id,
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child_id));
+        $this->assertTrue($child_obj->canViewItem(), 'child must be viewable for this test');
+        $parent_obj = new KnowbaseItem();
+        $this->assertTrue($parent_obj->getFromDB($parent_id));
+        $this->assertFalse($parent_obj->canViewItem(), 'parent must NOT be viewable for this test');
+
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        \ob_start();
+        KnowbaseItem::showList(['start' => 0], 'browse');
+        $output = (string) \ob_get_clean();
+        \error_reporting($reporting_level);
+        $this->hasPhpLogRecordThatContains('Called method is deprecated', LogLevel::INFO);
+
+        // The child (visible) is listed, but the unviewable parent must not leak.
+        $this->assertStringContainsString('Leaf child ' . __FUNCTION__, $output);
+        $this->assertStringNotContainsString('Secret parent ' . __FUNCTION__, $output);
+        $this->assertStringNotContainsString("data-parent-id='" . $parent_id . "'", $output);
+    }
+
+    /**
+     * A viewable parent is rendered as a link to the parent article itself.
+     *
+     * It must NOT point at the search list with a `knowbaseitems_id_parent`
+     * parameter: that parameter was only ever read by the tree-browse view,
+     * which `KnowbaseItem` no longer implements, so such a link would land on
+     * the unfiltered article list.
+     */
+    public function testShowListLinksParentToItsOwnForm(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Visible parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Visible child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        \ob_start();
+        KnowbaseItem::showList(['start' => 0], 'browse');
+        $output = (string) \ob_get_clean();
+        \error_reporting($reporting_level);
+        $this->hasPhpLogRecordThatContains('Called method is deprecated', LogLevel::INFO);
+
+        $this->assertStringContainsString('Visible child ' . __FUNCTION__, $output);
+        $this->assertStringContainsString(
+            "href='" . htmlescape(KnowbaseItem::getFormURLWithID($parent->getID())) . "'",
+            $output
+        );
+        $this->assertStringNotContainsString('knowbaseitems_id_parent=', $output);
+        $this->assertStringNotContainsString('forcetab=Knowbase', $output);
+        // Guard against the assertions above passing on an empty parent cell.
+        $this->assertStringContainsString(
+            "data-parent-id='" . $parent->getID() . "'",
+            $output
+        );
+    }
+
+    public function testRootArticleExists(): void
+    {
+        // The root article is created by the installation process, thus the
+        // configured id must always point to an existing article.
+        $root_id = KnowbaseItem::getRootId();
+        $this->assertGreaterThan(0, $root_id);
+
+        $root = KnowbaseItem::getById($root_id);
+        $this->assertInstanceOf(KnowbaseItem::class, $root);
+
+        // It must be readable from any entity.
+        $this->assertEquals(0, $root->fields['entities_id']);
+        $this->assertEquals(1, $root->fields['is_recursive']);
+    }
+
+    public function testAllArticlesMenuLinkSkipsTheRootArticleRedirect(): void
+    {
+        // A bare `front/knowbaseitem.php` redirects to the root article, so the
+        // link to the article list has to carry a parameter.
+        $link = KnowbaseItem::getAdditionalMenuLinks()['all_articles'];
+
+        $this->assertStringStartsWith(KnowbaseItem::getSearchURL(false) . '?', $link);
+        $this->assertNotEmpty(parse_url($link, PHP_URL_QUERY));
+    }
+
+    public function testRootArticleIsAuthoredByTheSystemUser(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+
+        // Created in the background: credited to the system user, else the
+        // history and the last update info would report a deleted user.
+        $this->assertSame((int) $CFG_GLPI['system_user'], (int) $root->fields['users_id']);
+        $this->assertInstanceOf(User::class, User::getById((int) $root->fields['users_id']));
+        $this->assertNotEquals(__('Deleted user'), $root->getLastUpdateInfo()->getAuthorName());
+    }
+
+    public function testRootArticleCannotBeDeleted(): void
+    {
+        // The root article belongs to the root entity: work from there, else the
+        // entity check of `canDeleteItem()`/`canPurgeItem()` would be the one
+        // refusing the action.
+        $this->login();
+        $this->setEntity(0, true);
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+        $this->assertTrue($root->checkEntity());
+
+        // Sanity check: the current user is allowed to delete a regular article
+        // of the same entity.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Article ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->assertTrue($other->can($other->getID(), DELETE));
+        $this->assertTrue($other->can($other->getID(), PURGE));
+
+        // Rights checks, on which every UI and API deletion path relies, refuse
+        // the action for the root article.
+        $this->assertFalse($root->canDeleteItem());
+        $this->assertFalse($root->canPurgeItem());
+        $this->assertFalse($root->can($root->getID(), DELETE));
+        $this->assertFalse($root->can($root->getID(), PURGE));
+
+        // The deletion itself is refused too, even when rights are not checked.
+        $this->assertFalse($root->delete(['id' => $root->getID()]));
+        $this->hasSessionMessages(ERROR, ['The root article of the knowledge base cannot be deleted.']);
+        $this->assertFalse($root->delete(['id' => $root->getID()], true));
+        $this->hasSessionMessages(ERROR, ['The root article of the knowledge base cannot be deleted.']);
+
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+    }
+
+    public function testRootArticleDeleteActionIsNotOffered(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+        $this->assertNotContains(
+            EditorActionType::DELETE_ARTICLE,
+            $this->getAsideActionTypes($root),
+        );
+
+        // Sanity check: the action is offered for a regular article.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Article ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->assertContains(
+            EditorActionType::DELETE_ARTICLE,
+            $this->getAsideActionTypes($other),
+        );
+    }
+
+    /**
+     * @return EditorActionType[]
+     */
+    private function getAsideActionTypes(KnowbaseItem $article): array
+    {
+        return array_map(
+            static fn(EditorAction $action): EditorActionType => $action->type,
+            array_filter(
+                $article->getAsideActions(),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            ),
+        );
+    }
+
+    public function testRootArticleIsReadableWithoutVisibilityRules(): void
+    {
+        // A profile that can read the knowledge base but is not a KB admin, as
+        // admins bypass every visibility check.
+        $this->login('tech', 'tech');
+        $this->assertFalse(Session::haveRight('knowbase', KnowbaseItem::KNOWBASEADMIN));
+
+        $root_id = KnowbaseItem::getRootId();
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+
+        // Premise: the root article has no visibility rule whatsoever.
+        $visibility_tables = [
+            'glpi_entities_knowbaseitems',
+            'glpi_groups_knowbaseitems',
+            'glpi_knowbaseitems_profiles',
+            'glpi_knowbaseitems_users',
+        ];
+        foreach ($visibility_tables as $table) {
+            $this->assertEquals(0, countElementsInTable($table, ['knowbaseitems_id' => $root_id]));
+        }
+
+        // It is readable anyway, and listed among the visible articles.
+        $this->assertTrue($root->canViewItem());
+        $this->assertTrue($root->can($root_id, READ));
+        $this->assertContains($root_id, $this->getVisibleArticleIds());
+    }
+
+    public function testRootArticleIsReadableByKnowledgeBaseAdmins(): void
+    {
+        $this->login();
+
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            // Authored by someone else, else the author shortcut would answer
+            // instead of the rights check.
+            'users_id' => getItemByTypeName('User', 'tech', true),
+        ]);
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+
+        // Knowledge base administrators bypass every visibility rule. The root
+        // article has none, so it must not be the single article they are
+        // refused, as `canUpdateItem()` already lets them edit it.
+        $_SESSION['glpiactiveprofile']['knowbase'] = KnowbaseItem::KNOWBASEADMIN;
+        $this->assertFalse(Session::haveRight('knowbase', READ));
+
+        $this->assertTrue($other->canViewItem());
+        $this->assertTrue($root->canViewItem());
+    }
+
+    public function testRootArticleIsNotPublishable(): void
+    {
+        $this->login();
+
+        $root_id = KnowbaseItem::getRootId();
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $this->assertEquals(0, $root->fields['is_faq']);
+        $this->assertEquals(0, $root->fields['show_in_service_catalog']);
+
+        // Admitted to the FAQ by its id, never as a listed FAQ or catalog entry.
+        $this->assertTrue($root->update([
+            'id'                      => $root_id,
+            'is_faq'                  => 1,
+            'show_in_service_catalog' => 1,
+        ]));
+        $this->assertTrue($root->getFromDB($root_id));
+        $this->assertEquals(0, $root->fields['is_faq']);
+        $this->assertEquals(0, $root->fields['show_in_service_catalog']);
+
+        // The action that would set the FAQ flag is not offered either, see
+        // `testRootArticleHasNoVisibilityRelatedActions()` for the service
+        // catalog one.
+        $this->assertNotContains('Add to FAQ', $this->getAsideActionLabels($root));
+
+        // Sanity check: a regular article can be published.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Article ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->assertContains('Add to FAQ', $this->getAsideActionLabels($other));
+        $this->assertTrue($other->update([
+            'id'                      => $other->getID(),
+            'is_faq'                  => 1,
+            'show_in_service_catalog' => 1,
+        ]));
+        $this->assertTrue($other->getFromDB($other->getID()));
+        $this->assertEquals(1, $other->fields['is_faq']);
+        $this->assertEquals(1, $other->fields['show_in_service_catalog']);
+    }
+
+    public function testFaqPublicationNeedsThePublishFaqRight(): void
+    {
+        // The article is authored by another user: the author bypass would otherwise let the tested user edit it without any visibility rule.
+        $this->login();
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => getItemByTypeName(User::class, 'glpi', true),
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'users_id'         => getItemByTypeName(User::class, 'tech', true),
+        ]);
+
+        $this->login('tech', 'tech');
+        $this->assertTrue($article->getFromDB($article->getID()));
+
+        // `UPDATE` alone does not publish in the FAQ.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+        $this->assertTrue($article->canUpdateItem());
+        $this->assertNotContains('Add to FAQ', $this->getAsideActionLabels($article));
+        $this->assertTrue($article->update(['id' => $article->getID(), 'is_faq' => 1]));
+        $this->assertTrue($article->getFromDB($article->getID()));
+        $this->assertEquals(0, $article->fields['is_faq']);
+
+        // `PUBLISHFAQ` does.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | KnowbaseItem::PUBLISHFAQ;
+        $this->assertContains('Add to FAQ', $this->getAsideActionLabels($article));
+        $this->assertTrue($article->update(['id' => $article->getID(), 'is_faq' => 1]));
+        $this->assertTrue($article->getFromDB($article->getID()));
+        $this->assertEquals(1, $article->fields['is_faq']);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getAsideActionLabels(KnowbaseItem $article): array
+    {
+        return array_map(
+            static fn(EditorAction $action): string => $action->label,
+            array_filter(
+                $article->getAsideActions(),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            ),
+        );
+    }
+
+    public function testRootArticleIsNotOfferedTheMoveAction(): void
+    {
+        $this->login();
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+        $this->assertNotContains('Move', $this->getMovableAsideActionLabels($root));
+
+        // Sanity check: the action is offered for a regular article.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Article ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->assertContains('Move', $this->getMovableAsideActionLabels($other));
+    }
+
+    /**
+     * Unlike `getAsideActionLabels()`, asks for the occurrence-aware actions: "Move"
+     * needs the aside row context and is never offered without it.
+     *
+     * @return string[]
+     */
+    private function getMovableAsideActionLabels(KnowbaseItem $article): array
+    {
+        return array_map(
+            static fn(EditorAction $action): string => $action->label,
+            array_filter(
+                $article->getAsideActions(with_move: true),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            ),
+        );
+    }
+
+    public function testArticleCreatedWithoutParentIsAttachedToTheRoot(): void
+    {
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        // No parent given: the article joins the tree under the root article,
+        // so it does not become a second root.
+        $orphan = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Orphan ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->assertSame([$root_id], $this->getParentIds($orphan->getID()));
+
+        // An explicit parent is left alone.
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$orphan->getID()],
+        ]);
+        $this->assertSame([$orphan->getID()], $this->getParentIds($child->getID()));
+
+        // The root article is the only one left without a parent.
+        $parentless = (new KnowbaseItem())->find([
+            'NOT' => [
+                'id' => new QuerySubQuery([
+                    'SELECT' => 'knowbaseitems_id',
+                    'FROM'   => KnowbaseItem_KnowbaseItem::getTable(),
+                ]),
+            ],
+        ]);
+        $this->assertSame([$root_id], array_map('intval', array_column($parentless, 'id')));
+    }
+
+    public function testArticleUpdatedWithoutAnyParentIsAttachedToTheRoot(): void
+    {
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+        $this->assertSame([$parent->getID()], $this->getParentIds($child->getID()));
+
+        // An update that does not target the parents leaves them alone.
+        $this->updateItem(KnowbaseItem::class, $child->getID(), [
+            'name' => 'Renamed ' . __FUNCTION__,
+        ]);
+        $this->assertSame([$parent->getID()], $this->getParentIds($child->getID()));
+
+        // Removing every parent would turn the article into a second root: it
+        // is attached back to the root article instead.
+        $this->updateItem(KnowbaseItem::class, $child->getID(), [
+            '__parents_defined' => 1,
+        ]);
+        $this->assertSame([$root_id], $this->getParentIds($child->getID()));
+    }
+
+    public function testDeletingAnArticleIsRefusedWhenItWouldDetachAChild(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Parent ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Only child ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            '_parents'     => [$parent->getID()],
+        ]);
+
+        // Deletion rights are untouched: the refusal is about the tree, not
+        // about what the user is allowed to do.
+        $this->assertTrue($parent->canDeleteItem());
+        $this->assertTrue($parent->canPurgeItem());
+
+        // The action is still offered: the refusal is decided when it is used,
+        // so that it never rests on what the page was rendered with.
+        $this->assertContains(
+            EditorActionType::DELETE_ARTICLE,
+            $this->getAsideActionTypes($parent),
+        );
+
+        // Every deletion path goes through the model, which refuses.
+        $expected_message = 'This article cannot be deleted because it contains sub-articles. They must be moved or deleted first.';
+        $this->assertFalse($parent->delete(['id' => $parent->getID()]));
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+        $this->assertFalse($parent->delete(['id' => $parent->getID()], true));
+        $this->hasSessionMessages(ERROR, [$expected_message]);
+
+        // Nothing moved: the child is still attached to its parent, and both
+        // articles are still there.
+        $this->assertTrue($parent->getFromDB($parent->getID()));
+        $this->assertTrue($child->getFromDB($child->getID()));
+        $this->assertSame([$parent->getID()], $this->getParentIds($child->getID()));
+    }
+
+    public function testDeletingAnArticleIsAllowedWhenItsChildrenHaveAnotherParent(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Parent ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $other_parent = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Other parent ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $shared_child = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Shared child ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            '_parents'     => [$parent->getID(), $other_parent->getID()],
+        ]);
+
+        // The child would not leave the tree, so nothing stands in the way.
+        $this->assertTrue($parent->delete(['id' => $parent->getID()], true));
+
+        // The child is left alone, under its remaining parent.
+        $this->assertSame([$other_parent->getID()], $this->getParentIds($shared_child->getID()));
+    }
+
+    public function testDeletingChildlessArticleIsAllowed(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Article ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->assertTrue($article->delete(['id' => $article->getID()], true));
+    }
+
+    public function testAnArticleBecomesDeletableAsSoonAsItsLastChildIsGone(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Parent ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Only child ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            '_parents'     => [$parent->getID()],
+        ]);
+
+        $this->assertTrue($parent->hasChildrenWithoutOtherParent());
+        $this->assertTrue($child->delete(['id' => $child->getID()], true));
+
+        // No reload stands between the two deletions: the parent is a leaf now.
+        $this->assertFalse($parent->hasChildrenWithoutOtherParent());
+        $this->assertTrue($parent->delete(['id' => $parent->getID()], true));
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getParentIds(int $article_id): array
+    {
+        $links = (new KnowbaseItem_KnowbaseItem())->find([
+            'knowbaseitems_id' => $article_id,
+        ]);
+
+        return array_map('intval', array_column($links, 'knowbaseitems_id_parent'));
+    }
+
+    public function testRootArticleIsEditableWithoutVisibilityRules(): void
+    {
+        // A profile that can update the knowledge base but is not a KB admin.
+        $this->login('tech', 'tech');
+        $this->assertFalse(Session::haveRight('knowbase', KnowbaseItem::KNOWBASEADMIN));
+        $this->assertTrue(Session::haveRight('knowbase', UPDATE));
+
+        $root_id = KnowbaseItem::getRootId();
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+
+        $this->assertTrue($root->canUpdateItem());
+        $this->assertTrue($root->can($root_id, UPDATE));
+    }
+
+    public function testRootArticleHasNoVisibilityRelatedActions(): void
+    {
+        $this->login();
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+        $labels = $this->getEditorActionLabels($root);
+
+        // Visibility rules have no effect on the root article, and scheduling it
+        // out of sight would leave the article tree headless. Publishing it to
+        // the service catalog would expose the entry point of the knowledge base
+        // as a piece of content, see `testRootArticleIsNotPublishable()`.
+        $this->assertNotContains('Permissions', $labels);
+        $this->assertNotContains('Schedule visibility', $labels);
+        $this->assertNotContains('Service catalog', $labels);
+
+        // The other actions of the same block are untouched.
+        $this->assertContains('History', $labels);
+
+        // Sanity check: a regular article offers all three.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Article ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $labels = $this->getEditorActionLabels($other);
+        $this->assertContains('Permissions', $labels);
+        $this->assertContains('Schedule visibility', $labels);
+        $this->assertContains('Service catalog', $labels);
+    }
+
+    /**
+     * Labels of the actions offered by the article editor's dots menu.
+     *
+     * @return string[]
+     */
+    private function getEditorActionLabels(KnowbaseItem $article): array
+    {
+        return array_map(
+            static fn(EditorAction $action): string => $action->label,
+            array_filter(
+                $this->callPrivateMethod($article, 'getEditorActions'),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            ),
+        );
+    }
+
+    public function testRootArticleIsVisibleInTheFaqButIsNotAFaqArticle(): void
+    {
+        // A self-service user, allowed to read the FAQ but not the knowledge base.
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(Session::haveRight('knowbase', READ));
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+
+        // The root is the FAQ home page: `is_faq` stays 0.
+        $this->assertEquals(0, $root->fields['is_faq']);
+        $this->assertEquals(0, $root->fields['show_in_service_catalog']);
+
+        // Admitted by id all the same, in the rights check and in the query.
+        $this->assertTrue($root->canViewItem());
+        $this->assertContains(KnowbaseItem::getRootId(), $this->getVisibleArticleIds());
+    }
+
+    public function testRootArticleDoesNotMakeItsChildrenVisible(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        // Three articles authored by someone else and without any visibility rule
+        // of their own: only inheritance can make them visible.
+        $child_of_root = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child of root ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$root_id],
+        ]);
+        $visible_parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Visible parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$root_id],
+        ]);
+        $child_of_visible = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child of visible parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$visible_parent->getID()],
+        ]);
+
+        $this->login('tech', 'tech');
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $visible_parent->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $visible = $this->getVisibleArticleIds();
+        $this->assertContains($root_id, $visible);
+
+        // Inheriting from a regular ancestor still works...
+        $this->assertContains($child_of_visible->getID(), $visible);
+
+        // ... but the root article, being the ancestor of everything, never
+        // grants access to its descendants.
+        $this->assertNotContains($child_of_root->getID(), $visible);
+        $this->assertFalse((new KnowbaseItem())->can($child_of_root->getID(), READ));
+    }
+
+    public function testVisibilityRulesSetOnTheRootArticleDoNotCascade(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $child_of_root = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child of root ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$root_id],
+        ]);
+
+        // An administrator may add visibility rules to the root article like to
+        // any other one. Doing so must not open the whole knowledge base.
+        $this->login('tech', 'tech');
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $root_id,
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $visible = $this->getVisibleArticleIds();
+        $this->assertContains($root_id, $visible);
+        $this->assertNotContains($child_of_root->getID(), $visible);
+    }
+
+    public function testVisibilityRulesSetOnTheRootArticleDoNotCascadeToDeeperArticles(): void
+    {
+        // Arrange: create an article below the root article, and a child below
+        // it, and give visibility to the "tech" user of the root article.
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$root_id],
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$article->getID()],
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $root_id,
+            'users_id'         => $tech_user,
+        ]);
+
+        // Act and assert: "tech" can view the root article, but not the articles
+        // below it.
+        $this->login('tech', 'tech');
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $this->assertTrue($root->canViewItem());
+
+        foreach ([$article, $child] as $hidden) {
+            $hidden_obj = new KnowbaseItem();
+            $this->assertTrue($hidden_obj->getFromDB($hidden->getID()));
+            $this->assertFalse($hidden_obj->canViewItem());
+        }
+    }
+
+    public function testListsAndRightsChecksAgreeOnInheritedVisibility(): void
+    {
+        // Arrange: create a tree with all the inheritance cases, and give
+        // visibility to the "tech" user of the root article and of the "Shared"
+        // article:
+        //
+        //   root
+        //   ├── Shared
+        //   │   └── Child of shared
+        //   │       └── Grandchild of shared
+        //   ├── Hidden
+        //   │   ├── Child of hidden and shared (also below "Shared")
+        //   │   └── Child of hidden
+        //   └── Child of root
+        //
+        // The articles are authored by "glpi": the author bypass would
+        // otherwise make them visible to "tech" without any visibility rule.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $tech_user = getItemByTypeName('User', 'tech', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $suffix = __FUNCTION__;
+        $create = fn(string $name, array $parents): int => $this->createItem(KnowbaseItem::class, [
+            'name'     => $name . ' ' . $suffix,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => $parents,
+        ])->getID();
+
+        $shared              = $create('Shared', [$root_id]);
+        $child_of_shared     = $create('Child of shared', [$shared]);
+        $grandchild          = $create('Grandchild of shared', [$child_of_shared]);
+        $hidden              = $create('Hidden', [$root_id]);
+        $child_of_both       = $create('Child of hidden and shared', [$hidden, $shared]);
+        $child_of_hidden     = $create('Child of hidden', [$hidden]);
+        $child_of_root       = $create('Child of root', [$root_id]);
+
+        foreach ([$root_id, $shared] as $article_id) {
+            $this->createItem(KnowbaseItem_User::class, [
+                'knowbaseitems_id' => $article_id,
+                'users_id'         => $tech_user,
+            ]);
+        }
+
+        // Act: get the articles visible for "tech" in the lists (SQL) and through
+        // the rights checks (PHP).
+        $this->login('tech', 'tech');
+        $this->assertFalse(
+            Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        );
+
+        $articles = [
+            $root_id,
+            $shared,
+            $child_of_shared,
+            $grandchild,
+            $hidden,
+            $child_of_both,
+            $child_of_hidden,
+            $child_of_root,
+        ];
+        $visible_in_lists = array_values(
+            array_intersect($articles, $this->getVisibleArticleIds())
+        );
+        $visible_in_rights_checks = array_values(array_filter(
+            $articles,
+            static fn(int $id): bool => (new KnowbaseItem())->can($id, READ)
+        ));
+
+        // Assert: both give the same articles, the expected ones.
+        $expected = [$root_id, $shared, $child_of_shared, $grandchild, $child_of_both];
+        $this->assertSame($expected, $visible_in_lists);
+        $this->assertSame($expected, $visible_in_rights_checks);
+    }
+
+    /**
+     * Ids of the articles the current user is allowed to see.
+     *
+     * @return int[]
+     */
+    private function getVisibleArticleIds(): array
+    {
+        global $DB;
+
+        $criteria = array_merge(KnowbaseItem::getVisibilityCriteria(false), [
+            'SELECT' => KnowbaseItem::getTableField('id'),
+            'FROM'   => KnowbaseItem::getTable(),
+        ]);
+
+        return array_map(
+            'intval',
+            array_column(iterator_to_array($DB->request($criteria)), 'id'),
+        );
+    }
+
+    public function testHasRoot(): void
+    {
+        global $CFG_GLPI;
+
+        $this->assertTrue(KnowbaseItem::hasRoot());
+
+        // Only a corrupted installation has no root article. The pages that can
+        // do without one must be able to tell without catching an exception.
+        $CFG_GLPI['root_knowbaseitems_id'] = 0;
+        $this->assertFalse(KnowbaseItem::hasRoot());
+    }
+
+    /**
+     * The helpdesk FAQ renders the same aside as the central knowledge base, so
+     * a reader can jump between articles instead of going back to the list. It
+     * lists only what is shared with them, and offers no way to author the tree.
+     */
+    public function testFaqAsideListsSharedArticlesOnlyAndCannotAuthorTheTree(): void
+    {
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $shared = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_shared',
+            'answer'      => '<p>Shared</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $shared->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+        // Not in the FAQ and shared with nobody: out of the helpdesk reader's reach.
+        $private = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_private',
+            'answer'      => '<p>Private</p>',
+            'is_faq'      => 0,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($shared->getID()));
+        $html = (string) $item->getAsideContent();
+
+        // The shared article is listed, and the aside knows it is the one being read.
+        $this->assertStringContainsString(
+            'data-glpi-kb-article-id="' . $shared->getID() . '"',
+            $html,
+        );
+        $this->assertStringContainsString($shared->fields['name'], $html);
+        $this->assertStringContainsString('data-glpi-kb-article-current', $html);
+
+        // Navigation targets the FAQ page, not the central article form.
+        $this->assertStringContainsString('/front/helpdesk.faq.php?id=' . $shared->getID(), $html);
+
+        $this->assertStringNotContainsString(
+            'data-glpi-kb-article-id="' . $private->getID() . '"',
+            $html,
+        );
+        $this->assertStringNotContainsString($private->fields['name'], $html);
+
+        // Search and favorites are part of the FAQ aside.
+        $this->assertStringContainsString('data-glpi-kb-aside-search-input', $html);
+        $this->assertStringContainsString('data-glpi-kb-aside-favorites', $html);
+
+        // But nothing that restructures the knowledge base.
+        $this->assertStringNotContainsString('data-glpi-kb-aside-category-add', $html);
+        $this->assertStringNotContainsString('AsideDragController', $html);
+    }
+
+    public function testAsideTreeIsAuthoredFromTheCentralInterfaceOnly(): void
+    {
+        $this->login();
+        $this->assertTrue(KnowbaseItem::canAuthorAsideTree());
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(KnowbaseItem::canAuthorAsideTree());
+    }
+
+    /**
+     * Anonymous readers lose the visibility `WHERE`, so the FAQ filter is all
+     * that keeps a non-FAQ article out of their reach.
+     */
+    public function testAnonymousListRequestKeepsNonFaqArticlesOut(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+
+        $this->login();
+        $faq = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_faq',
+            'answer'   => '<p>Public</p>',
+            'is_faq'   => 1,
+            'users_id' => $glpi_user,
+        ]);
+        $not_faq = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_not_faq',
+            'answer'   => '<p>Internal runbook</p>',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        // All the anonymous branch checks on its own.
+        foreach ([$faq, $not_faq] as $item) {
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $item->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->logOut();
+
+        // `faq` is forced, not defaulted: a crafted `?faq=0` must not lift the filter.
+        foreach ([[], ['faq' => 0], ['faq' => false]] as $params) {
+            $ids = [];
+            foreach ($DB->request(KnowbaseItem::getListRequest($params, 'browse')) as $row) {
+                $ids[] = (int) $row['id'];
+            }
+
+            $this->assertContains($faq->getID(), $ids);
+            $this->assertNotContains($not_faq->getID(), $ids);
+        }
+    }
+
+    public function testDirectAccessHonoursThePublicationWindow(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $articles = [];
+        foreach (
+            [
+                'expired' => [null, '-1 day'],
+                'future'  => ['+1 day', null],
+                'current' => ['-1 day', '+1 day'],
+            ] as $key => [$begin, $end]
+        ) {
+            $articles[$key] = $this->createItem(KnowbaseItem::class, [
+                'name'       => __FUNCTION__ . '_' . $key,
+                'answer'     => '<p>Text</p>',
+                'is_faq'     => 1,
+                'users_id'   => getItemByTypeName(User::class, 'glpi', true),
+                'begin_date' => $begin === null ? null : date('Y-m-d H:i:s', strtotime($begin)),
+                'end_date'   => $end === null ? null : date('Y-m-d H:i:s', strtotime($end)),
+            ]);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $articles[$key]->getID(),
+                'entities_id'      => 0,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        // Fresh objects: `can()` does not reload the entity links added after `createItem()`.
+        // KB admin keeps access to manage scheduled and expired articles.
+        foreach ($articles as $article) {
+            $this->assertTrue((new KnowbaseItem())->can($article->getID(), READ));
+        }
+
+        $expected = ['expired' => false, 'future' => false, 'current' => true];
+
+        // A reader who is neither admin nor author gets the dates.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+
+        // An editor of the FAQ keeps access.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::PUBLISHFAQ;
+        foreach ($articles as $article) {
+            $this->assertTrue((new KnowbaseItem())->can($article->getID(), READ));
+        }
+
+        $this->login('post-only', 'postonly');
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = 1;
+        foreach ($expected as $key => $can_read) {
+            $this->assertSame($can_read, (new KnowbaseItem())->can($articles[$key]->getID(), READ));
+        }
+    }
+
+    /**
+     * Those endpoints all 403 outside the central interface, right or no right.
+     */
+    public function testAsideActionsOfferNoAuthoringOutsideTheCentralInterface(): void
+    {
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__,
+            'answer'      => '<p>Shared</p>',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $article->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        // A profile flipped to simplified keeps its rights value.
+        $this->addRightToProfile(
+            'Self-Service',
+            'knowbase',
+            KnowbaseItem::PUBLISHFAQ | KnowbaseItem::KNOWBASEADMIN | UPDATE | PURGE,
+        );
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($article->getID()));
+
+        $types = array_map(
+            fn($action) => $action instanceof EditorAction ? $action->type : null,
+            $item->getAsideActions(with_move: true),
+        );
+
+        $this->assertNotContains(EditorActionType::TOGGLE_VALUE, $types);
+        $this->assertNotContains(EditorActionType::OPEN_MODAL, $types);
+        $this->assertNotContains(EditorActionType::DELETE_ARTICLE, $types);
+
+        $this->assertTrue($item->can($article->getID(), READ));
+        $this->assertContains(EditorActionType::TOGGLE_FAVORITE, $types);
+    }
+
+    public function testGetRootIdFailIfNotConfigured(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['root_knowbaseitems_id'] = 0;
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The knowledge base root article is not defined.');
+        KnowbaseItem::getRootId();
+    }
+
+    /**
+     * A FAQ reader opens the root, and so does an anonymous reader when the
+     * public FAQ is enabled.
+     */
+    public function testRootArticleIsReadableByFaqReaders(): void
+    {
+        global $CFG_GLPI;
+
+        $root_id = KnowbaseItem::getRootId();
+        $root    = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+
+        // A helpdesk reader that holds READFAQ only.
+        $this->login('post-only', 'postonly');
+        $this->assertTrue($root->can($root_id, READ));
+
+        $this->logOut();
+
+        // An anonymous reader, public FAQ enabled.
+        $CFG_GLPI['use_public_faq'] = true;
+        try {
+            $this->assertTrue($root->can($root_id, READ));
+        } finally {
+            $CFG_GLPI['use_public_faq'] = false;
+        }
+
+        // An anonymous reader, public FAQ disabled.
+        $this->assertFalse($root->can($root_id, READ));
+    }
+
+    /**
+     * Ids a browse list request returns for the current session.
+     *
+     * @return list<int>
+     */
+    private function getBrowseListRequestIds(): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $ids = [];
+        foreach ($DB->request(KnowbaseItem::getListRequest([], 'browse')) as $row) {
+            $ids[] = (int) $row['id'];
+        }
+
+        return $ids;
+    }
+
+    /**
+     * A child must not inherit the root's visibility: admission by id does
+     * not cascade.
+     */
+    public function testRootVisibilityDoesNotCascadeToItsChildren(): void
+    {
+        global $CFG_GLPI;
+
+        $glpi_user = getItemByTypeName(User::class, 'glpi', true);
+
+        $this->login();
+        $not_faq = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . '_not_faq',
+            'answer'   => '<p>Internal runbook</p>',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $not_faq->getID(),
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+        ]);
+
+        // `$not_faq` has no `_parents`, so it attaches to the root by default.
+        $parents = array_map('intval', array_column(
+            getAllDataFromTable(
+                KnowbaseItem_KnowbaseItem::getTable(),
+                ['knowbaseitems_id' => $not_faq->getID()]
+            ),
+            'knowbaseitems_id_parent'
+        ));
+        $this->assertSame([KnowbaseItem::getRootId()], $parents);
+
+        // A logged-in FAQ reader must not get the non-FAQ child.
+        $this->login('post-only', 'postonly');
+        $this->assertNotContains($not_faq->getID(), $this->getBrowseListRequestIds());
+
+        // An anonymous reader on a public FAQ must not get it either.
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = true;
+        try {
+            $this->assertNotContains($not_faq->getID(), $this->getBrowseListRequestIds());
+        } finally {
+            $CFG_GLPI['use_public_faq'] = false;
+        }
+    }
+
+    /**
+     * A logged-in FAQ reader gets the root in a browse list request.
+     */
+    public function testRootArticleIsListedForLoggedInFaqReaders(): void
+    {
+        $this->login('post-only', 'postonly');
+
+        $this->assertContains(KnowbaseItem::getRootId(), $this->getBrowseListRequestIds());
+    }
+
+    /**
+     * An anonymous reader on a public FAQ gets the root, single and multi entity.
+     */
+    public function testRootArticleIsListedForAnonymousFaqReaders(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $root_id = KnowbaseItem::getRootId();
+
+        $this->logOut();
+        $CFG_GLPI['use_public_faq'] = true;
+
+        try {
+            $this->assertContains($root_id, $this->getBrowseListRequestIds());
+
+            $DB->delete(Entity::getTable(), ['id' => ['>', 0]]);
+            $this->assertContains($root_id, $this->getBrowseListRequestIds());
+        } finally {
+            $CFG_GLPI['use_public_faq'] = false;
+        }
+    }
+
+    public function testOnlyAdminsCanChooseTheAuthor(): void
+    {
+        $glpi_user = getItemByTypeName(User::class, 'glpi', true);
+        $tech_user = getItemByTypeName(User::class, 'tech', true);
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article',
+            'answer'   => 'Answer',
+            'users_id' => $glpi_user,
+        ]);
+
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE | UPDATE;
+
+        // Update: the author is not changed.
+        $kb = new KnowbaseItem();
+        $this->assertTrue($kb->update(['id' => $article->getID(), 'users_id' => $tech_user]));
+        $this->assertTrue($kb->getFromDB($article->getID()));
+        $this->assertSame($glpi_user, $kb->fields['users_id']);
+
+        // Add: the current user is the author.
+        $kb = new KnowbaseItem();
+        $id = $kb->add(['name' => 'Other', 'answer' => 'Answer', 'users_id' => $glpi_user]);
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame($tech_user, $kb->fields['users_id']);
+
+        // A knowledge base admin can change the author.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | KnowbaseItem::KNOWBASEADMIN;
+        $this->assertTrue($kb->update(['id' => $id, 'users_id' => $glpi_user]));
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame($glpi_user, $kb->fields['users_id']);
+    }
+
+    public function testCreateRightDoesNotPublishToFaq(): void
+    {
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE;
+
+        $kb = new KnowbaseItem();
+        $id = $kb->add(['name' => 'Article', 'answer' => 'Answer', 'is_faq' => 1]);
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame(0, $kb->fields['is_faq']);
+    }
+
+    public function testCreateUnderUneditableParentIsDenied(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Readable, not editable',
+            'answer'      => '',
+            'entities_id' => Session::getActiveEntity(),
+        ]);
+        $input = [
+            'name'        => 'Child',
+            'entities_id' => Session::getActiveEntity(),
+            '_parents'    => [$parent->getID()],
+        ];
+        $this->assertTrue((new KnowbaseItem())->can(-1, CREATE, $input));
+
+        // can() with the input is what the legacy API calls.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE;
+        $this->assertFalse((new KnowbaseItem())->can(-1, CREATE, $input));
+
+        $input['_parents'] = [KnowbaseItem::getRootId()];
+        $this->assertTrue((new KnowbaseItem())->can(-1, CREATE, $input));
+    }
+
+    public function testCloneUnderUneditableParentIsDenied(): void
+    {
+        $this->login();
+        // A FAQ article by someone else: not editable without PUBLISHFAQ.
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'FAQ parent',
+            'answer'      => '',
+            'is_faq'      => 1,
+            'users_id'    => getItemByTypeName(User::class, 'tech', true),
+            'entities_id' => Session::getActiveEntity(),
+        ]);
+        $source = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Source',
+            'answer'      => '',
+            'entities_id' => Session::getActiveEntity(),
+            '_parents'    => [$parent->getID()],
+        ]);
+
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | CREATE | UPDATE;
+        $this->assertFalse((new KnowbaseItem())->can($parent->getID(), UPDATE));
+
+        $this->assertTrue($source->getFromDB($source->getID()));
+        $this->assertFalse($source->clone());
+        $this->hasSessionMessages(ERROR, ["You don&#039;t have permission to perform this action."]);
+        $this->assertSame(1, countElementsInTable(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id_parent' => $parent->getID(),
+        ]));
     }
 }

@@ -193,6 +193,7 @@ class DropdownFormController extends AbstractController
                 true,
                 ...$dropdown->getSectorizedDetails()
             );
+            $dropdown->initObjectOnCreation($request->query->all());
             $dropdown->showForm($id);
             Html::popFooter();
             $content = ob_get_clean();
@@ -209,6 +210,9 @@ class DropdownFormController extends AbstractController
         }
         $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
         $options['id'] = $id;
+        if ($dropdown->maybeTemplate()) {
+            $options['withtemplate'] = $request->query->get('withtemplate', '');
+        }
 
         $dropdown::displayFullPageForItem($id, $dropdown->getSectorizedDetails(), $options);
         $content = ob_get_clean();

@@ -31,7 +31,7 @@
  #}
 
 <span
-    class="kb-item-badge badge bg-light text-dark d-flex align-items-center gap-2"
+    class="kb-item-badge badge d-flex align-items-center gap-2"
     data-glpi-item-assoc-id="{{ item.id }}"
     data-testid="related-item-chip"
 >
@@ -39,14 +39,14 @@
        class="d-flex align-items-center gap-2 text-decoration-none"
        title="{{ __('%1$s: %2$s')|format(item.type_name, item.name) }}"
     >
-        <i class="{{ item.icon_class }} {{ item.color_class }}"></i>
+        <i class="{{ item.icon_class }} {{ item.color_class }}" aria-hidden="true"></i>
         <span>{{ item.name }}</span>
     </a>
 
     {% if can_edit %}
         <button
             type="button"
-            class="kb-unlink-item btn-close btn-close-white"
+            class="kb-unlink-item btn-close"
             data-glpi-kb-unlink-item="{{ item.id }}"
             title="{{ __('Unlink item') }}"
             aria-label="{{ __('Unlink item') }}"

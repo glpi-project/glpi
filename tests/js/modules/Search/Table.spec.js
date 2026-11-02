@@ -268,10 +268,10 @@ describe('Search Table', () => {
     });
     test('AJAX refresh on sort', async () => {
         restore_initial_sort_state();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/search.php', 'GET', {}, () => {
             return $('div.ajax-container').html();
         }));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
             return {};
         }));
 
@@ -285,12 +285,12 @@ describe('Search Table', () => {
     });
     test('AJAX refresh on limit change', async () => {
         const history_push_spy = vi.spyOn(window.history, 'pushState');
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/search.php', 'GET', {
             glpilist_limit: '10',
         }, () => {
             return $('div.ajax-container').html();
         }));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
             return {};
         }));
         real_table.getElement().closest('form').find('select.search-limit-dropdown').first().val(10).trigger('change');
@@ -304,7 +304,7 @@ describe('Search Table', () => {
         expect(history_push_spy).toHaveBeenCalledTimes(1);
     });
     test('AJAX refresh on search', async () => {
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/search.php', 'GET', {
             'criteria[0][link]': 'AND',
             'criteria[0][field]': 'view',
             'criteria[0][searchtype]': 'contains',
@@ -314,7 +314,7 @@ describe('Search Table', () => {
         }, () => {
             return $('div.ajax-container').html();
         }));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
             return {};
         }));
         real_table.getElement().closest('.search-container').find('form.search-form-container button[name="search"]').trigger('click');
@@ -364,10 +364,10 @@ describe('Search Table', () => {
         expect(overlay.css('visibility')).toBe('visible');
     });
     test('Reload after refresh exception', async () => {
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/search.php', 'GET', {}, () => {
             return $('div.ajax-container').html();
         }));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
             return {};
         }));
         const get_itemtype = vi.spyOn(real_table, 'getItemtype');

@@ -70,6 +70,20 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     use TreeBrowse;
     use ParentStatus;
 
+    /**
+     * List of file extension allowed for images documents.
+     *
+     * @var string[]
+     */
+    public const ALLOWED_IMAGE_EXTENSIONS = [
+        'bmp',
+        'gif',
+        'jpeg',
+        'jpg',
+        'png',
+        'webp',
+    ];
+
     // From CommonDBTM
     public bool $dohistory                   = true;
 
@@ -130,8 +144,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function canCreate(): bool
     {
         // Have right to add document OR ticket followup
-        return (Session::haveRight('document', CREATE)
-              || Session::haveRight('followup', ITILFollowup::ADDMY));
+        return (Session::haveRight(Document::$rightname, CREATE)
+              || Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDMY));
     }
 
     public function canCreateItem(): bool
@@ -141,7 +155,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 ($item = getItemForItemtype($this->input['itemtype']))
                 && $item->getFromDB($this->input['items_id'])
             ) {
-                return $item->canAddItem('Document');
+                // canAddItem() holds the "one write is enough" rule; parent::canCreateItem()
+                // still enforces the document's own entity.
+                return $item->canAddItem('Document') && parent::canCreateItem();
             } else {
                 unset($this->input['itemtype'], $this->input['items_id']);
             }
@@ -226,9 +242,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $input = $this->filterFields($input);
 
-        // current_filename is not necessary (item is new, current_filename should not exist
-        // but used for display can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
-        $input['current_filename'] = '';
+        // current_filename/current_filepath are not necessary (item is new, there is no current file)
+        // an unexpected value can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
+        unset($input['current_filepath'], $input['current_filename']);
 
         if ($uid = Session::getLoginUserID()) {
             $input["users_id"] = Session::getLoginUserID();
@@ -378,7 +394,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'uploader' => $this->fields['users_id'] > 0 ? getUserLink($this->fields["users_id"]) : '',
             'uploaded_files' => self::getUploadedFiles(),
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 
@@ -422,7 +438,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
             throw new InvalidArgumentException();
         } elseif ($linked_item !== null) {
-            $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item::class, $linked_item->getID());
+            $link_params = sprintf('&itemtype=%s&items_id=%s', rawurlencode($linked_item::class), $linked_item->getID());
         }
 
         $splitter = $this->fields['filename'] !== null ? explode("/", $this->fields['filename']) : [];
@@ -718,8 +734,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $visibilityCriteria = KnowbaseItem::getVisibilityCriteria();
 
         $request = [
+            'SELECT'    => 'glpi_knowbaseitems.id',
+            'DISTINCT'  => true,
             'FROM'      => 'glpi_documents_items',
-            'COUNT'     => 'cpt',
             'INNER JOIN' => [
                 'glpi_knowbaseitems' => [
                     'FKEY' => [
@@ -741,9 +758,15 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             $request['WHERE'] += $visibilityCriteria['WHERE'];
         }
 
-        $result = $DB->request($request)->current();
+        // The criteria have no publication window: `canViewItem()` checks it.
+        $kb = new KnowbaseItem();
+        foreach ($DB->request($request) as $row) {
+            if ($kb->getFromDB($row['id']) && $kb->canViewItem()) {
+                return true;
+            }
+        }
 
-        return $result['cpt'] > 0;
+        return false;
     }
 
     /**
@@ -779,6 +802,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'WHERE' => [
                 'documents_id' => $this->fields['id'],
                 'OR' => $conditions,
+                ...Document_Item::getPrivacyRestrictionCriteria(),
             ],
         ])->current();
 
@@ -819,6 +843,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'WHERE' => [
                 'documents_id' => $this->fields['id'],
                 $itil->getAssociatedDocumentsCriteria(),
+                ...Document_Item::getPrivacyRestrictionCriteria(),
             ],
             'LIMIT' => 1, // Only need to see one result
         ])->current();
@@ -850,7 +875,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         /** @var CommonDBTM $item */
         $item->getFromDB($items_id);
-        if (!$item->canViewItem()) {
+        if (!$item->can($item->getID(), READ)) {
             return false;
         }
 
@@ -868,6 +893,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 'itemtype'     => $itemtype,
                 'items_id'     => $items_id,
                 'documents_id' => $this->getID(),
+                ...Document_Item::getPrivacyRestrictionCriteria(),
             ],
         ])->current();
 
@@ -1340,9 +1366,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (empty($dir)) {
             $message = __s('Unauthorized file type');
 
-            if (Session::haveRight('dropdown', READ)) {
+            if (Session::haveRight(DocumentType::$rightname, READ)) {
                 $message .= " <a target='_blank' href='" . htmlescape(DocumentType::getSearchURL()) . "' class='pointer'>
-                         <i class='fa fa-info'</i><span class='sr-only'>" . __s('Manage document types') . "</span></a>";
+                         <i class='fa fa-info'</i><span class='visually-hidden'>" . __s('Manage document types') . "</span></a>";
             }
             Session::addMessageAfterRedirect($message, false, ERROR);
             return '';
@@ -1615,16 +1641,16 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         if (self::canApplyOn($itemtype)) {
             if (self::canView()) {
-                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus'></i>"
+                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus' aria-hidden='true'></i>"
                                                 . _sx('button', 'Add a document');
-                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus'></i>"
+                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus' aria-hidden='true'></i>"
                                                 . _sx('button', 'Remove a document');
             }
         }
 
         if ((is_a($itemtype, self::class, true)) && (static::canUpdate())) {
-            $actions[$action_prefix . 'add_item']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
-            $actions[$action_prefix . 'remove_item'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
+            $actions[$action_prefix . 'add_item']    = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
+            $actions[$action_prefix . 'remove_item'] = "<i class='ti ti-package-off' aria-hidden='true'></i>" . _sx('button', 'Remove an item');
         }
     }
 
@@ -1654,6 +1680,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (!file_exists($file) || !is_file($file)) {
             return false;
         }
+
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if (!in_array(strtolower($ext), self::ALLOWED_IMAGE_EXTENSIONS)) {
+            // Filter by file extensions, since `exif_imagetype()` can be fooled.
+            return false;
+        }
+
         if (extension_loaded('exif')) {
             if (filesize($file) < 12) {
                 return false;
@@ -1738,7 +1771,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function cronInfo($name): array
     {
         return match ($name) {
-            'cleanorphans' => ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')],
+            'cleanorphansdocument' => ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')],
             default => [],
         };
     }
@@ -1751,7 +1784,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
-    public static function cronCleanOrphans(CronTask $task): int
+    public static function cronCleanOrphansDocument(CronTask $task): int
     {
         global $DB;
 

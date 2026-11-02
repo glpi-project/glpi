@@ -46,6 +46,8 @@ use Group;
 use Profile;
 use User;
 
+use function Safe\json_encode;
+
 abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
@@ -58,6 +60,16 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
     );
 
     abstract public function getFieldClass(): string;
+
+    /**
+     * Expected actors when no strategy matches; overridden by fields with a fallback.
+     *
+     * @return array<array{itemtype?: class-string<\CommonDBTM>, items_id: int}>
+     */
+    protected function getExpectedNoMatchActors(): array
+    {
+        return [];
+    }
 
     public function testUserActorsFromSpecificItemQuestions(): void
     {
@@ -98,7 +110,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -111,7 +123,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_ids' => [$computers[0]->getID()],
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with second computer
@@ -167,7 +179,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -193,7 +205,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_ids' => [$computers[1]->getID()],
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
     }
 
@@ -232,7 +244,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -258,7 +270,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_ids' => [$computers[1]->getID()],
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
     }
 
@@ -297,7 +309,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -310,7 +322,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_ids' => [$computers[0]->getID()],
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with second computer
@@ -383,7 +395,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first custom asset
@@ -465,7 +477,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first custom asset
@@ -492,6 +504,41 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 ],
             ],
             expected_actors: [['items_id' => $groups[1]->getID()]]
+        );
+    }
+
+    public function testEmptyStrategyValueIsIgnoredWhenDeserializingConfig(): void
+    {
+        $config_class = (new ($this->getFieldClass())())->getConfigClass();
+
+        // "0" is the empty value of the strategy dropdown. It may have been
+        // stored by a configuration form saved without picking any strategy.
+        $config = $config_class::jsonDeserialize([
+            ITILActorFieldConfig::STRATEGIES => ['0'],
+        ]);
+
+        // An unknown strategy must be discarded, so the field falls back on its
+        // default strategy instead of exposing a `null` strategy.
+        $this->assertEquals(
+            $config_class::jsonDeserialize([])->getStrategies(),
+            $config->getStrategies(),
+        );
+    }
+
+    public function testEmptyStrategyValueIsDiscardedFromDeserializedStrategies(): void
+    {
+        $config_class = (new ($this->getFieldClass())())->getConfigClass();
+
+        $config = $config_class::jsonDeserialize([
+            ITILActorFieldConfig::STRATEGIES => [
+                '0',
+                ITILActorFieldStrategy::FORM_FILLER->value,
+            ],
+        ]);
+
+        $this->assertEquals(
+            [ITILActorFieldStrategy::FORM_FILLER],
+            $config->getStrategies(),
         );
     }
 

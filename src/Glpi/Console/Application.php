@@ -37,11 +37,13 @@ namespace Glpi\Console;
 
 use DBmysql;
 use Glpi\Application\Environment;
+use Glpi\Config\ConfigContainer;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\System\Requirement\RequirementInterface;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
@@ -60,8 +62,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Toolbox;
 use Update;
-
-use function Safe\preg_replace;
 
 class Application extends BaseApplication
 {
@@ -96,7 +96,7 @@ class Application extends BaseApplication
     /**
      * Pointer to $CFG_GLPI.
      */
-    private array $config;
+    private ConfigContainer $config;
 
     private ?DBmysql $db = null;
 
@@ -104,6 +104,7 @@ class Application extends BaseApplication
 
     public function __construct(private Kernel $kernel)
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $DB, $CFG_GLPI;
 
         // preconfigure the output to correctly handle kernel boot errors
@@ -220,8 +221,6 @@ class Application extends BaseApplication
     protected function configureIO(InputInterface $input, OutputInterface $output): void
     {
 
-        global $CFG_GLPI;
-
         $this->output = $output;
         ConsoleErrorDisplayHandler::setOutput($output);
 
@@ -229,7 +228,7 @@ class Application extends BaseApplication
 
         // Trigger error on invalid lang. This is not done before as error handler would not be set.
         $lang = $input->getParameterOption('--lang', null, true);
-        if (null !== $lang && !array_key_exists($lang, $CFG_GLPI['languages'])) {
+        if (null !== $lang && !LanguageRegistry::has($lang)) {
             throw new RuntimeException(
                 sprintf(__('Invalid "--lang" option value "%s".'), $lang)
             );
@@ -248,17 +247,6 @@ class Application extends BaseApplication
     public function getOutput()
     {
         return $this->output;
-    }
-
-    protected function getCommandName(InputInterface $input): ?string
-    {
-        $name = parent::getCommandName($input);
-        if ($name !== null) {
-            // strip `glpi:` prefix that was used before GLPI 10.0.6
-            // FIXME Deprecate usage of `glpi:` prefix in GLPI 11.0.
-            $name = preg_replace('/^glpi:/', '', $name);
-        }
-        return $name;
     }
 
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int
@@ -368,7 +356,7 @@ class Application extends BaseApplication
 
         // 2. Check in GLPI configuration
         if (
-            null === $lang && array_key_exists('language', $this->config)
+            null === $lang && isset($this->config['language'])
             && $this->isLanguageValid($this->config['language'])
         ) {
             $lang = $this->config['language'];
@@ -395,8 +383,7 @@ class Application extends BaseApplication
      */
     private function isLanguageValid($language)
     {
-        return array_key_exists('languages', $this->config)
-         && array_key_exists($language, $this->config['languages']);
+        return LanguageRegistry::has($language);
     }
 
     /**

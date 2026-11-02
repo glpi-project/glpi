@@ -33,6 +33,7 @@
  */
 
 use Glpi\Application\ResourcesChecker;
+use Glpi\Error\StartupErrors;
 use Glpi\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -41,6 +42,12 @@ use Symfony\Component\HttpFoundation\Request;
 if (version_compare(PHP_VERSION, '8.3.0', '<') || version_compare(PHP_VERSION, '8.5.999', '>')) {
     exit('PHP version must be between 8.3 and 8.5.');
 }
+
+// Capture the PHP errors that occurred during the request startup (e.g. `max_input_vars` overflow).
+// They are raised before any userland code is executed, so they cannot be caught by an error handler,
+// and any error triggered below would overwrite the value returned by `error_get_last()`.
+require_once dirname(__DIR__) . '/src/Glpi/Error/StartupErrors.php';
+StartupErrors::capture();
 
 // Check the resources state before trying to instanciate the Kernel.
 // It must be done here as this check must be done even when the Kernel

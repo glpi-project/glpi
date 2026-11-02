@@ -42,7 +42,7 @@ final class ServiceCatalogRenderer implements RendererInterface
     #[Override]
     public function canView(KnowbaseItem $item): bool
     {
-        return $item->canUpdateItem();
+        return $item->can($item->getID(), UPDATE);
     }
 
     #[Override]

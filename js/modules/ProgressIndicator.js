@@ -255,7 +255,7 @@ export class ProgressIndicator
 
         const message_element = document.createElement('div');
         message_element.innerHTML = `
-            <i class="${icon_class} align-middle"></i>
+            <i class="${icon_class} align-middle" aria-hidden="true"></i>
             ${_.escape(text)}
         `;
 

@@ -432,6 +432,8 @@ $break_tablet: 1400px;
                 }
 
                 .select2 {
+                    min-width: 100px;
+
                     & ~ a,
                     & ~ span { // remove icons next select2
                         display: none;
@@ -448,8 +450,52 @@ $break_tablet: 1400px;
                         height: 24px;
                     }
 
-                    .select2-container {
-                        margin-right: 0;
+                    .select2-selection.select2-selection--multiple {
+                        border: none;
+                        background-color: transparent;
+                        min-height: 24px;
+                        padding-right: 18px;
+
+                        .select2-selection__rendered {
+                            padding: 0;
+                            line-height: 18px;
+                        }
+
+                        .select2-selection__choice {
+                            font-weight: bold;
+                            font-size: 12px;
+                            background-color: transparent;
+                            border: 1px solid var(--tblr-border-color);
+                            border-radius: 3px;
+                            padding: 0 4px;
+                            margin: 2px 2px 0 0;
+                        }
+
+                        .select2-selection__choice__remove {
+                            color: var(--tblr-info);
+                            margin-right: 3px;
+                        }
+
+                        .select2-search--inline .select2-search__field {
+                            color: var(--tblr-body-color);
+                            font-weight: bold;
+                            font-size: 12px;
+                            margin: 0;
+                            outline: none;
+                            line-height: 18px;
+                            field-sizing: content;
+                            width: auto !important;
+                        }
+                    }
+
+                    // override select2 focus/open border on multiple selection
+                    &.select2-container--focus,
+                    &.select2-container--open {
+                        .select2-selection--multiple {
+                            border: none;
+                            outline: none;
+                            box-shadow: none;
+                        }
                     }
 
                     .select2-selection__rendered {
@@ -525,6 +571,22 @@ $break_tablet: 1400px;
                     input,
                     .select2-selection__rendered {
                         color: #509ee3 !important;
+                    }
+
+                    .select2 {
+                        width: auto !important;
+                    }
+
+                    .select2-selection--multiple {
+                        .select2-selection__choice {
+                            color: var(--tblr-info) !important;
+                            border-color: currentcolor;
+                        }
+
+                        .select2-search--inline .select2-search__field {
+                            color: var(--tblr-info) !important;
+                            min-width: 4px !important;
+                        }
                     }
 
                     .flatpickr,
@@ -995,8 +1057,34 @@ $break_tablet: 1400px;
             min-height: 0; // force firefox to respect flex-shrink on svg
         }
 
+        // Title above the chart, on 2 lines at most (the full title is in the title attribute)
         .main-label {
-            height: 30px;
+            order: -1;
+            margin: 0;
+            padding-block: 10px 0;
+            padding-inline: 12px 2.5em;
+            max-width: 100%;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .main-icon {
+            font-size: 1.3em;
+            inset-block-start: 8px;
+            inset-block-end: auto;
+            opacity: 0.55;
+        }
+
+        .chart {
+            margin-block: 4px 6px;
+            margin-inline: 6px;
         }
 
         .ct-chart-bar:not(.ct-horizontal-bars),

@@ -37,6 +37,7 @@
  * Knowbase Class
  *
  * @since 0.84
+ * @deprecated 12.0.0 The knowledge base is browsed from the side panel of `KnowbaseItem`.
  **/
 class Knowbase extends CommonGLPI
 {
@@ -48,6 +49,8 @@ class Knowbase extends CommonGLPI
 
     public function defineTabs($options = [])
     {
+        Toolbox::deprecated();
+
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
 
@@ -57,6 +60,8 @@ class Knowbase extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        Toolbox::deprecated();
+
         if ($item::class === self::class) {
             $tabs[1] = self::createTabEntry(_x('button', 'Search'), icon: 'ti ti-search');
             $tabs[2] = self::createTabEntry(_x('button', 'Browse'), icon: 'ti ti-list-tree');
@@ -68,6 +73,8 @@ class Knowbase extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        Toolbox::deprecated();
+
         if ($item::class === self::class) {
             switch ($tabnum) {
                 case 1: // all
@@ -86,9 +93,13 @@ class Knowbase extends CommonGLPI
      * Show the knowbase search view
      *
      * @return void
+     *
+     * @deprecated 12.0.0
      */
     public static function showSearchView()
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         // Search a solution

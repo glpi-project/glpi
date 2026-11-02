@@ -205,7 +205,7 @@ class Screenhot {
         const preview_item = $(`
             <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${_.escape(filename)}" style="height: ${_.escape(height)}">
                 <button class="btn btn-sm btn-danger position-absolute top-0 start-0" type="button" title="${__('Delete')}">
-                    <i class="ti ti-x"></i>
+                    <i class="ti ti-x" aria-hidden="true"></i>
                 </button>
             </div>
         `).appendTo(preview_container);
@@ -235,7 +235,7 @@ class Screenhot {
         const preview_item = $(`
             <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${_.escape(filename)}" style="height: ${_.escape(height)}">
                 <button class="btn btn-sm btn-danger position-absolute top-0 start-0" type="button" title="${__('Delete')}">
-                    <i class="ti ti-x"></i>
+                    <i class="ti ti-x" aria-hidden="true"></i>
                 </button>
             </div>
         `).appendTo(preview_container);

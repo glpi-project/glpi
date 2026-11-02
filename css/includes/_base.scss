@@ -379,6 +379,12 @@ body.in_modal {
     }
 }
 
+// Remove contextual skip links from pages that do not contain their target
+body:not(:has(#search-results)) .skip-links .skip-link-search-results,
+body:not(:has(#itil-timeline)) .skip-links .skip-link-itil-timeline {
+    display: none;
+}
+
 table {
     &.table thead th {
         font-size: 0.625rem;
@@ -516,20 +522,19 @@ body .toast {
     outline: none !important;
 }
 
-.totp-code-input {
-    --otp-cell: 2ch;
-
-    width: calc(var(--otp-digits, 6) * var(--otp-cell) + 1px);
-    padding-inline: 0.5ch 0;
+.totp-code-digit {
+    width: 2.5em;
+    padding-inline: 0;
     font-family: var(--tblr-font-monospace, monospace);
     font-size: 1.75em;
     font-weight: 700;
-    letter-spacing: 1ch;
-    background-image: repeating-linear-gradient(
-        90deg,
-        transparent 0 calc(var(--otp-cell) - 1px),
-        var(--tblr-border-color) calc(var(--otp-cell) - 1px) var(--otp-cell)
-    );
+}
+
+.form-control:focus-visible,
+.form-select:focus-visible,
+.form-check-input:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--tblr-body-color), transparent 40%);
+    outline-offset: 1px;
 }
 
 .tooltip {
@@ -617,6 +622,18 @@ body pre {
     p:last-child {
         margin-bottom: 0;
     }
+}
+
+.service-catalog-item {
+    &:hover {
+        color: var(--tblr-link-hover-color);
+    }
+}
+
+// Keep description links clickable above the title stretched link
+.service-catalog-description a {
+    position: relative;
+    z-index: 2;
 }
 
 // Missing class from tabler, probably need to update it ?

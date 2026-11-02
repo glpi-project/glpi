@@ -154,6 +154,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         /** @var CommonITILObject $itil */
         $itil = new static::$itemtype_1();
         $item = getItemForItemtype($input["itemtype"]);
+        if (!($item instanceof CommonDBTM)) {
+            // Unknown itemtype (e.g. relation from an uninstalled plugin)
+            return false;
+        }
 
         // Process rules based on linked item location if needed
         if (
@@ -486,7 +490,7 @@ TWIG, $twig_params);
                     'kb' => $item->getKBLinks(),
                     'showmassiveactions' => $canedit && !$is_closed,
                 ];
-                $name = htmlescape($data["name"]);
+                $name = htmlescape($data["name"] ?? '');
                 if (
                     $_SESSION["glpiis_ids_visible"]
                     || empty($data["name"])
@@ -785,7 +789,12 @@ TWIG, $twig_params);
         if (count($linkeditems)) {
             foreach ($linkeditems as $ltype => $tab) {
                 foreach ($tab as $lID) {
-                    $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
+                    $restrict[] = [
+                        'AND' => [
+                            static::getTable() . '.' . static::$itemtype_2 => $ltype,
+                            static::getTable() . '.' . static::$items_id_2 => $lID,
+                        ],
+                    ];
                 }
             }
         }
@@ -938,7 +947,7 @@ TWIG, $twig_params);
         }
 
         // My group items
-        if (Session::haveRight("show_group_hardware", READ)) {
+        if (Session::haveRight(Profile::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE, READ)) {
             $devices = self::getMyGroupsDevices($userID, $entity_restrict, $already_add);
             foreach ($devices as $itemtype => $items) {
                 foreach ($items as $data) {

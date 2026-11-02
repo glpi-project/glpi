@@ -33,8 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\Parts\BasePart;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
 
@@ -763,7 +765,12 @@ class Migration
     public function executeMigration()
     {
         foreach ($this->queries[self::PRE_QUERY] as $query) {
-            $this->db->doQuery($query['query']);
+            if ($query['query'] instanceof BasePart) {
+                $stmt = $this->db->prepare($query['query']->getQuery());
+                $this->db->executeStatement($stmt, $query['query']->getParams());
+            } else {
+                $this->db->doQuery($query['query']);
+            }
         }
         $this->queries[self::PRE_QUERY] = [];
 
@@ -777,7 +784,12 @@ class Migration
         }
 
         foreach ($this->queries[self::POST_QUERY] as $query) {
-            $this->db->doQuery($query['query']);
+            if ($query['query'] instanceof BasePart) {
+                $stmt = $this->db->prepare($query['query']->getQuery());
+                $this->db->executeStatement($stmt, $query['query']->getParams());
+            } else {
+                $this->db->doQuery($query['query']);
+            }
         }
         $this->queries[self::POST_QUERY] = [];
 
@@ -881,7 +893,7 @@ class Migration
                 foreach ($iterator as $data) {
                     $max_rank = $this->db->request([
                         'SELECT' => [
-                            QueryFunction::max('rank', 'max_rank'),
+                            QueryFunction::max(new QueryIdentifier('rank'), 'max_rank'),
                         ],
                         'FROM'   => 'glpi_displaypreferences',
                         'WHERE'  => [
@@ -1094,8 +1106,8 @@ class Migration
                             'glpi_configs',
                             [
                                 'context' => $context,
-                                'name'    => $name,
-                                'value'   => $value,
+                                'name' => $name,
+                                'value' => $value,
                             ]
                         );
                     }
@@ -1659,7 +1671,7 @@ class Migration
                                     'old' => 'itemtype',
                                     [
                                         'AND' => [
-                                            'new.users_id' => new QueryExpression($this->db::quoteName('old.users_id')),
+                                            'new.users_id' => new QueryIdentifier('old.users_id'),
                                             'new.itemtype' => $itemtype,
                                             'new.num' => $new_search_opt,
                                             'old.num' => $old_search_opt,

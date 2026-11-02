@@ -49,7 +49,6 @@ class ComponentControllerTest extends HLAPITestCase
 
         $this->login();
         $this->api->call(new Request('GET', '/Components'), function ($call) use ($types) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($types) {
@@ -106,7 +105,6 @@ class ComponentControllerTest extends HLAPITestCase
         $request->setParameter('entities_id', getItemByTypeName('Entity', '_test_root_entity', true));
         $new_item_location = null;
         $this->api->call($request, function ($call) use ($type, &$new_item_location) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($type, &$new_item_location) {
@@ -118,7 +116,6 @@ class ComponentControllerTest extends HLAPITestCase
         $items_location = $new_item_location . '/Items';
         // By default, there is no component of this type. Response should be an empty array
         $this->api->call(new Request('GET', $items_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -146,7 +143,6 @@ class ComponentControllerTest extends HLAPITestCase
 
         // There should now be one component of this type
         $this->api->call(new Request('GET', $items_location), function ($call) use ($type) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($type) {

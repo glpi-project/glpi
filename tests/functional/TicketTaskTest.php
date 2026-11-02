@@ -38,6 +38,7 @@ use Glpi\Search\SearchEngine;
 use Glpi\Tests\CommonITILTaskTestCase;
 use Override;
 use TicketTask;
+use User;
 
 final class TicketTaskTest extends CommonITILTaskTestCase
 {
@@ -762,6 +763,93 @@ final class TicketTaskTest extends CommonITILTaskTestCase
     }
 
     /**
+     * Editing an existing task must not reopen a solved ticket, while unchecking
+     * the pending toggle of a pending task must still resume the ticket.
+     *
+     * @return void
+     */
+    public function testEditingTaskKeepsParentStatus(): void
+    {
+        $this->login();
+
+        // Solved ticket: changing only the task duration must keep it solved.
+        $ticket_id = $this->getNewTicket();
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'tickets_id' => $ticket_id,
+            'content'    => 'Task on a ticket to solve',
+            'actiontime' => 600,
+            'pending'    => 0,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+
+        $this->assertTrue((new \Ticket())->update([
+            'id'     => $ticket_id,
+            'status' => \Ticket::SOLVED,
+        ]));
+        $solved_ticket = \Ticket::getById($ticket_id);
+        $this->assertEquals(\Ticket::SOLVED, $solved_ticket->fields['status']);
+        $this->assertNotNull($solved_ticket->fields['solvedate']);
+
+        // The task form always sends the parent id and the pending toggle, unchecked here.
+        $this->assertTrue($task->update([
+            'id'         => $task_id,
+            'tickets_id' => $ticket_id,
+            'actiontime' => 300,
+            'pending'    => 0,
+        ]));
+
+        $ticket = \Ticket::getById($ticket_id);
+        $this->assertEquals(\Ticket::SOLVED, $ticket->fields['status']);
+        $this->assertEquals($solved_ticket->fields['solvedate'], $ticket->fields['solvedate']);
+
+        // Pending task: unchecking the pending toggle must resume the ticket.
+        $ticket_id = $this->getNewTicket();
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'tickets_id' => $ticket_id,
+            'content'    => 'Pending task',
+            'pending'    => 1,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+        $this->assertEquals(\Ticket::WAITING, \Ticket::getById($ticket_id)->fields['status']);
+
+        $this->assertTrue($task->update([
+            'id'         => $task_id,
+            'tickets_id' => $ticket_id,
+            'content'    => 'No longer pending',
+            'pending'    => 0,
+        ]));
+        $this->assertEquals(\Ticket::ASSIGNED, \Ticket::getById($ticket_id)->fields['status']);
+
+        // No pending field (API): a requester editing a task of a solved ticket does not reopen it either.
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name'                => 'ticket title',
+            'content'             => 'a description',
+            'entities_id'         => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_users_id_requester' => \Session::getLoginUserID(),
+            '_users_id_assign'    => getItemByTypeName('User', 'tech', true),
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'tickets_id' => $ticket_id,
+            'content'    => 'Task on a ticket to solve',
+            'actiontime' => 600,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+        $this->assertTrue($ticket->update(['id' => $ticket_id, 'status' => \Ticket::SOLVED]));
+
+        $this->assertTrue($task->update([
+            'id'         => $task_id,
+            'tickets_id' => $ticket_id,
+            'actiontime' => 300,
+        ]));
+        $this->assertEquals(\Ticket::SOLVED, \Ticket::getById($ticket_id)->fields['status']);
+    }
+
+    /**
      * Test that the task duration is correctly updated
      *
      * @return void
@@ -836,6 +924,62 @@ final class TicketTaskTest extends CommonITILTaskTestCase
             $date_begin->add(new \DateInterval('PT2H'))->format('Y-m-d H:i:s'),
             $task->fields['end']
         );
+    }
+
+    /**
+     * An empty duration (selecting ‘----’ from the duration drop-down menu sends the value ‘0’)
+     * must not replace an end date that has been entered.
+     * Otherwise, the "end" will coincide with the "start"
+     * and the error : "the start date is later than the end date" will be generated incorrectly
+     *
+     * @return void
+     */
+    public function testEmptyActiontimeDoesNotOverrideEndDate()
+    {
+        $this->login();
+        $ticketId = $this->getNewTicket();
+        $uid = getItemByTypeName('User', TU_USER, true);
+
+        $date_begin = new \DateTime(); // ==> now
+        $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+
+        $date_end = clone $date_begin;
+        $date_end->add(new \DateInterval('PT1H')); // ==> +1 hour
+        $date_end_string = $date_end->format('Y-m-d H:i:s');
+
+        // Create a task with a duration that is not one of the duration dropdown steps (12 min)
+        // Such a value makes the dropdown fall back to its empty choice, which submits "0"
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'state'              => \Planning::TODO,
+            'tickets_id'         => $ticketId,
+            'tasktemplates_id'   => '0',
+            'taskcategories_id'  => '0',
+            'content'            => "Task with non-standard duration",
+            'users_id_tech'      => $uid,
+            'actiontime'         => 720,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+        $this->assertEquals(720, $task->fields['actiontime']);
+
+        // Schedule the task with an explicit end date while the duration dropdown submits "0".
+        $this->assertTrue(
+            $task->update([
+                'id'                 => $task_id,
+                'tickets_id'         => $ticketId,
+                'users_id_tech'      => $uid,
+                'actiontime'         => '0',
+                'plan'               => [
+                    'begin'        => $date_begin_string,
+                    'end'          => $date_end_string,
+                ],
+            ])
+        );
+
+        // The explicitly entered end date must be preserved and the duration recomputed from it.
+        $this->assertEquals($date_begin_string, $task->fields['begin']);
+        $this->assertEquals($date_end_string, $task->fields['end']);
+        $this->assertEquals(3600, $task->fields['actiontime']);
     }
 
     public function testParentMetaSearchOptions()
@@ -1035,5 +1179,30 @@ final class TicketTaskTest extends CommonITILTaskTestCase
                 'tickets_id' => $ticket->getID(),
             ])
         );
+    }
+
+    /**
+     * Non-regression: buildParentCondition() must qualify column names to avoid MySQL 1052
+     * when the search engine JOINs polymorphic tables that share the same column name.
+     */
+    public function testBuildParentConditionReturnsQualifiedColumns(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+        $this->login($selfservice_user->fields['name']);
+
+        $condition = TicketTask::buildParentCondition();
+        $table = TicketTask::getTable();
+
+        $this->assertStringContainsString("OR `$table`.`tickets_id` IN", $condition);
+        $this->assertStringNotContainsString('OR `tickets_id` IN', $condition);
     }
 }

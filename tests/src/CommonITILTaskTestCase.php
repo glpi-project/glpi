@@ -36,6 +36,9 @@ namespace Glpi\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 abstract class CommonITILTaskTestCase extends DbTestCase
 {
     /** @return class-string<\CommonITILTask> */
@@ -377,6 +380,203 @@ abstract class CommonITILTaskTestCase extends DbTestCase
         $this->assertFalse($tech_task->canUpdateItem());
     }
 
+    public function testCanChangeStateWhenAssigned(): void
+    {
+        global $DB;
+
+        $task_class = static::getTaskClass();
+        $itil_class = $task_class::getItilObjectItemType();
+        $itil_fkey = getForeignKeyFieldForItemType($itil_class);
+
+        $this->login();
+        $my_group = $this->createItem(
+            \Group::class,
+            [
+                'name' => __FUNCTION__ . ' - my group',
+                'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $this->createItem(
+            \Group_User::class,
+            [
+                'groups_id' => $my_group->getID(),
+                'users_id' => getItemByTypeName(\User::class, TU_USER, true),
+            ]
+        );
+        $other_group = $this->createItem(
+            \Group::class,
+            [
+                'name' => __FUNCTION__ . ' - other group',
+                'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+
+        $itil_item = $this->createItem(
+            $itil_class,
+            [
+                'name' => 'ITIL item',
+                'content' => __FUNCTION__,
+                'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            ]
+        );
+        $assigned_task = $this->createItem(
+            $task_class,
+            [
+                'state' => \Planning::TODO,
+                $itil_fkey => $itil_item->getID(),
+                'content' => 'Task assigned to the current user',
+                'users_id_tech' => getItemByTypeName(\User::class, TU_USER, true),
+            ]
+        );
+        $other_task = $this->createItem(
+            $task_class,
+            [
+                'state' => \Planning::TODO,
+                $itil_fkey => $itil_item->getID(),
+                'content' => 'Task assigned to another user',
+                'users_id_tech' => getItemByTypeName(\User::class, 'tech', true),
+            ]
+        );
+        $my_group_task = $this->createItem(
+            $task_class,
+            [
+                'state' => \Planning::TODO,
+                $itil_fkey => $itil_item->getID(),
+                'content' => 'Task assigned to a group of the current user',
+                'groups_id_tech' => $my_group->getID(),
+            ]
+        );
+        $other_group_task = $this->createItem(
+            $task_class,
+            [
+                'state' => \Planning::TODO,
+                $itil_fkey => $itil_item->getID(),
+                'content' => 'Task assigned to a group the current user does not belong to',
+                'groups_id_tech' => $other_group->getID(),
+            ]
+        );
+        // Tasks authored by another user
+        $tasks = [$assigned_task, $other_task, $my_group_task, $other_group_task];
+        $DB->update(
+            $task_class::getTable(),
+            ['users_id' => getItemByTypeName(\User::class, 'tech', true)],
+            ['id' => array_map(static fn($task) => $task->getID(), $tasks)]
+        );
+        foreach ($tasks as $task) {
+            $this->assertTrue($task->getFromDB($task->getID()));
+        }
+
+        // Only UPDATEMY right: cannot update tasks authored by someone else
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => \CommonITILTask::UPDATEMY],
+            [
+                'profiles_id' => getItemByTypeName(\Profile::class, 'Super-Admin', true),
+                'name' => $task_class::$rightname,
+            ]
+        );
+        $this->login();
+
+        $this->assertFalse($assigned_task->canUpdateItem());
+        $this->assertTrue($assigned_task->canChangeState());
+
+        $this->assertFalse($other_task->canUpdateItem());
+        $this->assertFalse($other_task->canChangeState());
+
+        $this->assertFalse($my_group_task->canUpdateItem());
+        $this->assertTrue($my_group_task->canChangeState());
+
+        $this->assertFalse($other_group_task->canUpdateItem());
+        $this->assertFalse($other_group_task->canChangeState());
+
+        // Cannot change state of a task whose parent is in the trashbin
+        $this->assertTrue($itil_item->delete(['id' => $itil_item->getID()]));
+        $this->assertFalse($assigned_task->canChangeState());
+
+        // Cannot change state of a task whose parent is closed
+        $this->assertTrue($itil_item->restore(['id' => $itil_item->getID()]));
+        $this->assertTrue($assigned_task->canChangeState());
+        $DB->update(
+            $itil_class::getTable(),
+            ['status' => \CommonITILObject::CLOSED],
+            ['id' => $itil_item->getID()]
+        );
+        $this->assertFalse($assigned_task->canChangeState());
+    }
+
+    /**
+     * Data provider for testIsParentAlreadyLoaded
+     *
+     * @return iterable
+     */
+    protected function testIsParentAlreadyLoadedProvider(): iterable
+    {
+        $this->login();
+        $entity = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+
+        $task_class = static::getTaskClass();
+        $itil_class = $task_class::getItilObjectItemType();
+
+        // Obviously false, no data was loaded
+        $task = new $task_class();
+        yield [$task, false];
+
+        // Create two ITIL items of the expected type and a task
+        $parent_1 = $this->createItem($itil_class, [
+            'entities_id' => $entity,
+            'name'        => 'Test item 1',
+            'content'     => '',
+        ]);
+        $parent_2 = $this->createItem($itil_class, [
+            'entities_id' => $entity,
+            'name'        => 'Test item 2',
+            'content'     => '',
+        ]);
+        // Create an ITIL item of a different type, to test the itemtype check.
+        // Avoid Ticket when possible, its plugin hooks are noisy in tests.
+        $other_itil_class = $itil_class === \Problem::class ? \Change::class : \Problem::class;
+        $parent_3 = $this->createItem($other_itil_class, [
+            'entities_id' => $entity,
+            'name'        => 'Test item 3',
+            'content'     => '',
+        ]);
+
+        $itil_fkey = getForeignKeyFieldForItemType($itil_class);
+        $task = $this->createItem($task_class, [
+            $itil_fkey => $parent_1->getID(),
+            'content'  => 'Test task',
+        ]);
+
+        // Correct parent
+        $task->setParentItem($parent_1);
+        yield [$task, true];
+
+        // Invalid parent (wrong id)
+        $task->setParentItem($parent_2);
+        yield [$task, false];
+
+        // Invalid parent (wrong itemtype)
+        $task->setParentItem($parent_3);
+        yield [$task, false];
+    }
+
+    /**
+     * Tests for the isParentAlreadyLoaded method
+     *
+     * @return void
+     */
+    public function testIsParentAlreadyLoaded(): void
+    {
+        $provider = $this->testIsParentAlreadyLoadedProvider();
+        foreach ($provider as $row) {
+            [$task, $is_parent_loaded] = $row;
+            $this->assertEquals(
+                $is_parent_loaded,
+                $this->callPrivateMethod($task, 'isParentAlreadyLoaded')
+            );
+        }
+    }
+
     public function testShowMassiveActionAddTaskForm(): void
     {
         // Arrange: create a task
@@ -387,7 +587,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
         $task = new $task_class();
         ob_start();
         $task->showMassiveActionAddTaskForm();
-        $output = ob_end_clean();
+        $output = ob_get_clean();
 
         // Assert: make sure the template was renderer without fatal errors
         $this->assertNotEmpty($output);

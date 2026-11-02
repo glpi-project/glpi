@@ -432,6 +432,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'mac' => 'e0:dc:ff:ed:09:59',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
+                'ifspeed' => 240000000,
             ],
         ];
 
@@ -466,8 +467,8 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'is_recursive' => 0,
                 'is_deleted' => 0,
                 'is_dynamic' => 1,
-                'ifmtu' => 0,
-                'ifspeed' => 0,
+                'ifmtu' => $expected['ifmtu'] ?? 0,
+                'ifspeed' => $expected['ifspeed'] ?? 0,
                 'ifinternalstatus' => null,
                 'ifconnectionstatus' => 0,
                 'iflastchange' => null,
@@ -1170,6 +1171,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'mac' => '00:e0:4c:68:01:db',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
+                'ifspeed' => 100000000,
             ], [
                 'logical_number' => 1,
                 'name' => 'wlp58s0',
@@ -1232,8 +1234,8 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'is_recursive' => 0,
                 'is_deleted' => 0,
                 'is_dynamic' => 1,
-                'ifmtu' => 0,
-                'ifspeed' => 0,
+                'ifmtu' => $expected['ifmtu'] ?? 0,
+                'ifspeed' => $expected['ifspeed'] ?? 0,
                 'ifinternalstatus' => null,
                 'ifconnectionstatus' => 0,
                 'iflastchange' => null,

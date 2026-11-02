@@ -217,7 +217,7 @@ export class WebIconSelector {
             if (iconset_prefix === "fa") {
                 style = "style=\"font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands';\"";
             }
-            container.innerHTML = `<i class="${_.escape(iconset_prefix)} ${_.escape(option.id)}" ${style}></i> ${_.escape(option.id)}`;
+            container.innerHTML = `<i class="${_.escape(iconset_prefix)} ${_.escape(option.id)}" ${style} aria-hidden="true"></i> ${_.escape(option.id)}`;
             return container;
         } else {
             return option.text;

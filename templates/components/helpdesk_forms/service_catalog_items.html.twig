@@ -118,7 +118,7 @@
                     aria-label="{{ __('First page') }}"
                     {{ current_page <= 1 ? 'aria-disabled="true"' : '' }}
                 >
-                    <i class="ti ti-chevrons-left"></i>
+                    <i class="ti ti-chevrons-left" aria-hidden="true"></i>
                 </a>
             </li>
             <li class="page-item {{ current_page <= 1 ? 'disabled' : '' }}">
@@ -130,7 +130,7 @@
                     aria-label="{{ __('Previous page') }}"
                     {{ current_page <= 1 ? 'aria-disabled="true"' : '' }}
                 >
-                    <i class="ti ti-chevron-left"></i>
+                    <i class="ti ti-chevron-left" aria-hidden="true"></i>
                 </a>
             </li>
 
@@ -169,7 +169,7 @@
                     aria-label="{{ __('Next page') }}"
                     {{ current_page >= total_pages ? 'aria-disabled="true"' : '' }}
                 >
-                    <i class="ti ti-chevron-right"></i>
+                    <i class="ti ti-chevron-right" aria-hidden="true"></i>
                 </a>
             </li>
             <li class="page-item {{ current_page >= total_pages ? 'disabled' : '' }}">
@@ -181,7 +181,7 @@
                     aria-label="{{ __('Last page') }}"
                     {{ current_page >= total_pages ? 'aria-disabled="true"' : '' }}
                 >
-                    <i class="ti ti-chevrons-right"></i>
+                    <i class="ti ti-chevrons-right" aria-hidden="true"></i>
                 </a>
             </li>
         </ul>

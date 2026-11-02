@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\TemplateManager;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\AssignableItem;
 use Glpi\Toolbox\URL;
 
@@ -104,7 +104,7 @@ class Link extends CommonDBTM
                 $nb = countElementsInTable(
                     ['glpi_links_itemtypes','glpi_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
+                        'glpi_links_itemtypes.links_id'  => new QueryIdentifier('glpi_links.id'),
                         'glpi_links_itemtypes.itemtype'  => $item::class,
                     ] + $entity_criteria
                 );
@@ -562,13 +562,13 @@ class Link extends CommonDBTM
                 <div class="firstbloc">
                     {% if show_add %}
                         <a class="btn btn-primary ms-1" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
-                            <i class="ti ti-link"></i>
+                            <i class="ti ti-link" aria-hidden="true"></i>
                             <span>{{ add_msg }}</span>
                         </a>
                     {% endif %}
                     {% if show_configure %}
                         <a class="btn btn-primary ms-1" href="{{ 'Link'|itemtype_search_path }}">
-                            <i class="ti ti-settings"></i>
+                            <i class="ti ti-settings" aria-hidden="true"></i>
                             <span>{{ configure_msg }}</span>
                         </a>
                     {% endif %}
@@ -597,8 +597,8 @@ TWIG, $buttons_params);
 
                 if ($manuallink->canUpdateItem()) {
                     $actions .= '<a href="' . htmlescape(ManualLink::getFormURLWithID($row[$item->getIndexName()])) . '" title="' . _sx('button', 'Update') . '">';
-                    $actions .= '<i class="ti ti-edit"></i>';
-                    $actions .= '<span class="sr-only">' . _sx('button', 'Update') . '</span>';
+                    $actions .= '<i class="ti ti-edit" aria-hidden="true"></i>';
+                    $actions .= '<span class="visually-hidden">' . _sx('button', 'Update') . '</span>';
                     $actions .= '</a>';
                 }
                 $entry['actions'] = $actions;
@@ -711,10 +711,10 @@ TWIG, $buttons_params);
                     $file = reset($files);
                 }
                 $url             = $CFG_GLPI["root_doc"] . "/front/link.send.php?lID=" . $params['id']
-                                 . "&itemtype=" . $item::class
+                                 . "&itemtype=" . rawurlencode($item::class)
                                  . "&id=" . $item->getID() . "&rank=$key";
                 $newlink         = '<a href="' . htmlescape($url) . '" target="_blank">';
-                $newlink        .= "<i class='fs-2 ti ti-link me-2'></i>";
+                $newlink        .= "<i class='fs-2 ti ti-link me-2' aria-hidden='true'></i>";
                 $linkname        = htmlescape(sprintf(__('%1$s #%2$s'), $name, $i));
                 $newlink        .= htmlescape(sprintf(__('%1$s: %2$s'), $linkname, $val));
                 $newlink        .= "</a>";

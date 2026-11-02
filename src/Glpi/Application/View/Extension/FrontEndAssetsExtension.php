@@ -35,10 +35,11 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Config;
 use DBmysql;
 use Entity;
 use Glpi\Application\ImportMapGenerator;
+use Glpi\Config\ConfigContainer;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
@@ -152,7 +153,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             if (!str_starts_with($clean_path, '/')) {
                 $clean_path = '/' . $clean_path; // be sure to have a path starting with `/`
 
-                // FIXME Trigger a warning in GLPI 12.0.
+                // FIXME Trigger a warning.
             }
 
             if (!$is_debug) {
@@ -197,7 +198,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         if (!str_starts_with($path, '/')) {
             $path = '/' . $path; // be sure to have a path starting with `/`
 
-            // FIXME Trigger a warning in GLPI 12.0.
+            // FIXME Trigger a warning.
         }
 
         if (!$is_debug) {
@@ -268,8 +269,6 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     public function localesJs(): string
     {
-        global $CFG_GLPI;
-
         if (!isset($_SESSION['glpilanguage'])) {
             return '';
         }
@@ -288,7 +287,7 @@ class FrontEndAssetsExtension extends AbstractExtension
 
             $.fn.select2.defaults.set(
                 'language',
-                '" . \jsescape($CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]) . "',
+                '" . \jsescape(LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code) . "',
             );
         ";
 
@@ -322,6 +321,7 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     public function configJs(): string
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         $cfg_glpi = [
@@ -330,7 +330,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         ];
         if (Session::getLoginUserID(true) !== false) {
             // expose full config only for connected users
-            $cfg_glpi += Config::getSafeConfig(true);
+            $cfg_glpi += $CFG_GLPI->getSafeConfig(true);
         }
 
         $plugins_path = \array_combine(

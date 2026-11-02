@@ -35,8 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRightsOr('group', [CREATE, UPDATE]);
-Session::checkRight('user', User::UPDATEAUTHENT);
+Session::checkRightsOr(Group::$rightname, [CREATE, UPDATE]);
+Session::checkRight(User::$rightname, User::UPDATEAUTHENT);
 AuthLDAP::manageRequestValues(false);
 
 Html::header(__('LDAP directory link'), '', "admin", "group", "ldap");

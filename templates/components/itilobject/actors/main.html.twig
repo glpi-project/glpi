@@ -161,7 +161,7 @@
     <div class="modal-content">
       <div class="modal-header">
          <h5 class="modal-title">
-            <i class="ti ti-mail"></i>
+            <i class="ti ti-mail" aria-hidden="true"></i>
             &nbsp;{{ __('Edit notification settings') }}
          </h5>
          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
@@ -180,7 +180,7 @@
                <label class="form-check-label" for="use_notification">{{ __('Email followup') }}</label>
             </div>
             <div id="alert_notification_disable" class='alert alert-info d-flex align-items-center mb-4 d-none' role='alert'>
-               <i class='ti ti-info-circle fs-2x'></i>
+               <i class='ti ti-info-circle fs-2x' aria-hidden='true'></i>
                <span class='ms-2'>
                   {{ __('Notifications are disabled because:') }}
                   <ul>
@@ -196,11 +196,11 @@
       </div>
       <div class="modal-footer">
          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            <i class="ti ti-x"></i>
+            <i class="ti ti-x" aria-hidden="true"></i>
             <span>{{ __('Close') }}</span>
          </button>
          <button type="button" class="btn btn-primary" id="saveActorNotifySettings">
-            <i class="ti ti-device-floppy"></i>
+            <i class="ti ti-device-floppy" aria-hidden="true"></i>
             <span>{{ __('Save') }}</span>
          </button>
       </div>

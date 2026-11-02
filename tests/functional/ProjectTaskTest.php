@@ -74,6 +74,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'first test, whole period',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-10',
                 'plan_end_date'            => '2019-08-20',
@@ -96,6 +97,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'test, subperiod',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-13',
                 'plan_end_date'            => '2019-08-14',
@@ -126,6 +128,7 @@ class ProjectTaskTest extends DbTestCase
             0,
             (int) $ptask->add([
                 'name'                     => 'test subperiod, out of bounds',
+                'entities_id'              => $this->getTestRootEntity(true),
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2018-08-13',
                 'plan_end_date'            => '2018-08-24',
@@ -452,6 +455,248 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEquals($project->getID(), $clonedSubtask2->fields['projects_id']);
         $this->assertEquals($subtask2->fields['name'] . ' (copy)', $clonedSubtask2->fields['name']);
     }
+
+    public function testCloneProjectTaskClonesSubTreeOnce()
+    {
+        $project = $this->createItem('Project', [
+            'name' => __FUNCTION__,
+        ]);
+
+        // Task to be cloned, with two children, one of them having a child itself
+        $task = $this->createItem('ProjectTask', [
+            'projects_id' => $project->getID(),
+            'name'        => 'Task A',
+        ]);
+        $child1 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Task A.1',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $child1->getID(),
+            'name'            => 'Task A.1.1',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Task A.2',
+        ]);
+
+        // Unrelated task, it must not be impacted by the clone
+        $this->createItem('ProjectTask', [
+            'projects_id' => $project->getID(),
+            'name'        => 'Task B',
+        ]);
+
+        $clone_id = $task->clone();
+        $this->assertGreaterThan(0, $clone_id);
+
+        // 5 original tasks + the 4 tasks of the cloned sub-tree
+        $tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID()]);
+        $this->assertCount(9, $tasks);
+
+        // Check the hierarchy, `name => parent name` (0 when the task has no parent)
+        $names = array_column($tasks, 'name', 'id');
+        $hierarchy = [];
+        foreach ($tasks as $row) {
+            $hierarchy[$row['name']] = $row['projecttasks_id'] === 0
+                ? 0
+                : ($names[$row['projecttasks_id']] ?? 'unknown');
+        }
+        $this->assertEquals(
+            [
+                // original tasks, untouched
+                'Task A'              => 0,
+                'Task A.1'            => 'Task A',
+                'Task A.1.1'          => 'Task A.1',
+                'Task A.2'            => 'Task A',
+                'Task B'              => 0,
+                // cloned sub-tree
+                'Task A (copy)'       => 0,
+                'Task A.1 (copy)'     => 'Task A (copy)',
+                'Task A.1.1 (copy)'   => 'Task A.1 (copy)',
+                'Task A.2 (copy)'     => 'Task A (copy)',
+            ],
+            $hierarchy
+        );
+    }
+
+    public function testCloneProjectTaskInTemplate()
+    {
+        $template = $this->createItem('Project', [
+            'name'          => __FUNCTION__,
+            'is_template'   => 1,
+            'template_name' => __FUNCTION__,
+        ]);
+
+        $task = $this->createItem('ProjectTask', [
+            'projects_id' => $template->getID(),
+            'name'        => 'Task A',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $template->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Task A.1',
+        ]);
+
+        $clone_id = $task->clone();
+        $this->assertGreaterThan(0, $clone_id);
+
+        $child_clone = new ProjectTask();
+        $this->assertTrue($child_clone->getFromDBByCrit(['projecttasks_id' => $clone_id]));
+        $this->assertEquals('Task A.1 (copy)', $child_clone->fields['name']);
+        $this->assertEquals($template->getID(), $child_clone->fields['projects_id']);
+
+        // 2 original tasks + the 2 cloned ones
+        $this->assertEquals(
+            4,
+            countElementsInTable(ProjectTask::getTable(), ['projects_id' => $template->getID()])
+        );
+    }
+
+    public function testCloneProjectTaskIntoAnotherProject()
+    {
+        $source_project = $this->createItem('Project', [
+            'name' => __FUNCTION__ . ' source',
+        ]);
+        $target_project = $this->createItem('Project', [
+            'name' => __FUNCTION__ . ' target',
+        ]);
+
+        $task = $this->createItem('ProjectTask', [
+            'projects_id' => $source_project->getID(),
+            'name'        => 'Task A',
+        ]);
+        $child = $this->createItem('ProjectTask', [
+            'projects_id'     => $source_project->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Task A.1',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $source_project->getID(),
+            'projecttasks_id' => $child->getID(),
+            'name'            => 'Task A.1.1',
+        ]);
+
+        $clone_id = $task->clone(['projects_id' => $target_project->getID()]);
+        $this->assertGreaterThan(0, $clone_id);
+
+        // Source project is left with its 3 original tasks
+        $this->assertEquals(
+            3,
+            countElementsInTable(ProjectTask::getTable(), ['projects_id' => $source_project->getID()])
+        );
+
+        // The whole sub-tree has been cloned into the target project
+        $cloned_tasks = getAllDataFromTable(
+            ProjectTask::getTable(),
+            ['projects_id' => $target_project->getID()]
+        );
+        $this->assertCount(3, $cloned_tasks);
+
+        $names = array_column($cloned_tasks, 'name', 'id');
+        $hierarchy = [];
+        foreach ($cloned_tasks as $row) {
+            $hierarchy[$row['name']] = $row['projecttasks_id'] === 0
+                ? 0
+                : ($names[$row['projecttasks_id']] ?? 'unknown');
+        }
+        $this->assertEquals(
+            [
+                'Task A (copy)'     => 0,
+                'Task A.1 (copy)'   => 'Task A (copy)',
+                'Task A.1.1 (copy)' => 'Task A.1 (copy)',
+            ],
+            $hierarchy
+        );
+    }
+
+    public function testSortProjectTasksByHierarchy()
+    {
+        $project = $this->createItem('Project', [
+            'name' => __FUNCTION__,
+        ]);
+
+        $task_A = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A',
+        ]);
+        $task_B = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B',
+        ]);
+
+        $task_B1 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B.1',
+            'projecttasks_id' => $task_B->getID(),
+        ]);
+        $task_A1 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A.1',
+            'projecttasks_id' => $task_A->getID(),
+        ]);
+
+        $task_A2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A.2',
+            'projecttasks_id' => $task_A1->getID(),
+        ]);
+        $task_B2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B.2',
+            'projecttasks_id' => $task_B1->getID(),
+        ]);
+
+        $tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID(), 'ORDER' => 'id ASC']);
+
+        // Sort tasks by hierarchy
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy($tasks);
+
+        // Check the order of the sorted tasks
+        $this->assertEquals(
+            [
+                $task_A->fields,
+                $task_A1->fields,
+                $task_A2->fields,
+                $task_B->fields,
+                $task_B1->fields,
+                $task_B2->fields,
+            ],
+            $sorted_tasks
+        );
+    }
+
+    public function testSortProjectTasksByHierarchyWithMutualCycle()
+    {
+        $task_a = ['id' => 10, 'projecttasks_id' => 20, 'name' => 'A'];
+        $task_b = ['id' => 20, 'projecttasks_id' => 10, 'name' => 'B'];
+
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy([$task_a, $task_b]);
+
+        $this->assertEquals([$task_a, $task_b], $sorted_tasks);
+    }
+
+    public function testSortProjectTasksByHierarchyWithCycleAndNormalTasks()
+    {
+        // A normal, well-formed root and child, alongside a corrupted cycle (A and B are each
+        // other's father) that itself has a well-formed child (C) hanging off of it.
+        $root       = ['id' => 1, 'projecttasks_id' => 0, 'name' => 'Root'];
+        $root_child = ['id' => 2, 'projecttasks_id' => 1, 'name' => 'Root child'];
+        $task_a     = ['id' => 10, 'projecttasks_id' => 20, 'name' => 'A'];
+        $task_b     = ['id' => 20, 'projecttasks_id' => 10, 'name' => 'B'];
+        $task_c     = ['id' => 30, 'projecttasks_id' => 10, 'name' => 'C (child of A)'];
+
+        $tasks = [$root, $root_child, $task_a, $task_b, $task_c];
+
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy($tasks);
+
+        // The normal tree is sorted as usual, and the cyclic tasks (plus whatever hangs off of
+        // them) are appended instead of being dropped; nothing is lost nor duplicated.
+        $this->assertEquals($tasks, $sorted_tasks);
+    }
+
     protected function testAutochangeStateProvider()
     {
         $config = new \Config();
@@ -1070,39 +1315,6 @@ class ProjectTaskTest extends DbTestCase
         $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
     }
 
-    public function testPlanningRecallCreatedOnAdd(): void
-    {
-        $this->login();
-        $users_id = Session::getLoginUserID();
-
-        $project = $this->createItem(Project::class, ['name' => 'Test project for recall']);
-
-        $task = $this->createItem(ProjectTask::class, [
-            'name'            => 'Task with recall',
-            'projects_id'     => $project->getID(),
-            'plan_start_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
-            'plan_end_date'   => date('Y-m-d H:i:s', strtotime('+2 days')),
-            '_planningrecall' => [
-                'itemtype'    => 'ProjectTask',
-                'items_id'    => 0,
-                'users_id'    => $users_id,
-                'before_time' => HOUR_TIMESTAMP,
-                'field'       => 'plan_end_date',
-            ],
-        ]);
-        $task_id = $task->getID();
-
-        $recall = new PlanningRecall();
-        $this->assertTrue(
-            $recall->getFromDBByCrit([
-                'itemtype' => 'ProjectTask',
-                'items_id' => $task_id,
-                'users_id' => $users_id,
-            ])
-        );
-        $this->assertSame(HOUR_TIMESTAMP, (int) $recall->fields['before_time']);
-    }
-
     public function testPlanningRecallUpdatedOnPlanEndDateChange(): void
     {
         $this->login();
@@ -1116,35 +1328,29 @@ class ProjectTaskTest extends DbTestCase
             'projects_id'     => $project->getID(),
             'plan_start_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
             'plan_end_date'   => $end_date,
-            '_planningrecall' => [
-                'itemtype'    => 'ProjectTask',
-                'items_id'    => 0,
-                'users_id'    => $users_id,
-                'before_time' => HOUR_TIMESTAMP,
-                'field'       => 'plan_end_date',
-            ],
+            'entities_id'     => $this->getTestRootEntity(true),
         ]);
+
+        $this->createItem(ProjectTaskTeam::class, [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => \User::class,
+            'items_id'        => $users_id,
+        ]);
+        $this->assertTrue($task->can($task->getID(), READ));
+
+        $new_end_date      = date('Y-m-d H:i:s', strtotime('+5 days'));
+        $new_expected_when = date('Y-m-d H:i:s', strtotime($new_end_date) - HOUR_TIMESTAMP);
+
+        $task->update(['id' => $task->getID(), 'plan_end_date' => $new_end_date, 'recall' => HOUR_TIMESTAMP,]);
 
         $recall = new PlanningRecall();
         $this->assertTrue(
             $recall->getFromDBByCrit([
-                'itemtype' => 'ProjectTask',
+                'itemtype' => ProjectTask::class,
                 'items_id' => $task->getID(),
                 'users_id' => $users_id,
             ])
         );
-        $expected_when = date('Y-m-d H:i:s', strtotime($end_date) - HOUR_TIMESTAMP);
-        $this->assertSame($expected_when, $recall->fields['when']);
-
-        $new_end_date    = date('Y-m-d H:i:s', strtotime('+5 days'));
-        $new_expected_when = date('Y-m-d H:i:s', strtotime($new_end_date) - HOUR_TIMESTAMP);
-
-        $task->update([
-            'id'            => $task->getID(),
-            'plan_end_date' => $new_end_date,
-        ]);
-
-        $recall->getFromDB($recall->getID());
         $this->assertSame($new_expected_when, $recall->fields['when']);
     }
 

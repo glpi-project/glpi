@@ -42,7 +42,7 @@ class DebugRequestMiddleware extends AbstractMiddleware implements RequestMiddle
     public function process(MiddlewareInput $input, callable $next): void
     {
         if (
-            Session::haveRight('config', UPDATE)
+            Session::haveRight(\Config::$rightname, UPDATE)
             && $input->request->hasHeader('X-Debug-Mode')
             && filter_var($input->request->getHeaderLine('X-Debug-Mode'), FILTER_VALIDATE_BOOLEAN)
         ) {

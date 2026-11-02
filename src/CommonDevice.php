@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * CommonDevice Class
@@ -68,7 +69,6 @@ abstract class CommonDevice extends CommonDropdown
      **/
     public static function getDeviceTypes(bool $grouped = false)
     {
-        //TODO After GLPI 11.0, make this always return grouped values
         global $CFG_GLPI;
 
         $valid_types = [
@@ -188,7 +188,7 @@ abstract class CommonDevice extends CommonDropdown
                             );
 
                             $listLabel = '<i class="ti ti-list pointer" title="' . htmlescape($itemTypeName) . '"></i>'
-                            . '<span class="sr-only">' . htmlescape($itemTypeName) . '</span>';
+                            . '<span class="visually-hidden">' . htmlescape($itemTypeName) . '</span>';
                             $menu['options'][$key]['links'][$listLabel] = $itemClass::getSearchURL(false);
 
                             // item device self links
@@ -263,7 +263,7 @@ abstract class CommonDevice extends CommonDropdown
                 'SELECT'    => [
                     'itemtype',
                     QueryFunction::groupConcat(
-                        expression: 'items_id',
+                        expression: new QueryIdentifier('items_id'),
                         distinct: true,
                         alias: 'ids'
                     ),
@@ -473,10 +473,11 @@ abstract class CommonDevice extends CommonDropdown
 
         if ($options['canedit']) {
             $field_name  = 'quantity_' . static::class . '_' . $this->getID();
-            $content .= "&nbsp;<span class='ti ti-plus cursor-pointer' title='" . __s('Add') . "'
-                      onClick=\"$('#" . htmlescape(jsescape($field_name)) . "').show();\"
-                      ><span class='sr-only'>" . __s('Add') . "</span></span>";
-            $content .= "<span id='" . htmlescape($field_name) . "' style='display:none'><br>";
+            $content .= "&nbsp;<button type='button' class='btn-as-link ti ti-plus collapse-trigger-once' title='" . __s('Add') . "'
+                      data-bs-toggle='collapse' data-bs-target='#" . htmlescape($field_name) . "'
+                      aria-expanded='false' aria-controls='" . htmlescape($field_name) . "'
+                      ><span class='visually-hidden'>" . __s('Add') . "</span></button>";
+            $content .= "<div id='" . htmlescape($field_name) . "' class='collapse'>";
             $content .= __s('Add') . "&nbsp;";
 
             $content  = [$content,
@@ -487,7 +488,7 @@ abstract class CommonDevice extends CommonDropdown
                     ],
                     ],
                 ],
-                "</span>",
+                "</div>",
             ];
         }
 
@@ -652,6 +653,15 @@ abstract class CommonDevice extends CommonDropdown
     {
         $this->post_workOnItem();
         parent::post_updateItem($history);
+    }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                static::getItem_DeviceType(),
+            ]
+        );
     }
 
     public static function getFormURL($full = true)

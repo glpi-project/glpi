@@ -49,6 +49,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
@@ -77,7 +78,7 @@ use function Safe\strtotime;
 
 final class CoreController extends AbstractController
 {
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         $transfer_keep_option = [
             'type' => Doc\Schema::TYPE_INTEGER,
@@ -512,7 +513,7 @@ HTML;
             $response_headers['Access-Control-Allow-Headers'] = [
                 'Content-Type', 'Authorization', 'Origin', 'Accept',
                 'GLPI-API-Version', 'GLPI-Profile', 'GLPI-Entity', 'GLPI-Entity-Recursive',
-                'X-Debug-Mode',
+                'X-Debug-Mode', 'X-Requested-With', 'Accept-Language', 'Accept-Encoding', 'User-Agent',
             ];
             if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
                 $response_headers['Access-Control-Allow-Headers'][] = 'XDEBUG_TRIGGER';
@@ -671,6 +672,13 @@ HTML;
                     'response_type' => 'code',
                     'redirect_uri'  => $auth_request->getRedirectUri(),
                 ];
+                if ($auth_request->getCodeChallenge() !== null) {
+                    $redirect_params['code_challenge'] = $auth_request->getCodeChallenge();
+                    $redirect_params['code_challenge_method'] = $auth_request->getCodeChallengeMethod();
+                }
+                if ($auth_request->getState() !== null) {
+                    $redirect_params['state'] = $auth_request->getState();
+                }
                 $redirect_uri = $CFG_GLPI['url_base']
                     . '/api.php/v2'
                     . $this->getAPIPathForRouteFunction(self::class, 'authorize')
@@ -782,7 +790,7 @@ HTML;
     )]
     public function statusAllServices(Request $request): Response
     {
-        $show_all = Session::haveRight('config', READ);
+        $show_all = Session::haveRight(\Config::$rightname, READ);
         $data = StatusChecker::getServiceStatus(null, !$show_all);
         return new JSONResponse($data);
     }
@@ -809,7 +817,7 @@ HTML;
     )]
     public function statusByService(Request $request): Response
     {
-        $show_all = Session::haveRight('config', READ);
+        $show_all = Session::haveRight(\Config::$rightname, READ);
         $service = $request->getAttribute('service');
         $service = strtolower($service);
 
@@ -920,7 +928,7 @@ HTML;
     )]
     public function getLocales(Request $request): Response
     {
-        global $TRANSLATE, $CFG_GLPI;
+        global $TRANSLATE;
 
         $messages = $TRANSLATE->getAllMessages($_GET['domain']);
         if (!($messages instanceof TextDomain)) {
@@ -939,7 +947,7 @@ HTML;
         $po_file = GLPI_ROOT . '/locales/' . preg_replace(
             '/\.mo$/',
             '.po',
-            $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
+            LanguageRegistry::get($_SESSION['glpilanguage'])->mo_file
         );
         $po_file_handle = fopen(
             $po_file,

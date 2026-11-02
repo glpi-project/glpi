@@ -86,6 +86,12 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
     }
 
     #[Override]
+    public function getGroupedItemsOptionName(): ?string
+    {
+        return 'licenses';
+    }
+
+    #[Override]
     public function getTags()
     {
 

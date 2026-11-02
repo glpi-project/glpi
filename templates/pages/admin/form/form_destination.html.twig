@@ -39,13 +39,13 @@
 
 <div class="py-2 px-3">
     <h2 class="d-flex">
-        <i class="{{ icon }} me-2"></i>
+        <i class="{{ icon }} me-2" aria-hidden="true"></i>
         {{ _n("Destination", "Destinations", get_plural_number()) }}
     </h2>
 
     {% for warning in warnings %}
         <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
-            <i class="ti ti-alert-triangle me-2"></i>
+            <i class="ti ti-alert-triangle me-2" aria-hidden="true"></i>
             {{ warning }}
         </div>
     {% endfor %}
@@ -72,7 +72,7 @@
                     type="submit"
                     value="{{ type }}"
                 >
-                    <i class="ti ti-plus me-1"></i> {{ __("Add %s")|format(label) }}
+                    <i class="ti ti-plus me-1" aria-hidden="true"></i> {{ __("Add %s")|format(label) }}
                 </button>
             {% endfor %}
         </div>
@@ -102,7 +102,7 @@
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                             data-glpi-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
                         >
-                            <i class="{{ concrete_destination ? concrete_destination.getIcon() : 'ti ti-unlink text-white' }}"></i>
+                            <i class="{{ concrete_destination ? concrete_destination.getIcon() : 'ti ti-unlink text-white' }}" aria-hidden="true"></i>
                             <span
                                 class="m-0 lh-base fw-normal glpi-form-destination-name {{ not concrete_destination ? 'text-white' : '' }}"
                             >
@@ -117,7 +117,7 @@
                                         class="{{ display_class }} badge bg-secondary-lt d-flex align-items-center ms-2"
                                         data-glpi-editor-condition-badge="{{ strategy.value }}"
                                     >
-                                        <i class="{{ strategy.getIcon() }} me-1 {{ not concrete_destination ? 'text-white' : '' }}"></i>
+                                        <i class="{{ strategy.getIcon() }} me-1 {{ not concrete_destination ? 'text-white' : '' }}" aria-hidden="true"></i>
                                         <span class="{{ not concrete_destination ? 'text-white' : '' }}">{{ strategy.getLabel() }}</span>
                                     </span>
                                 {% endfor %}

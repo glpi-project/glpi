@@ -57,6 +57,7 @@ use function Safe\file_put_contents;
 use function Safe\iconv;
 use function Safe\mb_convert_encoding;
 use function Safe\preg_match;
+use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
@@ -74,9 +75,14 @@ class MailCollector extends CommonDBTM
 {
     // Specific one
     /**
-     * IMAP / POP connection
+     * IMAP connection
      */
     private ?AbstractStorage $storage = null;
+    /**
+     * Notification subject tags used across entities, memoized for the current run.
+     * @var ?string[]
+     */
+    private ?array $notification_subject_tags = null;
     /**
      * UID of the current message
      */
@@ -171,7 +177,7 @@ class MailCollector extends CommonDBTM
     {
         $links = [];
         if (countElementsInTable(self::getTable()) > 0) {
-            $links["<i class='ti ti-list'></i>" . __s('Not imported emails')] = "/front/notimportedemail.php";
+            $links["<i class='ti ti-list' aria-hidden='true'></i>" . __s('Not imported emails')] = "/front/notimportedemail.php";
         }
         return $links;
     }
@@ -308,8 +314,9 @@ class MailCollector extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/setup_form.html.twig', [
-            'item'             => $this,
-            'protocol_choices' => $protocol_choices,
+            'item'              => $this,
+            'protocol_choices'  => $protocol_choices,
+            'uses_pop_protocol' => Toolbox::isPopMailServerConnectString((string) ($this->fields['host'] ?? '')),
         ]);
         return true;
     }
@@ -735,25 +742,26 @@ class MailCollector extends CommonDBTM
 
                         if (!$tkt['_blacklisted']) {
                             $rejinput['from']              = $requester ?? '';
-                            $rejinput['to']                = $headers['to'] ?? '';
+                            $rejinput['to']                = mb_substr($headers['to'] ?? '', 0, 255);
                             $rejinput['users_id']          = $tkt['_users_id_requester'];
                             $rejinput['subject']           = $this->cleanSubject($headers['subject']);
                             $rejinput['messageid']         = $headers['message_id'];
                         }
                     } catch (Throwable $e) {
                         $error++;
-                        ErrorHandler::logCaughtException($e);
-                        ErrorHandler::displayCaughtExceptionMessage($e);
-                        Toolbox::logInFile(
-                            'mailgate',
+                        $this->reportMailCollectError(
+                            $e,
+                            $rejinput,
+                            $rejected,
                             sprintf(
-                                __('Error during message parsing (%s). Check in "%s" for more details') . "\n",
+                                __('Error during message parsing (%s). Check in "%s" for more details'),
                                 $e->getMessage(),
                                 GLPI_LOG_DIR . '/php-errors.log'
                             )
                         );
-                        $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
-                        $rejected->add($rejinput);
+                        // Move the message out of the inbox, otherwise it would be fetched again,
+                        // and would fail again, on every collect.
+                        $delete[$uid] = self::REFUSED_FOLDER;
                         continue;
                     }
 
@@ -778,7 +786,22 @@ class MailCollector extends CommonDBTM
                     } elseif (isset($tkt['_refuse_email_with_response'])) {
                         $delete[$uid] =  self::REFUSED_FOLDER;
                         $refused++;
-                        $this->sendMailRefusedResponse($requester, $tkt['name']);
+                        try {
+                            $this->sendMailRefusedResponse($requester, $tkt['name']);
+                        } catch (Throwable $e) {
+                            // The message was already correctly classified as refused above ;
+                            // a failure to notify the sender must not be reported as a failed import.
+                            ErrorHandler::logCaughtException($e);
+                            Toolbox::logInFile(
+                                'mailgate',
+                                sprintf(
+                                    __('Unable to send refused response for message from collector "%s" (%s) (%s)'),
+                                    $this->fields['name'],
+                                    $this->fields['host'],
+                                    $e->getMessage()
+                                ) . "\n"
+                            );
+                        }
                     } elseif (isset($tkt['_refuse_email_no_response'])) {
                         $delete[$uid] =  self::REFUSED_FOLDER;
                         $refused++;
@@ -805,12 +828,15 @@ class MailCollector extends CommonDBTM
                             $refused++;
                             $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
                             $rejected->add($rejinput);
-                        } elseif ($ticket->add($tkt)) {
+                        } elseif ($this->addItemFromMessage($ticket, $tkt)) {
                             $delete[$uid] =  self::ACCEPTED_FOLDER;
                         } else {
                             $error++;
                             $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                             $rejected->add($rejinput);
+                            // Move the message out of the inbox, otherwise it would be fetched again,
+                            // and would fail again, on every collect.
+                            $delete[$uid] = self::REFUSED_FOLDER;
                         }
                     } elseif (
                         isset($tkt['tickets_id'])
@@ -856,6 +882,9 @@ class MailCollector extends CommonDBTM
                             $error++;
                             $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                             $rejected->add($rejinput);
+                            // Move the message out of the inbox, otherwise it would be fetched again,
+                            // and would fail again, on every collect.
+                            $delete[$uid] = self::REFUSED_FOLDER;
                         } elseif (
                             !$CFG_GLPI['use_anonymous_followups']
                              && !$ticket->canUserAddFollowups($tkt['_users_id_requester'])
@@ -865,12 +894,15 @@ class MailCollector extends CommonDBTM
                             $refused++;
                             $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
                             $rejected->add($rejinput);
-                        } elseif ($fup->add($fup_input)) {
+                        } elseif ($this->addItemFromMessage($fup, $fup_input)) {
                             $delete[$uid] =  self::ACCEPTED_FOLDER;
                         } else {
                             $error++;
                             $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                             $rejected->add($rejinput);
+                            // Move the message out of the inbox, otherwise it would be fetched again,
+                            // and would fail again, on every collect.
+                            $delete[$uid] = self::REFUSED_FOLDER;
                         }
                     } else {
                         if ($is_user_anonymous && !$CFG_GLPI["use_anonymous_helpdesk"]) {
@@ -930,6 +962,66 @@ class MailCollector extends CommonDBTM
             } else {
                 return $msg;
             }
+        }
+    }
+
+    /**
+     * Logs an exception caught during collect() and reports the corresponding message as rejected.
+     *
+     * @param Throwable        $e           Caught exception
+     * @param array<string, mixed> $rejinput    Input used to build the NotImportedEmail entry
+     * @param NotImportedEmail $rejected    NotImportedEmail instance to add the entry to
+     * @param string           $log_message Message to write to the mailgate log file
+     */
+    private function reportMailCollectError(Throwable $e, array $rejinput, NotImportedEmail $rejected, string $log_message): void
+    {
+        ErrorHandler::logCaughtException($e);
+        ErrorHandler::displayCaughtExceptionMessage($e);
+        Toolbox::logInFile('mailgate', $log_message . "\n");
+
+        $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+        try {
+            $rejected->add($rejinput);
+        } catch (Throwable $inner_e) {
+            // Reporting itself failed (e.g. same malformed content) ; log-only to avoid letting
+            // the exception escape the caller's catch block and abort the whole collect batch.
+            ErrorHandler::logCaughtException($inner_e);
+            Toolbox::logInFile(
+                'mailgate',
+                sprintf(__('Unable to report rejected email (%s)'), $inner_e->getMessage()) . "\n"
+            );
+        }
+    }
+
+
+    /**
+     * Add the item (ticket or followup) corresponding to a collected message.
+     *
+     * Errors are caught here to prevent a single faulty message (e.g. containing a value that is
+     * rejected by the DB server) to stop the whole collect process, and therefore the whole
+     * mailgate crontask.
+     *
+     * @param CommonDBTM $item   Item to add
+     * @param array<string, mixed> $input  Item fields
+     *
+     * @return bool
+     */
+    private function addItemFromMessage(CommonDBTM $item, array $input): bool
+    {
+        try {
+            return (bool) $item->add($input);
+        } catch (Throwable $e) {
+            ErrorHandler::logCaughtException($e);
+            ErrorHandler::displayCaughtExceptionMessage($e);
+            Toolbox::logInFile(
+                'mailgate',
+                sprintf(
+                    __('Error during message import (%s). Check in "%s" for more details') . "\n",
+                    $e->getMessage(),
+                    GLPI_LOG_DIR . '/php-errors.log'
+                )
+            );
+            return false;
         }
     }
 
@@ -1283,6 +1375,13 @@ class MailCollector extends CommonDBTM
     public function cleanSubject($text)
     {
         $text = str_replace("=20", "\n", $text);
+
+        if (!mb_check_encoding($text, 'UTF-8')) {
+            // Subject may contain invalid UTF-8 sequences, that would be rejected by the DB server.
+            // See https://github.com/glpi-project/glpi/issues/25325
+            $text = iconv($this->detectCharset($text), 'UTF-8', $text);
+        }
+
         return mb_substr($text, 0, 255, 'UTF-8');
     }
 
@@ -1417,13 +1516,14 @@ class MailCollector extends CommonDBTM
                     if ($email === null) {
                         continue;
                     }
-                    $mailto = Toolbox::strtolower($email);
-                    if ($mailto === $this->fields['name']) {
-                        $to = $mailto;
-                    }
-                    $tos[] = $mailto;
+                    $tos[] = Toolbox::strtolower($email);
                 }
             }
+        }
+        // Use the whole recipients list (not just the first one) so that rule criteria
+        // matching against the "To" address work regardless of the recipient's position.
+        if ($tos !== []) {
+            $to = implode(', ', $tos);
         }
 
         $ccs     = [];
@@ -1742,25 +1842,55 @@ class MailCollector extends CommonDBTM
                 $content = '';
 
                 // Extract everything located prior to doctype/html declaration
-                $pre_content_matches = [];
-                if (preg_match('/^(?<pre_content>.*?)(?:<!doctype|<html)/is', $raw_content, $pre_content_matches)) {
-                    $content .= trim($pre_content_matches['pre_content']);
+                $html_opening_matches = [];
+                if (preg_match('/(<!doctype|<html)/uis', $raw_content, $html_opening_matches, PREG_OFFSET_CAPTURE) === 1) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $html_opening_pos = mb_strlen(substr($raw_content, 0, $html_opening_matches[1][1] ?? 0));
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        0,
+                        $html_opening_pos
+                    );
                 }
 
                 // Extract everything located inside the body
-                $body_matches = [];
-                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $raw_content, $body_matches)) {
-                    $content .= $body_matches['body'];
+                $body_opening_matches = [];
+                $body_closing_matches = [];
+                if (
+                    preg_match('/(<body[^>]*>)/uis', $raw_content, $body_opening_matches, PREG_OFFSET_CAPTURE) === 1
+                    && preg_match('/(<\/body>)/uis', $raw_content, $body_closing_matches, PREG_OFFSET_CAPTURE) === 1
+                    && ($body_closing_matches[1][1] ?? 0) > ($body_opening_matches[1][1] ?? 0)
+                ) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $body_opening_pos = mb_strlen(substr($raw_content, 0, $body_opening_matches[1][1] ?? 0));
+                    $body_closing_pos = mb_strlen(substr($raw_content, 0, $body_closing_matches[1][1] ?? 0));
+
+                    $body_content_start_pos = $body_opening_pos + mb_strlen($body_opening_matches[1][0] ?? '');
+                    $body_content_end_pos   = $body_closing_pos;
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        $body_content_start_pos,
+                        $body_content_end_pos - $body_content_start_pos
+                    );
                 }
 
                 // Extract everything located after the html closing tag
-                $post_content_matches = [];
-                if (preg_match('/(?:<\/html>)(?<post_content>.*?)$/is', $raw_content, $post_content_matches)) {
-                    $content .= trim($post_content_matches['post_content']);
+                $html_closing_matches = [];
+                if (preg_match('/(<\/html>)/uis', $raw_content, $html_closing_matches, PREG_OFFSET_CAPTURE) === 1) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $html_closing_pos = mb_strlen(substr($raw_content, 0, $html_closing_matches[1][1] ?? 0));
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        $html_closing_pos + mb_strlen($html_closing_matches[1][0] ?? ''),
+                        null
+                    );
                 }
 
                 // If we have extracted content, use it, otherwise fallback to original
-                if ($content === '') {
+                if (trim($content) === '') {
                     $content = $raw_content;
                 }
 
@@ -1814,12 +1944,6 @@ class MailCollector extends CommonDBTM
      **/
     public function deleteMails($uid, $folder = '')
     {
-
-        // Disable move support, POP protocol only has the INBOX folder
-        if (strstr($this->fields['host'], "/pop")) {
-            $folder = '';
-        }
-
         if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
             $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
             try {
@@ -1874,7 +1998,25 @@ class MailCollector extends CommonDBTM
                 $mc->maxfetch_emails = $max;
 
                 $task->log("Collect mails from " . $data["name"] . " (" . $data["host"] . ")\n");
-                $message = $mc->collect($data["id"]);
+                try {
+                    $message = $mc->collect($data["id"]);
+                } catch (Throwable $e) {
+                    ErrorHandler::logCaughtException($e);
+
+                    // Update last collect date even if an error occurs.
+                    // This will prevent collectors that are constantly errored to be stuck at the begin of the
+                    // crontask process queue, and therefore to prevent other collectors to be processed.
+                    $mc->update([
+                        'id'                => $data['id'],
+                        'last_collect_date' => $_SESSION["glpi_currenttime"],
+                    ]);
+
+                    $message = sprintf(
+                        __('Error during mails collect (%s). Check in "%s" for more details'),
+                        $e->getMessage(),
+                        GLPI_LOG_DIR . '/php-errors.log'
+                    );
+                }
 
                 $task->addVolume($mc->fetch_emails);
                 $task->log("$message\n");
@@ -2148,18 +2290,70 @@ class MailCollector extends CommonDBTM
         // Check in subject
         if ($message->getHeaders()->has('subject')) {
             $subject = $message->getHeader('subject')->getFieldValue();
-            $matches = [];
 
             $ticket = new Ticket();
-            if (
-                preg_match('/\[.+#(\d+)\]/', $subject, $matches) === 1
-                && $ticket->getFromDB($matches[1])
-            ) {
-                return $ticket;
+
+            // GLPI prefixes ITIL notification subjects with `[<tag> #<id>]`, where the
+            // id is zero-padded to at least 7 digits and always preceded by a space
+            // (see NotificationTargetCommonITILObject::getSubjectPrefix()). Requiring
+            // that shape prevents foreign references such as `[Ticket#123]` from being
+            // mistaken for a ticket id.
+            if (preg_match_all('/\[([^\]]*)\s#(\d{7,})\]/', $subject, $matches, PREG_SET_ORDER) > 0) {
+                $candidate = null;
+                if (count($matches) === 1) {
+                    // Single match: trust it, even if the entity tag has been edited
+                    // since the notification was sent.
+                    $candidate = $matches[0][2];
+                } else {
+                    // Multiple matches: prefer the one whose prefix matches a known
+                    // notification subject tag, and fall back to the last match.
+                    $known_tags = $this->getNotificationSubjectTags();
+                    foreach ($matches as $match) {
+                        // Keep the last seen id as fallback, but stop as soon as a
+                        // known notification subject tag is found.
+                        $candidate = $match[2];
+                        if (in_array(trim($match[1]), $known_tags, true)) {
+                            break;
+                        }
+                    }
+                }
+
+                if ($candidate !== null && $ticket->getFromDB($candidate)) {
+                    return $ticket;
+                }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Get the notification subject tags (`[<tag> #<id>]`) configured across the
+     * entities, plus the default `GLPI` tag. Computed once per collector instance.
+     *
+     * @return string[]
+     */
+    private function getNotificationSubjectTags(): array
+    {
+        if ($this->notification_subject_tags === null) {
+            /** @var DBmysql $DB */
+            global $DB;
+
+            $tags = ['GLPI'];
+            $iterator = $DB->request([
+                'SELECT'   => 'notification_subject_tag',
+                'DISTINCT' => true,
+                'FROM'     => Entity::getTable(),
+                'WHERE'    => ['notification_subject_tag' => ['<>', '']],
+            ]);
+            foreach ($iterator as $row) {
+                $tags[] = trim((string) $row['notification_subject_tag']);
+            }
+
+            $this->notification_subject_tags = array_values(array_unique(array_filter($tags)));
+        }
+
+        return $this->notification_subject_tags;
     }
 
     /**
@@ -2456,9 +2650,17 @@ class MailCollector extends CommonDBTM
 
         $charset = $content_type->getParameter('charset');
 
-        // If charset is not specified, and not UTF-8, force fallback default encoding
+        // If charset is not specified, fallback on detected encoding
         if ($charset === null) {
-            $charset = mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
+            $charset = $this->detectCharset($contents);
+        }
+
+        if (strtoupper($charset) === 'UTF-8' && !mb_check_encoding($contents, 'UTF-8')) {
+            // The sender declared the `UTF-8` charset, but did not honor it.
+            // Invalid UTF-8 sequences would be rejected by the DB server, so contents encoding
+            // has to be detected, to be able to convert them.
+            // See https://github.com/glpi-project/glpi/issues/25325
+            $charset = $this->detectCharset($contents);
         }
 
         if (strtoupper($charset) != 'UTF-8') {
@@ -2486,16 +2688,43 @@ class MailCollector extends CommonDBTM
 
                 // Try to convert using iconv with TRANSLIT, then with IGNORE.
                 // TRANSLIT may result in failure depending on system iconv implementation.
-                try {
-                    $converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents);
-                } catch (IconvException $e) {
-                    $converted = iconv($charset, 'UTF-8//IGNORE', $contents);
+                $converted = null;
+                foreach (['UTF-8//TRANSLIT', 'UTF-8//IGNORE'] as $target_charset) {
+                    try {
+                        $converted = @iconv($charset, $target_charset, $contents);
+                        break;
+                    } catch (IconvException $e) {
+                        // Conversion failed, try the next target charset, or fallback below.
+                    }
                 }
+
+                if ($converted === null) {
+                    // The declared charset is not supported by iconv either. It may not even be a
+                    // charset name at all (e.g. `Content-Type: text/html; charset="text/html"`).
+                    // Fallback on detected encoding, as if no charset was declared.
+                    $converted = mb_convert_encoding($contents, 'UTF-8', $this->detectCharset($contents));
+                }
+
                 $contents = $converted;
             }
         }
 
         return $contents;
+    }
+
+    /**
+     * Detect the charset of the given contents.
+     *
+     * Used when the message part declares no charset, or declares one that cannot be used
+     * for conversion.
+     *
+     * @param string $contents
+     *
+     * @return string
+     */
+    private function detectCharset(string $contents): string
+    {
+        return mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
     }
 
 

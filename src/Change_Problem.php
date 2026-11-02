@@ -186,6 +186,14 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
+                'specific_actions' => [
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlink' => _sx('button', 'Unlink'),
+                ],
+                'extraparams'      => [
+                    'source_itemtype'       => Problem::class,
+                    'source_items_id'       => $problem->getID(),
+                    'massive_action_fields' => ['source_itemtype', 'source_items_id'],
+                ],
             ],
         ]);
     }
@@ -277,6 +285,14 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
+                'specific_actions' => [
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlink' => _sx('button', 'Unlink'),
+                ],
+                'extraparams'      => [
+                    'source_itemtype'       => Change::class,
+                    'source_items_id'       => $change->getID(),
+                    'massive_action_fields' => ['source_itemtype', 'source_items_id'],
+                ],
             ],
         ]);
     }

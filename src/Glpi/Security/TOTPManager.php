@@ -38,6 +38,7 @@ namespace Glpi\Security;
 use DateInterval;
 use Entity;
 use Exception;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\AuthenticationFailedException;
 use GLPIKey;
@@ -54,6 +55,7 @@ use Symfony\Component\Cache\Adapter\Psr16Adapter;
 use Symfony\Component\RateLimiter\LimiterInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\RateLimiter\Storage\CacheStorage;
+use User;
 
 use function Safe\json_encode;
 
@@ -127,7 +129,6 @@ final class TOTPManager
 
     /**
      * Mainly used to get the displayed issuer for the TOTP in Authenticator app
-     * @return string
      */
     public function getIssuer(): string
     {
@@ -145,7 +146,6 @@ final class TOTPManager
     /**
      * Get an instance of the TwoFactorAuth class
      * @param string $algorithm Algorithm used to generate the TOTP code.
-     * @return TwoFactorAuth
      * @throws TwoFactorAuthException
      */
     private function getTwoFactorAuth(string $algorithm = 'sha1'): TwoFactorAuth
@@ -175,8 +175,8 @@ final class TOTPManager
 
     /**
      * Set the TOTP secret code for a user
-     * @param int $users_id ID of the user
-     * @param string $secret The secret code
+     * @param int    $users_id ID of the user
+     * @param string $secret   The secret code
      * @return bool True on success, false otherwise
      */
     public function setSecretForUser(int $users_id, string $secret, ?string $algorithm = null): bool
@@ -205,13 +205,13 @@ final class TOTPManager
      */
     public function disable2FAForUser(int $users_id): bool
     {
-        global $DB;
+        $user = User::getById($users_id);
 
-        return $DB->update('glpi_users', [
-            '2fa'   => null,
-        ], [
-            'id' => $users_id,
-        ]) !== false;
+        if ($user === false) {
+            return false;
+        }
+
+        return $user->update(['id' => $users_id, '2fa' => null]);
     }
 
     /**
@@ -274,8 +274,8 @@ final class TOTPManager
 
     /**
      * Verify a TOTP code for a user
-     * @param string $code The code to verify
-     * @param int $users_id ID of the user
+     * @param string $code     The code to verify
+     * @param int    $users_id ID of the user
      * @return bool True if the code is valid, false otherwise
      * @throws JsonException
      * @throws TwoFactorAuthException
@@ -283,7 +283,7 @@ final class TOTPManager
     public function verifyCodeForUser(string $code, int $users_id): bool
     {
         $config = $this->get2FAConfigForUser($users_id);
-        if ($config['secret'] === null) {
+        if ($config === null || $config['secret'] === null) {
             return false;
         }
         return $this->getTwoFactorAuth($config['digest'] ?? 'sha1')->verifyCode($config['secret'], $code);
@@ -291,7 +291,7 @@ final class TOTPManager
 
     /**
      * Verify a TOTP code for a secret
-     * @param string $code The code to verify
+     * @param string $code   The code to verify
      * @param string $secret The secret to use
      * @return string|false The algorithm matched if the code is valid, false otherwise
      * @throws TwoFactorAuthException
@@ -349,7 +349,7 @@ final class TOTPManager
                 $code .= $code_chars[random_int(0, strlen($code_chars) - 1)];
             }
             $random_codes[] = $code;
-            $code_hashes[] = password_hash($code, PASSWORD_BCRYPT);
+            $code_hashes[] = password_hash($code, PASSWORD_BCRYPT, Environment::get()->getPasswordHashOptions());
         }
 
         $tfa = $DB->request([
@@ -375,9 +375,9 @@ final class TOTPManager
 
     /**
      * Verify a backup code for a user
-     * @param string $code Backup code
-     * @param int $users_id User ID
-     * @param bool $consume_code If true, the backup code will be consumed and will not be usable again
+     * @param string $code         Backup code
+     * @param int    $users_id     User ID
+     * @param bool   $consume_code If true, the backup code will be consumed and will not be usable again
      * @return bool True if the code is valid, false otherwise
      * @throws JsonException
      */
@@ -543,7 +543,6 @@ final class TOTPManager
 
     /**
      * Show a form asking the user for their TOTP code.
-     * @return void
      */
     public function showTOTPPrompt(): void
     {
@@ -555,10 +554,9 @@ final class TOTPManager
 
     /**
      * Show a form to set up TOTP for the current user or manage the settings if it is set up already.
-     * @param int $users_id ID of the user
-     * @param bool $force_setup Force the setup form to be shown even if 2FA is already enabled
+     * @param int  $users_id                ID of the user
+     * @param bool $force_setup             Force the setup form to be shown even if 2FA is already enabled
      * @param bool $regenerate_backup_codes Regenerate backup codes immediately when showing the status form
-     * @return void
      * @throws JsonException
      * @throws TwoFactorAuthException
      */
@@ -587,6 +585,7 @@ final class TOTPManager
             TemplateRenderer::getInstance()->display('pages/2fa/2fa_new_secret.html.twig', [
                 'qrcode' => $qr,
                 'secret' => $secret,
+                'user_id' => $users_id,
             ]);
         }
     }
@@ -594,7 +593,6 @@ final class TOTPManager
     /**
      * Show a form to set up TOTP for the current user or manage the settings if it is set up already.
      * @param int $users_id User ID
-     * @return void
      */
     public function showTOTPSetupForm(int $users_id): void
     {
@@ -612,13 +610,13 @@ final class TOTPManager
             'secret' => $secret,
             'enforcement' => $this->get2FAEnforcement($users_id),
             'grace_period_days_left' => $this->getGracePeriodDaysLeft(),
+            'user_id' => $users_id,
         ]);
     }
 
     /**
      * Show the backup codes for the specified user.
      * Intended for use after setting up 2FA during the login process.
-     * @return void
      */
     public function showBackupCodes(int $users_id): void
     {

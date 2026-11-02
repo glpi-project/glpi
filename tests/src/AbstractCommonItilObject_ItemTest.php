@@ -37,7 +37,11 @@ namespace Glpi\Tests;
 use CommonITILObject;
 use CommonItilObject_Item;
 use Computer;
+use DeviceSimcard;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Form\Form;
+use Item_DeviceSimcard;
+use Monitor;
 use User;
 
 abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
@@ -70,7 +74,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             'items_id' => getItemByTypeName(Computer::class, '_test_pc01', true),
         ]);
         $this->assertEquals(
-            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge" data-testid="tab-count-badge">1</span></span>',
+            '<span class="d-flex align-items-center"><i class="ti ti-package me-2" aria-hidden="true"></i>Items <span class="badge glpi-badge" data-testid="tab-count-badge">1</span></span>',
             $link->getTabNameForItem($itil_item),
         );
 
@@ -80,7 +84,7 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             'items_id' => getItemByTypeName(Computer::class, '_test_pc02', true),
         ]);
         $this->assertEquals(
-            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge" data-testid="tab-count-badge">2</span></span>',
+            '<span class="d-flex align-items-center"><i class="ti ti-package me-2" aria-hidden="true"></i>Items <span class="badge glpi-badge" data-testid="tab-count-badge">2</span></span>',
             $link->getTabNameForItem($itil_item),
         );
 
@@ -101,6 +105,111 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             'Items',
             strip_tags($link->getTabNameForItem($itil_item)),
         );
+    }
+
+    public function testShowForObjectWithItemtypeWithoutNameField(): void
+    {
+        $itil_itemtype = $this->getTestedClass()::$itemtype_1;
+        if (!is_subclass_of($itil_itemtype, CommonITILObject::class)) {
+            $this->markTestSkipped('This test is only for ITIL items');
+        }
+
+        $this->login();
+        $entity = $this->getTestRootEntity(true);
+
+        // Item_DeviceSimcard is a linkable itemtype whose table has no "name" column.
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $simcard_model = $this->createItem(DeviceSimcard::class, [
+            'designation' => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $simcard = $this->createItem(Item_DeviceSimcard::class, [
+            'devicesimcards_id' => $simcard_model->getID(),
+            'itemtype'          => Computer::class,
+            'items_id'          => $computer->getID(),
+            'entities_id'       => $entity,
+        ]);
+
+        $itil_item = $this->createItem($itil_itemtype, [
+            'name'        => __FUNCTION__,
+            'content'     => 'test',
+            'entities_id' => $entity,
+        ], ['content']);
+        $this->createItem($this->getTestedClass(), [
+            $itil_itemtype::getForeignKeyField() => $itil_item->getID(),
+            'itemtype'                           => Item_DeviceSimcard::class,
+            'items_id'                           => $simcard->getID(),
+        ]);
+
+        $_SESSION['glpiactiveprofile']['helpdesk_item_type'][] = Item_DeviceSimcard::class;
+
+        // Rendering the linked items must not raise "Undefined array key name".
+        $errors = [];
+        set_error_handler(static function (int $errno, string $errstr) use (&$errors): bool {
+            $errors[] = $errstr;
+            return true;
+        });
+        try {
+            $method = new \ReflectionMethod($this->getTestedClass(), 'showForObject');
+            $method->setAccessible(true);
+            ob_start();
+            $method->invoke(null, $itil_item);
+            ob_get_clean();
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertEmpty(
+            array_filter($errors, static fn(string $e): bool => str_contains($e, 'Undefined array key "name"')),
+        );
+    }
+
+    public function testShowListForItemWithLinkedItems(): void
+    {
+        $itil_itemtype = $this->getTestedClass()::$itemtype_1;
+        if (!is_subclass_of($itil_itemtype, CommonITILObject::class)) {
+            $this->markTestSkipped('This test is only for ITIL items');
+        }
+
+        $this->login();
+        $entity = $this->getTestRootEntity(true);
+
+        // Computer connected to a monitor
+        $computer = $this->createItem(Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $monitor = $this->createItem(Monitor::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $entity,
+        ]);
+        $this->createItem(Asset_PeripheralAsset::class, [
+            'itemtype_asset'      => Computer::class,
+            'items_id_asset'      => $computer->getID(),
+            'itemtype_peripheral' => Monitor::class,
+            'items_id_peripheral' => $monitor->getID(),
+        ]);
+
+        // ITIL object linked to the monitor only
+        $itil_item = $this->createItem($itil_itemtype, [
+            'name'        => __FUNCTION__ . ' on monitor',
+            'content'     => 'test',
+            'entities_id' => $entity,
+        ], ['content']);
+        $this->createItem($this->getTestedClass(), [
+            $itil_itemtype::getForeignKeyField() => $itil_item->getID(),
+            'itemtype'                           => Monitor::class,
+            'items_id'                           => $monitor->getID(),
+        ]);
+
+        ob_start();
+        $this->getTestedClass()::showListForItem($computer);
+        $out = ob_get_clean();
+
+        $this->assertStringContainsString(__FUNCTION__ . ' on monitor', $out);
     }
 
     public function testGetTabNameForItemUser(): void

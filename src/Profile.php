@@ -38,12 +38,14 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dashboard\Grid;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Form\Form;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Inventory\Conf;
+use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\ArrayNormalizer;
 
@@ -60,6 +62,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /** @use Clonable<static> */
     use Clonable;
 
+    public const HELPDESK_RIGHT_PASSWORD_UPDATE = 'password_update';
+    public const HELPDESK_RIGHT_PERSONALIZATION = 'personalization';
+    public const HELPDESK_RIGHT_SHOW_GROUP_HARDWARE = 'show_group_hardware';
+
     // Specific ones
 
     /**
@@ -73,13 +79,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         'helpdesk_hardware',
         'helpdesk_item_type',
         'knowbase',
-        'password_update',
-        'personalization',
+        self::HELPDESK_RIGHT_PASSWORD_UPDATE,
+        self::HELPDESK_RIGHT_PERSONALIZATION,
         'problemtemplates_id',
         'reminder_public',
         'reservation',
         'rssfeed_public',
-        'show_group_hardware',
+        self::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE,
         'use_mentions',
         'task',
         'ticket',
@@ -357,6 +363,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         // PROFILES and UNIQUE_PROFILE in RuleMailcollector
         Rule::cleanForItemCriteria($this, 'PROFILES');
         Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
+
+        $profile_id = $this->getID();
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $definition->removeProfileFromField($profile_id);
+        }
+        foreach (DropdownDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $definition->removeProfileFromField($profile_id);
+        }
     }
 
     public function getCloneRelations(): array
@@ -776,7 +790,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'OR'                             => $right_subqueries,
             ],
         ]);
-        $criteria[] = new QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery());
+        $criteria[] = new QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery(), values: $sub_query->getParams());
 
         if (Session::getCurrentInterface() === 'central') {
             return [
@@ -990,6 +1004,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Consumable::class, 'central'),
                                 $fn_get_rights(Phone::class, 'central'),
                                 $fn_get_rights(Peripheral::class, 'central'),
+                                $fn_get_rights(Enclosure::class, 'central'),
+                                $fn_get_rights(Cable::class, 'central'),
                                 $fn_get_rights(NetworkName::class, 'central', [
                                     'label' => __('Internet'),
                                 ]),
@@ -1017,7 +1033,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Domain::class, 'central'),
                                 $fn_get_rights(Appliance::class, 'central'),
                                 $fn_get_rights(DatabaseInstance::class, 'central'),
-                                $fn_get_rights(Cable::class, 'central'),
                             ],
                         ],
                         'admin' => [
@@ -1178,7 +1193,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 ]),
                                 $fn_get_rights(Location::class, 'central'),
                                 $fn_get_rights(ITILCategory::class, 'central'),
-                                $fn_get_rights(KnowbaseItemCategory::class, 'central'),
                                 $fn_get_rights(TaskCategory::class, 'central'),
                                 $fn_get_rights(State::class, 'central'),
                                 $fn_get_rights(ITILFollowupTemplate::class, 'central'),
@@ -1971,6 +1985,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         ];
 
         $tab[] = [
+            'id'                 => '178',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Enclosure::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Enclosure::class,
+            'rightname'          => Enclosure::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Enclosure::$rightname],
+            ],
+        ];
+
+        $tab[] = [
             'id'                 => '147',
             'table'              => 'glpi_profilerights',
             'field'              => 'rights',
@@ -2290,20 +2318,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => ITILCategory::$rightname],
-            ],
-        ];
-
-        $tab[] = [
-            'id'                 => '165',
-            'table'              => 'glpi_profilerights',
-            'field'              => 'rights',
-            'name'               => KnowbaseItemCategory::getTypeName(Session::getPluralNumber()),
-            'datatype'           => 'right',
-            'rightclass'         => KnowbaseItemCategory::class,
-            'rightname'          => KnowbaseItemCategory::$rightname,
-            'joinparams'         => [
-                'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => KnowbaseItemCategory::$rightname],
             ],
         ];
 
@@ -3496,7 +3510,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public static function getHelpdeskItemtypes()
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $values = [];
         foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
@@ -3506,6 +3520,18 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 unset($CFG_GLPI["ticket_types"][$key]);
             }
         }
+
+        if (isset($PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET])) {
+            $plugin_types = [];
+            foreach ($PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET] as $plugin => $value) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                $plugin_types = Plugin::doOneHook($plugin, Hooks::AUTO_ASSIGN_TO_TICKET, $plugin_types) ?? $plugin_types;
+            }
+            $values += $plugin_types;
+        }
+
         return $values;
     }
 
@@ -3950,5 +3976,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public function getTilesConfigInformationText(): ?string
     {
         return __("Users with this profile will see the tiles below if defined, overriding the one found in the entities configuration.");
+    }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 }

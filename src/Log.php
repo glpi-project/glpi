@@ -179,7 +179,10 @@ class Log extends CommonDBTM
                     // Linkfield or standard field not massive action enable
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
-                    if ($val2['table'] == $item->getTable()) {
+                    if (
+                        $val2['table'] == $item->getTable()
+                        || ($item::class == Infocom::class && $val2['linkfield'] == $key)
+                    ) {
                         $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     } else {
                         // other cases; link field -> get data from dropdown
@@ -314,7 +317,7 @@ class Log extends CommonDBTM
 
         $result = $DB->insert(self::getTable(), $params);
 
-        if ($result && $DB->affectedRows() > 0) {
+        if ($result && $DB->getAffectedRows() > 0) {
             return $_SESSION['glpi_maxhistory'] = $DB->insertId();
         }
         return false;

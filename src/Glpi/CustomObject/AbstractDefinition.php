@@ -42,6 +42,8 @@ use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldDefinition;
+use Glpi\Dashboard\Grid;
+use Glpi\Locale\LanguageRegistry;
 use LogicException;
 use Profile;
 use ProfileRight;
@@ -330,8 +332,6 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function showTranslationForm(): void
     {
-        global $CFG_GLPI;
-
         $asset_name_translations = $this->getDecodedTranslationsField();
 
         $translations = [];
@@ -360,7 +360,10 @@ abstract class AbstractDefinition extends CommonDBTM
 
         usort(
             $translations,
-            static fn(array $a, array $b) => strnatcasecmp($CFG_GLPI['languages'][$a['language']][0], $CFG_GLPI['languages'][$b['language']][0])
+            static fn(array $a, array $b) => strnatcasecmp(
+                LanguageRegistry::get($a['language'])->native_name,
+                LanguageRegistry::get($b['language'])->native_name
+            )
         );
 
         $rand = mt_rand();
@@ -557,6 +560,8 @@ abstract class AbstractDefinition extends CommonDBTM
             $this->syncProfilesRights();
             unset($_SESSION['menu']);
         }
+
+        $this->resetDashboardCardsCache();
     }
 
     public function post_updateItem($history = true)
@@ -576,6 +581,27 @@ abstract class AbstractDefinition extends CommonDBTM
         ) {
             $this->syncProfilesRights();
         }
+
+        $this->resetDashboardCardsCache();
+    }
+
+    public function post_purgeItem()
+    {
+        $this->resetDashboardCardsCache();
+    }
+
+    /**
+     * Reset the dashboard cards catalog cache, as it contains cards related to the custom objects.
+     */
+    private function resetDashboardCardsCache(): void
+    {
+        global $GLPI_CACHE;
+
+        $cache_keys = [];
+        foreach (array_keys(LanguageRegistry::all()) as $language) {
+            $cache_keys[] = Grid::getAllDashboardCardsCacheKey((string) $language);
+        }
+        $GLPI_CACHE->deleteMultiple($cache_keys);
     }
 
     private function registerAndBootstrapDefinition(): void
@@ -609,6 +635,23 @@ abstract class AbstractDefinition extends CommonDBTM
             history: false
         );
         (new DisplayPreference())->deleteByCriteria(['itemtype' => $concrete_classname]);
+    }
+
+    /**
+     * Remove given profile from the `profiles` field.
+     *
+     * @param int $profile_id
+     * @return void
+     */
+    public function removeProfileFromField(int $profile_id): void
+    {
+        $profiles = $this->getDecodedProfilesField();
+        if (!array_key_exists($profile_id, $profiles)) {
+            return;
+        }
+
+        unset($profiles[$profile_id]);
+        $this->update(['id' => $this->getID(), 'profiles' => $profiles]);
     }
 
     /**
@@ -817,7 +860,7 @@ abstract class AbstractDefinition extends CommonDBTM
         switch ($field) {
             case 'icon':
                 $value = htmlescape($values[$field]);
-                return sprintf('<i class="ti %s"></i>', $value);
+                return sprintf('<i class="ti %s" aria-hidden="true"></i>', $value);
             case 'translations':
                 $translations = json_decode($values[$field], associative: true);
 
@@ -912,8 +955,6 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {
-        global $CFG_GLPI;
-
         if (!is_array($translations)) {
             return false;
         }
@@ -921,7 +962,7 @@ TWIG, ['name' => $name, 'value' => $value]);
         $is_valid = true;
 
         foreach ($translations as $language => $values) {
-            if (!in_array($language, array_keys($CFG_GLPI['languages']), true)) {
+            if (!LanguageRegistry::has($language)) {
                 $is_valid = false;
                 break;
             }
@@ -953,10 +994,8 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     public static function getPluralFormsForLanguage(string $language): array
     {
-        global $CFG_GLPI;
-
         // check language exists in GLPI configuration
-        if (!array_key_exists($language, $CFG_GLPI['languages'])) {
+        if (!LanguageRegistry::has($language)) {
             return [];
         }
 

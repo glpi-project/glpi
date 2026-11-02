@@ -37,14 +37,18 @@ import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkControl
 import { LinkItemFormController } from "/js/modules/Knowbase/LinkItemFormController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
-
-const EditorActionType = Object.freeze({
-    LOAD_SIDE_PANEL: 'LOAD_SIDE_PANEL',
-    TOGGLE_VALUE:    'TOGGLE_VALUE',
-    TOGGLE_FAVORITE: 'TOGGLE_FAVORITE',
-    DELETE_ARTICLE:  'DELETE_ARTICLE',
-    OPEN_MODAL:      'OPEN_MODAL',
-});
+import { highlightComments } from "/js/modules/Knowbase/CommentHighlighter.js";
+import { ReadModeSelectionBubble } from "/js/modules/Knowbase/ReadModeSelectionBubble.js";
+import {
+    EditorActionType,
+    extractParamsFromDataset,
+    isTogglePending,
+    runToggle,
+    syncToggleCheckboxes,
+    toggleFavorite,
+    toggleField,
+    deleteArticle,
+} from "/js/modules/Knowbase/EditorActions.js";
 
 export class GlpiKnowbaseArticleController
 {
@@ -85,6 +89,9 @@ export class GlpiKnowbaseArticleController
     /** @type {string|null} */
     #translation_language = null;
 
+    /** @type {number|null} Positive category ID when a category is staged, null otherwise. */
+    #staged_category_id = null;
+
     /** @type {string} */
     #default_language = '';
 
@@ -99,6 +106,21 @@ export class GlpiKnowbaseArticleController
 
     /** @type {DocumentLinkController|null} */
     #document_link_controller = null;
+
+    /** @type {boolean} */
+    #can_comment = false;
+
+    /** @type {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} */
+    #comment_anchors = [];
+
+    /** @type {number} */
+    #comment_anchor_max_length = Number.POSITIVE_INFINITY;
+
+    /** @type {Array<{id: string, text: string}>} */
+    #resolved_anchors = [];
+
+    /** @type {string|null} */
+    #hovered_comment_id = null;
 
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
@@ -139,7 +161,9 @@ export class GlpiKnowbaseArticleController
     constructor(container, side_panel_container, offcanvas_container, mode)
     {
         this.#container = container;
-        if (mode === "edit") {
+        // The side panel (comments, related items, service catalog, revisions...)
+        // is only meaningless in "add" mode, where the article doesn't exist yet.
+        if (mode !== "add") {
             this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
                 side_panel_container,
                 offcanvas_container,
@@ -147,11 +171,19 @@ export class GlpiKnowbaseArticleController
             );
         }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
+        this.#can_comment = container.dataset.glpiKbCanComment === 'true';
+        if (mode === 'add') {
+            const prefilled_id = Number(container.dataset.glpiKbPrefilledCategoryId);
+            if (Number.isInteger(prefilled_id) && prefilled_id > 0) {
+                this.#staged_category_id = prefilled_id;
+            }
+        }
         this.#initEventListeners();
         this.#initEditor();
         this.#initDiffListeners();
         this.#initIllustrationPicker();
         this.#initRecursiveToggle();
+        this.#initCommentAnchors();
 
         if (mode === "edit") {
             this.#default_language = container.dataset.glpiKbDefaultLanguage;
@@ -178,7 +210,10 @@ export class GlpiKnowbaseArticleController
         const actions = this.#container.querySelectorAll("[data-glpi-kb-action]");
         for (const action of actions) {
             action.addEventListener("click", (e) => {
-                e.preventDefault();
+                // Keep the checkbox's native toggle on direct clicks; cancelling it desyncs the UI.
+                if (!e.target.matches('input[type="checkbox"]')) {
+                    e.preventDefault();
+                }
                 try {
                     this.#executeAction(e);
                 } catch (e) {
@@ -231,6 +266,14 @@ export class GlpiKnowbaseArticleController
         this.#container.addEventListener('item:linked', (e) => {
             this.#onItemLinked(e.detail.item ?? null);
         });
+
+        // The header counters are plain anchors to the footer, so activate the tab they name.
+        for (const link of this.#container.querySelectorAll('[data-glpi-kb-activates-tab]')) {
+            const tab = this.#container.querySelector(`#${CSS.escape(link.dataset.glpiKbActivatesTab)}`);
+            if (tab) {
+                link.addEventListener('click', () => bootstrap.Tab.getOrCreateInstance(tab).show());
+            }
+        }
     }
 
     #initDiffListeners()
@@ -438,7 +481,7 @@ export class GlpiKnowbaseArticleController
         const target = event.target;
 
         const type = element.dataset.glpiKbAction;
-        const params = this.#extractParamsFromDataset(element.dataset);
+        const params = extractParamsFromDataset(element.dataset);
 
         switch (type) {
             case EditorActionType.LOAD_SIDE_PANEL:
@@ -459,14 +502,21 @@ export class GlpiKnowbaseArticleController
             case EditorActionType.TOGGLE_FAVORITE: {
                 event.stopPropagation();
                 const toggle = element.querySelector('input[type="checkbox"]');
-                if (toggle) {
-                    const clicked_on_toggle = target === toggle;
-                    if (!clicked_on_toggle) {
+                if (!toggle) {
+                    break;
+                }
+                const clicked_on_toggle = target === toggle;
+                if (isTogglePending(EditorActionType.TOGGLE_FAVORITE, params.id)) {
+                    // Ignore clicks while a request is in flight; undo any native flip.
+                    if (clicked_on_toggle) {
                         toggle.checked = !toggle.checked;
                     }
-                    this.#updateFavoritesAside(toggle.checked);
-                    this.#toggleFavorite(params.id, toggle);
+                    break;
                 }
+                if (!clicked_on_toggle) {
+                    toggle.checked = !toggle.checked;
+                }
+                this.#toggleFavorite(params.id, toggle);
                 break;
             }
             case EditorActionType.DELETE_ARTICLE:
@@ -478,23 +528,10 @@ export class GlpiKnowbaseArticleController
         }
     }
 
-    /** @param {DOMStringMap} dataset */
-    #extractParamsFromDataset(dataset)
-    {
-        const params = {};
-        const prefix = 'glpiKbActionParam';
-
-        for (const [key, value] of Object.entries(dataset)) {
-            if (key.startsWith(prefix)) {
-                const param_name = key.slice(prefix.length).toLowerCase();
-                params[param_name] = value;
-            }
-        }
-
-        return params;
-    }
-
     /**
+     * Mirror the favorite state in the aside; same visibility rule as the
+     * aside's own `#refreshFavoritesVisibility()`.
+     *
      * @param {boolean} is_favorited
      */
     #updateFavoritesAside(is_favorited)
@@ -528,16 +565,94 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
+     * Update the article title displayed in the knowledge base aside tree.
+     * The same article can appear both in the favorites section and in the
+     * category tree, so every matching entry is updated.
+     *
+     * @param {string} title
+     */
+    #updateAsideTitle(title)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+
+        const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
+        const entries = aside.querySelectorAll(
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] > .article-line [data-glpi-kb-article-title]`
+        );
+        for (const entry of entries) {
+            entry.textContent = title;
+        }
+    }
+
+    /**
+     * Update the article illustration displayed in the knowledge base aside
+     * tree.
+     */
+    #updateAsideIllustration()
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+
+        const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
+        const containers = aside.querySelectorAll(
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] > .article-line [data-glpi-kb-article-illustration]`
+        );
+
+        // The illustration picker preview already holds a freshly rendered node
+        // for the selected illustration. We clone it with a different size.
+        const source = this.#getIllustrationPreviewNode();
+        for (const container of containers) {
+            if (source === null) {
+                container.replaceChildren();
+            } else {
+                const icon = source.cloneNode(true);
+                // The aside renders illustrations at size 20 (see aside.html.twig).
+                icon.setAttribute('width', '20');
+                icon.setAttribute('height', '20');
+                container.replaceChildren(icon);
+            }
+        }
+    }
+
+    /**
+     * @return {?(SVGElement|HTMLImageElement)} The rendered illustration node
+     * from the picker preview, or null when no illustration is selected.
+     */
+    #getIllustrationPreviewNode()
+    {
+        const preview = this.#container.querySelector(
+            '[data-glpi-kb-illustration-container] [data-glpi-icon-picker-value-preview]'
+        );
+        return preview?.querySelector(
+            '[data-glpi-icon-picker-value-preview-native]:not(.d-none) svg,'
+            + ' [data-glpi-icon-picker-value-preview-custom]:not(.d-none) img'
+        ) ?? null;
+    }
+
+    /**
      * @param {number} id
      * @param {HTMLInputElement} toggle
      */
     async #toggleFavorite(id, toggle)
     {
         const value = toggle.checked;
+        this.#updateFavoritesAside(value);
+        syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, value);
         try {
-            await post(`Knowbase/${id}/ToggleFavorite`, { value: value });
+            const { favorite } = await runToggle(
+                EditorActionType.TOGGLE_FAVORITE,
+                id,
+                () => toggleFavorite(id, value),
+            );
+            // Reconcile from the server's authoritative state.
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, favorite);
+            this.#updateFavoritesAside(favorite);
         } catch (e) {
-            toggle.checked = !value;
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, !value);
+            this.#updateFavoritesAside(!value);
             throw e;
         }
     }
@@ -550,13 +665,12 @@ export class GlpiKnowbaseArticleController
     async #toggleValue(id, field, toggle)
     {
         const value = toggle.checked;
+        // Reflect the change on every menu for this article, aside included.
+        syncToggleCheckboxes(id, EditorActionType.TOGGLE_VALUE, value, field);
         try {
-            await post(`Knowbase/${id}/ToggleField`, {
-                field: field,
-                value: value,
-            });
+            await toggleField(id, field, value);
         } catch (e) {
-            toggle.checked = !value;
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_VALUE, !value, field);
             throw e;
         }
     }
@@ -575,8 +689,17 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
-        const response = await post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
+        const response = await deleteArticle(id);
         const body = await response.json();
+
+        if (!response.ok) {
+            glpi_alert({
+                title: __('Delete article'),
+                message: body.message,
+            });
+            return;
+        }
+
         window.location.href = body.redirect;
     }
 
@@ -913,6 +1036,216 @@ export class GlpiKnowbaseArticleController
         return picker?.glpiIllustrationPicker ?? null;
     }
 
+    #initCommentAnchors()
+    {
+        // Covers "add" mode and users who lack the comment right.
+        if (!this.#can_comment) {
+            return;
+        }
+
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        if (!content_el) {
+            return;
+        }
+
+        try {
+            this.#comment_anchors = JSON.parse(content_el.dataset.glpiCommentAnchors || '[]');
+        } catch {
+            this.#comment_anchors = [];
+        }
+
+        // Absent attribute means no client-side gate; the server still enforces it.
+        this.#comment_anchor_max_length =
+            Number.parseInt(content_el.dataset.glpiCommentAnchorMaxLength, 10)
+            || Number.POSITIVE_INFINITY;
+
+        this.#renderCommentAnchors();
+        new ReadModeSelectionBubble(content_el, this.#comment_anchor_max_length);
+
+        content_el.addEventListener('glpi:kb:comment-selection', (e) => {
+            this.#onCommentSelection(e.detail.anchor);
+        });
+
+        // Listened on `document`, not the container: the mobile offcanvas panel
+        // sits outside the article container in the DOM.
+        document.addEventListener('glpi:kb:comment-anchored', (e) => {
+            this.#onCommentAnchored(e.detail.anchor);
+        });
+
+        document.addEventListener('glpi:kb:comment-unanchored', (e) => {
+            this.#onCommentUnanchored(e.detail.id);
+        });
+
+        // Panel content is replaced by AJAX; re-apply the quote state to the new HTML.
+        document.addEventListener('glpi:kb:panel-loaded', () => {
+            this.#syncAnchorQuotes();
+        });
+
+        document.addEventListener('glpi:kb:comment-focus-changed', (e) => {
+            this.#onCommentFocusChanged(e.detail.id, e.detail.source);
+        });
+
+        content_el.addEventListener('click', (e) => {
+            const mark = e.target.closest('.kb-comment-highlight');
+            if (!mark) {
+                this.#side_panel?.focusComment(null);
+                return;
+            }
+            this.#onHighlightClick(mark.dataset.commentId);
+        });
+
+        // Highlights carry role="button"/tabindex="0" (set in DomTextIndex.js
+        // and CommentHighlightExtension.js) — keep them keyboard-operable.
+        content_el.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') {
+                return;
+            }
+            const mark = e.target.closest('.kb-comment-highlight');
+            if (!mark) {
+                return;
+            }
+            e.preventDefault();
+            this.#onHighlightClick(mark.dataset.commentId);
+        });
+
+        // CSS :hover would reach only the fragment under the cursor.
+        content_el.addEventListener('mouseover', (e) => {
+            const mark = e.target.closest('.kb-comment-highlight');
+            this.#setHoveredComment(mark?.dataset.commentId ?? null);
+        });
+
+        content_el.addEventListener('mouseleave', () => {
+            this.#setHoveredComment(null);
+        });
+    }
+
+    /**
+     * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    async #onCommentSelection(anchor)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+        await this.#side_panel.load(this.#item_id, 'comments');
+        this.#side_panel.setPendingCommentAnchor(anchor);
+    }
+
+    /**
+     * @param {{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    #onCommentAnchored(anchor)
+    {
+        this.#comment_anchors = [...this.#comment_anchors, anchor];
+        this.#renderCommentAnchors();
+    }
+
+    /**
+     * @param {number|string} comment_id - Root comment id of the deleted thread.
+     */
+    #onCommentUnanchored(comment_id)
+    {
+        this.#comment_anchors = this.#comment_anchors.filter(
+            (anchor) => String(anchor.id) !== String(comment_id)
+        );
+        this.#renderCommentAnchors();
+    }
+
+    #renderCommentAnchors()
+    {
+        if (this.#editor) {
+            this.#editor.refreshCommentAnchors(this.#comment_anchors);
+            this.#resolved_anchors = this.#editor.getResolvedCommentAnchors();
+        } else {
+            const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+            this.#resolved_anchors = content_el
+                ? highlightComments(content_el, this.#comment_anchors)
+                : [];
+            // Marks are rebuilt from scratch, losing the hovered tag.
+            this.#applyHoveredComment();
+        }
+
+        this.#syncAnchorQuotes();
+    }
+
+    #syncAnchorQuotes()
+    {
+        // Undefined in "add" mode, where the article doesn't exist yet.
+        this.#side_panel?.setResolvedCommentAnchors(this.#resolved_anchors);
+    }
+
+    /**
+     * @param {string} comment_id
+     */
+    async #onHighlightClick(comment_id)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+        await this.#side_panel.load(this.#item_id, 'comments');
+        this.#side_panel.focusComment(comment_id, 'article');
+    }
+
+    /**
+     * @param {string|null} comment_id
+     * @param {'panel'|'article'} source
+     */
+    #onCommentFocusChanged(comment_id, source)
+    {
+        // Edit-mode marks are ProseMirror decorations, rebuilt on every keystroke.
+        if (this.#editor) {
+            return;
+        }
+
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        if (!content_el) {
+            return;
+        }
+
+        content_el.querySelectorAll('.kb-comment-highlight').forEach((mark) => {
+            mark.classList.toggle(
+                'kb-comment-highlight--focused',
+                mark.dataset.commentId === comment_id
+            );
+        });
+
+        if (comment_id !== null && source === 'panel') {
+            content_el
+                .querySelector(`.kb-comment-highlight[data-comment-id="${CSS.escape(comment_id)}"]`)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    /**
+     * @param {string|null} comment_id
+     */
+    #setHoveredComment(comment_id)
+    {
+        if (this.#hovered_comment_id === comment_id) {
+            return;
+        }
+
+        this.#hovered_comment_id = comment_id;
+        this.#applyHoveredComment();
+    }
+
+    #applyHoveredComment()
+    {
+        // Edit-mode decorations would wipe a hand-set class on the next redraw.
+        if (this.#editor) {
+            this.#editor.setCommentHighlightHover(this.#hovered_comment_id);
+            return;
+        }
+
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        content_el?.querySelectorAll('.kb-comment-highlight').forEach((mark) => {
+            mark.classList.toggle(
+                'kb-comment-highlight--hovered',
+                mark.dataset.commentId === this.#hovered_comment_id
+            );
+        });
+    }
+
     #initScheduleVisibilityDialog(modal)
     {
         const begin_input = modal.querySelector('[data-glpi-kb-begin-date]');
@@ -933,7 +1266,7 @@ export class GlpiKnowbaseArticleController
             const end_date      = end_input.value || null;
             const original_html = apply_btn.innerHTML;
             apply_btn.disabled  = true;
-            apply_btn.innerHTML = `<i class="ti ti-loader me-1"></i>${__('Saving...')}`;
+            apply_btn.innerHTML = `<i class="ti ti-loader me-1" aria-hidden="true"></i>${__('Saving...')}`;
 
             try {
                 await post(`Knowbase/${this.#item_id}/UpdateVisibilityDates`, {
@@ -988,16 +1321,29 @@ export class GlpiKnowbaseArticleController
 
         // Lazy load editor on first use
         if (this.#editor === null) {
+            editor_element.style.setProperty('--suggestion-placeholder', `"${__('Keep typing to filter...')}"`);
             const { KnowbaseEditor } = await import('/js/modules/KnowbaseEditor.js');
             this.#editor = new KnowbaseEditor(editor_element, {
                 content: this.#original_content,
                 readonly: false,
-                placeholder: __("Start writing..."),
+                placeholder: ({ pos }) => {
+                    if (pos === 0) {
+                        return __("Type / to insert, or start writing...");
+                    }
+                    return __("Type / to insert...");
+                },
                 item_id: this.#item_id,
+                can_comment: this.#can_comment,
+                comment_anchors: this.#comment_anchors,
+                comment_anchor_max_length: this.#comment_anchor_max_length,
                 onUpdate: () => {
                     setHasUnsavedChanges(true);
+                    this.#resolved_anchors = this.#editor?.getResolvedCommentAnchors() ?? [];
+                    this.#syncAnchorQuotes();
                 },
             });
+            // The pointer may already sit on a passage, edit mode being keyboard-reachable.
+            this.#applyHoveredComment();
         } else {
             this.#editor.setEditable(true);
         }
@@ -1073,12 +1419,27 @@ export class GlpiKnowbaseArticleController
 
         const original_button_html = save_button.innerHTML;
         save_button.disabled = true;
-        save_button.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
+        save_button.innerHTML = `<i class="ti ti-loader me-1" aria-hidden="true"></i>${__("Saving...")}`;
+
+        // Anchors whose quoted passage the saved content no longer carries: the
+        // server drops them, so they can't linger as dead rows.
+        const orphaned_ids = this.#comment_anchors
+            .filter((anchor) => !this.#resolved_anchors.some((resolved) => resolved.id === String(anchor.id)))
+            .map((anchor) => anchor.id);
+
+        // The others moved with the edits, so their stored quote has to move too.
+        const refreshed_anchors = this.#editor.getRefreshedCommentAnchors();
 
         try {
             const body = {
                 answer: this.#editor.getHTML(),
             };
+            if (orphaned_ids.length > 0) {
+                body.orphaned_comment_ids = orphaned_ids;
+            }
+            if (refreshed_anchors.length > 0) {
+                body.comment_anchors = refreshed_anchors;
+            }
             if (new_title !== null) {
                 body.name = new_title;
             }
@@ -1089,10 +1450,24 @@ export class GlpiKnowbaseArticleController
 
             await post(`Knowbase/KnowbaseItem/${this.#item_id}/Answer`, body);
 
+            if (orphaned_ids.length > 0) {
+                this.#comment_anchors = this.#comment_anchors.filter(
+                    (anchor) => !orphaned_ids.includes(anchor.id)
+                );
+            }
+
+            // Keep the in-memory anchors in step with what was just stored, so a second
+            // save in the same session doesn't report them against a stale quote.
+            this.#comment_anchors = this.#comment_anchors.map((anchor) => {
+                const refreshed = refreshed_anchors.find((candidate) => candidate.id === String(anchor.id));
+                return refreshed === undefined ? anchor : { ...anchor, ...refreshed, id: anchor.id };
+            });
+
             // Update originals for future cancel operations
             this.#original_content = this.#editor.getHTML();
             if (new_title !== null) {
                 this.#original_title = new_title;
+                this.#updateAsideTitle(new_title);
             }
             this.#editor.setEditable(false);
             this.#disableTitleEditing();
@@ -1101,7 +1476,10 @@ export class GlpiKnowbaseArticleController
 
             this.#base_content = this.#original_content;
             this.#base_title = this.#original_title;
-            picker?.commit();
+            if (picker !== null) {
+                picker.commit();
+                this.#updateAsideIllustration();
+            }
 
             edit_button.classList.remove('d-none');
             save_button.classList.add('d-none');
@@ -1121,17 +1499,13 @@ export class GlpiKnowbaseArticleController
 
     async #addArticle()
     {
-        const title = this.#title_element
+        let title = this.#title_element
             ? this.#title_element.textContent.trim()
             : '';
         const answer = this.#editor ? this.#editor.getHTML() : '';
 
         if (title.length === 0) {
-            glpi_toast_error(__("Title cannot be empty"));
-            if (this.#title_element) {
-                this.#title_element.focus();
-            }
-            return;
+            title = __("Untitled article");
         }
 
         const form = document.createElement('form');
@@ -1159,6 +1533,20 @@ export class GlpiKnowbaseArticleController
             input.name = key;
             input.value = value;
             form.appendChild(input);
+        }
+
+        if (this.#staged_category_id !== null && this.#staged_category_id > 0) {
+            const defined_input = document.createElement('input');
+            defined_input.type = 'hidden';
+            defined_input.name = '__categories_defined';
+            defined_input.value = '1';
+            form.appendChild(defined_input);
+
+            const categories_input = document.createElement('input');
+            categories_input.type = 'hidden';
+            categories_input.name = '_categories[]';
+            categories_input.value = String(this.#staged_category_id);
+            form.appendChild(categories_input);
         }
 
         document.body.appendChild(form);
@@ -1445,7 +1833,7 @@ export class GlpiKnowbaseArticleController
 
         const original_button_html = save_btn.innerHTML;
         save_btn.disabled = true;
-        save_btn.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
+        save_btn.innerHTML = `<i class="ti ti-loader me-1" aria-hidden="true"></i>${__("Saving...")}`;
 
         if (this.#translation_language !== this.#default_language) {
             const body = {
@@ -1488,6 +1876,7 @@ export class GlpiKnowbaseArticleController
             if (new_title !== null) {
                 this.#original_title = new_title;
                 this.#base_title = this.#original_title;
+                this.#updateAsideTitle(new_title);
             }
 
             glpi_toast_info(__("Article saved successfully"));

@@ -53,10 +53,6 @@ abstract class Spreadsheet extends ExportSearchOutput
 {
     protected \PhpOffice\PhpSpreadsheet\Spreadsheet $spread;
     protected BaseWriter|IWriter $writer;
-    /**
-     * FIXME: remove in GLPI 12, seems not used
-     */
-    protected int $count;
 
     public function __construct()
     {
@@ -260,7 +256,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                                 $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, $searchoptname);
                                 $itemtype     = getItemTypeForTable($searchopt[$criteria['field']]["table"]);
                                 $valuename    = '';
-                                if ($item = getItemForItemtype($itemtype)) {
+                                if ($itemtype !== null && $item = getItemForItemtype($itemtype)) {
                                     $valuename = $item->getValueToDisplay(
                                         $searchopt[$criteria['field']],
                                         $criteria['value']
@@ -309,6 +305,14 @@ abstract class Spreadsheet extends ExportSearchOutput
 
                             case "morethan":
                                 $titlecontain = sprintf(__('%1$s > %2$s'), $titlecontain, $valuename);
+                                break;
+
+                            case "lessthanorequal":
+                                $titlecontain = sprintf(__('%1$s <= %2$s'), $titlecontain, $valuename);
+                                break;
+
+                            case "morethanorequal":
+                                $titlecontain = sprintf(__('%1$s >= %2$s'), $titlecontain, $valuename);
                                 break;
 
                             case "contains":
@@ -447,6 +451,22 @@ abstract class Spreadsheet extends ExportSearchOutput
                         case "morethan":
                             $titlecontain2 = sprintf(
                                 __('%1$s > %2$s'),
+                                $titlecontain2,
+                                $metacriteria['value']
+                            );
+                            break;
+
+                        case "lessthanorequal":
+                            $titlecontain2 = sprintf(
+                                __('%1$s <= %2$s'),
+                                $titlecontain2,
+                                $metacriteria['value']
+                            );
+                            break;
+
+                        case "morethanorequal":
+                            $titlecontain2 = sprintf(
+                                __('%1$s >= %2$s'),
                                 $titlecontain2,
                                 $metacriteria['value']
                             );

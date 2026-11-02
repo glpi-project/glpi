@@ -70,6 +70,19 @@ class NetworkName extends FQDNLabel
         return _n('Network name', 'Network names', $nb);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public static function getConnexityMassiveActionsSpecificities(): array
+    {
+        $specificities = parent::getConnexityMassiveActionsSpecificities();
+
+        $specificities['reaffect'] = true;
+        $specificities['itemtypes'] = [NetworkPort::class];
+
+        return $specificities;
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', CommonDropdown::class, self::class];
@@ -451,10 +464,10 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
         }
         if (!isset($options['dont_display'][$column_name])) {
             $content = htmlescape(self::getTypeName());
-            if (isset($options['column_links'][$column_name])) {
-                $content = '<a href="' . htmlescape($options['column_links'][$column_name]) . '">'
+            if (isset($options['column_reload_params'][$column_name])) {
+                $content = '<button type="button" class="btn-as-link" data-glpi-reload-tab="' . htmlescape($options['column_reload_params'][$column_name]) . '">'
                     . $content
-                    . '</a>';
+                    . '</button>';
             }
             $father = $base->addHeader($column_name, $content, $super, $father);
             $father->setItemType('NetworkName');
@@ -624,7 +637,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                     $internetName = "(" . $line["id"] . ")";
                 }
                 $content  = htmlescape($internetName);
-                if (Session::haveRight('internet', READ)) {
+                if (Session::haveRight(self::$rightname, READ)) {
                     $content  = '<a href="' . htmlescape($address->getLinkURL()) . '">'
                         . htmlescape($internetName)
                         . '</a>';
@@ -680,8 +693,8 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
 
         if (
             ($item::class === NetworkPort::class)
-            && Session::haveRight('internet', UPDATE)
-            && $item->canUpdateItem()
+            && Session::haveRight(self::$rightname, UPDATE)
+            && $item->can($item->getID(), UPDATE)
         ) {
             $twig_params = [
                 'item' => $item,
@@ -735,10 +748,10 @@ TWIG, $twig_params);
             }
 
             if ($item::class === FQDN::class) {
-                $table_options['column_links'] = [
-                    'NetworkName' => 'javascript:reloadTab("order=name");',
-                    'NetworkAlias' => 'javascript:reloadTab("order=alias");',
-                    'IPAddress' => 'javascript:reloadTab("order=ip");',
+                $table_options['column_reload_params'] = [
+                    'NetworkName' => 'order=name',
+                    'NetworkAlias' => 'order=alias',
+                    'IPAddress' => 'order=ip',
                 ];
             }
 
@@ -749,7 +762,7 @@ TWIG, $twig_params);
 
             $canedit = false;
         } else {
-            $canedit = Session::haveRight('internet', UPDATE) && $item->canUpdateItem();
+            $canedit = Session::haveRight(self::$rightname, UPDATE) && $item->can($item->getID(), UPDATE);
         }
 
         $table_options['canedit']                  = false;

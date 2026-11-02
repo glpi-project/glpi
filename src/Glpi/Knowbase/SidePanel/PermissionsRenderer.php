@@ -62,7 +62,7 @@ final class PermissionsRenderer implements RendererInterface
     #[Override]
     public function canView(KnowbaseItem $item): bool
     {
-        return $item->can($item->getID(), READ);
+        return $item->can($item->getID(), UPDATE);
     }
 
     #[Override]
@@ -85,6 +85,7 @@ final class PermissionsRenderer implements RendererInterface
             'type'  => '__VALUE__',
             'right' => ($item->getField('is_faq') ? 'faq' : 'knowbase'),
             'allusers' => 1,
+            'knowbaseitems_id' => $id,
         ];
         if (isset($item->fields['entities_id'])) {
             $visiblity_dropdown_params['entity'] = $item->fields['entities_id'];

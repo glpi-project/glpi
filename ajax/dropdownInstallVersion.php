@@ -38,7 +38,7 @@ global $DB;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("software", UPDATE);
+Session::checkRight(Software::$rightname, UPDATE);
 
 if ($_POST['softwares_id'] > 0) {
     if (!isset($_POST['value'])) {

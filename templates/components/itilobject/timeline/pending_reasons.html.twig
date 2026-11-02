@@ -42,7 +42,7 @@
       <div class="col-12 col-sm-4" title="{{ "PendingReason"|itemtype_name }}"
            data-bs-toggle="tooltip" data-bs-placement="top">
          {% set pendingreasons_lbl %}
-            <i class="ti ti-tags"></i>
+            <i class="ti ti-tags" aria-hidden="true"></i>
          {% endset %}
          {% set pending_reasons_id_script %}
             <script>
@@ -128,7 +128,7 @@
                   false
                ]) %}
                {% set pendingreasons_frequency_lbl %}
-                  <i class="ti ti-reload"></i>
+                  <i class="ti ti-reload" aria-hidden="true"></i>
                {% endset %}
                {{ fields.field(
                   'followup_frequency',
@@ -154,7 +154,7 @@
                      false
                ]) %}
                {% set pendingreasons_resolution_lbl %}
-                  <i class="ti ti-check"></i>
+                  <i class="ti ti-check" aria-hidden="true"></i>
                {% endset %}
                {{ fields.field(
                   'followups_before_resolution',

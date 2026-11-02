@@ -43,6 +43,6 @@
 
 <button type="button" name="save_bookmark_record" class="btn btn-sm px-2 btn-outline-secondary btn-icon"
         title="{{ __('Save current search') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-   <i class="ti ti-bookmark-plus {{ active ? 'active text-yellow' : '' }}"></i>
+   <i class="ti ti-bookmark-plus {{ active ? 'active text-yellow' : '' }}" aria-hidden="true"></i>
 </button>
 <div id="savedsearch-modal" class="modal" data-params="{{ params|json_encode }}"></div>

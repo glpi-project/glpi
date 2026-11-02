@@ -34,7 +34,9 @@
 
 namespace tests\units;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ReminderTranslationTest extends DbTestCase
 {
@@ -77,6 +79,64 @@ class ReminderTranslationTest extends DbTestCase
         $this->assertSame($text_fr, $text);
     }
 
+    public function testPlanningUsesTranslation(): void
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $reminder = new \Reminder();
+        $reminders_id = (int) $reminder->add([
+            'name'        => '_test_planned_reminder',
+            'text'        => '<p>Original text</p>',
+            'entities_id' => 0,
+            'plan'        => [
+                'begin' => '2025-01-15 10:00:00',
+                'end'   => '2025-01-15 11:00:00',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $reminders_id);
+
+        $translation = new \ReminderTranslation();
+        $this->assertGreaterThan(0, (int) $translation->add([
+            'reminders_id' => $reminders_id,
+            'users_id'     => \Session::getLoginUserID(),
+            'language'     => 'ja_JP',
+            'name'         => 'Translated title',
+            'text'         => '<p>Translated text</p>',
+        ]));
+
+        $get_event = function () use ($reminders_id): array {
+            $events = \Reminder::populatePlanning([
+                'who'      => \Session::getLoginUserID(),
+                'whogroup' => 0,
+                'begin'    => '2025-01-15 00:00:00',
+                'end'      => '2025-01-16 00:00:00',
+            ]);
+            foreach ($events as $event) {
+                if ((int) $event['reminders_id'] === $reminders_id) {
+                    return $event;
+                }
+            }
+            $this->fail('Reminder not found in planning');
+        };
+
+        $current_lang = $_SESSION['glpilanguage'];
+
+        // No translation for the current language, the original values are used
+        $_SESSION['glpilanguage'] = 'en_GB';
+        $event = $get_event();
+        $this->assertSame('_test_planned_reminder', $event['name']);
+        $this->assertStringContainsString('Original text', $event['text']);
+
+        // The translation for the current language is used
+        $_SESSION['glpilanguage'] = 'ja_JP';
+        $event = $get_event();
+        $this->assertSame('Translated title', $event['name']);
+        $this->assertStringContainsString('Translated text', $event['text']);
+
+        $_SESSION['glpilanguage'] = $current_lang;
+    }
+
     /**
      * Add translation into database
      *
@@ -98,5 +158,56 @@ class ReminderTranslationTest extends DbTestCase
             'language'     => $lang,
         ];
         $this->assertGreaterThan(0, (int) $trans->add($input));
+    }
+
+    public static function formActionProvider(): iterable
+    {
+        yield 'add' => ['add'];
+        yield 'update' => ['update'];
+        yield 'purge' => ['purge'];
+    }
+
+    #[DataProvider('formActionProvider')]
+    public function testFormRequiresRightsOnReminder(string $action): void
+    {
+        // Arrange: a reminder of another user, with an existing translation
+        $this->login();
+        $reminder = $this->createItem(\Reminder::class, [
+            'name'     => 'Reminder of glpi',
+            'text'     => 'Original text',
+            'users_id' => \Session::getLoginUserID(),
+        ]);
+        $existing_translation = $this->createItem(\ReminderTranslation::class, [
+            'reminders_id' => $reminder->getID(),
+            'language'     => 'fr_FR',
+            'name'         => 'Rappel',
+            'text'         => 'Texte original',
+        ]);
+
+        $count_before = countElementsInTable(\ReminderTranslation::getTable(), ['reminders_id' => $reminder->getID()]);
+
+        $this->login('post-only', 'postonly');
+        $this->assertFalse($reminder->can($reminder->getID(), UPDATE));
+
+        $_POST = match ($action) {
+            'add'    => ['add' => 1, 'reminders_id' => $reminder->getID(), 'language' => 'es_ES', 'name' => 'Hacked', 'text' => 'Hacked'],
+            'update' => ['update' => 1, 'id' => $existing_translation->getID(), 'reminders_id' => $reminder->getID(), 'text' => 'Hacked'],
+            'purge'  => ['purge' => 1, 'id' => $existing_translation->getID(), 'reminders_id' => $reminder->getID()],
+        };
+
+        // Act: submit the translation form
+        $exception = null;
+        try {
+            include GLPI_ROOT . '/front/remindertranslation.form.php';
+        } catch (\Throwable $e) {
+            $exception = $e;
+        } finally {
+            $_POST = [];
+        }
+
+        // Assert: the action is refused and nothing is changed
+        $this->assertInstanceOf(AccessDeniedHttpException::class, $exception);
+        $this->assertSame($count_before, countElementsInTable(\ReminderTranslation::getTable(), ['reminders_id' => $reminder->getID()]));
+        $this->assertSame('Texte original', \ReminderTranslation::getById($existing_translation->getID())->fields['text']);
     }
 }

@@ -234,14 +234,14 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
         mysqli_report(MYSQLI_REPORT_OFF);
         $mysqli = new mysqli();
-        if ($this->db->dbssl) {
+        if ($this->getDb()->dbssl) {
             // set ssl config
             $mysqli->ssl_set(
-                $this->db->dbsslkey,
-                $this->db->dbsslcert,
-                $this->db->dbsslca,
-                $this->db->dbsslcapath,
-                $this->db->dbsslcacipher
+                $this->getDb()->dbsslkey,
+                $this->getDb()->dbsslcert,
+                $this->getDb()->dbsslca,
+                $this->getDb()->dbsslcapath,
+                $this->getDb()->dbsslcacipher
             );
         }
         if (intval($db_port) > 0) {
@@ -326,7 +326,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
         $progress_indicator = new ConsoleProgressIndicator($output);
         try {
-            $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
+            $this->getDb()->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
 
             Toolbox::createSchema($default_language, $this->db, $progress_indicator);
         } catch (Throwable $e) {

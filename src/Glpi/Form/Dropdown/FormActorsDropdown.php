@@ -39,6 +39,7 @@ use AbstractRightsDropdown;
 use Dropdown;
 use Group;
 use Override;
+use Session;
 use Supplier;
 use User;
 
@@ -81,23 +82,32 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                     (data.itemtype && data.itemtype === 'User')
                     || (data.id && data.id.startsWith('users_id-'))
                 ) {
-                    icon = '<i class="ti ti-user mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-user mx-1" title="' + title + '" aria-hidden="true"></i>';
                 } else if (
                     (data.itemtype && data.itemtype === 'Group')
                     || (data.id && data.id.startsWith('groups_id-'))
                 ) {
-                    icon = '<i class="ti ti-users mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-users mx-1" title="' + title + '" aria-hidden="true"></i>';
                 } else if (
                     (data.itemtype && data.itemtype === 'Supplier')
                     || (data.id && data.id.startsWith('suppliers_id-'))
                 ) {
-                    icon = '<i class="ti ti-package mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-package mx-1" title="' + title + '" aria-hidden="true"></i>';
                 }
 
                 return $('<span class="actor_entry">' + icon + text + '</span>');
             }
         JS;
         $params['templateResult'] = $params['templateSelection'];
+
+        $params['_idor_token'] = Session::getNewIDORToken(
+            self::class,
+            [
+                'allowed_types'    => $params['allowed_types'] ?? [],
+                'right_for_users'  => $params['right_for_users'] ?? 'all',
+                'group_conditions' => $params['group_conditions'] ?? [],
+            ],
+        );
 
         return parent::show($name, $values, $params);
     }

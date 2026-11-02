@@ -76,7 +76,8 @@ class Notepad extends CommonDBChild
             isset($this->fields['itemtype'])
             && ($item = getItemForItemtype($this->fields['itemtype']))
         ) {
-            return Session::haveRight($item::$rightname, UPDATENOTE);
+            return Session::haveRight($item::$rightname, UPDATENOTE)
+                && $item->can($this->fields['items_id'], READ);
         }
         return false;
     }
@@ -89,7 +90,8 @@ class Notepad extends CommonDBChild
             isset($this->fields['itemtype'])
             && ($item = getItemForItemtype($this->fields['itemtype']))
         ) {
-            return Session::haveRight($item::$rightname, UPDATENOTE);
+            return Session::haveRight($item::$rightname, UPDATENOTE)
+                && $item->can($this->fields['items_id'], READ);
         }
         return false;
     }
@@ -200,8 +202,8 @@ class Notepad extends CommonDBChild
                 }
 
                 $item = $document_obj->fields;
-                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
-                $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem();
+                $item['_can_edit'] = $document_obj->can($document_obj->getID(), UPDATE);
+                $item['_can_delete'] = $document_obj->can($document_obj->getID(), DELETE);
 
                 $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
                 $is_image = Document::isImage($docpath);

@@ -34,8 +34,15 @@
 
 namespace Glpi\Application;
 
+use Agent;
+use Auth;
+use GLPINetwork;
+use Planning;
 use Psr\Log\LogLevel;
+use RSSFeed;
+use Toolbox;
 use UnexpectedValueException;
+use Webhook;
 
 use function Safe\define;
 
@@ -148,31 +155,14 @@ enum Environment: string
                 'GLPI_VAR_DIR'                  => $root_dir . '/tests/files' . (($test_token !== false && $test_token !== '' && $test_token > 1) ? "-$test_token" : ''),
                 'GLPI_LOG_LVL'                  => LogLevel::DEBUG,
                 'GLPI_STRICT_ENV'               => true,
-                'GLPI_SERVERSIDE_URL_ALLOWLIST' => [
-                    // Based on https://github.com/symfony/symfony/blob/7.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
-                    '~^
-                        (http|https|feed)://                                                # protocol
-                        (
-                            (?:
-                                (?:xn--[a-z0-9-]++\.)*+xn--[a-z0-9-]++                      # a domain name using punycode
-                                    |
-                                (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++                    # a multi-level domain name
-                                    |
-                                [a-z0-9\-\_]++                                              # a single-level domain name
-                            )\.?
-                                |                                                           # or
-                            \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}                              # an IP address
-                                |                                                           # or
-                            \[
-                                (?:(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-f]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,1}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,2}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,3}(?:(?:[0-9a-f]{1,4})))?::(?:(?:[0-9a-f]{1,4})):)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,4}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,5}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,6}(?:(?:[0-9a-f]{1,4})))?::))))
-                            \]                                                              # an IPv6 address
-                        )
-                        (?:/ (?:[\pL\pN\pS\pM\-._\~!$&\'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*     # a path
-                        (?:\? (?:[\pL\pN\-._\~!$&\'\[\]()*+,;=:@/?]|%[0-9A-Fa-f]{2})* )?    # a query (optional)
-                    $~ixuD',
-
-                    // calendar mockups
-                    '/^file:\/\/.*\.ics$/',
+                'GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS' => [
+                    // Enable all context for test suite
+                    Agent::class,
+                    Auth::class,
+                    GLPINetwork::class,
+                    Planning::class,
+                    RSSFeed::class,
+                    Webhook::class,
                 ],
                 'GLPI_MARKETPLACE_DIR'          => $root_dir . '/tests/fixtures/marketplace',
                 'GLPI_PLUGINS_DIRECTORIES'      => [
@@ -257,21 +247,40 @@ enum Environment: string
         };
     }
 
-    public function shouldAddExtraE2EDataDuringInstallation(): bool
+    /**
+     * Get the options to pass to `password_hash()` and `password_needs_rehash()`.
+     *
+     * @return array{cost?: int}
+     */
+    public function getPasswordHashOptions(): array
     {
-        return
-            $this->shouldAddExtraCypressDataDuringInstallation()
-            || $this->shouldAddExtraPlaywrightDataDuringInstallation()
-        ;
+        // Specific for tests, should never be used anywhere else.
+        // The lowest bcrypt cost makes the hash computation and verification
+        // hundreds of times faster, which greatly reduces the tests duration.
+        return match ($this) {
+            default       => [],
+            self::TESTING => ['cost' => 4],
+        };
     }
 
+    /**
+     * @deprecated 11.0.12
+     */
+    public function shouldAddExtraE2EDataDuringInstallation(): bool
+    {
+        Toolbox::deprecated('Use `Environment::shouldAddExtraPlaywrightDataDuringInstallation()` instead.');
+
+        return $this->shouldAddExtraPlaywrightDataDuringInstallation();
+    }
+
+    /**
+     * @deprecated 11.0.12
+     */
     public function shouldAddExtraCypressDataDuringInstallation(): bool
     {
-        // Note: this will be removed when we switch to playwright.
-        return match ($this) {
-            default       => false,
-            self::TESTING => true,
-        };
+        Toolbox::deprecated('The Cypress data is no longer added during installation.');
+
+        return false;
     }
 
     public function shouldAddExtraPlaywrightDataDuringInstallation(): bool
@@ -288,6 +297,7 @@ enum Environment: string
     {
         return match ($this) {
             default   => false,
+            self::TESTING => true,
             self::E2E => true,
         };
     }

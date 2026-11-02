@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Computer;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
@@ -47,14 +48,12 @@ class GraphQLControllerTest extends HLAPITestCase
     {
         $this->login();
 
-        $request = new Request('POST', '/GraphQL', [], 'query { __schema { types { name } } }');
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { __schema { types { name } } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertGreaterThan(150, $content['data']['__schema']['types']);
-                    $types = $content['data']['__schema']['types'];
+                ->data('__schema', function ($schema) {
+                    $types = $schema['types'];
+                    $this->assertGreaterThan(150, $types);
                     $some_expected = ['Computer', 'Ticket', 'User', 'PrinterModel', 'FirmwareType'];
                     $found = [];
                     foreach ($types as $type) {
@@ -69,14 +68,11 @@ class GraphQLControllerTest extends HLAPITestCase
                 });
         });
 
-        $request = new Request('POST', '/GraphQL', [], 'query { __schema { types { name description } } }');
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { __schema { types { name description } } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $types = $content['data']['__schema']['types'];
-                    foreach ($types as $type) {
+                ->data('__schema', function ($schema) {
+                    foreach ($schema['types'] as $type) {
                         $this->assertArrayHasKey('name', $type);
                         $this->assertArrayHasKey('description', $type);
                         $this->assertArrayNotHasKey('fields', $type);
@@ -84,14 +80,11 @@ class GraphQLControllerTest extends HLAPITestCase
                 });
         });
 
-        $request = new Request('POST', '/GraphQL', [], 'query { __schema { types { name fields { type { name } } } } }');
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { __schema { types { name fields { type { name } } } } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $types = $content['data']['__schema']['types'];
-                    foreach ($types as $type) {
+                ->data('__schema', function ($schema) {
+                    foreach ($schema['types'] as $type) {
                         $this->assertArrayHasKey('name', $type);
                         $this->assertArrayNotHasKey('description', $type);
                         $this->assertArrayHasKey('fields', $type);
@@ -104,16 +97,13 @@ class GraphQLControllerTest extends HLAPITestCase
     {
         $this->login();
 
-        $request = new Request('POST', '/GraphQL', [], 'query { Computer(id: 1) { id name } }');
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Computer(id: 1) { id name } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['data']);
-                    $this->assertCount(1, $content['data']['Computer']);
-                    $this->assertEquals(1, $content['data']['Computer'][0]['id']);
-                    $this->assertEquals('_test_pc01', $content['data']['Computer'][0]['name']);
+                ->data('Computer', function ($computers) {
+                    $this->assertCount(1, $computers);
+                    $this->assertEquals(1, $computers[0]['id']);
+                    $this->assertEquals('_test_pc01', $computers[0]['name']);
                 });
         });
     }
@@ -122,14 +112,11 @@ class GraphQLControllerTest extends HLAPITestCase
     {
         $this->login();
 
-        $request = new Request('POST', '/GraphQL', [], 'query { Computer { id name } }');
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Computer { id name } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['data']);
-                    $this->assertGreaterThan(2, count($content['data']['Computer']));
+                ->data('Computer', function ($computers) {
+                    $this->assertGreaterThan(2, count($computers));
                 });
         });
     }
@@ -138,14 +125,11 @@ class GraphQLControllerTest extends HLAPITestCase
     {
         $this->login();
 
-        $request = new Request('POST', '/GraphQL', [], 'query { Computer(filter: "name=like=\'*_test_pc*\'") { id name } }');
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Computer(filter: "name=like=\'*_test_pc*\'") { id name } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['data']);
-                    $this->assertCount(9, $content['data']['Computer']);
+                ->data('Computer', function ($computers) {
+                    $this->assertCount(9, $computers);
                 });
         });
     }
@@ -167,18 +151,15 @@ class GraphQLControllerTest extends HLAPITestCase
         ]));
 
         // product_number is not available this way via the REST API, but should be available here as the partial schema gets replaced by the full schema
-        $request = new Request('POST', '/GraphQL', [], 'query { CartridgeItem { id name printer_models { name product_number } } }');
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { CartridgeItem { id name printer_models { name product_number } } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['data']);
-                    $this->assertArrayHasKey('id', $content['data']['CartridgeItem'][0]);
-                    $this->assertArrayHasKey('name', $content['data']['CartridgeItem'][0]);
-                    $this->assertGreaterThan(0, count($content['data']['CartridgeItem'][0]['printer_models']));
-                    $this->assertArrayHasKey('name', $content['data']['CartridgeItem'][0]['printer_models'][0]);
-                    $this->assertArrayHasKey('product_number', $content['data']['CartridgeItem'][0]['printer_models'][0]);
+                ->data('CartridgeItem', function ($items) {
+                    $this->assertArrayHasKey('id', $items[0]);
+                    $this->assertArrayHasKey('name', $items[0]);
+                    $this->assertGreaterThan(0, count($items[0]['printer_models']));
+                    $this->assertArrayHasKey('name', $items[0]['printer_models'][0]);
+                    $this->assertArrayHasKey('product_number', $items[0]['printer_models'][0]);
                 });
         });
     }
@@ -196,7 +177,7 @@ class GraphQLControllerTest extends HLAPITestCase
             'is_visible_computer' => 1,
             'is_visible_monitor' => 0,
         ]));
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertGreaterThan(0, $computers_id = $computer->add([
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
@@ -204,34 +185,18 @@ class GraphQLControllerTest extends HLAPITestCase
         ]));
 
         $this->login();
-        $request = new Request('POST', '/GraphQL', [], <<<GRAPHQL
-            query {
-                Computer(id: $computers_id) {
-                    id
-                    name
-                    status {
-                        name
-                        visibilities {
-                            computer monitor
-                        }
-                    }
-                }
-            }
-GRAPHQL);
 
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call("query { Computer(id: $computers_id) { id name status { name visibilities { computer monitor } } } }", function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['data']);
-                    $this->assertCount(1, $content['data']['Computer']);
-                    $this->assertArrayHasKey('id', $content['data']['Computer'][0]);
-                    $this->assertArrayHasKey('name', $content['data']['Computer'][0]);
-                    $this->assertArrayHasKey('status', $content['data']['Computer'][0]);
-                    $this->assertArrayHasKey('name', $content['data']['Computer'][0]['status']);
-                    $this->assertTrue($content['data']['Computer'][0]['status']['visibilities']['computer']);
-                    $this->assertFalse($content['data']['Computer'][0]['status']['visibilities']['monitor']);
+                ->data('Computer', function ($computers) {
+                    $this->assertCount(1, $computers);
+                    $this->assertArrayHasKey('id', $computers[0]);
+                    $this->assertArrayHasKey('name', $computers[0]);
+                    $this->assertArrayHasKey('status', $computers[0]);
+                    $this->assertArrayHasKey('name', $computers[0]['status']);
+                    $this->assertTrue($computers[0]['status']['visibilities']['computer']);
+                    $this->assertFalse($computers[0]['status']['visibilities']['monitor']);
                 });
         });
     }
@@ -248,38 +213,31 @@ GRAPHQL);
         $tickets_id = $DB->insertId();
 
         $this->loginWeb();
-        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $this->graphql->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
 
         $_SESSION['glpi_use_mode'] = 2;
 
         // Can see no tickets
         $_SESSION['glpiactiveprofile']['ticket'] = 0;
-        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertEmpty($content['data']['Ticket']);
-                });
+        $this->graphql->call('query { Ticket { id name } }', function ($call) {
+            $call->response->isCompletelyError();
         });
 
         // Can only see my own tickets
         $_SESSION['glpiactiveprofile']['ticket'] = READ;
 
-        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) use ($tickets_id) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Ticket { id name } }', function ($call) use ($tickets_id) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use ($tickets_id) {
-                    $this->assertNotContains($tickets_id, array_column($content['data']['Ticket'], 'id'));
+                ->data('Ticket', function ($tickets) use ($tickets_id) {
+                    $this->assertNotContains($tickets_id, array_column($tickets, 'id'));
                 });
         });
-        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket(id: ' . $tickets_id . ') { id name } }'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Ticket(id: ' . $tickets_id . ') { id name } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertEmpty($content['data']['Ticket']);
+                ->data('Ticket', function ($tickets) {
+                    $this->assertEmpty($tickets);
                 });
         });
     }
@@ -300,18 +258,17 @@ GRAPHQL);
         ]));
 
         $this->loginWeb();
-        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $this->graphql->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
 
         $_SESSION['glpi_use_mode'] = 2;
 
         // Can see no entities
         $_SESSION['glpiactiveprofile']['entity'] = 0;
-        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name entity { id name comment } } }'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Ticket { id name entity { id name comment } } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    foreach ($content['data']['Ticket'] as $ticket) {
+                ->data('Ticket', function ($tickets) {
+                    foreach ($tickets as $ticket) {
                         // The name is part of the partial schema, so it is always visible
                         $this->assertNotNull($ticket['entity']['name']);
                         // The comment comes from the full schema which the user has no right to see
@@ -326,7 +283,6 @@ GRAPHQL);
         $this->login(api_options: ['scope' => 'api']);
         $request = new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isAccessDenied()
                 ->jsonContent(function ($content) {
@@ -334,11 +290,8 @@ GRAPHQL);
                 });
         });
         $this->login(api_options: ['scope' => 'graphql']);
-        $request = new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }');
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+        $this->graphql->call('query { Ticket { id name } }', function ($call) {
+            $call->response->isOK();
         });
     }
 
@@ -349,7 +302,6 @@ GRAPHQL);
         $query = 'query { Computer(id: 1) { id name } }';
         $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/graphql'], $query);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -369,7 +321,6 @@ GRAPHQL);
         $body = json_encode(['query' => $query]);
         $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], $body);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -388,7 +339,6 @@ GRAPHQL);
         $query = 'query { Computer(id: 1) { id name } }';
         $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -400,17 +350,33 @@ GRAPHQL);
         });
     }
 
-    private function getCompleteFieldsRequestForSchema(array $properties): string
+    private function getCompleteFieldsRequestForSchema(array $properties, int $current_level = 0): string
     {
         $fields_query_part = '';
         // Convert OpenAPI properties to GraphQL fields request
         foreach ($properties as $property_name => $property_info) {
-            if ($property_info['type'] === 'object' && !empty($property_info['properties'])) {
+            if ($property_info['type'] === 'object') {
                 // Nested object, recurse
-                $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['properties']) . ' } ';
-            } elseif ($property_info['type'] === 'array' && !empty($property_info['items']['properties'])) {
+                if ($current_level > 2) {
+                    continue;
+                }
+                if (!empty($property_info['discriminator']['mapping'])) {
+                    continue;
+                }
+                if (!empty($property_info['properties'])) {
+                    $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['properties'], $current_level + 1) . ' } ';
+                }
+            } elseif ($property_info['type'] === 'array') {
                 // Array of objects, recurse
-                $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['items']['properties']) . ' } ';
+                if ($current_level > 2) {
+                    continue;
+                }
+                if (!empty($property_info['items']['discriminator']['mapping'])) {
+                    continue;
+                }
+                if (!empty($property_info['items']['properties'])) {
+                    $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['items']['properties'], $current_level + 1) . ' } ';
+                }
             } else {
                 // Scalar field
                 $fields_query_part .= $property_name . ' ';
@@ -434,7 +400,7 @@ GRAPHQL);
 
         $schemas_errors = [];
         foreach ($controllers as $controller) {
-            $schemas = $controller::getKnownSchemas(null);
+            $schemas = $controller::getKnownSchemas(Router::API_VERSION);
             foreach ($schemas as $schema_name => $schema) {
                 if (!isset($schema['x-itemtype']) || str_starts_with($schema_name, '_')) {
                     continue;
@@ -444,7 +410,6 @@ GRAPHQL);
                     'X-Debug-Mode' => '1', // Debug mode allows seeing more information in errors
                 ], $query);
                 $this->api->call($request, function ($call) use ($schema_name, &$schemas_errors) {
-                    /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($schema_name, &$schemas_errors) {
@@ -454,16 +419,6 @@ GRAPHQL);
                         });
                 });
             }
-        }
-
-        //TODO v3 of the API should fix the user "name"/"username" properties conflict. The full schema uses "username" while the partial schema uses "name".
-        //Ignore them for now.
-        $schemas_errors = array_filter($schemas_errors, function ($error) {
-            return !str_contains($error, 'Cannot query field \"name\" on type \"User\"');
-        });
-        // An assertion to force the fix of the above in case it is forgotten when the API hits v3
-        if (version_compare(Router::API_VERSION, '3.0.0', '>=')) {
-            $this->fail('The User "name"/"username" conflict should be fixed in API v3');
         }
 
         $this->assertEmpty($schemas_errors, "Schemas with errors when querying with GraphQL: \n" . implode("\n", $schemas_errors));
@@ -477,16 +432,12 @@ GRAPHQL);
     {
         $this->login();
 
-        $query = 'query { Project(filter: "name==_project01;entity.level==2") { id name } }';
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Project(filter: "name==_project01;entity.level==2") { id name } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['data']);
-                    $this->assertCount(1, $content['data']['Project']);
-                    $this->assertEquals('_project01', $content['data']['Project'][0]['name']);
+                ->data('Project', function ($projects) {
+                    $this->assertCount(1, $projects);
+                    $this->assertEquals('_project01', $projects[0]['name']);
                 });
         });
 
@@ -503,28 +454,107 @@ GRAPHQL);
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
 
-        $query = 'query { Project(filter: "name==_project01;tasks.parent_task.name==test") { id name } }';
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Project(filter: "name==_project01;tasks.parent_task.name==test") { id name } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertEmpty($content['data']['Project']);
+                ->data('Project', function ($projects) {
+                    $this->assertCount(0, $projects);
                 });
         });
 
-        $query = 'query { Project(filter: "name==_project01;tasks.parent_task.name==ParentTask") { id name } }';
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+        $this->graphql->call('query { Project(filter: "name==_project01;tasks.parent_task.name==ParentTask") { id name } }', function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertCount(1, $content['data']);
-                    $this->assertCount(1, $content['data']['Project']);
-                    $this->assertEquals('_project01', $content['data']['Project'][0]['name']);
+                ->data('Project', function ($projects) {
+                    $this->assertCount(1, $projects);
+                    $this->assertEquals('_project01', $projects[0]['name']);
                 });
+        });
+    }
+
+    public function testRFC3339DateTimeFormat(): void
+    {
+        $this->login();
+
+        $this->graphql->call('query { Ticket(limit: 1) { date } }', function ($call) {
+            $call->response
+                ->isOK()
+                ->data('Ticket', function ($tickets) {
+                    $ticket = $tickets[0];
+                    $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/', $ticket['date']);
+                });
+        });
+    }
+
+    public function testEmbeddedObjectProperties(): void
+    {
+        $this->login();
+
+        $this->graphql->call('query { Ticket(filter: "name==_ticket01") { status { name } } }', function ($call) {
+            $call->response
+                ->isOK()
+                ->data('Ticket', function ($tickets) {
+                    $ticket = $tickets[0];
+                    $this->assertEquals('New', $ticket['status']['name']);
+                });
+        });
+    }
+
+    public function testFieldAccessDenied(): void
+    {
+        global $DB;
+
+        $this->login('tech', 'tech');
+
+        // Ensure at least one computer has a user to trigger the resolver on the User field to have the date_sync field visibility evaluated
+        $DB->insert(Computer::getTable(), [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id' => getItemByTypeName('User', 'glpi', true),
+        ]);
+        $DB->insert(Computer::getTable(), [
+            'name' => __FUNCTION__ . '2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id' => getItemByTypeName('User', 'glpi', true),
+        ]);
+
+        // Direct access to a field the user does not have access to
+        $this->graphql->call('query { User { id username date_sync } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('User.date_sync');
+        });
+
+        $this->graphql->call('query { Computer { id name user { id username date_sync } } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('Computer.user.date_sync');
+        });
+
+        // Error message adapts to aliases
+        $this->graphql->call('query { Computer { id name owner:user { id username last_sync:date_sync } } }', function ($call) {
+            $call->response
+                ->isPartialError()
+                ->hasFieldAccessDenied('Computer.owner.last_sync');
+        });
+
+        $DB->insert('glpi_users', [
+            'name' => __FUNCTION__,
+            'date_sync' => '2026-07-01 06:07:00',
+        ]);
+
+        // Filtering by date_sync should not affect the results as missing fields are silently ignored currently
+        $this->graphql->call('query { User(filter: "date_sync=gt=2026-01-01") { id username } }', function ($call) {
+            $call->response
+                ->isOK()
+                ->data('User', function ($users) {
+                    $this->assertGreaterThan(4, count($users));
+                });
+        });
+
+        // Cannot sort by field not in the used schema
+        $this->graphql->call('query { User(sort: "date_sync") { id username } }', function ($call) {
+            $call->response->isCompletelyError();
         });
     }
 }

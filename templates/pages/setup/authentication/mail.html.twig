@@ -34,6 +34,12 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
+    {% if uses_pop_protocol %}
+        <div class="alert alert-warning">
+            {{ __('This mail authentication server uses the POP protocol, which is no longer supported. Please reconfigure it to use the IMAP protocol.') }}
+        </div>
+    {% endif %}
+
     {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
 
     {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options) }}

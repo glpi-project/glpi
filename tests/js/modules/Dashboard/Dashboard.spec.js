@@ -94,6 +94,21 @@ describe('Dashboard', () => {
         expect(window.GLPIDashboard).toBeDefined();
     });
 
+    test('current_name reads the actually selected dashboard from the DOM on init', () => {
+        // The select's selected option ('current_dashboard') differs from the PHP-provided
+        // 'current' option, reproducing the case where the two can get out of sync on first load.
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'stale_dashboard_from_php',
+        });
+        expect(dashboard.current_name).toBe('current_dashboard');
+    });
+
+    test('Init with an empty dashboard select', () => {
+        $('#dashboard-12345 .dashboard_select').empty();
+        expect(() => new GLPIDashboard({'rand': '12345'})).not.toThrow();
+    });
+
     test('saveMarkdown', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);
@@ -306,7 +321,7 @@ describe('Dashboard', () => {
         dashboard.saveDashboard = vi.fn();
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             action: 'get_card',
             dashboard: 'current_dashboard',
             card_id: undefined,
@@ -453,7 +468,7 @@ describe('Dashboard', () => {
         dashboard.saveFilter = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             action: 'get_filter',
             filter_id: 'myfilter',
         }, () => {
@@ -485,7 +500,7 @@ describe('Dashboard', () => {
         $('body').find('.grid-stack').empty();
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             action: 'get_dashboard_items',
             dashboard: 'current_dashboard',
         }, () => {
@@ -525,19 +540,23 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.grid.removeAll = vi.fn().mockImplementation(() => {});
         dashboard.grid.makeWidget = vi.fn().mockImplementation(() => {});
         dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
         $('body').find('.grid-stack').empty();
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             action: 'get_dashboard_items',
             dashboard: 'current_dashboard',
             embed: 1,
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
         }, () => {
             return `
                 <div class="grid-stack-item" gs-id="4"><div class="card"></div></div>
@@ -573,7 +592,7 @@ describe('Dashboard', () => {
         });
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             dashboard: 'current_dashboard',
             page: 'http://localhost/',
             action: 'set_last_dashboard',
@@ -603,7 +622,13 @@ describe('Dashboard', () => {
             'filter2': 'filter2_value',
         });
         expect(window.sortable).toHaveBeenCalledWith('#filter-selector', 'reload');
-        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith('filter2');
+        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith(
+            'filter2',
+            {
+                'filter1': 'filter1_value',
+                'filter2': 'filter2_value',
+            }
+        );
     });
 
     test('refreshCardsImpactedByFilter', () => {
@@ -617,10 +642,10 @@ describe('Dashboard', () => {
         `);
         dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
 
-        dashboard.refreshCardsImpactedByFilter('filter1');
+        dashboard.refreshCardsImpactedByFilter('filter1', {});
 
-        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(1, `[gs-id="${CSS.escape(4)}"]`);
-        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(2, `[gs-id="${CSS.escape(6)}"]`);
+        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(1, `[gs-id="${CSS.escape(4)}"]`, {});
+        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(2, `[gs-id="${CSS.escape(6)}"]`, {});
     });
 
     test('saveDashboard', async () => {
@@ -631,7 +656,7 @@ describe('Dashboard', () => {
         dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'save_items',
             dashboard: 'current_dashboard',
             items: [], //FIXME There are no items here because the function uses a :visible selector and jsdom doesn't acutally do any layout so nothing is visible
@@ -652,7 +677,7 @@ describe('Dashboard', () => {
         dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'save_items',
             dashboard: 'current_dashboard',
             items: [], //FIXME There are no items here because the function uses a :visible selector and jsdom doesn't acutally do any layout so nothing is visible
@@ -943,7 +968,7 @@ describe('Dashboard', () => {
         dashboard.addNewDashbardInSelect = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'clone_dashboard',
             dashboard: 'current_dashboard',
         }, () => {
@@ -972,7 +997,7 @@ describe('Dashboard', () => {
         dashboard.setLastDashboard = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'delete_dashboard',
             dashboard: 'current_dashboard',
         }, () => {
@@ -1000,7 +1025,7 @@ describe('Dashboard', () => {
         window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
         dashboard.addForm();
         expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((arg) => {
-            return arg.params.action === 'add_new' && arg.url === '//ajax/dashboard.php';
+            return arg.params.action === 'add_new' && arg.url === '/ajax/dashboard.php';
         }));
     });
 
@@ -1010,7 +1035,7 @@ describe('Dashboard', () => {
         dashboard.setEditMode = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'save_new_dashboard',
             title: 'mytitle',
             context: 'core'
@@ -1034,7 +1059,7 @@ describe('Dashboard', () => {
         dashboard.setEditMode = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'save_new_dashboard',
             title: 'mytitle',
             context: 'other_context'
@@ -1089,6 +1114,8 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1102,28 +1129,34 @@ describe('Dashboard', () => {
             $(item).data('card-options', {});
         });
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             embed: 1,
             action: 'get_card',
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 1
         }, () => {return true;}));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             embed: 1,
             action: 'get_card',
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 2
         }, () => {return true;}));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             embed: 1,
             action: 'get_card',
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 3
         }, () => {return true;}));
 
@@ -1167,7 +1200,7 @@ describe('Dashboard', () => {
             $(item).data('card-options', {});
         });
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             action: 'get_card',
         }, () => {
             return true;
@@ -1210,6 +1243,8 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1234,9 +1269,11 @@ describe('Dashboard', () => {
             "embed": 1,
             "token": "mytoken",
             "entities_id": 3,
-            "is_recursive": 1
+            "is_recursive": 1,
+            "profiles_id": 4,
+            "users_id": 5
         };
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'get_cards',
             data: JSON.stringify(data)
         }, () => {
@@ -1285,7 +1322,7 @@ describe('Dashboard', () => {
             $(item).data('card-options', {});
         });
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'get_cards',
         }, () => {
             return true;
@@ -1321,7 +1358,7 @@ describe('Dashboard', () => {
         $('#dashboard-12345').append('<div class="filters"></div>');
         const init_filter_event_handler = vi.fn().mockImplementation(() => {});
         $(document).on('glpiDasbhoardInitFilter', init_filter_event_handler);
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             action: 'get_dashboard_filters',
             filters: {
                 'filter1': 'value1',
@@ -1351,7 +1388,7 @@ describe('Dashboard', () => {
             'current': 'current_dashboard',
         });
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
             action: 'get_filter_data',
             dashboard: 'current_dashboard',
         }, () => {
@@ -1381,7 +1418,7 @@ describe('Dashboard', () => {
             'current': 'current_dashboard',
         });
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'save_filter_data',
             dashboard: 'current_dashboard',
             filters: JSON.stringify({
@@ -1575,7 +1612,7 @@ describe('Dashboard', () => {
         `);
         window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'save_rights',
             dashboard: 'current_dashboard',
             rights: {
@@ -1636,7 +1673,7 @@ describe('Dashboard', () => {
         $('#dashboard-12345 .grid-stack-item[gs-id="2"] .edit-item').trigger('click');
         expect(window.glpi_ajax_dialog).toHaveBeenCalledTimes(1);
         expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
-            return params.url === '//ajax/dashboard.php' && params.params.action === 'display_edit_widget'
+            return params.url === '/ajax/dashboard.php' && params.params.action === 'display_edit_widget'
                 && params.params.gridstack_id === '2' && params.params.dashboard === 'current_dashboard'
                 && params.params.card_id === 'mycard_id';
         }));
@@ -1654,7 +1691,7 @@ describe('Dashboard', () => {
 
         $('#dashboard-12345 .cell-add').trigger('click');
         expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
-            return params.url === '//ajax/dashboard.php' && params.params.action === 'display_add_widget'
+            return params.url === '/ajax/dashboard.php' && params.params.action === 'display_add_widget'
                 && params.params.dashboard === 'current_dashboard';
         }));
     });
@@ -1680,7 +1717,7 @@ describe('Dashboard', () => {
 
         $('#dashboard-12345 .filters_toolbar .add-filter').trigger('click');
         expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
-            return params.url === '//ajax/dashboard.php' && params.params.action === 'display_add_filter'
+            return params.url === '/ajax/dashboard.php' && params.params.action === 'display_add_filter'
                 && params.params.dashboard === 'current_dashboard' && params.params.used.includes('filter1')
                 && params.params.used.includes('filter2');
         }));
@@ -1714,7 +1751,12 @@ describe('Dashboard', () => {
         expect(dashboard.setFiltersInDB).toHaveBeenCalledWith({
             filter2: 'value2',
         });
-        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith('filter1');
+        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith(
+            'filter1',
+            {
+                filter2: 'value2',
+            }
+        );
     });
 
     test('Single ajax mode - Animate on load', () => {
@@ -1776,6 +1818,52 @@ describe('Dashboard', () => {
         expect(dashboard.resetComputedWidth).toHaveBeenCalledTimes(2);
         expect(dashboard.fitNumbers).toHaveBeenCalledTimes(1);
         expect(dashboard.animateNumbers).toHaveBeenCalledTimes(1);
+    });
+
+    test('Resize the charts with their card', () => {
+        const default_observer = window.ResizeObserver;
+        const observed = [];
+        let resize_callback;
+        window.ResizeObserver = class {
+            constructor(callback) {
+                resize_callback = callback;
+            }
+            observe(el) {
+                observed.push(el);
+            }
+            unobserve(el) {
+                observed.splice(observed.indexOf(el), 1);
+            }
+        };
+        const grid_handlers = {};
+        window.GridStack = {
+            init: () => ({
+                setStatic: vi.fn(),
+                on: (event, callback) => {
+                    grid_handlers[event] = callback;
+                },
+            }),
+        };
+        const chart = {resize: vi.fn()};
+        window.echarts = {getInstanceByDom: vi.fn().mockReturnValue(chart)};
+
+        try {
+            new GLPIDashboard({'rand': '12345'});
+            const card = $('<div class="grid-stack-item"><div class="chart" _echarts_instance_="ec_1"></div></div>')[0];
+
+            grid_handlers['added'](new Event('added'), [{el: card}]);
+            expect(observed).toEqual([card]);
+
+            resize_callback([{target: card}]);
+            expect(window.echarts.getInstanceByDom).toHaveBeenCalledWith(card.querySelector('.chart'));
+            expect(chart.resize).toHaveBeenCalledTimes(1);
+
+            grid_handlers['removed'](new Event('removed'), [{el: card}]);
+            expect(observed).toEqual([]);
+        } finally {
+            window.ResizeObserver = default_observer;
+            delete window.echarts;
+        }
     });
 
     test('Add/Update Widget after Form Submit', () => {

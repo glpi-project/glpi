@@ -272,7 +272,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         $tab = [];
 
         if (in_array($itemtype, Domain::getTypes(true))) {
-            if (Session::haveRight("domain", READ)) {
+            if (Session::haveRight(Domain::$rightname, READ)) {
                 $tab[] = [
                     'id'                 => 'domain',
                     'name'               => self::getTypeName(Session::getPluralNumber()),
@@ -400,6 +400,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             'entity'  => '',
             'used'    => [],
             'display' => true,
+            'rand'    => mt_rand(),
         ];
 
         if (is_array($options) && count($options)) {
@@ -408,7 +409,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             }
         }
 
-        $rand = mt_rand();
+        $rand = $p['rand'];
 
         $where = [
             'glpi_domains.is_deleted'  => 0,
@@ -452,9 +453,9 @@ class Domain extends CommonDBTM implements AssignableItemInterface
 
         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
             if ($isadmin) {
-                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']   = "<i class='ti ti-link'></i>" . _sx('button', 'Associate');
-                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = "<i class='ti ti-link-off'></i>" . _sx('button', 'Dissociate');
-                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'duplicate']  = "<i class='ti ti-copy'></i>" . _sx('button', 'Duplicate');
+                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']   = "<i class='ti ti-link' aria-hidden='true'></i>" . _sx('button', 'Associate');
+                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = "<i class='ti ti-link-off' aria-hidden='true'></i>" . _sx('button', 'Dissociate');
+                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'duplicate']  = "<i class='ti ti-copy' aria-hidden='true'></i>" . _sx('button', 'Duplicate');
             }
         }
         return $actions;
@@ -524,7 +525,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                         'itemtype'                  => $item::class,
                         'domainrelations_id'        => $input['domainrelations_id'],
                     ];
-                    if ($domain_item->can(-1, UPDATE, $input)) {
+                    if ($domain_item->can(-1, CREATE, $input)) {
                         if ($domain_item->getFromDBByCrit($input)) {
                             $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                         } else {
@@ -539,8 +540,10 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                 return;
             case 'remove_domain':
                 $input = $ma->getInput();
-                $nolink = true;
                 foreach ($ids as $id) {
+                    $nolink = true;
+                    $is_ok = true;
+
                     $domain_item = new Domain_Item();
                     foreach (
                         $domain_item->find([
@@ -549,16 +552,26 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                             'itemtype'   => $item::class,
                         ]) as $data
                     ) {
-                        $purge = !$data['is_dynamic']; // dynamic relations should be preserved for inventory lock feature (dynamic + deleted = locked)
-                        if ($domain_item->delete($data, $purge)) {
-                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                        } else {
-                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                        }
                         $nolink = false;
+
+                        if (!$domain_item->can($data['id'], DELETE)) {
+                            $is_ok = false;
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
+                        $purge = !$data['is_dynamic']; // dynamic relations should be preserved for inventory lock feature (dynamic + deleted = locked)
+                        if (!$domain_item->delete($data, $purge)) {
+                            $is_ok = false;
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
                     }
                     if ($nolink) {
                         $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
+                    } elseif (!$is_ok) {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
                 return;
@@ -570,6 +583,13 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                             'items_id'                  => $input["item_item"],
                             'itemtype'                  => $input['typeitem'],
                         ];
+
+                        if (!$domain_item->can(-1, CREATE, $values)) {
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         if ($domain_item->add($values)) {
                             $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                         } else {
@@ -585,7 +605,19 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             case 'uninstall':
                 $input = $ma->getInput();
                 foreach ($ids as $key) {
-                    if ($domain_item->deleteItemByDomainsAndItem($key, $input['item_item'], $input['typeitem'])) {
+                    if (!$domain_item->getFromDBbyDomainsAndItem($key, $input['item_item'], $input['typeitem'])) {
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                        continue;
+                    }
+
+                    if (!$domain_item->can($domain_item->getID(), DELETE)) {
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    if ($domain_item->delete(['id' => $domain_item->getID()])) {
                         $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } else {
                         $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
@@ -597,12 +629,24 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                 if ($item instanceof Domain) {
                     $input     = $ma->getInput();
                     foreach (array_keys($ids) as $key) {
-                        $item->getFromDB($key);
-                        unset($item->fields["id"]);
-                        $item->fields["name"]    = $item->fields["name"];
-                        $item->fields["comment"] = $item->fields["comment"];
-                        $item->fields["entities_id"] = $input['entities_id'];
-                        if ($item->add($item->fields)) {
+                        if (!$item->getFromDB($key)) {
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                            continue;
+                        }
+
+                        $values = $item->fields;
+                        unset($values["id"]);
+                        $values["entities_id"] = $input['entities_id'];
+
+                        $duplicate = new Domain();
+                        if (!$item->can($key, READ) || !$duplicate->can(-1, CREATE, $values)) {
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
+                        if ($duplicate->add($values)) {
                             $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
@@ -642,14 +686,17 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         global $DB;
 
         $delay = Entity::getUsedConfig('send_domains_alert_expired_delay', $entities_id);
+        $date_expr = new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > ?");
+        $date_delai_expr = clone $date_expr;
+        $date_zero_expr = clone $date_expr;
         return [
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'NOT' => ['date_expiration' => null],
                 'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > $delay"),
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > 0"),
+                $date_delai_expr->setParams([$delay]),
+                $date_zero_expr->setParams([0]),
             ],
         ];
     }
@@ -666,14 +713,16 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         global $DB;
 
         $delay = Entity::getUsedConfig('send_domains_alert_close_expiries_delay', $entities_id);
+        $date_delai_expr = new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > ?");
+        $date_zero_expr = new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") < ?");
         return [
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'NOT' => ['date_expiration' => null],
                 'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > -$delay"),
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") < 0"),
+                $date_delai_expr->setParams([-$delay]),
+                $date_zero_expr->setParams([0]),
             ],
         ];
     }

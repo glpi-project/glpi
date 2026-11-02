@@ -54,7 +54,7 @@
         <div class="align-items-center col-12">
             <div class="form-field row flex-grow-1 mx-0 my-1 new-custom-field cursor-pointer btn btn-sm btn-ghost-secondary w-100" role="button">
                 <div class="col py-2 text-center">
-                    <i class="ti ti-plus"></i>
+                    <i class="ti ti-plus" aria-hidden="true"></i>
                     {{ __('New field') }}
                 </div>
             </div>

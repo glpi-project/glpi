@@ -74,14 +74,27 @@ class Central extends CommonGLPI
         if ($item instanceof self) {
             $tabs = [
                 1 => self::createTabEntry(__('Personal View'), 0, null, User::getIcon()),
-                2 => self::createTabEntry(__('Group View'), 0, null, Group::getIcon()),
                 3 => self::createTabEntry(__('Global View'), 0, null, 'ti ti-world'),
-                4 => self::createTabEntry(_n('RSS feed', 'RSS feeds', Session::getPluralNumber()), 0, null, RSSFeed::getIcon()),
             ];
 
-            if (Grid::canViewOneDashboard()) {
-                array_unshift($tabs, self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon()));
+            if (self::canViewGroupView()) {
+                $tabs[2] = self::createTabEntry(__('Group View'), 0, null, Group::getIcon());
             }
+
+            if (RSSFeed::canView()) {
+                $tabs[4] = self::createTabEntry(
+                    _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
+                    0,
+                    null,
+                    RSSFeed::getIcon(),
+                );
+            }
+
+            if (Grid::canViewOneDashboard()) {
+                $tabs[0] = self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon());
+            }
+
+            ksort($tabs);
 
             return $tabs;
         }
@@ -145,9 +158,9 @@ class Central extends CommonGLPI
     public static function showGlobalView()
     {
 
-        $showticket  = Session::haveRight("ticket", Ticket::READALL);
-        $showproblem = Session::haveRight("problem", Problem::READALL);
-        $show_change = Session::haveRight('change', Change::READALL);
+        $showticket  = Session::haveRight(Ticket::$rightname, Ticket::READALL);
+        $showproblem = Session::haveRight(Problem::$rightname, Problem::READALL);
+        $show_change = Session::haveRight(Change::$rightname, Change::READALL);
 
         $grid_items = [];
 
@@ -184,22 +197,22 @@ class Central extends CommonGLPI
     public static function showMyView()
     {
         $showticket  = Session::haveRightsOr(
-            "ticket",
+            Ticket::$rightname,
             [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]
         );
 
         $showmyticket = Session::haveRightsOr(
-            "ticket",
+            Ticket::$rightname,
             [Ticket::READMY, Ticket::READALL]
         );
 
-        $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        $showproblem = Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY]);
 
-        $showchanges = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        $showchanges = Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY]);
 
         $lists = [];
 
-        if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+        if (Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'tovalidate',
@@ -263,7 +276,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRightsOr('changevalidation', ChangeValidation::getValidateRights())) {
+        if (Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())) {
             $lists[] = [
                 'itemtype'  => Change::class,
                 'status'    => 'tovalidate',
@@ -314,16 +327,18 @@ class Central extends CommonGLPI
             ],
         ];
 
-        $idor = Session::getNewIDORToken(Reminder::class);
-        $twig_params['cards'][] = [
-            'itemtype'  => Reminder::class,
-            'widget'    => 'central_list',
-            'params'    => [
-                '_idor_token'  => $idor,
-            ],
-        ];
+        if (Reminder::canView()) {
+            $idor = Session::getNewIDORToken(Reminder::class);
+            $twig_params['cards'][] = [
+                'itemtype'  => Reminder::class,
+                'widget'    => 'central_list',
+                'params'    => [
+                    '_idor_token'  => $idor,
+                ],
+            ];
+        }
 
-        if (Session::haveRight("reminder_public", READ)) {
+        if (Session::haveRight(Reminder::$rightname, READ)) {
             $idor = Session::getNewIDORToken(Reminder::class, [
                 'personal' => 'false',
             ]);
@@ -338,7 +353,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight("project", Project::READMY)) {
+        if (Session::haveRight(Project::$rightname, Project::READMY)) {
             $idor = Session::getNewIDORToken(Project::class);
 
             $twig_params['cards'][] = [
@@ -351,7 +366,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+        if (Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)) {
             $idor = Session::getNewIDORToken(ProjectTask::class);
 
             $twig_params['cards'][] = [
@@ -417,12 +432,15 @@ class Central extends CommonGLPI
      */
     public static function showGroupView()
     {
+        if (!self::canViewGroupView()) {
+            return;
+        }
 
-        $showticket = Session::haveRightsOr("ticket", [Ticket::READALL, Ticket::READASSIGN]);
+        $showticket = Session::haveRightsOr(Ticket::$rightname, [Ticket::READALL, Ticket::READASSIGN]);
 
-        $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        $showproblem = Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY]);
 
-        $showchange = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        $showchange = Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY]);
 
         $lists = [];
 
@@ -436,7 +454,7 @@ class Central extends CommonGLPI
                 'status'    => 'todo',
             ];
         }
-        if (Session::haveRight('ticket', Ticket::READGROUP)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'waiting',
@@ -464,7 +482,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight('ticket', Ticket::READGROUP)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'observed',
@@ -503,7 +521,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight("project", Project::READMY)) {
+        if (Session::haveRight(Project::$rightname, Project::READMY)) {
             $idor = Session::getNewIDORToken(Project::class);
             $twig_params['cards'][] = [
                 'itemtype'  => Project::class,
@@ -514,7 +532,7 @@ class Central extends CommonGLPI
                 ],
             ];
         }
-        if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+        if (Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)) {
             $idor = Session::getNewIDORToken(ProjectTask::class);
             $twig_params['cards'][] = [
                 'itemtype'  => ProjectTask::class,
@@ -527,6 +545,19 @@ class Central extends CommonGLPI
         }
 
         TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
+    }
+
+    private static function canViewGroupView(): bool
+    {
+        if (empty($_SESSION['glpigroups'])) {
+            return false;
+        }
+
+        return Session::haveRightsOr(Ticket::$rightname, [Ticket::READALL, Ticket::READASSIGN, Ticket::READGROUP])
+            || Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY])
+            || Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY])
+            || Session::haveRight(Project::$rightname, Project::READMY)
+            || Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY);
     }
 
     private static function getMessages(): array
@@ -546,7 +577,7 @@ class Central extends CommonGLPI
              . '</a>';
         }
 
-        if (Session::haveRight("config", UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             $logins = User::checkDefaultPasswords();
             $user   = new User();
             if (!empty($logins)) {
@@ -649,6 +680,44 @@ class Central extends CommonGLPI
                     foreach ($requirement->getValidationMessages() as $message) {
                         $messages['warnings'][] = htmlescape($message);
                     }
+                }
+            }
+
+            // Re-authentication on sensitive actions can be turned off by a constant.
+            // It lowers the security level of the whole instance: warn the administrators.
+            if (GLPI_DISABLE_REAUTH === true) {
+                $messages['warnings'][] = sprintf(
+                    __s('Re-authentication on sensitive actions is disabled by the "%s" constant.'),
+                    'GLPI_DISABLE_REAUTH'
+                ) . ' ' . __s('Remove it from your configuration to restore the expected security level.');
+            }
+
+            // POP protocol is no longer supported, mails receivers and authentication servers using it are disabled.
+            $pop_itemtypes = [
+                MailCollector::class => 'host',
+                AuthMail::class      => 'connect_string',
+            ];
+            foreach ($pop_itemtypes as $itemtype => $connect_string_field) {
+                $iterator = $DB->request([
+                    'SELECT' => ['id', 'name', $connect_string_field],
+                    'FROM'   => $itemtype::getTable(),
+                    'WHERE'  => [
+                        $connect_string_field => ['LIKE', '%/pop%'],
+                    ],
+                ]);
+                foreach ($iterator as $data) {
+                    if (!Toolbox::isPopMailServerConnectString((string) $data[$connect_string_field])) {
+                        continue;
+                    }
+                    $link = '<a href="' . htmlescape($itemtype::getFormURLWithID($data['id'])) . '">'
+                        . htmlescape($data['name'])
+                        . '</a>';
+                    $messages['warnings'][] = sprintf(
+                        $itemtype === MailCollector::class
+                            ? __s('The "%s" mails receiver uses the POP protocol, which is no longer supported. It has been disabled, please reconfigure it to use the IMAP protocol.')
+                            : __s('The "%s" mail authentication server uses the POP protocol, which is no longer supported. It has been disabled, please reconfigure it to use the IMAP protocol.'),
+                        $link
+                    );
                 }
             }
 

@@ -70,6 +70,8 @@ window.GLPI.Dashboard = {
  * @property {string|null} [token] Token
  * @property {number|null} [entities_id] Entities ID
  * @property {number|boolean|null} [is_recursive] Recursive
+ * @property {number|null} [profiles_id] Profile ID of the user who shared the dashboard
+ * @property {number|null} [users_id] User ID of the user who shared the dashboard
  * @property {{}[]} [all_cards] All cards
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
@@ -103,6 +105,7 @@ class GLPIDashboard {
         this.cache_key = "";
         this.filters = "{}";
         this.filters_selector = "";
+        this._filters_cache = null;
 
         GridStack.renderCB = (el, w) => {
             el.parentElement.innerHTML = w.content;
@@ -121,6 +124,8 @@ class GLPIDashboard {
             token:       null,
             entities_id: null,
             is_recursive:null,
+            profiles_id: null,
+            users_id:    null,
             ajax_cards:  true,
             all_cards:   [],
             context:     "core"
@@ -131,11 +136,13 @@ class GLPIDashboard {
         this.elem_id      = "#dashboard-" + this.rand;
         this.element      = $(this.elem_id);
         this.elem_dom     = this.element[0];
-        this.current_name = $(`${this.elem_id} .dashboard-select`).val() || options.current;
+        this.current_name = $(`${this.elem_id} .dashboard_select`).val() || options.current;
         this.embed        = options.embed;
         this.token        = options.token;
         this.entities_id  = options.entities_id;
         this.is_recursive = options.is_recursive;
+        this.profiles_id  = options.profiles_id;
+        this.users_id     = options.users_id;
         this.ajax_cards   = options.ajax_cards;
         this.all_cards    = options.all_cards;
         this.all_widgets  = options.all_widgets;
@@ -157,13 +164,36 @@ class GLPIDashboard {
             float: true, // widget can be placed anywhere on the grid, not only on top
             animate: false, // as we don't move widget automatically, we don't need animation
             draggable: { // override jquery ui draggable options
-                'cancel': 'textarea' // avoid draggable on some child elements
+                'cancel': 'textarea', // avoid draggable on some child elements
+                // GridStack auto-scrolls as long as the dragged card is clipped by the viewport, not when the cursor
+                // nears an edge: dragging a card whose top is scrolled out scrolls the page up to the top.
+                'scroll': false,
             },
             // columnOpts is intentionally NOT used: GridStack v12 triggers GridStackEngine._fixCollisions
             // during the column change, which causes infinite recursion (moveNode <-> _fixCollisions)
             // when float:true is enabled. Mobile layout is managed manually via this.switchColumnLayout().
         };
         this.grid = GridStack.init(gridstack_options, `#grid-stack-${options.rand}`);
+
+        // ECharts keeps the size it had when it was initialized: resize the charts with their card
+        // (browser zoom, window or sidebar resized, card resized in edit mode)
+        this.cards_observer = new ResizeObserver((entries) => {
+            entries.forEach((entry) => {
+                entry.target.querySelectorAll('[_echarts_instance_]').forEach((chart_el) => {
+                    window.echarts?.getInstanceByDom(chart_el)?.resize();
+                });
+            });
+        });
+        this.grid.on('added', (event, items) => {
+            items.forEach((item) => {
+                this.cards_observer.observe(item.el);
+            });
+        });
+        this.grid.on('removed', (event, items) => {
+            items.forEach((item) => {
+                this.cards_observer.unobserve(item.el);
+            });
+        });
 
         // set grid in static to prevent edition (unless user click on edit button)
         // previously in option, but current version of gridstack has a bug with one column mode (responsive)
@@ -438,7 +468,7 @@ class GLPIDashboard {
             const filters = this.getFiltersFromDB();
             delete filters[filter_id];
             this.setFiltersInDB(filters);
-            this.refreshCardsImpactedByFilter(filter_id);
+            this.refreshCardsImpactedByFilter(filter_id, filters);
         });
 
         // save new or existing widget (submit form)
@@ -734,6 +764,8 @@ class GLPIDashboard {
             data.token        = this.token;
             data.entities_id  = this.entities_id;
             data.is_recursive = this.is_recursive;
+            data.profiles_id  = this.profiles_id;
+            data.users_id     = this.users_id;
         }
 
         $.get({
@@ -775,20 +807,22 @@ class GLPIDashboard {
         // store current filter in localStorage
         const filters = this.getFiltersFromDB();
         filters[filter_id] = value;
+
+        // persist (async, no need to wait: the refresh below carries the filters)
         this.setFiltersInDB(filters);
 
         // refresh sortable
         sortable(this.filters_selector, 'reload');
 
-        // refresh all card impacted by the changed filter
-        this.refreshCardsImpactedByFilter(filter_id);
+        // we directly apply the filters we already have in memory. no more re-reading from the server, no more waiting
+        this.refreshCardsImpactedByFilter(filter_id, filters);
     }
 
-    refreshCardsImpactedByFilter(filter_id) {
+    refreshCardsImpactedByFilter(filter_id, filters) {
         $('.dashboard .card.filter-'+filter_id).each((i, elem) => {
             const gridstack_item = $(elem).closest(".grid-stack-item");
             const card_id = gridstack_item.attr('gs-id');
-            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`);
+            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`, filters);
         });
     }
 
@@ -1131,10 +1165,11 @@ class GLPIDashboard {
             .trigger('change');
     }
 
-    getCardsAjax(specific_one) {
+    getCardsAjax(specific_one, filters) {
         specific_one = specific_one || "";
 
-        const filters = this.getFiltersFromDB();
+        // Callers that already know the filters can pass them in to avoid a redundant synch round-trip to the server
+        filters = filters || this.getFiltersFromDB();
         const force = (specific_one.length > 0 ? 1 : 0);
 
         const requested_cards = [];
@@ -1188,6 +1223,8 @@ class GLPIDashboard {
                     data.token        = this.token;
                     data.entities_id  = this.entities_id;
                     data.is_recursive = this.is_recursive;
+                    data.profiles_id  = this.profiles_id;
+                    data.users_id     = this.users_id;
                 }
 
                 promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
@@ -1196,7 +1233,7 @@ class GLPIDashboard {
                     this.fitNumbers(card);
                     this.animateNumbers(card);
                 }, () => {
-                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                 }));
             });
 
@@ -1215,6 +1252,8 @@ class GLPIDashboard {
                 data.token        = this.token;
                 data.entities_id  = this.entities_id;
                 data.is_recursive = this.is_recursive;
+                data.profiles_id  = this.profiles_id;
+                data.users_id     = this.users_id;
             }
 
             return $.ajax({
@@ -1236,13 +1275,13 @@ class GLPIDashboard {
                         }
                     });
                     if (!has_result) {
-                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                     }
                 });
             }, () => {
                 $.each(requested_cards, (i2, crd) => {
                     const card = crd.card_el;
-                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                 });
             });
         }
@@ -1256,7 +1295,8 @@ class GLPIDashboard {
             return;
         }
 
-        const filters = this.getFiltersFromDB();
+        // copy: avoid mutating the cached filters used by later ajax calls
+        const filters = { ...this.getFiltersFromDB() };
 
         // replace empty array by empty string to avoid jquery remove the corresponding key
         // when sending ajax query
@@ -1310,6 +1350,12 @@ class GLPIDashboard {
             return [];
         }
 
+        if (this._filters_cache !== null) {
+            // Avoid a synchronous round trip to the server on every call, several of which
+            // happen on a single dashboard load (init, refresh, filter changes...).
+            return this._filters_cache;
+        }
+
         let filters;
         $.ajax({
             method: 'GET',
@@ -1324,7 +1370,9 @@ class GLPIDashboard {
             }
         });
 
-        return filters || {};
+        this._filters_cache = filters || {};
+
+        return this._filters_cache;
     }
 
     /**
@@ -1337,7 +1385,10 @@ class GLPIDashboard {
         if (this.current_name.length > 0) {
             filters[this.current_name] = sub_filters;
         }
-        $.ajax({
+
+        this._filters_cache = sub_filters;
+
+        return $.ajax({
             method: 'POST',
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             data: {
@@ -1362,6 +1413,9 @@ class GLPIDashboard {
         }
 
         select.addEventListener('change', (event) => {
+            if (event.target.selectedIndex < 0) {
+                return;
+            }
             const tempSelect = document.createElement('select');
             const tempOption = document.createElement('option');
             tempOption.textContent = event.target.options[event.target.selectedIndex].text;

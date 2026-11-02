@@ -47,7 +47,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public static ?string $items_id_1       = 'notifications_id';
     public static ?string $itemtype_2 = NotificationTemplate::class;
     public static ?string $items_id_2       = 'notificationtemplates_id';
-    public static bool $mustBeAttached_2 = false; // Mandatory to display creation form
 
     public bool $no_form_page    = false;
     protected bool $displaylist  = false;
@@ -163,7 +162,7 @@ TWIG, $twig_params);
 
             $tpl_link = $tpl->getLink();
             if (empty($tpl_link)) {
-                $tpl_link = "<i class='ti ti-alert-triangle red'></i>
+                $tpl_link = "<i class='ti ti-alert-triangle red' aria-hidden='true'></i>
                         <a href='" . htmlescape($notiftpl->getLinkUrl()) . "'>"
                          . __s("No template selected")
                       . "</a>";
@@ -316,7 +315,7 @@ TWIG, $twig_params);
     #[Override]
     public function showForm($ID, array $options = [])
     {
-        if (!Session::haveRight("notification", UPDATE)) {
+        if (!Session::haveRight(Notification::$rightname, UPDATE)) {
             return false;
         }
 
@@ -325,7 +324,7 @@ TWIG, $twig_params);
             $this->check($ID, READ);
             $notif->getFromDB($this->fields['notifications_id']);
         } else {
-            $this->check(-1, CREATE, $options);
+            $this->checkGlobal(CREATE);
             $notif->getFromDB($options['notifications_id']);
         }
 

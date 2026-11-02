@@ -39,6 +39,7 @@ use CronTask;
 use Glpi\Console\AbstractCommand;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Event;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -98,15 +99,15 @@ class UnlockCommand extends AbstractCommand
         $tasks = $input->getOption('task');
 
         if (null !== $cycle) {
-            $delay = $cycle . ' * ' . $this->db->quoteName('frequency');
+            $delay = $cycle . ' * ' . $this->getDb()->quoteName('frequency');
         }
 
-        $task_iterator = $this->db->request(
+        $task_iterator = $this->getDb()->request(
             [
                 'SELECT' => [
                     'id',
                     QueryFunction::concat(
-                        params: ['itemtype', new QueryExpression($this->db::quoteValue('::')), 'name'],
+                        params: [new QueryIdentifier('itemtype'), new QueryExpression($this->getDb()::quoteValue('::')), new QueryIdentifier('name')],
                         alias: 'task'
                     ),
                 ],
@@ -114,7 +115,7 @@ class UnlockCommand extends AbstractCommand
                 'WHERE'  => [
                     'state' => CronTask::STATE_RUNNING,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('lastrun') . " + $delay"
+                        QueryFunction::unixTimestamp(new QueryIdentifier('lastrun')) . " + $delay"
                         . " < "
                         . QueryFunction::unixTimestamp()
                     ),

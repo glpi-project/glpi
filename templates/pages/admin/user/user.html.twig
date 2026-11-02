@@ -63,7 +63,11 @@
                                 <input type="hidden" name="id" value="{{ item.getID() }}" />
                             {% endif %}
                             {% if (item.isNewItem() or internal_auth) and not is_preference_form %}
-                                {{ fields.textField('name', item.fields['name'], __('Login')) }}
+                                {{ fields.textField('name', item.fields['name'], __('Login'), {
+                                    additional_attributes: {
+                                        autocomplete: 'off'
+                                    }
+                                }) }}
                             {% else %}
                                 {% set login_field %}
                                     <span class="fw-bold">{{ item.fields['name'] }}</span>
@@ -92,10 +96,16 @@
                             {% endif %}
 
                             {{ fields.textField('realname', item.fields['realname'], __('Surname'), {
-                                readonly: external_auth,
+                                readonly: identity_readonly_fields.realname,
+                                additional_attributes: is_preference_form ? {autocomplete: 'family-name'} : {},
                             }) }}
                             {{ fields.textField('firstname', item.fields['firstname'], __('First name'), {
-                                readonly: external_auth,
+                                readonly: identity_readonly_fields.firstname,
+                                additional_attributes: is_preference_form ? {autocomplete: 'given-name'} : {},
+                            }) }}
+                            {{ fields.textField('middlename', item.fields['middlename'], __('Middle name / Patronymic'), {
+                                readonly: identity_readonly_fields.middlename,
+                                additional_attributes: is_preference_form ? {autocomplete: 'additional-name'} : {},
                             }) }}
 
                             {% if use_timezones %}
@@ -106,6 +116,13 @@
                             {% elseif has_profile_right('config', constant('READ')) %}
                                 {% set tz_not_config = __('Timezone usage has not been activated.') ~ ' ' ~ __('Run the "%1$s" command to activate it.')|format('php bin/console database:enable_timezones') %}
                                 {{ fields.htmlField('', tz_not_config|e, __('Timezone'), field_options) }}
+                            {% endif %}
+
+                            {% if item.isNewItem() and not is_preference_form %}
+                                {{ fields.dropdownArrayField('language', '', call('Dropdown::getLanguages'), __('Language'), field_options|merge({
+                                    display_emptychoice: true,
+                                    emptylabel: __('Use server configuration'),
+                                })) }}
                             {% endif %}
 
                             {% if not is_preference_form %}
@@ -254,10 +271,16 @@
                                 {{ call('UserEmail::showAddEmailButton', [item]) }}
                             {% endset %}
                             {{ fields.htmlField('_useremails', emails_field, _n('Email', 'Emails', get_plural_number())) }}
-                            {{ fields.textField('phone', item.fields['phone'], 'Phone'|itemtype_name(1)) }}
-                            {{ fields.textField('mobile', item.fields['mobile'], __('Mobile phone')) }}
+                            {{ fields.textField('phone', item.fields['phone'], 'Phone'|itemtype_name(1), {
+                                additional_attributes: is_preference_form ? {autocomplete: 'tel'} : {},
+                            }) }}
+                            {{ fields.textField('mobile', item.fields['mobile'], __('Mobile phone'), {
+                                additional_attributes: is_preference_form ? {autocomplete: 'mobile tel'} : {},
+                            }) }}
                             {% if not simple_form %}
-                                {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2')) }}
+                                {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2'), {
+                                    additional_attributes: is_preference_form ? {autocomplete: 'tel'} : {},
+                                }) }}
                             {% endif %}
                             </div>
 
@@ -277,7 +300,7 @@
                                     {% set change_pw_field %}
                                         {% if is_preference_form %}
                                             <a role="button" class="btn btn-outline-secondary btn-sm" href="{{ path('/front/updatepassword.php') }}">
-                                                <i class="ti ti-lock"></i>
+                                                <i class="ti ti-lock" aria-hidden="true"></i>
                                                 {{ __('Change password') }}
                                             </a>
                                         {% else %}
@@ -299,7 +322,7 @@
                                                 data-bs-target="#modal_password_{{ rand_field }}"
                                                 aria-label="{{ __('Change password') }}"
                                             >
-                                                <i class="ti ti-lock"></i>
+                                                <i class="ti ti-lock" aria-hidden="true"></i>
                                                 {{ __('Change password') }}
                                             </button>
                                             <div class="text-warning d-none" data-password-change-pending>
@@ -344,7 +367,7 @@
             {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
             <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                 <button class="btn btn-primary me-2" type="submit" name="update" value="1">
-                    <i class="ti ti-device-floppy"></i>
+                    <i class="ti ti-device-floppy" aria-hidden="true"></i>
                     <span>{{ _x('button', 'Save') }}</span>
                 </button>
             </div>

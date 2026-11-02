@@ -59,7 +59,7 @@
                           data-bs-toggle="tooltip"
                           title="{{ breadcrumb_item['location']['completename'] }}"
                           style="max-width: 100px;">
-                        <i class="{{ call('Location::getIcon') }}"></i>
+                        <i class="{{ call('Location::getIcon') }}" aria-hidden="true"></i>
                         {% if breadcrumb_item['location']['locations_id'] == previous_location_id %}
                            {% if previous_location_id is not null %}
                               &gt;

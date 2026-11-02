@@ -37,7 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-Session::checkRight("group", READ);
+$group = new Group();
+$group->checkGlobal(READ);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";
@@ -100,6 +101,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } elseif (isset($_GET['_in_modal'])) {
+    $group->check($_GET["id"], READ);
     Html::popHeader(Group::getTypeName(Session::getPluralNumber()), in_modal: true);
     $group->showForm($_GET["id"]);
     Html::popFooter();
@@ -117,6 +119,7 @@ if (isset($_POST["add"])) {
     );
     $group->redirectToList();
 } else {
+    // Right and re-authentication checks are performed inside displayFullPageForItem().
     $menus = ["admin", "group"];
     Group::displayFullPageForItem($_GET["id"], $menus, [
         'formoptions'  => "data-track-changes=true",

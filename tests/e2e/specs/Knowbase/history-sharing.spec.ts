@@ -46,9 +46,9 @@ test('Enabling public sharing appears in the history', async ({ page, profile, a
     });
 
     await kb.goto(id);
-    const modal = await kb.doOpenSharingTab();
-    await kb.doCreateSharingLink(modal);
-    await expect(modal.getByRole('checkbox', { name: 'Link 1' })).toBeChecked();
+    await kb.openSharePopover();
+    await kb.publishSwitch().check();
+    await expect(kb.shareLink()).toBeVisible();
 
     await kb.goto(id);
     await kb.doOpenHistoryPanel();
@@ -66,38 +66,15 @@ test('Disabling public sharing appears in the history', async ({ page, profile, 
     });
 
     await kb.goto(id);
-    const modal = await kb.doOpenSharingTab();
-    await kb.doCreateSharingLink(modal);
+    await kb.openSharePopover();
+    await kb.publishSwitch().check();
+    await expect(kb.shareLink()).toBeVisible();
 
-    const toggle = modal.getByRole('checkbox', { name: 'Link 1' });
-    await expect(toggle).toBeChecked();
-    await toggle.click();
-    await expect(toggle).not.toBeChecked();
+    await kb.publishSwitch().uncheck();
+    await expect(kb.shareLink()).not.toBeAttached();
 
     await kb.goto(id);
     await kb.doOpenHistoryPanel();
     await expect(kb.getHistoryEventByText('Sharing enabled')).toBeVisible();
     await expect(kb.getHistoryEventByText('Sharing disabled')).toBeVisible();
-});
-
-test('Creating a second active link does not duplicate the enable event', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const id = await api.createItem('KnowbaseItem', {
-        name: `KB sharing history second link - ${crypto.randomUUID()}`,
-        entities_id: getWorkerEntityId(),
-        answer: 'Content for history-sharing second-link',
-    });
-
-    await kb.goto(id);
-    const modal = await kb.doOpenSharingTab();
-    await kb.doCreateSharingLink(modal);
-    await kb.doCreateSharingLink(modal);
-    await expect(modal.getByRole('checkbox')).toHaveCount(2);
-
-    await kb.goto(id);
-    await kb.doOpenHistoryPanel();
-    await expect(kb.getHistoryEventByText('Sharing enabled')).toHaveCount(1);
-    await expect(kb.getHistoryEventByText('Sharing disabled')).toHaveCount(0);
 });

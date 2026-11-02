@@ -38,7 +38,7 @@
       <input type="file" name="xml_file">
       {{ inputs.hidden('action', 'preview_import') }}
       {% set import_label %}
-         <i class="ti ti-upload"></i>
+         <i class="ti ti-upload" aria-hidden="true"></i>
          {{ _x('button', 'Import') }}
       {% endset %}
       {{ inputs.submit('import', import_label, 1) }}

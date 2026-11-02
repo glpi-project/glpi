@@ -207,7 +207,7 @@ export class DocumentLinkController
         this.#listContainer.innerHTML = Array.from(this.#selectedDocuments.values())
             .map((doc) => `
                 <div class="file-uploader-item d-flex align-items-center p-2 border rounded mb-2" role="listitem">
-                    <i class="ti ti-file-symlink me-2 text-muted"></i>
+                    <i class="ti ti-file-symlink me-2 text-muted" aria-hidden="true"></i>
                     <div class="flex-grow-1 min-width-0">
                         <div class="fw-medium text-truncate">${_.escape(doc.text)}</div>
                     </div>
@@ -215,7 +215,7 @@ export class DocumentLinkController
                             class="btn btn-sm btn-ghost-danger file-uploader-remove ms-2"
                             data-glpi-kb-link-remove="${_.escape(doc.id)}"
                             title="${__('Remove')}">
-                        <i class="ti ti-x"></i>
+                        <i class="ti ti-x" aria-hidden="true"></i>
                     </button>
                 </div>
             `).join('');

@@ -55,6 +55,12 @@ class UserEmail extends CommonDBChild
      */
     private static int $display_index = 0;
 
+    /**
+     * Whether the e-mail inputs are rendered on the current user's own profile.
+     * When true, editable inputs expose an `autocomplete="email"` hint (RGAA 11.13).
+     */
+    private static bool $render_for_current_user = false;
+
 
     public static function getTypeName($nb = 0)
     {
@@ -189,10 +195,12 @@ class UserEmail extends CommonDBChild
         // only appended (no client-side removal); revisit if a remove control is added.
         $position_expr = "'+(document.querySelectorAll('[name^=" . $field_name . "]').length + 1)+'";
 
+        $autocomplete = self::$render_for_current_user ? " autocomplete='email'" : "";
+
         $html = "<div class='d-flex' role='group' aria-label='" . _sn('Email', 'Emails', 1) . "'>"
             . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . htmlescape(sprintf(__('Set %s email as default'), '__LABEL_POS__')) . "'>"
             . "&nbsp;"
-            . "<input type='text' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . htmlescape(sprintf(__('Email address %s'), '__LABEL_POS__')) . "'>"
+            . "<input type='text' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'$autocomplete aria-label='" . htmlescape(sprintf(__('Email address %s'), '__LABEL_POS__')) . "'>"
             . "</div>";
 
         // The label placeholders are replaced after jsescape() so the counting expression
@@ -239,7 +247,8 @@ class UserEmail extends CommonDBChild
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
             $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
         } else {
-            $result .= "<input type='text' class='form-control' name='$field_name' value='$value' aria-label='" . htmlescape(sprintf(__('Email address %s'), $position)) . "'>";
+            $autocomplete = self::$render_for_current_user ? " autocomplete='email'" : "";
+            $result .= "<input type='text' class='form-control' name='$field_name' value='$value'$autocomplete aria-label='" . htmlescape(sprintf(__('Email address %s'), $position)) . "'>";
         }
         $result .= "</div>";
 
@@ -281,7 +290,15 @@ class UserEmail extends CommonDBChild
         }
 
         self::$display_index = 0; // restart the per-render numbering used for aria-labels
-        parent::showChildsForItemForm($user, '_useremails', $canedit);
+
+        // Scoped to this render (reset below) so no later caller inherits a stale state.
+        self::$render_for_current_user = $users_id == Session::getLoginUserID();
+
+        try {
+            parent::showChildsForItemForm($user, '_useremails', $canedit);
+        } finally {
+            self::$render_for_current_user = false;
+        }
     }
 
 
@@ -308,7 +325,14 @@ class UserEmail extends CommonDBChild
             }
         }
 
-        parent::showAddChildButtonForItemForm($user, '_useremails', $canedit);
+        // Scoped to this render (reset below) so no later caller inherits a stale state.
+        self::$render_for_current_user = $users_id == Session::getLoginUserID();
+
+        try {
+            parent::showAddChildButtonForItemForm($user, '_useremails', $canedit);
+        } finally {
+            self::$render_for_current_user = false;
+        }
     }
 
 

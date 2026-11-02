@@ -5429,25 +5429,25 @@
                         "type": "string",
                         "enum": {
                             "0": "bigNumber",
-                            "58": "summaryNumbers",
-                            "59": "multipleNumber",
-                            "60": "pie",
-                            "61": "donut",
-                            "62": "halfpie",
-                            "63": "halfdonut",
-                            "64": "bar",
-                            "65": "hbar",
-                            "710": "searchShowList",
-                            "727": "line",
-                            "728": "area",
-                            "730": "lines",
-                            "731": "areas",
-                            "732": "bars",
-                            "733": "stackedbars",
-                            "746": "hBars",
-                            "747": "stackedHBars",
-                            "830": "articleList",
-                            "831": "markdown"
+                            "59": "summaryNumbers",
+                            "60": "multipleNumber",
+                            "61": "pie",
+                            "62": "donut",
+                            "63": "halfpie",
+                            "64": "halfdonut",
+                            "65": "bar",
+                            "66": "hbar",
+                            "703": "searchShowList",
+                            "720": "line",
+                            "721": "area",
+                            "723": "lines",
+                            "724": "areas",
+                            "725": "bars",
+                            "726": "stackedbars",
+                            "731": "hBars",
+                            "732": "stackedHBars",
+                            "851": "articleList",
+                            "852": "markdown"
                         }
                     }
                 },
@@ -5467,15 +5467,19 @@
                         "enum": [
                             "dates",
                             "dates_mod",
+                            "entity",
                             "itilcategory",
                             "location",
                             "manufacturer",
                             "requesttype",
+                            "sla",
                             "state",
                             "tickettype",
                             "group_requester",
                             "group_tech",
-                            "user_tech"
+                            "user_tech",
+                            "user_assigned",
+                            "ticketstatus"
                         ]
                     }
                 }
@@ -9736,7 +9740,7 @@
                 },
                 "knowbase_category": {
                     "type": "object",
-                    "x-itemtype": "KnowbaseItemCategory",
+                    "x-itemtype": "KnowbaseItem",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -10915,7 +10919,6 @@
             }
         },
         "KBCategory": {
-            "x-itemtype": "KnowbaseItemCategory",
             "type": "object",
             "properties": {
                 "id": {
@@ -10932,7 +10935,8 @@
                     "readOnly": true
                 },
                 "comment": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 },
                 "entity": {
                     "type": "object",
@@ -10956,7 +10960,9 @@
                 },
                 "parent": {
                     "type": "object",
-                    "x-itemtype": "KnowbaseItemCategory",
+                    "nullable": true,
+                    "readOnly": true,
+                    "x-full-schema": "KBCategory",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -10966,8 +10972,7 @@
                             "type": "string",
                             "readOnly": true
                         }
-                    },
-                    "x-full-schema": "KBCategory"
+                    }
                 },
                 "level": {
                     "type": "integer",
@@ -12277,7 +12282,9 @@
                 "size": {
                     "type": "number",
                     "format": "float",
-                    "minimum": 0
+                    "minimum": 0,
+                    "maximum": 999.99,
+                    "multipleOf": 0.01
                 },
                 "has_microphone": {
                     "type": "boolean",
@@ -21244,6 +21251,23 @@
                                     "x-label": "Global dropdowns",
                                     "x-right-scope": "global"
                                 },
+                                "enclosure": {
+                                    "type": "integer",
+                                    "description": "Enclosures rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "enum": [
+                                        1,
+                                        2,
+                                        4,
+                                        8,
+                                        16,
+                                        256,
+                                        512,
+                                        1024,
+                                        2048
+                                    ],
+                                    "x-label": "Enclosures",
+                                    "x-right-scope": "entity"
+                                },
                                 "entity": {
                                     "type": "integer",
                                     "description": "Entities rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 1024: Read parameters\n- 2048: Update parameters",
@@ -21420,18 +21444,6 @@
                                         8192
                                     ],
                                     "x-label": "Knowledge base",
-                                    "x-right-scope": "entity"
-                                },
-                                "knowbasecategory": {
-                                    "type": "integer",
-                                    "description": "Knowledge base categories rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
-                                    "enum": [
-                                        1,
-                                        2,
-                                        4,
-                                        16
-                                    ],
-                                    "x-label": "Knowledge base categories",
                                     "x-right-scope": "entity"
                                 },
                                 "license": {
@@ -24361,7 +24373,8 @@
                 },
                 "ola_ttr": {
                     "type": "object",
-                    "x-itemtype": "OLA",
+                    "nullable": true,
+                    "x-full-schema": "OLA",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -24372,11 +24385,12 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "OLA"
+                    "readOnly": true
                 },
                 "ola_tto": {
                     "type": "object",
-                    "x-itemtype": "OLA",
+                    "nullable": true,
+                    "x-full-schema": "OLA",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -24387,7 +24401,7 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "OLA"
+                    "readOnly": true
                 },
                 "sla_level_ttr": {
                     "type": "object",
@@ -24406,7 +24420,8 @@
                 },
                 "ola_level_ttr": {
                     "type": "object",
-                    "x-itemtype": "OlaLevel",
+                    "nullable": true,
+                    "x-full-schema": "OLALevel",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -24417,7 +24432,7 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "OLALevel"
+                    "readOnly": true
                 },
                 "sla_waiting_duration": {
                     "type": "integer",
@@ -24429,21 +24444,23 @@
                 },
                 "ola_ttr_begin_date": {
                     "type": "string",
-                    "readOnly": true,
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "ola_tto_begin_date": {
                     "type": "string",
-                    "readOnly": true,
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "internal_resolution_date": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "internal_take_into_account_date": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "global_validation": {
                     "type": "integer",
@@ -25356,6 +25373,9 @@
                 "firstname": {
                     "type": "string"
                 },
+                "middlename": {
+                    "type": "string"
+                },
                 "phone": {
                     "type": "string"
                 },
@@ -25752,13 +25772,12 @@
                 "pdf_font": {
                     "type": "string",
                     "enum": [
-                        "aealarabiya",
-                        "aefurat",
                         "cid0cs",
                         "cid0ct",
                         "cid0jp",
                         "cid0kr",
                         "courier",
+                        "dejavumathtexgyre",
                         "dejavusans",
                         "dejavusanscondensed",
                         "dejavusansextralight",
@@ -25769,18 +25788,18 @@
                         "freesans",
                         "freeserif",
                         "helvetica",
-                        "hysmyeongjostdmedium",
-                        "kozgopromedium",
-                        "kozminproregular",
-                        "msungstdlight",
                         "pdfacourier",
                         "pdfahelvetica",
                         "pdfasymbol",
                         "pdfatimes",
                         "pdfazapfdingbats",
-                        "stsongstdlight",
                         "symbol",
                         "times",
+                        "unifont",
+                        "unifont_csur",
+                        "unifont_jp",
+                        "unifont_t",
+                        "unifont_upper",
                         "zapfdingbats"
                     ]
                 },

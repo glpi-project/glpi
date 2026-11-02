@@ -208,7 +208,7 @@ export class GlpiFormRendererController
 
                 // Find the input field within the question
                 let has_input_field = true;
-                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea');
+                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea:not(.select2-search__field)');
                 if (!inputFields.length) {
                     has_input_field = false;
                 }
@@ -279,6 +279,7 @@ export class GlpiFormRendererController
      */
     async #submitForm() {
         const submit = $(this.#target).find('button[data-glpi-form-renderer-action=submit]');
+        let is_redirecting = false;
 
         // Form will be sumitted using an AJAX request instead
         try {
@@ -311,6 +312,15 @@ export class GlpiFormRendererController
                 url: $(this.#target).prop("action"),
                 data: $(this.#target).serialize(),
             });
+
+            // Redirect to the created item if requested by the user preferences
+            if (response.redirect_url) {
+                // Keep actions disabled until the browser leaves the page to
+                // prevent another submission.
+                is_redirecting = true;
+                window.location.href = response.redirect_url;
+                return;
+            }
 
             // Show toast with link to answers set
             glpi_toast_info(
@@ -363,8 +373,10 @@ export class GlpiFormRendererController
 
             glpi_toast_error(errorMessage);
         } finally {
-            this.#enableActions();
-            submit.removeClass('btn-loading');
+            if (!is_redirecting) {
+                this.#enableActions();
+                submit.removeClass('btn-loading');
+            }
         }
     }
 
@@ -508,6 +520,15 @@ export class GlpiFormRendererController
         );
         if (submit_button !== null) {
             this.#applyVisibilityToItem(submit_button, results.form_visibility);
+        }
+
+        // Altcha widget must follow the same visibility as the submit button,
+        // as it has no purpose when the form cannot be submitted.
+        const altcha = container.querySelector(
+            '[data-glpi-form-renderer-altcha]'
+        );
+        if (altcha !== null) {
+            this.#applyVisibilityToItem(altcha, results.form_visibility);
         }
 
         // Apply sections visibility

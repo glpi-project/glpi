@@ -42,6 +42,7 @@ use CommonDBTM;
 use CommonDropdown;
 use Computer;
 use Dropdown;
+use Glpi\Asset\Asset;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\MainAsset\MainAsset;
@@ -280,10 +281,15 @@ abstract class InventoryAsset
                         }
                         $this->known_links[$known_key] = $new_id;
                     } elseif (preg_match('/^.+models_id/', $key)) {
+                        // Resolve concrete Model class for generic assets
+                        $model_itemtype = $key === 'assets_assetmodels_id' && $this->item instanceof Asset
+                            ? $this->item->getDefinition()->getAssetModelClassName()
+                            : getItemtypeForForeignKeyField($key);
+
                         // models that need manufacturer relation for dictionary import
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $new_id = Dropdown::importExternal(
-                            getItemtypeForForeignKeyField($key),
+                            $model_itemtype,
                             $value->$key ?? '',
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
@@ -299,6 +305,11 @@ abstract class InventoryAsset
                         }
                         $this->known_links[$known_key] = $new_id;
                     } elseif ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                        if ($key === 'assets_assettypes_id' && $this->item instanceof Asset) {
+                            // Resolve concrete Type class for generic assets
+                            $itemtype = $this->item->getDefinition()->getAssetTypeClassName();
+                        }
+
                         $foreignkey_itemtype[$key] = $itemtype;
 
                         $new_id = Dropdown::importExternal(

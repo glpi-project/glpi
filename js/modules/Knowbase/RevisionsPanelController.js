@@ -38,6 +38,8 @@ const current_version_selector = "[data-glpi-current-version]";
 const translation_revision_selector = "[data-glpi-translation-revision-id]";
 const revert_translation_selector = "[data-glpi-revert-translation-revision]";
 const current_translation_selector = "[data-glpi-current-translation-language]";
+const list_selector = "[data-glpi-revisions]";
+const load_more_selector = "[data-glpi-history-load-more]";
 
 export class GlpiKnowbaseRevisionsPanelController
 {
@@ -58,11 +60,19 @@ export class GlpiKnowbaseRevisionsPanelController
      */
     #activeRevisionId = null;
 
+    /**
+     * Watches the marker sitting at the end of the loaded events, to load the
+     * next page before the user reaches it.
+     * @type {IntersectionObserver|null}
+     */
+    #loadMoreObserver = null;
+
     constructor(container)
     {
         this.#container = container;
         this.#initClickListeners();
         this.#initStateSync();
+        this.#watchLoadMoreMarker();
     }
 
     #initStateSync()
@@ -77,7 +87,84 @@ export class GlpiKnowbaseRevisionsPanelController
         this.#container.addEventListener('glpi:kb:panel-loaded', () => {
             this.#activeRevisionId = null;
             this.#viewedLanguage = null;
+            this.#watchLoadMoreMarker();
         });
+    }
+
+    /**
+     * The history is loaded 50 events at a time.
+     * The server puts a marker after the last loaded event, which is watched
+     * here to append the next page as it comes into view.
+     */
+    #watchLoadMoreMarker()
+    {
+        // The panel content is replaced on each load, we must always reset the
+        // observer.
+        this.#loadMoreObserver?.disconnect();
+        this.#loadMoreObserver = null;
+
+        const list = this.#container.querySelector(list_selector);
+        const marker = list?.querySelector(load_more_selector);
+        if (!marker) {
+            return;
+        }
+
+        this.#loadMoreObserver = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        this.#loadNextPage(entry.target);
+                    }
+                }
+            },
+            // The list scrolls inside its own box, and the next page is
+            // loaded slightly before the marker is actually reached.
+            {root: list, rootMargin: '200px'}
+        );
+        this.#loadMoreObserver.observe(marker);
+    }
+
+    /**
+     * @param {HTMLElement} marker
+     */
+    async #loadNextPage(marker)
+    {
+        // Both the observer and a fast scroll may ask for the same page.
+        if (marker.dataset.glpiLoading !== undefined) {
+            return;
+        }
+        marker.dataset.glpiLoading = '';
+        this.#loadMoreObserver?.unobserve(marker);
+
+        const kbId = marker.dataset.glpiKbId;
+        const offset = marker.dataset.glpiHistoryNextOffset;
+
+        let page;
+        try {
+            const base_url = CFG_GLPI.root_doc;
+            const response = await fetch(
+                `${base_url}/Knowbase/${kbId}/HistoryPage/${offset}`,
+                {headers: {'X-Requested-With': 'XMLHttpRequest'}}
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to load the next history page');
+            }
+
+            page = await response.text();
+        } catch {
+            delete marker.dataset.glpiLoading;
+            marker.textContent = __("An unexpected error occurred.");
+            return;
+        }
+
+        // The page ends with the marker of the following one, if any.
+        marker.insertAdjacentHTML('beforebegin', page);
+        marker.remove();
+
+        this.#watchLoadMoreMarker();
+        // Newly loaded events may hold the revision being compared.
+        this.#updateHighlighting();
     }
 
     #initClickListeners()

@@ -87,7 +87,6 @@ class ManagementControllerTest extends HLAPITestCase
             $new_location = null;
             $new_items_id = null;
             $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use (&$new_location) {

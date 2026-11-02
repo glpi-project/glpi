@@ -41,18 +41,20 @@
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (isset($_POST['type'], $_POST['end'])) {
+if (isset($_POST['type'], $_POST['begin'])) {
+    $default_end = Reservation::getDefaultPeriodicityEnd((string) $_POST['begin'], (string) $_POST['type']);
+
     echo "<table style='width: 90%'>";
     switch ($_POST['type']) {
         case 'day':
             echo "<tr><td>" . __s('End date') . '</td><td>';
-            Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
+            Html::showDateField('periodicity[end]', ['value' => $default_end]);
             echo "</td></tr>";
             break;
 
         case 'week':
             echo "<tr><td>" . __s('End date') . '</td><td>';
-            Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
+            Html::showDateField('periodicity[end]', ['value' => $default_end]);
             echo "</td></tr></table>";
             echo "<table class='tab_glpi'>";
             echo "<tr class='center'><td>&nbsp;</td>";
@@ -85,7 +87,7 @@ if (isset($_POST['type'], $_POST['end'])) {
             Dropdown::showFromArray('periodicity[subtype]', $values);
             echo "</td></tr>";
             echo "<tr><td>" . __s('End date') . '</td><td>';
-            Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
+            Html::showDateField('periodicity[end]', ['value' => $default_end]);
             echo "</td></tr>";
     }
     echo '</table>';

@@ -39,7 +39,7 @@
                 {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
                     <form action="{{ path('index.php') }}" method="post">
                         <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-reload"></i>{{ __('Try again') }}
+                            <i class="ti ti-reload" aria-hidden="true"></i>{{ __('Try again') }}
                         </button>
                     </form>
                 {% endif %}
@@ -54,7 +54,7 @@
                                 {{ __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') }}
                             </p>
                             <button type="submit" name="continue" value="1" class="btn btn-primary">
-                                <i class="ti ti-check"></i>{{ _x('button', 'Upgrade') }}
+                                <i class="ti ti-check" aria-hidden="true"></i>{{ _x('button', 'Upgrade') }}
                             </button>
                         </form>
                     {% else %}

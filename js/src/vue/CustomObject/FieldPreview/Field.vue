@@ -28,15 +28,15 @@
             </div>
             <div v-if="is_active" class="col-auto btn-group shadow-none field-actions">
                 <button type="button" class="btn btn-ghost-secondary btn-sm edit-field" :title="__('Edit')">
-                    <i class="ti ti-pencil"></i>
+                    <i class="ti ti-pencil" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="btn btn-ghost-danger btn-sm hide-field" :title="__('Hide')">
-                    <i class="ti ti-eye-off"></i>
+                    <i class="ti ti-eye-off" aria-hidden="true"></i>
                 </button>
             </div>
             <div v-if="!is_active && customfields_id > 0" class="col-auto btn-group shadow-none field-actions">
                 <button type="button" class="btn btn-ghost-danger btn-sm purge-field" :title="_x('button', 'Delete permanently')">
-                    <i class="ti ti-trash"></i>
+                    <i class="ti ti-trash" aria-hidden="true"></i>
                 </button>
             </div>
         </div>

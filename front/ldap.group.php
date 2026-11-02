@@ -39,7 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 $group = new Group();
 $group->checkGlobal(UPDATE);
-Session::checkRight('user', User::UPDATEAUTHENT);
+Session::checkRight(User::$rightname, User::UPDATEAUTHENT);
 
 Html::header(__('LDAP directory link'), '', "admin", "group", "ldap");
 

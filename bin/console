@@ -73,6 +73,14 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
+   // Generate the TCPDF font assets. Since TCPDF 7.0, fonts are no longer
+   // bundled and must be generated from tecnickcom/tc-lib-pdf-font (see
+   // K_PATH_FONTS).
+   passthru('bash tools/build_fonts.sh', $exit_code);
+   if ($exit_code > 0) {
+      exit($exit_code);
+   }
+
 
    $npm_command = 'npm install --no-save';
    passthru($npm_command, $exit_code);

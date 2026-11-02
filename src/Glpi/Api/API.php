@@ -46,17 +46,19 @@ use Change;
 use CommonDBTM;
 use CommonDevice;
 use CommonITILObject;
-use Config;
 use Contract;
 use Document;
+use Document_Item;
 use Dropdown;
 use Entity;
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Config\ConfigContainer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Search\Provider\SQLProvider;
@@ -600,7 +602,10 @@ abstract class API
      */
     protected function getGlpiConfig()
     {
-        return ['cfg_glpi' => Config::getSafeConfig()];
+        /** @var ConfigContainer $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return ['cfg_glpi' => $CFG_GLPI->getSafeConfig()];
     }
 
 
@@ -914,6 +919,7 @@ abstract class API
                         'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
                     ];
                 }
+                $doc_criteria = [...$doc_criteria, ...Document_Item::getPrivacyRestrictionCriteria()];
                 $doc_iterator = $DB->request([
                     'SELECT'    => [
                         'glpi_documents_items.id AS assocID',
@@ -1009,8 +1015,12 @@ abstract class API
                     'glpi_changes_items.itemtype' => $itemtype,
                 ] + getEntitiesRestrictCriteria(Change::getTable());
                 $iterator = $DB->request($criteria);
+                $change = new Change();
                 foreach ($iterator as $data) {
-                    $fields['_changes'][] = $data;
+                    // Keep only the changes the user is allowed to see
+                    if ($change->getFromDB($data['id']) && $change->canViewItem()) {
+                        $fields['_changes'][] = $data;
+                    }
                 }
             }
         }
@@ -1600,7 +1610,8 @@ abstract class API
      *        Each criterion object must provide :
      *           - link: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
      *           - field: id of searchoptions.
-     *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan,
+     *                         lessthanorequal, morethanorequal, under, notunder].
      *           - value : value to search.
      *    - 'metacriteria' (optional): array of metacriterion object to filter search.
      *                                  Optional.
@@ -1610,7 +1621,8 @@ abstract class API
      *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
      *            - itemtype: second itemtype to link.
      *            - field: id of searchoptions.
-     *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan,
+     *                          lessthanorequal, morethanorequal, under, notunder].
      *            - value : value to search.
      *    - 'sort' :  id of searchoption to sort by (default 1). Optional.
      *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optional.
@@ -1800,6 +1812,10 @@ abstract class API
                     $tmp_fields = [$col_ref_field => $current_values];
                     if (array_key_exists('additionalfields', $col['searchopt'])) {
                         foreach ($col['searchopt']['additionalfields'] as $field_name) {
+                            // The search engine removes the `TABLE.` prefix from the column alias
+                            if (str_starts_with($field_name, 'TABLE.')) {
+                                $field_name = substr($field_name, strlen('TABLE.'));
+                            }
                             $field_value_key = 'ITEM_' . $col['itemtype'] . '_' . $col['id'] . '_' . $field_name;
                             $tmp_fields[$field_name] = $raw[$field_value_key];
                         }
@@ -3028,9 +3044,9 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                         // append network name
                         $concat_expr = QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                'ipadr.id',
+                                new QueryIdentifier('ipadr.id'),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                'ipadr.name',
+                                new QueryIdentifier('ipadr.name'),
                             ]),
                             separator: Search::LONGSEP,
                             alias: 'ipadresses'

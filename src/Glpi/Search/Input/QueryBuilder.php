@@ -105,11 +105,18 @@ final class QueryBuilder implements SearchInputInterface
         }
         $p['target'] = URL::sanitizeURL($p['target']);
 
+        // Virtual criteria are internal to the search engine (e.g. tree browse category filter)
+        // and must neither be displayed nor submitted back by the search form.
+        $p['criteria'] = array_filter(
+            $p['criteria'],
+            static fn($criterion) => !($criterion['virtual'] ?? false)
+        );
+
         // Itemtype name used in JS function names, etc
         $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);
         $linked = SearchEngine::getMetaItemtypeAvailable($itemtype);
 
-        $can_disablefilter = Session::haveRightsOr('search_config', [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
+        $can_disablefilter = Session::haveRightsOr(DisplayPreference::$rightname, [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
 
         $target_query  = parse_url($p['target'], PHP_URL_QUERY);
         $additional_params = [];
@@ -287,6 +294,8 @@ final class QueryBuilder implements SearchInputInterface
             case "notequals":
             case "morethan":
             case "lessthan":
+            case "morethanorequal":
+            case "lessthanorequal":
             case "under":
             case "notunder":
                 if (isset($searchopt['field'])) {
@@ -338,6 +347,7 @@ final class QueryBuilder implements SearchInputInterface
                     }
 
                     // Standard datatype usage
+                    $skip_value_to_select = false;
                     if (isset($searchopt['datatype'])) {
                         switch ($searchopt['datatype']) {
                             case "date":
@@ -345,13 +355,31 @@ final class QueryBuilder implements SearchInputInterface
                             case "datetime":
                                 $options2['relative_dates'] = true;
                                 break;
+
+                            case "count":
+                            case "mio":
+                            case "number":
+                            case "integer":
+                            case "decimal":
+                                if (
+                                    in_array(
+                                        $request['searchtype'],
+                                        ['morethan', 'lessthan', 'morethanorequal', 'lessthanorequal'],
+                                        true
+                                    )
+                                ) {
+                                    $skip_value_to_select = true;
+                                }
+                                break;
                         }
                     }
 
-                    $out = $item->getValueToSelect($searchopt, $inputname, $request['value'], $options2);
-                    if (strlen($out)) {
-                        echo $out;
-                        $display = true;
+                    if (!$skip_value_to_select) {
+                        $out = $item->getValueToSelect($searchopt, $inputname, $request['value'], $options2);
+                        if (strlen($out)) {
+                            echo $out;
+                            $display = true;
+                        }
                     }
 
                     //Could display be handled by a plugin ?
@@ -816,6 +844,10 @@ final class QueryBuilder implements SearchInputInterface
             && $usesession
         ) {
             foreach ($params as $key => $val) {
+                // 'reset' is one-shot, must not persist in session
+                if ($key === 'reset') {
+                    continue;
+                }
                 $_SESSION['glpisearch'][$itemtype][$key] = $val;
             }
         }
@@ -825,7 +857,7 @@ final class QueryBuilder implements SearchInputInterface
             if (!isset($params[$key])) {
                 if (
                     $usesession
-                    && ($key == 'is_deleted' || $key == 'as_map' || $key == 'browse' || $key === 'unpublished' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
+                    && ($key == 'is_deleted' || $key == 'as_map' || $key == 'browse' || $key === 'unpublished' || $key === 'sort' || $key === 'order' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
                     && isset($_SESSION['glpisearch'][$itemtype][$key])
                 ) {
                     $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
@@ -838,7 +870,7 @@ final class QueryBuilder implements SearchInputInterface
 
         if ($defaultfilter = DefaultFilter::getSearchCriteria($itemtype)) {
             $params['defaultfilter'] = $defaultfilter;
-            $can_disablefilter = Session::haveRightsOr('search_config', [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
+            $can_disablefilter = Session::haveRightsOr(DisplayPreference::$rightname, [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
             if (!isset($params['nodefault']) || !$can_disablefilter) {
                 $defaultfilter['search_criteria']['_hidden'] = true;
                 $params['criteria'][] = $defaultfilter['search_criteria'];

@@ -46,9 +46,9 @@
     {% endif %}
 
     {{ component('Alert', {
-        type: alert_type,
-        title: title,
-        message: _message,
+        color: alert_type ?: 'info',
+        heading: title,
+        content: _message,
         icon: icon,
         important: important,
     }) }}

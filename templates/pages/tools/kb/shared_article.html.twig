@@ -41,7 +41,7 @@
 {% block content_body %}
     <div class="card">
         <div class="card-body rich-text-content">
-            {{ content|safe_html }}
+            {{ content|enhanced_html({text_maxsize: 0, user_mentions: false}) }}
         </div>
     </div>
 {% endblock content_body %}

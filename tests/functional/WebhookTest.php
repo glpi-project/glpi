@@ -34,14 +34,23 @@
 
 namespace tests\units;
 
+use Change;
+use CommonITILActor;
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\Router;
 use Glpi\Search\CriteriaFilter;
-use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
+use ITILFollowup;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
+use Supplier;
+use Supplier_Ticket;
 use Ticket;
+use TicketTask;
+use TicketValidation;
+use User;
 use Webhook;
 
 use function Safe\json_encode;
@@ -270,6 +279,39 @@ JSON;
         }
     }
 
+    /**
+     * The schema resolution methods accept an API version so that the v3 work does not have to
+     * change their signatures. The filtering itself is not implemented yet, so passing a version
+     * must not change what they return today.
+     *
+     * The per-version memoization of getAPIItemtypeData() is deliberately not covered: under
+     * PHPUnit, Environment::shouldExpectResourcesToChange() is always true, so the static cache
+     * is bypassed on every call and its keying cannot be observed from a test.
+     */
+    public function testSchemaResolutionAcceptsAnAPIVersion()
+    {
+        $this->login();
+
+        $default = Webhook::getAPIItemtypeData();
+        $explicit = Webhook::getAPIItemtypeData(Router::API_VERSION);
+        $this->assertSame($default, $explicit);
+
+        $schema_default = Webhook::getAPISchemaBySupportedItemtype(\Computer::class);
+        $schema_explicit = Webhook::getAPISchemaBySupportedItemtype(\Computer::class, Router::API_VERSION);
+        // Schemas embed closures (rights checks) that are fresh instances on every call, so the
+        // exposed property names are compared rather than the raw structures.
+        $this->assertNotEmpty($schema_default['properties']);
+        $this->assertSame(
+            array_keys($schema_default['properties']),
+            array_keys($schema_explicit['properties'])
+        );
+
+        $suggestions_default = Webhook::getMonacoSuggestions(\Computer::class);
+        $suggestions_explicit = Webhook::getMonacoSuggestions(\Computer::class, Router::API_VERSION);
+        $this->assertNotEmpty($suggestions_default);
+        $this->assertSame($suggestions_default, $suggestions_explicit);
+    }
+
     public function testGetAPIPath()
     {
         $this->login();
@@ -444,6 +486,87 @@ JSON;
         );
     }
 
+    public function testWebhookFilterWithMetaCriteria(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: create one ticket assigned to a supplier and one ticket without supplier
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => 'Test supplier',
+            'entities_id' => $entity_id,
+        ]);
+        $ticket_with_supplier = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket with supplier',
+            'content'     => 'Ticket with supplier',
+            'entities_id' => $entity_id,
+        ]);
+        $this->createItem(Supplier_Ticket::class, [
+            'tickets_id'   => $ticket_with_supplier->getID(),
+            'suppliers_id' => $supplier->getID(),
+            'type'         => CommonITILActor::ASSIGN,
+        ]);
+        $ticket_without_supplier = $this->createItem(Ticket::class, [
+            'name'             => 'Ticket without supplier',
+            'content'          => 'Ticket without supplier',
+            'entities_id'      => $entity_id,
+            '_users_id_assign' => getItemByTypeName(User::class, 'tech', true),
+        ]);
+
+        // Arrange: setup a followup webhook filtered on the parent ticket supplier (meta criteria)
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype'        => Webhook::class,
+            'items_id'        => $webhook->getID(),
+            'search_itemtype' => ITILFollowup::class,
+            'search_criteria' => json_encode([
+                [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'meta'       => true,
+                    'field'      => '6', // Assigned to a supplier
+                    'searchtype' => 'equals',
+                    'value'      => $supplier->getID(),
+                ],
+            ]),
+        ], ['search_criteria']);
+
+        // Act: add a followup on the ticket without supplier
+        $base_count = $this->countQueuedRequestForWebhook($webhook);
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_without_supplier->getID(),
+            'content'  => 'Followup on ticket without supplier',
+        ]);
+
+        // Assert: the webhook must not be triggered
+        $this->assertEquals(
+            $base_count,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+
+        // Act: add a followup on the ticket with supplier
+        $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_with_supplier->getID(),
+            'content'  => 'Followup on ticket with supplier',
+        ]);
+
+        // Assert: the webhook must be triggered
+        $this->assertEquals(
+            $base_count + 1,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+    }
+
     private function countQueuedRequestForWebhook(Webhook $webhook): int
     {
         return countElementsInTable(QueuedWebhook::getTable(), [
@@ -528,5 +651,389 @@ JSON;
         $matching_itemtype = \Computer::class;
         $no_mismatch = $webhook->getID() && $matching_itemtype !== $webhook->fields['itemtype'];
         $this->assertFalse($no_mismatch, 'Correct itemtype should not trigger the mismatch guard');
+    }
+
+    /**
+     * Non-regression: a Self-Service user adding a followup must not produce a webhook error
+     * popup (Webhook::raise() catches exceptions and converts them to session messages).
+     */
+    public function testWebhookDoesNotErrorOnFollowupAddBySelfServiceUser(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'Test ticket',
+            'content'             => 'Test content',
+            'entities_id'         => $entity_id,
+            '_users_id_requester' => $selfservice_user->getID(),
+        ]);
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype'        => Webhook::class,
+            'items_id'        => $webhook->getID(),
+            'search_itemtype' => ITILFollowup::class,
+            'search_criteria' => json_encode([[
+                'link'       => 'AND',
+                'field'      => 4, // is_private
+                'searchtype' => 'equals',
+                'value'      => '0',
+            ]]),
+        ], ['search_criteria']);
+
+        $this->login($selfservice_user->fields['name']);
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        $followup    = new ITILFollowup();
+        $followup_id = $followup->add([
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'content'  => 'Test followup',
+        ]);
+
+        $this->assertGreaterThan(0, $followup_id);
+
+        $webhook_errors = array_filter(
+            $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? [],
+            static fn(string $msg) => stripos($msg, 'webhook') !== false
+        );
+        $this->assertEmpty($webhook_errors);
+    }
+
+    public function testParentItemResolvedForFixedParentChild(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        // TicketValidation is a CommonDBChild with a fixed parent (Ticket), so its payload carries
+        // tickets_id, not itemtype/items_id. The parent must still be resolved for the body.
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test validation webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketValidation::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for validation',
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName('User', TU_USER, true),
+        ]);
+
+        $webhooks = array_values(getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]));
+        $this->assertCount(1, $webhooks);
+        $body = json_decode($webhooks[0]['body'], true);
+        $this->assertIsArray($body);
+        $this->assertArrayHasKey('parent_item', $body);
+        $this->assertSame($ticket->getID(), $body['parent_item']['id']);
+    }
+
+    public function testParentItemResolvedWithoutParentReadRight(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test validation webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketValidation::class,
+            'event'               => 'new',
+            'is_active'           => 0,
+            'use_default_payload' => 1,
+        ]);
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for validation',
+            'entities_id' => $entity_id,
+        ]);
+        $validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName('User', TU_USER, true),
+        ]);
+
+        // The user raising the event (an approver for instance) may not be able to read the ticket.
+        // The parent must still be resolved, and never replaced by an API error body.
+        $saved_profile = $_SESSION['glpiactiveprofile'];
+        $_SESSION['glpiactiveprofile']['ticket'] = 0;
+        try {
+            $body = $webhook->getResultForPath(
+                $webhook->getApiPath($validation),
+                'new',
+                TicketValidation::class,
+                $validation->getID(),
+                true
+            );
+        } finally {
+            $_SESSION['glpiactiveprofile'] = $saved_profile;
+        }
+
+        $data = json_decode($body, true);
+        $this->assertIsArray($data);
+        $this->assertSame($ticket->getID(), $data['parent_item']['id'] ?? null);
+    }
+
+    public function testParentItemResolvedProperly(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        // Create webhook for new followups
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'Test ticket',
+            'entities_id' => $entity_id,
+            '_actors' => [
+                'observer' => [
+                    [
+                        'itemtype' => User::class,
+                        'items_id' => 2,
+                    ],
+                ],
+            ],
+        ]);
+
+        $change = $this->createItem(Change::class, [
+            'name' => 'Test change',
+            'entities_id' => $entity_id,
+            '_actors' => [
+                'observer' => [
+                    [
+                        'itemtype' => User::class,
+                        'items_id' => 3,
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->createItem(ITILFollowup::class, [
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'content'  => 'Test followup for ticket',
+        ]);
+
+        $this->createItem(ITILFollowup::class, [
+            'items_id' => $change->getID(),
+            'itemtype' => Change::class,
+            'content'  => 'Test followup for change',
+        ]);
+
+        $webhooks = array_values(getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]));
+        $this->assertCount(2, $webhooks);
+        $team_1 = json_decode($webhooks[0]['body'], true)['parent_item']['team'][0];
+        $team_2 = json_decode($webhooks[1]['body'], true)['parent_item']['team'][0];
+        $this->assertSame('glpi', $team_1['name']);
+        $this->assertSame('observer', $team_1['role']);
+        $this->assertSame('post-only', $team_2['name']);
+        $this->assertSame('observer', $team_2['role']);
+    }
+
+    public function testGetPinnableAPIVersions()
+    {
+        $pinnable = Webhook::getPinnableAPIVersions();
+
+        // v1 is routed to the legacy API and would never resolve a webhook path.
+        $this->assertArrayNotHasKey('1', $pinnable);
+        $this->assertArrayHasKey('2', $pinnable);
+        // Major 2 is not fully deprecated, so its label is the bare version.
+        $this->assertSame('2', $pinnable['2']);
+    }
+
+    public function testGetPinnedAPIVersion()
+    {
+        $this->login();
+        $webhook = new Webhook();
+
+        // Explicit value is kept.
+        $webhook->fields['pinned_version'] = '2';
+        $this->assertSame('2', $webhook->getPinnedAPIVersion());
+
+        // Empty value falls back to the oldest pinnable major, not to the latest one.
+        $webhook->fields['pinned_version'] = '';
+        $this->assertSame('2', $webhook->getPinnedAPIVersion());
+
+        // Unknown value falls back too, otherwise normalizeAPIVersion() would silently
+        // resolve it to the latest version, which is the bug being fixed.
+        $webhook->fields['pinned_version'] = '99';
+        $this->assertSame('2', $webhook->getPinnedAPIVersion());
+
+        // Missing key behaves like an empty value.
+        unset($webhook->fields['pinned_version']);
+        $this->assertSame('2', $webhook->getPinnedAPIVersion());
+    }
+
+    public function testIsPinnedAPIVersionDeprecated()
+    {
+        $webhook = new Webhook();
+        $webhook->fields['pinned_version'] = '2';
+        $this->assertFalse($webhook->isPinnedAPIVersionDeprecated());
+    }
+
+    public function testNewWebhookIsPinnedToLatestMajorVersion()
+    {
+        $this->login();
+        $pinnable = array_keys(Webhook::getPinnableAPIVersions());
+        // Cast: array keys are integers, the stored field is a string.
+        $latest_major = (string) end($pinnable);
+
+        /** @var Webhook $webhook */
+        $webhook = $this->createItem(Webhook::class, [
+            'name' => 'Pinned version default',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => User::class,
+            'event' => 'new',
+        ]);
+
+        $this->assertSame($latest_major, $webhook->fields['pinned_version']);
+    }
+
+    public function testExplicitPinnedVersionIsKeptOnCreation()
+    {
+        $this->login();
+
+        /** @var Webhook $webhook */
+        $webhook = $this->createItem(Webhook::class, [
+            'name' => 'Pinned version explicit',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => User::class,
+            'event' => 'new',
+            'pinned_version' => '2',
+        ]);
+
+        $this->assertSame('2', $webhook->fields['pinned_version']);
+    }
+
+    public function testPinnedMajorResolvesToRouterCurrentVersion()
+    {
+        $this->login();
+
+        /** @var Webhook $webhook */
+        $webhook = $this->createItem(Webhook::class, [
+            'name' => 'Pinned to v2',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => User::class,
+            'event' => 'new',
+            'pinned_version' => '2',
+        ]);
+
+        $this->assertSame('2.3.0', Router::normalizeAPIVersion($webhook->getPinnedAPIVersion()));
+    }
+
+    /**
+     * A webhook whose stored version is missing falls back to the oldest pinnable major, so it
+     * must produce the very same payload as one pinned to it explicitly. This also proves that
+     * setting the version header does not break the internal routing.
+     */
+    public function testFallbackVersionProducesSamePayloadAsExplicitPin()
+    {
+        $this->login();
+        $users_id = \Session::getLoginUserID();
+
+        $common_input = [
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => User::class,
+            'event' => 'new',
+            'is_active' => 1,
+            'use_default_payload' => 1,
+        ];
+
+        /** @var Webhook $pinned */
+        $pinned = $this->createItem(Webhook::class, $common_input + [
+            'name' => 'Pinned to v2',
+            'pinned_version' => '2',
+        ]);
+
+        /** @var Webhook $unpinned */
+        $unpinned = $this->createItem(Webhook::class, $common_input + ['name' => 'Unpinned']);
+        // Simulate a webhook inserted without going through prepareInputForAdd().
+        $unpinned->fields['pinned_version'] = '';
+
+        $path = '/Administration/User/' . $users_id;
+        $pinned_body = $pinned->getResultForPath($path, 'new', User::class, $users_id);
+        $unpinned_body = $unpinned->getResultForPath($path, 'new', User::class, $users_id);
+
+        $this->assertNotNull($pinned_body);
+        $this->assertSame($pinned_body, $unpinned_body);
+    }
+
+    public static function itilTaskWebhookEntityProvider(): iterable
+    {
+        yield 'same entity' => ['_test_root_entity', false, '_test_root_entity', 1];
+        yield 'parent entity, recursive' => ['_test_root_entity', true, '_test_child_1', 1];
+        yield 'parent entity, not recursive' => ['_test_root_entity', false, '_test_child_1', 0];
+        yield 'other entity' => ['_test_child_2', true, '_test_child_1', 0];
+        yield 'root entity, recursive' => ['Root entity', true, '_test_child_1', 1];
+    }
+
+    #[DataProvider('itilTaskWebhookEntityProvider')]
+    public function testITILTaskWebhookMatchesParentEntity(
+        string $webhook_entity,
+        bool $is_recursive,
+        string $ticket_entity,
+        int $expected_count
+    ): void {
+        $this->login();
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => getItemByTypeName('Entity', $webhook_entity, true),
+            'is_recursive'        => (int) $is_recursive,
+            'url'                 => 'http://localhost',
+            'itemtype'            => TicketTask::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket',
+            'content'     => 'Test ticket content',
+            'entities_id' => getItemByTypeName('Entity', $ticket_entity, true),
+        ]);
+        $this->createItem(TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content'    => 'Test task',
+        ]);
+
+        $this->assertEquals($expected_count, $this->countQueuedRequestForWebhook($webhook));
     }
 }

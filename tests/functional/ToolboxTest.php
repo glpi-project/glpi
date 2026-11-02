@@ -139,14 +139,16 @@ class ToolboxTest extends DbTestCase
     public static function dataGetSize()
     {
         return [
-            [1,                                  '1 B'],
-            [1025,                               '1 KiB'],
-            [1100000,                            '1.05 MiB'],
-            [1100000000,                         '1.02 GiB'],
-            [1100000000000,                      '1 TiB'],
-            [1100000000000 * 1024,               '1 PiB'],
-            [1100000000000 * 1024 * 1024,        '1 EiB'],
-            [1100000000000 * 1024 * 1024 * 1024, '1 ZiB'],
+            [1,                                                '1 B'],
+            [1025,                                             '1 KiB'],
+            [1100000,                                          '1.05 MiB'],
+            [1100000000,                                       '1.02 GiB'],
+            [1100000000000,                                    '1 TiB'],
+            [1100000000000 * 1024,                             '1 PiB'],
+            [1100000000000 * 1024 * 1024,                      '1 EiB'],
+            [1100000000000 * 1024 * 1024 * 1024,               '1 ZiB'],
+            [1100000000000 * 1024 * 1024 * 1024 * 1024,        '1 YiB'],
+            [1100000000000 * 1024 * 1024 * 1024 * 1024 * 1024, '1024.45 YiB'],
         ];
     }
 
@@ -321,6 +323,24 @@ class ToolboxTest extends DbTestCase
         $this->assertSame($out, \Toolbox::ucfirst($in));
     }
 
+    public static function isPopMailServerConnectStringProvider(): iterable
+    {
+        yield ['{mail.example.org/pop}', true];
+        yield ['{mail.example.org:995/pop/ssl/novalidate-cert}INBOX', true];
+        yield ['{mail.example.org/imap}', false];
+        yield ['{mail.example.org:993/imap/ssl}INBOX', false];
+        yield ['{pop.example.org/imap}', false];
+        yield ['{mail.example.org/popular}', false];
+        yield ['{mail.example.org/pop', false];
+        yield ['', false];
+    }
+
+    #[DataProvider('isPopMailServerConnectStringProvider')]
+    public function testIsPopMailServerConnectString(string $connect_string, bool $expected): void
+    {
+        $this->assertSame($expected, \Toolbox::isPopMailServerConnectString($connect_string));
+    }
+
     public static function shortcutProvider()
     {
         return [
@@ -473,6 +493,11 @@ class ToolboxTest extends DbTestCase
         // Save and delete nonexistent files
         $this->assertFalse(\Toolbox::savePicture('notafile.jpg'));
         $this->assertFalse(\Toolbox::deletePicture('notafile.jpg'));
+
+        // Save with a prefix (special chars in prefix are replaced by `_`)
+        copy(__DIR__ . '/../../public/pics/add_dropdown.png', $test_file); // saved image will be removed from FS
+        $prefixed_pict = \Toolbox::savePicture($test_file, 'azerty_abcd/+~1234|]');
+        $this->assertMatchesRegularExpression('#^\w{2}/azerty_abcd_1234_\w+\.png#', $prefixed_pict);
     }
 
     public static function getPictureUrlProvider()
@@ -1524,95 +1549,6 @@ HTML;
     {
         $result = \Toolbox::getMioSizeFromString($size);
         $this->assertEquals($expected, $result);
-    }
-
-    public static function safeUrlProvider(): iterable
-    {
-        // Invalid URLs are refused
-        yield [
-            'url'      => '',
-            'expected' => false,
-        ];
-        yield [
-            'url'      => ' ',
-            'expected' => false,
-        ];
-
-        // Invalid schemes are refused
-        yield [
-            'url'      => 'file://tmp/test',
-            'expected' => false,
-        ];
-        yield [
-            'url'      => 'test://localhost/',
-            'expected' => false,
-        ];
-
-        // Local file are refused
-        yield [
-            'url'      => '//tmp/test',
-            'expected' => false,
-        ];
-
-        // http, https and feed URLs are accepted, unless they contains a user or non default port information
-        foreach (['http', 'https', 'feed'] as $scheme) {
-            foreach (['', '/', '/path/to/resource.php'] as $path) {
-                yield [
-                    'url'      => sprintf('%s://localhost%s', $scheme, $path),
-                    'expected' => true,
-                ];
-                yield [
-                    'url'      => sprintf('%s://localhost:8080%s', $scheme, $path),
-                    'expected' => false,
-                ];
-                yield [
-                    'url'      => sprintf('%s://test@localhost%s', $scheme, $path),
-                    'expected' => false,
-                ];
-                yield [
-                    'url'      => sprintf('%s://test:pass@localhost%s', $scheme, $path),
-                    'expected' => false,
-                ];
-            }
-        }
-
-        // Extra slashes are detected and refused
-        yield [
-            'url'      => 'http:////evil:evil@evil.com',
-            'expected' => false,
-        ];
-
-        // Custom allowlist with multiple entries
-        $custom_allowlist = [
-            '|^https://\w+:[^/]+@calendar.mydomain.tld/|',
-            '|//intra.mydomain.tld/|',
-        ];
-        yield [
-            'url'       => 'https://calendar.external.tld/',
-            'expected'  => false,
-            'allowlist' => $custom_allowlist,
-        ];
-        yield [
-            'url'       => 'https://user:pass@calendar.mydomain.tld/',
-            'expected'  => true, // validates first item of allowlist
-            'allowlist' => $custom_allowlist,
-        ];
-        yield [
-            'url'       => 'http://intra.mydomain.tld/news.feed.php',
-            'expected'  => true, // validates second item of allowlist
-            'allowlist' => $custom_allowlist,
-        ];
-    }
-
-
-    #[DataProvider('safeUrlProvider')]
-    public function testIsUrlSafe(string $url, bool $expected, ?array $allowlist = null): void
-    {
-        $params = [$url];
-        if ($allowlist !== null) {
-            $params[] = $allowlist;
-        }
-        $this->assertSame($expected, call_user_func_array('Toolbox::isUrlSafe', $params));
     }
 
 

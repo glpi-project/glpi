@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Config\ConfigContainer;
+
 /**
  * Abstract notifications settings class
  */
@@ -124,10 +126,11 @@ abstract class NotificationSetting extends CommonDBTM
      */
     public static function disableAll()
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         $CFG_GLPI['use_notifications'] = 0;
-        foreach (array_keys($CFG_GLPI) as $key) {
+        foreach (array_keys($CFG_GLPI->getArrayCopy()) as $key) {
             if (str_starts_with($key, 'notifications_')) {
                 $CFG_GLPI[$key] = 0;
             }

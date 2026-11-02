@@ -36,9 +36,11 @@
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\URL;
 use Safe\Exceptions\UrlException;
 use SimplePie\SimplePie;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use function Safe\parse_url;
 
@@ -58,7 +60,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static function getTypeName($nb = 0)
     {
-        if (Session::haveRight('rssfeed_public', READ)) {
+        if (Session::haveRight(RSSFeed::$rightname, READ)) {
             return _n('RSS feed', 'RSS feed', $nb);
         }
         return _n('Personal RSS feed', 'Personal RSS feed', $nb);
@@ -83,7 +85,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         // Is my rssfeed or is in visibility
         return (($this->fields['users_id'] === Session::getLoginUserID())
-              || (Session::haveRight('rssfeed_public', READ)
+              || (Session::haveRight(RSSFeed::$rightname, READ)
                   && $this->haveVisibilityAccess()));
     }
 
@@ -96,7 +98,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public function canUpdateItem(): bool
     {
         return (($this->fields['users_id'] === Session::getLoginUserID())
-              || (Session::haveRight('rssfeed_public', UPDATE)
+              || (Session::haveRight(RSSFeed::$rightname, UPDATE)
                   && $this->haveVisibilityAccess()));
     }
 
@@ -207,9 +209,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
             $restrict = getEntitiesRestrictCriteria('glpi_groups_rssfeeds', '', '', true);
             $orwhere[] = [
-                'glpi_groups_rssfeeds.groups_id' => count($_SESSION["glpigroups"])
-                                                      ? $_SESSION["glpigroups"]
-                                                      : [-1],
+                // A user member of a sub-group must also see RSS feeds made visible to a parent group
+                'glpi_groups_rssfeeds.groups_id' => Group::getGroupsAncestorsIds($_SESSION["glpigroups"]),
                 'OR' => [
                     'glpi_groups_rssfeeds.no_entity_restriction' => 1,
                 ] + $restrict,
@@ -426,7 +427,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             switch ($item::class) {
                 case RSSFeed::class:
                     $showtab = [1 => self::createTabEntry(__('Content'))];
-                    if (Session::haveRight('rssfeed_public', UPDATE)) {
+                    if (Session::haveRight(RSSFeed::$rightname, UPDATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }
@@ -542,15 +543,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
-        if (!Toolbox::isUrlSafe($url)) {
-            Session::addMessageAfterRedirect(
-                htmlescape(sprintf(__('URL "%s" is not allowed by your administrator.'), $url)),
-                false,
-                ERROR
-            );
-            return false;
-        }
-
         return true;
     }
 
@@ -568,7 +560,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="alert alert-danger">
-                    <i class="alert-icon ti ti-alert-triangle"></i>
+                    <i class="alert-icon ti ti-alert-triangle" aria-hidden="true"></i>
                     <div class="alert-title">{{ msg }}</div>
                 </div>
 TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
@@ -623,7 +615,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public function showFeedContent(): bool
     {
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return false;
         }
         $rss_feed = [
@@ -641,9 +633,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 ];
             }
         } else {
-            $rss_feed['error'] = !Toolbox::isUrlSafe($this->fields['url'])
-                ? sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url'])
-                : __('Error retrieving RSS feed');
+            $rss_feed['error'] = __('Error retrieving RSS feed');
             $this->setError(true);
         }
 
@@ -664,24 +654,17 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
-        global $GLPI_CACHE, $CFG_GLPI;
+        global $GLPI_CACHE;
 
         // Fetch feed data, unless it is already cached
         $cache_key = sha1($url);
         $update_cache = false;
         if (($raw_data = $GLPI_CACHE->get($cache_key)) === null) {
-            if (!Toolbox::isUrlSafe($url)) {
-                return false;
-            }
-
-            $error_msg  = null;
-            $curl_error = null;
-            $eopts = [];
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-                $eopts['proxy_excluded'] = true;
-            }
-            $raw_data = Toolbox::callCurl($url, $eopts, $error_msg, $curl_error, true);
-            if (empty($raw_data)) {
+            $http_client = new HttpClient(context: self::class);
+            try {
+                $response = $http_client->get($url);
+                $raw_data = $response->getContent();
+            } catch (ExceptionInterface $e) {
                 return false;
             }
 
@@ -807,7 +790,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
         if (
             ($personal && self::canCreate())
-            || (!$personal && Session::haveRight('rssfeed_public', CREATE))
+            || (!$personal && Session::haveRight(RSSFeed::$rightname, CREATE))
         ) {
             $output .= "<span class='float-end'>";
             $output .= "<a href='" . htmlescape(RSSFeed::getFormURL()) . "'>";

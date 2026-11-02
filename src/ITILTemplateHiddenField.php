@@ -58,7 +58,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
         // can exists for template
         if (
             $item instanceof ITILTemplate
-            && Session::haveRight("itiltemplate", READ)
+            && Session::haveRight(ITILTemplate::$rightname, READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {

@@ -204,7 +204,7 @@
                 width: 100%;
             }
 
-            &:not([data-glpi-form-editor-active-question]) {
+            &:not([data-glpi-form-editor-active-question], [data-glpi-form-editor-active-comment]) {
                 div:has(> [data-glpi-form-editor-dynamic-input]) {
                     overflow: hidden;
                 }

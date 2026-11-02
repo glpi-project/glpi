@@ -37,7 +37,7 @@
     {% set real_profile = session('glpilocksavedprofile')|default(null) %}
     {% if not check_unlock_right or (real_profile != null and real_profile[get_static(item.fields['itemtype'], 'rightname')] b-and constant('UNLOCK')) %}
         <button type="button" class="btn btn-sm btn-primary ms-2 force-unlock-item">
-            <i class="ti ti-lock-open"></i>
+            <i class="ti ti-lock-open" aria-hidden="true"></i>
             <span>{{ __('Force unlock %1s #%2s')|format(item.fields['itemtype']|itemtype_name, item.fields['items_id']) }}</span>
         </button>
     {% endif %}
@@ -46,7 +46,7 @@
 {% if autolock_readmode %}
     <div id="message_after_lock" class="d-inline-block w-100 alert alert-warning">
         <span class="me-3">
-            <i class="ti ti-eye"></i>
+            <i class="ti ti-eye" aria-hidden="true"></i>
             {{ __('Read-only mode') }}
         </span>
         <form method="post" class="d-inline">
@@ -78,7 +78,7 @@
                 {% if show_ask_unlock %}
                     <br>
                     <button type="button" class="btn btn-sm btn-primary ask-unlock-item mt-2 me-2">
-                        <i class="ti ti-lock-open"></i>
+                        <i class="ti ti-lock-open" aria-hidden="true"></i>
                         <span>{{ __('Ask for unlock') }}</span>
                     </button>
                     <div class="d-inline-flex" style="vertical-align: sub">

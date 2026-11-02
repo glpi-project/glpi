@@ -40,8 +40,8 @@
          data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Enter or select a date') }}">
         <input type="text" name="{{ name }}" data-input class="form-control rounded-start ps-2">
         <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
-            <i class="ti ti-calendar-time"></i>
-            <span class="sr-only">{{ __('Enter or select a date') }}</span>
+            <i class="ti ti-calendar-time" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __('Enter or select a date') }}</span>
         </button>
     </div>
     <label class="d-flex align-items-center gap-2 text-nowrap mb-0">
@@ -67,6 +67,16 @@ $(function() {
             locale:          getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
             minuteIncrement: {{ timestep }},
             allowInput:      true,
+            onReady:         function(dates, str, instance) {
+                // The calendar is appended to <body>, so its clicks never bubble
+                // through the search filters dropdown. Stop them from reaching the
+                // document so Bootstrap's dropdown auto-close (a document 'click'
+                // listener) doesn't treat calendar navigation (month arrows, etc.)
+                // as an outside click and close the panel.
+                instance.calendarContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            },
             onClose:         function(dates, str, picker) {
                 picker.setDate(picker.altInput.value, true, picker.config.altFormat);
             },

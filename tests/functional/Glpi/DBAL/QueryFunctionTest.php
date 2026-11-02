@@ -36,6 +36,8 @@ namespace tests\units\Glpi\DBAL;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
+use Glpi\DBAL\QueryValue;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -765,6 +767,182 @@ class QueryFunctionTest extends GLPITestCase
         $this->assertSame(
             $expected,
             (string) QueryFunction::locate($substring, $expression, $alias)
+        );
+    }
+
+    /**
+     * Values bound by an argument must survive the concatenation performed to build the call.
+     *
+     * These used to get dropped: the argument was cast to a string through `__toString()`, which
+     * renders the SQL only, so the statement ended up with more `?` placeholders than bound
+     * values, shifting the positional binding of everything that followed.
+     */
+    public static function parameterPropagationProvider(): iterable
+    {
+        $sub = static fn(int $value): QueryExpression => new QueryExpression('(SELECT x FROM t WHERE y = ?)', values: [$value]);
+
+        yield 'dateAdd interval' => [
+            static fn() => QueryFunction::dateAdd(new QueryIdentifier('date_creation'), $sub(42), 'SECOND'),
+            'DATE_ADD(`date_creation`, INTERVAL (SELECT x FROM t WHERE y = ?) SECOND)',
+            [42],
+        ];
+        yield 'dateAdd date' => [
+            static fn() => QueryFunction::dateAdd($sub(42), 3, 'DAY'),
+            'DATE_ADD((SELECT x FROM t WHERE y = ?), INTERVAL 3 DAY)',
+            [42],
+        ];
+        yield 'dateSub interval' => [
+            static fn() => QueryFunction::dateSub(new QueryIdentifier('date_creation'), $sub(42), 'SECOND'),
+            'DATE_SUB(`date_creation`, INTERVAL (SELECT x FROM t WHERE y = ?) SECOND)',
+            [42],
+        ];
+        yield 'concat_ws separator and elements' => [
+            static fn() => QueryFunction::concat_ws($sub(1), [$sub(2), new QueryIdentifier('a.b'), $sub(3)]),
+            'CONCAT_WS((SELECT x FROM t WHERE y = ?), (SELECT x FROM t WHERE y = ?), `a`.`b`, (SELECT x FROM t WHERE y = ?))',
+            [1, 2, 3],
+        ];
+        yield 'groupConcat order by' => [
+            static fn() => QueryFunction::groupConcat(
+                new QueryIdentifier('a.x'),
+                ',',
+                false,
+                new QueryExpression('CASE WHEN z = ? END', values: [9])
+            ),
+            "GROUP_CONCAT(`a`.`x` ORDER BY CASE WHEN z = ? END SEPARATOR ',')",
+            [9],
+        ];
+        yield 'groupConcat order by inside an array' => [
+            static fn() => QueryFunction::groupConcat(
+                new QueryIdentifier('a.x'),
+                null,
+                false,
+                ['a.y', new QueryExpression('CASE WHEN z = ? END', values: [9])]
+            ),
+            'GROUP_CONCAT(`a`.`x` ORDER BY `a`.`y`, CASE WHEN z = ? END)',
+            [9],
+        ];
+        yield 'if' => [
+            static fn() => QueryFunction::if($sub(1), $sub(2), $sub(3)),
+            'IF((SELECT x FROM t WHERE y = ?), (SELECT x FROM t WHERE y = ?), (SELECT x FROM t WHERE y = ?))',
+            [1, 2, 3],
+        ];
+        yield 'if with array criteria' => [
+            static fn() => QueryFunction::if(['a.x' => 5], new QueryExpression("'yes'"), new QueryExpression("'no'")),
+            "IF(`a`.`x` = ?, 'yes', 'no')",
+            [5],
+        ];
+        yield 'cast' => [
+            static fn() => QueryFunction::cast($sub(1), 'CHAR'),
+            'CAST((SELECT x FROM t WHERE y = ?) AS CHAR)',
+            [1],
+        ];
+        yield 'convert' => [
+            static fn() => QueryFunction::convert($sub(1), 'utf8mb4'),
+            'CONVERT((SELECT x FROM t WHERE y = ?) USING utf8mb4)',
+            [1],
+        ];
+        yield 'sum distinct' => [
+            static fn() => QueryFunction::sum($sub(1), true),
+            'SUM(DISTINCT (SELECT x FROM t WHERE y = ?))',
+            [1],
+        ];
+        yield 'magic call with an array' => [
+            static fn() => QueryFunction::concat([$sub(1), $sub(2)]),
+            'CONCAT((SELECT x FROM t WHERE y = ?), (SELECT x FROM t WHERE y = ?))',
+            [1, 2],
+        ];
+        yield 'nested calls' => [
+            static fn() => QueryFunction::ifnull(QueryFunction::cast($sub(1), 'CHAR'), $sub(2)),
+            'IFNULL(CAST((SELECT x FROM t WHERE y = ?) AS CHAR), (SELECT x FROM t WHERE y = ?))',
+            [1, 2],
+        ];
+    }
+
+    /**
+     * @param callable(): QueryExpression $build
+     * @param array<int, mixed> $expected_params
+     */
+    #[DataProvider('parameterPropagationProvider')]
+    public function testParametersArePropagated(callable $build, string $expected_sql, array $expected_params): void
+    {
+        $result = $build();
+
+        $this->assertSame($expected_sql, (string) $result);
+        $this->assertSame($expected_params, $result->getParams());
+        // a mismatch here is what silently shifts the binding of the whole statement
+        $this->assertSame(substr_count($expected_sql, '?'), count($result->getParams()));
+    }
+
+    /**
+     * Parameters are positional, so they must be collected in the order the SQL is assembled.
+     */
+    public function testParametersKeepTheEmissionOrder(): void
+    {
+        $result = QueryFunction::concat([
+            new QueryValue('first'),
+            new QueryValue('second'),
+            new QueryValue('third'),
+        ]);
+
+        $this->assertSame('CONCAT(?, ?, ?)', (string) $result);
+        $this->assertSame(['first', 'second', 'third'], $result->getParams());
+    }
+
+    public static function queryValueProvider(): iterable
+    {
+        yield 'aggregate' => [static fn() => QueryFunction::sum(new QueryValue(5)), 'SUM(?)', [5]];
+        yield 'ifnull' => [
+            static fn() => QueryFunction::ifnull(new QueryIdentifier('a.x'), new QueryValue('fallback')),
+            'IFNULL(`a`.`x`, ?)',
+            ['fallback'],
+        ];
+        yield 'cast' => [static fn() => QueryFunction::cast(new QueryValue(7), 'CHAR'), 'CAST(? AS CHAR)', [7]];
+        yield 'date interval' => [
+            static fn() => QueryFunction::dateAdd(new QueryIdentifier('a.d'), new QueryValue(3), 'DAY'),
+            'DATE_ADD(`a`.`d`, INTERVAL ? DAY)',
+            [3],
+        ];
+        yield 'concat_ws' => [
+            static fn() => QueryFunction::concat_ws(new QueryValue('-'), [new QueryValue('a'), new QueryIdentifier('b.c')]),
+            'CONCAT_WS(?, ?, `b`.`c`)',
+            ['-', 'a'],
+        ];
+    }
+
+    /**
+     * @param callable(): QueryExpression $build
+     * @param array<int, mixed> $expected_params
+     */
+    #[DataProvider('queryValueProvider')]
+    public function testAQueryValueIsBoundInsteadOfInlined(callable $build, string $expected_sql, array $expected_params): void
+    {
+        $result = $build();
+
+        $this->assertSame($expected_sql, (string) $result);
+        $this->assertSame($expected_params, $result->getParams());
+    }
+
+    public function testNullArgumentsAreIgnored(): void
+    {
+        $this->assertSame('UNIX_TIMESTAMP()', (string) QueryFunction::unixTimestamp());
+        $this->assertSame(
+            'CONCAT_WS(?, `a`.`b`)',
+            (string) QueryFunction::concat_ws(new QueryValue('-'), [new QueryIdentifier('a.b'), null])
+        );
+    }
+
+    /**
+     * A bare string identifier keeps working; it is only the less explicit form.
+     */
+    public function testABareStringIsStillTreatedAsAnIdentifier(): void
+    {
+        $bare = QueryFunction::sum('glpi_computers.id');
+
+        $this->assertSame('SUM(`glpi_computers`.`id`)', (string) $bare);
+        $this->assertSame([], $bare->getParams());
+        $this->assertSame(
+            (string) QueryFunction::sum(new QueryIdentifier('glpi_computers.id')),
+            (string) $bare
         );
     }
 }

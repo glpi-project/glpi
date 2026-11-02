@@ -57,9 +57,9 @@ abstract class LevelAgreementParameters extends AbstractParameters
         ];
     }
 
-    protected function defineValues(CommonDBTM $sla): array
+    protected function defineValues(CommonDBTM $la): array
     {
-        $fields = $sla->fields;
+        $fields = $la->fields;
 
         return [
             'id'       => $fields['id'],

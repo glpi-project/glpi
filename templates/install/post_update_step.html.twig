@@ -32,7 +32,7 @@
 
 {% if not is_db_consistent %}
     <div class="alert alert-important alert-danger my-2 mx-4" role="alert">
-        <i class="fas fa-2x fa-exclamation-triangle align-middle"></i>
+        <i class="fas fa-2x fa-exclamation-triangle align-middle" aria-hidden="true"></i>
         {{ __('The database schema is not consistent with the current GLPI version.') }}<br />
         {{ __('It is recommended to run the "%s" command to see the differences.')|format('php bin/console database:check_schema_integrity') }}
     </div>
@@ -60,7 +60,7 @@
 <form action="update.php" method="post" data-submit-once>
    <div class="text-center">
       <button type="submit" class="btn btn-primary">
-         <i class="fas fa-thumbs-up me-1"></i>
+         <i class="fas fa-thumbs-up me-1" aria-hidden="true"></i>
          {{ __("Use GLPI") }}
       </button>
    </div>

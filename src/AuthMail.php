@@ -50,6 +50,12 @@ class AuthMail extends CommonDBTM
         return _n('Email server', 'Email servers', $nb);
     }
 
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', Auth::class, self::class];
@@ -196,9 +202,10 @@ class AuthMail extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/authentication/mail.html.twig', [
-            'item'             => $this,
-            'params'           => $options,
-            'protocol_choices' => $protocol_choices,
+            'item'              => $this,
+            'params'            => $options,
+            'protocol_choices'  => $protocol_choices,
+            'uses_pop_protocol' => Toolbox::isPopMailServerConnectString((string) ($this->fields['connect_string'] ?? '')),
         ]);
         return true;
     }
@@ -286,7 +293,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Test a connexion to the IMAP/POP server
+     * Test a connexion to the IMAP server
      *
      * @param string $connect_string mail server
      * @param string $login          user login
@@ -307,12 +314,12 @@ TWIG, $twig_params);
     /**
      * Authenticate a user by checking a specific mail server
      *
-     * @param object $auth        identification object
+     * @param Auth   $auth        identification object
      * @param string $login       user login
      * @param string $password    user password
      * @param array  $mail_method mail_method array to use
      *
-     * @return object identification object
+     * @return Auth identification object
      */
     public static function mailAuth($auth, $login, $password, $mail_method)
     {
@@ -323,6 +330,7 @@ TWIG, $twig_params);
                 $password
             );
             if ($auth->auth_succeded) {
+                $auth->setAuthType(Auth::MAIL);
                 $auth->extauth      = 1;
                 $auth->user_present = $auth->user->getFromDBbyName($login);
                 $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
@@ -337,14 +345,14 @@ TWIG, $twig_params);
     /**
      * Try to authenticate a user by checking all the mail server
      *
-     * @param object  $auth     identification object
+     * @param Auth    $auth     identification object
      * @param string  $login    user login
      * @param string  $password user password
      * @param int $auths_id auths_id already used for the user (default 0)
      * @param bool $break    if user is not found in the first directory,
      *                          stop searching or try the following ones (true by default)
      *
-     * @return object identification object
+     * @return Auth identification object
      */
     public static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true)
     {

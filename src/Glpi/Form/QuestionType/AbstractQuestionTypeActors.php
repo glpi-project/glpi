@@ -36,6 +36,7 @@
 namespace Glpi\Form\QuestionType;
 
 use CommonDBTM;
+use Dropdown;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
@@ -322,7 +323,16 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             return $default_values;
         }
 
-        return [key($default_values) => current($default_values)];
+        // Single actor: keep the first defined actor among the allowed and enabled types
+        foreach ($this->getAllowedActorTypes() as $itemtype) {
+            $fkey = getForeignKeyFieldForItemType($itemtype);
+            $ids = $default_values[$fkey] ?? [];
+            if ($ids !== [] && $this->isTypeEnabled($question, $itemtype)) {
+                return [$fkey => [reset($ids)]];
+            }
+        }
+
+        return [];
     }
 
     #[Override]
@@ -384,6 +394,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
                 'mb'              : '',
                 'right_for_users' : right_for_users,
                 'group_conditions': group_conditions,
+                'placeholder'     : placeholder,
             }
         ]) %}
 
@@ -416,6 +427,8 @@ TWIG;
             'aria_label'         => $question->fields['name'],
             'right_for_users'    => $this->getRightForUsers(),
             'group_conditions'   => $this->getGroupConditions(),
+            // Non-empty placeholder enables the select2 clear button in Html::jsAjaxDropdown()
+            'placeholder'        => $is_multiple_actors ? '' : Dropdown::EMPTY_VALUE,
         ]);
     }
 

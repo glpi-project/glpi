@@ -570,12 +570,16 @@ final class SearchOption implements ArrayAccess
                     case "integer":
                     case 'decimal':
                         $opt = [
-                            'contains'    => __('contains'),
-                            'notcontains' => __('not contains'),
-                            'equals'      => __('is'),
-                            'notequals'   => __('is not'),
-                            'empty'       => __('is empty'),
-                            'searchopt'   => $searchopt[$field_num],
+                            'contains'        => __('contains'),
+                            'notcontains'     => __('not contains'),
+                            'equals'          => __('is'),
+                            'notequals'       => __('is not'),
+                            'morethan'        => __('greater than'),
+                            'lessthan'        => __('less than'),
+                            'morethanorequal' => __('greater than or equal to'),
+                            'lessthanorequal' => __('less than or equal to'),
+                            'empty'           => __('is empty'),
+                            'searchopt'       => $searchopt[$field_num],
                         ];
                         // No is / isnot if no limits defined
                         if (
@@ -752,7 +756,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if ($itemtype == Computer::class) {
-            if (!Session::haveRight('networking', $action)) {
+            if (!Session::haveRight(NetworkPort::$rightname, $action)) {
                 $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
                 $todel      = array_merge($todel, array_keys($itemstodel));
             }

@@ -1,0 +1,283 @@
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+import { expect, test } from "../../fixtures/glpi_fixture";
+import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
+import { Profiles } from "../../utils/Profiles";
+import { getUniqueName } from "../../utils/Random";
+import { getWorkerEntityId } from "../../utils/WorkerEntities";
+
+test('Can add and remove a favorite from the aside dots menu', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const viewed_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside viewed`),
+        answer: "My answer",
+    });
+    const target_name = getUniqueName(`Aside favorite`);
+    const target_id = await api.knowbase.createArticle({
+        name: target_name,
+        answer: "My answer",
+    });
+
+    await kb.goto(viewed_id);
+    await expect(kb.getFavoriteArticle(target_name)).toBeHidden();
+
+    // Add to favorites from the tree row's dots menu.
+    await kb.doOpenAsideArticleMenu(target_id);
+    const favorite_checkbox = kb.getAsideArticleAction(target_id, 'Add to favorites').getByRole('checkbox');
+    await expect(favorite_checkbox).not.toBeChecked();
+
+    await kb.doToggleAsideFavorite(target_id);
+
+    // It now appears in the favorites section and the toggle reflects the state.
+    await expect(favorite_checkbox).toBeChecked();
+    await expect(kb.getFavoriteArticle(target_name)).toBeVisible();
+
+    // Only the tree row's menu stays open: the freshly cloned favorites row
+    // must not render a second, orphaned open menu.
+    await expect(kb.openAsideFavoriteToggles).toHaveCount(1);
+
+    // Remove it again from the same menu.
+    await kb.doToggleAsideFavorite(target_id);
+    await expect(favorite_checkbox).not.toBeChecked();
+    await expect(kb.getFavoriteArticle(target_name)).toBeHidden();
+});
+
+test('A nested article dots menu acts on that article, not on its parent', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const viewed_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside nested viewed`),
+        answer: "My answer",
+    });
+    const parent_name = getUniqueName(`Aside nested parent`);
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_name = getUniqueName(`Aside nested child`);
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    await kb.goto(viewed_id);
+    await kb.waitForAsideReady();
+
+    // Load parent menu actions. Revealing the child under its parent (the tree
+    // is folded by default) already interacts with the parent row, which
+    // prefetches them, so the waiter has to be armed before that.
+    const parent_actions = page.waitForResponse(
+        (response) => response.url().includes(`/Knowbase/${parent_id}/AsideActions`),
+    );
+    await kb.doExpandAsideCategory(parent_name);
+    await kb.getAsideArticleTitleLink(parent_name).hover();
+    await parent_actions;
+
+    // Favorite the child from its own menu.
+    await kb.doOpenAsideArticleMenu(child_id);
+    await kb.doToggleAsideFavorite(child_id);
+
+    // The child is favorited, the parent is untouched.
+    await expect(kb.getFavoriteArticle(child_name)).toBeVisible();
+    await expect(kb.getFavoriteArticle(parent_name)).toBeHidden();
+});
+
+test('Can toggle FAQ status from the aside dots menu', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const viewed_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside viewed`),
+        answer: "My answer",
+    });
+    const target_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside FAQ`),
+        answer: "My answer",
+    });
+
+    // Go to article and open aside menu for another article
+    await kb.goto(viewed_id);
+    await kb.doOpenAsideArticleMenu(target_id);
+
+    // It should be unchecked by default
+    const faq_checkbox = kb.getAsideArticleAction(target_id, 'Add to FAQ').getByRole('checkbox');
+    await expect(faq_checkbox).not.toBeChecked();
+
+    // We toggle the value
+    await kb.doToggleAsideFaq(target_id);
+    await expect(faq_checkbox).toBeChecked();
+
+    // Make sure the change is persisted by reloading the page to refresh the data
+    await page.reload();
+    await kb.doOpenAsideArticleMenu(target_id);
+    await expect(kb.getAsideArticleAction(target_id, 'Add to FAQ').getByRole('checkbox')).toBeChecked();
+});
+
+test('Aside dots menu is reachable and operable with the keyboard', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const viewed_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside viewed`),
+        answer: "My answer",
+    });
+    const target_name = getUniqueName(`Aside favorite`);
+    const target_id = await api.knowbase.createArticle({
+        name: target_name,
+        answer: "My answer",
+    });
+
+    await kb.goto(viewed_id);
+    await kb.waitForAsideReady();
+
+    // Tabbing off the article link walks the row's actions in visual order:
+    // the "create child article" (+) affordance first...
+    await kb.getAsideTreeArticleRow(target_id).getByRole('link', { name: target_name }).focus();
+    await page.keyboard.press('Tab');
+    await expect(kb.getAsideArticleAddChildTrigger(target_id)).toBeFocused();
+
+    // ...then the dots trigger.
+    await page.keyboard.press('Tab');
+    await expect(kb.getAsideArticleMenuTrigger(target_id)).toBeFocused();
+
+    // ...and pressing Enter opens its menu.
+    await page.keyboard.press('Enter');
+    await expect(kb.getAsideArticleAction(target_id, 'Add to favorites')).toBeVisible();
+});
+
+test('Can delete an article from the aside dots menu without leaving the page', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const viewed_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside viewed`),
+        answer: "My answer",
+    });
+    const target_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside delete`),
+        answer: "My answer",
+    });
+
+    await kb.goto(viewed_id);
+    await expect(kb.getAsideTreeArticleRow(target_id)).toBeVisible();
+
+    await kb.doOpenAsideArticleMenu(target_id);
+    await kb.doDeleteAsideArticle(target_id);
+
+    // The row is removed from the tree in place, and we stay on the article we
+    // were viewing (no redirect, since it is not the deleted one).
+    await expect(kb.getAsideTreeArticleRow(target_id)).toHaveCount(0);
+    await expect(page).toHaveURL(new RegExp(`knowbaseitem\\.form\\.php\\?id=${viewed_id}(\\D|$)`));
+});
+
+test("Can't delete an article with children", async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const parent_name = getUniqueName(`Aside undeletable parent`);
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_name = getUniqueName(`Aside undeletable child`);
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    // Viewing the child unfolds the path to it, so both rows are on screen.
+    await kb.goto(child_id);
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
+
+    // The action is offered on the parent, and the server explains the refusal:
+    // deleting it would leave the child outside the tree.
+    await kb.doOpenAsideArticleMenu(parent_id);
+    await kb.getAsideArticleAction(parent_id, 'Delete article').click();
+    await page.getByRole('dialog')
+        .getByRole('button', { name: 'Delete', exact: true })
+        .click();
+
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toContainText(
+        'This article cannot be deleted because it contains sub-articles. They must be moved or deleted first.'
+    );
+
+    // Nothing was deleted.
+    await dialog.getByRole('button', { name: 'OK' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(kb.getAsideTreeArticleRow(parent_id)).toBeVisible();
+    await expect(kb.getAsideTreeArticleRow(child_id)).toBeVisible();
+});
+
+test('An article can be deleted right after its last child was deleted', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const viewed_id = await api.knowbase.createArticle({
+        name: getUniqueName(`Aside viewed`),
+        answer: 'My answer',
+    });
+    const parent_name = getUniqueName(`Aside emptied parent`);
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: getUniqueName(`Aside emptied child`),
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    // Delete the only child
+    await kb.goto(viewed_id);
+    await kb.doExpandAsideCategory(parent_name);
+    await kb.doOpenAsideArticleMenu(child_id);
+    await kb.doDeleteAsideArticle(child_id);
+    await expect(kb.getAsideTreeArticleRow(child_id)).toHaveCount(0);
+
+    // Now delete the parent
+    await kb.doOpenAsideArticleMenu(parent_id);
+    await kb.doDeleteAsideArticle(parent_id);
+    await expect(kb.getAsideTreeArticleRow(parent_id)).toHaveCount(0);
+});

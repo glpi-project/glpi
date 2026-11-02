@@ -3,37 +3,124 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-
-## [12.0.0] unreleased
+## [13.0.0] unreleased
 
 ### Added
+- Documents, contracts and notes on cables.
+- Date variables (e.g. `{YEAR}`, `{MONTH_NAME+1}`, `{WEEK}` with `{YEAR_OF_WEEK}`) in the predefined title of recurrent tickets and changes, computed from the occurrence date.
+
+### Changes
+
+### Deprecated
+
+### Removed
+- `itemtype` criteria for Ticket and Change rules. This has been non-operational since 0.85 (over 11 years ago).
+- POP protocol support for mails receivers and mail authentication servers. Existing mails receivers and authentication servers using it are disabled during the update.
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+- `Session::getNewCSRFToken()`
+- `Session::validateCSRF()`
+- `Session::checkCSRF()`
+- `Session::cleanCSRFTokens()`
+- `csrf_token()` Twig function.
+- `getAjaxCsrfToken()` JavaScript function.
+- `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
+- Support of `javascript:` values for the `add_link` parameter of `components/tab/addlink_block.html.twig`.
+- `Html::addConfirmationOnAction()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::getConfirmationOnActionScript()`. Use the `data-glpi-confirm="<message>"` attribute instead.
+- `Html::link()`.
+- `confirmaction` option of `Html::submit()`. Confirmation is now handled through the `data-glpi-confirm` attribute, so no additional action can be run on confirmation.
+
+## [12.0.1] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [12.0.0] 2026-10-07
+
+### Added
+- `morethan` and `lessthan` search operators for numeric fields (number, integer, decimal, count, mio).
 - Sessions tab for OAuth Clients to display non-expired sessions associated with the client and allow revoking them.
 - Improved client IP detection.
-  If your GLPI instance is behind a reverse proxy, you should add its IP(s) the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP.
+  If your GLPI instance is behind a reverse proxy, you should add its IP(s) or CIDR range(s) to the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP (`X-Forwarded-For` by default, `Forwarded` and the other `X-Forwarded-*` headers are also supported).
+  When several proxies are chained, all of them must be listed in `GLPI_TRUSTED_REVERSE_PROXIES`.
   Only the required HTTP headers should be listed for better security as any header not handled by the proxy could be spoofed by the client.
+- Remember me support for multiple devices at the same time.
+- `Setup > Data and Privacy` menu item to centralize all data policies and privacy related settings.
+- New automatic action "purgesessionhistory" to automate deleting old login history data based on a retention period set in `Setup > Data and Privacy`.
+- A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration. It can be edited like any other article but it cannot be deleted. **On upgrade, articles that have no parent (including the ones created from the former categories) become children of it.**
+- Knowledge base articles can be moved in the aside tree by dragging them: onto an article to become its child, or onto the top or bottom edge of an article to become its sibling. Dragging is mouse-only for now, and reorders nothing: only the parent changes.
+- Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
+- High-Level API version 3.0.0.
+- `=istruthy=` and `=isnottruthy=` RSQL operators.
+- New "Assignment of a project task" notification event, raised when a member is added to a project task team, with a "New project task team member" recipient.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
 - Password policy and 2FA settings moved from `Setup > General` to `Setup > Security`.
+- CLI command `system:status` now gives information about database version.
+- New `ERROR` status for automatic actions that have repeatedly failed.
+  Action failure is tracked based on a shutdown handler that checks if the action has completed normally.
+  When an action failure is caught, it will go back to a scheduled status and increment an error counter. If the action fails 5 times, the action gets put in an ERROR status and it will need manual intervention.
+  Failed actions get rescheduled using a backoff strategy starting at 1 minute and doubling for each failure up to a max delay of 30 minutes, plus a random delay between 0 and 2 minutes.
+- New `ABORTED` status for automatic actions terminated externally (ex: killed process). These actions are scheduled to re-run as soon as possible.
+- `status_msg` property for the cronttask (automatic actions) service in the status checker format changed from "RUNNING: %d, STUCK: %d, TOTAL: %d" to "RUNNING: %d, STUCK: %d, ERROR: %d, TOTAL: %d".
+  If your monitoring relies on parsing this string, make sure it can handle the new format.
+- New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
+- "Logs purge" tab moved from `Setup > General` to `Setup > Data and Privacy` and renamed to "Historical logs".
+- Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents). The root article is an exception: it is readable by anyone who can read the knowledge base, and it never grants access to its descendants.
+- Using `==` and `!=` RSQL operators with boolean fields are coerced to `=istruthy=` and `=isnottruthy=`. There should be no noticeable change in behavior with any existing queries, but this was done to fix behavior with a field added with HLAPI v3.
+- Custom asset schemas renamed `state` to `status` to align with the built-in asset schemas in High-Level API v3. The name remains unchanged in v2.
 
 ### Deprecated
 
 ### Removed
 - CSRF protection is now handled via browser-native `Sec-Fetch-Site`/`Origin` header validation instead of per-request tokens. All `_glpi_csrf_token` hidden form fields and `X-Glpi-Csrf-Token` AJAX headers must be removed from plugins. See API changes below for the full list of removed methods and helpers.
+- The `KnowbaseItemCategory` itemtype and the `knowbasecategory` right have been removed. Knowledge base categories are now regular articles; hierarchy is expressed by linking child articles to parent articles.
+- Generic tree-browse (`TreeBrowse`) support for the knowledge base. The KB aside provides browsing.
+- The `Search` and `Browse` tabs of the knowledge base article list. The list is now a plain search page.
 
 ### API changes
 - Type declarations for some `CronTask` methods have been added.
 
 #### Added
+- `Glpi\DBAL\QueryElementInterface`, implemented by every SQL building block that may carry bound values (`QueryExpression`, `QueryIdentifier`, `QueryValue`, `AbstractQuery`). It exposes `getValue()` for the SQL fragment and `getParams()` for the values to bind for its `?` placeholders; both must always be used together.
+- `Glpi\DBAL\QueryIdentifier`, to designate a database identifier (table or field name) that has to be quoted, instead of relying on a bare string.
+- `Glpi\DBAL\QueryValue`, to designate a scalar value used in a statement. It renders as a `?` placeholder and carries the value to bind for it, instead of the value being inlined into the SQL. Not to be confused with `QueryParam`, which renders as `?` but binds nothing.
 
 #### Changes
+- `QueryFunction` methods now accept any `QueryElementInterface` where they used to accept only a `string` or a `QueryExpression`
 - `Session::haveRight()` now only returns a boolean
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
 - `KnowbaseItem_Comment` is now final
 - `KnowbaseItem_Revision` is now final
 - Use of the `users_id_validate` field for `CommonITILValidation` is no longer supported. Use `items_id_target` and `itemtype_target` instead.
 - Passing additional URL parameters in `Document::getDownloadLink()` is no longer supported.
-- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use `_categories` array instead.
+- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use the `_parents` array instead (parent articles, stored in `glpi_knowbaseitems_knowbaseitems.knowbaseitems_id_parent`).
 - Use of the `certificates` and `entities_id` options in `NotificationTargetCertificate` is no longer supported. These values are automatically computed based on the linked certificate.
 - Use of the `domains` and `entities_id` options in `NotificationTargetDomain` is no longer supported. These values are automatically computed based on the linked domain.
 - Use of the `bypass_rights`, `expose_private` and `is_self_service` parameters in `CommonITILObject::getTimelineItems()` is no longer supported.
@@ -43,6 +130,13 @@ The present file will list all changes made to the project; according to the
 - `countDistinctElementsInTable` / `DbUtils::countDistinctElementsInTable()` method signatures changed.
 - `getAllDataFromTable` / `DbUtils::getAllDataFromTable()` method signatures changed.
 - Methods in `Dbutils` and the global counterparts in `src/autoload/dbutils-aliases.php` now have strict type declarations except for methods that have been deprecated.
+- `User::getAuthToken()` cannot be used for `cookie_token` anymore.
+- Remember me cookie token no longer stored in the `glpi_users` table. It is now stored in the `glpi_user_tokens` table.
+- `Auth::setRememberMeCookie()` signature changed. It no longer accepts an empty value to trigger the removal of the cookie.
+- `KnowbaseItem_KnowbaseItemCategory` renamed to `KnowbaseItem_KnowbaseItem`; table `glpi_knowbaseitems_knowbaseitemcategories` renamed to `glpi_knowbaseitems_knowbaseitems` with columns `knowbaseitems_id` (child) and `knowbaseitems_id_parent` (parent).
+- The `knowbaseitemcategories_id` column of `ITILCategory` and `TaskCategory` is renamed to `knowbaseitems_id` and now references a knowledge base article.
+- `KnowbaseItem::getForCategory()` renamed to `KnowbaseItem::getChildrenArticles()`; the HL API `/Knowledge base/Category` endpoints and the `KBCategory` schema are removed.
+- `Glpi\Api\HL\Controller\AbstractController::getRawKnownSchemas()` now has an optional `$api_version` parameter to accommodate complex schema differences between API versions.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.
@@ -69,6 +163,17 @@ The present file will list all changes made to the project; according to the
 - `csrf_token()` Twig function: remove all `_glpi_csrf_token` hidden fields from forms; they are no longer required.
 - `getAjaxCsrfToken()` JavaScript function: remove all `X-Glpi-Csrf-Token` request headers from AJAX calls; they are no longer required.
 - `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
+- `escapeMarkupText()` javascript function.
+- `Html::link()`
+- Inclusion of the `inc/includes.php` file.
+- `Knowbase` class. The knowledge base is browsed from the side panel of `KnowbaseItem`.
+- `KnowbaseItem::SEEALL` constant.
+- `KnowbaseItem::searchForm()`
+- `KnowbaseItem::showList()`
+- `KnowbaseItem::showRecentPopular()`
+- `knowbaseitems_id_parent` parameter and `allmy`, `myunpublished`, `allunpublished`, `allpublished` types of `KnowbaseItem::getListRequest()`.
+- `Glpi\Toolbox\IPUtilities::isCidrMatch()`, use `Glpi\Toolbox\IPUtilities::isIPInList()` instead.
+- `Glpi\Toolbox\IPUtilities::isTrustedReverseProxy()`, use `Symfony\Component\HttpFoundation\Request::isFromTrustedProxy()` instead.
 
 #### Removed
 
@@ -80,6 +185,8 @@ The present file will list all changes made to the project; according to the
 - `Forms/FaIconSelector` JS module
 - `Knowbase` JS module
 - `league/csv` PHP library. Use `phpoffice/phpspreadsheet` instead.
+- `guzzlehttp/guzzle` PHP library. Use `Glpi\Toolbox\HttpClient` instead.
+- `GLPI_SERVERSIDE_URL_ALLOWLIST` constant, replaced by `GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS`
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
@@ -87,6 +194,7 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLE`
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
+- `CommonITILObject::assign()`
 - `CommonITILObject::showSatisfactionTabContent()`
 - `ComputerAntivirus` class
 - `ComputerVirtualMachine` class
@@ -99,14 +207,16 @@ The present file will list all changes made to the project; according to the
 - `DBConnection::getDBSlaveConf()`
 - `DBConnection::isDBSlaveActive()`
 - `DBConnection::saveDBSlaveConf()`
+- `DBmysql::doQueryOrDie()`
+- `DBmysql::deleteOrDie()`
+- `DBmysql::guessTimezone()`
+- `DBmysql::insertOrDie()`
 - `DBmysql::query()`
 - `DBmysql::queryOrDie()`
-- `DBmysql::doQueryOrDie()`
-- `DBmysql::insertOrDie()`
 - `DBmysql::updateOrDie()`
-- `DBmysql::deleteOrDie()`
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
+- `DbUtils::getEntitiesRestrictRequest()`
 - `Document::send()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
@@ -143,15 +253,18 @@ The present file will list all changes made to the project; according to the
 - `ITILFollowup::ADDGROUPTICKET` constant
 - `ITILFollowup::ADDMYTICKET` constant
 - `KnowbaseItem::normalizeKbRevisionDiffHtml()`
+- `KnowbaseItem_KnowbaseItemCategory` class
 - `KnowbaseItem_Comment::getCommentForm()`
 - `KnowbaseItem_Comment::showForItem()`
 - `KnowbaseItem_Revision::showForItem()`
+- `KnowbaseItemCategory` class
 - `KnowbaseItemTranslation::defineTabs()`
 - `KnowbaseItemTranslation::displayTabContentForItem()`
 - `KnowbaseItemTranslation::getTabNameForItem()`
 - `KnowbaseItemTranslation::showForm()`
 - `KnowbaseItemTranslation::showFull()`
 - `KnowbaseItemTranslation::showTranslations()`
+- `LevelAgreement::getDataForTicket()`
 - `Migration::addNewMessageArea()`
 - `Migration::setOutputHandler()`
 - `Migration::displayError()`
@@ -167,15 +280,51 @@ The present file will list all changes made to the project; according to the
 - `SavedSearch::addVisibilityRestrict()`
 - `Search::joinDropdownTranslations()`
 - `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
+- `Ticket::getDatasToAddOLA()`
+- `Ticket::olaAffect()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Timer` class
 - `Toolbox::addslashes_deep()`
+- `Toolbox::callCurl()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::getGuzzleClient()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::getURLContent()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::isUrlSafe()`
 - `Toolbox::seems_utf8()`
 - `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.9] unreleased
+## [11.0.12] unreleased
+
+### Added
+
+### Changed
+- The "Other financial and administrative information" report now includes the licenses that are not linked to any software, so its totals can change.
+
+- Default behavior when submitting a Form that has only one destination is now redirecting to created item instead of showing the feedback page. Previous behavior is obtained by unchecking "Go to created item after creation" in General configuration > Default values.
+
+- Webhooks on ITIL tasks now match the entity of their parent item. A non-recursive task webhook defined in the root entity is no longer triggered by tasks of sub-entities: enable "Sub-entities" on the webhook to keep the previous behavior.
+
+- The "Refused equipments" setting of the logs purge now purges the history of refused equipments instead of the refused equipments themselves.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+- `Glpi\Application\Environment::shouldAddExtraCypressDataDuringInstallation()`
+- `Glpi\Application\Environment::shouldAddExtraE2EDataDuringInstallation()`
+
+#### Removed
+
+
+## [11.0.11] 2026-10-01
 
 ### Added
 
@@ -190,6 +339,52 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.10] 2026-09-30
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.9] 2026-09-16
+
+### Added
+- System requirements now check that the security key files (`glpicrypt.key`, `oauth.pem` and `oauth.pub`) can be read, or created when missing.
+
+### Changed
+- Fixed searching values with multiple concurrent spaces.
+- Fixed import of exported forms containing a condition on an item dropdown with no item selected.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+- Duplicate spaces in some SQL queries, including values, (usually ones that used subqueries) no longer removed.
 
 #### Deprecated
 
@@ -1064,7 +1259,49 @@ If you have anything pinned to specific v2 versions, please try to pin to the la
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.26] unreleased
+## [10.0.28] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.27] 2026-09-16
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.26] 2026-06-24
 
 ### Added
 

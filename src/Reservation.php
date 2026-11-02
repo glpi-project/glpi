@@ -60,7 +60,7 @@ class Reservation extends CommonDBChild
     {
         if (
             !$withtemplate
-            && Session::haveRight("reservation", READ)
+            && Session::haveRight(Reservation::$rightname, READ)
         ) {
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::class);
         }
@@ -86,7 +86,7 @@ class Reservation extends CommonDBChild
         if (
             isset($this->fields["users_id"])
             && (($this->fields["users_id"] === Session::getLoginUserID())
-              || Session::haveRight("reservation", PURGE))
+              || Session::haveRight(Reservation::$rightname, PURGE))
         ) {
             // Processing Email
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -192,16 +192,25 @@ class Reservation extends CommonDBChild
                 false,
                 ERROR
             );
+            return;
         }
 
         $dates_to_add = [];
         $dates_to_add[$input['resa']["begin"]] = $input['resa']["end"];
         if (!empty($input['periodicity']['type'])) {
-            $dates_to_add += self::computePeriodicities(
+            $periodicities = self::computePeriodicities(
                 $input['resa']["begin"],
                 $input['resa']["end"],
                 $input['periodicity']
             );
+            if ($periodicities === [] && !empty($input['periodicity']['end'])) {
+                Session::addMessageAfterRedirect(
+                    __s('No repetition matches the repetition settings'),
+                    false,
+                    WARNING
+                );
+            }
+            $dates_to_add += $periodicities;
         }
         ksort($dates_to_add);
 
@@ -428,7 +437,7 @@ class Reservation extends CommonDBChild
         $item = $ri !== false ? $ri->getItem() : false;
         if ($item !== false) {
             // Users with permission to update the specific asset can CRUD all reservations for that asset
-            if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+            if ($item->can($item->getID(), UPDATE)) {
                 return true;
             }
         }
@@ -477,7 +486,7 @@ class Reservation extends CommonDBChild
         }
 
         // Users with permission to update the specific asset can see all reservations for that asset
-        if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+        if ($item->can($item->getID(), UPDATE)) {
             return true;
         }
 
@@ -520,7 +529,7 @@ class Reservation extends CommonDBChild
     {
         global $CFG_GLPI;
 
-        if (!Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
+        if (!Session::haveRightsOr(Reservation::$rightname, [READ, ReservationItem::RESERVEANITEM])) {
             return;
         }
 
@@ -550,7 +559,7 @@ class Reservation extends CommonDBChild
 
             $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>"
                . __s('View all items')
-               . "&nbsp;<i class='ti ti-eye'></i>"
+               . "&nbsp;<i class='ti ti-eye' aria-hidden='true'></i>"
             . "</a>";
         } else {
             $type = "";
@@ -567,7 +576,7 @@ class Reservation extends CommonDBChild
         echo "</div>"; // .reservation_panel
 
         $can_reserve = (
-            Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
+            Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
         );
 
@@ -580,21 +589,19 @@ class Reservation extends CommonDBChild
             $default_date = sprintf('%04d-%02d-01', $year, $month);
         }
 
-        $js = "
-            $(function() {
-                var reservation = new Reservations();
-                reservation.init({
+        $can_reserve_js = $can_reserve ? "true" : "false";
+        $now = jsescape($_SESSION["glpi_currenttime"]);
+        $default_date = jsescape($default_date);
+        echo <<<HTML
+            <script type="module">
+                window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
                     id: $ID,
-                    is_all: " . ($ID === 0 ? "true" : "false") . ",
-                    rand: $rand,
-                    can_reserve: " . ($can_reserve ? "true" : "false") . ",
-                    now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
-                    defaultDate: '" . jsescape($default_date) . "',
-                });
-                reservation.displayPlanning();
-          });
-        ";
-        echo Html::scriptBlock($js);
+                    can_reserve: $can_reserve_js,
+                    now: '$now',
+                    default_date: '$default_date',
+                }).mount('#reservations_planning_$rand');
+            </script>
+HTML;
     }
 
     public static function getEvents(array $params): array
@@ -614,9 +621,9 @@ class Reservation extends CommonDBChild
         $res_table   = static::getTable();
         $res_i_table = ReservationItem::getTable();
 
-        $can_read    = Session::haveRight("reservation", READ);
-        $can_edit    = Session::getCurrentInterface() === "central" && Session::haveRight("reservation", UPDATE);
-        $can_reserve = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
+        $can_read    = Session::haveRight(Reservation::$rightname, READ);
+        $can_edit    = Session::getCurrentInterface() === "central" && Session::haveRight(Reservation::$rightname, UPDATE);
+        $can_reserve = Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM);
 
         $user = new User();
 
@@ -685,7 +692,7 @@ class Reservation extends CommonDBChild
                 'start'       => $data['begin'],
                 'end'         => $data['end'],
                 'comment'     => $can_read || $my_item ? $data['comment'] : '',
-                'title'       => $params['reservationitems_id'] ? "" : $name,
+                'title'       => $name,
                 'icon'        => $item->getIcon(),
                 'description' => $item->getTypeName(),
                 'itemtype'    => $data['itemtype'],
@@ -845,7 +852,7 @@ class Reservation extends CommonDBChild
         $resa->fields["users_id_friendlyname"] = User::getFriendlyNameById($uid);
 
         $entities_id  = (isset($item)) ? $item->getEntityID() : Session::getActiveEntity();
-        $canedit = Session::haveRight("reservation", UPDATE) && Session::haveAccessToEntity($entities_id);
+        $canedit = Session::haveRight(Reservation::$rightname, UPDATE) && Session::haveAccessToEntity($entities_id);
 
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
@@ -870,6 +877,27 @@ class Reservation extends CommonDBChild
             'canedit'           => $canedit,
         ]);
         return true;
+    }
+
+    /**
+     * Default repetition end date, late enough for computePeriodicities() to return at least one occurrence.
+     *
+     * @param string $begin Planning start
+     * @param string $type  Periodicity type (day, week or month)
+     *
+     * @return string Y-m-d date, empty for an unknown type
+     */
+    public static function getDefaultPeriodicityEnd(string $begin, string $type): string
+    {
+        $modifier = match ($type) {
+            'day'   => '+1 day',
+            'week'  => '+1 week',
+            // Subtype is unknown here; "same day of week" can land up to 7 days after +1 month
+            'month' => '+1 month +1 week',
+            default => null,
+        };
+
+        return $modifier !== null ? date('Y-m-d', strtotime($begin . ' ' . $modifier)) : '';
     }
 
     /**
@@ -1003,7 +1031,7 @@ class Reservation extends CommonDBChild
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        if (!Session::haveRight("reservation", READ)) {
+        if (!Session::haveRight(Reservation::$rightname, READ)) {
             return;
         }
 
@@ -1020,7 +1048,8 @@ class Reservation extends CommonDBChild
         $ID     = $ri->getID();
 
         echo "<br>";
-        echo "<h1>" . __s('Reservations for this item') . "</h1>";
+        // Level 2: the page already carries the item h1. The h1 class keeps the rendering unchanged.
+        echo "<h2 class='h1'>" . __s('Reservations for this item') . "</h2>";
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
         $default_date = date('Y-m-d');
@@ -1032,23 +1061,23 @@ class Reservation extends CommonDBChild
             $default_date = sprintf('%04d-%02d-01', $year, $month);
         }
         $default_date = jsescape($default_date);
-        $now = date("Y-m-d H:i:s");
-        $js = <<<JAVASCRIPT
-            $(() => {
-                const reservation = new Reservations();
-                reservation.init({
+
+        $can_reserve_js =  (
+            Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM)
+            && count(self::getReservableItemtypes()) > 0
+        ) ? "true" : "false";
+        $now = jsescape($_SESSION["glpi_currenttime"]);
+        echo <<<HTML
+            <script type="module">
+                window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
                     id: $ID,
-                    is_all: false,
-                    is_tab: true,
-                    rand: $rand,
-                    currentv: 'listFull',
-                    defaultDate: '$default_date',
+                    can_reserve: $can_reserve_js,
                     now: '$now',
-                });
-                reservation.displayPlanning();
-            });
-JAVASCRIPT;
-        echo Html::scriptBlock($js);
+                    default_date: '$default_date',
+                    current_view: 'listFull',
+                }).mount('#reservations_planning_$rand');
+            </script>
+HTML;
         echo "</div>";
     }
 
@@ -1176,14 +1205,14 @@ JAVASCRIPT;
                 [$annee, $mois] = explode("-", $data["start_date"]);
                 $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
-                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
-                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "' aria-hidden='true'></i>";
+                $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
                 $entry['planning'] .= "</a>";
             } elseif ($item instanceof CommonDBTM) {
                 $href = htmlescape($item::getFormURLWithID($item->getID()) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data['start_date']}");
                 $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
-                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
-                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "' aria-hidden='true'></i>";
+                $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
             }
             return $entry;
         };
@@ -1231,7 +1260,7 @@ JAVASCRIPT;
      **/
     public static function showForUser($ID)
     {
-        if (!Session::haveRight("reservation", READ)) {
+        if (!Session::haveRight(Reservation::$rightname, READ)) {
             return;
         }
 
@@ -1281,16 +1310,16 @@ JAVASCRIPT;
                 }
             }
             if ($show_all || !$reservable) {
-                $actions[$action_prefix . 'enable'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Authorize reservations');
+                $actions[$action_prefix . 'enable'] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>" . __s('Authorize reservations');
             }
             if ($show_all || $reservable) {
-                $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off'></i>" . __s('Prohibit reservations');
+                $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off' aria-hidden='true'></i>" . __s('Prohibit reservations');
             }
             if ($show_all || ($reservable && !$available)) {
-                $actions[$action_prefix . 'available'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Make available for reservations');
+                $actions[$action_prefix . 'available'] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>" . __s('Make available for reservations');
             }
             if ($show_all || $available) {
-                $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off'></i>" . __s('Make unavailable for reservations');
+                $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off' aria-hidden='true'></i>" . __s('Make unavailable for reservations');
             }
         }
     }
@@ -1337,11 +1366,17 @@ JAVASCRIPT;
                         // Treat as OK
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $result = $reservation_item->add([
+                        $input = [
                             'itemtype' => $item::class,
                             'items_id' => $id,
                             'is_active' => 1,
-                        ]);
+                        ];
+                        if (!$reservation_item->can(-1, CREATE, $input)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+                        $result = $reservation_item->add($input);
                         $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     }
                 }
@@ -1349,6 +1384,11 @@ JAVASCRIPT;
             case 'disable':
                 foreach ($ids as $id) {
                     if ($reservation_item->getFromDBbyItem($item::class, $id)) {
+                        if (!$reservation_item->can($reservation_item->getID(), DELETE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
                         $result = $reservation_item->delete(['id' => $reservation_item->getID()]);
                         $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
@@ -1359,6 +1399,11 @@ JAVASCRIPT;
             case 'available':
                 foreach ($ids as $id) {
                     if ($reservation_item->getFromDBbyItem($item::class, $id)) {
+                        if (!$reservation_item->can($reservation_item->getID(), UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
                             'is_active' => 1,
@@ -1372,6 +1417,11 @@ JAVASCRIPT;
             case 'unavailable':
                 foreach ($ids as $id) {
                     if ($reservation_item->getFromDBbyItem($item::class, $id)) {
+                        if (!$reservation_item->can($reservation_item->getID(), UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
                             'is_active' => 0,

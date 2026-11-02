@@ -71,26 +71,6 @@ class IPRestrictionRequestMiddlewareTest extends DbTestCase
         $this->assertEquals($expected, $this->callPrivateMethod($middleware, 'isIPAllowed', $ip, $allowed_ips));
     }
 
-    public static function isCidrMatchProvider()
-    {
-        return [
-            ['ip' => '10.10.13.5', 'range' => '10.10.13.0/24', 'expected' => true],
-            ['ip' => '10.10.13.5', 'range' => '10.10.13.0/16', 'expected' => true],
-            ['ip' => '10.10.13.5', 'range' => '10.10.13.0/32', 'expected' => false],
-            ['ip' => '10.10.13.5', 'range' => '10.10.13.5/32', 'expected' => true],
-            ['ip' => '2001:4860:4860::8888', 'range' => '2001:4860:4860::8888/32', 'expected' => true],
-            ['ip' => '2001:4860:4860::8888', 'range' => '2001:4860:4860::8888/64', 'expected' => true],
-            ['ip' => '2001:4861:4860::8888', 'range' => '2001:4860:4860::8888/32', 'expected' => false],
-        ];
-    }
-
-    #[DataProvider('isCidrMatchProvider')]
-    public function testIsCidrMatch($ip, $range, $expected)
-    {
-        $middleware = new IPRestrictionRequestMiddleware();
-        $this->assertEquals($expected, $this->callPrivateMethod($middleware, 'isCidrMatch', $ip, $range));
-    }
-
     /**
      * @return array<string, array<string, mixed>>
      */

@@ -65,11 +65,17 @@ class ObjectLock extends CommonDBTM
     }
 
     /**
-     * @inheritDoc
-     * @return int Always 0 (Root entity)
+     * Get the entity ID of the locked item since the ObjectLock table is not linked to an entity.
+     * @return int The entity ID of the locked item, or 0 if the itemtype or items_id is not set or if the item cannot be found.
      **/
     public function getEntityID()
     {
+        if (isset($this->fields['itemtype'], $this->fields['items_id'])) {
+            $item = getItemForItemtype($this->fields['itemtype']);
+            if ($item && $item->getFromDB($this->fields['items_id'])) {
+                return $item->getEntityID();
+            }
+        }
         return 0;
     }
 
@@ -309,6 +315,12 @@ class ObjectLock extends CommonDBTM
         array $ids
     ) {
         foreach ($ids as $items_id) {
+            if (!Session::haveRight($item::$rightname, UNLOCK) || !$item->can($items_id, UPDATE)) {
+                $ma->itemDone($item::class, $items_id, MassiveAction::ACTION_NORIGHT);
+                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                continue;
+            }
+
             $itemtype = get_class($item);
             $lo       = new self();
             if ($lo->getLockedObjectInfo($itemtype, $items_id)) {
@@ -395,15 +407,18 @@ class ObjectLock extends CommonDBTM
                     {% set tooltip = is_locked ? locked_by_label|format(user_name, date) : text %}
 
                     <span class="badge {{ color }}" data-bs-toggle="tooltip" title="{{ tooltip }}">
-                        <i class="ti {{ icon }}"></i>
+                        <i class="ti {{ icon }}" aria-hidden="true"></i>
                         {{ text }}
                     </span>
 TWIG;
 
+                // Values are null when the item is not locked (no matching lock row)
+                $is_locked = ($values['id'] ?? 0) > 0;
+
                 return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
-                    'is_locked'       => $values['id'] > 0,
-                    'user_name'       => getUserName($values['users_id']),
-                    'date'            => $values['date'],
+                    'is_locked'       => $is_locked,
+                    'user_name'       => $is_locked ? getUserName($values['users_id']) : '',
+                    'date'            => $values['date'] ?? '',
                     'locked_label'    => __('Locked'),
                     'free_label'      => __('Free'),
                     'locked_by_label' => __('Locked by %s at %s'),

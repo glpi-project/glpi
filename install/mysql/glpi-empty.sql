@@ -1640,6 +1640,8 @@ CREATE TABLE `glpi_crontasks` (
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `error_count` int NOT NULL DEFAULT '0',
+  `next_run` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`name`),
   KEY `name` (`name`),
@@ -4117,7 +4119,7 @@ CREATE TABLE `glpi_itilcategories` (
   `completename` text,
   `comment` text,
   `level` int NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `code` varchar(255) DEFAULT NULL,
@@ -4138,7 +4140,7 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
+  KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `users_id` (`users_id`),
   KEY `groups_id` (`groups_id`),
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
@@ -4168,34 +4170,6 @@ CREATE TABLE `glpi_itils_projects` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`projects_id`),
   KEY `projects_id` (`projects_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-
-### Dump table glpi_knowbaseitemcategories
-
-DROP TABLE IF EXISTS `glpi_knowbaseitemcategories`;
-CREATE TABLE `glpi_knowbaseitemcategories` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `entities_id` int unsigned NOT NULL DEFAULT '0',
-  `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
-  `name` varchar(255) DEFAULT NULL,
-  `completename` text,
-  `comment` text,
-  `illustration` varchar(255) DEFAULT NULL,
-  `level` int NOT NULL DEFAULT '0',
-  `sons_cache` longtext,
-  `ancestors_cache` longtext,
-  `date_mod` timestamp NULL DEFAULT NULL,
-  `date_creation` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`entities_id`,`knowbaseitemcategories_id`,`name`),
-  KEY `name` (`name`),
-  KEY `is_recursive` (`is_recursive`),
-  KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
-  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -4236,16 +4210,16 @@ CREATE TABLE `glpi_knowbaseitems` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_knowbaseitems_knowbaseitemcategories
+### Dump table glpi_knowbaseitems_knowbaseitems
 
-DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitemcategories`;
-CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
+DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitems`;
+CREATE TABLE `glpi_knowbaseitems_knowbaseitems` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
+  `knowbaseitems_id_parent` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `knowbaseitems_id` (`knowbaseitems_id`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
+  UNIQUE KEY `unicity` (`knowbaseitems_id`, `knowbaseitems_id_parent`),
+  KEY `knowbaseitems_id_parent` (`knowbaseitems_id_parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6258,6 +6232,7 @@ CREATE TABLE `glpi_projecttasks` (
   `percent_done` int NOT NULL DEFAULT '0',
   `auto_percent_done` tinyint NOT NULL DEFAULT '0',
   `is_milestone` tinyint NOT NULL DEFAULT '0',
+  `recall` int,
   `projecttasktemplates_id` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
@@ -6452,6 +6427,7 @@ CREATE TABLE `glpi_queuednotifications` (
   `attach_documents` tinyint NOT NULL DEFAULT '0',
   `itemtype_trigger` varchar(255) DEFAULT NULL,
   `items_id_trigger` int unsigned NOT NULL DEFAULT '0',
+  `is_body_encrypted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`,`notificationtemplates_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -6934,6 +6910,7 @@ CREATE TABLE `glpi_olas` (
   `end_of_working_day` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `slms_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -6941,7 +6918,28 @@ CREATE TABLE `glpi_olas` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `calendars_id` (`calendars_id`),
-  KEY `slms_id` (`slms_id`)
+  KEY `slms_id` (`slms_id`),
+  KEY `groups_id` (`groups_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_items_olas
+
+DROP TABLE IF EXISTS `glpi_items_olas`;
+CREATE TABLE `glpi_items_olas` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `due_time` timestamp,
+  `end_time` timestamp,
+  `items_id` int unsigned NOT NULL,
+  `itemtype` varchar(255) NOT NULL,
+  `olas_id` int unsigned NOT NULL,
+  `ola_type` tinyint NOT NULL,
+  `start_time` timestamp,
+  `waiting_time` int NOT NULL DEFAULT 0,
+  `waiting_start` timestamp,
+  `is_late` tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `olas_id` (`olas_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_softwarecategories
@@ -7357,7 +7355,7 @@ CREATE TABLE `glpi_taskcategories` (
   `is_helpdeskvisible` tinyint NOT NULL DEFAULT '1',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `taskcategories_id` (`taskcategories_id`),
@@ -7367,7 +7365,7 @@ CREATE TABLE `glpi_taskcategories` (
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
+  KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -7533,14 +7531,6 @@ CREATE TABLE `glpi_tickets` (
   `time_to_own` timestamp NULL DEFAULT NULL,
   `begin_waiting_date` timestamp NULL DEFAULT NULL,
   `sla_waiting_duration` int NOT NULL DEFAULT '0',
-  `ola_waiting_duration` int NOT NULL DEFAULT '0',
-  `olas_id_tto` int unsigned NOT NULL DEFAULT '0',
-  `olas_id_ttr` int unsigned NOT NULL DEFAULT '0',
-  `olalevels_id_ttr` int unsigned NOT NULL DEFAULT '0',
-  `ola_tto_begin_date` timestamp NULL DEFAULT NULL,
-  `ola_ttr_begin_date` timestamp NULL DEFAULT NULL,
-  `internal_time_to_resolve` timestamp NULL DEFAULT NULL,
-  `internal_time_to_own` timestamp NULL DEFAULT NULL,
   `waiting_duration` int NOT NULL DEFAULT '0',
   `close_delay_stat` int NOT NULL DEFAULT '0',
   `solve_delay_stat` int NOT NULL DEFAULT '0',
@@ -7569,11 +7559,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `slas_id_ttr` (`slas_id_ttr`),
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `time_to_own` (`time_to_own`),
-  KEY `olas_id_tto` (`olas_id_tto`),
-  KEY `olas_id_ttr` (`olas_id_ttr`),
   KEY `slalevels_id_ttr` (`slalevels_id_ttr`),
-  KEY `internal_time_to_resolve` (`internal_time_to_resolve`),
-  KEY `internal_time_to_own` (`internal_time_to_own`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `type` (`type`),
   KEY `itilcategories_id` (`itilcategories_id`),
@@ -7581,8 +7567,6 @@ CREATE TABLE `glpi_tickets` (
   KEY `name` (`name`),
   KEY `locations_id` (`locations_id`),
   KEY `date_creation` (`date_creation`),
-  KEY `ola_waiting_duration` (`ola_waiting_duration`),
-  KEY `olalevels_id_ttr` (`olalevels_id_ttr`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -8039,6 +8023,7 @@ CREATE TABLE `glpi_users` (
   `mobile` varchar(255) DEFAULT NULL,
   `realname` varchar(255) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
+  `middlename` varchar(255) DEFAULT NULL,
   `locations_id` int unsigned NOT NULL DEFAULT '0',
   `language` char(10) DEFAULT NULL,
   `use_mode` int NOT NULL DEFAULT '0',
@@ -8086,8 +8071,6 @@ CREATE TABLE `glpi_users` (
   `personal_token_date` timestamp NULL DEFAULT NULL,
   `api_token` varchar(255) DEFAULT NULL,
   `api_token_date` timestamp NULL DEFAULT NULL,
-  `cookie_token` varchar(255) DEFAULT NULL,
-  `cookie_token_date` timestamp NULL DEFAULT NULL,
   `display_count_on_home` int DEFAULT NULL,
   `notification_to_myself` tinyint DEFAULT NULL,
   `duedateok_color` varchar(255) DEFAULT NULL,
@@ -8113,6 +8096,7 @@ CREATE TABLE `glpi_users` (
   `savedsearches_pinned` text,
   `timeline_order` char(20) DEFAULT NULL,
   `itil_layout` text,
+  `unfolded_knowbaseitems` json,
   `richtext_layout` char(20) DEFAULT NULL,
   `set_default_requester` tinyint DEFAULT NULL,
   `lock_autolock_mode` tinyint DEFAULT NULL,
@@ -8144,6 +8128,7 @@ CREATE TABLE `glpi_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),
+  KEY `middlename` (`middlename`),
   KEY `realname` (`realname`),
   KEY `entities_id` (`entities_id`),
   KEY `profiles_id` (`profiles_id`),
@@ -8323,6 +8308,10 @@ CREATE TABLE `glpi_knowbaseitems_comments` (
   `language` varchar(10) DEFAULT NULL,
   `comment` text,
   `parent_comment_id` int unsigned DEFAULT NULL,
+  `anchor_prefix` varchar(255) DEFAULT NULL,
+  `anchor_exact` varchar(1000) DEFAULT NULL,
+  `anchor_suffix` varchar(255) DEFAULT NULL,
+  `anchor_occurrence` int DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8545,6 +8534,8 @@ CREATE TABLE `glpi_dcrooms` (
   `vis_rows` int DEFAULT NULL,
   `vis_cell_width` int NOT NULL DEFAULT '40',
   `vis_cell_height` int NOT NULL DEFAULT '40',
+  `column_labels` text,
+  `row_labels` text,
   `blueprint` text,
   `datacenters_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -8790,6 +8781,11 @@ CREATE TABLE `glpi_pdus` (
   `pdumodels_id` int unsigned DEFAULT NULL,
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `sysdescr` text,
+  `last_inventory_update` timestamp NULL DEFAULT NULL,
+  `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -8813,6 +8809,26 @@ CREATE TABLE `glpi_pdus` (
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `pdutypes_id` (`pdutypes_id`),
   KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `snmpcredentials_id` (`snmpcredentials_id`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
+  KEY `is_dynamic` (`is_dynamic`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_plugtypes`;
+CREATE TABLE `glpi_plugtypes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -8821,12 +8837,17 @@ CREATE TABLE `glpi_plugs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `custom_name` varchar(255) DEFAULT NULL,
+  `number` int NOT NULL DEFAULT '0',
+  `plugtypes_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype_main` varchar(255) DEFAULT NULL,
   `items_id_main` int unsigned NOT NULL DEFAULT '0',
   `itemtype_asset` varchar(255) NOT NULL DEFAULT '',
   `items_id_asset` int unsigned NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -8834,8 +8855,12 @@ CREATE TABLE `glpi_plugs` (
   KEY `name` (`name`),
   KEY `asset_item` (`itemtype_asset`, `items_id_asset`),
   KEY `main_item` (`itemtype_main`, `items_id_main`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `plugtypes_id` (`plugtypes_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
+  KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -10026,12 +10051,15 @@ CREATE TABLE `glpi_changesatisfactions` (
 DROP TABLE IF EXISTS `glpi_oauth_access_tokens`;
 CREATE TABLE `glpi_oauth_access_tokens` (
    `identifier` varchar(255) NOT NULL,
+   `uuid` varchar(255) NOT NULL,
    `client` varchar(255) NOT NULL,
    `date_expiration` timestamp NOT NULL,
    `user_identifier` varchar(255) DEFAULT NULL,
    `scopes` text DEFAULT NULL,
    `ip_address` varchar(45) DEFAULT NULL,
+   `user_agent` varchar(512) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
+   UNIQUE KEY `uuid` (`uuid`),
    KEY `client` (`client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -10198,6 +10226,7 @@ CREATE TABLE `glpi_webhooks` (
   `oauth_url` varchar(255) DEFAULT NULL,
   `clientid` varchar(255) DEFAULT NULL,
   `clientsecret` varchar(255) DEFAULT NULL,
+  `pinned_version` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
@@ -10504,8 +10533,6 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
   KEY `item` (`itemtype`, `items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-### Dump table glpi_sharetokens
-
 DROP TABLE IF EXISTS `glpi_sharetokens`;
 CREATE TABLE `glpi_sharetokens` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -10529,6 +10556,56 @@ CREATE TABLE `glpi_sharetokens` (
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `date_expiration` (`date_expiration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_usertokens`;
+CREATE TABLE `glpi_usertokens` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL,
+    `type` varchar(64) NOT NULL,
+    `token_uid` char(16) NOT NULL,
+    `token_hash` varchar(255) NOT NULL,
+    `date_expiration` timestamp NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `token_uid` (`token_uid`),
+    KEY `users_id` (`users_id`),
+    KEY `type` (`type`),
+    KEY `date_expiration` (`date_expiration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_users_sessions`;
+CREATE TABLE `glpi_users_sessions` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL,
+    `login_session_uid` varchar(64) NOT NULL,
+    `session_file` varchar(261) NOT NULL COMMENT 'Current session filename. PHP allows up to 256 characters for session IDs + the "sess_" prefix used by default.',
+    `ip_address` varchar(45) NOT NULL,
+    `user_agent` varchar(512) NOT NULL,
+    `auth_type` tinyint NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `last_activity_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `login_session_uid` (`login_session_uid`),
+    KEY `users_id` (`users_id`),
+    KEY `last_activity_at` (`last_activity_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_users_sessionhistories`;
+CREATE TABLE `glpi_users_sessionhistories` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL,
+    `login_session_uid` varchar(64) NOT NULL,
+    `ip_address` varchar(45) NOT NULL,
+    `user_agent` varchar(512) NOT NULL,
+    `auth_type` tinyint NOT NULL,
+    `logged_in_at` timestamp NOT NULL,
+    `logged_out_at` timestamp NULL DEFAULT NULL,
+    `logout_reason` enum('user', 'admin', 'expired') DEFAULT NULL,
+    `users_id_revoked_by` int unsigned DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `users_id` (`users_id`, `logged_in_at` DESC),
+    KEY `users_id_revoked_by` (`users_id_revoked_by`),
+    KEY `logged_out_at` (`logged_out_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

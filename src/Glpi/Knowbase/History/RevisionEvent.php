@@ -41,7 +41,7 @@ class RevisionEvent implements HistoryEventInterface
     public function __construct(
         private int $id,
         protected int $index,
-        private string $date,
+        private ?string $date,
         private int $author_id,
     ) {}
 
@@ -58,7 +58,7 @@ class RevisionEvent implements HistoryEventInterface
     }
 
     #[Override]
-    public function getDate(): string
+    public function getDate(): ?string
     {
         return $this->date;
     }

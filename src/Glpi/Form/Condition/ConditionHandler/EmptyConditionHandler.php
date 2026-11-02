@@ -85,11 +85,27 @@ class EmptyConditionHandler implements ConditionHandlerInterface
         }
 
         return match ($operator) {
-            ValueOperator::EMPTY     => empty($a),
-            ValueOperator::NOT_EMPTY => !empty($a),
+            ValueOperator::EMPTY     => $this->isConsideredEmpty($a),
+            ValueOperator::NOT_EMPTY => !$this->isConsideredEmpty($a),
 
             // Unsupported operators
             default => false,
         };
+    }
+
+    /**
+     * An answer is empty only when no value was provided.
+     *
+     * Unlike empty(), a value of 0 or "0" is a real answer (for instance a
+     * number question answered with zero) and must not be treated as empty.
+     * Question types that use a "no selection" placeholder normalize it to an
+     * empty string or an empty array through their condition value transformer
+     * before this check runs.
+     */
+    private function isConsideredEmpty(mixed $value): bool
+    {
+        return $value === null
+            || $value === ''
+            || (is_array($value) && count($value) === 0);
     }
 }

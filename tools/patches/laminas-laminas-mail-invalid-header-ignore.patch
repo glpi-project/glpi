@@ -1,8 +1,48 @@
+diff --git a/src/Address.php b/src/Address.php
+index c6f3d6d4..53a44d7d 100644
+--- a/src/Address.php
++++ b/src/Address.php
+@@ -69,7 +69,12 @@ class Address implements Address\AddressInterface
+      */
+     public function __construct($email, $name = null, $comment = null)
+     {
+-        $emailAddressValidator = new EmailAddressValidator(Hostname::ALLOW_DNS | Hostname::ALLOW_LOCAL);
++        $emailAddressValidator = new EmailAddressValidator(
++            [
++                'allow'  => Hostname::ALLOW_DNS | Hostname::ALLOW_LOCAL,
++                'strict' => false,
++            ]
++        );
+         if (! is_string($email) || empty($email)) {
+             throw new Exception\InvalidArgumentException('Email must be a valid email address');
+         }
+diff --git a/src/Header/AbstractAddressList.php b/src/Header/AbstractAddressList.php
+index 1cc99891..7e6d180c 100644
+--- a/src/Header/AbstractAddressList.php
++++ b/src/Header/AbstractAddressList.php
+@@ -118,7 +118,16 @@ abstract class AbstractAddressList implements HeaderInterface
+                     ],
+                     $value
+                 );
+-                return empty($value) ? null : Address::fromString($value, $comments);
++                if (empty($value)) {
++                    return null;
++                }
++                try {
++                    return Address::fromString($value, $comments);
++                } catch (\Laminas\Mail\Exception\InvalidArgumentException $e) {
++                    // Invalid email address, ignore it and add a warning
++                    trigger_error(sprintf('Invalid address "%s"', $value), E_USER_WARNING);
++                    return null;
++                }
+             },
+             $values
+         );
 diff --git a/src/Headers.php b/src/Headers.php
-index 23475bc..8cdb76f 100644
+index 626fd3a0..d1feac8e 100644
 --- a/src/Headers.php
 +++ b/src/Headers.php
-@@ -278,10 +278,17 @@ class Headers implements Countable, Iterator
+@@ -303,10 +303,17 @@ class Headers implements Countable, Iterator
          }
  
          if ($fieldValue === null) {

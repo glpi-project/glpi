@@ -34,14 +34,189 @@
 
 namespace tests\units\Glpi\Dashboard;
 
+use Glpi\Dashboard\Grid;
 use Glpi\Dashboard\Widget;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
+use Ticket;
 
 /* Test for inc/dashboard/widget.class.php */
 
 class WidgetTest extends DbTestCase
 {
+    public function tearDown(): void
+    {
+        Grid::$embed = false;
+        parent::tearDown();
+    }
+
+    /**
+     * Build an embed session using the exact profile/user the dashboard
+     * was "shared" as, mirroring what Grid::initEmbed() does once the token
+     * has been validated.
+     */
+    private function initEmbedSessionAs(array $params): void
+    {
+        Grid::$embed = true;
+        (new Grid(''))->initEmbedSession($params);
+    }
+
+    public function testSearchShowListInEmbedModeReturnsResults(): void
+    {
+        // Log in as a user with full ticket rights, and capture the exact context
+        // (profile/user/entity) that would have been recorded when they shared
+        // the dashboard.
+        $this->login();
+        $profiles_id  = $_SESSION['glpiactiveprofile']['id'];
+        $users_id     = Session::getLoginUserID();
+        $entities_id  = $_SESSION['glpiactive_entity'];
+        $is_recursive = $_SESSION['glpiactive_entity_recursive'];
+
+        // Create the ticket explicitly in that same entity: the logged in user's
+        // active entity is not necessarily the root entity (e.g. TU_USER defaults
+        // to a sub-entity), and the embed session only sees entities_id and its
+        // children, not its ancestors, so the ticket must land within that scope.
+        $this->createItem(Ticket::class, [
+            'name'        => 'Embed dashboard test ticket',
+            'content'     => 'Test',
+            'status'      => Ticket::INCOMING,
+            'entities_id' => $entities_id,
+        ]);
+
+        $this->initEmbedSessionAs([
+            'entities_id'  => $entities_id,
+            'is_recursive' => $is_recursive,
+            'profiles_id'  => $profiles_id,
+            'users_id'     => $users_id,
+        ]);
+
+        $html = Widget::searchShowList([
+            'itemtype'   => Ticket::class,
+            // Filter on the ticket name so this assertion does not depend on how many
+            // other tickets exist in the DB / where this one lands in the default sort
+            // + pagination when the full test suite runs.
+            's_criteria' => [
+                ['field' => 1, 'searchtype' => 'contains', 'value' => 'Embed dashboard test ticket'],
+            ],
+            'limit'      => 20,
+            'color'      => '#CCCCCC',
+        ]);
+
+        $this->assertStringContainsString('Embed dashboard test ticket', $html);
+    }
+
+    public function testSearchShowListWithoutEmbedModeReturnsNoResults(): void
+    {
+        // Create a ticket while logged in
+        $this->login();
+        $this->createItem(Ticket::class, [
+            'name'    => 'Embed dashboard test ticket',
+            'content' => 'Test',
+            'status'  => Ticket::INCOMING,
+        ]);
+
+        // Simulate a session without any profile (as initEmbedSession used to leave it)
+        Session::destroy();
+        Session::start();
+        $_SESSION['glpiactiveentities']        = [0];
+        $_SESSION['glpiactiveentities_string'] = "'0'";
+        $_SESSION['glpiactive_entity']         = 0;
+        $_SESSION['glpigroups']                = [];
+        $_SESSION['glpilist_limit']            = 20;
+        $_SESSION['glpiname']                  = '';
+        // Grid::$embed stays false
+
+        $html = Widget::searchShowList([
+            'itemtype'   => Ticket::class,
+            's_criteria' => [],
+            'limit'      => 20,
+            'color'      => '#CCCCCC',
+        ]);
+
+        $this->assertStringNotContainsString('Embed dashboard test ticket', $html);
+    }
+
+    public function testSearchShowListInEmbedModeIsRestrictedToSharerRights(): void
+    {
+        // A ticket created by a full-rights user...
+        $this->login();
+        $this->createItem(Ticket::class, [
+            'name'    => 'Embed dashboard restricted ticket',
+            'content' => 'Test',
+            'status'  => Ticket::INCOMING,
+        ]);
+
+        // ...must NOT be visible through an embed session that restores the
+        // context of a low-privilege user (self-service, sees only their own
+        // tickets). This is the actual regression test for the security issue:
+        // the embed session must never grant more than the sharer could see,
+        // unlike the previous implementation which bypassed all right checks.
+        $this->login('post-only', 'postonly');
+        $profiles_id  = $_SESSION['glpiactiveprofile']['id'];
+        $users_id     = Session::getLoginUserID();
+        $entities_id  = $_SESSION['glpiactive_entity'];
+        $is_recursive = $_SESSION['glpiactive_entity_recursive'];
+
+        $this->initEmbedSessionAs([
+            'entities_id'  => $entities_id,
+            'is_recursive' => $is_recursive,
+            'profiles_id'  => $profiles_id,
+            'users_id'     => $users_id,
+        ]);
+
+        $html = Widget::searchShowList([
+            'itemtype'   => Ticket::class,
+            's_criteria' => [],
+            'limit'      => 20,
+            'color'      => '#CCCCCC',
+        ]);
+
+        $this->assertStringNotContainsString('Embed dashboard restricted ticket', $html);
+    }
+
+    public function testInitEmbedThrowsOnInvalidToken(): void
+    {
+        $this->expectException(AccessDeniedHttpException::class);
+
+        $grid = new Grid('test_dashboard');
+        $grid->initEmbed([
+            'dashboard'    => 'test_dashboard',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'profiles_id'  => 0,
+            'users_id'     => 0,
+            'token'        => 'invalid-token',
+        ]);
+    }
+
+    public function testInitEmbedThrowsWhenUserNoLongerHasProfileOnEntity(): void
+    {
+        $this->expectException(AccessDeniedHttpException::class);
+
+        $this->login();
+        $entities_id  = $_SESSION['glpiactive_entity'];
+        $is_recursive = $_SESSION['glpiactive_entity_recursive'];
+        $users_id     = (int) Session::getLoginUserID();
+        // This profile is never assigned to the logged in user, so even
+        // though the token is valid for this exact combination, the
+        // DB-backed assignment check must reject it.
+        $profiles_id = 999999;
+
+        $token = Grid::getToken('test_dashboard', $entities_id, $is_recursive, $profiles_id, $users_id);
+
+        $grid = new Grid('test_dashboard');
+        $grid->initEmbed([
+            'dashboard'    => 'test_dashboard',
+            'entities_id'  => $entities_id,
+            'is_recursive' => $is_recursive,
+            'profiles_id'  => $profiles_id,
+            'users_id'     => $users_id,
+            'token'        => $token,
+        ]);
+    }
+
     public function testGetAllTypes()
     {
         $types = Widget::getAllTypes();
@@ -108,6 +283,203 @@ class WidgetTest extends DbTestCase
         $this->assertEquals(
             $expected,
             Widget::getGradientPalette($bg_color, $nb_series, $revert)
+        );
+    }
+
+    /**
+     * Extract the `chart_options` JS variable embedded in the HTML returned by
+     * chart widgets (simpleBar/simpleLine/...) and decode it back to an array.
+     */
+    private function extractChartOptions(string $html): array
+    {
+        $this->assertMatchesRegularExpression(
+            '/const chart_options = (\{.*\});$/m',
+            $html
+        );
+        preg_match('/const chart_options = (\{.*\});$/m', $html, $matches);
+
+        return json_decode($matches[1], true);
+    }
+
+    public static function simpleBarDistributionProvider(): iterable
+    {
+        // Mirrors what Provider::ticketsOpened() returns: a single (non-multiple)
+        // bar serie, explicitly marked as non-distributed.
+        yield 'non-distributed single serie (e.g. Provider::ticketsOpened)' => [
+            'distributed' => false,
+        ];
+        // Default behaviour of Widget::simpleBar() when the provider does not
+        // force 'distributed', each bar getting its own color from the palette.
+        yield 'distributed single serie (simpleBar default)' => [
+            'distributed' => true,
+        ];
+    }
+
+    /**
+     * Regression test for the "Number of tickets by month" dashboard card
+     * displaying `undefined`/`NaN` in its "View data" table and no bars at all
+     */
+    #[DataProvider('simpleBarDistributionProvider')]
+    public function testSimpleBarSingleSerieDataIsNotDoubleWrapped(bool $distributed): void
+    {
+        $data = [
+            ['number' => 440, 'label' => '2025-09', 'url' => '/front/ticket.php?…'],
+            ['number' => 558, 'label' => '2025-10', 'url' => '/front/ticket.php?…'],
+            ['number' => 581, 'label' => '2025-11', 'url' => '/front/ticket.php?…'],
+        ];
+
+        $html = Widget::simpleBar([
+            'data'        => $data,
+            'distributed' => $distributed,
+            'label'       => 'Number of tickets by month',
+        ]);
+
+        $chart_options = $this->extractChartOptions($html);
+
+        $this->assertCount(1, $chart_options['series']);
+        $serie_data = $chart_options['series'][0]['data'];
+
+        $this->assertCount(3, $serie_data);
+        $this->assertEquals([440, 558, 581], array_column($serie_data, 'value'));
+        $this->assertEquals(['2025-09', '2025-10', '2025-11'], array_column($serie_data, 'meta'));
+    }
+
+    public static function pieLegendProvider(): iterable
+    {
+        yield 'full pie' => [
+            'half'        => false,
+            'legend_top'  => 'bottom',
+            'side_legend' => true,
+        ];
+        yield 'half pie' => [
+            'half'        => true,
+            'legend_top'  => 0,
+            'side_legend' => false,
+        ];
+    }
+
+    #[DataProvider('pieLegendProvider')]
+    public function testPieLegend(bool $half, string|int $legend_top, bool $side_legend): void
+    {
+        $html = Widget::donut([
+            'label'  => 'Tickets by status',
+            'legend' => true,
+            'half'   => $half,
+            'data'   => [
+                ['number' => 3, 'label' => 'New', 'url' => ''],
+                ['number' => 2, 'label' => 'Solved', 'url' => ''],
+            ],
+        ]);
+
+        // The full title is available in a tooltip, as it is clamped to 2 lines
+        $this->assertStringContainsString('<span class="main-label" title="Tickets by status">', $html);
+
+        preg_match('/myChart\.setOption\((\{.*\})\);$/m', $html, $matches);
+        $chart_options = json_decode($matches[1] ?? '', true);
+        $this->assertIsArray($chart_options);
+
+        // A single line legend, paginated when it overflows
+        $this->assertSame('scroll', $chart_options['legend']['type']);
+        $this->assertSame($legend_top, $chart_options['legend']['top']);
+
+        // Only a full pie moves its legend on the right side when its card is wide
+        $this->assertStringContainsString('if (' . ($side_legend ? 'true' : 'false') . ') {', $html);
+    }
+
+    public function testHorizontalBarsLabels(): void
+    {
+        $html = Widget::multipleHBars([
+            'label'  => 'Tickets by category',
+            'legend' => true,
+            'data'   => [
+                'labels' => ['A very long category name > A very long sub-category name', 'Short'],
+                'series' => [
+                    ['name' => 'New', 'data' => [3, 1]],
+                    ['name' => 'Solved', 'data' => [2, 4]],
+                ],
+            ],
+        ]);
+
+        $this->assertStringContainsString('<span class="main-label" title="Tickets by category">', $html);
+
+        $chart_options = $this->extractChartOptions($html);
+        $this->assertSame('scroll', $chart_options['legend']['type']);
+
+        // Long category labels are truncated on a single line, not rotated
+        $y_axis_label = $chart_options['yAxis']['axisLabel'];
+        $this->assertSame('truncate', $y_axis_label['overflow']);
+        $this->assertSame(110, $y_axis_label['width']);
+        $this->assertTrue($y_axis_label['hideOverlap']);
+        $this->assertArrayNotHasKey('rotate', $y_axis_label);
+
+        foreach ($chart_options['series'] as $serie) {
+            $this->assertSame(26, $serie['barMaxWidth']);
+        }
+    }
+
+    public function testSunburst(): void
+    {
+        $this->assertArrayHasKey('sunburst', Widget::getAllTypes());
+
+        $html = Widget::sunburst([
+            'label'  => 'Tickets by category',
+            'labels' => true,
+            'limit'  => 2,
+            'data'   => [
+                [
+                    'label'    => 'Hardware',
+                    'number'   => 5,
+                    'url'      => '/front/ticket.php?hardware',
+                    'children' => [
+                        ['label' => 'Laptop', 'number' => 3, 'url' => '/front/ticket.php?laptop'],
+                        ['label' => 'Printer', 'number' => 2, 'url' => ''],
+                    ],
+                ],
+                ['label' => 'Software', 'number' => 4, 'url' => ''],
+                ['label' => 'Network', 'number' => 1, 'url' => ''],
+            ],
+        ]);
+
+        $chart_options = $this->extractChartOptions($html);
+        $this->assertCount(1, $chart_options['series']);
+        $serie = $chart_options['series'][0];
+        $this->assertSame('sunburst', $serie['type']);
+        $this->assertTrue($serie['label']['show']);
+
+        // The limit applies to root nodes, children are kept
+        $this->assertSame(['Hardware', 'Software'], array_column($serie['data'], 'name'));
+        $this->assertSame(['Laptop', 'Printer'], array_column($serie['data'][0]['children'], 'name'));
+        $this->assertEquals([3, 2], array_column($serie['data'][0]['children'], 'value'));
+        $this->assertSame('/front/ticket.php?laptop', $serie['data'][0]['children'][0]['url']);
+        $this->assertArrayNotHasKey('children', $serie['data'][1]);
+        $this->assertNotEmpty($serie['color']);
+    }
+
+    public function testSunburstWithoutData(): void
+    {
+        $html = Widget::sunburst([
+            'label' => 'Tickets by category',
+            'data'  => ['nodata' => true],
+        ]);
+
+        $this->assertStringContainsString('no-data', $html);
+        $this->assertStringNotContainsString('chart_options', $html);
+    }
+
+    public function testSunburstEscapesLabels(): void
+    {
+        $html = Widget::sunburst([
+            'label' => '<b>card</b>',
+            'data'  => [
+                ['label' => '</script><script>alert(1)</script>', 'number' => 1, 'url' => ''],
+            ],
+        ]);
+
+        $this->assertStringNotContainsString('<b>card</b>', $html);
+        $this->assertStringNotContainsString('</script><script>alert(1)', $html);
+        $this->assertSame(
+            '</script><script>alert(1)</script>',
+            $this->extractChartOptions($html)['series'][0]['data'][0]['name']
         );
     }
 }

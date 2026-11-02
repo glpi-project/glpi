@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 class Domain_Item extends CommonDBRelation
 {
@@ -82,7 +83,7 @@ class Domain_Item extends CommonDBRelation
 
         if (
             $item instanceof DomainRelation || (in_array($item::class, Domain::getTypes(true), true)
-                && Session::haveRight('domain', READ))
+                && Session::haveRight(Domain::$rightname, READ))
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -399,7 +400,7 @@ TWIG, $twig_params);
                 'glpi_domains.name AS assocName',
                 'glpi_domains.*',
                 QueryFunction::groupConcat(
-                    expression: Group_Item::getTable() . '.groups_id',
+                    expression: new QueryIdentifier(Group_Item::getTable() . '.groups_id'),
                     separator: ',',
                     alias: 'groups_id_tech',
                 ),
@@ -475,7 +476,7 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        if ($item->isNewItem() || !Session::haveRight('domain', READ)) {
+        if ($item->isNewItem() || !Session::haveRight(Domain::$rightname, READ)) {
             return false;
         }
 
@@ -561,9 +562,11 @@ TWIG, $twig_params);
                             {% set domain_dropdown = call('Domain::dropdownDomains', [{
                                 entity: entities,
                                 used: used,
-                                display: false
+                                display: false,
+                                rand: rand
                             }]) %}
                             {{ fields.htmlField('', domain_dropdown, 'Domain'|itemtype_name, {
+                                id: 'dropdown_domains_id' ~ rand,
                                 helper: helper
                             }) }}
                             {{ fields.dropdownField('DomainRelation', 'domainrelations_id', constant('DomainRelation::BELONGS'), 'DomainRelation'|itemtype_name, {

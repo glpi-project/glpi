@@ -743,6 +743,75 @@ HTML,
         return (int) iterator_to_array($results)[0]['number_of_followups'];
     }
 
+    /**
+     * Non-regression: buildParentCondition() must qualify column names to avoid MySQL 1052
+     * when the search engine JOINs polymorphic tables (plugin Fields, glpi_logs).
+     */
+    public function testBuildParentConditionReturnsQualifiedColumnsForSelfServiceUser(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+        $this->login($selfservice_user->fields['name']);
+
+        $condition = CoreITILFollowup::buildParentCondition(Ticket::class);
+        $table = CoreITILFollowup::getTable();
+
+        $this->assertStringContainsString("`$table`.`itemtype`", $condition);
+        $this->assertStringNotContainsString('(`itemtype` = ', $condition);
+        $this->assertStringNotContainsString('OR `items_id` IN', $condition);
+        $this->assertStringContainsString("OR `$table`.`items_id` IN", $condition);
+    }
+
+    /**
+     * Non-regression: buildParentCondition() output must be valid SQL when JOINed with
+     * a polymorphic table (glpi_logs reproduces the same 'itemtype' column ambiguity as
+     * plugin Fields tables). Without the fix: MySQL 1052 "Column 'itemtype' is ambiguous".
+     */
+    public function testBuildParentConditionDoesNotCauseAmbiguousColumnWhenJoined(): void
+    {
+        global $DB;
+
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+        $this->login($selfservice_user->fields['name']);
+
+        $table     = CoreITILFollowup::getTable();
+        $condition = CoreITILFollowup::buildParentCondition(Ticket::class);
+
+        $threw = false;
+        try {
+            $DB->doQuery(
+                "SELECT `{$table}`.`id` FROM `{$table}`"
+                . " LEFT JOIN `glpi_logs` ON (`glpi_logs`.`items_id` = `{$table}`.`id`)"
+                . " WHERE {$condition}"
+                . " LIMIT 1"
+            );
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), '1052')) {
+                $threw = true;
+            } else {
+                throw $e;
+            }
+        }
+        $this->assertFalse($threw, 'buildParentCondition() must not generate ambiguous column references');
+    }
+
     private function createFollowupInEntityForType(
         string $entity_name,
         string $itemtype
@@ -757,5 +826,45 @@ HTML,
             'items_id' => $itil->getID(),
             'content'  => 'Test followup',
         ]);
+    }
+
+    public function testFollowupDoesNotPropagateThroughTicketMergeForProblem(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entity = $this->getTestRootEntity(true);
+
+        // Two tickets; ticket B is merged (SON_OF) into ticket A and soft-deleted.
+        $ticket = new Ticket();
+        $id_a = $ticket->add(['name' => __FUNCTION__ . ' A', 'content' => 'a', 'entities_id' => $entity]);
+        $id_b = $ticket->add(['name' => __FUNCTION__ . ' B', 'content' => 'b', 'entities_id' => $entity]);
+        $this->assertGreaterThan(0, $id_a);
+        $this->assertGreaterThan(0, $id_b);
+        $this->assertTrue($DB->update('glpi_tickets', ['is_deleted' => 1], ['id' => $id_b]));
+        $this->assertTrue((bool) $DB->insert('glpi_tickets_tickets', [
+            'tickets_id_1' => $id_b,
+            'tickets_id_2' => $id_a,
+            'link'         => \Ticket_Ticket::SON_OF,
+        ]));
+        $this->assertSame([$id_a], Ticket::getMergedTickets($id_b));
+
+        // Two problems sharing the ids of the merged ticket (B) and its parent (A).
+        $problem = new Problem();
+        $pb = $problem->add(['name' => __FUNCTION__ . ' PB', 'content' => 'pb', 'entities_id' => $entity]);
+        $this->assertTrue($DB->update('glpi_problems', ['id' => $id_b], ['id' => $pb]));
+        $pn = (new Problem())->add(['name' => __FUNCTION__ . ' PN', 'content' => 'pn', 'entities_id' => $entity]);
+        $this->assertTrue($DB->update('glpi_problems', ['id' => $id_a], ['id' => $pn]));
+
+        // A follow-up on Problem #id_b must not be propagated onto Problem #id_a
+        // through the ticket merge graph.
+        $followup = new CoreITILFollowup();
+        $this->assertGreaterThan(0, $followup->add([
+            'itemtype' => Problem::class,
+            'items_id' => $id_b,
+            'content'  => 'problem followup',
+        ]));
+
+        $this->assertEquals(0, countElementsInTable(CoreITILFollowup::getTable(), ['itemtype' => Problem::class, 'items_id' => $id_a]));
     }
 }

@@ -139,7 +139,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'add_document'      => __('New document'),
             'pendingreason_add' => __('Pending reason added'),
             'pendingreason_del' => __('Pending reason removed'),
-            'pendingreason_close' => __('Pending reason auto close'),
+            'pendingreason_resolve' => __('Pending reason auto resolve'),
+            'remove_requester_user' => __('Deletion of a user in requesters'),
+            'remove_requester_group' => __('Deletion of a group in requesters'),
+            'remove_observer_user' => __('Deletion of a user in observers'),
+            'remove_observer_group' => __('Deletion of a group in observers'),
+            'remove_assign_user'   => __('Deletion of a user in assignees'),
+            'remove_assign_group'  => __('Deletion of a group in assignees'),
+            'remove_assign_supplier' => __('Deletion of a supplier in assignees'),
         ];
 
         asort($events);
@@ -344,42 +351,104 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addOldAssignTechnician()
     {
+        $this->addOldUserActor($this->options['_old_user'] ?? null, CommonITILActor::ASSIGN);
+    }
+
+    /**
+     * Add the previous user actor of a given role (before removal or reassignment)
+     *
+     * @param ?array{type?: int, use_notification?: bool, users_id?: int, alternative_email?: string} $old_actor
+     * @param int $actor_type Expected actor role (CommonITILActor::REQUESTER|OBSERVER|ASSIGN)
+     *
+     * @return void
+     */
+    private function addOldUserActor(?array $old_actor, int $actor_type): void
+    {
         global $CFG_GLPI;
 
         if (
-            isset($this->options['_old_user'])
-            && ($this->options['_old_user']['type'] == CommonITILActor::ASSIGN)
-            && $this->options['_old_user']['use_notification']
+            $old_actor === null
+            || (int) ($old_actor['type'] ?? 0) !== $actor_type
+            || empty($old_actor['use_notification'])
         ) {
-            $user = new User();
-            $user->getFromDB($this->options['_old_user']['users_id']);
+            return;
+        }
 
-            $author_email = UserEmail::getDefaultForUser($user->fields['id']);
-            $author_lang  = $user->fields["language"];
-            $author_id    = $user->fields['id'];
+        $user = new User();
+        $user->getFromDB($old_actor['users_id'] ?? 0);
 
-            if (
-                !empty($this->options['_old_user']['alternative_email'])
-                && ($this->options['_old_user']['alternative_email'] != $author_email)
-                && NotificationMailing::isUserAddressValid($this->options['_old_user']['alternative_email'])
-            ) {
-                $author_email = $this->options['_old_user']['alternative_email'];
-            }
-            if (empty($author_lang)) {
-                $author_lang = $CFG_GLPI["language"];
-            }
-            if (empty($author_id)) {
-                $author_id = -1;
-            }
+        $author_email = UserEmail::getDefaultForUser($user->fields['id']);
+        $author_lang  = $user->fields["language"];
+        $author_id    = $user->fields['id'];
 
-            $user = [
-                'language' => $author_lang,
-                'users_id' => $author_id,
-            ];
-            if ($this->isMailMode()) {
-                $user['email'] = $author_email;
-            }
-            $this->addToRecipientsList($user);
+        if (
+            !empty($old_actor['alternative_email'])
+            && ($old_actor['alternative_email'] != $author_email)
+            && NotificationMailing::isUserAddressValid($old_actor['alternative_email'])
+        ) {
+            $author_email = $old_actor['alternative_email'];
+        }
+        if (empty($author_lang)) {
+            $author_lang = $CFG_GLPI["language"];
+        }
+        if (empty($author_id)) {
+            $author_id = -1;
+        }
+
+        $recipient = [
+            'language' => $author_lang,
+            'users_id' => $author_id,
+        ];
+        if ($this->isMailMode()) {
+            $recipient['email'] = $author_email;
+        }
+        $this->addToRecipientsList($recipient);
+    }
+
+    /**
+     * Add the previous group actor of a given role (before removal or reassignment)
+     *
+     * @param ?array{type?: int, groups_id?: int} $old_actor
+     * @param int $actor_type Expected actor role (CommonITILActor::REQUESTER|OBSERVER|ASSIGN)
+     *
+     * @return void
+     */
+    private function addOldGroupActor(?array $old_actor, int $actor_type): void
+    {
+        if ($old_actor === null || (int) ($old_actor['type'] ?? 0) !== $actor_type) {
+            return;
+        }
+
+        $this->addForGroup(0, $old_actor['groups_id'] ?? 0);
+    }
+
+    /**
+     * Add the previous supplier actor of a given role (before removal or reassignment)
+     *
+     * @param ?array{type?: int, suppliers_id?: int} $old_actor
+     * @param int $actor_type Expected actor role (CommonITILActor::ASSIGN)
+     *
+     * @return void
+     */
+    private function addOldSupplierActor(?array $old_actor, int $actor_type): void
+    {
+        if (
+            $old_actor === null
+            || (int) ($old_actor['type'] ?? 0) !== $actor_type
+            || !$this->isMailMode()
+        ) {
+            return;
+        }
+
+        $supplier = new Supplier();
+        if (
+            $supplier->getFromDB($old_actor['suppliers_id'] ?? 0)
+            && NotificationMailing::isUserAddressValid($supplier->fields['email'])
+        ) {
+            $this->addToRecipientsList([
+                'email' => $supplier->fields['email'],
+                'name'  => $supplier->fields['name'],
+            ]);
         }
     }
 
@@ -988,11 +1057,38 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             return; // Do not propose more targets
         }
 
-        if ($event == 'update') {
+        if (
+            $event == 'update'
+            || $event == 'remove_assign_user'
+        ) {
             $this->addTarget(
                 Notification::OLD_TECH_IN_CHARGE,
                 __('Former technician in charge of the ticket')
             );
+        }
+
+        if ($event == 'remove_requester_user') {
+            $this->addTarget(Notification::OLD_REQUESTER_USER, __('Former requester'));
+        }
+
+        if ($event == 'remove_requester_group') {
+            $this->addTarget(Notification::OLD_REQUESTER_GROUP, __('Former requester group'));
+        }
+
+        if ($event == 'remove_observer_user') {
+            $this->addTarget(Notification::OLD_OBSERVER_USER, __('Former observer'));
+        }
+
+        if ($event == 'remove_observer_group') {
+            $this->addTarget(Notification::OLD_OBSERVER_GROUP, __('Former observer group'));
+        }
+
+        if ($event == 'remove_assign_group') {
+            $this->addTarget(Notification::OLD_ASSIGN_GROUP, __('Former group in charge of the ticket'));
+        }
+
+        if ($event == 'remove_assign_supplier') {
+            $this->addTarget(Notification::OLD_ASSIGN_SUPPLIER, __('Former supplier in charge of the ticket'));
         }
 
         if ($event == 'satisfaction') {
@@ -1096,6 +1192,36 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                         //Send to the technician previously in charge of the ITIL object (before reassignation)
                     case Notification::OLD_TECH_IN_CHARGE:
                         $this->addOldAssignTechnician();
+                        break;
+
+                        //Send to the user previously in requesters (before removal)
+                    case Notification::OLD_REQUESTER_USER:
+                        $this->addOldUserActor($this->options['_old_user'] ?? null, CommonITILActor::REQUESTER);
+                        break;
+
+                        //Send to the group previously in requesters (before removal)
+                    case Notification::OLD_REQUESTER_GROUP:
+                        $this->addOldGroupActor($this->options['_old_group'] ?? null, CommonITILActor::REQUESTER);
+                        break;
+
+                        //Send to the user previously in observers (before removal)
+                    case Notification::OLD_OBSERVER_USER:
+                        $this->addOldUserActor($this->options['_old_user'] ?? null, CommonITILActor::OBSERVER);
+                        break;
+
+                        //Send to the group previously in observers (before removal)
+                    case Notification::OLD_OBSERVER_GROUP:
+                        $this->addOldGroupActor($this->options['_old_group'] ?? null, CommonITILActor::OBSERVER);
+                        break;
+
+                        //Send to the group previously in charge of the ITIL object (before removal)
+                    case Notification::OLD_ASSIGN_GROUP:
+                        $this->addOldGroupActor($this->options['_old_group'] ?? null, CommonITILActor::ASSIGN);
+                        break;
+
+                        //Send to the supplier previously in charge of the ITIL object (before removal)
+                    case Notification::OLD_ASSIGN_SUPPLIER:
+                        $this->addOldSupplierActor($this->options['_old_supplier'] ?? null, CommonITILActor::ASSIGN);
                         break;
 
                         //Assign to a supplier
@@ -1208,7 +1334,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $objettype = strtolower($this->obj::class);
 
         // Get data from ITIL objects
-        if ($event != 'alertnotclosed') {
+        if ($event != 'alertnotclosed' && !is_null($this->obj)) {
             $this->data = $this->getDataForObject($this->obj, $options);
         } else {
             if (
@@ -1222,6 +1348,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 }
                 $item = getItemForItemtype($objettype);
                 if ($item instanceof CommonITILObject) {
+                    /** @var T $item */
                     $objettypes = Toolbox::strtolower(getPlural($objettype));
                     $items      = [];
                     foreach ($options['items'] as $object) {
@@ -1261,9 +1388,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get data from an item
      *
-     * @param CommonITILObject $item    Object instance
-     * @param array            $options Options
-     * @param bool          $simple  (false by default)
+     * @param T     $item    Object instance
+     * @param array $options Options
+     * @param bool  $simple  (false by default)
      *
      * @return array
      **/
@@ -1502,9 +1629,22 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 'itemtype'  => $objettype,
                 'items_id'  => $item->fields['id'],
             ],
-            'ORDER'  => 'date_creation DESC',
+            'ORDER'  => ['date_creation DESC', 'id DESC'],
             'LIMIT'  => 1,
         ]);
+
+        // A refused solution is not the solution of the object. It must remain
+        // available for the solution rejection notification, but be ignored for
+        // any other event: otherwise a resolution notification sent after the
+        // object was resolved without a new solution would still display the
+        // previously refused solution.
+        if (
+            $solution
+            && (int) $itilsolution->fields['status'] === CommonITILValidation::REFUSED
+            && $this->raiseevent !== 'rejectsolution'
+        ) {
+            $solution = false;
+        }
 
         if ($solution) {
             $data["##$objettype.solution.type##"] = '';
@@ -1937,7 +2077,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data['timelineitems'][] = $tmptimelineitem;
             }
 
-            /** @var CommonITILObject $item */
             $inquest = $item::getSatisfactionClassInstance();
             if ($inquest !== null) {
                 $data['##satisfaction.type##'] = '';

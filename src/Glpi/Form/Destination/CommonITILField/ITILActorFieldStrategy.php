@@ -142,10 +142,13 @@ enum ITILActorFieldStrategy: string
                 ],
             ];
         } else {
+            $current_user = new User();
+            $current_user->getFromDB($user_id);
             return [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $user_id,
+                    'items_id' => (int) $user_id,
+                    'use_notification' => (int) $current_user->isUserNotificationEnable(),
                 ],
             ];
         }
@@ -410,6 +413,12 @@ enum ITILActorFieldStrategy: string
             $actors_ids = $item->fields[$fk_field];
             if (!is_array($actors_ids)) {
                 $actors_ids = [$actors_ids];
+            }
+
+            // 0 means unset, not an actor with id 0
+            $actors_ids = array_filter($actors_ids, fn($actor_id) => (int) $actor_id > 0);
+            if ($actors_ids === []) {
+                continue;
             }
 
             foreach ($actors_ids as $actor_id) {

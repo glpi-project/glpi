@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Features\Clonable;
@@ -207,7 +208,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         // No view to project by right on tasks add it
         if (
             !static::canView()
-            && Session::haveRight('projecttask', ProjectTask::READMY)
+            && Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)
         ) {
             $menu['project']['title'] = self::getTypeName(Session::getPluralNumber());
             $menu['project']['page']  = ProjectTask::getMyTasksURL(false);
@@ -235,13 +236,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         $links = [];
         if (
             static::canView()
-            || Session::haveRight('projecttask', ProjectTask::READMY)
+            || Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)
         ) {
             $pic_validate = '
-            <i class="ti ti-eye-check" title="' . __s('My tasks') . '"></i>
-            <span class="d-none d-xxl-block">
+            <i class="ti ti-eye-check" title="' . __s('My tasks') . '" aria-hidden="true"></i>
+            <span class="d-none d-xxl-block" aria-hidden="true">
                ' . __s('My tasks') . '
             </span>
+            <span class="visually-hidden">' . __s('My tasks') . '</span>
          ';
 
             $links[$pic_validate] = ProjectTask::getMyTasksURL(false);
@@ -376,7 +378,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
-        if (Session::haveRight('project', self::READALL)) {
+        if (Session::haveRight(Project::$rightname, self::READALL)) {
             return [
                 'LEFT JOIN' => [],
                 'WHERE' => [],
@@ -747,7 +749,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'joinparams'         => [
                 'jointype'           => 'child',
                 'specific_itemtype'  => 'ProjectCost',
-                'condition'          => ['NEWTABLE.projects_id' => new QueryExpression($DB::quoteName('REFTABLE.id'))],
+                'condition'          => ['NEWTABLE.projects_id' => new QueryIdentifier('REFTABLE.id')],
                 'beforejoin'         => [
                     'table'        => static::getTable(),
                     'joinparams'   => [
@@ -755,7 +757,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                     ],
                 ],
             ],
-            'computation'        => QueryFunction::sum('TABLE.cost'),
+            'computation'        => QueryFunction::sum(new QueryIdentifier('TABLE.cost')),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -1443,7 +1445,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                             {{ fields.dropdownItemsFromItemtypes('items_id', label, dropdown_params) }}
                         </div>
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>
@@ -1564,7 +1566,7 @@ TWIG, $twig_params);
 
             $restrict = [];
             if (!empty($column_ids) && !$get_default) {
-                $restrict = ['id' => $column_ids];
+                $restrict = [ProjectState::getTable() . '.id' => $column_ids];
             }
 
             $addselect = [];
@@ -1727,7 +1729,7 @@ TWIG, $twig_params);
             }
 
             $project->fields = $subproject;
-            $item['_readonly'] = !Project::canUpdate() || !$project->canUpdateItem();
+            $item['_readonly'] = !$project->can($project->getID(), UPDATE);
 
             $subproject_teams = array_filter($projectteams, static fn($e) => $e['projects_id'] === $subproject['id']);
             foreach ($subproject_teams as $teammember) {
@@ -1770,7 +1772,7 @@ TWIG, $twig_params);
             }
 
             $projecttask->fields = $subtask;
-            $item['_readonly'] = !ProjectTask::canUpdate() || !$projecttask->canUpdateItem();
+            $item['_readonly'] = !$projecttask->can($projecttask->getID(), UPDATE);
 
             $subtask_teams = array_filter($projecttaskteams, static fn($e) => $e['projecttasks_id'] == $subtask['id']);
             foreach ($subtask_teams as $teammember) {
@@ -1818,7 +1820,7 @@ TWIG, $twig_params);
             ];
         }
         $criteria = [];
-        if (!empty($column_ids)) {
+        if (!empty($column_ids) && !$get_default) {
             $criteria = [
                 'projectstates_id'   => $column_ids,
             ];
@@ -1872,7 +1874,8 @@ TWIG, $twig_params);
                 $content .= htmlescape(reset($typematches)['name']) . '&nbsp;';
             }
             if (array_key_exists('is_milestone', $item) && $item['is_milestone']) {
-                $content .= "&nbsp;<i class='ti ti-directions-filled' title='" . __s('Milestone') . "'></i>&nbsp;";
+                $content .= "&nbsp;<i class='ti ti-directions-filled' title='" . __s('Milestone') . "' aria-hidden='true'></i>"
+                    . "<span class='visually-hidden'>" . __s('Milestone') . "</span>&nbsp;";
             }
             if (isset($item['_steps']) && count($item['_steps'])) {
                 $done = count(array_filter($item['_steps'], static fn($step) => (int) $step['percent_done'] === 100));
@@ -1923,7 +1926,7 @@ TWIG, $twig_params);
         }
 
         foreach (array_keys($columns) as $column_id) {
-            if ($column_id !== 0 && !in_array($column_id, $column_ids)) {
+            if ($column_id !== 0 && !$get_default && !in_array($column_id, $column_ids)) {
                 unset($columns[$column_id]);
             }
         }
@@ -1952,7 +1955,7 @@ TWIG, $twig_params);
         $project = new Project();
         if (
             ($ID <= 0 && !self::canView())
-            || ($ID > 0 && (!$project->getFromDB($ID) || !$project->canViewItem()))
+            || ($ID > 0 && (!$project->getFromDB($ID) || !$project->can($project->getID(), READ)))
         ) {
             return false;
         }
@@ -2527,7 +2530,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => [
                 QueryFunction::cast(
-                    expression: QueryFunction::avg('percent_done'),
+                    expression: QueryFunction::avg(new QueryIdentifier('percent_done')),
                     type: 'UNSIGNED',
                     alias: 'percent_done'
                 ),

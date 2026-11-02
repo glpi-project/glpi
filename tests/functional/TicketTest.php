@@ -45,10 +45,12 @@ use Computer;
 use Contract;
 use CronTask;
 use Entity;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\ITILTrait;
+use Glpi\Tests\Glpi\SLMTrait;
 use Glpi\Tests\Glpi\ValidationStepTrait;
 use Group;
 use Group_Ticket;
@@ -83,12 +85,21 @@ use TicketValidation;
 use User;
 use UserEmail;
 
+use function Safe\copy;
+use function Safe\file_get_contents;
+use function Safe\json_encode;
+use function Safe\ob_end_clean;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\strtotime;
+
 /* Test for inc/ticket.class.php */
 
 class TicketTest extends DbTestCase
 {
     use ValidationStepTrait;
     use ITILTrait;
+    use SLMTrait;
 
     public static function addActorsProvider(): iterable
     {
@@ -1635,17 +1646,9 @@ class TicketTest extends DbTestCase
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to own editable $caller");
 
-        // Internal time to own, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
-        $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to own editable $caller");
-
         // Time to resolve, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to resolve $caller");
-
-        // Internal time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
-        $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to resolve $caller");
 
         //Type
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
@@ -1716,6 +1719,76 @@ class TicketTest extends DbTestCase
         $ticket = getItemByTypeName('Ticket', '_ticket01');
 
         $this->checkFormOutput($ticket);
+    }
+
+    public function testShowFormFromItemUsesItemEntity(): void
+    {
+        // Arrange: an asset in a sub-entity, while the current (default)
+        // session entity is its parent entity
+        $this->login('glpi', 'glpi');
+
+        $root_entity = $this->getTestRootEntity(only_id: true);
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer used to create a ticket from item',
+            'entities_id' => $item_entity,
+        ]);
+
+        // Active entity is the parent entity (with access to its sub-entities),
+        // which is not the same as the asset's own entity
+        $this->assertTrue(Session::changeActiveEntities($root_entity, true));
+
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // Act: render form for a new ticket created from the asset
+        ob_start();
+        $ticket->showForm($ticket->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the ticket entity follows the asset entity, not the
+        // currently active session entity
+        $this->assertEquals($item_entity, (int) $ticket->fields['entities_id']);
+        $this->assertNotEquals($root_entity, (int) $ticket->fields['entities_id']);
+    }
+
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // Act: render form for a new ticket created from the (inaccessible) asset
+        ob_start();
+        $ticket->showForm($ticket->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the ticket falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $ticket->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $ticket->fields['entities_id']);
     }
 
     public function testFormPostOnly()
@@ -2927,6 +3000,80 @@ class TicketTest extends DbTestCase
         // check status (should still be ASSIGNED)
         $this->assertTrue($ticket->getFromDB($tickets_id));
         $this->assertEquals(CommonITILObject::ASSIGNED, (int) $ticket->fields['status']);
+
+        // remove associated user
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [],
+            ],
+        ]));
+        // check status (should be INCOMING)
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals(CommonITILObject::INCOMING, (int) $ticket->fields['status']);
+
+        // add associated user
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 2,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]));
+        // check status (should be ASSIGNED)
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals(CommonITILObject::ASSIGNED, (int) $ticket->fields['status']);
+
+        // replace associated user
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 3,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]));
+        // check status (should still be ASSIGNED)
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals(CommonITILObject::ASSIGNED, (int) $ticket->fields['status']);
+
+        // change status to WAITING
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            'status' => CommonITILObject::WAITING,
+        ]));
+
+        // replace associated user
+        $this->assertTrue($ticket->update([
+            'id'     => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => 2,
+                        'use_notification' => 0,
+                        'default_email' => '',
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]));
+        // check status (should still be WAITING)
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+        $this->assertEquals(CommonITILObject::WAITING, (int) $ticket->fields['status']);
     }
 
     public function testClosedTicketTransfer()
@@ -3156,11 +3303,6 @@ class TicketTest extends DbTestCase
         $this->assertEquals('NULL', $input['time_to_own']);
         $this->assertEquals(0, (int) $input['slas_id_tto']);
         $this->assertEquals(0, (int) $input['slas_id_ttr']);
-
-        $this->assertEquals('NULL', $input['internal_time_to_resolve']);
-        $this->assertEquals('NULL', $input['internal_time_to_own']);
-        $this->assertEquals(0, (int) $input['olas_id_tto']);
-        $this->assertEquals(0, (int) $input['olas_id_ttr']);
 
         $this->assertEquals(0, (int) $input['_add_validation']);
 
@@ -3627,6 +3769,26 @@ class TicketTest extends DbTestCase
                 $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
             }
         }
+    }
+
+    public function testGetSlasData(): void
+    {
+        $this->login();
+        // arrange - create a ticket with TTO SLA
+        ['sla' => $sla_tto] = $this->createSla(sla_type: SLM::TTO);
+        ['sla' => $sla_ttr] = $this->createSla(sla_type: SLM::TTR);
+        $ticket = $this->createTicket(['slas_id_tto' => $sla_tto->getID()]);
+
+        // act + assert
+        $slas_data = $ticket->getSlasData();
+        $this->assertCount(1, $slas_data);
+        $this->assertEquals($sla_tto->getID(), $slas_data[0]['id']);
+
+        // arrange - add TTR SLA to the ticket
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), [            'slas_id_ttr' => $sla_ttr->getID(),        ]);
+        $slas_data = $ticket->getSlasData();
+        $this->assertCount(2, $slas_data);
+        $this->assertEqualsCanonicalizing([$sla_ttr->getID(), $sla_tto->getID()], array_column($slas_data, 'id'));
     }
 
     /**
@@ -4333,6 +4495,76 @@ class TicketTest extends DbTestCase
             'itemtype' => 'Ticket',
             'items_id' => $ticket1,
             'documents_id' => $documents_id,
+        ]));
+    }
+
+    public function testMergeDoesNotTriggerNotifications(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $user = getItemByTypeName(User::class, 'tech');
+        $this->createItem(UserEmail::class, [
+            'users_id'    => $user->getID(),
+            'is_default'  => 1,
+            'email'       => 'tech@tech.tech',
+        ]);
+
+        $ticket1 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif target',
+            'content'     => 'merge notif target',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+            '_actors'     => [
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ])->getID();
+        $ticket2 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif source',
+            'content'     => 'merge notif source',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+        ])->getID();
+
+        $fup = new ITILFollowup();
+        $fup->add([
+            'itemtype'  => 'Ticket',
+            'items_id'  => $ticket2,
+            'content'   => 'source ticket followup',
+        ]);
+
+        $task = new TicketTask();
+        $task->add([
+            'tickets_id' => $ticket2,
+            'content'    => 'source ticket task',
+        ]);
+
+        $status = [];
+        Ticket::merge($ticket1, [$ticket2], $status, [
+            'linktypes'  => ['ITILFollowup', 'TicketTask'],
+            'link_type'  => \CommonITILObject_CommonITILObject::SON_OF,
+        ]);
+        $this->assertSame([$ticket2 => 0], $status);
+
+        // Merging must not queue any "add_followup"/"add_task" notification for the merged-in content
+        $queue = new \QueuedNotification();
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_followup',
+        ]));
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_task',
         ]));
     }
 
@@ -5842,7 +6074,7 @@ HTML,
         CronTask::launch(
             - CronTask::MODE_INTERNAL, // force
             1,
-            'createinquest'
+            'createinquestticket'
         );
 
         // Ensure survey has been created
@@ -7388,12 +7620,14 @@ HTML,
             '_skip_auto_assign' => true,
         ]);
         $ticket_id = $ticket->getID();
+        // GLPI zero-pads the ticket id to at least 7 digits in notification subjects.
+        $padded_ticket_id = sprintf('%07d', $ticket_id);
 
         // Build a raw email from the sender replying to the ticket (linked via subject line)
         $raw = implode("\r\n", [
             "From: {$from_user} <{$sender_email}>",
             "To: helpdesk@glpi.com",
-            "Subject: Re: [GLPI #{$ticket_id}]",
+            "Subject: Re: [GLPI #{$padded_ticket_id}]",
             "Message-ID: <test-{$from_user}-followup@glpi-test.com>",
             "Date: Mon, 01 Jan 2024 12:00:00 +0000",
             "",
@@ -8718,6 +8952,48 @@ HTML,
         $this->assertTrue($fn_dropdown_has_id($values['results'], $not_my_tickets_id));
     }
 
+    public function testDropdownValueOrderedByIdForLinkSearch()
+    {
+        $this->login();
+
+        // Names are chosen so that alphabetical order (Alpha, Mid, Zulu) differs
+        // from creation/id order, to distinguish the two sorting strategies.
+        $prefix = $this->getUniqueString();
+        $entities_id = $this->getTestRootEntity(true);
+        $first = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Zulu",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+        $second = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Alpha",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+        $third = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Mid",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+
+        $dropdown_params = [
+            'itemtype'         => Ticket::class,
+            'searchText'       => $prefix,
+            'entity_restrict'  => $entities_id,
+            'page_limit'       => 10,
+        ];
+        $idor = Session::getNewIDORToken(Ticket::class, $dropdown_params);
+        $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
+
+        $found_ids = array_column($values['results'], 'id');
+        // Only the 3 tickets created above are expected, sorted by id descending
+        // (most recent first), not alphabetically by name.
+        $this->assertEquals(
+            [$third->getID(), $second->getID(), $first->getID()],
+            $found_ids
+        );
+    }
+
     public function testGetCommonCriteria()
     {
         global $DB;
@@ -9433,7 +9709,7 @@ HTML,
             Ticket::class,
             [
                 'name'        => 'ITILsolution Title',
-                'content'     => '',
+                'content'     => 'content',
                 'entities_id' => 0,
                 '_actors'     => [
                     'requester' => [
@@ -10217,6 +10493,124 @@ HTML,
     }
 
     /**
+     * A ticket created without template input (e.g. from mailcollector) must store the template
+     */
+    public function testTemplateIsStoredOnAddWithoutTemplateInput(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $template = $this->createItem(TicketTemplate::class, [
+            'name' => 'Dedicated template',
+        ]);
+        $category = $this->createItem(ITILCategory::class, [
+            'name'                        => 'Category with dedicated template',
+            'entities_id'                 => $entity_id,
+            'is_recursive'                => 1,
+            'tickettemplates_id_incident' => $template->getID(),
+            'tickettemplates_id_demand'   => $template->getID(),
+        ]);
+
+        $rule = $this->createItem(Rule::class, [
+            'name'         => 'Set category with dedicated template',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'entities_id'  => $entity_id,
+            'is_recursive' => 1,
+        ]);
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'name',
+            'condition' => Rule::PATTERN_CONTAIN,
+            'pattern'   => 'dedicated template',
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'itilcategories_id',
+            'value'       => $category->getID(),
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'         => 'Ticket with dedicated template',
+            'content'      => 'content',
+            'entities_id'  => $entity_id,
+            '_auto_import' => 1,
+        ], ['_auto_import']);
+        $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
+        $this->assertEquals($template->getID(), $ticket->fields['tickettemplates_id']);
+
+        // Without category template, profile or entity template must not be stored
+        $ticket = $this->createItem(Ticket::class, [
+            'name'         => 'Ticket without category',
+            'content'      => 'content',
+            'entities_id'  => $entity_id,
+            '_auto_import' => 1,
+        ], ['_auto_import']);
+        $this->assertEquals(0, $ticket->fields['itilcategories_id']);
+        $this->assertEquals(0, $ticket->fields['tickettemplates_id']);
+    }
+
+    /**
+     * A mandatory template field added to a ticket after a solution was already submitted
+     * must not prevent that solution from being validated, nor the ticket from being closed.
+     */
+    public function testValidateSolutionNotBlockedByMandatoryTemplateFieldAddedAfterward(): void
+    {
+        $this->login();
+
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity');
+
+        // Create a ticket with an empty category
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket with empty category',
+            'content'     => 'content',
+            'entities_id' => $entity->getID(),
+        ]);
+        $this->assertEquals(0, (int) $ticket->fields['itilcategories_id']);
+
+        // Add a solution, which is waiting for approval by default
+        $solution = $this->createItem(ITILSolution::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => 'solution content',
+        ]);
+        $this->assertEquals(CommonITILValidation::WAITING, (int) $solution->fields['status']);
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::SOLVED, (int) $ticket->fields['status']);
+
+        // Only now, add a ticket template with the category as a mandatory field,
+        // and assign it to the ticket's entity
+        $template = $this->createItem(TicketTemplate::class, [
+            'name' => 'Template with mandatory category',
+        ]);
+        $mandatory_field = new TicketTemplateMandatoryField();
+        $this->createItem(TicketTemplateMandatoryField::class, [
+            'tickettemplates_id' => $template->getID(),
+            'num'                => $mandatory_field->getFieldNum($template, 'Category'),
+        ]);
+        $this->updateItem(Entity::class, $entity->getID(), [
+            'tickettemplates_id' => $template->getID(),
+        ]);
+
+        // Validate the solution
+        $this->createItem(ITILFollowup::class, [
+            'itemtype'  => Ticket::class,
+            'items_id'  => $ticket->getID(),
+            'add_close' => '1',
+        ], ['add_close']);
+
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertEquals(CommonITILValidation::ACCEPTED, (int) $solution->fields['status'], 'Solution should have been accepted');
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::CLOSED, (int) $ticket->fields['status'], 'Ticket should have been closed');
+    }
+
+    /**
      * Data provider for testGetAssociatedDocumentsWithoutActiveSession
      * Returns different scenarios with timeline items (followup/task/solution) with various visibility and user rights
      */
@@ -10542,6 +10936,268 @@ HTML,
     }
 
     /**
+     * @return iterable
+     */
+    public static function delActorNotificationProvider(): iterable
+    {
+        yield [
+            'role'            => CommonITILActor::REQUESTER,
+            'target_itemtype' => User::class,
+            'event'           => 'remove_requester_user',
+            'target'          => \Notification::OLD_REQUESTER_USER,
+        ];
+        yield [
+            'role'            => CommonITILActor::REQUESTER,
+            'target_itemtype' => Group::class,
+            'event'           => 'remove_requester_group',
+            'target'          => \Notification::OLD_REQUESTER_GROUP,
+        ];
+        yield [
+            'role'            => CommonITILActor::OBSERVER,
+            'target_itemtype' => User::class,
+            'event'           => 'remove_observer_user',
+            'target'          => \Notification::OLD_OBSERVER_USER,
+        ];
+        yield [
+            'role'            => CommonITILActor::OBSERVER,
+            'target_itemtype' => Group::class,
+            'event'           => 'remove_observer_group',
+            'target'          => \Notification::OLD_OBSERVER_GROUP,
+        ];
+        yield [
+            'role'            => CommonITILActor::ASSIGN,
+            'target_itemtype' => Group::class,
+            'event'           => 'remove_assign_group',
+            'target'          => \Notification::OLD_ASSIGN_GROUP,
+        ];
+        yield [
+            'role'            => CommonITILActor::ASSIGN,
+            'target_itemtype' => Supplier::class,
+            'event'           => 'remove_assign_supplier',
+            'target'          => \Notification::OLD_ASSIGN_SUPPLIER,
+        ];
+        yield [
+            'role'            => CommonITILActor::ASSIGN,
+            'target_itemtype' => User::class,
+            'event'           => 'remove_assign_user',
+            'target'          => \Notification::OLD_TECH_IN_CHARGE,
+        ];
+    }
+
+    /**
+     * Create the actor to be removed for {@see testDelActorNotification()}, along with its expected notification recipient email.
+     *
+     * @return array{0: int, 1: string}
+     */
+    private function createActorForDelNotificationTest(string $target_itemtype): array
+    {
+        $name  = $this->getUniqueString();
+        $email = strtolower(str_replace(' ', '', $name)) . '@glpi-test.local';
+
+        if ($target_itemtype === User::class) {
+            $user = $this->createItem(User::class, ['name' => $name]);
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'is_default' => 1,
+                'email'      => $email,
+            ]);
+            return [$user->getID(), $email];
+        }
+
+        if ($target_itemtype === Group::class) {
+            $group = $this->createItem(Group::class, [
+                'name'      => $name,
+                'is_notify' => 1,
+            ]);
+            $member = $this->createItem(User::class, ['name' => $this->getUniqueString()]);
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $member->getID(),
+                'is_default' => 1,
+                'email'      => $email,
+            ]);
+            $this->createItem(Group_User::class, [
+                'groups_id' => $group->getID(),
+                'users_id'  => $member->getID(),
+            ]);
+            return [$group->getID(), $email];
+        }
+
+        // Supplier::class
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => $name,
+            'entities_id' => $this->getTestRootEntity(true),
+            'email'       => $email,
+        ]);
+        return [$supplier->getID(), $email];
+    }
+
+    #[DataProvider('delActorNotificationProvider')]
+    public function testDelActorNotification(int $role, string $target_itemtype, string $event, int $target): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+
+        $notif = $this->createItem(\Notification::class, [
+            'name'         => 'Old actor test - ' . $event,
+            'itemtype'     => Ticket::class,
+            'event'        => $event,
+            'is_active'    => 1,
+            'is_recursive' => 1,
+            'entities_id'  => 0,
+        ]);
+        $template = $this->createItem(\NotificationTemplate::class, [
+            'name'     => 'Old actor test template - ' . $event,
+            'itemtype' => Ticket::class,
+        ]);
+        $this->createItem(\NotificationTemplateTranslation::class, [
+            'notificationtemplates_id' => $template->getID(),
+            'language'                 => '',
+            'subject'                  => '##ticket.action## ##ticket.title##',
+            'content_text'             => '##ticket.action##',
+            'content_html'             => '##ticket.action##',
+        ]);
+        $this->createItem(\Notification_NotificationTemplate::class, [
+            'notifications_id'         => $notif->getID(),
+            'mode'                     => 'mailing',
+            'notificationtemplates_id' => $template->getID(),
+        ]);
+        $this->createItem(\NotificationTarget::class, [
+            'notifications_id' => $notif->getID(),
+            'type'             => \Notification::USER_TYPE,
+            'items_id'         => $target,
+        ]);
+
+        [$actor_items_id, $expected_recipient] = $this->createActorForDelNotificationTest($target_itemtype);
+
+        $role_key = match ($role) {
+            CommonITILActor::REQUESTER => 'requester',
+            CommonITILActor::OBSERVER  => 'observer',
+            CommonITILActor::ASSIGN    => 'assign',
+        };
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Old actor notification test',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_actors'     => [
+                $role_key => [
+                    [
+                        'itemtype'         => $target_itemtype,
+                        'items_id'         => $actor_items_id,
+                        'use_notification' => 1,
+                    ],
+                ],
+            ],
+        ]);
+
+        $link_class = match ($target_itemtype) {
+            User::class     => Ticket_User::class,
+            Group::class    => Group_Ticket::class,
+            Supplier::class => Supplier_Ticket::class,
+        };
+        $link = new $link_class();
+        $this->assertTrue($link->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+            $link->getActorForeignKey() => $actor_items_id,
+            'type'       => $role,
+        ]));
+        $this->assertTrue($link->delete(['id' => $link->getID()], true));
+
+        $queue = new \QueuedNotification();
+        $this->assertTrue(
+            $queue->getFromDBByCrit([
+                'itemtype'  => Ticket::class,
+                'items_id'  => $ticket->getID(),
+                'event'     => $event,
+                'mode'      => 'mailing',
+                'recipient' => $expected_recipient,
+            ]),
+            sprintf('No queued notification found for event "%s" and recipient "%s"', $event, $expected_recipient)
+        );
+    }
+
+    public function testDelActorNotificationSkippedWhenUseNotificationDisabled(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+
+        $event = 'remove_requester_user';
+
+        $notif = $this->createItem(\Notification::class, [
+            'name'         => 'Old actor test - ' . $event,
+            'itemtype'     => Ticket::class,
+            'event'        => $event,
+            'is_active'    => 1,
+            'is_recursive' => 1,
+            'entities_id'  => 0,
+        ]);
+        $template = $this->createItem(\NotificationTemplate::class, [
+            'name'     => 'Old actor test template - ' . $event,
+            'itemtype' => Ticket::class,
+        ]);
+        $this->createItem(\NotificationTemplateTranslation::class, [
+            'notificationtemplates_id' => $template->getID(),
+            'language'                 => '',
+            'subject'                  => '##ticket.action## ##ticket.title##',
+            'content_text'             => '##ticket.action##',
+            'content_html'             => '##ticket.action##',
+        ]);
+        $this->createItem(\Notification_NotificationTemplate::class, [
+            'notifications_id'         => $notif->getID(),
+            'mode'                     => 'mailing',
+            'notificationtemplates_id' => $template->getID(),
+        ]);
+        $this->createItem(\NotificationTarget::class, [
+            'notifications_id' => $notif->getID(),
+            'type'             => \Notification::USER_TYPE,
+            'items_id'         => \Notification::OLD_REQUESTER_USER,
+        ]);
+
+        [$actor_items_id, $expected_recipient] = $this->createActorForDelNotificationTest(User::class);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Old actor notification test - use_notification disabled',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_actors'     => [
+                'requester' => [
+                    [
+                        'itemtype'         => User::class,
+                        'items_id'         => $actor_items_id,
+                        'use_notification' => 0,
+                    ],
+                ],
+            ],
+        ]);
+
+        $link = new Ticket_User();
+        $this->assertTrue($link->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+            'users_id'   => $actor_items_id,
+            'type'       => CommonITILActor::REQUESTER,
+        ]));
+        $this->assertTrue($link->delete(['id' => $link->getID()], true));
+
+        $queue = new \QueuedNotification();
+        $this->assertFalse(
+            $queue->getFromDBByCrit([
+                'itemtype'  => Ticket::class,
+                'items_id'  => $ticket->getID(),
+                'event'     => $event,
+                'mode'      => 'mailing',
+                'recipient' => $expected_recipient,
+            ]),
+            sprintf('Unexpected queued notification found for event "%s" and recipient "%s"', $event, $expected_recipient)
+        );
+    }
+
+    /**
      * Test that sourceof_items_id / sourceitems_id references in followups and tasks are cleaned when a ticket is purged
      * @return void
      */
@@ -10633,5 +11289,1563 @@ HTML,
         ], ['name']);
 
         $this->assertSame(255, mb_strlen($ticket->fields['name']));
+    }
+
+    public function testGetAssociatedDocumentsOfPrivateTaskWithUnrelatedGroup(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $tech_user_id   = getItemByTypeName(User::class, 'tech', true);
+        $normal_user_id = getItemByTypeName(User::class, 'normal', true);
+
+        // Give the tech profile full visibility on private tasks (seeprivate)
+        // in addition to seeprivategroups
+        $tprofile_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $profile_right = new ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $tprofile_id,
+            'name'        => 'task',
+        ]);
+        $this->updateItem(
+            ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => \CommonITILTask::SEEPUBLIC
+                    + \CommonITILTask::SEEPRIVATE
+                    + \CommonITILTask::SEEPRIVATEGROUPS,
+            ]
+        );
+
+        // Group with no relation at all to the ticket or its tasks
+        $unrelated_group = $this->createItem(Group::class, [
+            'name' => 'Unrelated group',
+        ]);
+        $this->createItem(Group_User::class, [
+            'groups_id' => $unrelated_group->getID(),
+            'users_id'  => $tech_user_id,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Private task neither authored by assigned to nor linked by group to the tech user
+        $task = $this->createItem(TicketTask::class, [
+            'tickets_id'    => $ticket->getID(),
+            'content'       => 'private task unrelated to tech user',
+            'is_private'    => 1,
+            'users_id'      => $normal_user_id,
+            'users_id_tech' => $normal_user_id,
+        ]);
+
+        $doc = $this->createItem(\Document::class, [
+            'name' => 'Doc linked to unrelated private task',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'     => $task->getID(),
+            'itemtype'     => TicketTask::class,
+            'documents_id' => $doc->getID(),
+        ]);
+
+        // Tech user has seeprivate but also belongs to an
+        // unrelated group with seeprivategroups enabled. Merely belonging to that
+        // group must not restrict access to documents they are otherwise allowed to see
+        $this->login('tech', 'tech');
+
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria();
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+
+        $this->assertContains($doc->getID(), $found_docs);
+    }
+
+    /**
+     * Data provider for testShowCentralListRights
+     */
+    public static function showCentralListRightsProvider(): iterable
+    {
+        // "waiting": tickets on hold, assigned to the user or their group.
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [CREATE],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['waiting_assign', 'waiting_requestbyself_assign', 'waiting_observer_assign', 'waiting_requestbyself_observer_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['waiting_assign', 'waiting_requestbyself_assign', 'waiting_observer_assign', 'waiting_requestbyself_observer_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'waiting',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['waiting_assign', 'waiting_requestbyself_assign', 'waiting_observer_assign', 'waiting_requestbyself_observer_assign'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['waiting_group_assign', 'waiting_group_requester_assign', 'waiting_group_observer_assign', 'waiting_group_requester_observer_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['waiting_group_assign', 'waiting_group_requester_assign', 'waiting_group_observer_assign', 'waiting_group_requester_observer_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'waiting',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        // "process": tickets to handle (incoming/planned/assigned), assigned to the user or their group.
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_assign', 'incoming_requestbyself_assign', 'incoming_observer_assign', 'incoming_requestbyself_observer_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['incoming_assign', 'incoming_requestbyself_assign', 'incoming_observer_assign', 'incoming_requestbyself_observer_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'process',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['incoming_assign', 'incoming_requestbyself_assign', 'incoming_observer_assign', 'incoming_requestbyself_observer_assign'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_group_assign', 'incoming_group_requester_assign', 'incoming_group_observer_assign', 'incoming_group_requester_observer_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['incoming_group_assign', 'incoming_group_requester_assign', 'incoming_group_observer_assign', 'incoming_group_requester_observer_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'process',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        // "toapprove": solved tickets requested by the user (or their group), pending approval.
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['solved_requestbyself'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['solved_requestbyself'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'toapprove',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['solved_requestbyself'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['solved_group_requester'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['solved_group_requester'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'toapprove',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        // "tovalidate": tickets awaiting the user's validation, directly or via a group.
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'tovalidate',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'tovalidate',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'tovalidate',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['tovalidate_user', 'tovalidate_group'],
+            'showgrouptickets'  => true,
+        ];
+
+        // "validation.rejected": assigned tickets whose validation was refused.
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['rejected_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['rejected_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'validation.rejected',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['rejected_assign'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['rejected_group_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['rejected_group_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'validation.rejected',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'validation.rejected',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        // "solution.rejected": assigned tickets whose solution was refused.
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['solution_rejected_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['solution_rejected_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'solution.rejected',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['solution_rejected_assign'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['solution_rejected_group_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['solution_rejected_group_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'solution.rejected',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'solution.rejected',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        // "observed": tickets the user (or their group) observes, excluding ones also requested or assigned.
+        yield [
+            'status'           => 'observed',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_observed', 'waiting_observed'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['incoming_observed', 'waiting_observed'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'observed',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['incoming_observed', 'waiting_observed'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_group_observed', 'waiting_group_observed'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['incoming_group_observed', 'waiting_group_observed'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'observed',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        // "survey": closed tickets with a pending satisfaction survey.
+        yield [
+            'status'           => 'survey',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['survey_requester'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['survey_requester'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'survey',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['survey_requester'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READASSIGN, Ticket::SURVEY],
+            'expected_tickets' => ['survey_recipient'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['survey_group_requester'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['survey_group_requester'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'survey',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'survey',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        // "requestbyself": tickets requested by the user (or their group), excluding ones also assigned.
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_requestbyself', 'waiting_requestbyself', 'incoming_requestbyself_observer', 'waiting_requestbyself_observer'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['incoming_requestbyself', 'waiting_requestbyself', 'incoming_requestbyself_observer', 'waiting_requestbyself_observer'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'requestbyself',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['incoming_requestbyself', 'waiting_requestbyself', 'incoming_requestbyself_observer', 'waiting_requestbyself_observer'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_group_requester', 'waiting_group_requester', 'incoming_group_requester_observer', 'waiting_group_requester_observer'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['incoming_group_requester', 'waiting_group_requester', 'incoming_group_requester_observer', 'waiting_group_requester_observer'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'requestbyself',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+    }
+
+    /**
+     * Test that the central list of tickets shows the correct tickets based on user rights.
+     */
+    public function testShowCentralListRights(): void
+    {
+        $this->login();
+
+        // Create a test user and assign rights
+        $user = $this->createItem(User::class, [
+            'name' => 'testShowCentralListRights_user',
+            'password' => 'testShowCentralListRights_password',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'testShowCentralListRights profile',
+        ]);
+
+        $this->createItem(Profile_User::class, [
+            'profiles_id'  => $profile->getID(),
+            'users_id'     => $user->getID(),
+            'entities_id'  => $this->getTestRootEntity(true),
+            'is_recursive' => 0,
+        ]);
+
+        // Fetched once so their rights can be reset between provider cases below.
+        $ticket_profile_right = new ProfileRight();
+        $ticket_profile_right->getFromDBByCrit([
+            'profiles_id' => $profile->getID(),
+            'name'        => Ticket::$rightname,
+        ]);
+
+        $validation_profile_right = new ProfileRight();
+        $validation_profile_right->getFromDBByCrit([
+            'profiles_id' => $profile->getID(),
+            'name'        => TicketValidation::$rightname,
+        ]);
+
+        $group = $this->createItem(Group::class, [
+            'name' => 'testShowCentralListRights group',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->createItem(Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => $user->getID(),
+        ]);
+
+        $entities_id = $this->getTestRootEntity(true);
+
+        // Create tickets with various statuses and assignments
+        $incoming_tickets = $this->createItems(
+            Ticket::class,
+            [
+                [
+                    'name' => 'incoming_requestbyself',
+                    'content' => 'incoming requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_observed',
+                    'content' => 'observer ticket content',
+                    '_users_id_observer' => $user->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_assign',
+                    'content' => 'assign ticket content',
+                    '_users_id_assign' => $user->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_requestbyself_observer',
+                    'content' => 'incoming requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    '_users_id_observer' => $user->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_requestbyself_assign',
+                    'content' => 'incoming requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    '_users_id_assign' => $user->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_observer_assign',
+                    'content' => 'incoming requester ticket content',
+                    '_users_id_observer' => $user->getID(),
+                    '_users_id_assign' => $user->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_requestbyself_observer_assign',
+                    'content' => 'incoming requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    '_users_id_observer' => $user->getID(),
+                    '_users_id_assign' => $user->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_requester',
+                    'content' => 'group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_observed',
+                    'content' => 'group observer ticket content',
+                    '_groups_id_observer' => $group->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_assign',
+                    'content' => 'group assign ticket content',
+                    '_groups_id_assign' => $group->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_requester_observer',
+                    'content' => 'incoming group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    '_groups_id_observer' => $group->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_requester_assign',
+                    'content' => 'incoming group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    '_groups_id_assign' => $group->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_observer_assign',
+                    'content' => 'incoming group requester ticket content',
+                    '_groups_id_observer' => $group->getID(),
+                    '_groups_id_assign' => $group->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_requester_observer_assign',
+                    'content' => 'incoming group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    '_groups_id_observer' => $group->getID(),
+                    '_groups_id_assign' => $group->getID(),
+                    'entities_id' => $entities_id,
+                ],
+            ]
+        );
+
+        $waiting_tickets = $this->createItems(
+            Ticket::class,
+            [
+                [
+                    'name' => 'waiting_requestbyself',
+                    'content' => 'waiting requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_observed',
+                    'content' => 'waiting observer ticket content',
+                    '_users_id_observer' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_assign',
+                    'content' => 'waiting assign ticket content',
+                    '_users_id_assign' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_requestbyself_observer',
+                    'content' => 'waiting requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    '_users_id_observer' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_requestbyself_assign',
+                    'content' => 'waiting requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    '_users_id_assign' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_observer_assign',
+                    'content' => 'waiting observer ticket content',
+                    '_users_id_observer' => $user->getID(),
+                    '_users_id_assign' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_requestbyself_observer_assign',
+                    'content' => 'waiting requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    '_users_id_observer' => $user->getID(),
+                    '_users_id_assign' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_requester',
+                    'content' => 'waiting group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_observed',
+                    'content' => 'waiting group observer ticket content',
+                    '_groups_id_observer' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_assign',
+                    'content' => 'waiting group assign ticket content',
+                    '_groups_id_assign' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_requester_observer',
+                    'content' => 'waiting group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    '_groups_id_observer' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_requester_assign',
+                    'content' => 'waiting group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    '_groups_id_assign' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_observer_assign',
+                    'content' => 'waiting group observer ticket content',
+                    '_groups_id_observer' => $group->getID(),
+                    '_groups_id_assign' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_requester_observer_assign',
+                    'content' => 'waiting group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    '_groups_id_observer' => $group->getID(),
+                    '_groups_id_assign' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+            ]
+        );
+
+        $solved_tickets = $this->createItems(
+            Ticket::class,
+            [
+                [
+                    'name' => 'solved_requestbyself',
+                    'content' => 'solved requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::SOLVED,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'solved_group_requester',
+                    'content' => 'solved group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    'status' => Ticket::SOLVED,
+                    'entities_id' => $entities_id,
+                ],
+            ]
+        );
+
+        // GLPI modifies changes the status to ASSIGNED when a technician is assigned to a new ticket.
+        // We reassign the "INCOMING" status.
+        foreach ($incoming_tickets as $incoming_ticket) {
+            $this->updateItem(Ticket::class, $incoming_ticket->getID(), [
+                'status' => Ticket::INCOMING,
+            ]);
+        }
+
+        [$tovalidate_user_ticket, $tovalidate_group_ticket, $tovalidate_closed_ticket, $tovalidate_accepted_ticket] = $this->createItems(
+            Ticket::class,
+            [
+                [
+                    'name' => 'tovalidate_user',
+                    'content' => 'tovalidate ticket content',
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'tovalidate_group',
+                    'content' => 'tovalidate ticket content',
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'tovalidate_closed',
+                    'content' => 'tovalidate ticket content',
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'tovalidate_accepted',
+                    'content' => 'tovalidate ticket content',
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+            ]
+        );
+        $tovalidate_tickets = [$tovalidate_user_ticket, $tovalidate_group_ticket, $tovalidate_closed_ticket, $tovalidate_accepted_ticket];
+
+        // Waiting validation targeting the user directly.
+        $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $tovalidate_user_ticket->getID(),
+            'entities_id'     => $entities_id,
+            'itemtype_target' => User::class,
+            'items_id_target' => $user->getID(),
+        ]);
+
+        // Waiting validation targeting one of the user's groups
+        $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $tovalidate_group_ticket->getID(),
+            'entities_id'     => $entities_id,
+            'itemtype_target' => Group::class,
+            'items_id_target' => $group->getID(),
+        ]);
+
+        // Waiting validation, but the ticket itself is closed.
+        $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $tovalidate_closed_ticket->getID(),
+            'entities_id'     => $entities_id,
+            'itemtype_target' => User::class,
+            'items_id_target' => $user->getID(),
+        ]);
+        $this->updateItem(Ticket::class, $tovalidate_closed_ticket->getID(), [
+            'status' => Ticket::CLOSED,
+        ]);
+
+        // Validation already answered.
+        $tovalidate_accepted_validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $tovalidate_accepted_ticket->getID(),
+            'entities_id'     => $entities_id,
+            'itemtype_target' => User::class,
+            'items_id_target' => $user->getID(),
+        ]);
+
+        [$rejected_assign_ticket, $rejected_group_assign_ticket, $rejected_closed_ticket] = $this->createItems(
+            Ticket::class,
+            [
+                [
+                    'name' => 'rejected_assign',
+                    'content' => 'rejected ticket content',
+                    '_users_id_assign' => $user->getID(),
+                    'status' => Ticket::SOLVED,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'rejected_group_assign',
+                    'content' => 'rejected group ticket content',
+                    '_groups_id_assign' => $group->getID(),
+                    'status' => Ticket::SOLVED,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'rejected_closed',
+                    'content' => 'rejected closed ticket content',
+                    '_users_id_assign' => $user->getID(),
+                    'status' => Ticket::SOLVED,
+                    'entities_id' => $entities_id,
+                ],
+            ]
+        );
+        $rejected_tickets = [$rejected_assign_ticket, $rejected_group_assign_ticket, $rejected_closed_ticket];
+
+        $rejected_assign_validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $rejected_assign_ticket->getID(),
+            'entities_id'     => $entities_id,
+            'itemtype_target' => User::class,
+            'items_id_target' => $user->getID(),
+        ]);
+
+        $rejected_group_assign_validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $rejected_group_assign_ticket->getID(),
+            'entities_id'     => $entities_id,
+            'itemtype_target' => User::class,
+            'items_id_target' => $user->getID(),
+        ]);
+
+        $rejected_closed_validation = $this->createItem(TicketValidation::class, [
+            'tickets_id'      => $rejected_closed_ticket->getID(),
+            'entities_id'     => $entities_id,
+            'itemtype_target' => User::class,
+            'items_id_target' => $user->getID(),
+        ]);
+        $this->updateItem(Ticket::class, $rejected_closed_ticket->getID(), [
+            'status' => Ticket::CLOSED,
+        ]);
+
+        [$solution_rejected_assign_ticket, $solution_rejected_group_assign_ticket, $solution_rejected_closed_ticket] = $this->createItems(
+            Ticket::class,
+            [
+                [
+                    'name' => 'solution_rejected_assign',
+                    'content' => 'solution rejected ticket content',
+                    '_users_id_assign' => $user->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'solution_rejected_group_assign',
+                    'content' => 'solution rejected group ticket content',
+                    '_groups_id_assign' => $group->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'solution_rejected_closed',
+                    'content' => 'solution rejected closed ticket content',
+                    '_users_id_assign' => $user->getID(),
+                    'entities_id' => $entities_id,
+                ],
+            ]
+        );
+        $solution_rejected_tickets = [$solution_rejected_assign_ticket, $solution_rejected_group_assign_ticket, $solution_rejected_closed_ticket];
+
+        foreach ($solution_rejected_tickets as $solution_rejected_ticket) {
+            $solution = $this->createItem(ITILSolution::class, [
+                'itemtype' => Ticket::class,
+                'items_id' => $solution_rejected_ticket->getID(),
+                'content'  => 'content',
+            ]);
+            $this->updateItem(ITILSolution::class, $solution->getID(), [
+                'status' => CommonITILValidation::REFUSED,
+            ]);
+        }
+
+        // The solution is refused above, but the ticket itself gets closed:.
+        $this->updateItem(Ticket::class, $solution_rejected_closed_ticket->getID(), [
+            'status' => Ticket::CLOSED,
+        ]);
+
+        [
+            $survey_requester_ticket,
+            $survey_group_requester_ticket,
+            $survey_recipient_ticket,
+            $survey_answered_ticket,
+            $survey_expired_ticket,
+        ] = $this->createItems(
+            Ticket::class,
+            [
+                [
+                    'name' => 'survey_requester',
+                    'content' => 'survey ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::CLOSED,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'survey_group_requester',
+                    'content' => 'survey group ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    'status' => Ticket::CLOSED,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'survey_recipient',
+                    'content' => 'survey recipient ticket content',
+                    'users_id_recipient' => $user->getID(),
+                    '_skip_auto_assign' => true,
+                    'status' => Ticket::CLOSED,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'survey_answered',
+                    'content' => 'survey answered ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::CLOSED,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'survey_expired',
+                    'content' => 'survey expired ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::CLOSED,
+                    // Closed more than Entity::MAX_INQUEST_DURATION_DAYS days ago: must NOT appear.
+                    'date' => '2020-01-01 00:00:00',
+                    'closedate' => '2020-01-01 00:00:00',
+                    'entities_id' => $entities_id,
+                ],
+            ]
+        );
+        $survey_tickets = [
+            $survey_requester_ticket,
+            $survey_group_requester_ticket,
+            $survey_recipient_ticket,
+            $survey_answered_ticket,
+            $survey_expired_ticket,
+        ];
+
+        foreach ([$survey_requester_ticket, $survey_group_requester_ticket, $survey_recipient_ticket] as $survey_ticket) {
+            $this->createItem(TicketSatisfaction::class, [
+                'tickets_id' => $survey_ticket->getID(),
+                'type'       => CommonITILSatisfaction::TYPE_INTERNAL,
+                'date_begin' => $_SESSION['glpi_currenttime'],
+            ]);
+        }
+
+        // Survey already answered: must NOT appear.
+        $this->createItem(TicketSatisfaction::class, [
+            'tickets_id'    => $survey_answered_ticket->getID(),
+            'type'          => CommonITILSatisfaction::TYPE_INTERNAL,
+            'date_begin'    => $_SESSION['glpi_currenttime'],
+            'date_answered' => $_SESSION['glpi_currenttime'],
+        ]);
+
+        $this->createItem(TicketSatisfaction::class, [
+            'tickets_id' => $survey_expired_ticket->getID(),
+            'type'       => CommonITILSatisfaction::TYPE_INTERNAL,
+            'date_begin' => '2020-01-01 00:00:00',
+        ]);
+
+        $tickets = array_merge(
+            $incoming_tickets,
+            $waiting_tickets,
+            $solved_tickets,
+            $tovalidate_tickets,
+            $rejected_tickets,
+            $solution_rejected_tickets,
+            $survey_tickets
+        );
+
+        // Log in as the test user and change to the created profile
+        $this->login($user->fields['name'], 'testShowCentralListRights_password');
+
+        Session::changeProfile($profile->getID());
+
+        // Answering a validation is only allowed to its target, so this must happen
+        // once logged in as the test user.
+        $this->updateItem(TicketValidation::class, $tovalidate_accepted_validation->getID(), [
+            'status' => CommonITILValidation::ACCEPTED,
+        ]);
+        foreach ([$rejected_assign_validation, $rejected_group_assign_validation, $rejected_closed_validation] as $validation) {
+            $this->updateItem(TicketValidation::class, $validation->getID(), [
+                'status'             => CommonITILValidation::REFUSED,
+                'comment_validation' => 'refused for test purposes',
+            ]);
+        }
+
+        // Run every provider case
+        foreach (self::showCentralListRightsProvider() as $case) {
+            $status = $case['status'];
+            $rights = $case['rights'];
+            $expected_tickets = $case['expected_tickets'];
+            $showgrouptickets = $case['showgrouptickets'];
+            $validation_rights = $case['validation_rights'] ?? [];
+
+            $this->updateItem(ProfileRight::class, $ticket_profile_right->getID(), ['rights' => 0]);
+            $this->updateItem(ProfileRight::class, $validation_profile_right->getID(), ['rights' => 0]);
+
+            foreach ($rights as $right) {
+                $this->addRightToProfile($profile->fields['name'], Ticket::$rightname, $right);
+            }
+            foreach ($validation_rights as $right) {
+                $this->addRightToProfile($profile->fields['name'], TicketValidation::$rightname, $right);
+            }
+
+            Session::changeProfile($profile->getID());
+
+            // Show the central list of tickets and capture the output
+            $output = Ticket::showCentralList(0, $status, $showgrouptickets, false);
+
+            // Extract ticket IDs from the output using regex
+            preg_match_all('/ticket\.form\.php\?id=(\d+)/', (string) $output, $matches);
+            $found_ids = array_map('intval', $matches[1]);
+
+            // Assert that the number of found tickets matches the expected count
+            $this->assertCount(
+                count($expected_tickets),
+                $found_ids,
+            );
+
+            // Assert that each expected ticket is present in the found IDs
+            foreach ($tickets as $ticket) {
+                $name = $ticket->fields['name'];
+                $this->assertSame(
+                    in_array($name, $expected_tickets, true),
+                    in_array($ticket->getID(), $found_ids, true),
+                );
+            }
+        }
+    }
+
+    public function testUpdateFormRequiresAccessToTheTicket(): void
+    {
+        $this->login();
+        $entity_1 = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $entity_2 = getItemByTypeName(Entity::class, '_test_child_2', true);
+        $ticket_1 = $this->createItem(Ticket::class, ['name' => 'Ticket 1', 'content' => 'Content', 'entities_id' => $entity_1]);
+        $ticket_2 = $this->createItem(Ticket::class, ['name' => 'Ticket 2', 'content' => 'Content', 'entities_id' => $entity_2]);
+
+        // A technician that can only access the first entity
+        $this->createItem(User::class, [
+            'name'          => 'restricted_technician',
+            'password'      => 'Restricted-Pass-123!',
+            'password2'     => 'Restricted-Pass-123!',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Technician', true),
+            '_entities_id'  => $entity_1,
+            '_is_recursive' => 0,
+        ], skip_fields: ['password', 'password2']);
+        $this->login('restricted_technician', 'Restricted-Pass-123!');
+        $this->assertTrue(Ticket::canUpdate());
+        $this->assertFalse((new Ticket())->can($ticket_2->getID(), READ));
+
+        $submit = function (Ticket $ticket, string $name): ?\Throwable {
+            $_POST = ['update' => 1, 'id' => $ticket->getID(), 'name' => $name];
+            $exception = null;
+            try {
+                include GLPI_ROOT . '/front/ticket.form.php';
+            } catch (\Throwable $e) {
+                $exception = $e;
+            } finally {
+                $_POST = [];
+            }
+            return $exception;
+        };
+
+        // The ticket of the other entity cannot be updated
+        $this->assertInstanceOf(AccessDeniedHttpException::class, $submit($ticket_2, 'Updated'));
+        $this->assertTrue($ticket_2->getFromDB($ticket_2->getID()));
+        $this->assertSame('Ticket 2', $ticket_2->fields['name']);
+
+        // The ticket of the entity of the technician can be updated
+        $this->assertNotInstanceOf(AccessDeniedHttpException::class, $submit($ticket_1, 'Updated'));
+        $this->assertTrue($ticket_1->getFromDB($ticket_1->getID()));
+        $this->assertSame('Updated', $ticket_1->fields['name']);
+    }
+
+    public function testReassignDoesNotNotifyRemovedTechnician(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        $old_tech = getItemByTypeName(User::class, 'tech');
+        $new_tech = getItemByTypeName(User::class, TU_USER);
+        foreach ([$old_tech, $new_tech] as $user) {
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'is_default' => 1,
+                'email'      => $user->fields['name'] . '@reassign.test',
+            ]);
+        }
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'reassign notif',
+            'content'     => 'reassign notif',
+            'entities_id' => 0,
+            '_actors'     => [
+                'assign' => [
+                    ['itemtype' => 'User', 'items_id' => $old_tech->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ]);
+
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            '_actors' => [
+                'assign' => [
+                    ['itemtype' => 'User', 'items_id' => $new_tech->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ]);
+
+        $recipients = array_column(
+            getAllDataFromTable('glpi_queuednotifications', [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'event'    => 'assign_user',
+            ]),
+            'recipient'
+        );
+        $this->assertContains($new_tech->fields['name'] . '@reassign.test', $recipients);
+        $this->assertNotContains($old_tech->fields['name'] . '@reassign.test', $recipients);
+    }
+
+    public function testAddingSeveralTechniciansNotifiesEachOnce(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $this->setEntity('Root entity', true);
+
+        $techs = [getItemByTypeName(User::class, 'tech'), getItemByTypeName(User::class, TU_USER)];
+        $actors = [];
+        foreach ($techs as $user) {
+            $this->createItem(UserEmail::class, [
+                'users_id'   => $user->getID(),
+                'is_default' => 1,
+                'email'      => $user->fields['name'] . '@several.test',
+            ]);
+            $actors[] = ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1];
+        }
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'several techs',
+            'content'     => 'several techs',
+            'entities_id' => 0,
+        ]);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_actors' => ['assign' => $actors]]);
+
+        $recipients = array_column(
+            getAllDataFromTable('glpi_queuednotifications', [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket->getID(),
+                'event'    => 'assign_user',
+            ]),
+            'recipient'
+        );
+        foreach ($techs as $user) {
+            $this->assertCount(1, array_keys($recipients, $user->fields['name'] . '@several.test'));
+        }
     }
 }

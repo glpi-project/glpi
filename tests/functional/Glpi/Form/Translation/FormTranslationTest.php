@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Form;
 
 use Dropdown;
+use Glpi\Controller\Form\Translation\GetFormTranslationController;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
@@ -52,6 +53,7 @@ use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\json_encode;
 
@@ -307,6 +309,18 @@ class FormTranslationTest extends DbTestCase
     }
 
     /**
+     * Get the content of the translation modal of the given language, as loaded on demand.
+     */
+    private function getTranslationModalContent(Form $form, string $language): Crawler
+    {
+        $this->login();
+        $controller = new GetFormTranslationController();
+        $response = $controller->__invoke(new Request(), $form->getID(), $language);
+
+        return new Crawler($response->getContent());
+    }
+
+    /**
      * Assert that handlers are listed (or not) in the translation table.
      *
      * @param array $handlers
@@ -322,7 +336,7 @@ class FormTranslationTest extends DbTestCase
         string $message
     ): void {
         foreach ($handlers as $handler) {
-            $row = $crawler->filter('#form-translation-modal-fr_FR tbody tr')
+            $row = $crawler->filter('tbody tr')
                 ->reduce(function (Crawler $node) use ($handler) {
                     return str_contains($node->text(), $handler->getName());
                 });
@@ -346,10 +360,7 @@ class FormTranslationTest extends DbTestCase
         $question = Question::getById($this->getQuestionId($form, "My question"));
         $handlers = $type->listTranslationsHandlers($question);
 
-        ob_start();
-        FormTranslation::displayTabContentForItem($form);
-        $content = ob_get_clean();
-        $crawler = new Crawler($content);
+        $crawler = $this->getTranslationModalContent($form, 'fr_FR');
 
         // Assert: no default value handler should be listed when value is empty
         $this->assertHandlersInTranslationTable(
@@ -372,10 +383,7 @@ class FormTranslationTest extends DbTestCase
         $question = Question::getById($this->getQuestionId($form, "My question"));
         $handlers = $type->listTranslationsHandlers($question);
 
-        ob_start();
-        FormTranslation::displayTabContentForItem($form);
-        $content = ob_get_clean();
-        $crawler = new Crawler($content);
+        $crawler = $this->getTranslationModalContent($form, 'fr_FR');
 
         // Assert: default value handler should be listed when value is not empty
         $this->assertHandlersInTranslationTable(
@@ -407,10 +415,7 @@ class FormTranslationTest extends DbTestCase
             );
         }
 
-        ob_start();
-        FormTranslation::displayTabContentForItem($form);
-        $content = ob_get_clean();
-        $crawler = new Crawler($content);
+        $crawler = $this->getTranslationModalContent($form, 'fr_FR');
 
         // Assert: default value handler should be listed even if original value is empty
         // because a translation already exists
@@ -431,10 +436,7 @@ class FormTranslationTest extends DbTestCase
             $translation->delete($translation->fields, true);
         }
 
-        ob_start();
-        FormTranslation::displayTabContentForItem($form);
-        $content = ob_get_clean();
-        $crawler = new Crawler($content);
+        $crawler = $this->getTranslationModalContent($form, 'fr_FR');
 
         // Assert: default value handler should not be listed anymore
         $this->assertHandlersInTranslationTable(

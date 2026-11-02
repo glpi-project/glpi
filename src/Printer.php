@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
@@ -194,7 +195,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
                 'SELECT'       => [
                     'itemtype',
                     QueryFunction::groupConcat(
-                        expression: 'items_id',
+                        expression: new QueryIdentifier('items_id'),
                         distinct: true,
                         alias: 'ids'
                     ),
@@ -359,7 +360,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
             Asset_PeripheralAsset::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-               => "<i class='ti ti-key'></i>"
+               => "<i class='ti ti-key' aria-hidden='true'></i>"
                   . _sx('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);

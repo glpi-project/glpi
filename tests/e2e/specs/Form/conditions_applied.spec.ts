@@ -180,6 +180,32 @@ test(`Conditions are applied on comments`, async ({
     await expect(page.getByRole('heading', { name: 'My comment that is always visible' })).toBeVisible();
 });
 
+test(`Conditions are applied on comments using a checkbox checked by default`, async ({
+    page,
+    profile,
+    formImporter,
+}) => {
+    await profile.set(Profiles.SuperAdmin);
+    const info = await formImporter.importForm("comment-hidden-if-default-checked-checkbox.json");
+    const preview = new FormPreviewPage(page);
+    await preview.goto(info.getId());
+
+    const comment = page.getByRole('heading', { name: 'My comment that is hidden if the checkbox is checked' });
+    const option = page.getByRole('checkbox', { name: 'Option 1' });
+
+    // Default state: the checkbox is checked by default, the comment must be hidden
+    await expect(option).toBeChecked();
+    await expect(comment).toBeHidden();
+
+    // Uncheck the option: the comment becomes visible
+    await option.uncheck();
+    await expect(comment).toBeVisible();
+
+    // Check the option again: the comment is hidden again
+    await option.check();
+    await expect(comment).toBeHidden();
+});
+
 test(`Conditions are applied on sections`, async ({
     page,
     profile,

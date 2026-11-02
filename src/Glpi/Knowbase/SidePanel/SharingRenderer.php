@@ -40,16 +40,17 @@ use Override;
 
 final class SharingRenderer implements RendererInterface
 {
+    // The token is a credential: exposing it needs UPDATE, not canEdit()'s CREATE||PURGE.
     #[Override]
     public function canView(KnowbaseItem $item): bool
     {
-        return $item->canEdit($item->getID());
+        return $item->canManageSharing();
     }
 
     #[Override]
     public function getTemplate(): string
     {
-        return "pages/tools/kb/modal/sharing.html.twig";
+        return "pages/tools/kb/share_popover.html.twig";
     }
 
     #[Override]
@@ -57,19 +58,14 @@ final class SharingRenderer implements RendererInterface
     {
         $id = $item->getID();
         $manager = new ShareTokenManager();
-        $tokens = \array_map(
-            function (array $row) use ($manager): array {
-                $row['token'] = $manager->decryptToken((string) $row['token']);
-                return $row;
-            },
-            $manager->getTokensForItem(KnowbaseItem::class, $id),
-        );
+        $token = $manager->getToken(KnowbaseItem::class, $id);
 
         return [
-            'id'       => $id,
-            'itemtype' => KnowbaseItem::class,
-            'tokens'   => $tokens,
-            'can_edit' => $item->canEdit($id),
+            'id'           => $id,
+            'itemtype'     => KnowbaseItem::class,
+            'is_published' => $token !== null && (int) $token['is_active'] === 1,
+            'token'        => $token,
+            'can_edit'     => $item->canManageSharing(),
         ];
     }
 }

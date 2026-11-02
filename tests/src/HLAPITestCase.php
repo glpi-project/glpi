@@ -53,6 +53,7 @@ use Session;
 
 /**
  * @property HLAPIHelper $api
+ * @property GraphQLHelper $graphql
  */
 class HLAPITestCase extends DbTestCase
 {
@@ -155,6 +156,8 @@ class HLAPITestCase extends DbTestCase
     {
         if ($name === 'api') {
             return new HLAPIHelper(Router::getInstance(), $this);
+        } elseif ($name === 'graphql') {
+            return new GraphQLHelper(Router::getInstance(), $this);
         }
     }
 }
@@ -317,6 +320,8 @@ final class HLAPIHelper
             // Expect the new location to be a singleton (i.e. /endpoint instead of /endpoint/{id})
             'new_location_singleton' => false,
             'skip_update_test' => false,
+            // Params sent in the POST request but not returned by the GET response
+            'create_only_params' => [],
         ], $extra_options);
         $this->test->resetSession();
         $this->test->login();
@@ -376,6 +381,9 @@ final class HLAPIHelper
             $create_params['entity'] = getItemByTypeName('Entity', '_test_root_entity', true);
         }
         foreach ($create_params as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+        foreach ($extra_options['create_only_params'] as $key => $value) {
             $request->setParameter($key, $value);
         }
         // remove writeonly properties from $create_params so checks below don't fail
@@ -1206,5 +1214,275 @@ final class HLAPIRouteAsserter
     public function get(): RoutePath
     {
         return $this->routePath;
+    }
+}
+
+// @codingStandardsIgnoreStart
+final class GraphQLHelper
+{
+    private Router $router;
+    private HLAPITestCase $test;
+    private string $api_version;
+
+    // @codingStandardsIgnoreEnd
+
+    /**
+     * @param Router $router
+     * @param HLAPITestCase $test
+     * @param string|null $api_version The API version to use. Cannot be specified or overridden by the request URL. Defaults to the current API version.
+     */
+    public function __construct(Router $router, HLAPITestCase $test, ?string $api_version = null)
+    {
+        $this->router = $router;
+        $this->test = $test;
+        $this->api_version = $api_version ?? $router::API_VERSION;
+    }
+
+    public function withVersion(string $api_version): self
+    {
+        return new self($this->router, $this->test, $api_version);
+    }
+
+    public function getRouter(): Router
+    {
+        return $this->router;
+    }
+
+    /**
+     * @param string $query The GraphQL query string to send in the request body.
+     * @param callable(GraphQLCallAsserter): void $fn
+     * @return self
+     */
+    public function call(string $query, callable $fn, bool $auto_auth_header = true): self
+    {
+        $request = new Request('POST', '/GraphQL', [], $query);
+        if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
+            $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
+        }
+        $request = $request->withHeader('GLPI-API-Version', $this->api_version);
+        $response = $this->router->handleRequest($request);
+        if ($response instanceof StreamedResponseWrapper) {
+            $symfony_response = $response->getSymfonyResponse();
+            ob_start();
+            $symfony_response->sendContent();
+            $content = ob_get_clean();
+            $response = new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+        }
+        $fn(new GraphQLCallAsserter($this->test, $this->router, $response));
+        return $this;
+    }
+}
+
+// @codingStandardsIgnoreStart
+/**
+ * @property GraphQLResponseAsserter $response
+ */
+final class GraphQLCallAsserter
+{
+    // @codingStandardsIgnoreEnd
+    public function __construct(
+        public HLAPITestCase $test,
+        private Router $router,
+        private Response $response
+    ) {}
+
+    public function __get(string $name)
+    {
+        return match ($name) {
+            'response' => new GraphQLResponseAsserter($this, $this->response, $this->router->getOriginalRequest()->getHeaderLine('GLPI-API-Version') ?: $this->router::API_VERSION),
+            default => null,
+        };
+    }
+}
+
+// @codingStandardsIgnoreStart
+final class GraphQLResponseAsserter
+{
+    private array $decoded_content;
+
+    // @codingStandardsIgnoreEnd
+    public function __construct(
+        private GraphQLCallAsserter $call_asserter,
+        private Response $response,
+        private string $api_version,
+    ) {
+        $this->decoded_content = json_decode((string) $this->response->getBody(), true);
+    }
+
+    public function status(callable $fn): self
+    {
+        $fn($this->response->getStatusCode());
+        return $this;
+    }
+
+    public function headers(callable $fn): self
+    {
+        $headers = $this->response->getHeaders();
+        $headers = array_map(static function ($header) {
+            if (is_array($header) && count($header) === 1) {
+                return $header[0];
+            }
+            return $header;
+        }, $headers);
+        $fn($headers);
+        return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param callable $fn
+     * @phpstan-param callable(array): void $fn
+     * @return $this
+     */
+    public function data(string $field, callable $fn): self
+    {
+        $this->call_asserter->test->assertArrayHasKey($field, $this->decoded_content['data'], 'GraphQL response does not contain field "' . $field . '"');
+        $fn($this->decoded_content['data'][$field]);
+        return $this;
+    }
+
+    /**
+     * @param callable $fn
+     * @phpstan-param callable(array): void $fn
+     * @return $this
+     */
+    public function extensions(callable $fn): self
+    {
+        $this->call_asserter->test->assertArrayHasKey('extensions', $this->decoded_content, 'GraphQL response does not contain "extensions" property');
+        $fn($this->decoded_content['extensions']);
+        return $this;
+    }
+
+    /**
+     * @param callable $fn
+     * @phpstan-param callable(array<int, array{message: string, locations: array<int, array{line: int, column: int}>, path: string[]}>): void $fn
+     * @return $this
+     */
+    public function errors(callable $fn): self
+    {
+        $fn($this->decoded_content['errors']);
+        return $this;
+    }
+
+    /**
+     * Asserts that the GraphQL response has a 200 status code and does not contain any errors.
+     * @return $this
+     */
+    public function isOK(): self
+    {
+        $this->call_asserter->test->assertEquals(200, $this->response->getStatusCode());
+        $this->call_asserter->test->assertArrayNotHasKey('errors', $this->decoded_content, json_encode($this->decoded_content['errors'] ?? []));
+        return $this;
+    }
+
+    /**
+     * Asserts that the GraphQL response has a 200 status code and contains errors, and does not contain any data.
+     * @return $this
+     */
+    public function isCompletelyError(): self
+    {
+        // Even a GraphQL error will return a 200 status. If some other code is returned, a more severe error occured which needs fixed in the code.
+        $this->call_asserter->test->assertEquals(200, $this->response->getStatusCode());
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content);
+        // Even if every part of the query fails, GraphQL will still return a data property. It may or may not contain properties for each requested field, but they should be null.
+        $has_data = false;
+        if (isset($this->decoded_content['data']) && is_array($this->decoded_content['data'])) {
+            foreach ($this->decoded_content['data'] as $value) {
+                if ($value !== null) {
+                    $has_data = true;
+                    break;
+                }
+            }
+        }
+        $this->call_asserter->test->assertFalse($has_data, 'GraphQL response contains data when it should not');
+        return $this;
+    }
+
+    /**
+     * Asserts that the GraphQL response has a 200 status code and contains errors, and contains data.
+     * @return $this
+     */
+    public function isPartialError(): self
+    {
+        // Even a GraphQL error will return a 200 status. If some other code is returned, a more severe error occured which needs fixed in the code.
+        $this->call_asserter->test->assertEquals(200, $this->response->getStatusCode());
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content);
+        // Verify data is returned when there is a partial error
+        $has_data = false;
+        if (isset($this->decoded_content['data']) && is_array($this->decoded_content['data'])) {
+            foreach ($this->decoded_content['data'] as $value) {
+                if ($value !== null) {
+                    $has_data = true;
+                    break;
+                }
+            }
+        }
+        $this->call_asserter->test->assertTrue($has_data, 'GraphQL response does not contain data when it should');
+        return $this;
+    }
+
+    public function hasErrorWithMessage(string $message): self
+    {
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content, 'GraphQL response does not contain errors');
+        $found = false;
+        foreach ($this->decoded_content['errors'] as $error) {
+            if (isset($error['message']) && $error['message'] === $message) {
+                $found = true;
+                break;
+            }
+        }
+        $this->call_asserter->test->assertTrue($found, 'GraphQL response does not contain an error with message "' . $message . '"');
+        return $this;
+    }
+
+    public function hasFieldAccessDenied(string $field_path, bool $exact = false): self
+    {
+        if ($exact) {
+            return $this->hasErrorWithMessage('You do not have permission to view the field ' . $field_path);
+        } else {
+            // Check for error message that contains the field path but ignoring any numeric path segments which could appear anywhere (e.g. "You do not have permission to view the field data.items.0.name")
+            // In this mode, we don't care about the numeric index within arrays
+            // Ex $field_path = 'data.items.name' would match "You do not have permission to view the field data.items.0.name" or "You do not have permission to view the field data.items.1.name"
+            $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content, 'GraphQL response does not contain errors');
+            $found = false;
+            foreach ($this->decoded_content['errors'] as $error) {
+                if (isset($error['message']) && str_contains($error['message'], 'You do not have permission to view the field')) {
+                    // Remove any numeric segments from the error message
+                    $error_field_path = preg_replace('/\.\d+/', '', $error['message']);
+                    if ($error_field_path === 'You do not have permission to view the field ' . $field_path) {
+                        $found = true;
+                        break;
+                    }
+                }
+            }
+            $this->call_asserter->test->assertTrue($found, 'GraphQL response does not contain an error with field access denied for "' . $field_path . '"');
+            return $this;
+        }
+    }
+
+    public function hasUnknownQueryFieldError(string $field): self
+    {
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content, 'GraphQL response does not contain errors');
+        $pattern = 'Cannot query field "' . $field . '" on type "Query".';
+        foreach ($this->decoded_content['errors'] as $error) {
+            if (isset($error['message']) && str_starts_with($error['message'], $pattern)) {
+                return $this;
+            }
+        }
+        $this->call_asserter->test->fail('GraphQL response does not contain an error for unknown query field "' . $field . '"');
+    }
+
+    public function hasTypeUnknownOrAccessDeniedError(string $type): self
+    {
+        // Example: 'Unable to resolve field "SoftwareCategory": schema not found or not viewable'
+
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content, 'GraphQL response does not contain errors');
+        $pattern = 'Unable to resolve field "' . $type . '": schema not found or not viewable';
+        foreach ($this->decoded_content['errors'] as $error) {
+            if (isset($error['message']) && str_starts_with($error['message'], $pattern)) {
+                return $this;
+            }
+        }
+        $this->call_asserter->test->fail('GraphQL response does not contain an error for unknown or access denied type "' . $type . '"');
     }
 }

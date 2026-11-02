@@ -84,7 +84,7 @@ final class HomePageTabs extends CommonGLPI
         ];
 
         if (
-            Session::haveRight("reminder_public", READ)
+            Session::haveRight(Reminder::$rightname, READ)
             && Reminder::countPublicReminders() > 0
         ) {
             $tabs[self::PUBLIC_REMINDER_TAB] = self::createTabEntry(
@@ -94,7 +94,7 @@ final class HomePageTabs extends CommonGLPI
         }
 
         if (
-            Session::haveRight("rssfeed_public", READ)
+            Session::haveRight(RSSFeed::$rightname, READ)
             && RSSFeed::countPublicRssFedds() > 0
         ) {
             $tabs[self::RSS_FEED_PUBLIC] = self::createTabEntry(
@@ -136,7 +136,7 @@ final class HomePageTabs extends CommonGLPI
         }
 
         if ($tabnum == self::PUBLIC_REMINDER_TAB) {
-            if (!Session::haveRight("reminder_public", READ)) {
+            if (!Session::haveRight(Reminder::$rightname, READ)) {
                 return false;
             }
 
@@ -146,7 +146,7 @@ final class HomePageTabs extends CommonGLPI
         }
 
         if ($tabnum == self::RSS_FEED_PUBLIC) {
-            if (!Session::haveRight("rssfeed_public", READ)) {
+            if (!Session::haveRight(RSSFeed::$rightname, READ)) {
                 return false;
             }
 

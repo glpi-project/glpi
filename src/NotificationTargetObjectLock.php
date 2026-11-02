@@ -107,7 +107,7 @@ class NotificationTargetObjectLock extends NotificationTarget
         $this->data['##objectlock.id##']       = $options['item']->fields['items_id'];
         $this->data['##objectlock.type##']     = $options['item']->fields['itemtype'];
         $this->data['##objectlock.date##']     = Html::convDateTime(
-            $options['item']->fields['date_mod'],
+            $options['item']->fields['date'],
             $user->fields['date_format']
         );
         $this->data['##objectlock.date_mod##'] = $this->data['##objectlock.date##'];

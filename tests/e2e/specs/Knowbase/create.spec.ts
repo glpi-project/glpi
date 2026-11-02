@@ -31,6 +31,7 @@
  */
 
 import { expect, test } from "../../fixtures/glpi_fixture";
+import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
 
 test('Can create an article with title and content', async ({ page, profile }) => {
@@ -62,4 +63,15 @@ test('Can create an article with title and content', async ({ page, profile }) =
     // After the page is reloaded, we expect the following data to be set
     await expect(page.getByTestId('subject')).toHaveText('My new KB article');
     await expect(page.getByTestId('content')).toContainText('This is the content of my new article.');
+});
+
+test('Comment button is not shown while creating an article', async ({ page, profile }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    await page.goto('/front/knowbaseitem.form.php');
+
+    await kb.editor.typeText('Some content to select.');
+    await kb.bubbleMenu.selectAllContent();
+    await kb.bubbleMenu.assertButtonHidden('Comment');
 });

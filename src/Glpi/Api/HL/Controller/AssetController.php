@@ -67,6 +67,7 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Http\JSONResponse;
@@ -129,6 +130,7 @@ use Rack;
 use RackModel;
 use RackType;
 use RuntimeException;
+use Session;
 use SNMPCredential;
 use Software;
 use SoftwareCategory;
@@ -172,25 +174,13 @@ use function Safe\json_encode;
             description: 'The ID of the Asset',
             location: Doc\Parameter::LOCATION_PATH,
         ),
-        new Doc\Parameter(
-            name: 'asset_itemtype',
-            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
-            description: 'Asset type',
-            location: Doc\Parameter::LOCATION_PATH,
-        ),
-        new Doc\Parameter(
-            name: 'asset_id',
-            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
-            description: 'The ID of the Asset',
-            location: Doc\Parameter::LOCATION_PATH,
-        ),
     ]
 )]
 final class AssetController extends AbstractController
 {
     use CRUDControllerTrait;
 
-    public static function getRawKnownSchemas(): array
+    public static function getRawKnownSchemas(string $api_version): array
     {
         $schemas = [];
 
@@ -570,6 +560,7 @@ final class AssetController extends AbstractController
 
         $fn_get_group_property = (static fn(string $asset_type) => [
             'type' => Doc\Schema::TYPE_ARRAY,
+            'x-input-field' => 'groups_id',
             'items' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-full-schema' => 'Group',
@@ -599,6 +590,7 @@ final class AssetController extends AbstractController
         ]);
         $fn_get_group_tech_property = (static fn(string $asset_type) => [
             'type' => Doc\Schema::TYPE_ARRAY,
+            'x-input-field' => 'groups_id_tech',
             'items' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-full-schema' => 'Group',
@@ -631,8 +623,8 @@ final class AssetController extends AbstractController
         $entity_property = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
         $entity_property['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
         $manufacturer_property = self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer');
-        $user_property = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
-        $user_tech_property = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User');
+        $user_property = self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User');
+        $user_tech_property = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User');
         $network_property = self::getDropdownTypeSchema(class: Network::class);
         $autoupdatesystem_property = self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem');
 
@@ -692,6 +684,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'last_inventory_update' => [
                     'x-version-introduced' => '2.3.0',
@@ -747,7 +742,14 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'autoupdatesystem' => $autoupdatesystem_property,
-                'size' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0, 'x-version-introduced' => '2.3.0'],
+                'size' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                    'maximum' => 999.99,
+                    'multipleOf' => 0.01,
+                    'x-version-introduced' => '2.3.0',
+                ],
                 'has_microphone' => [
                     'x-version-introduced' => '2.3.0',
                     'x-field' => 'have_micro',
@@ -808,6 +810,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
             ],
@@ -865,6 +870,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
@@ -931,6 +939,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
             ],
@@ -983,7 +994,14 @@ final class AssetController extends AbstractController
                 'is_global' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
-                'ticket_tco' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'x-version-introduced' => '2.3.0'],
+                'ticket_tco' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'x-version-introduced' => '2.3.0',
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
+                ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'last_inventory_update' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3.0'],
             ],
@@ -1071,6 +1089,9 @@ final class AssetController extends AbstractController
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
@@ -1088,6 +1109,7 @@ final class AssetController extends AbstractController
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => SoftwareLicense::class,
             'x-version-introduced' => '2.0',
+            'x-version-removed' => '3.0',
             'x-rights-conditions' => [
                 'read' => static fn() => $fn_get_assignable_restriction(SoftwareLicense::class),
             ],
@@ -1353,8 +1375,8 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'printer_models' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of printer models that can use this cartridge',
@@ -1392,6 +1414,7 @@ final class AssetController extends AbstractController
                             'table' => Cartridge::getTable(),
                             'fkey' => 'id',
                             'field' => CartridgeItem::getForeignKeyField(),
+                            'primary-property' => 'id',
                         ],
                         'properties' => [
                             'id' => [
@@ -1463,8 +1486,8 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'consumables' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of consumables',
@@ -1475,6 +1498,7 @@ final class AssetController extends AbstractController
                             'table' => Consumable::getTable(),
                             'fkey' => 'id',
                             'field' => ConsumableItem::getForeignKeyField(),
+                            'primary-property' => 'id',
                         ],
                         'properties' => [
                             'id' => [
@@ -1514,7 +1538,7 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'parent' => self::getDropdownTypeSchema(class: Software::class, full_schema: 'Software'),
                 'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 'group' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -1544,7 +1568,7 @@ final class AssetController extends AbstractController
                         ],
                     ],
                 ],
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'group_tech' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -1589,6 +1613,9 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'minimum' => 0,
                     'x-version-introduced' => '2.3.0',
+                    'x-rights-conditions' => [
+                        'read' => static fn() => Session::haveRight(Infocom::$rightname, READ),
+                    ],
                 ],
             ],
         ];
@@ -1693,7 +1720,7 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: RackType::class, full_schema: 'RackType'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 'group' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -1723,7 +1750,7 @@ final class AssetController extends AbstractController
                         ],
                     ],
                 ],
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'group_tech' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -1858,7 +1885,7 @@ final class AssetController extends AbstractController
                 'model' => self::getDropdownTypeSchema(EnclosureModel::class, full_schema: 'EnclosureModel'),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 'group' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -1888,7 +1915,7 @@ final class AssetController extends AbstractController
                         ],
                     ],
                 ],
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'group_tech' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -1950,7 +1977,7 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: PDUType::class, full_schema: 'PDUType'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 'group' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -1980,7 +2007,7 @@ final class AssetController extends AbstractController
                         ],
                     ],
                 ],
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'group_tech' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -2040,7 +2067,7 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: PassiveDCEquipmentType::class, full_schema: 'PassiveDCEquipmentType'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 'group' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -2070,7 +2097,7 @@ final class AssetController extends AbstractController
                         ],
                     ],
                 ],
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'group_tech' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -2125,7 +2152,7 @@ final class AssetController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 'group' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -2155,7 +2182,7 @@ final class AssetController extends AbstractController
                         ],
                     ],
                 ],
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'group_tech' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
@@ -2679,9 +2706,8 @@ EOT,
 
         if ($assets === null) {
             $assets = [];
-            //TODO remove SoftwareLicense in v3 as it is a duplicate of License in the Management Controller
             $types = ['Computer', 'Monitor', 'NetworkEquipment',
-                'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+                'Peripheral', 'Phone', 'Printer',
                 'Certificate', 'Unmanaged', 'Appliance',
             ];
             /**
@@ -2707,7 +2733,7 @@ EOT,
             $types = [
                 'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem',
                 'Computer', 'Monitor', 'NetworkEquipment',
-                'Peripheral', 'Phone', 'Printer', 'Software', 'SoftwareLicense',
+                'Peripheral', 'Phone', 'Printer', 'Software',
                 'Certificate', 'Appliance', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable',
             ];
             /**
@@ -2783,9 +2809,9 @@ EOT,
         $asset_paths = [];
         foreach ($asset_types as $asset_type => $asset_name) {
             $asset_paths[] = [
-                'itemtype'  => $asset_type,
-                'name'      => $asset_name,
-                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $asset_type]),
+                'itemtype' => $asset_type,
+                'name' => $asset_name,
+                'href' => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $asset_type]),
             ];
         }
         return new JSONResponse($asset_paths);
@@ -2854,13 +2880,11 @@ EOT,
         if (!Infocom::canView()) {
             return self::getAccessDeniedErrorResponse();
         }
-        $params = $request->getParameters();
         $itemtype = $request->getAttribute('itemtype');
         $items_id = $request->getAttribute('id');
-        $filter = 'itemtype==' . $itemtype . ';items_id==' . $items_id;
-        $params['filter'] = $filter;
+        $this->restrictSearch($request, 'itemtype==' . $itemtype . ';items_id==' . $items_id);
         $management_controller = new ManagementController();
-        $result = ResourceAccessor::searchBySchema($management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)), $params);
+        $result = ResourceAccessor::searchBySchema($management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)), $request->getParameters());
         if ($result->getStatusCode() !== 200) {
             return $result;
         }
@@ -2920,8 +2944,8 @@ EOT,
         $request->setParameter('items_id', $request->getAttribute('id'));
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM'   => 'glpi_infocoms',
-            'WHERE'  => [
+            'FROM' => 'glpi_infocoms',
+            'WHERE' => [
                 'itemtype' => $request->getAttribute('itemtype'),
                 'items_id' => $request->getAttribute('id'),
             ],
@@ -2955,8 +2979,8 @@ EOT,
         $request->setParameter('items_id', $request->getAttribute('id'));
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM'   => 'glpi_infocoms',
-            'WHERE'  => [
+            'FROM' => 'glpi_infocoms',
+            'WHERE' => [
                 'itemtype' => $request->getAttribute('itemtype'),
                 'items_id' => $request->getAttribute('id'),
             ],
@@ -3306,9 +3330,7 @@ EOT,
     )]
     public function getRackItems(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';rack.id==' . $request->getAttribute('rack_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'rack.id==' . $request->getAttribute('rack_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3323,9 +3345,7 @@ EOT,
     )]
     public function getRackItem(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';rack.id==' . $request->getAttribute('rack_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'rack.id==' . $request->getAttribute('rack_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -3607,9 +3627,7 @@ EOT,
     )]
     public function searchSoftwareVersions(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';software.id==' . $request->getAttribute('software_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'software.id==' . $request->getAttribute('software_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3624,9 +3642,7 @@ EOT,
     )]
     public function getSoftwareVersion(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';software.id==' . $request->getAttribute('software_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'software.id==' . $request->getAttribute('software_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -3707,9 +3723,7 @@ EOT,
     )]
     public function searchItemOSInstallation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3721,9 +3735,7 @@ EOT,
     )]
     public function getOSInstallation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -3788,9 +3800,7 @@ EOT,
     )]
     public function searchItemSoftware(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3804,9 +3814,7 @@ EOT,
     )]
     public function getSoftwareInstallation(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -3875,9 +3883,7 @@ EOT,
     )]
     public function searchItemAntivirus(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Antivirus', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3891,9 +3897,7 @@ EOT,
     )]
     public function getItemAntivirus(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('Antivirus', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -3962,9 +3966,7 @@ EOT,
     )]
     public function searchItemVirtualMachine(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -3978,9 +3980,7 @@ EOT,
     )]
     public function getItemVirtualMachine(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -4049,9 +4049,7 @@ EOT,
     )]
     public function searchItemPeripheralConnection(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4065,9 +4063,7 @@ EOT,
     )]
     public function getItemPeripheralConnection(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -4137,9 +4133,7 @@ EOT,
     )]
     public function searchItemRemoteManagement(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4153,9 +4147,7 @@ EOT,
     )]
     public function getItemRemoteManagement(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -4237,9 +4229,7 @@ EOT,
     )]
     public function getItemApplianceLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema(
             $this->getKnownSchema('Appliance_Item', $this->getAPIVersion($request)),
             $request->getAttributes(),
@@ -4284,9 +4274,7 @@ EOT,
     )]
     public function searchDomainItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4302,9 +4290,7 @@ EOT,
     )]
     public function getDomainItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -4339,7 +4325,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate', methods: ['POST'], requirements: [
-        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|Appliance',
         'asset_id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
@@ -4365,7 +4351,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate', methods: ['GET'], requirements: [
-        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|Appliance',
         'asset_id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
@@ -4375,14 +4361,12 @@ EOT,
     )]
     public function searchCertificateItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate/{id}', methods: ['GET'], requirements: [
-        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
@@ -4393,14 +4377,12 @@ EOT,
     )]
     public function getCertificateItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate/{id}', methods: ['PATCH'], requirements: [
-        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ])]
@@ -4415,7 +4397,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate/{id}', methods: ['DELETE'], requirements: [
-        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ])]
@@ -4466,9 +4448,7 @@ EOT,
     )]
     public function searchProjectItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4484,9 +4464,7 @@ EOT,
     )]
     public function getProjectItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -4557,9 +4535,7 @@ EOT,
     )]
     public function searchLineItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)), $request->getParameters());
     }
 
@@ -4575,9 +4551,7 @@ EOT,
     )]
     public function getLineItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -4612,7 +4586,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle', methods: ['POST'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
         'asset_id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
@@ -4638,7 +4612,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle', methods: ['GET'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
         'asset_id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
@@ -4648,14 +4622,12 @@ EOT,
     )]
     public function searchKBArticleItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle/{id}', methods: ['GET'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
@@ -4666,14 +4638,12 @@ EOT,
     )]
     public function getKBArticleItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle/{id}', methods: ['PATCH'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ])]
@@ -4688,7 +4658,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle/{id}', methods: ['DELETE'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ])]
@@ -4703,7 +4673,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Contract', methods: ['POST'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
         'asset_id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
@@ -4729,7 +4699,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Contract', methods: ['GET'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
         'asset_id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
@@ -4739,14 +4709,12 @@ EOT,
     )]
     public function searchContractItemLinks(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Contract/{id}', methods: ['GET'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
@@ -4757,14 +4725,12 @@ EOT,
     )]
     public function getContractItemLink(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
-        $request->setParameter('filter', $filters);
+        $this->restrictSearch($request, 'itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id'));
         return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Contract/{id}', methods: ['PATCH'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ])]
@@ -4779,7 +4745,7 @@ EOT,
     }
 
     #[Route(path: '/{asset_itemtype}/{asset_id}/Contract/{id}', methods: ['DELETE'], requirements: [
-        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
         'asset_id' => '\d+',
         'id' => '\d+',
     ])]
@@ -4791,5 +4757,398 @@ EOT,
     public function deleteContractItemLink(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/SoftwareLicense', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'SoftwareLicense', description: 'List or search assets of a specific type')]
+    public function bcSearchSoftwareLicenses(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->searchItems20($request);
+    }
+
+    #[Route(path: '/SoftwareLicense', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.0', deprecated: '2.4', removed: '3.0')]
+    #[Doc\CreateRoute(schema_name: 'SoftwareLicense', description: 'Create an asset of a specific type')]
+    public function bcCreateSoftwareLicense(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->createItem20($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'SoftwareLicense', description: 'Get an existing asset of a specific type')]
+    public function bcGetSoftwareLicense(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->getItem20($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.0', deprecated: '2.4', removed: '3.0')]
+    #[Doc\UpdateRoute(schema_name: 'SoftwareLicense', description: 'Update an existing asset of a specific type')]
+    public function bcUpdateSoftwareLicense(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->updateItem20($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.0', deprecated: '2.4', removed: '3.0')]
+    #[Doc\DeleteRoute(schema_name: 'SoftwareLicense', description: 'Delete an existing asset of a specific type')]
+    public function bcDeleteSoftwareLicense(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->deleteItem20($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{id}/Infocom', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'Infocom', description: 'Get the financial and administration information for a specific asset')]
+    public function bcGetSoftwareLicenseInfocom(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->getItemInfocom($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{id}/Infocom', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2', deprecated: '2.4', removed: '3.0')]
+    #[Doc\CreateRoute(schema_name: 'Infocom', description: 'Create the financial and administration information for a specific asset')]
+    public function bcCreateSoftwareLicenseInfocom(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->createItemInfocom($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{id}/Infocom', methods: ['PATCH'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2', deprecated: '2.4', removed: '3.0')]
+    #[Doc\UpdateRoute(schema_name: 'Infocom', description: 'Update the financial and administration information for a specific asset')]
+    public function bcUpdateSoftwareLicenseInfocom(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->updateItemInfocom($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{id}/Infocom', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2', deprecated: '2.4', removed: '3.0')]
+    #[Doc\DeleteRoute(schema_name: 'Infocom', description: 'Delete the financial and administration information for a specific asset')]
+    public function bcDeleteSoftwareLicenseInfocom(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'License');
+        $management_controller = Router::getInstance()->getRegisteredController(ManagementController::class);
+        if ($management_controller === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return $management_controller->deleteItemInfocom($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/SoftwareInstallation', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.2', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'SoftwareInstallation', description: 'List or search software installed on an asset')]
+    public function bcSearchSoftwareLicenseSoftwareInstallation(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/SoftwareInstallation/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'SoftwareInstallation', description: 'Get an existing software installation by the installation ID')]
+    public function bcGetSoftwareLicenseSoftwareInstallation(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Antivirus', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'Antivirus', description: 'List or search antiviruses installed on an asset')]
+    public function bcSearchSoftwareLicenseAntivirus(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Antivirus/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'Antivirus', description: 'Get an existing antivirus by the antivirus ID')]
+    public function bcGetSoftwareLicenseAntivirus(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/VirtualMachine', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'VirtualMachine', description: 'List or search virtual machines and containers on an asset')]
+    public function bcSearchSoftwareLicenseVM(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/VirtualMachine/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'VirtualMachine', description: 'Get an existing virtual machine or container by ID')]
+    public function bcGetSoftwareLicenseVM(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/PeripheralConnection', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'PeripheralConnection', description: 'List or search peripherals connected to an asset')]
+    public function bcSearchSoftwareLicensePeripheralConnection(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/PeripheralConnection/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'PeripheralConnection', description: 'Get an existing peripheral connection by ID')]
+    public function bcGetSoftwareLicensePeripheralConnection(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/RemoteManagement', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'RemoteManagement', description: 'List or search remote management configurations on an asset')]
+    public function bcSearchSoftwareLicenseRemoteManagement(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/RemoteManagement/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'RemoteManagement', description: 'Get an existing remote management configuration by ID')]
+    public function bcGetSoftwareLicenseRemoteManagement(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Appliance/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'Appliance_Item', description: 'Get an existing appliance link by the link ID')]
+    public function bcGetSoftwareLicenseApplianceLink(Request $request): Response
+    {
+        return new JSONResponse([]);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Certificate', methods: ['POST'], requirements: [
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\CreateRoute(schema_name: 'Certificate_Item', description: 'Assign a certificate to an item')]
+    public function bcCreateSoftwareLicenseCertificateItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->createCertificateItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Certificate', methods: ['GET'], requirements: [
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'Certificate_Item', description: 'List or search certificate links')]
+    public function bcSearchSoftwareLicenseCertificateItemLinks(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->searchCertificateItemLinks($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Certificate/{id}', methods: ['GET'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'Certificate_Item', description: 'Get a specific certificate link')]
+    public function bcGetSoftwareLicenseCertificateItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->getCertificateItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Certificate/{id}', methods: ['PATCH'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\UpdateRoute(schema_name: 'Certificate_Item', description: 'Update a specific certificate link')]
+    public function bcUpdateSoftwareLicenseCertificateItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->updateCertificateItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Certificate/{id}', methods: ['DELETE'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\DeleteRoute(schema_name: 'Certificate_Item', description: 'Delete a specific certificate link')]
+    public function bcDeleteSoftwareLicenseCertificateItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->deleteCertificateItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/KBArticle', methods: ['POST'], requirements: [
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\CreateRoute(schema_name: 'KBArticle_Item', description: 'Assign a KB article to an item')]
+    public function bcCreateSoftwareLicenseKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->createKBArticleItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/KBArticle', methods: ['GET'], requirements: [
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'KBArticle_Item', description: 'List or search KB article links')]
+    public function bcSearchSoftwareLicenseKBArticleItemLinks(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->searchKBArticleItemLinks($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/KBArticle/{id}', methods: ['GET'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'KBArticle_Item', description: 'Get a specific KB article link')]
+    public function bcGetSoftwareLicenseKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->getKBArticleItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/KBArticle/{id}', methods: ['PATCH'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\UpdateRoute(schema_name: 'KBArticle_Item', description: 'Update a specific KB article link')]
+    public function bcUpdateSoftwareLicenseKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->updateKBArticleItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/KBArticle/{id}', methods: ['DELETE'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\DeleteRoute(schema_name: 'KBArticle_Item', description: 'Delete a specific KB article link')]
+    public function bcDeleteSoftwareLicenseKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->deleteKBArticleItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Contract', methods: ['POST'], requirements: [
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\CreateRoute(schema_name: 'Contract_Item', description: 'Assign a contract to an item')]
+    public function bcCreateSoftwareLicenseContractItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->createContractItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Contract', methods: ['GET'], requirements: [
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\SearchRoute(schema_name: 'Contract_Item', description: 'List or search contract links')]
+    public function bcSearchSoftwareLicenseContractItemLinks(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->searchContractItemLinks($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Contract/{id}', methods: ['GET'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\GetRoute(schema_name: 'Contract_Item', description: 'Get a specific contract link')]
+    public function bcGetSoftwareLicenseContractItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->getContractItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Contract/{id}', methods: ['PATCH'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\UpdateRoute(schema_name: 'Contract_Item', description: 'Update a specific contract link')]
+    public function bcUpdateSoftwareLicenseContractItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->updateContractItemLink($request);
+    }
+
+    #[Route(path: '/SoftwareLicense/{asset_id}/Contract/{id}', methods: ['DELETE'], requirements: [
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3', deprecated: '2.4', removed: '3.0')]
+    #[Doc\DeleteRoute(schema_name: 'Contract_Item', description: 'Delete a specific contract link')]
+    public function bcDeleteSoftwareLicenseContractItemLink(Request $request): Response
+    {
+        $request->setParameter('asset_itemtype', 'SoftwareLicense');
+        return $this->deleteContractItemLink($request);
     }
 }

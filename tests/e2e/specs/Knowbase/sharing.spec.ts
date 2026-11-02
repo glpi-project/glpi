@@ -35,94 +35,35 @@ import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from "../../utils/WorkerEntities";
 
-test('Can create a sharing link with and without name', async ({ page, profile, api }) => {
+// The full share URL (with secret) is read from the clipboard via the copy button.
+test.use({ permissions: ['clipboard-read', 'clipboard-write'] });
+
+test('Publishing reuses the same link across unpublish/republish', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const id = await api.createItem('KnowbaseItem', {
-        name: `KB sharing create - ${crypto.randomUUID()}`,
+        name: `KB sharing publish - ${crypto.randomUUID()}`,
         entities_id: getWorkerEntityId(),
-        answer: "Test content for create",
+        answer: "Test content for publish",
     });
 
     await kb.goto(id);
-    await expect(page.getByText('Test content for create')).toBeVisible();
-    const modal = await kb.doOpenSharingTab();
+    await expect(page.getByText('Test content for publish')).toBeVisible();
+    await kb.openSharePopover();
 
-    await expect(modal.getByRole('button', { name: 'Create a sharing link' })).toBeVisible();
-    await expect(modal.getByText('No sharing links yet')).toBeVisible();
+    await kb.publishSwitch().check();
+    await expect(kb.shareLink()).toBeVisible();
+    const url1 = await kb.copiedShareUrl();
+    expect(url1).toContain('/Share/');
 
-    await kb.doCreateSharingLink(modal, 'My named link');
+    await kb.publishSwitch().uncheck();
+    await expect(kb.shareLink()).not.toBeAttached();
 
-    await expect(modal.getByRole('checkbox', { name: 'My named link' })).toBeVisible();
-    await expect(modal.getByRole('checkbox', { name: 'My named link' })).toBeChecked();
-    await expect(modal.getByText('No sharing links yet')).not.toBeAttached();
-
-    await kb.doCreateSharingLink(modal);
-
-    await expect(modal.getByRole('checkbox')).toHaveCount(2);
-    await expect(modal.getByRole('checkbox', { name: 'My named link' })).toBeVisible();
-});
-
-test('Can toggle a sharing link off and on', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const id = await api.createItem('KnowbaseItem', {
-        name: `KB sharing toggle - ${crypto.randomUUID()}`,
-        entities_id: getWorkerEntityId(),
-        answer: "Test content for toggle",
-    });
-
-    await kb.goto(id);
-    await expect(page.getByText('Test content for toggle')).toBeVisible();
-    const modal = await kb.doOpenSharingTab();
-
-    await kb.doCreateSharingLink(modal);
-
-    const toggle = modal.getByRole('checkbox', { name: 'Link 1' });
-    await expect(toggle).toBeChecked();
-
-    const url_input = modal.getByRole('textbox', { name: '' }).last();
-    await expect(url_input).toBeVisible();
-
-    await toggle.click();
-    await expect(modal.getByRole('checkbox', { name: 'Link 1' })).not.toBeChecked();
-    await expect(url_input).not.toBeAttached();
-
-    await modal.getByRole('checkbox', { name: 'Link 1' }).click();
-    await expect(modal.getByRole('checkbox', { name: 'Link 1' })).toBeChecked();
-});
-
-test('Can delete a sharing link', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const id = await api.createItem('KnowbaseItem', {
-        name: `KB sharing delete - ${crypto.randomUUID()}`,
-        entities_id: getWorkerEntityId(),
-        answer: "Test content for delete",
-    });
-
-    await kb.goto(id);
-    await expect(page.getByText('Test content for delete')).toBeVisible();
-    const modal = await kb.doOpenSharingTab();
-
-    await kb.doCreateSharingLink(modal);
-    await expect(modal.getByRole('checkbox', { name: 'Link 1' })).toBeVisible();
-
-    await modal.getByRole('button', { name: 'Delete' }).click();
-
-    const confirm_dialog = page.getByRole('dialog').filter({ hasText: 'Delete sharing link' });
-    await expect(confirm_dialog).toBeVisible();
-    await confirm_dialog.getByRole('button', { name: 'Delete' }).click();
-
-    await expect(page.getByRole('dialog')).not.toBeAttached();
-
-    await kb.goto(id);
-    await expect(page.getByText('Test content for delete')).toBeVisible();
-    const reopened_modal = await kb.doOpenSharingTab();
-    await expect(reopened_modal.getByText('No sharing links yet')).toBeVisible();
+    await kb.publishSwitch().check();
+    await expect(kb.shareLink()).toBeVisible();
+    // Republish reuses the same token → same full link.
+    expect(await kb.copiedShareUrl()).toBe(url1);
 });
 
 test('Shared link is accessible by anonymous user', async ({ page, anonymousPage, profile, api }) => {
@@ -139,18 +80,57 @@ test('Shared link is accessible by anonymous user', async ({ page, anonymousPage
 
     await kb.goto(id);
     await expect(page.getByText(article_content)).toBeVisible();
-    const modal = await kb.doOpenSharingTab();
+    await kb.openSharePopover();
 
-    await kb.doCreateSharingLink(modal);
-    await expect(modal.getByRole('checkbox', { name: 'Link 1' })).toBeVisible();
-
-    const share_url = await modal.getByRole('textbox').last().inputValue();
+    await kb.publishSwitch().check();
+    await expect(kb.shareLink()).toBeVisible();
+    const share_url = await kb.copiedShareUrl();
     expect(share_url).toContain('/Share/');
 
     // Use path only so the test is agnostic of the server base URL (host/port vary between local and CI)
     const share_path = new URL(share_url, 'http://placeholder').pathname;
     await anonymousPage.goto(share_path);
 
+    await expect(anonymousPage.getByText(article_name)).toBeVisible();
+    await expect(anonymousPage.getByText(article_content)).toBeVisible();
+});
+
+test('Regenerating the link revokes the old one and issues a new one', async ({ page, anonymousPage, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const article_name = `KB regenerate article - ${crypto.randomUUID()}`;
+    const article_content = `Regenerate content - ${crypto.randomUUID()}`;
+    const id = await api.createItem('KnowbaseItem', {
+        name: article_name,
+        entities_id: getWorkerEntityId(),
+        answer: `<p>${article_content}</p>`,
+    });
+
+    await kb.goto(id);
+    await expect(page.getByText(article_content)).toBeVisible();
+    await kb.openSharePopover();
+
+    await kb.publishSwitch().check();
+    await expect(kb.shareLink()).toBeVisible();
+    const url1 = await kb.copiedShareUrl();
+    const path1 = new URL(url1, 'http://placeholder').pathname;
+
+    await kb.regenerateButton().click();
+    await kb.confirmRegenerate();
+
+    await expect(kb.shareLink()).toBeVisible();
+    const url2 = await kb.copiedShareUrl();
+    expect(url2).not.toBe(url1);
+    const path2 = new URL(url2, 'http://placeholder').pathname;
+
+    // Old link is revoked: the controller throws NotFoundHttpException for
+    // any token that isn't found active in the database.
+    const old_link_response = await anonymousPage.goto(path1);
+    expect(old_link_response?.status()).toBe(404);
+
+    // New link works.
+    await anonymousPage.goto(path2);
     await expect(anonymousPage.getByText(article_name)).toBeVisible();
     await expect(anonymousPage.getByText(article_content)).toBeVisible();
 });

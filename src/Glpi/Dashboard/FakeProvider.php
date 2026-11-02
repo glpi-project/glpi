@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use Agent;
 use CommonDBTM;
 use CommonDevice;
 use CommonITILObject;
@@ -43,6 +44,7 @@ use Document;
 use Entity;
 use Group;
 use InvalidArgumentException;
+use ITILCategory;
 use KnowbaseItem;
 use Location;
 use Manufacturer;
@@ -307,6 +309,325 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function ticketsBySla(array $params = []): array
+    {
+        $labels = [
+            _x('fake_data', 'Incident priority 1'),
+            _x('fake_data', 'Incident priority 2'),
+            _x('fake_data', 'Standard request'),
+            _x('fake_data', 'VIP support'),
+        ];
+
+        $series = [];
+        foreach ([__('On time') => 60, __('Late') => 15] as $serie_name => $max) {
+            $series[] = [
+                'name' => $serie_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($serie_name . $label, $max), 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => 'ti ti-stopwatch',
+        ];
+    }
+
+    public static function ticketsBySlaAndCategory(array $params = []): array
+    {
+        $labels = [
+            _x('fake_data', 'Software > Office suite'),
+            _x('fake_data', 'Hardware > Printer'),
+            _x('fake_data', 'Network > VPN'),
+            _x('fake_data', 'Hardware > Laptop'),
+        ];
+
+        $series = [];
+        foreach ([__('On time') => 60, __('Late') => 15] as $serie_name => $max) {
+            $series[] = [
+                'name' => $serie_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($serie_name . $label, $max), 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => 'ti ti-stopwatch',
+        ];
+    }
+
+    public static function ticketsByCategoryTree(array $params = []): array
+    {
+        $tree = [
+            _x('fake_data', 'Hardware') => [
+                _x('fake_data', 'Laptop')  => 184,
+                _x('fake_data', 'Printer') => 97,
+                _x('fake_data', 'Monitor') => 45,
+            ],
+            _x('fake_data', 'Software') => [
+                _x('fake_data', 'Office suite') => 152,
+                _x('fake_data', 'ERP')          => 88,
+            ],
+            _x('fake_data', 'Network') => [
+                _x('fake_data', 'Wi-Fi') => 76,
+                _x('fake_data', 'VPN')   => 63,
+            ],
+        ];
+
+        $data = [];
+        foreach ($tree as $label => $children) {
+            $child_nodes = [];
+            foreach ($children as $child_label => $number) {
+                $child_nodes[] = [
+                    'label'  => $child_label,
+                    'number' => $number,
+                    'url'    => '',
+                ];
+            }
+            $data[] = [
+                'label'    => $label,
+                'number'   => array_sum($children),
+                'url'      => '',
+                'children' => $child_nodes,
+            ];
+        }
+        $data[] = [
+            'label'  => __('None'),
+            'number' => 34,
+            'url'    => '',
+        ];
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => ITILCategory::getIcon(),
+        ];
+    }
+
+    public static function openedTicketsByCategoryAndStatus(array $params = []): array
+    {
+        $labels = [
+            _x('fake_data', 'Hardware'),
+            _x('fake_data', 'Software'),
+            _x('fake_data', 'Network'),
+            _x('fake_data', 'Accounts'),
+            __('None'),
+        ];
+
+        $series = [];
+        foreach (Ticket::getNotSolvedStatusArray() as $status) {
+            $series[] = [
+                'name' => Ticket::getStatus($status),
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($label . $status, 40),
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsByRequesterGroupAndStatus(array $params = []): array
+    {
+        return [
+            'data'  => [
+                'labels' => [
+                    _x('fake_data', 'Accounting'),
+                    _x('fake_data', 'Sales'),
+                    _x('fake_data', 'Human resources'),
+                    _x('fake_data', 'Marketing'),
+                ],
+                'series' => [
+                    [
+                        'name' => __('Opened'),
+                        'data' => [34, 52, 18, 27],
+                    ],
+                    [
+                        'name' => __('Closed'),
+                        'data' => [121, 168, 64, 89],
+                    ],
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsByRequesterLocation(array $params = []): array
+    {
+        $data = [];
+        foreach (
+            [
+                _x('fake_data', 'Headquarters') => 412,
+                _x('fake_data', 'North agency') => 238,
+                _x('fake_data', 'South agency') => 187,
+                _x('fake_data', 'Warehouse')    => 64,
+                __('None')                      => 21,
+            ] as $label => $number
+        ) {
+            $data[] = [
+                'number' => $number,
+                'label'  => $label,
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Location::getIcon(),
+        ];
+    }
+
+    public static function ticketsByStatusAndTechnician(array $params = []): array
+    {
+        $labels = self::getFakeNames();
+
+        $series = [];
+        foreach (array_keys(Ticket::getAllStatusArray()) as $status) {
+            $series[] = [
+                'name' => Ticket::getStatus($status),
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($label . $status, 30),
+                    $labels
+                ),
+            ];
+        }
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => User::getIcon(),
+        ];
+    }
+
+    public static function ticketsOpenedAndClosed(array $params = []): array
+    {
+        return [
+            'data'  => [
+                [
+                    'number' => 318,
+                    'label'  => _x('status', 'Not solved'),
+                    'url'    => '',
+                ],
+                [
+                    'number' => 1247,
+                    'label'  => _x('status', 'Solved + Closed'),
+                    'url'    => '',
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsBacklog(string $period = 'month', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $labels[] = match ($period) {
+                'day'   => date('Y-m-d', strtotime("-$i days")),
+                'week'  => date('o-\WW', strtotime("-$i weeks")),
+                'year'  => date('Y', strtotime("-$i years")),
+                default => date('Y-m', strtotime("-$i months")),
+            };
+        }
+
+        $series = [];
+        foreach (
+            [
+                _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
+                _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
+                __('Closed'),
+            ] as $name
+        ) {
+            $series[] = [
+                'name' => $name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($name . $label, 80) + 20, 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        // Backlog follows the difference between opened and solved tickets
+        $backlog = 150;
+        $backlog_data = [];
+        foreach (array_keys($labels) as $index) {
+            $backlog += $series[0]['data'][$index]['value'] - $series[1]['data'][$index]['value'];
+            $backlog_data[] = ['value' => max(0, $backlog), 'url' => ''];
+        }
+        $series[] = [
+            'name' => __('Backlog'),
+            'data' => $backlog_data,
+        ];
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsBySlaEvolution(string $period = 'month', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $labels[] = match ($period) {
+                'day'   => date('Y-m-d', strtotime("-$i days")),
+                'week'  => date('o-\WW', strtotime("-$i weeks")),
+                'year'  => date('Y', strtotime("-$i years")),
+                default => date('Y-m', strtotime("-$i months")),
+            };
+        }
+
+        $series = [];
+        foreach ([__('On time') => 60, __('Late') => 15] as $serie_name => $max) {
+            $series[] = [
+                'name' => $serie_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($serie_name . $label, $max) + 5, 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => 'ti ti-stopwatch',
+        ];
+    }
+
     public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
         $item_counts = self::getItemCount();
@@ -335,6 +656,24 @@ final class FakeProvider extends Provider
         ];
     }
 
+    public static function computersByAgentVersion(array $params = []): array
+    {
+        $data = [];
+        foreach (['1.11' => 800, '1.10' => 300, '1.9' => 120, '1.7.3' => 40] as $version => $max) {
+            $data[] = [
+                'number' => self::getObscureNumberForString('agent' . $version, $max),
+                'label'  => (string) $version,
+                'url'    => '#',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Agent::getIcon(),
+        ];
+    }
+
     public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
     {
         $data = [];
@@ -357,6 +696,157 @@ final class FakeProvider extends Provider
             'url'    => $item::getSearchURL(),
             'label'  => sprintf(__('List of %s'), $item::getTypeName(Session::getPluralNumber())),
             'icon'   => $item::getIcon(),
+        ];
+    }
+
+    public static function computersByOperatingSystemVersion(string $family = 'windows', string $group_by = 'version', array $params = []): array
+    {
+        $labels = match ($family . '-' . $group_by) {
+            'linux-name'    => ['Ubuntu', 'Debian GNU/Linux', 'Red Hat Enterprise Linux', 'Rocky Linux'],
+            'linux-version' => ['Ubuntu 24.04', 'Ubuntu 22.04', 'Debian GNU/Linux 12', 'Red Hat Enterprise Linux 9.4'],
+            'macos-major'   => ['macOS 15', 'macOS 14', 'macOS 13', 'Mac OS X 10.15'],
+            'macos-version' => ['macOS 15.1', 'macOS 14.7', 'macOS 13.6', 'Mac OS X 10.15.7'],
+            default         => ['Microsoft Windows 11 Professionnel 23H2', 'Microsoft Windows 11 Professionnel 24H2', 'Microsoft Windows 10 Professionnel 22H2', 'Microsoft Windows Server 2022 Standard'],
+        };
+
+        $data = [];
+        foreach ($labels as $label) {
+            $data[] = [
+                'number' => self::getObscureNumberForString($label, 300),
+                'label'  => $label,
+                'url'    => '#',
+            ];
+        }
+        usort($data, static fn(array $a, array $b): int => $b['number'] <=> $a['number']);
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Computer::getIcon(),
+        ];
+    }
+
+    public static function computersByMonitorsNumber(array $params = []): array
+    {
+        $data = [];
+        foreach ([0 => 120, 1 => 600, 2 => 300, 3 => 40] as $nb_monitors => $max) {
+            $data[] = [
+                'number' => self::getObscureNumberForString('monitors' . $nb_monitors, $max),
+                'label'  => sprintf(_n('%d monitor', '%d monitors', $nb_monitors), $nb_monitors),
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Monitor::getIcon(),
+        ];
+    }
+
+    public static function ticketsByCategoryAndEntity(array $params = []): array
+    {
+        $labels = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $labels[] = sprintf(__('%1$s %2$s'), Entity::getTypeName(1), $i);
+        }
+
+        $series = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $name     = sprintf(__('%1$s %2$s'), ITILCategory::getTypeName(1), $i);
+            $series[] = [
+                'name' => $name,
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($name . $label, 40),
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsByCategoryAndType(string $case = 'open', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $labels[] = sprintf(__('%1$s %2$s'), ITILCategory::getTypeName(1), $i);
+        }
+
+        $series = [];
+        foreach ([Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE] as $type) {
+            $name     = Ticket::getTicketTypeName($type);
+            $series[] = [
+                'name' => $name,
+                'data' => array_map(
+                    static fn(string $label) => self::getObscureNumberForString($case . $name . $label, 40),
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsByAssignedGroupAndStatuses(array $params = []): array
+    {
+        $labels = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $labels[] = sprintf(__('%1$s %2$s'), Group::getTypeName(1), $i);
+        }
+        $labels[] = __('None');
+
+        $series = [];
+        foreach (Ticket::getAllStatusArray() as $status_name) {
+            $series[] = [
+                'name' => $status_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($status_name . $label, 30), 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsByAssignedGroupChanges(array $params = []): array
+    {
+        $data = [];
+        // Fewer tickets as the number of changes grows
+        foreach ([60, 25, 10, 4, 1] as $nb_changes => $max) {
+            $data[] = [
+                'number' => self::getObscureNumberForString('group changes ' . $nb_changes, $max) + $max,
+                'label'  => sprintf(_n('%d change', '%d changes', $nb_changes), $nb_changes),
+                'url'    => '',
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'] ?? '',
+            'icon'  => Group::getIcon(),
         ];
     }
 
@@ -497,6 +987,69 @@ final class FakeProvider extends Provider
             'data'  => $data,
             'label' => $params['label'],
             'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsLifetime(string $period = 'month', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $labels[] = match ($period) {
+                'day'   => date('Y-m-d', strtotime("-$i days")),
+                'week'  => date('o-\WW', strtotime("-$i weeks")),
+                'year'  => date('Y', strtotime("-$i years")),
+                default => date('Y-m', strtotime("-$i months")),
+            };
+        }
+
+        $series = [];
+        foreach (Ticket::getAllStatusArray() as $status_name) {
+            $series[] = [
+                'name' => $status_name,
+                'data' => array_map(
+                    static fn(string $label) => ['value' => self::getObscureNumberForString($status_name . $label, 50), 'url' => ''],
+                    $labels
+                ),
+            ];
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => $series,
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => Ticket::getIcon(),
+        ];
+    }
+
+    public static function ticketsActionTimeVsSolveDelay(string $period = 'month', array $params = []): array
+    {
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $labels[] = match ($period) {
+                'day'   => date('Y-m-d', strtotime("-$i days")),
+                'week'  => date('o-\WW', strtotime("-$i weeks")),
+                'year'  => date('Y', strtotime("-$i years")),
+                default => date('Y-m', strtotime("-$i months")),
+            };
+        }
+
+        return [
+            'data'  => [
+                'labels' => $labels,
+                'series' => [
+                    [
+                        'name' => __("Tasks duration / solve delay (%)"),
+                        'data' => array_map(
+                            static fn(string $label) => self::getObscureNumberForString('actiontime' . $label, 40) + 10,
+                            $labels
+                        ),
+                    ],
+                ],
+            ],
+            'label' => $params['label'] ?? '',
+            'icon'  => "ti ti-stopwatch",
         ];
     }
 

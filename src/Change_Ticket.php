@@ -173,12 +173,21 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                     if ($item->can($id, READ)) {
                         if ($item->canSolve()) {
                             $solution = new ITILSolution();
-                            $added = $solution->add([
+
+                            $add_input = [
                                 'itemtype'         => $item::class,
                                 'items_id'         => $item->getID(),
                                 'solutiontypes_id' => $input['solutiontypes_id'],
                                 'content'          => $input['content'],
-                            ]);
+                            ];
+
+                            if (!$solution->can(-1, CREATE, $add_input)) {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                                continue;
+                            }
+
+                            $added = $solution->add($add_input);
 
                             if ($added) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
@@ -266,8 +275,8 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                     'displaywith' => ['id'],
                 ],
                 'create_link' => false,
-                'form_label' => __('Add a change'),
-                'button_label' => __('Create a change from this ticket'),
+                'form_label' => __('Add a ticket'),
+                'button_label' => __('Create a ticket from this change'),
             ]);
         }
 
@@ -291,11 +300,16 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
                 'specific_actions' => [
-                    'purge' => _sx('button', 'Delete permanently'),
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlink' => _sx('button', 'Unlink'),
                     self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket' => __s('Solve tickets'),
                     self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task' => __s('Add a new task'),
                 ],
-                'extraparams'      => ['changes_id' => $change->getID()],
+                'extraparams'      => [
+                    'source_itemtype'       => Change::class,
+                    'source_items_id'       => $change->getID(),
+                    'changes_id'            => $change->getID(),
+                    'massive_action_fields' => ['source_itemtype', 'source_items_id', 'changes_id'],
+                ],
             ],
         ]);
     }
@@ -392,6 +406,14 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
+                'specific_actions' => [
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlink' => _sx('button', 'Unlink'),
+                ],
+                'extraparams'      => [
+                    'source_itemtype'       => Ticket::class,
+                    'source_items_id'       => $ticket->getID(),
+                    'massive_action_fields' => ['source_itemtype', 'source_items_id'],
+                ],
             ],
         ]);
     }

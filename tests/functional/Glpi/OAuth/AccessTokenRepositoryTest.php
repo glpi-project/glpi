@@ -39,6 +39,7 @@ use Glpi\OAuth\AccessToken;
 use Glpi\OAuth\AccessTokenRepository;
 use Glpi\OAuth\Client;
 use Glpi\Tests\DbTestCase;
+use Ramsey\Uuid\Uuid;
 
 class AccessTokenRepositoryTest extends DbTestCase
 {
@@ -51,11 +52,13 @@ class AccessTokenRepositoryTest extends DbTestCase
             'identifier' => 'expired_token',
             'client' => 'client_1',
             'date_expiration' => date('Y-m-d H:i:s', time() - 3600),
+            'uuid' => Uuid::uuid4()->toString(),
         ]));
         $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
             'identifier' => 'current_token',
             'client' => 'client_1',
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
+            'uuid' => Uuid::uuid4()->toString(),
         ]));
 
         $repo = new AccessTokenRepository();
@@ -98,6 +101,7 @@ class AccessTokenRepositoryTest extends DbTestCase
             'identifier' => 'access_token_1',
             'client' => 'client_1',
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
+            'uuid' => Uuid::uuid4()->toString(),
         ]));
         $repo = new AccessTokenRepository();
         $repo->revokeAccessToken('access_token_1');
@@ -116,6 +120,7 @@ class AccessTokenRepositoryTest extends DbTestCase
             'identifier' => 'access_token_2',
             'client' => 'client_1',
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
+            'uuid' => Uuid::uuid4()->toString(),
         ]));
         $repo = new AccessTokenRepository();
         $this->assertFalse($repo->isAccessTokenRevoked('access_token_2'));

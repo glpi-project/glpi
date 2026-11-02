@@ -43,6 +43,7 @@ use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Html;
 use LogicException;
 use MassiveAction;
@@ -265,8 +266,8 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         if (in_array($itemtype, $CFG_GLPI['directconnect_types'], true)) {
-            $actions[$action_prefix . 'add']    = "<i class='ti ti-plug'></i>" . _sx('button', 'Connect');
-            $actions[$action_prefix . 'remove'] = "<i class='ti ti-plug-off'></i>" . _sx('button', 'Disconnect');
+            $actions[$action_prefix . 'add']    = "<i class='ti ti-plug' aria-hidden='true'></i>" . _sx('button', 'Connect');
+            $actions[$action_prefix . 'remove'] = "<i class='ti ti-plug-off' aria-hidden='true'></i>" . _sx('button', 'Disconnect');
         }
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
     }
@@ -311,7 +312,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         foreach ($CFG_GLPI['directconnect_types'] as $itemtype) {
             if ($itemtype::canView()) {
                 $iterator = self::getPeripheralAssets($asset, $itemtype);
-                $usediterator = self::getUsedPeripherals($itemtype);
+                $usediterator = self::getUnavailablePeripherals($asset, $itemtype);
 
                 foreach ($iterator as $data) {
                     $data['assoc_itemtype'] = $itemtype;
@@ -378,7 +379,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
             $link = $itemtype::getFormURLWithID($data["id"]);
-            $label = sprintf('<i class="%s"></i> %s', htmlescape($itemtype::getIcon()), htmlescape($linkname));
+            $label = sprintf('<i class="%s" aria-hidden="true"></i> %s', htmlescape($itemtype::getIcon()), htmlescape($linkname));
             $name = '<a href="' . htmlescape($link) . '">' . $label . '</a>';
             $entry['name'] = $name;
 
@@ -391,13 +392,13 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             $entry['entity'] = $entity_cache[$data['entities_id']];
 
             if (isset($data[$type_field])) {
-                if (!isset($type_cache[$data[$type_field]])) {
-                    $type_cache[$data[$type_field]] = Dropdown::getDropdownName(
+                if (!isset($type_cache[$type_class][$data[$type_field]])) {
+                    $type_cache[$type_class][$data[$type_field]] = Dropdown::getDropdownName(
                         $type_table,
                         $data[$type_field]
                     );
                 }
-                $entry['type'] = $type_cache[$data[$type_field]];
+                $entry['type'] = $type_cache[$type_class][$data[$type_field]];
             } else {
                 $entry['type'] = '-';
             }
@@ -505,7 +506,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                         {{ fields.hiddenField('itemtype_peripheral', peripheral.getType()) }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>
@@ -744,7 +745,7 @@ TWIG, $twig_params);
                 'SELECT' => [
                     'itemtype_peripheral',
                     QueryFunction::groupConcat(
-                        expression: 'items_id_peripheral',
+                        expression: new QueryIdentifier('items_id_peripheral'),
                         distinct: true,
                         alias: 'ids'
                     ),
@@ -779,7 +780,7 @@ TWIG, $twig_params);
                 'SELECT' => [
                     'itemtype_peripheral',
                     QueryFunction::groupConcat(
-                        expression: 'items_id_peripheral',
+                        expression: new QueryIdentifier('items_id_peripheral'),
                         distinct: true,
                         alias: 'ids'
                     ),
@@ -995,13 +996,14 @@ TWIG, $twig_params);
     }
 
     /**
-     * Returns used peripherals.
+     * Returns peripherals that cannot be connected to the given asset.
      *
+     * @param CommonDBTM               $asset    Main asset.
      * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
      *
      * @return DBmysqlIterator
-    */
-    private static function getUsedPeripherals(string $itemtype): DBmysqlIterator
+     */
+    private static function getUnavailablePeripherals(CommonDBTM $asset, string $itemtype): DBmysqlIterator
     {
         global $DB;
 
@@ -1024,7 +1026,14 @@ TWIG, $twig_params);
                 ],
             ],
             'WHERE' => [
-                self::getTable() . '.is_deleted'     => 0,
+                self::getTable() . '.is_deleted' => 0,
+                'OR' => [
+                    $peripheral::getTable() . '.is_global' => 0,
+                    [
+                        self::getTable() . '.itemtype_asset' => $asset::class,
+                        self::getTable() . '.items_id_asset' => $asset->getID(),
+                    ],
+                ],
             ] + getEntitiesRestrictCriteria($peripheral::getTable()),
             'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
         ]);

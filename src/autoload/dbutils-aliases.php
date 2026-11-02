@@ -612,7 +612,8 @@ function getDbRelations(): array
  *                                        when have acces to all entities (used for reminders)
  *
  * @return string the WHERE clause to restrict
- * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
+ *
+ * @deprecated 12.0.0
  */
 function getEntitiesRestrictRequest(
     $separator = "AND",
@@ -622,6 +623,8 @@ function getEntitiesRestrictRequest(
     $is_recursive = false,
     $complete_request = false
 ) {
+    Toolbox::deprecated('Use getEntitiesRestrictCriteria() instead.');
+
     return (new DbUtils())->getEntitiesRestrictRequest(
         $separator,
         $table,

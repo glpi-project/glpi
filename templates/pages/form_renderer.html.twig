@@ -60,11 +60,11 @@
                 class="mb-4"
                 data-glpi-form-renderer-form-header
             >
-                <h1 class="form-title mb-2" aria-label="{{ __('Form title') }}" data-testid="form-title">
+                <h1 class="form-title mb-2" data-testid="form-title">
                     {{ translate_form_item_key(form, constant('TRANSLATION_KEY_NAME', form)) }}
                 </h1>
 
-                <div class="text-muted form-description text-break" aria-label="{{ __('Form description') }}" role="note" data-testid="form-description">
+                <div class="text-muted form-description text-break" data-testid="form-description">
                     {{ translate_form_item_key(form, constant('TRANSLATION_KEY_HEADER', form))|safe_html }}
                 </div>
             </div>
@@ -171,7 +171,8 @@
                                                 <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
                                                     {{ translate_form_item_key(form_block, constant('TRANSLATION_KEY_NAME', form_block))|default(form_block.getUntitledLabel()) }}
                                                     {% if form_block.fields.is_mandatory ?? false %}
-                                                        <span class="text-danger">*</span>
+                                                        <span class="text-danger" aria-hidden="true">*</span>
+                                                        <span class="visually-hidden">{{ __('Required') }}</span>
                                                     {% endif %}
                                                 </h3>
 
@@ -196,7 +197,16 @@
             {# Form reference #}
             <input type="hidden" name="forms_id" value="{{ form.fields.id }}">
 
-            <div class="d-flex justify-content-end mb-3" data-glpi-form-renderer-actions>
+            <div
+                class="d-flex justify-content-end mb-3"
+                data-glpi-form-renderer-actions
+                {% if unauthenticated_user %}
+                    data-glpi-form-renderer-altcha
+                    {% if not visibility_engine_output.isFormVisible() %}
+                        data-glpi-form-renderer-hidden-by-condition
+                    {% endif %}
+                {% endif %}
+            >
                 {# Altcha #}
                 {% if unauthenticated_user %}
                     {{ include(
@@ -216,7 +226,7 @@
                         data-glpi-form-renderer-action="previous-section"
                         class="btn btn-ghost-secondary d-none d-flex align-items-end me-2 pointer-events-none"
                     >
-                        <i class="ti ti-arrow-narrow-left-dashed me-2"></i>
+                        <i class="ti ti-arrow-narrow-left-dashed me-2" aria-hidden="true"></i>
                         {{ __("Back") }}
                     </button>
 
@@ -225,7 +235,7 @@
                         data-glpi-form-renderer-action="next-section"
                         class="btn btn-primary pointer-events-none d-flex align-items-end"
                     >
-                        <i class="ti ti-arrow-narrow-right-dashed me-2"></i>
+                        <i class="ti ti-arrow-narrow-right-dashed me-2" aria-hidden="true"></i>
                         {{ __("Continue") }}
                     </button>
                 {% endif %}
@@ -234,13 +244,12 @@
                     type="button"
                     data-glpi-form-renderer-action="submit"
                     class="btn btn-primary pointer-events-none d-flex align-items-end {{ use_step_by_step ? 'd-none' : '' }}"
-                    aria-label="{{ __("Submit") }}"
                     disabled
                     {% if not visibility_engine_output.isFormVisible() %}
                         data-glpi-form-renderer-hidden-by-condition
                     {% endif %}
                 >
-                    <i class="ti ti-check me-2"></i>
+                    <i class="ti ti-check me-2" aria-hidden="true"></i>
                     {{ __("Submit") }}
                 </button>
             </div>
@@ -249,6 +258,7 @@
             <div
                 class="empty d-none mt-5"
                 data-glpi-form-renderer-success
+                tabindex="-1"
             >
                 <div class="empty-title d-flex align-items-center">
                     <svg
@@ -273,23 +283,27 @@
                     {{ __("Your form has been submitted successfully.") }}
                 </p>
                 {% if not unauthenticated_user %}
-                    <div class="mt-3 d-flex">
-                        {% if get_current_interface() == 'central' %}
-                            <a class="btn btn-outline-secondary me-2" href="{{ path('/ServiceCatalog') }}">
-                                <i class="ti ti-library me-1"></i>
-                                <span>{{ __("Go back to service catalog") }}</span>
+                    <ul class="mt-3 d-flex list-unstyled mb-0">
+                        <li class="me-2">
+                            {% if get_current_interface() == 'central' %}
+                                <a class="btn btn-outline-secondary" href="{{ path('/ServiceCatalog') }}">
+                                    <i class="ti ti-library me-1" aria-hidden="true"></i>
+                                    <span>{{ __("Go back to service catalog") }}</span>
+                                </a>
+                            {% else %}
+                                <a class="btn btn-outline-secondary" href="{{ path('/Helpdesk') }}">
+                                    <i class="ti ti-home me-1" aria-hidden="true"></i>
+                                    <span>{{ __("Take me home") }}</span>
+                                </a>
+                            {% endif %}
+                        </li>
+                        <li>
+                            <a class="btn btn-primary" href="{{ path('/front/ticket.php?' ~ my_tickets_url_param) }}">
+                                <i class="ti ti-article me-1" aria-hidden="true"></i>
+                                <span>{{ __("See my tickets") }}</span>
                             </a>
-                        {% else %}
-                            <a class="btn btn-outline-secondary me-2" href="{{ path('/Helpdesk') }}">
-                                <i class="ti ti-home me-1"></i>
-                                <span>{{ __("Take me home") }}</span>
-                            </a>
-                        {% endif %}
-                        <a class="btn btn-primary" href="{{ path('/front/ticket.php?' ~ my_tickets_url_param) }}">
-                            <i class="ti ti-article me-1"></i>
-                            <span>{{ __("See my tickets") }}</span>
-                        </a>
-                    </div>
+                        </li>
+                    </ul>
                 {% endif %}
             </div>
         </div>

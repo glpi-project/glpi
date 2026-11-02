@@ -32,7 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 
 /**
  * @var DBmysql $DB
@@ -43,17 +42,31 @@ $migration->addField('glpi_users', 'user_dn_hash', 'varchar(32)', [
     'after'  => 'user_dn',
 ]);
 
-$migration->addPostQuery($DB->buildUpdate(
-    'glpi_users',
+
+$users_iterator = $DB->request(
     [
-        'user_dn_hash' => new QueryExpression('MD5(`user_dn`)'),
-    ],
-    [
-        'NOT' => [
-            'user_dn' => null,
+        'SELECT' => ['id', 'user_dn'],
+        'FROM'   => 'glpi_users',
+        'WHERE'  => [
+            'NOT' => [
+                'user_dn' => null,
+            ],
         ],
     ]
-));
+);
+foreach ($users_iterator as $user_data) {
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_users',
+            [
+                'user_dn_hash' => md5($user_data['user_dn']),
+            ],
+            [
+                'id' => $user_data['id'],
+            ]
+        )
+    );
+}
 
 // Add user_dn_hash index
 $migration->addKey('glpi_users', 'user_dn_hash');

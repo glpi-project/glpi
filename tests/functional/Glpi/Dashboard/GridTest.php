@@ -38,7 +38,9 @@ use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Dashboard\Item;
 use Glpi\Dashboard\Right;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class GridTest extends DbTestCase
 {
@@ -179,5 +181,49 @@ class GridTest extends DbTestCase
 
         $result = Grid::getDefaultDashboardForMenu('mini_ticket', false);
         $this->assertSame('mini_tickets', $result);
+    }
+
+    public static function deniedProvider(): array
+    {
+        throw new AccessDeniedHttpException();
+    }
+
+    public static function deniedWithMessageProvider(): array
+    {
+        $exception = new AccessDeniedHttpException();
+        $exception->setMessageToDisplay('Custom denial message');
+        throw $exception;
+    }
+
+    public static function accessDeniedProvider(): iterable
+    {
+        yield 'default message' => [
+            'provider' => self::class . '::deniedProvider',
+            'expected' => "You don't have permission to perform this action.",
+        ];
+        yield 'message to display' => [
+            'provider' => self::class . '::deniedWithMessageProvider',
+            'expected' => 'Custom denial message',
+        ];
+    }
+
+    #[DataProvider('accessDeniedProvider')]
+    public function testGetCardHtmlWithAccessDeniedProvider(string $provider, string $expected): void
+    {
+        $grid = $this->getMockBuilder(Grid::class)
+            ->onlyMethods(['getAllDasboardCards'])
+            ->getMock();
+        $grid->expects($this->atLeastOnce())->method('getAllDasboardCards')->willReturn([
+            'denied_card' => [
+                'widgettype' => ['bigNumber'],
+                'label'      => 'Denied card',
+                'provider'   => $provider,
+            ],
+        ]);
+
+        $html = $grid->getCardHtml('denied_card', ['args' => ['widgettype' => 'bigNumber']]);
+
+        $this->assertStringContainsString(\htmlescape($expected), $html);
+        $this->assertStringNotContainsString('Error rendering card!', $html);
     }
 }

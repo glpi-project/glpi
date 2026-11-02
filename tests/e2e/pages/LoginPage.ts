@@ -134,7 +134,9 @@ export class LoginPage extends GlpiPage
 
     public async doFillTotpCode(token: string): Promise<void>
     {
-        await this.page.getByRole('textbox', { name: 'Authentication code' }).fill(token);
+        for (let i = 0; i < token.length; i++) {
+            await this.page.getByRole('textbox', { name: `Digit ${i + 1} of ${token.length}` }).fill(token[i]);
+        }
         await this.page.getByRole('button', { name: 'Verify' }).click();
     }
 }

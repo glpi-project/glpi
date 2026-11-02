@@ -60,12 +60,21 @@ use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
 
+use function Safe\json_encode;
+
 final class RequesterFieldTest extends AbstractActorFieldTest
 {
     #[Override]
     public function getFieldClass(): string
     {
         return RequesterField::class;
+    }
+
+    #[Override]
+    protected function getExpectedNoMatchActors(): array
+    {
+        // Fallback: the form filler.
+        return [['itemtype' => User::class, 'items_id' => getItemByTypeName(User::class, TU_USER, true)]];
     }
 
     public function testRequesterFromTemplate(): void
@@ -135,10 +144,31 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             answers: [],
             expected_actors: [
                 [
-                    'items_id' => $auth->getUser()->getID(),
-                    'itemtype' => User::class,
-                    // Make sure notifications are enabled
+                    'items_id'         => $auth->getUser()->getID(),
+                    'itemtype'         => User::class,
                     'use_notification' => 1,
+                ],
+            ]
+        );
+
+        // User with notifications explicitly disabled: use_notification must be 0
+        $user_no_notif = $this->createItem(User::class, [
+            'name'                    => 'testRequesterFormFiller NoNotif',
+            'password'                => 'testRequesterFormFiller NoNotif',
+            'password2'               => 'testRequesterFormFiller NoNotif',
+            'is_notif_enable_default' => 0,
+        ], ['password', 'password2']);
+
+        $this->login($user_no_notif->fields['name'], $user_no_notif->fields['name']);
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_config,
+            answers: [],
+            expected_actors: [
+                [
+                    'items_id'         => $user_no_notif->getID(),
+                    'itemtype'         => User::class,
+                    'use_notification' => 0,
                 ],
             ]
         );
@@ -188,6 +218,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             [
                 'itemtype'          => User::class,
                 'items_id'          => $post_only_id,
+                'use_notification'  => 1,
             ],
             $actors[0]
         );
@@ -448,6 +479,24 @@ final class RequesterFieldTest extends AbstractActorFieldTest
         );
     }
 
+    public function testFallbackToFormFillerWhenSpecificAnswerQuestionIsUnanswered(): void
+    {
+        // Sub-question never answered, must fall back to the form filler.
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+
+        $auth = $this->login();
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Requester 1")]
+            ),
+            answers: [],
+            expected_actors: [['items_id' => $auth->getUser()->getID()]]
+        );
+    }
+
     public function testActorsFromLastValidQuestion(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
@@ -630,6 +679,55 @@ final class RequesterFieldTest extends AbstractActorFieldTest
         );
     }
 
+    public function testTicketIsCreatedWhenStoredStrategyIsUnknown(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+        $destination = current($destinations);
+
+        // Simulate a destination whose requester strategy was stored as the
+        // empty value of the strategy dropdown. The update is done directly in
+        // database to bypass `prepareInput`, which now rejects such a value.
+        global $DB;
+        $this->assertTrue($DB->update(
+            $destination::getTable(),
+            [
+                'config' => json_encode([
+                    RequesterField::getKey() => [
+                        ITILActorFieldConfig::STRATEGIES => ['0'],
+                        ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS => null,
+                        ITILActorFieldConfig::SPECIFIC_QUESTION_IDS => null,
+                    ],
+                ]),
+            ],
+            ['id' => $destination->getID()]
+        ));
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers_set = $answers_handler->saveAnswers(
+            $form,
+            [],
+            getItemByTypeName(User::class, TU_USER, true)
+        );
+
+        // The ticket must still be created, with the form filler as requester.
+        $created_items = $answers_set->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        /** @var Ticket $ticket */
+        $ticket = current($created_items);
+        $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(1, $actors);
+        $this->assertEquals(
+            getItemByTypeName(User::class, TU_USER, true),
+            $actors[0]['items_id']
+        );
+    }
+
     #[Override]
     public static function provideConvertFieldConfigFromFormCreator(): iterable
     {
@@ -769,10 +867,14 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new RequesterField())->getDefaultConfig($form),
+            'field_config' => new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+            ),
         ];
 
         yield 'Tech group from an object' => [
@@ -781,10 +883,50 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new RequesterField())->getDefaultConfig($form),
+            'field_config' => new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+            ),
+        ];
+
+        yield 'Group from an object with question' => [
+            'field_key'     => RequesterField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
+        ];
+
+        yield 'Tech group from an object with question' => [
+            'field_key'     => RequesterField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
         ];
 
         yield 'Form author\'s supervisor' => [
@@ -877,6 +1019,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
 
         // Check actors
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(count($expected_actors), $actors);
         foreach ($expected_actors as $expected_actor) {
             $actor = array_shift($actors);
             $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(

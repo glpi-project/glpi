@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
@@ -213,7 +214,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
                 'SELECT'       => [
                     'itemtype',
                     QueryFunction::groupConcat(
-                        expression: 'items_id',
+                        expression: new QueryIdentifier('items_id'),
                         distinct: true,
                         alias: 'ids'
                     ),
@@ -275,7 +276,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
         if ($isadmin) {
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-               => "<i class='ti ti-key'></i>"
+               => "<i class='ti ti-key' aria-hidden='true'></i>"
                   . _sx('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);

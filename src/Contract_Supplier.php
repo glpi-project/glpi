@@ -76,7 +76,7 @@ class Contract_Supplier extends CommonDBRelation
                     break;
 
                 case Contract::class:
-                    if (Session::haveRight("contact_enterprise", READ)) {
+                    if (Session::haveRight(Supplier::$rightname, READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
@@ -156,7 +156,7 @@ class Contract_Supplier extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
+                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -241,7 +241,7 @@ TWIG, $twig_params);
 
         if (
             !$contract->can($instID, READ)
-            || !Session::haveRight("contact_enterprise", READ)
+            || !Session::haveRight(Supplier::$rightname, READ)
         ) {
             return;
         }
@@ -276,7 +276,7 @@ TWIG, $twig_params);
                                 entity_sons: contract.fields['is_recursive']
                             }) }}
                             {% set btn %}
-                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
+                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>

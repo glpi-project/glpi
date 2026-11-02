@@ -326,4 +326,34 @@ class FrontEndAssetsExtensionTest extends GLPITestCase
         $ext = new FrontEndAssetsExtension(vfsStream::url('glpi'));
         $this->assertEquals($expected, $ext->cssPath($path, $options));
     }
+
+    public function testPathsAreProperlyPrefixedWhenInstalledInSubfolder(): void
+    {
+        global $CFG_GLPI;
+
+        vfsStream::setup(
+            'glpi',
+            null,
+            [
+                'public' => [
+                    'js' => [
+                        'scripts_1.js' => '/* Source JS file */',
+                    ],
+                    'css' => [
+                        'styles_1.css' => '/* Source CSS file */',
+                    ],
+                ],
+            ]
+        );
+
+        // GLPI installed in a subfolder
+        $CFG_GLPI['root_doc'] = '/subfolder';
+        $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
+
+        $ext = new FrontEndAssetsExtension(vfsStream::url('glpi'));
+
+        $this->assertStringStartsWith('/subfolder/', $ext->assetPath('pics/foo.png'));
+        $this->assertStringStartsWith('/subfolder/js/scripts_1.js', $ext->jsPath('js/scripts_1.js'));
+        $this->assertStringStartsWith('/subfolder/css/styles_1.css', $ext->cssPath('css/styles_1.css'));
+    }
 }

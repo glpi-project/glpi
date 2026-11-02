@@ -53,6 +53,7 @@ final class ToggleFieldController extends AbstractController
     #[Route(
         "/Knowbase/{id}/ToggleField",
         name: "knowbase_toggle_field",
+        methods: ["POST"],
         requirements: [
             'id' => '\d+',
         ]

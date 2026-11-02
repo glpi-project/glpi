@@ -139,4 +139,23 @@ class ConfTest extends DbTestCase
         ]);
         $this->assertSame(Conf::NO_AUTH, Config::getConfigurationValue('inventory', 'auth_required'));
     }
+
+    public function testShowConfigFormWithoutAuthenticationSettings(): void
+    {
+        $this->login();
+
+        // Instances updated from GLPI 11.0 may not have authentication settings stored
+        Config::deleteConfigurationValues('inventory', [
+            'auth_required',
+            'basic_auth_login',
+            'basic_auth_password',
+        ]);
+
+        ob_start();
+        (new Conf())->showConfigForm();
+        $content = ob_get_clean();
+
+        $this->assertStringContainsString('name="auth_required"', $content);
+        $this->assertStringContainsString('name="basic_auth_login"', $content);
+    }
 }

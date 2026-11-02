@@ -34,6 +34,8 @@
 
 namespace Glpi\Kernel;
 
+use Glpi\Kernel\Listener\ControllerListener\CheckCsrfListener;
+use Glpi\Kernel\Listener\ControllerListener\FirewallStrategyListener;
 use Glpi\Kernel\Listener\PostBootListener\BootPlugins;
 use Glpi\Kernel\Listener\PostBootListener\CheckPluginsStates;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsAutoloaderRegistration;
@@ -50,13 +52,17 @@ use Glpi\Kernel\Listener\PostBootListener\SetDbSessionVars;
 use Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener;
 use Glpi\Kernel\Listener\RequestListener\CheckDatabaseStatusListener;
 use Glpi\Kernel\Listener\RequestListener\CheckMaintenanceListener;
+use Glpi\Kernel\Listener\RequestListener\CheckStartupErrorsListener;
+use Glpi\Kernel\Listener\RequestListener\ConfigureTrustedProxies;
 use Glpi\Kernel\Listener\RequestListener\ErrorHandlerRequestListener;
 use Glpi\Kernel\Listener\RequestListener\FlushBootErrors;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
 use Glpi\Kernel\Listener\RequestListener\PluginsRouterListener;
+use Glpi\Kernel\Listener\RequestListener\ReAuthReplayListener;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
+use Glpi\Kernel\Listener\RequestListener\SessionActivityListener;
 use Glpi\Kernel\Listener\RequestListener\SessionCheckCookieListener;
 use Glpi\Kernel\Listener\RequestListener\SessionVariables;
 
@@ -83,6 +89,10 @@ final class ListenersPriority
         // Keep it in top priority as is required during handling of errors that may be triggered by any other listener.
         ErrorHandlerRequestListener::class => 1000,
 
+        // Trusted proxies must be configured before anything reads the client IP, host or scheme of the request.
+        // It is done on the request event to not affect the CLI context.
+        ConfigureTrustedProxies::class     => 990,
+
         // Static assets must be served without executing anything else.
         // Keep the listener on top priority.
         FrontEndAssetsListener::class      => 500,
@@ -97,6 +107,11 @@ final class ListenersPriority
         // must be served in this case.
         CheckMaintenanceListener::class    => 490,
 
+        // This listener will report the PHP errors that occurred during the request startup, and will
+        // prevent the request from being processed when they altered the input data.
+        // It must be executed before anything reads the request input.
+        CheckStartupErrorsListener::class  => 485,
+
         // This listener will ensure that the request is made on a secure context (HTTPS) when the
         // cookies are available only on a secure context (`session.cookie_secure=on`).
         // It must be executed before trying to serve any statefull endpoint.
@@ -108,6 +123,14 @@ final class ListenersPriority
 
         // This listener will forward to the inventory controller any inventory agent requests made on the index endpoint.
         CatchInventoryAgentRequestListener::class => 420,
+
+        // Update session activity date
+        SessionActivityListener::class     => 410,
+
+        // Restores the referer of a request replayed after a re-authentication.
+        // Must be executed before any controller, legacy scripts included, as they read the
+        // referer to compute where to send the user back to.
+        ReAuthReplayListener::class        => 405,
 
         // Executes the legacy controller scripts (`/ajax/*.php` or `/front/*.php` scripts) whenever the
         // requested URI matches an existing file.
@@ -133,6 +156,14 @@ final class ListenersPriority
         // Update session variables according to request parameters.
         // Must be called as late as possible, just before controllers execution.
         SessionVariables::class            => 0,
+    ];
+
+    public const CONTROLLER_LISTENERS_PRIORITIES = [
+        // Block unsafe requests subject to CSRF.
+        CheckCsrfListener::class        => 20,
+
+        // Applies the security strategy of the controller (authentication, profile rights, ...).
+        FirewallStrategyListener::class => 10,
     ];
 
     private function __construct() {}

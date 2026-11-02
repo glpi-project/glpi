@@ -115,7 +115,7 @@ export class GlpiKnowbasePermissionsFormController
         this.#advancedVisible = false;
         this.#advancedBlock.classList.add('d-none');
         this.#advancedContent.innerHTML = '';
-        this.#advancedToggle.innerHTML = `<i class="ti ti-settings me-1"></i>${show_label}`;
+        this.#advancedToggle.innerHTML = `<i class="ti ti-settings me-1" aria-hidden="true"></i>${show_label}`;
     }
 
     async #loadVisibility(type)
@@ -236,13 +236,13 @@ export class GlpiKnowbasePermissionsFormController
                 // Show advanced options
                 this.#advancedBlock.classList.remove('d-none');
                 await this.#loadSubvisibility(this.#dropdown.value);
-                const html = `<i class="ti ti-settings me-1"></i>${hide_label}`;
+                const html = `<i class="ti ti-settings me-1" aria-hidden="true"></i>${hide_label}`;
                 this.#advancedToggle.innerHTML = html;
             } else {
                 // Hide advanced options
                 this.#advancedBlock.classList.add('d-none');
                 this.#advancedContent.innerHTML = '';
-                const html = `<i class="ti ti-settings me-1"></i>${show_label}`;
+                const html = `<i class="ti ti-settings me-1" aria-hidden="true"></i>${show_label}`;
                 this.#advancedToggle.innerHTML = html;
             }
         });

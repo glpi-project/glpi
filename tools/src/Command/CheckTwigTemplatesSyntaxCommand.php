@@ -46,6 +46,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twig\Error\Error;
 use Twig\TwigFunction;
 
+use function Safe\realpath;
+
 final class CheckTwigTemplatesSyntaxCommand extends Command
 {
     /**
@@ -59,7 +61,8 @@ final class CheckTwigTemplatesSyntaxCommand extends Command
     {
         parent::configure();
 
-        $this->setName('tools:check_twig_templates_syntax');
+        $this->setName('tools:check_twig_templates_syntax')
+             ->setDescription('Check twig templates syntax is valid');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

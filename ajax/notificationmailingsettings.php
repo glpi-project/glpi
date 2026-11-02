@@ -35,7 +35,7 @@
 
 use function Safe\json_encode;
 
-Session::checkRight("config", UPDATE);
+Session::checkRight(Config::$rightname, UPDATE);
 
 if (isset($_POST["test_smtp_send"])) {
     $result = NotificationMailing::testNotification();

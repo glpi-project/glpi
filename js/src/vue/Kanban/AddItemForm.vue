@@ -27,7 +27,7 @@
     <div class="kanban-add-form kanban-form d-flex flex-column card">
         <div class="kanban-item-header d-flex justify-content-between">
             <span class="kanban-item-title">
-                <i :class="data.itemtype_data.icon"></i>
+                <i :class="data.itemtype_data.icon" aria-hidden="true"></i>
                 {{ data.itemtype_data.name }}
             </span>
             <i class="ti ti-x cursor-pointer" :title="__('Close')" @click.prevent="emit('kanban:close_form')"></i>

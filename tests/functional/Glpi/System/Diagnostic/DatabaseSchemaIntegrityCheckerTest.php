@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\System\Diagnostic;
 
 use ArrayIterator;
+use Glpi\DBAL\Parts\BasePart;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Tests\GLPITestCase;
 use mysqli_result;
@@ -2195,7 +2196,7 @@ DIFF,
                 return true;
             }
 
-            public function doQuery($query)
+            public function doQuery(BasePart|string $query): true|mysqli_result
             {
                 if (isset($this->_mock_options['_mock_doQuery'])) {
                     return is_callable($this->_mock_options['_mock_doQuery'])
@@ -2272,6 +2273,47 @@ CREATE TABLE `glpi_displaypreferences` (
   UNIQUE KEY `unicity2` (`users_id`,`itemtype`,`num`,`interface`),
   UNIQUE KEY `unicity3` (`users_id`,`itemtype`,`num`,`interface`),
   UNIQUE KEY `unicity4` (`users_id`,`itemtype`,`num`,`interface`)
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL,
+            $normalized_sql
+        );
+    }
+
+    public function testIndexFieldOrderAreSupported(): void
+    {
+        // Arrange: get the SQL of a table that uses index with fields order
+        $sql = <<<SQL
+CREATE TABLE `glpi_objects` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `objects_id` int unsigned NOT NULL,
+  `level` int unsigned NOT NULL,
+  `valid_until` timestamp NOT NULL,
+  KEY `level` (`level` ASC),
+  KEY `validity` (`objects_id`, `valid_until`  DESC )
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL;
+
+        // Act: normalize the SQL
+        $db = $this->getDbMock();
+        $integrity_checker = new DatabaseSchemaIntegrityChecker(
+            $db,
+        );
+        $normalized_sql = $this->callPrivateMethod(
+            $integrity_checker,
+            'getNormalizedSql',
+            $sql
+        );
+
+        // Assert: the index fields order are normalized
+        $this->assertEquals(
+            <<<SQL
+CREATE TABLE `glpi_objects` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `objects_id` int unsigned NOT NULL,
+  `level` int unsigned NOT NULL,
+  `valid_until` timestamp NOT NULL,
+  KEY `level` (`level`),
+  KEY `validity` (`objects_id`,`valid_until` DESC)
 ) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
 SQL,
             $normalized_sql

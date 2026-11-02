@@ -36,7 +36,7 @@
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("config", UPDATE);
+Session::checkRight(Fieldblacklist::$rightname, UPDATE);
 
 $field = new Fieldblacklist();
 if ($_POST['id'] > 0) {

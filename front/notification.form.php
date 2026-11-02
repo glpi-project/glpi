@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-Session::checkRight("notification", READ);
+Session::checkRight(Notification::$rightname, READ);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";

@@ -41,7 +41,6 @@ use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -75,17 +74,28 @@ final class ShareTokenController extends AbstractController
         methods: ["POST"],
         requirements: ['items_id' => '\d+'],
     )]
-    public function create(Request $request, string $itemtype, int $items_id): JsonResponse
+    public function create(string $itemtype, int $items_id): JsonResponse
     {
-        $this->checkRightToShareItem($itemtype, $items_id);
+        $item = $this->checkRightToShareItem($itemtype, $items_id);
         /** @var class-string<\CommonDBTM> $itemtype */
         $manager = new ShareTokenManager();
-        $name = $request->getPayload()->getString('name') ?: null;
+
+        // A second token would stay active but unreachable from a single-link UI.
+        if (!$item->allowsMultipleShareTokens()) {
+            $existing = $manager->getToken($itemtype, $items_id);
+            if ($existing !== null) {
+                if ((int) $existing['is_active'] !== 1) {
+                    (new ShareToken())->update(['id' => (int) $existing['id'], 'is_active' => 1]);
+                    $existing['is_active'] = 1;
+                }
+
+                return new JsonResponse(['success' => true, 'token' => $existing]);
+            }
+        }
 
         $input = [
             'itemtype'  => $itemtype,
             'items_id'  => $items_id,
-            'name'      => $name,
             'is_active' => 1,
         ];
 
@@ -131,6 +141,64 @@ final class ShareTokenController extends AbstractController
     }
 
     #[Route(
+        "/Share/Token/{token_id}/Regenerate",
+        name: "glpi_share_token_regenerate",
+        methods: ["POST"],
+        requirements: ['token_id' => '\d+'],
+    )]
+    public function regenerate(int $token_id): JsonResponse
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $token = new ShareToken();
+        if (!$token->getFromDB($token_id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->checkRightToUpdateToken($token);
+
+        $itemtype = (string) $token->fields['itemtype'];
+        $items_id = (int) $token->fields['items_id'];
+
+        $error_response = new JsonResponse(
+            ['success' => false, 'message' => __('Failed to regenerate share link')],
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+        );
+
+        // Invalidate the current link and issue a fresh one atomically, so the item is never
+        // left with zero or two active tokens. The automatic "disabled"/"enabled" history
+        // entries are suppressed on both operations (_no_history) so that a single explicit
+        // "Sharing link regenerated" entry is written instead, once the new token exists.
+        $DB->beginTransaction();
+
+        if ((new ShareToken())->delete(['id' => $token_id, '_no_history' => true], true) === false) {
+            $DB->rollBack();
+            return $error_response;
+        }
+
+        $new_token = new ShareToken();
+        if ($new_token->add([
+            'itemtype'     => $itemtype,
+            'items_id'     => $items_id,
+            'is_active'    => 1,
+            '_no_history'  => true,
+        ]) === false) {
+            $DB->rollBack();
+            return $error_response;
+        }
+
+        $DB->commit();
+
+        $new_token->logRegeneration();
+
+        $fields = $new_token->fields;
+        $fields['token'] = (new ShareTokenManager())->decryptToken((string) $fields['token']);
+
+        return new JsonResponse(['success' => true, 'token' => $fields]);
+    }
+
+    #[Route(
         "/Share/Token/{token_id}/Delete",
         name: "glpi_share_token_delete",
         methods: ["POST"],
@@ -153,8 +221,10 @@ final class ShareTokenController extends AbstractController
 
     /**
      * Validate that the itemtype implements ShareableInterface and the user can manage sharing.
+     *
+     * @return \CommonDBTM&ShareableInterface The loaded item.
      */
-    private function checkRightToShareItem(string $itemtype, int $items_id): void
+    private function checkRightToShareItem(string $itemtype, int $items_id): \CommonDBTM&ShareableInterface
     {
         $item = getItemForItemtype($itemtype);
         if (!($item instanceof \CommonDBTM) || !($item instanceof ShareableInterface)) {
@@ -168,6 +238,8 @@ final class ShareTokenController extends AbstractController
         if (!$item->canManageSharing()) {
             throw new AccessDeniedHttpException();
         }
+
+        return $item;
     }
 
     /**

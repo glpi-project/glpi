@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use function Safe\strtotime;
 
-Session::checkRight("planning", READ);
+Session::checkRight(PlanningExternalEvent::$rightname, READ);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";
@@ -49,11 +49,13 @@ if (isset($_POST["add"])) {
     $extevent->check(-1, CREATE, $_POST);
 
     if ($newID = $extevent->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
+        if (!Toolbox::isAjax() && $_SESSION['glpibackcreated']) {
             Html::redirect($extevent->getLinkURL());
         }
     }
-    Html::back();
+    if (!Toolbox::isAjax()) {
+        Html::back();
+    }
 } elseif (isset($_POST["delete"])) {
     $extevent->check($_POST["id"], DELETE);
     $extevent->delete($_POST);
@@ -82,7 +84,9 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["update"])) {
     $extevent->check($_POST["id"], UPDATE);
     $extevent->update($_POST);
-    Html::back();
+    if (!Toolbox::isAjax()) {
+        Html::back();
+    }
 } else {
     $menus = ["helpdesk", "planning", "PlanningExternalEvent"];
     PlanningExternalEvent::displayFullPageForItem($_GET["id"], $menus);

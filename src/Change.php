@@ -36,7 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\ChangeParameters;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 use Glpi\Search\DefaultSearchRequestInterface;
 
@@ -102,7 +102,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     #[Override]
     public static function canView(): bool
     {
-        return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
+        return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY])
+            || Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights());
     }
 
     #[Override]
@@ -112,6 +113,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         if (!$this->checkEntity(true)) {
             return false;
         }
+
         return (Session::haveRight(self::$rightname, self::READALL)
               || (Session::haveRight(self::$rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
@@ -127,7 +129,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                               && $this->haveAGroup(
                                   CommonITILActor::ASSIGN,
                                   $_SESSION["glpigroups"]
-                              ))))));
+                              )))))
+              // Can validate changes (checked last as it requires a DB query)
+              || (Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())
+                  && ChangeValidation::canValidate($this->fields['id'])));
     }
 
     #[Override]
@@ -145,7 +150,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function canReopen()
     {
-        return Session::haveRight('followup', CREATE)
+        return Session::haveRight(ITILFollowup::$rightname, CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::EVALUATION));
@@ -212,7 +217,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         if (Session::getCurrentInterface() === 'central') {
             if (Change_Item::canCreate()) {
                 $actions['Change_Item' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='ti ti-plus'></i>"
+                = "<i class='ti ti-plus' aria-hidden='true'></i>"
                  . _sx('button', 'Add an item');
             }
 
@@ -250,7 +255,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_changes', 'glpi_changes_users'],
                             [
-                                'glpi_changes_users.changes_id'  => new QueryExpression(DBmysql::quoteName('glpi_changes.id')),
+                                'glpi_changes_users.changes_id'  => new QueryIdentifier('glpi_changes.id'),
                                 'glpi_changes_users.users_id'    => $item->getID(),
                                 'glpi_changes_users.type'        => CommonITILActor::REQUESTER,
                                 'glpi_changes.is_deleted'        => 0,
@@ -265,7 +270,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_changes', 'glpi_changes_groups'],
                             [
-                                'glpi_changes_groups.changes_id' => new QueryExpression(DBmysql::quoteName('glpi_changes.id')),
+                                'glpi_changes_groups.changes_id' => new QueryIdentifier('glpi_changes.id'),
                                 'glpi_changes_groups.groups_id'  => $item->getID(),
                                 'glpi_changes_groups.type'       => CommonITILActor::REQUESTER,
                                 'glpi_changes.is_deleted'        => 0,
@@ -880,7 +885,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         'glpi_changes.users_id_recipient'   => Session::getLoginUserID(),
                         [
                             'AND' => [
-                                'glpi_changes_users.changes_id'  => 'glpi_changes.id',
+                                'glpi_changes_users.changes_id'  => new QueryIdentifier('glpi_changes.id'),
                                 'glpi_changes_users.users_id'    => Session::getLoginUserID(),
                             ],
                         ],
@@ -1344,11 +1349,11 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         ) {
                             foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>'
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape($d['alternative_email']);
                                 }
                             }
@@ -1359,7 +1364,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                             && count($change->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1" aria-hidden="true"></i>'
                                     . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                             }
                         }
@@ -1631,5 +1636,32 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='6' ><i>" . __s('No change found.') . "</i></td></tr>";
         }
+    }
+
+    /**
+     * Give cron information
+     *
+     * @param string $name  Task's name
+     *
+     * @return array{description?: string}
+     **/
+    public static function cronInfo($name)
+    {
+        if ($name === 'createinquestchange') {
+            return ['description' => __('Generation of changes satisfaction surveys')];
+        }
+        return [];
+    }
+
+    /**
+     * Cron for automatically creating changes satisfaction surveys
+     *
+     * @param CronTask $task
+     *
+     * @return int (0 : nothing done - 1 : done)
+     **/
+    public static function cronCreateInquestChange($task)
+    {
+        return parent::cronCreateInquest($task);
     }
 }

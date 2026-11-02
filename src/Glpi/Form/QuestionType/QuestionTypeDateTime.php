@@ -163,7 +163,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
 
         try {
             /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
-            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
             if ($config === null) {
                 return false;
             }
@@ -181,7 +181,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
 
         try {
             /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
-            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
             if ($config === null) {
                 return true;
             }
@@ -199,7 +199,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
 
         try {
             /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
-            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
             if ($config === null) {
                 return false;
             }

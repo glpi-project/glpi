@@ -36,11 +36,13 @@ namespace tests\units\Glpi\Controller;
 
 use CommonDBTM;
 use Glpi\Controller\ShareAccessController;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use User;
 
@@ -100,6 +102,71 @@ final class ShareAccessControllerTest extends DbTestCase
         $controller = new ShareAccessController();
         $response = $controller->__invoke($request, $plain);
 
+        $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
+    }
+
+    public function testAuthenticatedUserWithoutItemVisibilityGetsSharedView(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        // KB READ right, but no visibility on the article
+        $this->login('normal', 'normal');
+        $this->assertFalse($kb->can($kb->getID(), READ));
+
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
+        $request = Request::create('/Share/' . $plain, 'GET');
+        $response = (new ShareAccessController())->__invoke($request, $plain);
+
+        $this->assertNotInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString($kb->fields['name'], (string) $response->getContent());
+    }
+
+    public function testAuthenticatedUserWithoutItemVisibilityGetsSharedViewOnEveryVisit(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $this->login('normal', 'normal');
+
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
+        $request = Request::create('/Share/' . $plain, 'GET');
+        foreach ([1, 2] as $visit) {
+            $response = (new ShareAccessController())->__invoke($request, $plain);
+
+            $this->assertNotInstanceOf(RedirectResponse::class, $response, "Visit $visit");
+            $this->assertSame(200, $response->getStatusCode(), "Visit $visit");
+        }
+    }
+
+    public function testAuthenticatedUserWithoutKnowbaseRightGetsSharedView(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $this->login('normal', 'normal');
+        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
+
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
+        $request = Request::create('/Share/' . $plain, 'GET');
+        $response = (new ShareAccessController())->__invoke($request, $plain);
+
+        $this->assertNotInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString($kb->fields['name'], (string) $response->getContent());
+    }
+
+    public function testUnknownTokenIsRejected(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $unknown = str_repeat('a', 64);
+        $request = Request::create('/Share/' . $unknown, 'GET');
+        (new ShareAccessController())->__invoke($request, $unknown);
     }
 }

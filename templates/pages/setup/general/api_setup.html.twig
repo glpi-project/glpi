@@ -59,7 +59,7 @@
     {{ fields.smallTitle(__('Legacy API')) }}
     {% if config['enable_api'] %}
         <twig:Alert:Warning
-            :title="__('The Legacy API is enabled. It is recommended to only use the new API when possible.')"
+            :heading="__('The Legacy API is enabled. It is recommended to only use the new API when possible.')"
         />
     {% endif %}
     {{ fields.sliderField('enable_api', config['enable_api'], __("Enable Legacy REST API"), {

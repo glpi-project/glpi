@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+use Rector\Caching\ValueObject\Storage\FileCacheStorage;
+use Rector\Config\RectorConfig;
+use Rector\Configuration\RectorConfigBuilder;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
+use RectorGlpi\Set\GlpiSetList;
+
+/**
+ * Marks the plugin as loaded so `Plugin*` classes resolve through the legacy autoloader during
+ * static analysis, without a full framework bootstrap (DB, session, plugin init logic).
+ *
+ * @param string[] $paths
+ */
+function registerPluginAutoloading(array $paths): void
+{
+    $plugin_root = \dirname($paths[0] ?? __DIR__);
+    $plugin_key  = \strtolower(\basename($plugin_root));
+
+    if (!\defined('GLPI_PLUGINS_DIRECTORIES')) {
+        \define('GLPI_PLUGINS_DIRECTORIES', [\dirname($plugin_root)]);
+    }
+
+    $loaded_plugins_property = new ReflectionProperty(Plugin::class, 'loaded_plugins');
+    $loaded_plugins          = $loaded_plugins_property->getValue();
+
+    if (!\in_array($plugin_key, $loaded_plugins, true)) {
+        $loaded_plugins_property->setValue(null, [...$loaded_plugins, $plugin_key]);
+    }
+}
+
+/**
+ * Shared rector baseline for GLPI plugins.
+ *
+ * Plugins usage:
+ *
+ *     $baseline = require __DIR__ . '/../../PluginsRector.php';
+ *     return $baseline([__DIR__ . '/src', __DIR__ . '/tests']);
+ *
+ * Do not call `->withPaths()` again on the returned builder.
+ * `withPaths()` overwrites what `withRootFiles()` append and so would drop the root files.
+ *
+ * @param string[] $paths
+ */
+return static function (array $paths): RectorConfigBuilder {
+    registerPluginAutoloading($paths);
+
+    return RectorConfig::configure()
+    ->withPaths($paths)
+    ->withRootFiles()
+    ->withSets([
+        GlpiSetList::GLPI_DEFAULT_SET,
+    ])
+    ->withCache(
+        cacheDirectory: 'var/rector',
+        cacheClass: FileCacheStorage::class,
+    )
+    ->withParallel(timeoutSeconds: 300)
+    ->withImportNames(removeUnusedImports: true)
+    ->withPreparedSets(
+        deadCode: true,
+        codeQuality: true,
+        codingStyle: true,
+    )
+    // withPhpVersion() intentionally not called
+    // both (withPhpSets and withPhpVersion) will resolve the PHP version from plugin own composer.json
+    ->withPhpSets()
+    ->withSkip([
+        // GLPI plugins receive request data as strings ($_POST, $_GET, CommonDBTM::$input).
+        // `strict_types=1` turns scalar coercion that return runtime TypeErrors.
+        SafeDeclareStrictTypesRector::class,
+    ])
+    ;
+};

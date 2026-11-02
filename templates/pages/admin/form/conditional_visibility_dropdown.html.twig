@@ -80,7 +80,7 @@
                     data-glpi-editor-visibility-badge="{{ strategy.value }}"
                     aria-label="{{ strategy.getLabel() }}"
                 >
-                    <i class="{{ strategy.getIcon() }} me-1"></i>
+                    <i class="{{ strategy.getIcon() }} me-1" aria-hidden="true"></i>
                     <span>{{ strategy.getLabel() }}</span>
                 </div>
             {% endfor %}
@@ -101,7 +101,7 @@
             <div class="card visibility-dropdown-card" data-glpi-form-editor-on-click="stop-propagation">
                 <div class="card-body">
                     <h3 class="card-title d-flex align-items-center">
-                        <i class="ti ti-circuit-changeover me-2"></i>
+                        <i class="ti ti-circuit-changeover me-2" aria-hidden="true"></i>
                         {{ __('Conditional visibility') }}
                     </h3>
 

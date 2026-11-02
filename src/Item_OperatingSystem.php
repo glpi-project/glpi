@@ -245,8 +245,8 @@ class Item_OperatingSystem extends CommonDBRelation
         foreach ($columns as $key => $val) {
             $val = htmlescape($val);
             $header_end .= "<th" . ($sort == $key ? " class='order_$order'" : '') . ">"
-                        . "<a href='javascript:reloadTab(\"sort=$key&amp;order="
-                          . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
+                        . "<button type='button' class='btn-as-link' data-glpi-reload-tab='"
+                          . htmlescape("sort=$key&order=" . (($order == "ASC") ? "DESC" : "ASC") . "&start=0") . "'>$val</button></th>";
         }
 
         $header_end .= "</tr>";
@@ -624,27 +624,36 @@ class Item_OperatingSystem extends CommonDBRelation
                 $ios = new Item_OperatingSystem();
                 foreach ($ids as $id) {
                     if ($item->getFromDB($id)) {
-                        if ($item->can($id, UPDATE, $input)) {
-                            $exists = $ios->getFromDBByCrit([
-                                'itemtype'  => $item::class,
-                                'items_id'  => $item->getID(),
-                            ]);
-                            $ok = false;
-                            if ($exists) {
-                                $ok = $ios->update(['id'  => $ios->getID()] + $input);
-                            } else {
-                                $ok = $ios->add(['itemtype' => $item::class, 'items_id' => $item->getID()] + $input);
-                            }
+                        $exists = $ios->getFromDBByCrit([
+                            'itemtype'  => $item::class,
+                            'items_id'  => $item->getID(),
+                        ]);
 
-                            if ($ok != false) {
-                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                            } else {
-                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                            }
+                        $item_input = $exists
+                            ? ['id'  => $ios->getID()] + $input
+                            : ['itemtype' => $item::class, 'items_id' => $item->getID()] + $input;
+
+                        if (
+                            ($exists && !$ios->can($ios->getID(), UPDATE, $item_input))
+                            || (!$exists && !$ios->can(-1, CREATE, $item_input))
+                        ) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
+                        $ok = false;
+                        if ($exists) {
+                            $ok = $ios->update($item_input);
+                        } else {
+                            $ok = $ios->add($item_input);
+                        }
+
+                        if ($ok != false) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                            $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);

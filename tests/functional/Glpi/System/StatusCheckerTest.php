@@ -55,6 +55,40 @@ class StatusCheckerTest extends GLPITestCase
         $this->assertIsArray($status);
     }
 
+    public function testDbVersions()
+    {
+        $statusPublic = StatusChecker::getServiceStatus(service: null, public_only: true);
+        $statusPrivate = StatusChecker::getServiceStatus(service: null, public_only: false);
+
+        foreach (['public' => $statusPublic, 'private' => $statusPrivate] as $visibility => $status) {
+            $this->assertIsArray($status['glpi']['database_version']);
+            $this->assertArrayHasKey('status', $status['glpi']['database_version']);
+
+            // Verify value types
+            $this->assertIsString($status['glpi']['database_version']['defined']);
+            $this->assertIsString($status['glpi']['database_version']['installed']);
+            $this->assertIsString($status['glpi']['database_version']['status']);
+
+            // Verify "uptodate" type according to visibility
+            $this->{$visibility == 'public' ? 'assertFalse' : 'assertIsBool'}($status['glpi']['database_version']['uptodate']);
+
+            // Verify versions
+            $this->assertEquals(
+                $visibility == 'public' ? StatusChecker::VALUE_REDACTED : GLPI_SCHEMA_VERSION,
+                $status['glpi']['database_version']['defined'],
+            );
+        }
+
+        $this->assertEquals(StatusChecker::VALUE_REDACTED, $statusPublic['glpi']['database_version']['installed']);
+
+        // Verify "status" represents "uptodate" value
+        $this->assertEquals(StatusChecker::STATUS_NO_DATA, $statusPublic['glpi']['database_version']['status']);
+        $this->assertEquals(
+            $statusPrivate['glpi']['database_version']['uptodate'] ? StatusChecker::STATUS_OK : StatusChecker::STATUS_WARNING,
+            $statusPrivate['glpi']['database_version']['status'],
+        );
+    }
+
     public function testDefaultStatus()
     {
         $status = StatusChecker::getServiceStatus(service: null);
@@ -165,6 +199,37 @@ class StatusCheckerTest extends GLPITestCase
         // Check the overall status without forcing a re-check in a separate call after individual status checks to avoid an issue where a full status check would show everything is OK
         $status = StatusChecker::getServiceStatus(service: null);
         $this->assertEquals(StatusChecker::STATUS_PROBLEM, $status['glpi']['status']);
+    }
+
+    public function testIMAPStatusWithUnsupportedProtocol(): void
+    {
+        global $DB;
+
+        // Run a DB check first so the status checker knows the DB is available.
+        StatusChecker::getDBStatus();
+
+        $DB->beginTransaction();
+
+        $auth_mail = new AuthMail();
+        $authmail_id = $auth_mail->add([
+            'name'            => 'testpop',
+            'connect_string'  => '{pop.localhost/pop}',
+            'is_active'       => 1,
+        ]);
+        $this->assertGreaterThan(0, $authmail_id);
+
+        $status = StatusChecker::getIMAPStatus(false);
+
+        $DB->rollBack();
+
+        $this->assertEquals(StatusChecker::STATUS_PROBLEM, $status['status']);
+        $this->assertEquals(
+            [
+                'status'     => StatusChecker::STATUS_PROBLEM,
+                'status_msg' => 'Unsupported mail server type',
+            ],
+            $status['servers']['testpop']
+        );
     }
 
     public static function getCalculatedGlobalStatusProvider()

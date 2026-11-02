@@ -34,8 +34,9 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
+use Glpi\Config\ConfigContainer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 
@@ -267,14 +268,15 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * Save $_SESSION and $CFG_GLPI into the returned array
      *
-     * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
+     * @return array{'$_SESSION': array<string, mixed>, '$CFG_GLPI': ConfigContainer} which contains a copy of $_SESSION and $CFG_GLPI
      */
     private static function saveContext(): array
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
         $context = [];
         $context['$_SESSION'] = $_SESSION;
-        $context['$CFG_GLPI'] = $CFG_GLPI;
+        $context['$CFG_GLPI'] = clone $CFG_GLPI;
         return $context;
     }
 
@@ -334,7 +336,7 @@ class SavedSearch_Alert extends CommonDBChild
                         'glpi_alerts.date' => ['<',
                             QueryFunction::dateSub(
                                 date: QueryFunction::now(),
-                                interval: new QueryExpression($DB::quoteName('glpi_savedsearches_alerts.frequency')),
+                                interval: new QueryIdentifier('glpi_savedsearches_alerts.frequency'),
                                 interval_unit: 'SECOND'
                             ),
                         ],

@@ -37,6 +37,7 @@ namespace tests\units\Glpi\UI;
 use Glpi\Tests\GLPITestCase;
 use Glpi\UI\IllustrationManager;
 use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 
 final class IllustrationManagerTest extends GLPITestCase
 {
@@ -108,12 +109,74 @@ final class IllustrationManagerTest extends GLPITestCase
         $ids = $manager->searchIcons(page: $page, page_size: $page_size);
     }
 
+    public function testInstantiationDoesNotRequireIllustrationFiles(): void
+    {
+        // Arrange / Act: instantiate the manager with paths that do not exist.
+        // The illustration files are provided by an npm package, that may not
+        // be installed (e.g. in a lint-only CI job), and instantiating the
+        // manager happens on every kernel boot.
+        $manager = new IllustrationManager(
+            icons_definition_file: '/does/not/exist/icons.json',
+            icons_sprites_path: '/lib/does-not-exist/icons.svg',
+            scenes_gradient_sprites_path: '/lib/does-not-exist/scenes.svg',
+        );
+
+        // Assert: no exception has been thrown.
+        $this->assertInstanceOf(IllustrationManager::class, $manager);
+    }
+
+    public function testRenderIconFailsWhenSpritesFileIsMissing(): void
+    {
+        // Arrange: a manager pointing to a missing sprites file.
+        // The sprites path is relative to the `public` directory.
+        $sprites_path = '/lib/does-not-exist/icons.svg';
+        $manager = new IllustrationManager(icons_sprites_path: $sprites_path);
+
+        // Assert: rendering an icon is where the missing file is reported.
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Failed to read file: ' . GLPI_ROOT . '/public/' . $sprites_path
+        );
+
+        // Act
+        $manager->renderIcon('report-issue');
+    }
+
     public function testRenderIconReturnsEmptyStringForEmptyValue(): void
     {
         $manager = new IllustrationManager();
 
         $this->assertSame('', $manager->renderIcon(''));
         $this->assertSame('', $manager->renderIcon('', 60));
+    }
+
+    public function testRenderIconIsHiddenButKeepsTitleForTooltip(): void
+    {
+        $manager = new IllustrationManager();
+
+        $html = $manager->renderIcon('report-issue');
+
+        // aria-hidden hides it regardless of the title.
+        $this->assertStringContainsString('aria-hidden="true"', $html);
+        $this->assertStringContainsString('<title>Report an issue</title>', $html);
+    }
+
+    public function testRenderSceneIsHiddenAndUnnamed(): void
+    {
+        $manager = new IllustrationManager();
+
+        $html = $manager->renderScene('desk');
+
+        $this->assertStringContainsString('aria-hidden="true"', $html);
+        $this->assertStringNotContainsString('<title>', $html);
+    }
+
+    public function testGetIconTitle(): void
+    {
+        $manager = new IllustrationManager();
+
+        $this->assertSame('Report an issue', $manager->getIconTitle('report-issue'));
+        $this->assertSame('', $manager->getIconTitle('report-issue.svg'));
     }
 
     public function testIllustrationsTranslationsAreGenerated(): void

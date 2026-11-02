@@ -194,8 +194,9 @@ class Group_User extends CommonDBRelation
 
         $group = new Group();
         $entries = [];
-        $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '"></i>';
-        $no_icon  = '<span class="visually-hidden" aria-label="' . __s('No') . '"></span>';
+        $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '" aria-hidden="true"></i>'
+            . '<span class="visually-hidden">' . __s('Yes') . '</span>';
+        $no_icon  = '<span class="visually-hidden">' . __s('No') . '</span>';
         foreach ($groups as $data) {
             if (!$group->getFromDB($data["id"])) {
                 continue;
@@ -412,14 +413,19 @@ class Group_User extends CommonDBRelation
         $used    = [];
         $ids     = [];
 
-        self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], true, false);
+        // Whether to also include members of this group's sub-groups.
+        // Persisted per-session, like other saved list options.
+        $has_children = $group->haveChildren();
+        $tree = $has_children ? (int) Session::getSavedOption(self::class, 'tree', 0) : 0;
+
+        self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], $tree, false);
         $all_groups = count($used);
         $used    = [];
         $ids     = [];
 
         // Retrieve member list
         // TODO: migrate to use CommonDBRelation::getListForItem()
-        $entityrestrict = self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], true, true);
+        $entityrestrict = self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], $tree, true);
 
         // We will load implicits members from parents groups and display
         // them after all the "direct" members
@@ -444,6 +450,26 @@ class Group_User extends CommonDBRelation
             self::showAddUserForm($group, $ids, $entityrestrict);
         }
 
+        if ($has_children) {
+            // Carry over any active column filter: reloadTab() doesn't merge
+            // query strings across calls, so we must resend them ourselves.
+            $filters_qs = http_build_query(['filters' => $_GET['filters'] ?? []]);
+            $reload_suffix = $filters_qs !== '' ? ('&' . $filters_qs) : '';
+
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <hr class="my-3">
+                <div class="d-flex justify-content-end">
+                    {{ fields.dropdownYesNo('tree', tree, label, {
+                        field_class: 'col-12 col-sm-8 col-md-5 col-xxl-4 mb-2',
+                        add_data_attributes: {
+                            'glpi-reload-tab-on-change': 'start=0&tree=%value%' ~ reload_suffix,
+                        },
+                    }) }}
+                </div>
+TWIG, ['tree' => $tree, 'reload_suffix' => $reload_suffix, 'label' => __('Include members of sub-groups')]);
+        }
+
         $number = count($used);
         $start  = (isset($_GET['start']) ? (int) $_GET['start'] : 0);
         if ($start >= $number) {
@@ -452,7 +478,7 @@ class Group_User extends CommonDBRelation
 
         if ($number != $all_groups) {
             echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
-            echo "<i class='ti ti-info-circle fs-1'></i>";
+            echo "<i class='ti ti-info-circle fs-1' aria-hidden='true'></i>";
             echo "<span class='ms-2'>";
             echo __s("Some users are not listed as they are not visible from your current entity.");
             echo "</span>";
@@ -461,8 +487,9 @@ class Group_User extends CommonDBRelation
 
         $tmpgrp = new Group();
         $entries = [];
-        $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '"></i>';
-        $no_icon  = '<span class="visually-hidden" aria-label="' . __s('No') . '"></span>';
+        $yes_icon = '<i class="ti ti-check" title="' . __s('Yes') . '" aria-hidden="true"></i>'
+            . '<span class="visually-hidden">' . __s('Yes') . '</span>';
+        $no_icon  = '<span class="visually-hidden">' . __s('No') . '</span>';
         for ($i = $start, $j = 0; ($i < $number) && ($j < $_SESSION['glpilist_limit']); $i++, $j++) {
             $data = $used[$i];
             $user->getFromDB($data["id"]);
@@ -512,7 +539,7 @@ class Group_User extends CommonDBRelation
                     'label' => __('Delegatee'),
                     'filter_formatter' => 'yesno',
                 ],
-                'is_active' => [
+                'active' => [
                     'label' => __('Active'),
                     'filter_formatter' => 'yesno',
                 ],
@@ -523,7 +550,7 @@ class Group_User extends CommonDBRelation
                 'dynamic' => 'raw_html',
                 'manager' => 'raw_html',
                 'delegatee' => 'raw_html',
-                'is_active' => 'raw_html',
+                'active' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => $number,
@@ -716,7 +743,9 @@ class Group_User extends CommonDBRelation
         if ($item instanceof Group) {
             $members = [];
             $ids = [];
-            self::getDataForGroup($item, $members, $ids, '', true, false);
+            // Always count direct members only: the tab badge cannot reflect
+            // the "tree" toggle live (reloadTab() never refreshes it).
+            self::getDataForGroup($item, $members, $ids, '', 0, false);
 
             // We will also count implicits members from parents groups
             $members = array_merge(
@@ -825,6 +854,23 @@ class Group_User extends CommonDBRelation
 
         // Group cache must be invalidated when a user is added to a group
         Group::updateLastGroupChange();
+
+        foreach (ProjectTask::getActiveProjectTaskIDsForGroup([(int) $this->fields['groups_id']]) as $row) {
+            $task = new ProjectTask();
+            if (!$task->getFromDB($row['id']) || $task->fields['recall'] === null) {
+                continue;
+            }
+            if (PlanningRecall::getForItem(ProjectTask::class, $task->getID(), $this->fields['users_id']) !== null) {
+                continue;
+            }
+            PlanningRecall::manageDatas([
+                'itemtype'    => ProjectTask::class,
+                'items_id'    => $row['id'],
+                'users_id'    => (int) $this->fields['users_id'],
+                'before_time' => (int) $task->fields['recall'],
+                'field'       => 'plan_end_date',
+            ]);
+        }
     }
 
     public function post_purgeItem()
@@ -900,6 +946,25 @@ class Group_User extends CommonDBRelation
 
         // Group cache must be invalidated when a user is remove from a group
         Group::updateLastGroupChange();
+
+        foreach (ProjectTask::getActiveProjectTaskIDsForGroup([(int) $this->fields['groups_id']]) as $row) {
+            $projecttasks_id = $row['id'];
+            $still_in_team = array_flip(ProjectTaskTeam::getUserInTeamFor($projecttasks_id));
+
+            if (isset($still_in_team[(int) $this->fields['users_id']])) {
+                continue;
+            }
+            $recall = PlanningRecall::getForItem(ProjectTask::class, $projecttasks_id, (int) $this->fields['users_id']);
+            if ($recall !== null) {
+                $recall->delete(['id' => $recall->getID()]);
+            }
+        }
+    }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 
     /**

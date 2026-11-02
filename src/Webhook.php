@@ -53,9 +53,9 @@ use Glpi\Features\Clonable;
 use Glpi\Http\Request;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
+use Glpi\Toolbox\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Twig\Extra\Markdown\MarkdownExtension;
 
 use function Safe\json_decode;
@@ -201,6 +201,15 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'field'              => 'completename',
             'name'               => WebhookCategory::getTypeName(1),
             'datatype'           => 'dropdown',
+        ];
+
+        $tab[] = [
+            'id'                 => '8',
+            'table'              => self::getTable(),
+            'field'              => 'pinned_version',
+            'name'               => __('API version'),
+            'massiveaction'      => false, // must be one of the pinnable versions, not free text
+            'datatype'           => 'string',
         ];
 
         return $tab;
@@ -355,23 +364,28 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public static function getStatusIcon($status): string
     {
         if ($status) {
-            return '<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;"></i>';
+            return '<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;" aria-hidden="true"></i>';
         } else {
-            return '<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;"></i>';
+            return '<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;" aria-hidden="true"></i>';
         }
     }
 
     /**
+     * @param string|null $api_version The API version to resolve the schemas against, defaults to {@see Router::API_VERSION}
      * @return array<class-string<AbstractController>, array{
      *     main: array<class-string<CommonDBTM>, array{name: string}>,
      *     subtypes?: array<class-string<CommonDBTM>, array{name: string, parent: class-string<CommonDBTM>}|array{}>
      * }>
      */
-    public static function getAPIItemtypeData(): array
+    public static function getAPIItemtypeData(?string $api_version = null): array
     {
-        static $supported = null;
+        // Normalized so that a bare major (e.g. '2') and its resolved full version (e.g. '2.4.0') share the same cache entry.
+        $api_version = Router::normalizeAPIVersion($api_version ?? Router::API_VERSION);
+        // Memoized per version: a single cache slot would return the first requested version's
+        // schemas for every other version once the schemas actually differ between majors.
+        static $supported_by_version = [];
 
-        if ($supported === null || Environment::get()->shouldExpectResourcesToChange()) {
+        if (!isset($supported_by_version[$api_version]) || Environment::get()->shouldExpectResourcesToChange()) {
             $supported = [
                 AssetController::class => [
                     'main' => AssetController::getAssetTypes(),
@@ -432,8 +446,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
              * @phpstan-var class-string<AbstractController> $controller
              */
             foreach ($supported as $controller => $categories) {
-                // TODO Allow pinning webhooks to specific API versions
-                $schemas = $controller::getKnownSchemas(Router::API_VERSION);
+                // Schemas absent from this version are already dropped by getKnownSchemas(), which
+                // makes the 'main' category below version-aware: an itemtype whose schema does not
+                // exist for $api_version keeps no entry.
+                $schemas = $controller::getKnownSchemas($api_version);
                 foreach ($categories as $category => $itemtypes) {
                     if ($category === 'main') {
                         foreach ($itemtypes as $i => $supported_itemtype) {
@@ -446,15 +462,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
                             unset($supported[$controller][$category][$i]);
                         }
                     } elseif ($controller === ITILController::class) {
+                        // TODO Unlike 'main' above, subtypes are named from a static match and are
+                        // never checked against $schemas, so they stay listed for every API version.
                         foreach (array_keys($itemtypes) as $supported_itemtype) {
                             $supported[$controller][$category][$supported_itemtype]['name'] = $controller::getFriendlyNameForSubtype($supported_itemtype);
                         }
                     }
                 }
             }
+
+            $supported_by_version[$api_version] = $supported;
         }
 
-        return $supported;
+        return $supported_by_version[$api_version];
     }
 
     /**
@@ -509,12 +529,74 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $sub_item;
     }
 
+    /**
+     * Get the API major versions a webhook can be pinned to.
+     *
+     * Only major versions are offered: the router resolves them to their latest minor version,
+     * which is not supposed to introduce breaking changes for a webhook consumer.
+     * v1 is excluded as it is routed to the legacy API and would not resolve any webhook path.
+     *
+     * @return array<int|string, string> Major version => label to display.
+     */
+    public static function getPinnableAPIVersions(): array
+    {
+        $pinnable = [];
+        foreach (Router::getAPIMajorVersions() as $version => $info) {
+            // Array keys of numeric strings are normalized to int by PHP, so compare as strings.
+            if ((string) $version === '1') {
+                continue;
+            }
+            $pinnable[$version] = $info['deprecated']
+                ? sprintf(__('%s (deprecated)'), $version)
+                : (string) $version;
+        }
+
+        return $pinnable;
+    }
+
+    /**
+     * Get the API version this webhook requests, as a `GLPI-API-Version` header value.
+     *
+     * An empty or unknown stored value falls back to the oldest pinnable major version rather
+     * than to the latest one: a webhook created outside of {@see self::prepareInputForAdd()},
+     * by a plugin or a direct SQL insert, must not silently jump to a newer major version.
+     *
+     * @return string
+     */
+    public function getPinnedAPIVersion(): string
+    {
+        $pinnable = self::getPinnableAPIVersions();
+        $pinned = (string) ($this->fields['pinned_version'] ?? '');
+
+        // array_key_exists() normalizes $pinned the same way PHP normalized the array keys,
+        // unlike in_array() on array_keys($pinnable) which would compare a string to integers.
+        if (array_key_exists($pinned, $pinnable)) {
+            return $pinned;
+        }
+
+        $oldest = array_key_first($pinnable);
+
+        return $oldest !== null ? (string) $oldest : explode('.', Router::API_VERSION)[0];
+    }
+
+    /**
+     * Whether the API version this webhook is pinned to is deprecated.
+     *
+     * @return bool
+     */
+    public function isPinnedAPIVersionDeprecated(): bool
+    {
+        return Router::getAPIMajorVersions()[$this->getPinnedAPIVersion()]['deprecated'] ?? false;
+    }
+
     private function getAPIResponse(string $path): array
     {
         $router = Router::getInstance();
         $router->registerAuthMiddleware(new InternalAuthMiddleware());
         $path = rtrim($path, '/');
-        $request = new Request('GET', $path);
+        // Without this header the router falls back to its latest version, so the payload would
+        // change under the consumer's feet as soon as a new major version ships.
+        $request = new Request('GET', $path, ['GLPI-API-Version' => $this->getPinnedAPIVersion()]);
         $response = Session::callAsSystem(static fn() => $router->handleRequest($request));
         if ($response->getStatusCode() === 200) {
             $body = (string) $response->getBody();
@@ -578,11 +660,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
      * @param string $itemtype The itemtype to get the parent item schema for.
+     * @param string|null $api_version The API version whose schema should be used, defaults to {@see Router::API_VERSION}.
      * @return array
      */
-    private static function getParentItemSchema(string $itemtype): array
+    private static function getParentItemSchema(string $itemtype, ?string $api_version = null): array
     {
-        $supported = self::getAPIItemtypeData();
+        $api_version ??= Router::API_VERSION;
+        $supported = self::getAPIItemtypeData($api_version);
         $parent_itemtypes = [];
         foreach ($supported as $controller => $categories) {
             if (isset($categories['subtypes']) && array_key_exists($itemtype, $categories['subtypes'])) {
@@ -597,7 +681,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
         if (count($parent_itemtypes) === 1) {
             $parent_itemtype = array_key_first($parent_itemtypes);
-            return self::getAPISchemaBySupportedItemtype($parent_itemtype);
+            return self::getAPISchemaBySupportedItemtype($parent_itemtype, $api_version);
         }
         $schema = [
             'type' => 'object',
@@ -605,7 +689,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'properties' => [],
         ];
         foreach ($parent_itemtypes as $parent_itemtype => $parent_itemtype_data) {
-            $parent_schema = self::getAPISchemaBySupportedItemtype($parent_itemtype);
+            $parent_schema = self::getAPISchemaBySupportedItemtype($parent_itemtype, $api_version);
             $schema['x-subtypes'][] = [
                 'itemtype' => $parent_itemtype,
                 'schema_name' => $parent_itemtype_data['name'],
@@ -631,8 +715,16 @@ class Webhook extends CommonDBTM implements FilterableInterface
     private function addParentItemData(array &$data, string $itemtype, int $items_id): void
     {
         if (is_subclass_of($itemtype, CommonDBChild::class)) {
-            $parent_itemtype = $data['item']['itemtype'];
-            $parent_id = $data['item']['items_id'];
+            if (str_starts_with($itemtype::$itemtype, 'itemtype')) {
+                // Polymorphic child: the parent is carried by the itemtype/items_id payload fields.
+                $parent_itemtype = $data['item']['itemtype'];
+                $parent_id = $data['item']['items_id'];
+            } else {
+                // Fixed parent (TicketValidation, ChangeValidation, ...): the payload only holds the
+                // parent foreign key, so derive the parent from the child class definition.
+                $parent_itemtype = $itemtype::$itemtype;
+                $parent_id = $data['item'][$itemtype::$items_id] ?? null;
+            }
         } elseif (is_subclass_of($itemtype, CommonITILTask::class)) {
             /** @var class-string<CommonDBTM> $parent_itemtype */
             $parent_itemtype = str_replace('Task', '', $itemtype);
@@ -640,21 +732,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
         } else {
             return;
         }
-        $parent_schema = self::getParentItemSchema($itemtype);
-        // filter properties in parent schema by the resolved parent itemtype (checks the x-parent-itemtype property)
-        foreach ($parent_schema['properties'] as $property_name => $property_data) {
-            if (in_array($parent_itemtype, $property_data['x-parent-itemtype'] ?? [], true)) {
-                $parent_schema['properties'][$property_name] = $property_data;
-            } else {
-                unset($parent_schema['properties'][$property_name]);
-            }
+        $parent_schema = self::getAPISchemaBySupportedItemtype($parent_itemtype, $this->getPinnedAPIVersion());
+        if ($parent_schema === null) {
+            throw new LogicException("Parent itemtype $parent_itemtype does not have a valid API schema");
         }
-        $parent_schema['x-itemtype'] = $parent_itemtype;
-        unset($parent_schema['x-subtypes']);
-        $parent_result = ResourceAccessor::getOneBySchema($parent_schema, [
+        // Fetch the parent like the item itself (see getAPIResponse()), so the payload does not depend
+        // on the rights of the user who triggered the event, and ignore it if it cannot be retrieved.
+        $parent_result = Session::callAsSystem(static fn() => ResourceAccessor::getOneBySchema($parent_schema, [
             'itemtype' => $parent_itemtype,
             'id' => $parent_id,
-        ], []);
+        ], []));
+        if ($parent_result->getStatusCode() !== 200) {
+            return;
+        }
         $result = json_decode((string) $parent_result->getBody(), true);
         if (is_array($result)) {
             $data['parent_item'] = $result;
@@ -681,7 +771,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         $itemtype = $item::class;
         $id = $item->getID();
-        $itemtypes = self::getAPIItemtypeData();
+        $itemtypes = self::getAPIItemtypeData($this->getPinnedAPIVersion());
 
         $controller = null;
         $api_name = null;
@@ -778,7 +868,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
         TemplateRenderer::getInstance()->display('pages/setup/webhook/webhook.html.twig', [
             'item' => $this,
-            'response_schema' => self::getMonacoSuggestions($this->fields['itemtype']),
+            'response_schema' => self::getMonacoSuggestions($this->fields['itemtype'], $this->getPinnedAPIVersion()),
         ]);
 
         return true;
@@ -867,12 +957,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     private function showCustomHeaders(): void
     {
-        $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype']);
+        $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype'], $this->getPinnedAPIVersion());
         $item_fields = Doc\Schema::flattenProperties($schema['properties'], 'item.');
         TemplateRenderer::getInstance()->display('pages/setup/webhook/webhook_headers.html.twig', [
             'item' => $this,
             'item_fields' => $item_fields,
-            'response_schema' => self::getMonacoSuggestions($this->fields['itemtype']),
+            'response_schema' => self::getMonacoSuggestions($this->fields['itemtype'], $this->getPinnedAPIVersion()),
             'params' => [
                 'candel' => false,
                 'formfooter' => false,
@@ -933,13 +1023,15 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
      * @param class-string<CommonDBTM> $itemtype The itemtype to get the schema for
+     * @param string|null $api_version The API version to resolve the schema against, defaults to {@see Router::API_VERSION}
      * @return array|null
      */
-    public static function getAPISchemaBySupportedItemtype(string $itemtype): ?array
+    public static function getAPISchemaBySupportedItemtype(string $itemtype, ?string $api_version = null): ?array
     {
+        $api_version ??= Router::API_VERSION;
         $controller_class = null;
         $schema_name = null;
-        $supported = self::getAPIItemtypeData();
+        $supported = self::getAPIItemtypeData($api_version);
 
         foreach ($supported as $controller => $categories) {
             if (array_key_exists($itemtype, $categories['main'])) {
@@ -968,21 +1060,22 @@ class Webhook extends CommonDBTM implements FilterableInterface
             echo __s('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
             return null;
         }
-        // TODO Allow pinning webhooks to specific API versions
-        return $controller_class::getKnownSchemas(Router::API_VERSION)[$schema_name] ?? null;
+        // Properties outside their x-version-introduced/x-version-removed window are already
+        // dropped by getKnownSchemas(), so the returned schema matches the requested version.
+        return $controller_class::getKnownSchemas($api_version)[$schema_name] ?? null;
     }
 
-    public static function getMonacoSuggestions(?string $itemtype): array
+    public static function getMonacoSuggestions(?string $itemtype, ?string $api_version = null): array
     {
         if (empty($itemtype)) {
             return [];
         }
-        $schema = self::getAPISchemaBySupportedItemtype($itemtype);
+        $schema = self::getAPISchemaBySupportedItemtype($itemtype, $api_version);
         if (is_null($schema)) {
             return [];
         }
         $props = Doc\Schema::flattenProperties($schema['properties'], 'item.');
-        $parent_schema = self::getParentItemSchema($itemtype);
+        $parent_schema = self::getParentItemSchema($itemtype, $api_version);
         $parent_props = $parent_schema !== [] ? Doc\Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
 
         $response_schema = [
@@ -1024,13 +1117,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     private function showPayloadEditor(): void
     {
-        $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype']);
-        $response_schema = self::getMonacoSuggestions($this->fields['itemtype']);
+        $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype'], $this->getPinnedAPIVersion());
+        $response_schema = self::getMonacoSuggestions($this->fields['itemtype'], $this->getPinnedAPIVersion());
 
         TemplateRenderer::getInstance()->display('pages/setup/webhook/payload_editor.html.twig', [
             'item' => $this,
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
                 'candel' => false,
             ],
             'response_schema' => $response_schema,
@@ -1090,37 +1183,23 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function validateCRAChallenge(string $url, string $body, string $secret): array
     {
-        global $CFG_GLPI;
-
-        if (!Toolbox::isUrlSafe($url)) {
-            return [
-                'status' => false,
-                'message' => sprintf(__('URL "%s" is not allowed by your administrator.'), $url),
-            ];
-        }
-
         $decrypted_secret = (new GLPIKey())->decrypt($secret);
         $secret_signature = self::getSignature($body, $decrypted_secret);
 
         $challenge_response = [];
-        $options = [
-            'base_uri'        => $url,
-            'connect_timeout' => 1,
-        ];
-        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-            $options['proxy_excluded'] = true;
-        }
 
-        // init guzzle client with base options
-        $httpClient = Toolbox::getGuzzleClient($options);
+        $httpClient = new HttpClient(context: self::class);
         try {
             //prepare query / body
-            $response = $httpClient->request('GET', '', [
-                'query' => ['crc_token' => $secret_signature],
-            ]);
+            $response = $httpClient->get(
+                $url,
+                [
+                    'query' => ['crc_token' => $secret_signature],
+                ]
+            );
 
             if ($response->getStatusCode() === 200) {
-                $response_challenge = $response->getBody()->getContents();
+                $response_challenge = $response->getContent();
                 //check response
                 if (hash_equals(hash_hmac('sha256', $secret_signature, $decrypted_secret), $response_challenge)) {
                     $challenge_response = [
@@ -1135,23 +1214,17 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 }
             } else {
                 $challenge_response = [
-                    'status' => false,
-                    'message' => $response->getReasonPhrase(),
+                    'status'      => false,
+                    'message'     => sprintf(__('Unexpected code %d received'), $response->getStatusCode()),
                 ];
             }
-        } catch (ClientException|RequestException $e) {
-            $challenge_response['status'] = false;
-            if ($e->hasResponse()) {
-                $response = $e->getResponse();
-                $challenge_response['message'] = $response->getReasonPhrase();
-                $challenge_response['status_code'] = $response->getStatusCode();
-            } else {
-                $challenge_response['message'] = $e->getMessage();
-                $challenge_response['status_code'] = 503;
-            }
-        } catch (GuzzleException $e) {
+        } catch (ExceptionInterface $e) {
             $challenge_response['status'] = false;
             $challenge_response['message'] = $e->getMessage();
+
+            if ($e instanceof HttpExceptionInterface) {
+                $challenge_response['status_code'] = $e->getResponse()->getStatusCode();
+            }
         }
 
         return $challenge_response;
@@ -1209,16 +1282,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $webhook = new self();
             $path = $webhook->getApiPath($item);
 
+            // Tasks have no entity of their own, use the one of their parent ITIL object
+            $entity_item = $item instanceof CommonITILTask ? $item->getItem() : $item;
+
             foreach ($it as $webhook_data) {
                 $match_entity = false;
-                if ($item->isEntityAssign()) {
+                if ($entity_item !== false && $entity_item->isEntityAssign()) {
                     if ($webhook_data['is_recursive']) {
-                        $parent_entities = getAncestorsOf(Entity::getTable(), $item->getEntityID());
+                        $parent_entities = getAncestorsOf(Entity::getTable(), $entity_item->getEntityID());
                         if (in_array($webhook_data['entities_id'], $parent_entities, true)) {
                             $match_entity = true;
                         }
                     }
-                    if ($item->getEntityID() === $webhook_data['entities_id']) {
+                    if ($entity_item->getEntityID() === $webhook_data['entities_id']) {
                         $match_entity = true;
                     }
                 } elseif ($webhook_data['entities_id'] === 0) {
@@ -1308,7 +1384,39 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function prepareInputForAdd($input)
     {
-        return $this->handleInput($input);
+        $input = $this->handleInput($input);
+        if ($input === false) {
+            return false;
+        }
+
+        if (empty($input['pinned_version'])) {
+            $default_pinned_version = self::getDefaultPinnedAPIVersion();
+            if ($default_pinned_version !== null) {
+                $input['pinned_version'] = $default_pinned_version;
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     * Get the API major version a new webhook should be pinned to when none is specified.
+     *
+     * Shared by {@see self::prepareInputForAdd()} (actual insert) and {@see self::post_getEmpty()}
+     * (form pre-selection) so the two never disagree on what a webhook created without an explicit
+     * `pinned_version` ends up pinned to.
+     *
+     * @return string|null Null if no major version is pinnable at all.
+     */
+    private static function getDefaultPinnedAPIVersion(): ?string
+    {
+        $pinnable = array_keys(self::getPinnableAPIVersions());
+        if ($pinnable === []) {
+            return null;
+        }
+
+        // Cast: PHP turns numeric array keys into integers, and the column holds a string.
+        return (string) end($pinnable);
     }
 
     public function prepareInputForUpdate($input)
@@ -1386,6 +1494,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public function post_getEmpty()
     {
         $this->fields['is_cra_challenge_valid'] = 0;
+
+        // Match prepareInputForAdd()'s default so the form does not preselect a different
+        // version than the one that will actually be saved.
+        $default_pinned_version = self::getDefaultPinnedAPIVersion();
+        if ($default_pinned_version !== null) {
+            $this->fields['pinned_version'] = $default_pinned_version;
+        }
     }
 
     public static function getMenuContent()

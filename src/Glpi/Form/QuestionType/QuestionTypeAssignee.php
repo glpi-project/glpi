@@ -39,10 +39,8 @@ use Exception;
 use Glpi\Form\Question;
 use Group;
 use Override;
-use Profile;
 use Session;
 use Supplier;
-use Ticket;
 use User;
 
 final class QuestionTypeAssignee extends AbstractQuestionTypeActors
@@ -88,19 +86,12 @@ final class QuestionTypeAssignee extends AbstractQuestionTypeActors
     {
         $actors = parent::prepareEndUserAnswer($question, $answer);
         foreach ($actors as $actor) {
-            if ($actor['itemtype'] === User::class) {
-                // Check if the user can be assigned
-                if (
-                    !Profile::haveUserRight(
-                        $actor['items_id'],
-                        Ticket::$rightname,
-                        Ticket::OWN,
-                        $question->getForm()->getEntityID()
-                    )
-                ) {
-                    throw new Exception('Invalid actor: must be able to be assigned');
-                }
-            } elseif ($actor['itemtype'] === Group::class) {
+            // Whether a User actor can actually be assigned depends on the
+            // ITIL object's entity, which is not known yet at this stage
+            // (it can depend on the requester, on another answer, ...).
+            // This is validated later, once that entity is resolved, in
+            // ITILActorField::isActorAllowed().
+            if ($actor['itemtype'] === Group::class) {
                 // Check if the group can be assigned
                 if (Group::getById($actor['items_id'])->fields['is_assign'] !== 1) {
                     throw new Exception('Invalid actor: must be able to be assigned');

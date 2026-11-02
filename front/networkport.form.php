@@ -43,7 +43,7 @@ use Glpi\Event;
 
 global $CFG_GLPI;
 
-Session::checkRightsOr("networking", [READ, CREATE, UPDATE]);
+Session::checkRightsOr(NetworkPort::$rightname, [READ, CREATE, UPDATE]);
 
 $np  = new NetworkPort();
 $nn  = new NetworkPort_NetworkPort();
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
         );
         Html::back();
     } else {
-        Session::checkRight("networking", UPDATE);
+        Session::checkRight(NetworkPort::$rightname, UPDATE);
 
         $input = $_POST;
         unset($input['several']);

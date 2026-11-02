@@ -30,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set allow_empty = allow_empty ?? false %}
 {% set total_pages = (countIcons(filter) / page_size)|round(0, 'ceil') %}
 {% set icon_ids = searchIcons(filter, page, page_size) %}
 
@@ -38,34 +39,43 @@
     {# Keep track of our page size as we will need to request the same size
     when querying the server for others pages #}
     data-glpi-icon-picker-page-size="{{ page_size }}"
+    {# Same for the "No illustration" tile, which must not reappear on the
+    pages fetched by AJAX when the picker does not allow an empty value. #}
+    data-glpi-icon-picker-allow-empty="{{ allow_empty ? 1 : 0 }}"
 >
     {% if icon_ids|length %}
-        <div class="row g-3 mb-4 align-items-start">
-            {% if page == 1 and filter is empty %}
+        <div class="row g-3 mb-4 align-items-start" role="group" aria-label="{{ __('Illustrations') }}">
+            {% if allow_empty and page == 1 and filter is empty %}
                 {# Tile to clear the selection — only shown on the first page with no filter. #}
-                <div
-                    class="col-4 col-sm-3 col-lg-2"
-                    role="button"
+                <button
+                    type="button"
+                    class="col-4 col-sm-3 col-lg-2 illustration-picker-tile"
                     aria-label="{{ __('No illustration') }}"
                     data-bs-dismiss="modal"
                     data-glpi-icon-picker-value=""
                 >
-                    <div class="card border-secondary-hover cursor-pointer rounded">
-                        <div class="card-body h-100 aspect-ratio-1 d-flex flex-column align-items-center justify-content-center text-secondary">
+                    <span class="card border-secondary-hover cursor-pointer rounded">
+                        <span class="card-body h-100 aspect-ratio-1 d-flex flex-column align-items-center justify-content-center text-secondary">
                             <i class="ti ti-photo-off fs-1" aria-hidden="true"></i>
                             <span class="mt-2 small text-center">{{ __("No illustration") }}</span>
-                        </div>
-                    </div>
-                </div>
+                        </span>
+                    </span>
+                </button>
             {% endif %}
             {% for icon_id in icon_ids %}
-                <div class="col-4 col-sm-3 col-lg-2" data-bs-dismiss="modal" data-glpi-icon-picker-value="{{ icon_id }}">
-                    <div class="card border-secondary-hover cursor-pointer rounded">
-                        <div class="card-body h-100 aspect-ratio-1">
+                <button
+                    type="button"
+                    class="col-4 col-sm-3 col-lg-2 illustration-picker-tile"
+                    aria-label="{{ getIconTitle(icon_id) }}"
+                    data-bs-dismiss="modal"
+                    data-glpi-icon-picker-value="{{ icon_id }}"
+                >
+                    <span class="card border-secondary-hover cursor-pointer rounded">
+                        <span class="card-body h-100 aspect-ratio-1">
                             {{ render_illustration(icon_id) }}
-                        </div>
-                    </div>
-                </div>
+                        </span>
+                    </span>
+                </button>
             {% endfor %}
         </div>
 

@@ -311,11 +311,16 @@ export class GlpiFormEditorController
 
         // Handle conditions count changes
         document.addEventListener('conditions_count_changed', (e) => {
+            const is_validation = $(e.detail.container).closest(
+                '[data-glpi-form-editor-validation-dropdown-container]'
+            ).length > 0;
+
             this.#updateConditionsCount(
                 $(e.detail.container).closest(
                     '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
                 ),
-                e.detail.conditions_count
+                e.detail.conditions_count,
+                is_validation ? 'validation' : 'visibility',
             );
         });
 
@@ -1543,14 +1548,19 @@ export class GlpiFormEditorController
         // Keep track of select2 values to restore
         const select2_values_to_restore = [];
 
-        // Look for tiynmce editor to init
-        copy.find("textarea").each(function() {
+        // Look for tiynmce editor to init (skip Select2 4.1.0 search textareas)
+        copy.find("textarea:not(.select2-search__field)").each(function() {
             // Get editor config for this field
             let id = $(this).attr("id");
 
             // JS object are passed by reference, we need to clone the config
             // to avoid breaking previous instances
             const config = _.cloneDeep(window.tinymce_editor_configs[id]);
+
+            // Not a rich-text editor
+            if (config === undefined) {
+                return;
+            }
 
             // Rename id to ensure it is unique
             const uid = getUUID();
@@ -2799,6 +2809,11 @@ export class GlpiFormEditorController
         // Simple class toggle, hiding the correct parts is handled by CSS rules
         section.toggleClass("section-collapsed");
 
+        // Expose the collapsed state to assistive technologies
+        section
+            .find('[data-glpi-form-editor-on-click="collapse-section"]')
+            .attr("aria-expanded", section.hasClass("section-collapsed") ? "false" : "true");
+
         // Update the block count
         this.#updateSectionBlockCount(section);
     }
@@ -2984,8 +2999,8 @@ export class GlpiFormEditorController
             .addClass('d-flex');
     }
 
-    #updateConditionsCount(container, value) {
-        container.find('[data-glpi-editor-validation-conditions-count-badge], [data-glpi-editor-visibility-conditions-count-badge]')
+    #updateConditionsCount(container, value, type) {
+        container.find(`[data-glpi-editor-${CSS.escape(type)}-conditions-count-badge]`)
             .html(value);
     }
 

@@ -38,6 +38,8 @@ use CommonITILObject;
 use Contract;
 use ContractType;
 use Entity;
+use Glpi\Tests\Glpi\ITILTrait;
+use Glpi\Tests\Glpi\SLMTrait;
 use Glpi\Tests\RuleBuilder;
 use Glpi\Tests\RuleCommonITILObjectTest;
 use ITILCategory;
@@ -48,13 +50,31 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use Rule;
 use RuleAction;
+use RuleCommonITILObject;
 use RuleCriteria;
 use TaskTemplate;
 use Ticket;
 use Ticket_Contract;
 
+/**
+ * Ola :
+ *  - Actions
+ *      - assign an ola :
+ *          - oncreation : @see self::testAssignSingleOla()
+ *          - onupdate : @see self::testAssignOlaOnTicketUpdate()
+ *      - assign mulitple olas : @see self::testAssignMultipleOlas()
+ *      - previous ola are preserved when a rule which add ola runs : @see self::testAssignOlaOnUpdatePreserveOlas()
+ *  - Criteria
+ *      - specified ola id match :
+ *          - on creation : @see self::testCriteriaOlaOnCreate()
+ *          - on update : @see self::testCriteriaOlaOnUpdate()
+ */
+
 class RuleTicketTest extends RuleCommonITILObjectTest
 {
+    use SLMTrait;
+    use ITILTrait;
+
     public function testGetCriteria()
     {
         $rule = $this->getRuleInstance();
@@ -218,7 +238,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $ruleticket::getType(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($ruleticket, $ruletid, $ruletinput);
@@ -269,6 +289,113 @@ class RuleTicketTest extends RuleCommonITILObjectTest
     }
 
     /**
+     * "To email header" business rule "is" condition must match a recipient
+     * even when it is not the only (nor the first) one, since the criterion is
+     * evaluated against every recipient individually rather than against the
+     * flattened, comma-joined "to" string.
+     */
+    public function testMailToHeaderCriteriaIsWithMultipleRecipients()
+    {
+        // clean right singleton
+        \SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+
+        $this->login();
+
+        $ruleticket = $this->getRuleInstance();
+
+        $rule = $this->createItem(get_class($ruleticket), [
+            'name'         => __FUNCTION__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => $ruleticket::getType(),
+            'condition'    => RuleCommonITILObject::ONADD,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => '_to',
+            'condition' => Rule::PATTERN_IS,
+            'pattern'   => 'support@glpi-project.org',
+        ]);
+
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'priority',
+            'value'       => 5,
+        ]);
+
+        $itil = $this->getITILObjectInstance();
+        $itil_id = $itil->add([
+            'name'              => __FUNCTION__,
+            'content'           => __FUNCTION__,
+            '_head'             => [
+                'to'  => 'jane.roe@glpi-project.org, support@glpi-project.org',
+                'tos' => ['jane.roe@glpi-project.org', 'support@glpi-project.org'],
+            ],
+        ]);
+
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertEquals(5, $itil->fields['priority']);
+    }
+
+    /**
+     * "To email header" business rule "is not" condition must NOT match as
+     * soon as the pattern equals any recipient, even when other recipients
+     * are also present. Regression test: matching against the flattened "to"
+     * string made this condition always true (false positive) once there was
+     * more than one recipient.
+     */
+    public function testMailToHeaderCriteriaIsNotWithMultipleRecipients()
+    {
+        // clean right singleton
+        \SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+
+        $this->login();
+
+        $ruleticket = $this->getRuleInstance();
+
+        $rule = $this->createItem(get_class($ruleticket), [
+            'name'         => __FUNCTION__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => $ruleticket::getType(),
+            'condition'    => RuleCommonITILObject::ONADD,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => '_to',
+            'condition' => Rule::PATTERN_IS_NOT,
+            'pattern'   => 'support@glpi-project.org',
+        ]);
+
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'priority',
+            'value'       => 5,
+        ]);
+
+        $itil = $this->getITILObjectInstance();
+        $itil_id = $itil->add([
+            'name'              => __FUNCTION__,
+            'content'           => __FUNCTION__,
+            '_head'             => [
+                'to'  => 'jane.roe@glpi-project.org, support@glpi-project.org',
+                'tos' => ['jane.roe@glpi-project.org', 'support@glpi-project.org'],
+            ],
+        ]);
+
+        $this->assertTrue($itil->getFromDB($itil_id));
+        $this->assertNotEquals(5, $itil->fields['priority']);
+    }
+
+    /**
      * Test contract type criteria
      */
     public function testContractType()
@@ -293,7 +420,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
-            'condition'    => \RuleCommonITILObject::ONADD | \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD | RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($ruleticket, $ruletid, $ruletinput);
@@ -409,7 +536,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -719,11 +846,68 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
+        //Must ensure the rule will be applied with _users_id_requester being both an int and an array
+        $tickets_id_2 = $ticket->add([
+            'name'    => 'test manager number 2',
+            'content' => 'test manager number 2',
+            '_users_id_requester' => $user_id,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_2);
+
         // check manager
         $ticket_user = new \Ticket_User();
         $this->assertTrue(
             $ticket_user->getFromDBByCrit([
                 'tickets_id'    => $tickets_id,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_2,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        // Now check with add action type
+        $ruleaction->delete(['id' => $action_id]);
+        $action_id_2 = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'append',
+            'field'       => '_users_id_observer',
+            'value'       => 'requester_manager',
+        ]);
+        $this->checkInput($ruleaction, $action_id_2, $action_input);
+
+        $tickets_id_3 = $ticket->add([
+            'name'    => 'test manager number 3',
+            'content' => 'test manager number 3',
+            '_users_id_requester' => $user_id,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_3);
+
+        $tickets_id_4 = $ticket->add([
+            'name'    => 'test manager number 4',
+            'content' => 'test manager number 4',
+            '_users_id_requester' => [$user_id],
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_4);
+
+        // check manager
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_3,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_4,
                 'users_id'      => $manager_id,
                 'type'          => \CommonITILActor::OBSERVER,
             ])
@@ -1618,8 +1802,6 @@ class RuleTicketTest extends RuleCommonITILObjectTest
      */
     #[TestWith(['field' => 'time_to_resolve'])] // $field is both the rule action field and the ticket field.
     #[TestWith(['field' => 'time_to_own'])]
-    #[TestWith(['field' => 'internal_time_to_resolve'])] // to remove when PR is merged - https://github.com/glpi-project/glpi/pull/19593
-    #[TestWith(['field' => 'internal_time_to_own'])] // to remove when PR is merged - https://github.com/glpi-project/glpi/pull/19593
     public function testDeleteLevelAgreementValuesAction(string $field): void
     {
         $this->login();
@@ -1650,5 +1832,279 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // --- assert rule action applied ---
         $this->assertNull($ticket->fields[$field]);
+    }
+
+    public function testAssignSingleOla()
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(Entity::class, '_test_child_1');
+        ['ola' => $ola, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+
+        $rule_builder = new RuleBuilder('Assign OLA rule', \RuleTicket::class);
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola->getID());
+        $this->createRule($rule_builder);
+
+        // act - create ticket matching criteria
+        $ticket = $this->createTicket(['entities_id' => $entity->getID()]);
+
+        // assert - ola is associated to ticket
+        $olas_data = $ticket->getOlasData();
+        $this->assertCount(1, $olas_data);
+        $ola_data = $olas_data[0];
+        $this->assertEquals($ola->getID(), $ola_data['olas_id']);
+    }
+
+    public function testAssignMultipleOlas()
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(Entity::class, '_test_child_1');
+        ['ola' => $ola_tto, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+        ['ola' => $ola_ttr1] = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm);
+        ['ola' => $ola_ttr2] = $this->createOLA(ola_type: \SLM::TTR, group: $group);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola_tto->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola_ttr1->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola_ttr2->getID());
+        $this->createRule($rule_builder);
+
+        // act - create ticket matching criteria
+        $ticket = $this->createTicket(['entities_id' => $entity->getID()]);
+
+        // assert - ola is associated to ticket - getOlasData()
+        $olas_data = $ticket->getOlasData();
+        $this->assertCount(3, $olas_data);
+        $olas_ids = array_column($olas_data, 'olas_id');
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID(), $ola_ttr1->getID(), $ola_ttr2->getID()]);        // assert - ola is associated to ticket - getOlasData()
+
+        $olas_ttr_data = $ticket->getOlasTTRData();
+        $this->assertCount(2, $olas_ttr_data);
+        $olas_ids = array_column($olas_ttr_data, 'olas_id');
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_ttr1->getID(), $ola_ttr2->getID()]);        // assert - ola is associated to ticket - getOlasData()
+
+        $olas_tto_data = $ticket->getOlasTTOData();
+        $this->assertCount(1, $olas_tto_data);
+        $olas_ids = array_column($olas_tto_data, 'olas_id');
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID()]);
+    }
+
+    public function testAssignOlaOnUpdatePreserveOlas(): void
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(Entity::class, '_test_child_1');
+        ['ola' => $ola_on_creation, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+        ['ola' => $ola_on_update] = $this->createOLA(group: $group, slm: $slm);
+
+        $rule_builder_on_creation = new RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder_on_creation->setCondtion(RuleCommonITILObject::ONADD);
+        $rule_builder_on_creation->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
+        $rule_builder_on_creation->addAction('append', 'olas_id', $ola_on_creation->getID());
+        $this->createRule($rule_builder_on_creation);
+
+        $rule_builder_on_update = new RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder_on_update->setCondtion(RuleCommonITILObject::ONUPDATE);
+        $rule_builder_on_update->addCriteria('priority', Rule::PATTERN_IS, 2);
+        $rule_builder_on_update->addAction('append', 'olas_id', $ola_on_update->getID());
+        $this->createRule($rule_builder_on_update);
+
+        $ticket = $this->createTicket(['entities_id' => $entity->getID()]);
+
+        $olas_data = $ticket->getOlasData();
+        assert(1 === count($olas_data));
+        $ola_data = $olas_data[0];
+        assert($ola_on_creation->getID() === $ola_data['olas_id']);
+
+        // act - update ticket to apply rule on update
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            'priority' => 2,
+        ]);
+
+        // assert - all olas are preserved
+        $olas_data = $ticket->getOlasData();
+        $this->assertCount(2, $olas_data);
+        $this->assertEqualsCanonicalizing([$ola_on_creation->getID(), $ola_on_update->getID()], array_column($olas_data, 'olas_id'));
+    }
+
+    public function testCriteriaOlaOnCreate()
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(Entity::class, '_test_child_1');
+        ['ola' => $ola] = $this->createOLA();
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder->addCriteria('_olas_id_rule_criteria', Rule::PATTERN_IS, $ola->getID());
+        $rule_builder->addAction('assign', 'impact', 4);
+        $this->createRule($rule_builder);
+
+        // act create ticket with priority 1
+        $ticket = $this->createTicket(
+            ['impact' => 1, 'entities_id' => $entity->getID(), '_la_update' => true, '_olas_id' => [$ola->getID()]],
+            ['impact'], // do not check impact, it is modified by the rule
+        );
+
+        // assert priority changed to 4
+        $this->assertEquals(4, $ticket->fields['impact']);
+    }
+
+    /**
+     * To test criterion : on update, update priority if an ola is set
+     */
+    public function testCriteriaOlaOnUpdate()
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(Entity::class, '_test_child_1');
+        ['ola' => $ola] = $this->createOLA();
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder->addCriteria('_olas_id_rule_criteria', Rule::PATTERN_IS, $ola->getID());
+
+        $rule_builder->addAction('assign', 'priority', 4);
+        $this->createRule($rule_builder);
+
+        // act create ticket with priority 1
+        $ticket = $this->createTicket(['priority' => 1, 'entities_id' => $entity->getID()]);
+
+        // add the ola matching the rule
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert priority changed to 4
+        $this->assertEquals(4, $ticket->fields['priority']);
+    }
+
+    public function testAssignSlaOnTicketCreation()
+    {
+        $this->login();
+        $_sla = new \SLA();
+        // create Ola + Rule to assign it on ticket update
+        foreach ([\SLM::TTR, \SLM::TTO] as $sla_type) {
+            [, $field_name] = $_sla->getFieldNames($sla_type);
+
+            ['sla' => $sla] = $this->createSLA(sla_type: $sla_type);
+
+            $builder = new RuleBuilder('Assign SLA rule', \RuleTicket::class);
+            $builder->setCondtion(RuleCommonITILObject::ONADD);
+            $builder->addCriteria('priority', Rule::PATTERN_IS, 4);
+            $builder->addAction('assign', $field_name, $sla->getID());
+            $builder->setEntity(0);
+            $this->createRule($builder);
+
+            // create ticket : no sla assigned
+            $ticket = $this->createTicket(
+                [
+                    'priority' => 4,
+                    'name' => __METHOD__ . ' ticket']
+            );
+            $this->assertEquals($ticket->fields[$field_name], $sla->getID());
+        }
+    }
+
+    public function testAssignOlaOnTicketUpdate()
+    {
+        $this->login();
+        // create Ola + Rule to assign it on ticket update
+        ['ola' => $ola] = $this->createOLA();
+
+        $builder = new RuleBuilder('Assign OLA rule', \RuleTicket::class);
+        $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
+        $builder->addCriteria('priority', Rule::PATTERN_IS, 4);
+        $builder->addAction('append', 'olas_id', $ola->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // create ticket : no ola assigned
+        $ticket = $this->createTicket(
+            [
+                'priority' => 3,
+                'name' => __METHOD__ . ' ticket']
+        );
+        $this->assertEmpty($ticket->getOlasData());
+
+        // update ticket : ola should be assigned
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
+            'content' => 'content updated',
+            'priority' => 4,
+        ]);
+        $this->assertNotEmpty($ticket->getOlasData());
+    }
+
+    public function testAssignSlaOnTicketUpdate()
+    {
+        $this->login();
+        // create Ola + Rule to assign it on ticket update
+        ['sla' => $sla] = $this->createSLA();
+
+        $builder = new RuleBuilder('Assign SLA rule', \RuleTicket::class);
+        $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
+        $builder->addCriteria('priority', Rule::PATTERN_IS, 4);
+        $builder->addAction('assign', 'slas_id_ttr', $sla->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // create ticket : no sla assigned
+        $ticket = $this->createTicket(
+            [
+                'priority' => 3,
+                'name' => __METHOD__ . ' ticket',
+            ]
+        );
+        $this->assertEquals(0, $ticket->fields['slas_id_ttr']);
+
+        // update ticket : sla should be assigned
+        $ticket = $this->updateItem(
+            Ticket::class,
+            $ticket->getID(),
+            [
+                'content' => 'content updated',
+                'priority' => 4,
+            ]
+        );
+        $this->assertEquals($sla->getID(), $ticket->fields['slas_id_ttr']);
+    }
+
+    public static function isCriteriaADropdownWithImportedConditionProvider(): iterable
+    {
+        yield 'integer condition from database' => [
+            'condition' => Rule::PATTERN_IS,
+            'expected'  => true,
+        ];
+
+        yield '"is" condition from XML' => [
+            'condition' => (string) Rule::PATTERN_IS,
+            'expected'  => true,
+        ];
+        yield '"is not" condition from XML' => [
+            'condition' => (string) Rule::PATTERN_IS_NOT,
+            'expected'  => true,
+        ];
+        yield '"under" condition from XML' => [
+            'condition' => (string) Rule::PATTERN_UNDER,
+            'expected'  => true,
+        ];
+        yield '"contains" condition from XML' => [
+            'condition' => (string) Rule::PATTERN_CONTAIN,
+            'expected'  => false,
+        ];
+        yield 'non numeric condition from XML' => [
+            'condition' => 'abc',
+            'expected'  => false,
+        ];
+    }
+
+    #[DataProvider('isCriteriaADropdownWithImportedConditionProvider')]
+    public function testIsCriteriaADropdownWithImportedCondition(int|string $condition, bool $expected): void
+    {
+        $rule = new \RuleTicket();
+
+        $this->assertSame(
+            $expected,
+            \RuleCollection::isCriteraADropdown($rule->getCriterias(), $condition, 'itilcategories_id')
+        );
     }
 }

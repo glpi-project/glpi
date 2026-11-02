@@ -308,3 +308,45 @@ test('Conditions count badge is updated when conditions are added or removed', a
     await form.doCloseValidationConditionEditor(1);
     await expect(form.getValidationConditionsCountBadge(1)).toHaveText('0');
 });
+
+test('Validation conditions count badge is not overwritten by visibility conditions count', async ({
+    page,
+    profile,
+    api,
+}) => {
+    await profile.set(Profiles.SuperAdmin);
+    const form = new FormPage(page);
+
+    const form_id = await api.createItem('Glpi\\Form\\Form', {
+        name: `Test validation and visibility badges independence - ${randomUUID()}`,
+        entities_id: getWorkerEntityId(),
+    });
+    await form.goto(form_id);
+
+    await form.addQuestion('My first question');
+    await form.addQuestion('My second question');
+
+    // Configure two validation conditions on the second question
+    await form.doInitValidationConfiguration(1);
+    await form.doSetValidationStrategy('Valid if...');
+    await form.doFillValidationCondition(
+        0, null, 'Match regular expression', '/^I love GLPI$/'
+    );
+    await form.doAddValidationCondition();
+    await form.doFillValidationCondition(
+        1, 'Or', 'Match regular expression', '/^GLPI is great$/'
+    );
+    await form.doCloseValidationConditionEditor(1);
+    await expect(form.getValidationConditionsCountBadge(1)).toHaveText('2');
+
+    // Configure a single visibility condition on the same question
+    await form.doInitVisibilityConditionsDropdown(1);
+    await form.doSetVisibilityStrategy('Visible if...');
+    await form.doFillStringCondition(
+        0, 'And', 'My first question', 'Is equal to', 'GLPI'
+    );
+
+    // The validation badge must keep showing its own count and must not
+    // be overwritten by the visibility conditions count.
+    await expect(form.getValidationConditionsCountBadge(1)).toHaveText('2');
+});

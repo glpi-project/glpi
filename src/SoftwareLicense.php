@@ -291,33 +291,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     public function rawSearchOptions()
     {
-        $tab = [];
-
-        // Only use for History (not by search Engine)
-        $tab[] = [
-            'id'                 => 'common',
-            'name'               => __('Characteristics'),
-        ];
-
-        $tab[] = [
-            'id'                 => '1',
-            'table'              => static::getTable(),
-            'field'              => 'name',
-            'name'               => __('Name'),
-            'datatype'           => 'itemlink',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-        ];
-
-        $tab[] = [
-            'id'                 => '2',
-            'table'              => static::getTable(),
-            'field'              => 'id',
-            'name'               => __('ID'),
-            'massiveaction'      => false,
-            'datatype'           => 'number',
-            'forcegroupby'       => true,
-        ];
+        $tab = parent::rawSearchOptions();
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
@@ -336,6 +310,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'name'               => __('Number'),
             'datatype'           => 'number',
             'max'                => 100,
+            'forcegroupby'       => true,
             'toadd'              => [
                 '-1'                 => 'Unlimited',
             ],
@@ -403,33 +378,6 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'field'              => 'allow_overquota',
             'name'               => __('Allow Over-Quota'),
             'datatype'           => 'bool',
-        ];
-
-        $tab[] = [
-            'id'                 => '13',
-            'table'              => static::getTable(),
-            'field'              => 'completename',
-            'name'               => __('Father'),
-            'datatype'           => 'itemlink',
-            'forcegroupby'       => true,
-            'joinparams'        => ['condition' => [new QueryExpression('true')]], // Add virtual condition to relink table
-        ];
-
-        $tab[] = [
-            'id'                 => '16',
-            'table'              => static::getTable(),
-            'field'              => 'comment',
-            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
-            'datatype'           => 'text',
-        ];
-
-        $tab[] = [
-            'id'                 => '121',
-            'table'              => $this->getTable(),
-            'field'              => 'date_creation',
-            'name'               => __('Creation date'),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -513,22 +461,6 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         ];
 
         $tab[] = [
-            'id'                 => '80',
-            'table'              => Entity::getTable(),
-            'field'              => 'completename',
-            'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown',
-        ];
-
-        $tab[] = [
-            'id'                 => '86',
-            'table'              => static::getTable(),
-            'field'              => 'is_recursive',
-            'name'               => __('Child entities'),
-            'datatype'           => 'bool',
-        ];
-
-        $tab[] = [
             'id'                 => '162',
             'table'              => static::getTable(),
             'field'              => 'otherserial',
@@ -569,8 +501,6 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'nosort'             => true,
         ];
 
-        // add objectlock search options
-        $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
@@ -747,15 +677,13 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
                     'glpi_softwares.name AS softname',
                 ],
                 'FROM'   => 'glpi_softwarelicenses',
-                'INNER JOIN'   => [
+                'LEFT JOIN'    => [
                     'glpi_softwares'  => [
                         'ON'  => [
                             'glpi_softwarelicenses' => 'softwares_id',
                             'glpi_softwares'        => 'id',
                         ],
                     ],
-                ],
-                'LEFT JOIN'    => [
                     'glpi_alerts'  => [
                         'ON'  => [
                             'glpi_softwarelicenses' => 'id',
@@ -774,27 +702,37 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
                         QueryFunction::datediff(
                             expression1: $DB::quoteName('glpi_softwarelicenses.expire'),
                             expression2: QueryFunction::curdate()
-                        )
-                    ) . ' < ' . $before,
-                    'glpi_softwares.is_template'  => 0,
-                    'glpi_softwares.is_deleted'   => 0,
-                    'glpi_softwares.entities_id'  => $entity,
+                        ) . ' < ' . $before
+                    ),
+                    'glpi_softwarelicenses.is_template'  => 0,
+                    'glpi_softwarelicenses.is_deleted'   => 0,
+                    'glpi_softwarelicenses.entities_id'  => $entity,
                 ],
             ];
             $iterator = $DB->request($criteria);
 
-            $messages = [];
-            $items    = [];
-
+            $items = [];
             foreach ($iterator as $license) {
-                $name     = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
+                $license['softname'] ??= __('Not linked to any software');
+                $items[$license['id']] = $license;
+            }
+
+            // Licenses excluded by the notifications filters must not be marked as alerted,
+            // otherwise they would never be notified
+            $items = array_intersect_key(
+                $items,
+                array_flip(NotificationEvent::getGroupedItemsIdsToNotify('alert', self::class, $entity, array_keys($items)))
+            );
+
+            $messages = [];
+            foreach ($items as $license) {
+                $name = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
                 //TRANS: %1$s the license name, %2$s is the expiration date
                 $messages[] = sprintf(
                     __('License %1$s expired on %2$s'),
-                    Html::convDate($license["expire"]),
-                    $name
+                    $name,
+                    Html::convDate($license["expire"])
                 );
-                $items[$license['id']] = $license;
             }
 
             if ($items !== []) {
@@ -909,7 +847,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {
             $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add_item']  = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'add_item']  = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
         }
 
         return $actions;
@@ -1179,17 +1117,7 @@ TWIG, $twig_params);
                     if (!self::canView()) {
                         return '';
                     }
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            static::getTable(),
-                            ['softwarelicenses_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(
-                        self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;'),
-                        $item::class
-                    );
+                    return parent::getTabNameForItem($item, $withtemplate);
             }
         }
         return '';

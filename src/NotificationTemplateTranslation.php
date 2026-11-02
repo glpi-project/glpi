@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\RichText\RichText;
 
 /**
@@ -77,10 +78,8 @@ class NotificationTemplateTranslation extends CommonDBChild
     #[Override]
     protected function computeFriendlyName()
     {
-        global $CFG_GLPI;
-
         if ($this->fields['language'] !== '') {
-            return $CFG_GLPI['languages'][$this->fields['language']][0];
+            return LanguageRegistry::get($this->fields['language'])->native_name;
         }
         return __('Default translation');
     }
@@ -132,7 +131,7 @@ class NotificationTemplateTranslation extends CommonDBChild
      */
     public function showSummary(NotificationTemplate $template, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $nID     = $template->getID();
         $canedit = Config::canUpdate();
@@ -159,7 +158,7 @@ TWIG, $twig_params);
         ) {
             if ($this->getFromDB($data['id'])) {
                 $href = self::getFormURL() . "?id=" . $data['id'] . "&notificationtemplates_id=" . $nID;
-                $lang = $data['language'] !== '' ? $CFG_GLPI['languages'][$data['language']][0] : __('Default translation');
+                $lang = $data['language'] !== '' ? LanguageRegistry::get($data['language'])->native_name : __('Default translation');
 
                 $entries[] = [
                     'itemtype' => self::class,

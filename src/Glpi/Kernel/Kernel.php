@@ -54,6 +54,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
@@ -67,6 +68,8 @@ final class Kernel extends BaseKernel
     private LoggerInterface $logger;
 
     private bool $in_reboot = false;
+
+    private ?Request $main_request = null;
 
     public function __construct(?string $env = null)
     {
@@ -86,11 +89,6 @@ final class Kernel extends BaseKernel
         );
     }
 
-    public function __destruct()
-    {
-        $this->triggerGlobalsDeprecation();
-    }
-
     /**
      * Returns the cache root directory.
      */
@@ -98,6 +96,34 @@ final class Kernel extends BaseKernel
     {
         // FIXME: Inject it as a DI parameter when corresponding services will be instanciated from the DI system.
         return GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION . '-' . Environment::get()->value;
+    }
+
+    /**
+     * Get the main request object.
+     *
+     * @FIXME   This method exist to prevent using `Request::createFromGlobals()` too late in the application process.
+     *          Indeed, an exception may be thrown when uploaded files have been moved already, since Symfony throws
+     *          a `FileNotFoundException` when the `$_FILES` state refers to an unexisting file in the temporary upload
+     *          dir.
+     *          The goal is to replace all usages of this method by a way to get the request object directly from
+     *          the dependency injection system.
+     *
+     * @return Request
+     */
+    public function getMainRequest(): Request
+    {
+        if ($this->main_request !== null) {
+            // Web context case.
+            //
+            // The `main_request` property is set in web context, when the `public/index.php` script
+            // call the `Kernel::handle($request)` method.
+            return $this->main_request;
+        }
+
+        // CLI and test suite contexts.
+        //
+        // Fallback to a request object created from globals each time, since some tests are mocking super globals.
+        return Request::createFromGlobals();
     }
 
     #[Override()]
@@ -179,6 +205,16 @@ final class Kernel extends BaseKernel
     }
 
     #[Override()]
+    public function handle(Request $request, int $type = HttpKernelInterface::MAIN_REQUEST, bool $catch = true): Response
+    {
+        if (HttpKernelInterface::MAIN_REQUEST === $type) {
+            $this->main_request = $request;
+        }
+
+        return parent::handle($request, $type, $catch);
+    }
+
+    #[Override()]
     protected function buildContainer(): ContainerBuilder
     {
         // Exit with a clear message if there is a missing write access that would prevent the Symfony container
@@ -235,82 +271,6 @@ final class Kernel extends BaseKernel
         // Env-specific route files.
         if (\is_file($path = $this->getProjectDir() . '/routes/' . $this->environment . '.php')) {
             (require $path)($routes->withPath($path), $this);
-        }
-    }
-
-    private function triggerGlobalsDeprecation(): void
-    {
-        if (in_array($this->getProjectDir() . '/inc/includes.php', get_included_files(), true)) {
-            // The following deprecations/warnings are already triggered in `inc/includes.php`.
-            return;
-        }
-
-        /**
-         * @var mixed|null $AJAX_INCLUDE
-         */
-        global $AJAX_INCLUDE;
-        if (isset($AJAX_INCLUDE)) {
-            trigger_error(
-                'The global `$AJAX_INCLUDE` variable has no effect anymore.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $SECURITY_STRATEGY
-         */
-        global $SECURITY_STRATEGY;
-        if (isset($SECURITY_STRATEGY)) {
-            trigger_error(
-                'The global `$SECURITY_STRATEGY` variable has no effect anymore.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $USEDBREPLICATE
-         * @var mixed|null $DBCONNECTION_REQUIRED
-         */
-        global $USEDBREPLICATE, $DBCONNECTION_REQUIRED;
-        if (isset($USEDBREPLICATE) || isset($DBCONNECTION_REQUIRED)) {
-            trigger_error(
-                'The global `$USEDBREPLICATE` and `$DBCONNECTION_REQUIRED` variables has no effect anymore. Use "DBConnection::getReadConnection()" to get the most apporpriate connection for read only operations.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $PLUGINS_EXCLUDED
-         * @var mixed|null $PLUGINS_INCLUDED
-         */
-        global $PLUGINS_EXCLUDED, $PLUGINS_INCLUDED;
-        if (isset($PLUGINS_EXCLUDED) || isset($PLUGINS_INCLUDED)) {
-            trigger_error(
-                'The global `$PLUGINS_EXCLUDED` and `$PLUGINS_INCLUDED` variables has no effect anymore.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $skip_db_check
-         */
-        global $skip_db_check;
-        if (isset($skip_db_check)) {
-            trigger_error(
-                'The global `$skip_db_check` variable has no effect anymore.',
-                E_USER_WARNING
-            );
-        }
-
-        /**
-         * @var mixed|null $dont_check_maintenance_mode
-         */
-        global $dont_check_maintenance_mode;
-        if (isset($dont_check_maintenance_mode)) {
-            trigger_error(
-                'The global `$dont_check_maintenance_mode` variable has no effect anymore.',
-                E_USER_WARNING
-            );
         }
     }
 

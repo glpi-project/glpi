@@ -62,7 +62,6 @@ class ProjectControllerTest extends HLAPITestCase
 
         $projects_id = null;
         $this->api->call($request, function ($call) use (&$projects_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
@@ -79,7 +78,6 @@ class ProjectControllerTest extends HLAPITestCase
         $request->setParameter('content', 'test');
         $new_item_location = null;
         $this->api->call($request, function ($call) use (&$new_item_location) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_item_location) {
@@ -90,7 +88,6 @@ class ProjectControllerTest extends HLAPITestCase
 
         // Get
         $this->api->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -102,13 +99,11 @@ class ProjectControllerTest extends HLAPITestCase
         $request = new Request('PATCH', $new_item_location);
         $request->setParameter('content', 'test2');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
         // Verify Update
         $this->api->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -118,13 +113,11 @@ class ProjectControllerTest extends HLAPITestCase
 
         // Delete (Trash)
         $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
         // Get (Trash)
         $this->api->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
@@ -132,13 +125,11 @@ class ProjectControllerTest extends HLAPITestCase
         $request = new Request('DELETE', $new_item_location);
         $request->setParameter('force', 1);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
         // Verify not found
         $this->api->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
     }
@@ -163,13 +154,11 @@ class ProjectControllerTest extends HLAPITestCase
         $_SESSION['glpiactiveprofile'][Project::$rightname] = 0;
 
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
 
         $_SESSION['glpiactiveprofile'][Project::$rightname] = Project::READMY;
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
@@ -178,7 +167,6 @@ class ProjectControllerTest extends HLAPITestCase
             'users_id' => $_SESSION['glpiID'] + 1, // Created by another user
         ]));
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
 
@@ -188,7 +176,6 @@ class ProjectControllerTest extends HLAPITestCase
             'items_id'   => $_SESSION['glpiID'],
         ]);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
@@ -198,7 +185,6 @@ class ProjectControllerTest extends HLAPITestCase
         ], ['id' => $project->getID()]));
         $project->getFromDB($project->getID());
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
     }
@@ -214,7 +200,6 @@ class ProjectControllerTest extends HLAPITestCase
             'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
         ]);
         $this->api->call(new Request('GET', '/Project/' . $project->getID() . '/Task'), function ($call) use ($project_task) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(static fn($c) => count($c) === 1 && $c[0]['id'] === $project_task->getID());
@@ -222,13 +207,11 @@ class ProjectControllerTest extends HLAPITestCase
 
         $_SESSION['glpiactiveprofile'][Project::$rightname] = 0;
         $this->api->call(new Request('GET', '/Project/' . $project->getID() . '/Task'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(static fn($c) => empty($c));
         });
         $this->api->call(new Request('GET', '/Project/Task/' . $project_task->getID()), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
     }
@@ -272,7 +255,6 @@ class ProjectControllerTest extends HLAPITestCase
         $teammember_endpoint = "/Project/{$project->getID()}/TeamMember";
 
         $this->api->call(new Request('GET', $teammember_endpoint), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -285,14 +267,11 @@ class ProjectControllerTest extends HLAPITestCase
         $request->setParameter('itemtype', 'User');
         $request->setParameter('items_id', $user_id);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         $teammember_id = null;
         $this->api->call(new Request('GET', $teammember_endpoint), function ($call) use ($user_id, &$teammember_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($user_id, &$teammember_id) {
@@ -307,13 +286,10 @@ class ProjectControllerTest extends HLAPITestCase
         $request->setParameter('itemtype', 'User');
         $request->setParameter('items_id', $user_id);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         $this->api->call(new Request('GET', $teammember_endpoint), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -346,14 +322,11 @@ class ProjectControllerTest extends HLAPITestCase
         $request->setParameter('itemtype', 'User');
         $request->setParameter('items_id', $user_id);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         $teammember_id = null;
         $this->api->call(new Request('GET', $teammember_endpoint), function ($call) use ($user_id, &$teammember_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($user_id, &$teammember_id) {
@@ -368,13 +341,10 @@ class ProjectControllerTest extends HLAPITestCase
         $request->setParameter('itemtype', 'User');
         $request->setParameter('items_id', $user_id);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         $this->api->call(new Request('GET', $teammember_endpoint), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {

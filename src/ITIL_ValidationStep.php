@@ -126,6 +126,48 @@ abstract class ITIL_ValidationStep extends CommonDBChild
     }
 
     /**
+     * Retrieve an item from the database
+     *
+     * @param int|null $id ID of the item to get
+     *
+     * @return self|false
+     */
+    public static function getById(?int $id)
+    {
+        global $DB;
+
+        if ($id === null) {
+            return false;
+        }
+
+        $row = $DB->request([
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                static::getTable() . '.' . static::getIndexName() => $id,
+            ],
+            'LIMIT'  => 1,
+        ])->current();
+
+        $itemtype = $row['itemtype'] ?? null;
+
+        if ($itemtype === null || !is_a($itemtype, CommonITILObject::class, true)) {
+            return false;
+        }
+
+        $instance = $itemtype::getValidationStepInstance();
+
+        if ($instance === null) {
+            return false;
+        }
+
+        if (!$instance->getFromDB($id)) {
+            return false;
+        }
+
+        return $instance;
+    }
+
+    /**
      * Validation status computed from all the attached validations.
      *
      * @return CommonITILValidation::WAITING|CommonITILValidation::ACCEPTED|CommonITILValidation::REFUSED

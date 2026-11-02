@@ -71,19 +71,19 @@
 <div class="d-flex gap-2 w-full">
     <div id="select_range_dropdown" class="dropdown">
         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="ti ti-calendar me-2"></i>
+            <i class="ti ti-calendar me-2" aria-hidden="true"></i>
             {{ start_date and end_date ? __('Custom range') ~ ': ' ~ start_date|split('T')[0] ~ ' - ' ~ end_date|split('T')[0] : timerange_presets[interval] }}
         </button>
         <ul class="dropdown-menu">
             {% for key, value in timerange_presets %}
                 <li>
-                    <span class="dropdown-item {{ interval == key and (not start_date or not end_date) ? 'active' }}" href="#" data-key="{{ key }}" onclick="update_date_preset_{{ options['rand'] }}(this)">{{ value }}</span>
+                    <span class="dropdown-item {{ interval == key and (not start_date or not end_date) ? 'active' }}" href="#" data-key="{{ key }}">{{ value }}</span>
                 </li>
             {% endfor %}
             <li><hr class="dropdown-divider"></li>
             <li id="show_custom_range" class="d-flex align-items-center">
                 <span class="dropdown-item {{ start_date and end_date ? 'active' }}" href="#">
-                    <i class="ti ti-plus {{ start_date and end_date ? 'rotate-45' : 'rotate-90' }}"></i>
+                    <i class="ti ti-plus {{ start_date and end_date ? 'rotate-45' : 'rotate-90' }}" aria-hidden="true"></i>
                     {{ __('Custom range') }}
                 </span>
             </li>
@@ -93,26 +93,26 @@
                     'full_width': true,
                     'mb': 'my-2',
                 })) }}
-                <button class="btn btn-primary w-full mb-1" type="button" onclick="update_custom_date_range_{{ options['rand'] }}()">{{ __('Apply') }}</button>
+                <button id="apply_custom_range_{{ options['rand'] }}" class="btn btn-primary w-full mb-1" type="button">{{ __('Apply') }}</button>
             </li>
         </ul>
     </div>
     <div id="select_format_dropdown" class="dropdown">
         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="ti ti-chart-dots-3 me-2"></i>
+        <i class="ti ti-chart-dots-3 me-2" aria-hidden="true"></i>
             {{ format_presets[format] }}
         </button>
         <ul class="dropdown-menu">
             {% for key, value in format_presets %}
                 <li>
-                    <span class="dropdown-item {{ format_presets[format] == value ? 'active' }}" href="#" data-key="{{ key }}" onclick="update_format_{{ options['rand'] }}(this)">{{ value }}</span>
+                    <span class="dropdown-item {{ format_presets[format] == value ? 'active' }}" href="#" data-key="{{ key }}">{{ value }}</span>
                 </li>
             {% endfor %}
         </ul>
     </div>
     <div id="compare_printers_dropdown" class="dropdown">
         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-        <i class="ti ti-git-compare me-2"></i>
+        <i class="ti ti-git-compare me-2" aria-hidden="true"></i>
             {{ __('Compare') }}
         </button>
         <ul class="dropdown-menu">
@@ -131,12 +131,12 @@
                     'full_width': true,
                     'is_horizontal': false,
                 })) }}
-                <button class="btn btn-primary w-full mb-1" type="button" onclick="update_compare_printers_{{ options['rand'] }}()">{{ __('Apply') }}</button>
+                <button id="apply_compare_printers_{{ options['rand'] }}" class="btn btn-primary w-full mb-1" type="button">{{ __('Apply') }}</button>
             </li>
         </ul>
     </div>
     <a href="{{ path(export_url) }}" target="_blank" class="btn btn-sm btn-icon btn-ghost-secondary me-0 me-sm-1 px-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Export to CSV') }}">
-         <i class="ti fs-2 ti-file-download"></i>
+         <i class="ti fs-2 ti-file-download" aria-hidden="true"></i>
       </a>
 </div>
 
@@ -215,6 +215,19 @@
 
         reloadTab_{{ options['rand'] }}();
     }
+
+    document.querySelectorAll('#select_range_dropdown .dropdown-item[data-key]').forEach((element) => {
+        element.addEventListener('click', () => update_date_preset_{{ options['rand'] }}(element));
+    });
+    document.querySelectorAll('#select_format_dropdown .dropdown-item[data-key]').forEach((element) => {
+        element.addEventListener('click', () => update_format_{{ options['rand'] }}(element));
+    });
+    document.getElementById('apply_custom_range_{{ options['rand'] }}').addEventListener('click', () => {
+        update_custom_date_range_{{ options['rand'] }}();
+    });
+    document.getElementById('apply_compare_printers_{{ options['rand'] }}').addEventListener('click', () => {
+        update_compare_printers_{{ options['rand'] }}();
+    });
 
     $(document).ready(function () {
         let range_date = $('#range_date_{{ options['rand'] }}')[0];

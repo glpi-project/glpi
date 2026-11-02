@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\ParentStatus;
 
@@ -321,6 +322,11 @@ class ITILFollowup extends CommonDBChild
 
     private function addToMergedTickets(): void
     {
+        // Ticket merge relationships must only be applied to ticket follow-ups.
+        if ($this->fields['itemtype'] !== Ticket::class) {
+            return;
+        }
+
         $merged = Ticket::getMergedTickets($this->fields['items_id']);
         foreach ($merged as $ticket_id) {
             $input = $this->input;
@@ -752,7 +758,7 @@ class ITILFollowup extends CommonDBChild
         ];
 
         $followup_condition = '';
-        if (!Session::haveRight('followup', self::SEEPRIVATE)) {
+        if (!Session::haveRight(ITILFollowup::$rightname, self::SEEPRIVATE)) {
             $followup_condition = [
                 'OR' => [
                     'NEWTABLE.is_private'   => 0,
@@ -804,7 +810,7 @@ class ITILFollowup extends CommonDBChild
                 'jointype'           => 'itemtype_item',
                 'condition'          => $followup_condition,
             ],
-            'computation'        => QueryFunction::max('TABLE.date'),
+            'computation'        => QueryFunction::max(new QueryIdentifier('TABLE.date')),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
         ];
 
@@ -1083,8 +1089,8 @@ class ITILFollowup extends CommonDBChild
         // We need to do some specific checks for tickets
         if ($itemtype == Ticket::class) {
             // Default condition
-            $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
-            return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
+            $condition = "(`$itilfup_table`.`itemtype` = '$itemtype' AND (0 = 1 ";
+            return $condition . Ticket::buildCanViewCondition("items_id", $itilfup_table) . ")) ";
         } else {
             if (Session::haveRight($rightname, $itemtype::READMY)) {
                 // Subquery for affected/assigned/observer user

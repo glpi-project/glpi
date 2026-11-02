@@ -37,20 +37,26 @@ namespace Glpi\Dashboard;
 
 use Config;
 use Dropdown;
+use Entity;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 use Html;
 use Item_Devices;
+use Location;
+use Manufacturer;
 use Plugin;
+use Profile;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 use Reminder;
 use Session;
 use ShareDashboardDropdown;
+use State;
 use Telemetry;
 use Throwable;
 use Ticket;
@@ -265,10 +271,10 @@ HTML;
 
         $nb_dashboards = count(self::$all_dashboards);
 
-        $can_view_all  = Session::haveRight('dashboard', READ) || self::$embed;
-        $can_create    = Session::haveRight('dashboard', CREATE);
-        $can_edit      = Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
-        $can_purge     = Session::haveRight('dashboard', PURGE) && $nb_dashboards;
+        $can_view_all  = Session::haveRight(Dashboard::$rightname, READ) || self::$embed;
+        $can_create    = Session::haveRight(Dashboard::$rightname, CREATE);
+        $can_edit      = Session::haveRight(Dashboard::$rightname, UPDATE) && $nb_dashboards;
+        $can_purge     = Session::haveRight(Dashboard::$rightname, PURGE) && $nb_dashboards;
         $can_clone     = $can_create && $nb_dashboards;
 
         // prepare html for add controls
@@ -322,7 +328,7 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<button type='button' class='btn btn-sm btn-icon btn-ghost-secondary fs-toggle add-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$add_dash_label'><i class='ti ti-plus' aria-hidden='true'></i></button>";
             }
             if (!$mini && $can_clone) {
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$clone_label'></i>";
@@ -332,10 +338,10 @@ HTML;
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
                <button class='btn btn-ghost-secondary btn-icon btn-sm fs-2 ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'>
-                   <i class='ti ti-device-floppy' ></i>
+                   <i class='ti ti-device-floppy' aria-hidden='true' ></i>
                </button>
                <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$reset_label}'>
-                   <i class='ti ti-refresh' ></i>
+                   <i class='ti ti-refresh' aria-hidden='true' ></i>
                </button>
                <span class='display-message'></span>
             </div>";
@@ -344,7 +350,7 @@ HTML;
                 $rename = <<<HTML
                     <div class='edit-dashboard-properties'>
                         <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' title='{$reset_label}'>
-                           <i class='ti ti-refresh' ></i>
+                           <i class='ti ti-refresh' aria-hidden='true' ></i>
                        </button>
                     </div>
 HTML;
@@ -378,7 +384,7 @@ HTML;
                     <div class="toolbar left-toolbar mb-3 position-relative">
                         <div class='edit-dashboard-properties'>
                             <button class='btn btn-ghost-danger btn-sm ms-1 reset-dashboard'>
-                               <i class='ti ti-refresh' ></i>
+                               <i class='ti ti-refresh' aria-hidden='true' ></i>
                                {$reset_label}
                            </button>
                         </div>
@@ -427,12 +433,12 @@ HTML;
                 <div class='placeholder_info {{ is_placeholder ? "" : "d-none" }}' style="background-color: transparent; color: var(--tblr-body-color); font-size: var(--tblr-body-font-size)">
                     <div class="alert alert-info">
                         <div class="d-flex">
-                            <i class="ti ti-info-circle fs-2x me-3"></i>
+                            <i class="ti ti-info-circle fs-2x me-3" aria-hidden="true"></i>
                             <div>
                                 <h4 class="alert-title">{{ messages['placeholder_main'] }}</h4>
                                 <div class="mt-2">
                                     <button class="btn btn-info btn-sm disable-dashboard-demo me-2 {{ can_disable_demo ? '' : 'd-none' }}" type="button">
-                                        <i class="ti ti-presentation-off"></i>
+                                        <i class="ti ti-presentation-off" aria-hidden="true"></i>
                                         <span>{{ messages['disable_demo_msg'] }}</span>
                                     </button>
                                     <script>
@@ -483,6 +489,8 @@ TWIG, $params);
                 'token'         => $token,
                 'entities_id'   => $_SESSION['glpiactive_entity'],
                 'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0,
+                'profiles_id'   => self::$embed ? ($_SESSION['glpiactiveprofile']['id'] ?? 0) : 0,
+                'users_id'      => self::$embed ? ($_SESSION['glpiID'] ?? 0) : 0,
             ],
         ];
         // language=Twig
@@ -529,29 +537,132 @@ TWIG, $twig_params);
 
 
     /**
-     * Init embed session
+     * Init embed session.
      *
-     * @param array $params
+     * The embed link is generated by a real, logged-in user who was viewing the
+     * dashboard with a given profile/entity when they shared it. Rather than
+     * bypassing all right checks for the embed request (which could expose items
+     * that user themselves could not see), we restore that exact profile (and its
+     * rights) plus that user's groups, scoped to the shared entity. This way, the
+     * embedded dashboard only ever shows what the sharer could see.
+     *
+     * @param array $params contains those keys:
+     * - entities_id: entity to init in session
+     * - is_recursive: do we need to display sub entities
+     * - profiles_id: id of the profile that was active when the dashboard was shared
+     * - users_id: id of the user who shared the dashboard
      *
      * @return void
      */
     public function initEmbedSession(array $params = [])
     {
-        // load minimal session
+        global $CFG_GLPI;
+
+        $entities_id  = (int) $params['entities_id'];
+        $is_recursive = (bool) $params['is_recursive'];
+        $profiles_id  = (int) ($params['profiles_id'] ?? 0);
+        $users_id     = (int) ($params['users_id'] ?? 0);
+
         Session::start();
-        $_SESSION["glpiactive_entity"]           = $params['entities_id'];
-        $_SESSION["glpiactive_entity_recursive"] = $params['is_recursive'];
-        $_SESSION["glpiname"]                    = 'embed_dashboard';
-        $_SESSION['glpigroups']                  = [];
-        if ($params['is_recursive']) {
-            $entities = getSonsOf("glpi_entities", $params['entities_id']);
+
+        // Links shared before GLPI 11.0.9 carry no profiles_id/users_id; keep them working
+        // with their original (pre-11.0.9) session init instead of denying access.
+        if ($profiles_id === 0 || $users_id === 0) {
+            $this->initLegacyEmbedSession($entities_id, $is_recursive);
+            return;
+        }
+
+        $_SESSION['glpiID']            = $users_id;
+        $_SESSION['glpiname']          = 'embed_dashboard';
+        $_SESSION['glpi_currenttime']  = date('Y-m-d H:i:s');
+
+        // Verify the sharer is still currently assigned to that profile on that
+        // entity, so that a share link becomes inert as soon as the sharer's
+        // access is revoked, instead of remaining valid forever.
+        Session::initEntityProfiles($users_id);
+        if (!self::userHasProfileOnEntity($profiles_id, $entities_id, $is_recursive)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $profile = new Profile();
+        if (!$profile->getFromDB($profiles_id)) {
+            throw new AccessDeniedHttpException();
+        }
+        $profile->cleanProfile();
+        $profile_fields             = $profile->fields;
+        $profile_fields['entities'] = [
+            $entities_id => [
+                'id'           => $entities_id,
+                'is_recursive' => $is_recursive,
+            ],
+        ];
+        $_SESSION['glpiactiveprofile'] = $profile_fields;
+
+        $_SESSION["glpiactive_entity"]           = $entities_id;
+        $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
+        if ($is_recursive) {
+            $entities = getSonsOf("glpi_entities", $entities_id);
         } else {
-            $entities = [$params['entities_id']];
+            $entities = [$entities_id];
         }
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
 
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+
+        // Load the real groups of the sharing user, restricted to the active
+        // entities, so group-scoped visibility rules behave as they would for them.
+        Session::loadGroups();
+
+        // Restore user preference defaults wiped by session_start() (mirrors PostBootListener).
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (isset($CFG_GLPI[$field])) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
+        }
+    }
+
+    private function initLegacyEmbedSession(int $entities_id, bool $is_recursive): void
+    {
+        $_SESSION['glpiactive_entity']           = $entities_id;
+        $_SESSION['glpiactive_entity_recursive'] = $is_recursive;
+        $_SESSION['glpiname']                    = 'embed_dashboard';
+        $_SESSION['glpigroups']                  = [];
+
+        $entities = $is_recursive ? getSonsOf('glpi_entities', $entities_id) : [$entities_id];
+        $_SESSION['glpiactiveentities']        = $entities;
+        $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+    }
+
+    /**
+     * Check that the given user is currently assigned to the given profile on
+     * the given entity (or one of its ancestors, if recursive access is required).
+     *
+     * @param int  $profiles_id
+     * @param int  $entities_id
+     * @param bool $is_recursive
+     *
+     * @return bool
+     */
+    private static function userHasProfileOnEntity(int $profiles_id, int $entities_id, bool $is_recursive): bool
+    {
+        if (!isset($_SESSION['glpiprofiles'][$profiles_id])) {
+            return false;
+        }
+
+        $ancestors = getAncestorsOf("glpi_entities", $entities_id);
+        foreach ($_SESSION['glpiprofiles'][$profiles_id]['entities'] as $entity) {
+            if (
+                ($entity['id'] == $entities_id || in_array($entity['id'], $ancestors))
+                && (!$is_recursive || $entity['is_recursive'])
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -563,6 +674,8 @@ TWIG, $twig_params);
      * - dashboard: the dashboard system name
      * - entities_id: entity to init in session
      * - is_recursive: do we need to display sub entities
+     * - profiles_id: id of the profile that was active when the dashboard was shared
+     * - users_id: id of the user who shared the dashboard
      * - token: the token to check
      *
      * @return void (display)
@@ -573,6 +686,8 @@ TWIG, $twig_params);
             'dashboard'    => '',
             'entities_id'  => 0,
             'is_recursive' => 0,
+            'profiles_id'  => 0,
+            'users_id'     => 0,
             'token'        => '',
         ];
         $params = array_merge($defaults, $params);
@@ -603,9 +718,14 @@ TWIG, $twig_params);
         $this->show(true, $params['token'] ?? '');
     }
 
-    public static function getToken(string $dasboard = "", int $entities_id = 0, int $is_recursive = 0): string
-    {
-        $seed         = $dasboard . $entities_id . $is_recursive . Telemetry::getInstanceUuid();
+    public static function getToken(
+        string $dasboard = "",
+        int $entities_id = 0,
+        int $is_recursive = 0,
+        int $profiles_id = 0,
+        int $users_id = 0
+    ): string {
+        $seed         = implode('|', [$dasboard, $entities_id, $is_recursive, $profiles_id, $users_id, Telemetry::getInstanceUuid()]);
         $uuid         = Uuid::uuid5(Uuid::NAMESPACE_OID, $seed);
         $token        = $uuid->toString();
 
@@ -613,12 +733,29 @@ TWIG, $twig_params);
     }
 
     /**
-     * Check token variables (compare it to `dashboard`, `entities_id` and `is_recursive` paramater)
+     * Token format used before GLPI 11.0.9, kept to avoid breaking links shared prior to that version.
+     */
+    public static function getLegacyToken(
+        string $dasboard = "",
+        int $entities_id = 0,
+        int $is_recursive = 0
+    ): string {
+        $seed = $dasboard . $entities_id . $is_recursive . Telemetry::getInstanceUuid();
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_OID, $seed);
+
+        return $uuid->toString();
+    }
+
+    /**
+     * Check token variables (compare it to `dashboard`, `entities_id`, `is_recursive`,
+     * `profiles_id` and `users_id` parameters)
      *
      * @param array $params contains theses keys:
      * - dashboard: the dashboard system name
      * - entities_id: entity to init in session
      * - is_recursive: do we need to display sub entities
+     * - profiles_id: id of the profile that was active when the dashboard was shared
+     * - users_id: id of the user who shared the dashboard
      * - token: the token to check
      *
      * @return bool
@@ -629,6 +766,8 @@ TWIG, $twig_params);
             'dashboard'    => '',
             'entities_id'  => 0,
             'is_recursive' => 0,
+            'profiles_id'  => 0,
+            'users_id'     => 0,
             'token'        => '',
         ];
         $params = array_merge($defaults, $params);
@@ -636,14 +775,21 @@ TWIG, $twig_params);
         $token = self::getToken(
             $params['dashboard'],
             $params['entities_id'],
+            $params['is_recursive'],
+            $params['profiles_id'],
+            $params['users_id']
+        );
+        if (hash_equals($token, (string) $params['token'])) {
+            return true;
+        }
+
+        $legacy_token = self::getLegacyToken(
+            $params['dashboard'],
+            $params['entities_id'],
             $params['is_recursive']
         );
 
-        if ($token !== $params['token']) {
-            return false;
-        }
-
-        return true;
+        return hash_equals($legacy_token, (string) $params['token']);
     }
 
 
@@ -903,12 +1049,19 @@ HTML;
 
         $entities_id  = $_SESSION['glpiactive_entity'];
         $is_recursive = $_SESSION['glpiactive_entity_recursive'];
-        $token        = self::getToken($this->current, $entities_id, $is_recursive);
+        // Bind the link to the current user's active profile, so the embedded
+        // dashboard later restores that exact profile's rights and groups
+        // instead of bypassing rights checks entirely.
+        $profiles_id  = $_SESSION['glpiactiveprofile']['id'];
+        $users_id     = (int) Session::getLoginUserID();
+        $token        = self::getToken($this->current, $entities_id, $is_recursive, $profiles_id, $users_id);
 
         $embed_url    = $CFG_GLPI['url_base']
          . "/front/central.php?embed&dashboard=" . $this->current
          . "&entities_id=$entities_id"
          . "&is_recursive=$is_recursive"
+         . "&profiles_id=$profiles_id"
+         . "&users_id=$users_id"
          . "&token=$token";
 
         echo "<label>" . __s("Embed in another application") . "</label><br>";
@@ -974,7 +1127,7 @@ HTML;
         echo "</div>";
 
         echo "<a href='#' class='btn btn-primary save_rights'>
-         <i class='ti ti-device-floppy'></i>
+         <i class='ti ti-device-floppy' aria-hidden='true'></i>
          <span>" . __s("Save") . "</span>
       </a>";
 
@@ -1004,11 +1157,11 @@ HTML;
 
         // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
-         <i class='ti ti-alert-triangle'></i>"
+         <i class='ti ti-alert-triangle' aria-hidden='true'></i>"
          . __s('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
-         <i class='ti ti-alert-triangle'></i>"
+         <i class='ti ti-alert-triangle' aria-hidden='true'></i>"
          . __s('Error rendering card!')
             . "</br>"
             . \htmlescape($card_id)
@@ -1100,6 +1253,12 @@ HTML;
             if ($html === '') {
                 return $notfound_html;
             }
+        } catch (AccessDeniedHttpException $e) {
+            // Rights denial is not an application error, do not log it
+            $html = "<div class='empty-card card-warning '>
+         <i class='ti ti-lock' aria-hidden='true'></i>"
+         . \htmlescape($e->getMessageToDisplay() ?? __("You don't have permission to perform this action.")) . "
+      </div>";
         } catch (Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
@@ -1290,12 +1449,27 @@ HTML;
             // add multiple width for Assets itemtypes grouped by their foreign keys
             $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
             foreach ($assets as $itemtype) {
-                $fk_itemtypes = [
-                    'State',
-                    'Entity',
-                    'Manufacturer',
-                    'Location',
-                ];
+                $item = getItemForItemtype($itemtype);
+                if ($item === false) {
+                    continue;
+                }
+                $fk_itemtypes = [];
+
+                if ($item->isField(State::getForeignKeyField())) {
+                    $fk_itemtypes[] = State::class;
+                }
+
+                if ($item->isField(Entity::getForeignKeyField())) {
+                    $fk_itemtypes[] = Entity::class;
+                }
+
+                if ($item->isField(Manufacturer::getForeignKeyField())) {
+                    $fk_itemtypes[] = Manufacturer::class;
+                }
+
+                if ($item->isField(Location::getForeignKeyField())) {
+                    $fk_itemtypes[] = Location::class;
+                }
 
                 if (class_exists($itemtype . 'Type')) {
                     $fk_itemtypes[] = $itemtype . 'Type';
@@ -1313,7 +1487,7 @@ HTML;
 
                     $cards["count_" . $itemtype . "_" . $fk_itemtype] = [
                         'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
-                        'itemtype'   => "\\Computer",
+                        'itemtype'   => $itemtype,
                         'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
                         'label'      => $label,
                         'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,
@@ -1394,12 +1568,103 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            // The month granularity is covered by the "ticket_status" card
+            foreach (
+                [
+                    'day'  => __("Tickets status by day"),
+                    'week' => __("Tickets status by week"),
+                    'year' => __("Tickets status by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_lifetime_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsLifetime",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
+            $cards["ticket_by_category_and_entity"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and entity"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndEntity",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            foreach (
+                [
+                    'day'   => __("SLA compliance of solved tickets by day"),
+                    'week'  => __("SLA compliance of solved tickets by week"),
+                    'month' => __("SLA compliance of solved tickets by month"),
+                    'year'  => __("SLA compliance of solved tickets by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_by_sla_evolution_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsBySlaEvolution",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
+            foreach (
+                [
+                    'open'  => __("Number of opened tickets by category and type"),
+                    'close' => __("Number of closed tickets by category and type"),
+                ] as $case => $label
+            ) {
+                $cards["ticket_by_category_and_type_$case"] = [
+                    'widgettype' => ['hBars', 'stackedHBars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndType",
+                    'args'       => [
+                        'case' => $case,
+                    ],
+                    'filters'    => array_values(array_diff(
+                        Filter::getAppliableFilters(Ticket::getTable()),
+                        [TicketStatusFilter::getId()]
+                    )),
+                ];
+            }
+
+            $cards["opened_ticket_by_category_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened tickets by category and status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::openedTicketsByCategoryAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["ticket_times"] = [
                 'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
                 'itemtype'   => "\\Ticket",
                 'group'      => __('Assistance'),
                 'label'      => __("Tickets times (in hours)"),
                 'provider'   => "Glpi\\Dashboard\\Provider::averageTicketTimes",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_assigned_group_changes"] = [
+                'widgettype' => ['bar', 'hbar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by number of assigned group changes"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByAssignedGroupChanges",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
@@ -1428,6 +1693,24 @@ HTML;
                 'group'      => __('Assistance'),
                 'label'      => __("Number of tickets by SLA status and technician group"),
                 'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnicianGroup",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_sla"] = [
+                'widgettype' => ['stackedbars', 'bars', 'stackedHBars', 'hBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of solved tickets by SLA"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsBySla",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_sla_and_category"] = [
+                'widgettype' => ['stackedHBars', 'hBars', 'stackedbars', 'bars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of solved tickets with SLA by category"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsBySlaAndCategory",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
@@ -1467,6 +1750,179 @@ HTML;
                     'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsActor",
                     'args'       => [
                         'case' => $type,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
+            $cards["report_ticket_by_status"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_opened_and_closed"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of not solved and solved tickets"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsOpenedAndClosed",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_assigned_group_and_statuses"] = [
+                'widgettype' => ['stackedHBars', 'hBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by assigned group and status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByAssignedGroupAndStatuses",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_computers_by_agent_version"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by agent version"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByAgentVersion",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_computers_by_os"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by operating system"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByOperatingSystem",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            foreach (
+                [
+                    'windows_version' => ['windows', 'version', __("Number of Windows computers by version")],
+                    'linux_version'   => ['linux', 'version', __("Number of Linux computers by version")],
+                    'linux_name'      => ['linux', 'name', __("Number of Linux computers by distribution")],
+                    'macos_version'   => ['macos', 'version', __("Number of macOS computers by version")],
+                    'macos_major'     => ['macos', 'major', __("Number of macOS computers by major version")],
+                ] as $key => [$family, $group_by, $label]
+            ) {
+                $cards["report_computers_by_os_$key"] = [
+                    'widgettype' => ['hbar', 'bar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                    'itemtype'   => "\\Computer",
+                    'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::computersByOperatingSystemVersion",
+                    'args'       => [
+                        'family'   => $family,
+                        'group_by' => $group_by,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+                ];
+            }
+
+            $cards["report_computers_by_age"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by age"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByAge",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_computers_by_monitors_number"] = [
+                'widgettype' => ['bar', 'hbar', 'pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by number of monitors"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByMonitorsNumber",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_ticket_by_group_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened and solved tickets by group"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByGroupAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_category_tree"] = [
+                'widgettype' => ['sunburst'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and sub-category"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryTree",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_requester_group_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened and solved tickets by requester group"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByRequesterGroupAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_requester_location"] = [
+                'widgettype' => ['summaryNumbers', 'pie', 'donut', 'halfpie', 'halfdonut', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by requester location"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByRequesterLocation",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["report_ticket_by_status_and_technician"] = [
+                'widgettype' => ['stackedHBars', 'hBars', 'stackedbars', 'bars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by status and technician"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByStatusAndTechnician",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            foreach (
+                [
+                    'day'   => __("Tickets backlog by day"),
+                    'week'  => __("Tickets backlog by week"),
+                    'month' => __("Tickets backlog by month"),
+                    'year'  => __("Tickets backlog by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_backlog_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsBacklog",
+                    'args'       => [
+                        'period' => $period,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
+            foreach (
+                [
+                    'day'   => __("Tasks duration compared to solve delay by day"),
+                    'week'  => __("Tasks duration compared to solve delay by week"),
+                    'month' => __("Tasks duration compared to solve delay by month"),
+                    'year'  => __("Tasks duration compared to solve delay by year"),
+                ] as $period => $label
+            ) {
+                $cards["report_ticket_actiontime_vs_solvedelay_$period"] = [
+                    'widgettype' => ['lines', 'areas', 'bars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsActionTimeVsSolveDelay",
+                    'args'       => [
+                        'period' => $period,
                     ],
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];

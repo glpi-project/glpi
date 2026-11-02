@@ -79,6 +79,12 @@ class RuleMailCollectorCollection extends RuleCollection
                     $input[$key] = $value;
                 }
             }
+            // Match "to" against every recipient individually (not the flattened,
+            // comma-joined string), so "is"/"is not"/regex conditions still work
+            // correctly when the email has more than one recipient.
+            if (in_array('to', $fields, true) && !empty($params['headers']['tos'])) {
+                $input['to'] = $params['headers']['tos'];
+            }
             $input['_headers'] = implode(
                 "\n",
                 array_map(

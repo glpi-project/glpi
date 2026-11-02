@@ -160,9 +160,10 @@ class ShareToken extends CommonDBChild
     /**
      * Write a sharing transition entry against the parent item.
      *
-     * The transition is encoded with HISTORY_ADD_RELATION (enabled) or
-     * HISTORY_DEL_RELATION (disabled), combined with itemtype_link set to
-     * ShareToken::class so HistoryBuilder can pick it up unambiguously.
+     * The transition is encoded with HISTORY_ADD_RELATION (enabled),
+     * HISTORY_DEL_RELATION (disabled) or HISTORY_UPDATE_RELATION (regenerated),
+     * combined with itemtype_link set to ShareToken::class so HistoryBuilder
+     * can pick it up unambiguously.
      *
      * Best-effort transition logging: a race window exists when two concurrent
      * operations both observe countOtherActiveTokens() === 0 before either has
@@ -172,6 +173,26 @@ class ShareToken extends CommonDBChild
      */
     private function logSharingTransition(bool $enabled): void
     {
+        $this->writeSharingLog($enabled ? Log::HISTORY_ADD_RELATION : Log::HISTORY_DEL_RELATION);
+    }
+
+    /**
+     * Write a single "link regenerated" entry against the parent item.
+     *
+     * Called explicitly by ShareTokenController::regenerate() once the new
+     * token exists, instead of letting the purge+add pair emit the usual
+     * disabled/enabled transitions (both suppressed via '_no_history').
+     */
+    public function logRegeneration(): void
+    {
+        $this->writeSharingLog(Log::HISTORY_UPDATE_RELATION);
+    }
+
+    /**
+     * Write a sharing history entry against the parent item for the given linked action.
+     */
+    private function writeSharingLog(int $linked_action): void
+    {
         $parent = $this->getItem(getFromDB: true, getEmpty: false);
         if (!$parent) {
             return;
@@ -180,9 +201,9 @@ class ShareToken extends CommonDBChild
         Log::history(
             $parent->getID(),
             $parent::class,
-            [0, '', $enabled ? '1' : '0'],
+            [0, '', $linked_action === Log::HISTORY_DEL_RELATION ? '0' : '1'],
             self::class,
-            $enabled ? Log::HISTORY_ADD_RELATION : Log::HISTORY_DEL_RELATION,
+            $linked_action,
         );
     }
 }

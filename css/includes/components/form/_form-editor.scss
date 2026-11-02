@@ -236,6 +236,18 @@
     }
 }
 
+// Reveal the "Copy UUID" option button only when its option row is hovered
+[data-glpi-form-editor-question][data-glpi-form-editor-active-question] {
+    [data-glpi-form-selectable-question-option] [data-glpi-form-editor-question-option-copy-uuid] {
+        opacity: 0;
+        transition: opacity 0.20s linear;
+    }
+
+    [data-glpi-form-selectable-question-option]:hover [data-glpi-form-editor-question-option-copy-uuid] {
+        opacity: 1;
+    }
+}
+
 [data-glpi-form-editor-comment] {
     &[data-glpi-form-editor-active-comment] {
         // Show secondary data on active comments
