@@ -34,6 +34,7 @@
 
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Exception\Crud\CloneException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
@@ -958,7 +959,7 @@ function loadDataset()
                     // Not found, create it
                     try {
                         $item->add($input);
-                    } catch (\Glpi\Exception\Crud\CloneException $e) {
+                    } catch (CloneException $e) {
                         //a clone exception will be thrown because we provide explicit id at creation
                         //FIXME: we should not provide hardcoded ids. Used in IMAP tests, maybe is there an alternative solution.
                         if (!isset($input['id'])) {

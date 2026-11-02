@@ -36,8 +36,8 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
-use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Crud\CloneException;
+use Glpi\Exception\Database\StatementException;
 
 /**
  * Profile class
