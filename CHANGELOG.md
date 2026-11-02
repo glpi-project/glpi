@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 - Documents, contracts and notes on cables.
 - Date variables (e.g. `{YEAR}`, `{MONTH_NAME+1}`, `{WEEK}` with `{YEAR_OF_WEEK}`) in the predefined title of recurrent tickets and changes, computed from the occurrence date.
+- Daily per-ticket "Not solved ticket" notification, which can target the technician and the group in charge of the ticket.
 
 ### Changes
 
