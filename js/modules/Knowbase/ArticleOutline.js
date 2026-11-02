@@ -32,20 +32,15 @@
 
 /* global _ */
 
-import { HEADING_SELECTOR, annotateHeadings } from '/js/modules/Knowbase/HeadingAnchors.js';
+import { HEADING_SELECTOR, OUTLINE_SELECTOR, annotateHeadings } from '/js/modules/Knowbase/HeadingAnchors.js';
 
 /**
- * Links shared before the `h-` ids used the server slugs: `slug_` prefix
- * before a digit, `.` and `_` kept.
- * @param {string} id
+ * @param {string} text
  * @returns {string}
  */
-function normalizeLegacyId(id)
+function normalizeText(text)
 {
-    return id
-        .replace(/^(h-|slug_)/, '')
-        .replace(/[^\p{L}\p{N}]+/gu, '-')
-        .replace(/^-+|-+$/g, '');
+    return text.replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -74,6 +69,12 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
     /** @type {HTMLElement} */
     #article;
 
+    /** @type {string|null} Set when the article is embedded in another page. */
+    #article_url;
+
+    /** @type {Object<string, string>} Heading text, by the id a link shared before may use. */
+    #legacy_ids;
+
     /** @type {OutlineHeading[]} */
     #headings = [];
 
@@ -90,8 +91,7 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
     #scroll_frame = null;
 
     /**
-     * Heading picked in the list. A short page cannot scroll it to the top, so
-     * it stays active while the scroller is on its way to, or at, its end.
+     * Stays active until the scroller leaves its end: a short page cannot scroll it to the top.
      * @type {{id: string, reached_end: boolean}|null}
      */
     #picked = null;
@@ -102,12 +102,15 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
     /**
      * @param {HTMLElement} content The element that holds the article HTML or the editor.
      * @param {HTMLElement} article The article element, which scrolls the content.
+     * @param {{article_url?: string|null, legacy_ids?: Object<string, string>}} options
      */
-    constructor(content, article)
+    constructor(content, article, { article_url = null, legacy_ids = {} } = {})
     {
         super();
         this.#content = content;
         this.#article = article;
+        this.#article_url = article_url;
+        this.#legacy_ids = legacy_ids;
     }
 
     /**
@@ -133,12 +136,15 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
         window.addEventListener('resize', on_scroll, { passive: true, signal });
         window.addEventListener('hashchange', () => this.#scrollToHash(true), { signal });
 
-        // The copy itself is done by the `data-glpi-clipboard-text` handler of common.js.
         this.#content.addEventListener('click', (e) => {
             const anchor = e.target.closest('[data-glpi-kb-heading-anchor]');
             if (anchor !== null) {
                 e.preventDefault();
-                history.replaceState(null, '', anchor.getAttribute('href'));
+                const url = new URL(this.#article_url ?? window.location.href, window.location.href);
+                url.hash = anchor.getAttribute('href');
+                // Copied next, by the `data-glpi-clipboard-text` handler of common.js.
+                anchor.dataset.glpiClipboardText = url.toString();
+                this.#setHash(anchor.getAttribute('href'));
             }
         });
 
@@ -179,8 +185,10 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
      */
     scrollTo(id, smooth = true)
     {
-        const heading = this.#headings.find((candidate) => candidate.id === id);
-        if (heading === undefined) {
+        // Not only the outline: a link can name a deeper heading.
+        const element = [...this.#content.querySelectorAll(HEADING_SELECTOR)]
+            .find((candidate) => candidate.id === id);
+        if (element === undefined) {
             return;
         }
         const reduce_motion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -188,21 +196,32 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
 
         // scrollIntoView() would also scroll the page around the article.
         if (this.#article.scrollHeight > this.#article.clientHeight) {
-            const margin = parseFloat(getComputedStyle(heading.element).scrollMarginTop) || 0;
+            const margin = parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
             this.#article.scrollTo({
                 top: this.#article.scrollTop
-                    + heading.element.getBoundingClientRect().top
+                    + element.getBoundingClientRect().top
                     - this.#article.getBoundingClientRect().top
                     - margin,
                 behavior,
             });
         } else {
-            heading.element.scrollIntoView({ behavior, block: 'start' });
+            element.scrollIntoView({ behavior, block: 'start' });
         }
-        history.replaceState(null, '', `#${id}`);
+        this.#setHash(`#${id}`);
 
         this.#picked = { id, reached_end: false };
         this.#updateActive();
+    }
+
+    /**
+     * @param {string} hash
+     */
+    #setHash(hash)
+    {
+        // The URL of the page that embeds the article is not the article URL.
+        if (this.#article_url === null) {
+            history.replaceState(null, '', hash);
+        }
     }
 
     /**
@@ -220,12 +239,15 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
         if (id === '' || !this.#isConnected()) {
             return false;
         }
-        const heading = this.#headings.find((candidate) => candidate.id === id)
-            ?? this.#headings.find((candidate) => normalizeLegacyId(candidate.id) === normalizeLegacyId(id));
-        if (heading === undefined) {
+        const elements = [...this.#content.querySelectorAll(HEADING_SELECTOR)]
+            .filter((element) => element.id !== '');
+        const legacy_text = Object.hasOwn(this.#legacy_ids, id) ? normalizeText(this.#legacy_ids[id]) : null;
+        const element = elements.find((candidate) => candidate.id === id)
+            ?? elements.find((candidate) => normalizeText(candidate.textContent) === legacy_text);
+        if (element === undefined) {
             return false;
         }
-        this.scrollTo(heading.id, smooth);
+        this.scrollTo(element.id, smooth);
         return true;
     }
 
@@ -234,14 +256,15 @@ export class GlpiKnowbaseArticleOutline extends EventTarget
         if (!this.#isConnected()) {
             return;
         }
-        // The editor gives the ids itself, with decorations.
-        if (this.#content.querySelector('.ProseMirror') === null) {
+        // The editor gives the ids itself, with decorations. A diff is not the article.
+        const is_diff = this.#article.classList.contains('kb-article--diff-mode');
+        if (this.#content.querySelector('.ProseMirror') === null && !is_diff) {
             annotateHeadings(this.#content);
             // Our own changes must not schedule a new refresh.
             this.#observer?.takeRecords();
         }
 
-        const elements = [...this.#content.querySelectorAll(HEADING_SELECTOR)]
+        const elements = [...this.#content.querySelectorAll(OUTLINE_SELECTOR)]
             .filter((element) => element.id !== '');
         const min_level = Math.min(...elements.map((element) => Number(element.tagName[1])));
         const headings = elements.map((element) => ({

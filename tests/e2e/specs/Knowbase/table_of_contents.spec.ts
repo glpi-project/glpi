@@ -55,10 +55,10 @@ test.describe('Knowledge base table of contents', () => {
         const toc = page.getByRole('navigation', { name: 'Table of contents' });
         await expect(toc).toBeHidden();
 
-        const toggle = page.getByRole('button', { name: 'Show contents' });
+        const toggle = page.getByRole('button', { name: 'Table of contents' });
         await toggle.click();
         await expect(toc.getByRole('link')).toHaveText(['Installation', 'Requirements', 'Usage']);
-        await expect(page.getByRole('button', { name: 'Hide contents' })).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.getByRole('button', { name: 'Table of contents' })).toHaveAttribute('aria-pressed', 'true');
 
         await page.reload();
         await expect(toc.getByRole('link')).toHaveText(['Installation', 'Requirements', 'Usage']);
@@ -73,7 +73,7 @@ test.describe('Knowledge base table of contents', () => {
         });
 
         await kb.goto(id);
-        await page.getByRole('button', { name: 'Show contents' }).click();
+        await page.getByRole('button', { name: 'Table of contents' }).click();
         const toc = page.getByRole('navigation', { name: 'Table of contents' });
         await toc.getByRole('link', { name: 'Usage' }).click();
 
@@ -92,7 +92,7 @@ test.describe('Knowledge base table of contents', () => {
         });
 
         await kb.goto(id);
-        await page.getByRole('button', { name: 'Show contents' }).click();
+        await page.getByRole('button', { name: 'Table of contents' }).click();
         await page.goto(`/front/knowbaseitem.form.php?id=${id}#h-requirements`);
 
         await expect(page.getByRole('heading', { name: 'Requirements' })).toBeInViewport();
@@ -106,7 +106,7 @@ test.describe('Knowledge base table of contents', () => {
         const id = await api.createItem('KnowbaseItem', {
             name: 'TOC legacy hash',
             entities_id: getWorkerEntityId(),
-            answer: `${answer}<h2>2. Setup</h2>${filler}`,
+            answer: `${answer}<h2>2. Setup</h2>${filler}<h2>Привет</h2>${filler}`,
         });
 
         await kb.goto(id);
@@ -117,6 +117,13 @@ test.describe('Knowledge base table of contents', () => {
         await page.goto(`/front/knowbaseitem.form.php?id=${id}#slug_2.-setup`);
         await expect(page.getByRole('heading', { name: '2. Setup' })).toBeInViewport();
         await expect(page).toHaveURL(/#h-2-setup$/);
+
+        await page.goto(`/front/knowbaseitem.form.php?id=${id}#privet`);
+        await expect(page.getByRole('heading', { name: 'Привет' })).toBeInViewport();
+
+        // A heading deeper than the outline keeps its link.
+        await page.goto(`/front/knowbaseitem.form.php?id=${id}#h-details`);
+        await expect(page.getByRole('heading', { name: 'Details' })).toBeInViewport();
     });
 
     test('Toggles from the actions menu and the keyboard shortcut', async ({ page, api }) => {
@@ -129,7 +136,7 @@ test.describe('Knowledge base table of contents', () => {
 
         await kb.goto(id);
         const toc = page.getByRole('navigation', { name: 'Table of contents' });
-        await expect(page.getByRole('button', { name: 'Show contents' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Table of contents' })).toBeVisible();
 
         await kb.articleActionsMenu.click();
         await kb.getButton('Show table of contents').click();
@@ -141,7 +148,7 @@ test.describe('Knowledge base table of contents', () => {
         await expect(kb.getButton('Show table of contents').getByRole('checkbox')).not.toBeChecked();
     });
 
-    test('Hides the toggle when the article has no headings', async ({ page, api }) => {
+    test('Hides the toggle and the column when the article has no headings', async ({ page, api }) => {
         const kb = new KnowbaseItemPage(page);
         const id = await api.createItem('KnowbaseItem', {
             name: 'TOC no headings',
@@ -149,9 +156,14 @@ test.describe('Knowledge base table of contents', () => {
             answer: '<p>No headings here</p>',
         });
 
+        await page.addInitScript(() => localStorage.setItem('glpi_kb_toc_visible', '1'));
         await kb.goto(id);
         await expect(page.getByText('No headings here')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Show contents' })).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Table of contents' })).toBeHidden();
+        await expect(page.getByText('This article has no headings.')).toBeHidden();
+
+        await kb.editor.enterEditMode();
+        await expect(page.getByText('This article has no headings.')).toBeVisible();
     });
 
     test('Updates while editing and saves the content unchanged', async ({ page, api }) => {
@@ -163,7 +175,7 @@ test.describe('Knowledge base table of contents', () => {
         });
 
         await kb.goto(id);
-        await page.getByRole('button', { name: 'Show contents' }).click();
+        await page.getByRole('button', { name: 'Table of contents' }).click();
         await kb.editor.enterEditMode();
 
         await page.getByRole('heading', { name: 'Usage' }).click();
@@ -209,7 +221,7 @@ test.describe('Knowledge base table of contents', () => {
 
         await page.setViewportSize({ width: 1100, height: 800 });
         await kb.goto(id);
-        await page.getByRole('button', { name: 'Show contents' }).click();
+        await page.getByRole('button', { name: 'Table of contents' }).click();
 
         const toc = page.getByRole('navigation', { name: 'Table of contents' });
         await expect(toc).toHaveCount(1);

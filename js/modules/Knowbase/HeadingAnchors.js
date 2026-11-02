@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-// The editor UI only creates these levels; deeper ones stay out of the outline.
-export const MAX_HEADING_LEVEL = 3;
-export const HEADING_SELECTOR = 'h1, h2, h3';
+export const HEADING_SELECTOR = 'h1, h2, h3, h4, h5, h6';
+// The editor buttons only create these levels: deeper ones get an anchor, not an outline entry.
+export const OUTLINE_SELECTOR = 'h1, h2, h3';
 
 /**
  * @param {string} text
@@ -41,7 +41,7 @@ export const HEADING_SELECTOR = 'h1, h2, h3';
 function slugify(text) {
     return text
         .normalize('NFKD')
-        .replace(/[̀-ͯ]/g, '')
+        .replace(/\p{M}/gu, '')
         .toLowerCase()
         .replace(/[^\p{L}\p{N}]+/gu, '-')
         .replace(/^-+|-+$/g, '');
@@ -78,7 +78,7 @@ export function getHeadingIds(texts) {
  */
 export function createHeadingAnchor(id) {
     const anchor = document.createElement('a');
-    setAnchorTarget(anchor, id);
+    anchor.href = `#${id}`;
     anchor.className = 'kb-heading-anchor';
     anchor.contentEditable = 'false';
     anchor.dataset.glpiKbHeadingAnchor = '';
@@ -86,18 +86,6 @@ export function createHeadingAnchor(id) {
     anchor.title = __('Copy link to this section');
 
     return anchor;
-}
-
-/**
- * @param {HTMLAnchorElement} anchor
- * @param {string} id
- */
-function setAnchorTarget(anchor, id) {
-    const url = new URL(window.location.href);
-    url.hash = id;
-    anchor.href = `#${id}`;
-    // Copied by the `data-glpi-clipboard-text` handler of common.js.
-    anchor.dataset.glpiClipboardText = url.toString();
 }
 
 /**
@@ -122,7 +110,7 @@ export function annotateHeadings(root) {
         if (anchor === null) {
             heading.append(createHeadingAnchor(id));
         } else {
-            setAnchorTarget(anchor, id);
+            anchor.href = `#${id}`;
         }
     });
 }

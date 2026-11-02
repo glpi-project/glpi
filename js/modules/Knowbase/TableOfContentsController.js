@@ -43,11 +43,7 @@ export class GlpiKnowbaseTableOfContentsController
 {
     static #STORAGE_KEY = 'glpi_kb_toc_visible';
 
-    /**
-     * @type {number} Below this body width, in rem, the column does not show:
-     * 37.5rem of text plus the 18rem of `.kb-toc-column` and its gap. Low
-     * enough for the fixed-width helpdesk and public FAQ layouts.
-     */
+    /** @type {number} Body width, in rem, for 37.5rem of text plus the column and its gap. */
     static #MIN_BODY_WIDTH = 55.5;
 
     /** @type {HTMLElement} */
@@ -70,6 +66,9 @@ export class GlpiKnowbaseTableOfContentsController
 
     /** @type {boolean} */
     #is_narrow = false;
+
+    /** @type {boolean} */
+    #is_editing = false;
 
     /** @type {AbortController} Removes the page-level listener once the article leaves the page. */
     #listeners = new AbortController();
@@ -174,6 +173,15 @@ export class GlpiKnowbaseTableOfContentsController
     }
 
     /**
+     * @param {boolean} is_editing
+     */
+    setEditing(is_editing)
+    {
+        this.#is_editing = is_editing;
+        this.#update();
+    }
+
+    /**
      * @param {boolean} is_visible
      */
     #setVisible(is_visible)
@@ -200,7 +208,9 @@ export class GlpiKnowbaseTableOfContentsController
     #onShortcut()
     {
         if (!this.#is_narrow) {
-            this.toggle();
+            if (this.#outline.getHeadings().length > 0 || this.#is_editing) {
+                this.toggle();
+            }
         } else if (this.#outline.getHeadings().length > 0) {
             bootstrap.Dropdown.getOrCreateInstance(this.#button).toggle();
         }
@@ -226,8 +236,9 @@ export class GlpiKnowbaseTableOfContentsController
 
         this.#toggle_container.classList.toggle('d-none', !has_headings);
 
-        // The kebab switch can show the empty column, so headings added in edit mode appear in it.
-        this.#column.classList.toggle('d-none', !this.#is_visible || this.#is_narrow);
+        // In edit mode the column can be empty, so the headings the author adds appear in it.
+        const show_column = this.#is_visible && !this.#is_narrow && (has_headings || this.#is_editing);
+        this.#column.classList.toggle('d-none', !show_column);
         this.#column.querySelector('[data-glpi-kb-toc-empty]')
             .classList.toggle('d-none', has_headings);
 
@@ -237,12 +248,13 @@ export class GlpiKnowbaseTableOfContentsController
             bootstrap.Dropdown.getInstance(this.#button)?.hide();
             this.#button.setAttribute('aria-pressed', this.#is_visible ? 'true' : 'false');
         }
-        this.#button.setAttribute('aria-label', this.#getLabel());
         bootstrap.Tooltip.getInstance(this.#toggle_container)?.setContent({ '.tooltip-inner': this.#getTooltip() });
 
-        const selector = `[data-glpi-kb-action="${EditorActionType.TOGGLE_TABLE_OF_CONTENTS}"] input[type="checkbox"]`;
-        for (const checkbox of this.#container.querySelectorAll(selector)) {
-            checkbox.checked = this.#is_visible;
+        // Without headings, the choice would change nothing here, but would apply to all the articles.
+        const selector = `[data-glpi-kb-action="${EditorActionType.TOGGLE_TABLE_OF_CONTENTS}"]`;
+        for (const action of this.#container.querySelectorAll(selector)) {
+            action.disabled = !has_headings && !this.#is_editing;
+            action.querySelector('input[type="checkbox"]').checked = this.#is_visible;
         }
     }
 

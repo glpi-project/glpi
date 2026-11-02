@@ -983,7 +983,7 @@ abstract class CommonDropdown extends CommonDBTM
                 $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
                 $ret .= "<div class='faqadd_entries'>";
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= $kbitem->showFull(['display' => false, 'embedded' => true]);
                 $ret .= "</div>"; // .faqadd_block_content
                 $ret .= Html::scriptBlock("
                         var setMaxWidth = function() {

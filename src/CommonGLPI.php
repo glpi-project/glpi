@@ -1494,7 +1494,7 @@ class CommonGLPI implements CommonGLPIInterface
             $ret .= "<div class='faqadd_entries' style='position:relative;'>";
             if (count($found_kbitem) == 1) {
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= $kbitem->showFull(['display' => false, 'embedded' => true]);
                 $ret .= "</div>"; // .faqadd_block_content
             } else {
                 $ret .= Html::scriptBlock("
@@ -1520,7 +1520,7 @@ class CommonGLPI implements CommonGLPIInterface
                     'on_change' => "getKnowbaseItemAnswer$rand()",
                 ]);
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= $kbitem->showFull(['display' => false, 'embedded' => true]);
                 $ret .= "</div>"; // .faqadd_block_content
             }
             $ret .= "</div>"; // .faqadd_entries

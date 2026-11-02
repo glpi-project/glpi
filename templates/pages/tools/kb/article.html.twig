@@ -38,6 +38,12 @@
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
     data-glpi-kb-can-comment="{{ can_comment ? 'true' : 'false' }}"
+    {% if legacy_heading_ids is defined and legacy_heading_ids is not empty %}
+        data-glpi-kb-legacy-heading-ids="{{ legacy_heading_ids|json_encode }}"
+    {% endif %}
+    {% if article_url is defined %}
+        data-glpi-kb-article-url="{{ article_url }}"
+    {% endif %}
     {% if prefilled_parent is defined %}
         data-glpi-kb-prefilled-parent-id="{{ prefilled_parent.id }}"
     {% endif %}
@@ -123,7 +129,7 @@
                     <button
                         type="button"
                         class="btn btn-ghost-secondary btn-icon kb-toc-toggle"
-                        aria-label="{{ __('Show contents') }}"
+                        aria-label="{{ __('Table of contents') }}"
                         aria-pressed="false"
                         aria-keyshortcuts="Control+Alt+H"
                         data-bs-toggle="dropdown"

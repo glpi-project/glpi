@@ -43,5 +43,5 @@ Html::header_nocache();
 if (isset($_POST['knowbaseitems_id'])) {
     $kbitem = new KnowbaseItem();
     $kbitem->getFromDB(intval($_POST['knowbaseitems_id']));
-    $kbitem->showFull();
+    $kbitem->showFull(['embedded' => true]);
 }

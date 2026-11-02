@@ -195,7 +195,7 @@ body.in_modal .kb-article {
 #kb-tiptap-editor {
     min-width: 0;
 
-    :is(h1, h2, h3) {
+    :is(h1, h2, h3, h4, h5, h6) {
         position: relative;
         scroll-margin-top: 1rem;
     }
@@ -220,7 +220,7 @@ body.in_modal .kb-article {
         content: "#";
     }
 
-    :is(h1, h2, h3):hover > &,
+    :is(h1, h2, h3, h4, h5, h6):hover > &,
     &:focus-visible {
         opacity: 1;
     }

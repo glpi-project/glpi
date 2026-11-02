@@ -289,6 +289,10 @@ export class GlpiKnowbaseArticleController
         const outline = new GlpiKnowbaseArticleOutline(
             this.#container.querySelector('#kb-tiptap-editor'),
             this.#container.querySelector('[data-glpi-knowbase-article-content]'),
+            {
+                article_url: this.#container.dataset.glpiKbArticleUrl ?? null,
+                legacy_ids: JSON.parse(this.#container.dataset.glpiKbLegacyHeadingIds ?? '{}'),
+            },
         );
         this.#toc = new GlpiKnowbaseTableOfContentsController(this.#container, outline);
         // After #initEditor(): the article HTML is read before headings get ids and icons.
@@ -975,6 +979,7 @@ export class GlpiKnowbaseArticleController
                 this.#editor.setContent(this.#original_content);
                 this.#editor.setEditable(false);
                 this.#is_editing = false;
+                this.#toc?.setEditing(false);
                 this.#disableTitleEditing(true);
                 this.#getIllustrationPicker()?.restore();
                 this.#setIllustrationEditable(false);
@@ -1374,6 +1379,7 @@ export class GlpiKnowbaseArticleController
         this.#enableTitleEditing();
         this.#setIllustrationEditable(true);
         this.#is_editing = true;
+        this.#toc?.setEditing(true);
 
         this.#editor.focus();
         if (edit_button) {
@@ -1496,6 +1502,7 @@ export class GlpiKnowbaseArticleController
             this.#disableTitleEditing();
             this.#setIllustrationEditable(false);
             this.#is_editing = false;
+            this.#toc?.setEditing(false);
 
             this.#base_content = this.#original_content;
             this.#base_title = this.#original_title;
@@ -1818,6 +1825,7 @@ export class GlpiKnowbaseArticleController
         this.#getIllustrationPicker()?.restore();
         this.#setIllustrationEditable(false);
         this.#is_editing = false;
+        this.#toc?.setEditing(false);
 
         // Restore main editor actions visibility
         const editor_actions = this.#container.querySelector('.kb-editor-actions');

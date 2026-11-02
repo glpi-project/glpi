@@ -892,6 +892,23 @@ HTML,
         $this->assertSame($answer, $kbi->getAnswer());
     }
 
+    public function testGetLegacyHeadingIds(): void
+    {
+        $kbi = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => '<h2>Привет</h2><h2><strong>Setup</strong></h2><h3>2. Setup</h3><h4>Привет</h4><h2> </h2><h2>🚀</h2>',
+        ]);
+
+        $this->assertSame(
+            [
+                'privet'              => 'Привет',
+                'strong-setup-strong' => 'Setup',
+                'slug_2.-setup'       => '2. Setup',
+            ],
+            $kbi->getLegacyHeadingIds($kbi->getAnswer())
+        );
+    }
+
     public function testCreateWithParents()
     {
         global $DB;

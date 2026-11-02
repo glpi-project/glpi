@@ -1529,6 +1529,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $default_options = [
             'display' => true,
             'mode' => "view",
+            // Shown inside the form of another item.
+            'embedded' => false,
         ];
         $options = array_merge($default_options, $options);
         $mode = $options['mode'];
@@ -1543,6 +1545,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'actions' => [],
             'comment_anchor_max_length' => KnowbaseItem_Comment::MAX_ANCHOR_LENGTH,
         ];
+
+        if ($mode !== 'add') {
+            $params['legacy_heading_ids'] = $this->getLegacyHeadingIds($params['answer']);
+        }
+        if ($options['embedded'] && $mode === 'view') {
+            $params['article_url'] = Session::getCurrentInterface() === 'helpdesk'
+                ? $CFG_GLPI['root_doc'] . '/front/helpdesk.faq.php?id=' . $this->fields['id']
+                : self::getFormURLWithID($this->fields['id']);
+        }
 
         if ($mode === "edit" || $mode === "view") {
             $can_update = $this->can($this->fields['id'], UPDATE);
@@ -3404,6 +3415,35 @@ TWIG, $twig_params);
     public function getAnswer()
     {
         return KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
+    }
+
+    /**
+     * The ids the server gave to the headings before, so that the links shared then still work.
+     *
+     * @param string $answer The answer, as {@see getAnswer()} gives it.
+     *
+     * @return array<string, string> Heading text, by id.
+     */
+    public function getLegacyHeadingIds(string $answer): array
+    {
+        // The pattern and the slugs of the server-side anchors, kept as they were.
+        preg_match_all('|<(h[1-6]{1})(.?[^>])?>(.+?)</h[1-6]{1}>|', $answer, $matches);
+
+        $ids = [];
+        foreach ($matches[3] as $title) {
+            $text = html_entity_decode(strip_tags($title), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            if (trim($text) === '') {
+                continue;
+            }
+            $id = Toolbox::slugify($title);
+            // A random fallback slug, different on each render: no link can match it.
+            if (str_starts_with($id, 'nok_')) {
+                continue;
+            }
+            $ids[$id] ??= $text;
+        }
+
+        return $ids;
     }
 
     /**
